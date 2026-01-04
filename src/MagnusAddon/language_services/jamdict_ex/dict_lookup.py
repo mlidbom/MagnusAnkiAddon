@@ -42,10 +42,6 @@ _all_name_forms = Lazy(_find_all_names)
 
 class DictLookup(Slots):
     @classmethod
-    def _failed_for_word(cls, word: str) -> DictLookupResult:
-        return DictLookupResult(QList(), word, QList())
-
-    @classmethod
     def lookup_vocab_word_or_name(cls, vocab: VocabNote) -> DictLookupResult:
         if vocab.readings.get():
             return cls.lookup_word_or_name_with_matching_reading(vocab.question.without_noise_characters, vocab.readings.get())
@@ -59,7 +55,7 @@ class DictLookup(Slots):
 
     @classmethod
     def _try_lookup_word_or_name_with_matching_reading(cls, word: str, readings: tuple[str, ...]) -> DictLookupResult:  # needs to be a tuple to be hashable for caching
-        if not cls.might_be_entry(word): return DictLookup._failed_for_word(word)
+        if not cls.might_be_entry(word): return DictLookupResult.failed()
 
         return cls._try_lookup_word_or_name_with_matching_reading_inner(word, readings)
 
@@ -87,7 +83,7 @@ class DictLookup(Slots):
 
     @classmethod
     def lookup_word_or_name(cls, word: str) -> DictLookupResult:
-        if not cls.might_be_entry(word): return DictLookup._failed_for_word(word)
+        if not cls.might_be_entry(word): return DictLookupResult.failed()
         word_hit = cls.lookup_word(word)
         if word_hit.found_words():
             return word_hit
@@ -95,13 +91,13 @@ class DictLookup(Slots):
 
     @classmethod
     def lookup_word(cls, word: str) -> DictLookupResult:
-        if not cls.might_be_word(word): return DictLookup._failed_for_word(word)
+        if not cls.might_be_word(word): return DictLookupResult.failed()
         entries = cls._lookup_word_raw(word)
         return DictLookupResult(entries, word, QList())
 
     @classmethod
     def lookup_name(cls, word: str) -> DictLookupResult:
-        if not cls.might_be_word(word): return DictLookup._failed_for_word(word)
+        if not cls.might_be_word(word): return DictLookupResult.failed()
         entries = cls._lookup_name_raw(word)
         return DictLookupResult(entries, word, QList())
 

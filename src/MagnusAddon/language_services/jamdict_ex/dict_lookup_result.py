@@ -5,11 +5,11 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 from language_services.jamdict_ex.priority_spec import PrioritySpec
 from sysutils import ex_str, kana_utils
+from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:
     from language_services.jamdict_ex.dict_entry import DictEntry
     from typed_linq_collections.collections.q_frozen_set import QFrozenSet
-    from typed_linq_collections.collections.q_list import QList
     from typed_linq_collections.collections.q_set import QSet
 
 class DictLookupResult(Slots):
@@ -65,3 +65,10 @@ class DictLookupResult(Slots):
             return f"""{reading_diff}{kanji_diff}: """ if reading_diff or kanji_diff else ""
 
         return ex_str.newline.join(self.entries.select(lambda entry: f"""{_create_separating_description(entry)}{entry.format_answer()}"""))
+
+    _failed: DictLookupResult | None = None
+    @classmethod
+    def failed(cls) -> DictLookupResult:
+        if cls._failed is None:
+            cls._failed = DictLookupResult(QList(), "", QList())
+        return cls._failed
