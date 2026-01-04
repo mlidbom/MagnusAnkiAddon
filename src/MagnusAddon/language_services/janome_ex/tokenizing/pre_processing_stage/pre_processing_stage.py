@@ -27,7 +27,7 @@ class PreProcessingStage(Slots):
         if split_godan_imperative is not None:
             return split_godan_imperative
 
-        split_godan_imperative = IchidanGodanPotentialOrImperativeHybridSplitter(token, self._vocabs).try_split()
+        split_godan_imperative = IchidanGodanPotentialOrImperativeHybridSplitter.try_split(token, self._vocabs)
         if split_godan_imperative is not None:
             return split_godan_imperative
 

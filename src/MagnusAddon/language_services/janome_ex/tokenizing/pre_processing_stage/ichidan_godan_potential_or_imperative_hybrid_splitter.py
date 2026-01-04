@@ -14,85 +14,89 @@ if TYPE_CHECKING:
     from note.collection.vocab_collection import VocabCollection
 
 class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
-    def __init__(self, token: JNToken, vocabs: VocabCollection) -> None:
-        self.token: JNToken = token
-        self._vocabs: VocabCollection = vocabs
 
-    def try_split(self) -> list[ProcessedToken] | None:
-        if self.token.inflected_form == InflectionForms.ImperativeMeireikei.ro:
+    @classmethod
+    def try_split(cls, token: JNToken, vocabs: VocabCollection) -> list[ProcessedToken] | None:
+        if token.inflected_form == InflectionForms.ImperativeMeireikei.ro:
             return None
 
-        hidden_godan = self._try_find_godan_hidden_in_ichidan_using_dictionary() or self._try_find_vocab_based_potential_or_imperative_godan_compound()
+        hidden_godan = cls._try_find_godan_hidden_in_ichidan_using_dictionary(token) or cls._try_find_vocab_based_potential_or_imperative_godan_compound(token, vocabs)
         if hidden_godan is not None:
-            if self._is_potential_godan(hidden_godan):
-                return self._split_godan_potential(hidden_godan)
-            if self._is_imperative_godan(hidden_godan):
-                return self._split_godan_imperative(hidden_godan)
+            if cls._is_potential_godan(token, hidden_godan):
+                return cls._split_godan_potential(token, hidden_godan)
+            if cls._is_imperative_godan(token, hidden_godan):
+                return cls._split_godan_imperative(token, hidden_godan)
 
         return None
 
-    def _split_godan_imperative(self, godan_base: str) -> list[ProcessedToken]:
-        if self.token.inflected_form == InflectionForms.ImperativeMeireikei.yo:  # handles cases like 放せよ which janome turns into a single token and believes is an ichidan よ imperative
-            godan_surface = self.token.surface[:-2]
-            imperative_part = self.token.surface[-2]
+    @classmethod
+    def _split_godan_imperative(cls, token: JNToken, godan_base: str) -> list[ProcessedToken]:
+        if token.inflected_form == InflectionForms.ImperativeMeireikei.yo:  # handles cases like 放せよ which janome turns into a single token and believes is an ichidan よ imperative
+            godan_surface = token.surface[:-2]
+            imperative_part = token.surface[-2]
             return [ProcessedToken(surface=godan_surface, base=godan_base, is_inflectable_word=True, is_godan_imperative_stem=True),
                     ProcessedToken(surface=imperative_part, base="え", is_inflectable_word=True, is_godan_imperative_inflection=True),
                     ProcessedToken(surface="よ", base="よ", is_inflectable_word=False)]
         else:  # noqa: RET505
-            godan_surface = self.token.surface[:-1]
-            imperative_part = self.token.surface[-1]
+            godan_surface = token.surface[:-1]
+            imperative_part = token.surface[-1]
             imperative_base = "い" if imperative_part == "い" else "え"
             return [ProcessedToken(surface=godan_surface, base=godan_base, is_inflectable_word=True, is_godan_imperative_stem=True),
                     ProcessedToken(surface=imperative_part, base=imperative_base, is_inflectable_word=True, is_godan_imperative_inflection=True)]
 
-    def _split_godan_potential(self, godan_base: str) -> list[ProcessedToken]:
-        godan_surface = self.token.surface.removesuffix("る")[:-1]
-        potential_surface = self.token.surface.removeprefix(godan_surface)
+    @classmethod
+    def _split_godan_potential(cls, token: JNToken, godan_base: str) -> list[ProcessedToken]:
+        godan_surface = token.surface.removesuffix("る")[:-1]
+        potential_surface = token.surface.removeprefix(godan_surface)
         potential_base = potential_surface if potential_surface[-1] == "る" else potential_surface + "る"
 
         return [ProcessedToken(surface=godan_surface, base=godan_base, is_inflectable_word=True, is_godan_potential_stem=True),
                 ProcessedToken(surface=potential_surface, base=potential_base, is_inflectable_word=True, is_godan_potential_inflection=True)]
 
     _potential_or_imperative_godan_last_compound_parts: set[str] = {"える", "え"}
-    def _try_find_vocab_based_potential_or_imperative_godan_compound(self) -> str | None:
-        for vocab in self._vocabs.with_question(self.token.base_form):
+    @classmethod
+    def _try_find_vocab_based_potential_or_imperative_godan_compound(cls, token: JNToken, vocabs: VocabCollection) -> str | None:
+        for vocab in vocabs.with_question(token.base_form):
             compound_parts = vocab.compound_parts.all()
-            if len(compound_parts) == 2 and compound_parts[1] in self._potential_or_imperative_godan_last_compound_parts:  # noqa: SIM102
+            if len(compound_parts) == 2 and compound_parts[1] in cls._potential_or_imperative_godan_last_compound_parts:  # noqa: SIM102
                 if WordInfo.is_godan(compound_parts[0]):
                     return compound_parts[0]
         return None
 
-    def _is_potential_godan(self, godan_base: str) -> bool:
-        if self.token.surface.endswith("る") or (self.token.next is not None and self.token.next.is_valid_godan_potential_form_inflection()):  # noqa: SIM103
+    @classmethod
+    def _is_potential_godan(cls, token: JNToken, godan_base: str) -> bool:
+        if token.surface.endswith("る") or (token.next is not None and token.next.is_valid_godan_potential_form_inflection()):  # noqa: SIM103
             godan_dict_entry = non_optional(WordInfo.lookup_godan(godan_base))
-            if (godan_dict_entry.is_intransitive and self.token.previous is not None and self.token.previous.surface == "を"  # intransitive verbs don't take を so this is most likely actually the ichidan verb  # noqa: SIM103
-                    and WordInfo.is_ichidan(self.token.base_form)):  # if one actally exists in the dictionary, if not this is most likely one of the godan verbs of motion that use を to refer to the space traversed
+            if (godan_dict_entry.is_intransitive and token.previous is not None and token.previous.surface == "を"  # intransitive verbs don't take を so this is most likely actually the ichidan verb  # noqa: SIM103
+                    and WordInfo.is_ichidan(token.base_form)):  # if one actally exists in the dictionary, if not this is most likely one of the godan verbs of motion that use を to refer to the space traversed
                 return False
             return True
         return False
 
-    def _is_imperative_godan(self, godan_base: str) -> bool:
+    @classmethod
+    def _is_imperative_godan(cls, token: JNToken, godan_base: str) -> bool:
         godan_word_info = WordInfo.lookup(godan_base)
-        if WordInfo.lookup(self.token.base_form) is None:
+        if WordInfo.lookup(token.base_form) is None:
             return True  # we check for potential godan before this, so if there is no ichidan verb in the dictonary, the only thing left is an imperative godan
-        elif (godan_word_info is not None and godan_word_info.is_intransitive) and self.token.previous is not None and self.token.previous.surface == "を":  # intransitive verbs don't take を so this is most likely actually the ichidan verb  # noqa: RET505, SIM103
+        elif (godan_word_info is not None and godan_word_info.is_intransitive) and token.previous is not None and token.previous.surface == "を":  # intransitive verbs don't take を so this is most likely actually the ichidan verb  # noqa: RET505, SIM103
             return False
-        elif self.token.next and self.token.next.cannot_follow_ichidan_stem():  # noqa: SIM114
+        elif token.next and token.next.cannot_follow_ichidan_stem():  # noqa: SIM114
             return True
-        elif self.token.next and self.token.next.is_more_likely_to_follow_imperative_than_ichidan_stem():  # noqa: SIM114
+        elif token.next and token.next.is_more_likely_to_follow_imperative_than_ichidan_stem():  # noqa: SIM114
             return True
-        elif self.token.next is None or self.token.is_end_of_statement():  # noqa: SIM114
+        elif token.next is None or token.is_end_of_statement():  # noqa: SIM114
             return True
-        elif self.token.inflected_form == InflectionForms.ImperativeMeireikei.yo:  # handles cases like 放せよ which janome turns into a single token and believes is an ichidan よ imperative
+        elif token.inflected_form == InflectionForms.ImperativeMeireikei.yo:  # handles cases like 放せよ which janome turns into a single token and believes is an ichidan よ imperative
             return True
 
         return False
 
-    def _try_find_godan_hidden_in_ichidan_using_dictionary(self) -> str | None:
-        if (len(self.token.base_form) >= 2
-                and self.token.base_form[-2:] in conjugator.godan_potential_verb_ending_to_dictionary_form_endings
-                and self.token.is_ichidan_verb()):
-            possible_godan_form = conjugator.construct_root_verb_for_possibly_potential_godan_verb_dictionary_form(self.token.base_form)
+    @classmethod
+    def _try_find_godan_hidden_in_ichidan_using_dictionary(cls, token: JNToken) -> str | None:
+        if (len(token.base_form) >= 2
+                and token.base_form[-2:] in conjugator.godan_potential_verb_ending_to_dictionary_form_endings
+                and token.is_ichidan_verb()):
+            possible_godan_form = conjugator.construct_root_verb_for_possibly_potential_godan_verb_dictionary_form(token.base_form)
             if WordInfo.is_godan(possible_godan_form):
                 return possible_godan_form
         return None
