@@ -78,7 +78,7 @@ class VocabMatch(Match, Slots):
                 RequiresOrForbidsMasuStem.apply_to(self.vocab_inspector),
 
                 RequiresOrForbidsIsExactMatch.apply_to(self.vocab_inspector),
-                RequiresOrForbidsIsSingleToken.for_if(self.vocab_inspector),
+                RequiresOrForbidsIsSingleToken.apply_to(self.vocab_inspector),
                 ForbidsSurfaceIsIn.for_if(self.vocab_inspector, self.rules.surface_is_not.get()),
                 ForbidsSurfaceIsIn.for_if(self.vocab_inspector, self.rules.yield_to_surface.get()),
         )

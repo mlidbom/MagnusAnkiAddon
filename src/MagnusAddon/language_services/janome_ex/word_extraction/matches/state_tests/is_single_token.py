@@ -1,37 +1,26 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.requirements.custom_requires_or_forbids import CustomRequiresOrForbids
+from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
 
 if TYPE_CHECKING:
+    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 class RequiresOrForbidsIsSingleToken(CustomRequiresOrForbids, Slots):
-    def __init__(self, inspector: VocabMatchInspector) -> None:
-        super().__init__(inspector)
+    _required_failure: FailedMatchRequirement = FailedMatchRequirement.required("single_token")
+    _forbidden_failure: FailedMatchRequirement = FailedMatchRequirement.forbids("single_token")
 
-    @staticmethod
-    def for_if(inspector: VocabMatchInspector) -> RequiresOrForbidsIsSingleToken | None:
-        return RequiresOrForbidsIsSingleToken(inspector) if inspector.match.requires_forbids.single_token.is_active else None
-
-    @property
-    @override
-    def is_required(self) -> bool:
-        return self.inspector.match.requires_forbids.single_token.is_required
-
-    @property
-    @override
-    def is_forbidden(self) -> bool:
-        return self.inspector.match.requires_forbids.single_token.is_forbidden
-
-    @property
-    @override
-    def description(self) -> str: return "single_token"
-
-    @override
-    def _internal_is_in_state(self) -> bool:
-        if not self.inspector.word.is_compound:  # noqa: SIM103
-            return True
-        return False
+    @classmethod
+    def apply_to(cls, inspector: VocabMatchInspector) -> MatchRequirement | None:
+        requirement = inspector.match.requires_forbids.single_token
+        if requirement.is_active:
+            is_in_state = not inspector.word.is_compound
+            if requirement.is_required and not is_in_state:
+                return cls._required_failure
+            if requirement.is_forbidden and is_in_state:
+                return cls._forbidden_failure
+        return None
