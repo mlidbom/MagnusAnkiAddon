@@ -32,19 +32,21 @@ class RequiresOrForbidsHasTeFormStem(Slots):
         if inspector.previous_location is None:
             return False
 
-        if inspector.previous_location.token.is_special_nai_negative():  # todo: review: this code means that we do not consider ない to be a te form stem, but it seems that janome does.....
+        previous_token = inspector.previous_location.token
+
+        if previous_token.is_special_nai_negative:  # todo: review: this code means that we do not consider ない to be a te form stem, but it seems that janome does.....
             return False
 
-        if inspector.previous_location.token.is_te_form_stem():
+        if previous_token.is_te_form_stem:
             return True
 
         if not any(te_form_start for te_form_start in RequiresOrForbidsHasTeFormStem._te_forms if inspector.parsed_form.startswith(te_form_start)):
             return False
 
-        if inspector.previous_location.token.is_past_tense_stem():
+        if previous_token.is_past_tense_stem:
             return True
 
-        if inspector.previous_location.token.is_ichidan_masu_stem():  # noqa: SIM103
+        if previous_token.is_ichidan_masu_stem:  # noqa: SIM103
             return True
 
         return False

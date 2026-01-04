@@ -29,10 +29,10 @@ class RequiresOrForbidsHasPastTenseStem(Slots):
         if inspector.previous_location is None:
             return False
 
-        if inspector.previous_location.token.is_past_tense_stem():
+        if inspector.previous_location.token.is_past_tense_stem:
             return True
 
-        if inspector.word.start_location.token.is_past_tense_marker():  # noqa: SIM103
+        if inspector.word.start_location.token.is_past_tense_marker:  # noqa: SIM103
             return True
 
         return False
