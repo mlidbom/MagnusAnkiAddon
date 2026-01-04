@@ -40,7 +40,7 @@ class Match(WeakRefable, Slots):
             self._validity_requirements_cache = [r for r in (
                     ForbidsIsConfiguredIncorrect.apply_to(self.inspector),
                     ForbidsIsGodanPotentialInflectionWithBase.apply_to(self.inspector),
-                    ForbidsIsGodanImperativeInflectionWithBase(self.inspector),
+                    ForbidsIsGodanImperativeInflectionWithBase.apply_to(self.inspector),
                     ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb(self.inspector),
                     *self._create_validity_requirements()
             ) if r is not None]
