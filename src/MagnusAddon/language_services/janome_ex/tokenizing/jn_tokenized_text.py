@@ -10,7 +10,7 @@ from language_services.janome_ex.tokenizing.pre_processing_stage.pre_processing_
 if TYPE_CHECKING:
     from janome.tokenizer import Token  # pyright: ignore[reportMissingTypeStubs]
     from language_services.janome_ex.tokenizing.jn_token import JNToken
-    from language_services.janome_ex.tokenizing.processed_token import SplitToken
+    from language_services.janome_ex.tokenizing.processed_token import IAnalysisToken
 
 class JNTokenizedText(Slots):
     def __init__(self, text: str, raw_tokens: list[Token], tokens: list[JNToken]) -> None:
@@ -18,7 +18,7 @@ class JNTokenizedText(Slots):
         self.text: str = text
         self.tokens: list[JNToken] = tokens
 
-    def pre_process(self) -> list[SplitToken]:
+    def pre_process(self) -> list[IAnalysisToken]:
         try:
             return PreProcessingStage(app.col().vocab).pre_process(self.tokens)
         except Exception:

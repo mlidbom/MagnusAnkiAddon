@@ -5,14 +5,14 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 from language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
 from language_services.janome_ex.tokenizing.inflection_types import InflectionTypes
-from language_services.janome_ex.tokenizing.processed_token import SplitToken
+from language_services.janome_ex.tokenizing.processed_token import IAnalysisToken, SplitToken
 
 if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.jn_token import JNToken
 
 class GodanImperativeSplitter(Slots):
     @classmethod
-    def try_split(cls, token: JNToken) -> list[SplitToken] | None:
+    def try_split(cls, token: JNToken) -> list[IAnalysisToken] | None:
         if cls._is_godan_imperative(token):
             return cls._split_godan_imperative(token, token.base_form)
 
@@ -31,7 +31,7 @@ class GodanImperativeSplitter(Slots):
         return False
 
     @classmethod
-    def _split_godan_imperative(cls, token: JNToken, godan_base: str) -> list[SplitToken]:
+    def _split_godan_imperative(cls, token: JNToken, godan_base: str) -> list[IAnalysisToken]:
         if token.inflected_form == InflectionForms.ImperativeMeireikei.yo:  # handles cases like 放せよ which janome turns into a single token and believes is an ichidan よ imperative
             godan_surface = token.surface[:-2]
             imperative_part = token.surface[-2]

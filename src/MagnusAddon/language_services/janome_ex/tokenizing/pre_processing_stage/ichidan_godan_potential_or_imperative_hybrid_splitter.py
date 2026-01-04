@@ -6,7 +6,7 @@ from autoslot import Slots
 from language_services import conjugator
 from language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
 from language_services.janome_ex.tokenizing.pre_processing_stage.word_info import WordInfo
-from language_services.janome_ex.tokenizing.processed_token import SplitToken
+from language_services.janome_ex.tokenizing.processed_token import IAnalysisToken, SplitToken
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
 
     @classmethod
-    def try_split(cls, token: JNToken, vocabs: VocabCollection) -> list[SplitToken] | None:
+    def try_split(cls, token: JNToken, vocabs: VocabCollection) -> list[IAnalysisToken] | None:
         if token.inflected_form == InflectionForms.ImperativeMeireikei.ro:
             return None
 
@@ -30,7 +30,7 @@ class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
         return None
 
     @classmethod
-    def _split_godan_imperative(cls, token: JNToken, godan_base: str) -> list[SplitToken]:
+    def _split_godan_imperative(cls, token: JNToken, godan_base: str) -> list[IAnalysisToken]:
         if token.inflected_form == InflectionForms.ImperativeMeireikei.yo:  # handles cases like 放せよ which janome turns into a single token and believes is an ichidan よ imperative
             godan_surface = token.surface[:-2]
             imperative_part = token.surface[-2]
@@ -45,7 +45,7 @@ class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
                     SplitToken(token, surface=imperative_part, base=imperative_base, is_inflectable_word=True, is_godan_imperative_inflection=True)]
 
     @classmethod
-    def _split_godan_potential(cls, token: JNToken, godan_base: str) -> list[SplitToken]:
+    def _split_godan_potential(cls, token: JNToken, godan_base: str) -> list[IAnalysisToken]:
         godan_surface = token.surface.removesuffix("る")[:-1]
         potential_surface = token.surface.removeprefix(godan_surface)
         potential_base = potential_surface if potential_surface[-1] == "る" else potential_surface + "る"
