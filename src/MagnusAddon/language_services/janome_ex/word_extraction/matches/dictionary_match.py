@@ -8,13 +8,12 @@ from language_services.janome_ex.word_extraction.matches.match import Match
 if TYPE_CHECKING:
     from language_services.jamdict_ex.dict_entry import DictEntry
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
+    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from sysutils.weak_ref import WeakRef
 
 class DictionaryMatch(Match, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant], dictionary_entry: DictEntry) -> None:
-        super().__init__(word_variant,
-                         validity_requirements=(),
-                         display_requirements=())
+        super().__init__(word_variant)
         self.dictionary_entry: DictEntry = dictionary_entry
 
     @property
@@ -23,3 +22,8 @@ class DictionaryMatch(Match, Slots):
     @property
     @override
     def readings(self) -> list[str]: return self.dictionary_entry.kana_forms_text()
+
+    @override
+    def _create_display_requirements(self) -> tuple[MatchRequirement | None, ...]: return ()
+    @override
+    def _create_validity_requirements(self) -> tuple[MatchRequirement | None, ...]: return ()

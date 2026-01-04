@@ -29,52 +29,59 @@ from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
+    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from note.vocabulary.vocabnote import VocabNote
     from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfiguration
 
 @final
 class VocabMatch(Match, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant], vocab: VocabNote) -> None:
-        weakref: WeakRef[VocabMatch] = WeakRef(self)
-        inspector = VocabMatchInspector(weakref)
+        self.weakref_vocab: WeakRef[VocabMatch] = WeakRef(self)
+        self.vocab_inspector = VocabMatchInspector(self.weakref_vocab)
         self.requires_forbids = vocab.matching_configuration.requires_forbids
         self.rules = vocab.matching_configuration.configurable_rules
         self.vocab: VocabNote = vocab
         self._variant: WeakRef[CandidateWordVariant] = word_variant
-        super().__init__(word_variant,
-                         validity_requirements=(
-                                 ForbidsAnotherMatchOwnsTheForm(inspector),
-                                 # head requirements
-                                 ForbidsPrefixIsIn.for_if(inspector, self.rules.prefix_is_not.get()),
-                                 RequiresPrefixIsIn.for_if(inspector, self.rules.required_prefix.get()),
-                                 RequiresOrForbidsIsSentenceStart.for_if(inspector),
-                                 RequiresOrForbidsHasTeFormStem.for_if(inspector),
-                                 RequiresOrForbidsHasAStem.for_if(inspector),
-                                 RequiresOrForbidsHasPastTenseStem.for_if(inspector),
-                                 RequiresOrForbidsHasEStem.for_if(inspector),
+        super().__init__(word_variant)
 
-                                 RequiresOrForbidsHasGodanImperativePrefix.for_if(inspector),
-                                 RequiresOrForbidsStartsWithGodanPotentialStemOrInflection.for_if(inspector),
-                                 RequiresOrForbidsStartsWithGodanImperativeStemOrInflection.for_if(inspector),
-                                 RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection.for_if(inspector),
+    @override
+    def _create_display_requirements(self) -> tuple[MatchRequirement | None, ...]:
+        return (
+                ForbidsHasDisplayedOverlappingFollowingCompound.for_if(self.vocab_inspector, self.requires_forbids.yield_last_token.is_required),
+                ForbidsCompositionallyTransparentCompound.for_if(self.vocab_inspector)
+        )
 
-                                 # tail requirements
-                                 RequiresOrForbidsIsSentenceEnd.for_if(inspector),
-                                 ForbidsSuffixIsIn.for_if(inspector, self.rules.suffix_is_not.get()),
+    @override
+    def _create_validity_requirements(self) -> tuple[MatchRequirement | None, ...]:
+        return (
+                ForbidsAnotherMatchOwnsTheForm(self.vocab_inspector),
+                # head requirements
+                ForbidsPrefixIsIn.for_if(self.vocab_inspector, self.rules.prefix_is_not.get()),
+                RequiresPrefixIsIn.for_if(self.vocab_inspector, self.rules.required_prefix.get()),
+                RequiresOrForbidsIsSentenceStart.for_if(self.vocab_inspector),
+                RequiresOrForbidsHasTeFormStem.for_if(self.vocab_inspector),
+                RequiresOrForbidsHasAStem.for_if(self.vocab_inspector),
+                RequiresOrForbidsHasPastTenseStem.for_if(self.vocab_inspector),
+                RequiresOrForbidsHasEStem.for_if(self.vocab_inspector),
 
-                                 # misc requirements
-                                 ForbidsIsPoisonWord(inspector),
-                                 RequiresOrForbidsMasuStem.apply_to(inspector),
+                RequiresOrForbidsHasGodanImperativePrefix.for_if(self.vocab_inspector),
+                RequiresOrForbidsStartsWithGodanPotentialStemOrInflection.for_if(self.vocab_inspector),
+                RequiresOrForbidsStartsWithGodanImperativeStemOrInflection.for_if(self.vocab_inspector),
+                RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection.for_if(self.vocab_inspector),
 
-                                 RequiresOrForbidsIsExactMatch.for_if(inspector),
-                                 RequiresOrForbidsIsSingleToken.for_if(inspector),
-                                 ForbidsSurfaceIsIn.for_if(inspector, self.rules.surface_is_not.get()),
-                                 ForbidsSurfaceIsIn.for_if(inspector, self.rules.yield_to_surface.get()),
-                         ),
-                         display_requirements=(
-                                 ForbidsHasDisplayedOverlappingFollowingCompound.for_if(inspector, self.requires_forbids.yield_last_token.is_required),
-                                 ForbidsCompositionallyTransparentCompound.for_if(weakref)
-                         ))
+                # tail requirements
+                RequiresOrForbidsIsSentenceEnd.for_if(self.vocab_inspector),
+                ForbidsSuffixIsIn.for_if(self.vocab_inspector, self.rules.suffix_is_not.get()),
+
+                # misc requirements
+                ForbidsIsPoisonWord(self.vocab_inspector),
+                RequiresOrForbidsMasuStem.apply_to(self.vocab_inspector),
+
+                RequiresOrForbidsIsExactMatch.for_if(self.vocab_inspector),
+                RequiresOrForbidsIsSingleToken.for_if(self.vocab_inspector),
+                ForbidsSurfaceIsIn.for_if(self.vocab_inspector, self.rules.surface_is_not.get()),
+                ForbidsSurfaceIsIn.for_if(self.vocab_inspector, self.rules.yield_to_surface.get()),
+        )
 
     @property
     def matching_configuration(self) -> VocabNoteMatchingConfiguration: return self.vocab.matching_configuration

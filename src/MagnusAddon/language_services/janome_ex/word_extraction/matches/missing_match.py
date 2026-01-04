@@ -7,13 +7,12 @@ from language_services.janome_ex.word_extraction.matches.match import Match
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
+    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from sysutils.weak_ref import WeakRef
 
 class MissingMatch(Match, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant]) -> None:
-        super().__init__(word_variant,
-                         validity_requirements=(),
-                         display_requirements=())
+        super().__init__(word_variant)
 
     @property
     @override
@@ -31,3 +30,8 @@ class MissingMatch(Match, Slots):
     @override
     def failure_reasons(self) -> list[str]:
         return super().failure_reasons + ["no_dictionary_or_vocabulary_match_found"]
+
+    @override
+    def _create_display_requirements(self) -> tuple[MatchRequirement | None, ...]: return ()
+    @override
+    def _create_validity_requirements(self) -> tuple[MatchRequirement | None, ...]: return ()

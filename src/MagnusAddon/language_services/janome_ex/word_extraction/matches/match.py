@@ -19,9 +19,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
 
 class Match(WeakRefable, Slots):
-    def __init__(self, word_variant: WeakRef[CandidateWordVariant],
-                 validity_requirements: tuple[MatchRequirement | None, ...],
-                 display_requirements: tuple[MatchRequirement | None, ...]) -> None:
+    def __init__(self, word_variant: WeakRef[CandidateWordVariant]) -> None:
         weakref_self = WeakRef(self)
         inspector = MatchInspector(weakref_self)
         self.inspector: MatchInspector = inspector
@@ -33,17 +31,22 @@ class Match(WeakRefable, Slots):
                 ForbidsIsGodanPotentialInflectionWithBase(inspector),
                 ForbidsIsGodanImperativeInflectionWithBase(inspector),
                 ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb(inspector),
-                *validity_requirements
+                *self._create_validity_requirements()
         ) if r is not None]
         self._display_requirements: list[MatchRequirement] = [r for r in (
                 self._is_not_shadowed_requirement,
                 ForbidsIsConfiguredHidden(inspector),
                 ForbidsConfiguredToHideCompounds.for_if(self),
-                *display_requirements
+                *self._create_display_requirements()
         ) if r is not None]
+
         self._is_valid_internal_cache: bool | None = None
         self._is_valid_cache: bool | None = None
         self._start_index_cache: int | None = None
+
+
+    def _create_validity_requirements(self) -> tuple[MatchRequirement | None, ...]: raise NotImplementedError()
+    def _create_display_requirements(self) -> tuple[MatchRequirement | None, ...]: raise NotImplementedError()
 
     @property
     def answer(self) -> str: raise NotImplementedError()
