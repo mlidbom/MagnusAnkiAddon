@@ -26,8 +26,13 @@ class Match(WeakRefable, Slots):
         self._is_not_shadowed_requirement: MatchRequirement = ForbidsIsShadowed(inspector)
         self.weakref: WeakRef[Match] = weakref_self
         self._variant: WeakRef[CandidateWordVariant] = word_variant
+
+        self._is_valid_internal_cache: bool | None = None
+        self._is_valid_cache: bool | None = None
+        self._start_index_cache: int | None = None
+
         self._validity_requirements: list[MatchRequirement] = [r for r in (
-                ForbidsIsConfiguredIncorrect(inspector),
+                ForbidsIsConfiguredIncorrect.apply_to(inspector),
                 ForbidsIsGodanPotentialInflectionWithBase(inspector),
                 ForbidsIsGodanImperativeInflectionWithBase(inspector),
                 ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb(inspector),
@@ -39,10 +44,6 @@ class Match(WeakRefable, Slots):
                 ForbidsConfiguredToHideCompounds.for_if(self),
                 *self._create_display_requirements()
         ) if r is not None]
-
-        self._is_valid_internal_cache: bool | None = None
-        self._is_valid_cache: bool | None = None
-        self._start_index_cache: int | None = None
 
 
     def _create_validity_requirements(self) -> tuple[MatchRequirement | None, ...]: raise NotImplementedError()
