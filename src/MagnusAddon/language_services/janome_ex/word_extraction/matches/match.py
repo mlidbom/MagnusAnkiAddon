@@ -52,7 +52,7 @@ class Match(WeakRefable, Slots):
             self._display_requirements_cache = [r for r in (
                     self._is_not_shadowed_requirement,
                     ForbidsIsConfiguredHidden.apply_to(self.inspector),
-                    ForbidsConfiguredToHideCompounds.for_if(self),
+                    ForbidsConfiguredToHideCompounds.apply_to(self),
                     *self._create_display_requirements()) if r is not None]
         return self._display_requirements_cache
 
