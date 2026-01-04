@@ -62,7 +62,7 @@ class VocabMatch(Match, Slots):
                 RequiresOrForbidsHasTeFormStem.apply_to(self.vocab_inspector),
                 RequiresOrForbidsHasAStem.apply_to(self.vocab_inspector),
                 RequiresOrForbidsHasPastTenseStem.apply_to(self.vocab_inspector),
-                RequiresOrForbidsHasEStem.for_if(self.vocab_inspector),
+                RequiresOrForbidsHasEStem.apply_to(self.vocab_inspector),
 
                 RequiresOrForbidsHasGodanImperativePrefix.for_if(self.vocab_inspector),
                 RequiresOrForbidsStartsWithGodanPotentialStemOrInflection.for_if(self.vocab_inspector),
