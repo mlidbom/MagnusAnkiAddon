@@ -59,8 +59,10 @@ class CandidateWordVariant(WeakRefable, Slots):
         else:
             if self._dict_lookup().found_words():
                 self.matches = [DictionaryMatch(self.weak_ref, self._dict_lookup().entries[0])]
-            else:
+            elif not self.word.is_compound:
                 self.matches = [MissingMatch(self.weak_ref)]
+            else:
+                self.matches = []
             self._valid_matches = [match for match in self.matches if match.is_valid]
 
         self._is_valid = any(self._valid_matches)
