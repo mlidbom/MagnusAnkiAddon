@@ -79,8 +79,8 @@ class VocabMatch(Match, Slots):
 
                 RequiresOrForbidsIsExactMatch.apply_to(self.vocab_inspector),
                 RequiresOrForbidsIsSingleToken.apply_to(self.vocab_inspector),
-                ForbidsSurfaceIsIn.for_if(self.vocab_inspector, self.rules.surface_is_not.get()),
-                ForbidsSurfaceIsIn.for_if(self.vocab_inspector, self.rules.yield_to_surface.get()),
+                ForbidsSurfaceIsIn.apply_to(self.vocab_inspector, self.rules.surface_is_not.get()),
+                ForbidsSurfaceIsIn.apply_to(self.vocab_inspector, self.rules.yield_to_surface.get()),  # todo this should be in display requirements right?
         )
 
     @property

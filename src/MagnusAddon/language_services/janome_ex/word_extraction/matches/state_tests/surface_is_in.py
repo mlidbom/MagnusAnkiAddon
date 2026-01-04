@@ -1,29 +1,20 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.requirements.custom_forbids import CustomForbids
+from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
 
 if TYPE_CHECKING:
+    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
     from typed_linq_collections.collections.q_set import QSet
 
 class ForbidsSurfaceIsIn(CustomForbids, Slots):
-    def __init__(self, inspector: VocabMatchInspector, surfaces: QSet[str]) -> None:
-        super().__init__(inspector)
-        self.surfaces: QSet[str] = surfaces
-
     @staticmethod
-    def for_if(inspector: VocabMatchInspector, surfaces: QSet[str]) -> ForbidsSurfaceIsIn | None:
-        return ForbidsSurfaceIsIn(inspector, surfaces) if surfaces else None
+    def apply_to(inspector: VocabMatchInspector, surfaces: QSet[str]) -> MatchRequirement | None:
+        if inspector.word.surface_variant.form in surfaces:
+            return FailedMatchRequirement.forbids(f"""surface_in:{",".join(surfaces)}""")
 
-    @property
-    @override
-    def description(self) -> str: return f"""surface_in:{",".join(self.surfaces)}"""
-
-    @override
-    def _internal_is_in_state(self) -> bool:
-        if self.inspector.word.surface_variant.form in self.surfaces:  # noqa: SIM103
-            return True
-        return False
+        return None
