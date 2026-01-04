@@ -82,9 +82,8 @@ class VocabNotePartsOfSpeech(Slots):
         if len(compounds) == 0: return False
         return compounds[-1] in analysis_constants.causative_verb_endings
 
-    _na_adjective_tos_names: QSet[str] = QSet(("な adjective", "na-adjective"))
     def is_complete_na_adjective(self) -> bool:
-        return self.__vocab().question.raw.endswith("な") and any(na for na in self._na_adjective_tos_names if na in self.get())
+        return self.__vocab().question.raw.endswith("な") and POS.NA_ADJECTIVE in self.get()
 
     @override
     def __repr__(self) -> str: return self.raw_string_value()
