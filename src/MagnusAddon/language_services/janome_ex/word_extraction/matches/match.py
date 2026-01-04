@@ -123,8 +123,8 @@ class Match(WeakRefable, Slots):
     def _is_emergency_displayed(self) -> bool:
         return (self.variant.is_surface
                 and self._surface_is_seemingly_valid_single_token
-                and not self.is_shadowed
                 and not self._base_is_valid_word
+                and not self.is_shadowed
                 and not self._has_valid_for_display_sibling)
 
     @property
