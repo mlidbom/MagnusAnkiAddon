@@ -14,12 +14,11 @@ class ParsedWordSerializer(Slots):
 
     @staticmethod
     def to_row(parsed_word: ParsedMatch) -> str: return ParsedWordSerializer.separator.join([
-        parsed_word.variant,  # 0
-        str(parsed_word.start_index),  # 1
-        str(1 if parsed_word.is_displayed else 0),  # 2
-        parsed_word.parsed_form,  # 3
-        parsed_word.information_string or "#",  # 4
-        str(parsed_word.vocab_id),  # 5
+            parsed_word.variant,  # 0
+            str(parsed_word.start_index),  # 1
+            str(1 if parsed_word.is_displayed else 0),  # 2
+            parsed_word.parsed_form,  # 3
+            str(parsed_word.vocab_id),  # 4
     ])
 
     @staticmethod
@@ -31,5 +30,4 @@ class ParsedWordSerializer(Slots):
                            int(values[1]),
                            values[2] != "0",
                            values[3],
-                           "", #values[4],
-                           cast(NoteId, int(values[5])))
+                           cast(NoteId, int(values[4])))
