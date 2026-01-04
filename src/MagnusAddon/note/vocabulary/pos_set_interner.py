@@ -8,7 +8,7 @@ from sysutils.memory_usage import string_auto_interner
 class POSSetManager:
     _pos_by_str: dict[str, frozenset[str]] = {}
 
-    # Maps both JMDict POS names and our own harmonizations to canonical forms
+    #todo: I'm far from sure about the mapping that go from one to two, are we not losing information?
     _remappings: dict[str, list[str]] = {
         # Our own harmonizations (for VocabNote usage)
         "intransitive verb": [POS.INTRANSITIVE],
@@ -65,6 +65,7 @@ class POSSetManager:
         "su verb - precursor to the modern suru": [POS.SU_VERB],
         POS.COUNTER: [POS.COUNTER],
         POS.NUMERIC: [POS.NUMERIC],
+
         "noun or verb acting prenominally": [POS.PRENOMINAL],
         "suru verb - special class": [POS.SURU_VERB, POS.SPECIAL_CLASS],
         "ichidan verb - kureru special class": [POS.ICHIDAN_VERB, POS.SPECIAL_CLASS],

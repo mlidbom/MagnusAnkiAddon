@@ -9,8 +9,6 @@ from typed_linq_collections.collections.q_set import QSet
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
-
-
 class VocabMetaTag(Slots):
     def __init__(self, name: str, display: str, tooltip: str) -> None:
         self.name: str = name
@@ -26,7 +24,6 @@ def get_meta_tags_html(vocab: VocabNote, display_extended_sentence_statistics: b
         def max_nine_number(value: int) -> str: return f"""{value}""" if value < 10 else "+"
         highlighted_in = vocab.sentences.user_highlighted()
         meta.append(VocabMetaTag("highlighted_in_sentences", f"""{max_nine_number(len(highlighted_in))}""", f"""highlighted in {len(highlighted_in)} sentences"""))
-
 
         counts = vocab.sentences.counts()
         if counts.total > 0:
@@ -49,59 +46,56 @@ def get_meta_tags_html(vocab: VocabNote, display_extended_sentence_statistics: b
     # overarching info
     if "_uk" in tags: meta.append(VocabMetaTag("uk", "uk", "usually written using kana only"))
     if POS.EXPRESSION in tos: meta.append(VocabMetaTag(POS.EXPRESSION, "x", "expression"))
-    if "abbreviation" in tos: meta.append(VocabMetaTag("abbreviation", "abbr", "abbreviation"))
-    if "auxiliary" in tos: meta.append(VocabMetaTag("auxiliary", "aux", "auxiliary"))
-    if "prefix" in tos: meta.append(VocabMetaTag("prefix", "頭", "prefix"))
-    if "suffix" in tos: meta.append(VocabMetaTag("suffix", "尾", "suffix"))
+    if POS.ABBREVIATION in tos: meta.append(VocabMetaTag("abbreviation", "abbr", "abbreviation"))
+    if POS.AUXILIARY in tos: meta.append(VocabMetaTag("auxiliary", "aux", "auxiliary"))
+    if POS.PREFIX in tos: meta.append(VocabMetaTag("prefix", "頭", "prefix"))
+    if POS.SUFFIX in tos: meta.append(VocabMetaTag("suffix", "尾", "suffix"))
 
     # nouns
-    if "proper noun" in tos: meta.append(VocabMetaTag("proper-noun", "p-名", "proper noun"))
-    elif "pronoun" in tos: meta.append(VocabMetaTag("pronoun", "pr-名", "pronoun"))
-    elif POS.NOUN in tos: meta.append(VocabMetaTag(POS.NOUN, "名", "noun"))
-    if "adverbial noun" in tos: meta.append(VocabMetaTag("adverbial-noun", "副-名", "adverbial noun"))
-    if "independent noun" in tos: meta.append(VocabMetaTag("independent-noun", "i-名", "independent noun"))
+    if POS.PROPER_NOUN in tos: meta.append(VocabMetaTag("proper-noun", "p-名", "proper noun"))
+    if POS.PRONOUN in tos: meta.append(VocabMetaTag("pronoun", "pr-名", "pronoun"))
+    if POS.NOUN in tos: meta.append(VocabMetaTag(POS.NOUN, "名", "noun"))
+    if POS.ADVERBIAL_NOUN in tos: meta.append(VocabMetaTag("adverbial-noun", "副-名", "adverbial noun"))
+    if POS.INDEPENDENT_NOUN in tos: meta.append(VocabMetaTag("independent-noun", "i-名", "independent noun"))
 
     # verbs
     if POS.ICHIDAN_VERB in tos: meta.append(_create_verb_meta_tag("ichidan", "1", POS.ICHIDAN_VERB, tos))
     if POS.GODAN_VERB in tos: meta.append(_create_verb_meta_tag("godan", "5", POS.GODAN_VERB, tos))
     if POS.SURU_VERB in tos or "verbal noun" in tos or "する verb" in tos: meta.append(_create_verb_meta_tag("suru-verb", "為", POS.SURU_VERB, tos))
-    if "kuru verb" in tos: meta.append(_create_verb_meta_tag("kuru-verb", "k-v", "kuru verb", tos))
+    if POS.KURU_VERB in tos: meta.append(_create_verb_meta_tag("kuru-verb", "k-v", "kuru verb", tos))
     if "auxiliary verb" in tos: meta.append(_create_verb_meta_tag("auxiliary-verb", "aux-v", "auxiliary verb", tos))
 
     # adverbs
-    if "と adverb" in tos or "to-adverb" in tos: meta.append(VocabMetaTag("to-adverb", "と", "adverbial noun taking the と particle to act as adverb"))
-    elif "adverb" in tos: meta.append(VocabMetaTag("adverb", "副", "adverb"))
-    elif "adverbial" in tos: meta.append(VocabMetaTag("adverbial", "副", "adverbial"))
+    if POS.TO_ADVERB in tos: meta.append(VocabMetaTag("to-adverb", "と", "adverbial noun taking the と particle to act as adverb"))
+    elif POS.ADVERB in tos: meta.append(VocabMetaTag("adverb", "副", "adverb"))
+    elif POS.ADVERBIAL in tos: meta.append(VocabMetaTag("adverbial", "副", "adverbial"))
 
     # adjectives
-    if "い adjective" in tos or "i-adjective" in tos: meta.append(VocabMetaTag("i-adjective", "い", "true adjective ending on the い copula"))
-    if "な adjective" in tos or "na-adjective" in tos: meta.append(VocabMetaTag("na-adjective", "な", "adjectival noun taking the な particle to act as adjective"))
-    if "の adjective" in tos or "no-adjective" in tos: meta.append(VocabMetaTag("no-adjective", "の", "adjectival noun taking the の particle to act as adjective"))
+    if POS.I_ADJECTIVE in tos: meta.append(VocabMetaTag("i-adjective", "い", "true adjective ending on the い copula"))
+    if POS.NA_ADJECTIVE in tos: meta.append(VocabMetaTag("na-adjective", "な", "adjectival noun taking the な particle to act as adjective"))
+    if POS.NO_ADJECTIVE in tos: meta.append(VocabMetaTag("no-adjective", "の", "adjectival noun taking the の particle to act as adjective"))
     if "auxiliary adjective" in tos: meta.append(VocabMetaTag("auxiliary-adjective", "a-い", "auxiliary adjective"))
-
-    # ???
-    if "in compounds" in tos: meta.append(VocabMetaTag("in-compounds", "i-c", "in compounds"))
 
     # misc
 
-    if "counter" in tos: meta.append(VocabMetaTag("counter", "ctr", "counter"))
-    if "numeral" in tos: meta.append(VocabMetaTag("numeral", "num", "numeral"))
-    if "interjection" in tos: meta.append(VocabMetaTag("interjection", "int", "interjection"))
-    if "conjunction" in tos: meta.append(VocabMetaTag("conjunction", "conj", "conjunction"))
-    if "particle" in tos: meta.append(VocabMetaTag("particle", "prt", "particle"))
+    if POS.COUNTER in tos: meta.append(VocabMetaTag("counter", "ctr", "counter"))
+    if POS.NUMERAL in tos: meta.append(VocabMetaTag("numeral", "num", "numeral"))
+    if POS.INTERJECTION in tos: meta.append(VocabMetaTag("interjection", "int", "interjection"))
+    if POS.CONJUNCTION in tos: meta.append(VocabMetaTag("conjunction", "conj", "conjunction"))
+    if POS.PARTICLE in tos: meta.append(VocabMetaTag("particle", "prt", "particle"))
 
     # my own inventions
-    if "masu-suffix" in tos: meta.append(VocabMetaTag("masu-suffix", "連", "follows the 連用形/masu-stem form of a verb"))
+    if POS.MASU_SUFFIX in tos: meta.append(VocabMetaTag("masu-suffix", "連", "follows the 連用形/masu-stem form of a verb"))
 
     return """<ol class="vocab_tag_list">""" + "".join([f"""<li class="vocab_tag vocab_tag_{tag.name}" title="{tag.tooltip}">{tag.display}</li>""" for tag in meta]) + "</ol>"
 
 def _create_verb_meta_tag(name: str, display: str, tooltip: str, tos: QSet[str]) -> VocabMetaTag:
     tag = VocabMetaTag(name, display, tooltip)
 
-    if "intransitive verb" in tos or "intransitive" in tos:
+    if POS.INTRANSITIVE in tos:
         tag.display += "i"
         tag.tooltip = "intransitive " + tag.tooltip
-    if "transitive verb" in tos or "transitive" in tos:
+    if POS.TRANSITIVE in tos:
         tag.display += "t"
         tag.tooltip = "transitive " + tag.tooltip
 

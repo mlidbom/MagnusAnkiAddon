@@ -3,6 +3,11 @@ from __future__ import annotations
 
 class POS:
     """Canonical POS (Part of Speech) value constants."""
+    ABBREVIATION: str = "abbreviation"
+    ADVERBIAL_NOUN: str = "adverbial noun"
+    ADVERBIAL: str = "adverbial"
+    NUMERAL: str = "numeral"
+    INDEPENDENT_NOUN: str = "independent noun"
     TRANSITIVE: str = "transitive"
     INTRANSITIVE: str = "intransitive"
     GODAN_VERB: str = "godan verb"
@@ -14,6 +19,7 @@ class POS:
     YODAN_VERB: str = "yodan verb"
     NIDAN_VERB: str = "nidan verb"
     NOUN: str = "noun"
+    PROPER_NOUN: str = "proper noun"
     NA_ADJECTIVE: str = "na-adjective"
     I_ADJECTIVE: str = "i-adjective"
     TARU_ADJECTIVE: str = "taru-adjective"
@@ -38,3 +44,4 @@ class POS:
     ZURU_VERB: str = "zuru verb"
     IRREGULAR: str = "irregular"
     UNKNOWN: str = "Unknown"
+    MASU_SUFFIX: str = "masu-suffix"  # non-standard, follows the 連用形/masu-stem form of a verb
