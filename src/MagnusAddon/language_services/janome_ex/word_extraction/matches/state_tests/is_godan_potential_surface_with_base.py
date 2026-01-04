@@ -12,8 +12,8 @@ if TYPE_CHECKING:
 class ForbidsIsGodanPotentialInflectionWithBase(Slots):
     _failed: MatchRequirement = FailedMatchRequirement.forbids("godan_potential_surface")
 
-    @staticmethod
-    def apply_to(inspector: MatchInspector) -> MatchRequirement | None:
+    @classmethod
+    def apply_to(cls, inspector: MatchInspector) -> MatchRequirement | None:
         if inspector.has_godan_potential_start and inspector.word.location_count == 1 and inspector.variant.is_surface and inspector.word.base_variant is not None:  # noqa: SIM103:
             return ForbidsIsGodanPotentialInflectionWithBase._failed
         return None

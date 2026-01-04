@@ -13,8 +13,8 @@ class ForbidsIsConfiguredIncorrect(Slots):
 
     _failed: MatchRequirement = FailedMatchRequirement.forbids("configured_incorrect")
 
-    @staticmethod
-    def apply_to(inspector: MatchInspector) -> MatchRequirement | None:
+    @classmethod
+    def apply_to(cls, inspector: MatchInspector) -> MatchRequirement | None:
         if inspector.configuration.incorrect_matches.excludes_at_index(inspector.tokenized_form,
                                                                        inspector.match.start_index):
             return ForbidsIsConfiguredIncorrect._failed

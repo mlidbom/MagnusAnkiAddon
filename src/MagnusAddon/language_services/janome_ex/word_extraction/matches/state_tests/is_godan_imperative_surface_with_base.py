@@ -12,8 +12,8 @@ if TYPE_CHECKING:
 class ForbidsIsGodanImperativeInflectionWithBase(Slots):
     _failed: MatchRequirement = FailedMatchRequirement.forbids("godan_imperative_surface_with_base")
 
-    @staticmethod
-    def apply_to(inspector: MatchInspector) -> MatchRequirement | None:
+    @classmethod
+    def apply_to(cls, inspector: MatchInspector) -> MatchRequirement | None:
         if inspector.has_godan_imperative_part and inspector.word.location_count == 1 and inspector.variant.is_surface and inspector.word.base_variant is not None:  # noqa: SIM103
             return ForbidsIsGodanImperativeInflectionWithBase._failed
         return None

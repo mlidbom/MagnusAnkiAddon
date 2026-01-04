@@ -15,8 +15,8 @@ class RequiresOrForbidsHasTeFormStem(Slots):
     _required_failure: FailedMatchRequirement = FailedMatchRequirement.required("te_form_stem")
     _forbidden_failure: FailedMatchRequirement = FailedMatchRequirement.forbids("te_form_stem")
 
-    @staticmethod
-    def apply_to(inspector: VocabMatchInspector) -> MatchRequirement | None:
+    @classmethod
+    def apply_to(cls, inspector: VocabMatchInspector) -> MatchRequirement | None:
         requirement = inspector.match.requires_forbids.te_form_stem
         if requirement.is_active:
             is_in_state = RequiresOrForbidsHasTeFormStem._internal_is_in_state(inspector)

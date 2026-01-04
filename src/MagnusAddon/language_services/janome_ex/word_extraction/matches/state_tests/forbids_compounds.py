@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 class ForbidsConfiguredToHideCompounds(MatchRequirement, Slots):
     _failed: MatchRequirement = FailedMatchRequirement.forbids("configured_to_hide_all_compounds")
 
-    @staticmethod
-    def apply_to(match: Match) -> MatchRequirement | None:
+    @classmethod
+    def apply_to(cls, match: Match) -> MatchRequirement | None:
         if (ConfigurationCache.hide_all_compounds()
                 and match.inspector.word.is_compound
                 and match.word.analysis.for_ui

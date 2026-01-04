@@ -11,16 +11,16 @@ if TYPE_CHECKING:
     from typed_linq_collections.collections.q_set import QSet
 
 class ForbidsPrefixIsIn(Slots):
-    @staticmethod
-    def apply_to(inspector: VocabMatchInspector, prefixes: QSet[str]) -> MatchRequirement | None:
+    @classmethod
+    def apply_to(cls, inspector: VocabMatchInspector, prefixes: QSet[str]) -> MatchRequirement | None:
         if prefixes and any(prefix for prefix in prefixes if inspector.prefix.endswith(prefix)):
             return FailedMatchRequirement.forbids(f"""prefix_in:{",".join(prefixes)}""")
 
         return None
 
 class RequiresPrefixIsIn(Slots):
-    @staticmethod
-    def apply_to(inspector: VocabMatchInspector, prefixes: QSet[str]) -> MatchRequirement | None:
+    @classmethod
+    def apply_to(cls, inspector: VocabMatchInspector, prefixes: QSet[str]) -> MatchRequirement | None:
         if prefixes and not any(prefix for prefix in prefixes if inspector.prefix.endswith(prefix)):
             return FailedMatchRequirement.required(f"""prefix_in:{",".join(prefixes)}""")
 

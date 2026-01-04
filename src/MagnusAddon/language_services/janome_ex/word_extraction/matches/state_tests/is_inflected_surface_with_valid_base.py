@@ -12,8 +12,8 @@ if TYPE_CHECKING:
 class ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb(Slots):
     _failed: MatchRequirement = FailedMatchRequirement.forbids("inflected_surface_with_valid_base")
 
-    @staticmethod
-    def apply_to(inspector: MatchInspector) -> MatchRequirement | None:
+    @classmethod
+    def apply_to(cls, inspector: MatchInspector) -> MatchRequirement | None:
         if (inspector.variant.is_surface
                 and inspector.word.has_base_variant_with_valid_match
                 and (inspector.word.is_inflected_word or (inspector.prefix.endswith("を") and inspector.is_end_of_statement))):

@@ -12,8 +12,8 @@ if TYPE_CHECKING:
 class ForbidsIsConfiguredHidden(Slots):
     _failed: MatchRequirement = FailedMatchRequirement.forbids("configured_hidden")
 
-    @staticmethod
-    def apply_to(inspector: MatchInspector) -> MatchRequirement | None:
+    @classmethod
+    def apply_to(cls, inspector: MatchInspector) -> MatchRequirement | None:
         if inspector.variant.configuration.hidden_matches.excludes_at_index(inspector.tokenized_form, inspector.variant.start_index):  # noqa: SIM103
             return ForbidsIsConfiguredHidden._failed
         return None

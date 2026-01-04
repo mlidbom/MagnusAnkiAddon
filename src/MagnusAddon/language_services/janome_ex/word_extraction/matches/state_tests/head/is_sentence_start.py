@@ -15,8 +15,8 @@ class RequiresOrForbidsIsSentenceStart(CustomRequiresOrForbids, Slots):
     _required_failure: FailedMatchRequirement = FailedMatchRequirement.required("sentence_start")
     _forbidden_failure: FailedMatchRequirement = FailedMatchRequirement.forbids("sentence_start")
 
-    @staticmethod
-    def apply_to(inspector: VocabMatchInspector) -> MatchRequirement | None:
+    @classmethod
+    def apply_to(cls, inspector: VocabMatchInspector) -> MatchRequirement | None:
         requirement = inspector.match.matching_configuration.requires_forbids.sentence_start
         if requirement.is_active:
             is_in_state = len(inspector.prefix) == 0 or inspector.prefix[-1] in analysis_constants.sentence_start_characters

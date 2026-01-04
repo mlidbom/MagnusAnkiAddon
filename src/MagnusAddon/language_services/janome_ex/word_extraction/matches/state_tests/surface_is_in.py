@@ -12,8 +12,8 @@ if TYPE_CHECKING:
     from typed_linq_collections.collections.q_set import QSet
 
 class ForbidsSurfaceIsIn(CustomForbids, Slots):
-    @staticmethod
-    def apply_to(inspector: VocabMatchInspector, surfaces: QSet[str]) -> MatchRequirement | None:
+    @classmethod
+    def apply_to(cls, inspector: VocabMatchInspector, surfaces: QSet[str]) -> MatchRequirement | None:
         if inspector.word.surface_variant.form in surfaces:
             return FailedMatchRequirement.forbids(f"""surface_in:{",".join(surfaces)}""")
 
