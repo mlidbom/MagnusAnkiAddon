@@ -34,9 +34,6 @@ class MutableCommaSeparatedStringsListField(Slots):
         field = self._field
         return field.value
 
-    def set_raw_string_value(self, value: str) -> None:
-        self.set(ex_str.extract_comma_separated_values(value))
-
     def add(self, add: str) -> None:
         self.set(self.get() + [add])
 

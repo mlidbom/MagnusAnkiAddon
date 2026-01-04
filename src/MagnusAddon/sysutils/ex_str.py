@@ -3,7 +3,6 @@ from __future__ import annotations
 import re
 
 from typed_linq_collections.collections.string_interning import QInterningList
-from typed_linq_collections.q_iterable import query
 
 newline = "\n"
 invisible_space = "​"
@@ -44,6 +43,3 @@ def first_number(string:str) -> int:
 
 def replace_word(word:str, replacement:str, text:str) -> str:
     return re.sub(rf"\b{re.escape(word)}\b", replacement, text)
-
-def indent(param:str) -> str:
-    return newline.join(query(param.splitlines()).select(lambda line: f"    {line}"))

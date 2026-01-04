@@ -17,9 +17,5 @@ class Lazy[T](Slots):
             self._instance = self.factory()
         return self._instance
 
-    @staticmethod
-    def from_value(result: T) -> Lazy[T]:
-        return Lazy[T](lambda: result)
-
     def reset(self) -> None:
         self._instance = None

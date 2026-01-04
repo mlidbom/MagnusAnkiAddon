@@ -44,16 +44,12 @@ def current_snapshot() -> Snapshot:
         take_snapshot()
     return snapshots[-1]
 
-
-#NOTE: THIS IS NOT RELIABLE, IT WILL SOMETIMES, IN UNKNOWN CIRCUMSTANCES REPORT ZERO INSTANCES OF A CLASS, AND STILL A MAJOR MEMORY LEAK WILL BE RESOLVED WHENE A CIRCULAR REFERENCE WITHIN THAT CLASS IS FIXED
+# NOTE: THIS IS NOT RELIABLE, IT WILL SOMETIMES, IN UNKNOWN CIRCUMSTANCES REPORT ZERO INSTANCES OF A CLASS, AND STILL A MAJOR MEMORY LEAK WILL BE RESOLVED WHENE A CIRCULAR REFERENCE WITHIN THAT CLASS IS FIXED
 class ObjectInstanceTracker(Slots):
     _track_instances_in_memory: bool = app.config().track_instances_in_memory.get_value()
     def __init__(self, cls_type: type[object]) -> None:
         self.type_name: str = self._get_fully_qualified_name(cls_type)
         current_instance_count[self.type_name] = current_instance_count.get(self.type_name, 0) + 1
-
-    def assert_single_instance(self) -> None:
-        if not current_instance_count[self.type_name] == 1: raise Exception(f"Expected single instance of {self.type_name}, found {current_instance_count[self.type_name]}")
 
     def __del__(self) -> None:
         current_instance_count[self.type_name] -= 1

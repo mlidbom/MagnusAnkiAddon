@@ -19,6 +19,7 @@ class SentenceConfigurationSerializer(Slots):
         if SentenceConfigurationSerializer._empty_object_json == "":
             SentenceConfigurationSerializer._empty_object_json = self.serialize(self.deserialize("", lambda: None))
 
+    # noinspection PyMethodMayBeStatic
     def deserialize(self, json: str, save_callback: Callable[[], None]) -> SentenceConfiguration:
         from note.sentences.sentence_configuration import SentenceConfiguration
         if not json: return SentenceConfiguration(QUniqueList(), WordExclusionSet(save_callback, []), WordExclusionSet(save_callback, []))
@@ -29,6 +30,7 @@ class SentenceConfigurationSerializer(Slots):
                                      WordExclusionSet(save_callback, reader.object_list("hidden_matches", WordExclusion.from_reader, [])))
 
     _empty_object_json: str = ""
+    # noinspection PyMethodMayBeStatic
     def serialize(self, config: SentenceConfiguration) -> str:
         json_dict: dict[str, Any] = {} # pyright: ignore[reportExplicitAny]
         if config.highlighted_words.any(): json_dict["highlighted_words"] = list(config.highlighted_words)

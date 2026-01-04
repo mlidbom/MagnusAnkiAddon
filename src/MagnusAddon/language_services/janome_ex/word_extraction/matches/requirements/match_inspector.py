@@ -50,7 +50,7 @@ class MatchInspector(Slots):
 
     @property
     def previous_location(self) -> TextAnalysisLocation | None:
-        return self.word.start_location.previous() if self.word.start_location.previous else None
+        return self.start_location.previous() if self.start_location.previous else None
 
     @property
     def prefix(self) -> str:
@@ -74,11 +74,11 @@ class MatchInspector(Slots):
 
     @property
     def has_godan_imperative_part(self) -> bool:
-        return self.word.start_location.token.is_godan_imperative_inflection or self.word.start_location.token.is_godan_imperative_stem
+        return self.start_location.token.is_godan_imperative_inflection or self.start_location.token.is_godan_imperative_stem
 
     @property
     def has_godan_potential_start(self) -> bool:
-        return self.word.start_location.token.is_godan_potential_inflection or self.word.start_location.token.is_godan_potential_stem
+        return self.start_location.token.is_godan_potential_inflection or self.start_location.token.is_godan_potential_stem
 
     @property
     def is_ichidan_covering_godan_potential(self) -> bool:
@@ -89,10 +89,6 @@ class MatchInspector(Slots):
         return self.word.end_location.token.is_godan_potential_inflection
 
     @property
-    def has_godan_ichidan_imperative_part(self) -> bool:
-        return self.word.start_location.token.is_ichidan_imperative_stem or self.word.start_location.token.is_ichidan_imperative_inflection
-
-    @property
     def compound_locations_all_have_valid_non_compound_matches(self) -> bool:
         return (query(self.word.locations)
                 .select(lambda it: it())
@@ -100,7 +96,7 @@ class MatchInspector(Slots):
 
     @property
     def has_masu_stem(self) -> bool:
-        return self.word.start_location.previous is not None and self.word.start_location.previous().token.is_masu_stem
+        return self.start_location.previous is not None and self.start_location.previous().token.is_masu_stem
 
     @property
     def is_end_of_statement(self) -> bool:

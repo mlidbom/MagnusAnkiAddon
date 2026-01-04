@@ -1,12 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from autoslot import Slots
 from typed_linq_collections.collections.q_dict import QDict
-
-if TYPE_CHECKING:
-    from typed_linq_collections.q_iterable import QIterable
 
 
 class Tag(Slots):
@@ -40,6 +35,3 @@ class Tag(Slots):
     @staticmethod
     def from_id(id: int) -> Tag:
         return Tag._by_id[id]
-
-    @staticmethod
-    def all() -> QIterable[Tag]: return Tag._by_id.qvalues()

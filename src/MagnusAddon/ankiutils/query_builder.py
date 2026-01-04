@@ -39,10 +39,10 @@ def _or_clauses(clauses: list[str]) -> str:
     return clauses[0] if len(clauses) == 1 else f"""({" OR ".join(clauses)})"""
 
 def field_contains_word(field: str, *words: str) -> str:
-    return _or_clauses([f'''"{field}:re:\\b{query}\\b"''' for query in words])
+    return _or_clauses([f'''"{field}:re:\\b{word}\\b"''' for word in words])
 
 def field_contains_string(field: str, *words: str) -> str:
-    return _or_clauses([f'''"{field}:*{query}*"''' for query in words])
+    return _or_clauses([f'''"{field}:*{word}*"''' for word in words])
 
 def sentence_search(word: str, exact: bool = False) -> str:
     result = f"""{note_sentence} """
@@ -80,16 +80,16 @@ def notes_lookup(notes: Iterable[JPNote]) -> str:
 def notes_by_id(note_ids: list[NoteId]) -> str:
     return f"""{NoteFields.note_id}:{",".join([str(note_id) for note_id in note_ids])}""" if note_ids else ""
 
-def single_vocab_wildcard(query: str) -> str: return f"{note_vocab} ({f_forms}:*{query}* OR {f_reading}:*{query}* OR {f_answer}:*{query}*)"
+def single_vocab_wildcard(form: str) -> str: return f"{note_vocab} ({f_forms}:*{form}* OR {f_reading}:*{form}* OR {f_answer}:*{form}*)"
 
-def single_vocab_by_question_reading_or_answer_exact(query: str) -> str:
-    return f"{note_vocab} ({field_contains_word(f_forms, query)} OR {field_contains_word(f_reading, kana_utils.katakana_to_hiragana(query))} OR {field_contains_word(f_answer, query)})"
+def single_vocab_by_question_reading_or_answer_exact(search: str) -> str:
+    return f"{note_vocab} ({field_contains_word(f_forms, search)} OR {field_contains_word(f_reading, kana_utils.katakana_to_hiragana(search))} OR {field_contains_word(f_answer, search)})"
 
-def single_vocab_by_form_exact(query: str) -> str: return f"{note_vocab} {field_contains_word(f_forms, query)}"
+def single_vocab_by_form_exact(string: str) -> str: return f"{note_vocab} {field_contains_word(f_forms, string)}"
 
-def single_vocab_by_form_exact_read_card_only(query: str) -> str: return f"({single_vocab_by_form_exact(query)}) {card_read}"
+def single_vocab_by_form_exact_read_card_only(form: str) -> str: return f"({single_vocab_by_form_exact(form)}) {card_read}"
 
-def kanji_in_string(query: str) -> str: return f"{note_kanji} ( {' OR '.join([f'{f_question}:{char}' for char in query])} )"
+def kanji_in_string(string: str) -> str: return f"{note_kanji} ( {' OR '.join([f'{f_question}:{char}' for char in string])} )"
 
 def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
     def single_vocab_clause(voc: str) -> str:
