@@ -7,7 +7,7 @@ class TimeSpan(Slots):
     """Represents a time duration with various unit accessors and formatting methods."""
 
     def __init__(self, seconds: float) -> None:
-        self._total_seconds = seconds
+        self._total_seconds:float = seconds
 
     @property
     def total_seconds(self) -> float:
