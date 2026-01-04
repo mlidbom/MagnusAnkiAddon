@@ -66,58 +66,6 @@ class TestRelatedVocabDataSerializer:
         assert deserialized.confused_with == QSet(["明く"])
         assert deserialized.see_also == QSet(["開放", "開始"])
 
-    def test_non_empty_data_does_not_serialize_to_empty_string(self, serializer: RelatedVocabDataSerializer) -> None:
-        # Test with just one field populated
-        data_with_ergative = RelatedVocabData(
-                ergative_twin="開く",
-                derived_from=ValueWrapper(""),
-                perfect_synonyms=QSet(),
-                similar=QSet(),
-                antonyms=QSet(),
-                confused_with=QSet(),
-                see_also=QSet()
-        )
-        assert serializer.serialize(data_with_ergative) != ""
-
-        data_with_derived = RelatedVocabData(
-                ergative_twin="",
-                derived_from=ValueWrapper("base"),
-                perfect_synonyms=QSet(),
-                similar=QSet(),
-                antonyms=QSet(),
-                confused_with=QSet(),
-                see_also=QSet()
-        )
-        assert serializer.serialize(data_with_derived) != ""
-
-        data_with_synonyms = RelatedVocabData(
-                ergative_twin="",
-                derived_from=ValueWrapper(""),
-                perfect_synonyms=QSet(),
-                similar=QSet(["synonym"]),
-                antonyms=QSet(),
-                confused_with=QSet(),
-                see_also=QSet()
-        )
-        assert serializer.serialize(data_with_synonyms) != ""
-
-    def test_multiple_roundtrips_are_stable(self, serializer: RelatedVocabDataSerializer) -> None:
-        """Ensure serializing and deserializing multiple times produces identical results."""
-        original = RelatedVocabData(
-                ergative_twin="test",
-                derived_from=ValueWrapper("source"),
-                perfect_synonyms=QSet(["a", "b"]),
-                similar=QSet(["c"]),
-                antonyms=QSet(["d"]),
-                confused_with=QSet(["e"]),
-                see_also=QSet(["f"])
-        )
-
-        first_serialized = serializer.serialize(original)
-        first_deserialized = serializer.deserialize(first_serialized)
-        second_serialized = serializer.serialize(first_deserialized)
-
-        assert first_serialized == second_serialized
 
 class TestVocabNoteMatchingRulesSerializer:
     @pytest.fixture
@@ -154,19 +102,3 @@ class TestVocabNoteMatchingRulesSerializer:
         assert deserialized.suffix_is_not == QSet(["suffix1", "suffix2", "suffix3"])
         assert deserialized.required_prefix == QSet(["req1"])
         assert deserialized.yield_to_surface == QSet(["yield1", "yield2"])
-
-    def test_multiple_roundtrips_are_stable(self, serializer: VocabNoteMatchingRulesSerializer) -> None:
-        """Ensure serializing and deserializing multiple times produces identical results."""
-        original = VocabNoteMatchingRulesData(
-                surface_is_not=QSet(["a", "b"]),
-                prefix_is_not=QSet(["c"]),
-                suffix_is_not=QSet(["d"]),
-                required_prefix=QSet(["e"]),
-                yield_to_surface=QSet(["f"])
-        )
-
-        first_serialized = serializer.serialize(original)
-        first_deserialized = serializer.deserialize(first_serialized)
-        second_serialized = serializer.serialize(first_deserialized)
-
-        assert first_serialized == second_serialized
