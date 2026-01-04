@@ -47,7 +47,7 @@ class VocabMatch(Match, Slots):
     @override
     def _create_display_requirements(self) -> tuple[MatchRequirement | None, ...]:
         return (
-                ForbidsHasDisplayedOverlappingFollowingCompound.for_if(self.vocab_inspector, self.requires_forbids.yield_last_token.is_required),
+                ForbidsHasDisplayedOverlappingFollowingCompound.apply_to(self.vocab_inspector, self.requires_forbids.yield_last_token.is_required),
                 ForbidsCompositionallyTransparentCompound.for_if(self.vocab_inspector)
         )
 
