@@ -3,14 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
-from language_services.janome_ex.tokenizing.processed_token import ReplacedToken
+from language_services.janome_ex.tokenizing.processed_token import SplitToken
 
 if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.jn_token import JNToken
 
-class JNTokenWrapper(ReplacedToken, Slots):
+class JNTokenWrapper(SplitToken, Slots):
     def __init__(self, token: JNToken) -> None:
-        super().__init__(token.surface, token.base_form, is_non_word_character=token.parts_of_speech.is_non_word_character(), is_inflectable_word=token.is_inflectable_word())
+        super().__init__(token, token.surface, token.base_form, is_non_word_character=token.parts_of_speech.is_non_word_character(), is_inflectable_word=token.is_inflectable_word())
         self.token: JNToken = token
 
     @property

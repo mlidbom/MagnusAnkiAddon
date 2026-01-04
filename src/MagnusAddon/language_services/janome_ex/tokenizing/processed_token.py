@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-from typing import override
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 
+if TYPE_CHECKING:
+    from language_services.janome_ex.tokenizing.jn_token import JNToken
 
 class IAnalysisToken(Slots):
 
@@ -40,8 +42,11 @@ class IAnalysisToken(Slots):
     @property
     def is_masu_stem(self) -> bool: raise NotImplementedError()
 
-class ReplacedToken(IAnalysisToken, Slots):
-    def __init__(self, surface: str, base: str,
+class SplitToken(IAnalysisToken, Slots):
+    def __init__(self,
+                 source: JNToken,
+                 surface: str,
+                 base: str,
                  is_non_word_character: bool = False,
                  is_inflectable_word: bool = False,
                  is_godan_potential_stem: bool = False,
@@ -50,6 +55,7 @@ class ReplacedToken(IAnalysisToken, Slots):
                  is_godan_potential_inflection: bool = False,
                  is_godan_imperative_inflection: bool = False,
                  is_ichidan_imperative_inflection: bool = False) -> None:
+        self.source: JNToken = source
         self._surface: str = surface
         self._base_form: str = base
         self._is_inflectable_word: bool = is_inflectable_word
