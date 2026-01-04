@@ -148,7 +148,7 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
         return (self.next is None
                 or self.next.parts_of_speech == JNPOS.Particle.sentence_ending
                 or self.next.surface in analysis_constants.sentence_end_characters
-                or self.next.parts_of_speech.is_non_word_character())
+                or self.next.is_non_word_character)
 
     _invalid_ichidan_inflection_surfaces: set[str] = {"っ"}
     def cannot_follow_ichidan_stem(self) -> bool:
