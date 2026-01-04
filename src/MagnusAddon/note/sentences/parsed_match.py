@@ -28,7 +28,7 @@ class ParsedMatch(Slots):
     def from_match(cls, match: Match) -> ParsedMatch:
         return ParsedMatch("S" if match.variant.is_surface else "B",
                            match.start_index,
-                           match.is_displayed,
+                           match.is_valid_for_display,
                            match.parsed_form,
                            match.vocab.get_id() if isinstance(match, VocabMatch) else cls.missing_note_id)
 
