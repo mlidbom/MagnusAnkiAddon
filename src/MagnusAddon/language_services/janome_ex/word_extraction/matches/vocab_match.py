@@ -74,7 +74,7 @@ class VocabMatch(Match, Slots):
                 ForbidsSuffixIsIn.apply_to(self.vocab_inspector, self.rules.suffix_is_not.get()),
 
                 # misc requirements
-                ForbidsIsPoisonWord(self.vocab_inspector),
+                ForbidsIsPoisonWord.apply_to(self.vocab_inspector),
                 RequiresOrForbidsMasuStem.apply_to(self.vocab_inspector),
 
                 RequiresOrForbidsIsExactMatch.apply_to(self.vocab_inspector),

@@ -1,28 +1,20 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from language_services.janome_ex.word_extraction.matches.requirements.custom_forbids import CustomForbids
+from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
 
 if TYPE_CHECKING:
+    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
-    from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfiguration
 
-class ForbidsIsPoisonWord(CustomForbids, Slots):
-    def __init__(self, inspector: VocabMatchInspector) -> None:
-        super().__init__(inspector)
+class ForbidsIsPoisonWord(Slots):
+    _failed: MatchRequirement = FailedMatchRequirement.forbids("poison_word")
 
-    @property
-    def rules(self) -> VocabNoteMatchingConfiguration:
-        return self.inspector.match.vocab.matching_configuration
+    @classmethod
+    def apply_to(cls, inspector: VocabMatchInspector) -> MatchRequirement | None:
+        if inspector.match.vocab.matching_configuration.bool_flags.is_poison_word.is_set():
+            return cls._failed
+        return None
 
-    @property
-    @override
-    def description(self) -> str: return "poison_word"
-
-    @override
-    def _internal_is_in_state(self) -> bool:
-        if self.rules.bool_flags.is_poison_word.is_set():  # noqa: SIM103
-            return True
-        return False
