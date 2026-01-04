@@ -41,7 +41,7 @@ class Match(WeakRefable, Slots):
                     ForbidsIsConfiguredIncorrect.apply_to(self.inspector),
                     ForbidsIsGodanPotentialInflectionWithBase.apply_to(self.inspector),
                     ForbidsIsGodanImperativeInflectionWithBase.apply_to(self.inspector),
-                    ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb(self.inspector),
+                    ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb.apply_to(self.inspector),
                     *self._create_validity_requirements()
             ) if r is not None]
         return self._validity_requirements_cache
