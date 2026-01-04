@@ -71,7 +71,7 @@ class VocabMatch(Match, Slots):
 
                 # tail requirements
                 RequiresOrForbidsIsSentenceEnd.apply_to(self.vocab_inspector),
-                ForbidsSuffixIsIn.for_if(self.vocab_inspector, self.rules.suffix_is_not.get()),
+                ForbidsSuffixIsIn.apply_to(self.vocab_inspector, self.rules.suffix_is_not.get()),
 
                 # misc requirements
                 ForbidsIsPoisonWord(self.vocab_inspector),
