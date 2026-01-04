@@ -24,6 +24,8 @@ class IAnalysisToken(Slots):
     def is_inflectable_word(self) -> bool: return False
     @property
     def is_non_word_character(self) -> bool: return False
+    @property
+    def is_masu_stem(self) -> bool: return False
 
     # <Only true for split tokens>
     @property
@@ -39,6 +41,3 @@ class IAnalysisToken(Slots):
     @property
     def is_ichidan_imperative_inflection(self) -> bool: return False
     # </Only true for split tokens>
-
-    @property
-    def is_masu_stem(self) -> bool: raise NotImplementedError()
