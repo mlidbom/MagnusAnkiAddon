@@ -60,7 +60,7 @@ class VocabMatch(Match, Slots):
                 RequiresPrefixIsIn.apply_to(self.vocab_inspector, self.rules.required_prefix.get()),
                 RequiresOrForbidsIsSentenceStart.apply_to(self.vocab_inspector),
                 RequiresOrForbidsHasTeFormStem.apply_to(self.vocab_inspector),
-                RequiresOrForbidsHasAStem.for_if(self.vocab_inspector),
+                RequiresOrForbidsHasAStem.apply_to(self.vocab_inspector),
                 RequiresOrForbidsHasPastTenseStem.for_if(self.vocab_inspector),
                 RequiresOrForbidsHasEStem.for_if(self.vocab_inspector),
 
