@@ -87,9 +87,7 @@ class Match(WeakRefable, Slots):
         return self._is_valid()
 
     def _is_valid(self) -> bool:
-        return (self._is_valid_internal
-                or (self.is_highlighted
-                    and not any(valid_sibling for valid_sibling in self._sibling_matches if valid_sibling._is_valid_internal)))
+        return self._is_valid_internal or self.is_highlighted
 
     @property
     def _is_valid_internal(self) -> bool:

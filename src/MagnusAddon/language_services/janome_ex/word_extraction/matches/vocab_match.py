@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, final, override
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from language_services.janome_ex.word_extraction.matches.match import Match
 from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import ForbidsAnotherMatchOwnsTheForm
@@ -42,6 +42,7 @@ class VocabMatch(Match, Slots):
         self.rules = vocab.matching_configuration.configurable_rules
         self.vocab: VocabNote = vocab
         self._variant: WeakRef[CandidateWordVariant] = word_variant
+        self._another_match_owns_the_form_cache: bool | None = None
         super().__init__(word_variant)
 
     @override
@@ -101,6 +102,25 @@ class VocabMatch(Match, Slots):
         return self.vocab.question.raw \
             if self.matching_configuration.bool_flags.question_overrides_form.is_set() \
             else super().parsed_form
+
+    @override
+    def _is_valid(self) -> bool:
+        return self._is_valid_internal or (self.is_highlighted and not any(match for match in self.variant.vocab_matches if match._is_valid_internal))
+
+    @property
+    def another_match_owns_the_form(self) -> bool:
+        if self._another_match_owns_the_form_cache is None:
+            if self.vocab.forms.is_owned_form(self.tokenized_form):
+                self._another_match_owns_the_form_cache = False
+            elif any(other_match for other_match in self.variant.vocab_matches  # noqa: SIM103
+                     if other_match != self
+                        and other_match.vocab.forms.is_owned_form(self.tokenized_form)
+                        and other_match._is_valid_internal):
+                self._another_match_owns_the_form_cache = True
+            else:
+                self._another_match_owns_the_form_cache = False
+
+        return self._another_match_owns_the_form_cache
 
     @override
     def _start_index(self) -> int:
