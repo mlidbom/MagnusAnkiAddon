@@ -39,6 +39,9 @@ def format_seconds_as_ss_ttt_ttt(seconds: float) -> str:
 
     return f"{seconds_part}.{milliseconds_part:03d} {microseconds_part:03d}"
 
+def auto_format_based_on_time(seconds: float) -> str:
+    return format_seconds_as_ss_ttt_ttt(seconds) if seconds < 60 else format_seconds_as_hh_mm_ss(seconds)
+
 # noinspection PyUnusedFunction
 def start_stop_watch() -> StopWatch:
     return StopWatch()
@@ -52,7 +55,7 @@ class StopWatch(Slots):
         return time.perf_counter() - self.start_time
 
     def elapsed_formatted(self) -> str:
-        return format_seconds_as_ss_ttt_ttt(time.perf_counter() - self.start_time)
+        return auto_format_based_on_time(time.perf_counter() - self.start_time)
 
     @classmethod
     @contextmanager
