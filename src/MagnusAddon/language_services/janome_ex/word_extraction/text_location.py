@@ -7,7 +7,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.tokenizing.processed_token import ReplacedToken
+    from language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 
@@ -18,11 +18,11 @@ _max_lookahead = 12  # In my collection the longest so far is 9, so 12 seems a p
 
 @final
 class TextAnalysisLocation(WeakRefable, Slots):
-    def __init__(self, analysis: WeakRef[TextAnalysis], token: ReplacedToken, character_start_index: int, token_index: int) -> None:
+    def __init__(self, analysis: WeakRef[TextAnalysis], token: IAnalysisToken, character_start_index: int, token_index: int) -> None:
         self.weakref = WeakRef(self)
         self.next: WeakRef[TextAnalysisLocation] | None = None
         self.previous: WeakRef[TextAnalysisLocation] | None = None
-        self.token: ReplacedToken = token
+        self.token: IAnalysisToken = token
         self.is_shadowed_by: list[WeakRef[TextAnalysisLocation]] = []
         self.shadows: list[WeakRef[TextAnalysisLocation]] = []
         self.analysis: WeakRef[TextAnalysis] = analysis

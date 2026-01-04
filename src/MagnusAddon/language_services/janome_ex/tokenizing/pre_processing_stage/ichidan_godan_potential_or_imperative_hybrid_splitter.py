@@ -6,17 +6,18 @@ from autoslot import Slots
 from language_services import conjugator
 from language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
 from language_services.janome_ex.tokenizing.pre_processing_stage.word_info import WordInfo
-from language_services.janome_ex.tokenizing.processed_token import ReplacedToken
+from language_services.janome_ex.tokenizing.split_token import SplitToken
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
+    from language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
     from language_services.janome_ex.tokenizing.jn_token import JNToken
     from note.collection.vocab_collection import VocabCollection
 
 class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
 
     @classmethod
-    def try_split(cls, token: JNToken, vocabs: VocabCollection) -> list[ReplacedToken] | None:
+    def try_split(cls, token: JNToken, vocabs: VocabCollection) -> list[IAnalysisToken] | None:
         if token.inflected_form == InflectionForms.ImperativeMeireikei.ro:
             return None
 
@@ -30,28 +31,28 @@ class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
         return None
 
     @classmethod
-    def _split_godan_imperative(cls, token: JNToken, godan_base: str) -> list[ReplacedToken]:
+    def _split_godan_imperative(cls, token: JNToken, godan_base: str) -> list[IAnalysisToken]:
         if token.inflected_form == InflectionForms.ImperativeMeireikei.yo:  # handles cases like 放せよ which janome turns into a single token and believes is an ichidan よ imperative
             godan_surface = token.surface[:-2]
             imperative_part = token.surface[-2]
-            return [ReplacedToken(surface=godan_surface, base=godan_base, is_inflectable_word=True, is_godan_imperative_stem=True),
-                    ReplacedToken(surface=imperative_part, base="え", is_inflectable_word=True, is_godan_imperative_inflection=True),
-                    ReplacedToken(surface="よ", base="よ", is_inflectable_word=False)]
+            return [SplitToken(token, surface=godan_surface, base=godan_base, is_inflectable_word=True, is_godan_imperative_stem=True),
+                    SplitToken(token, surface=imperative_part, base="え", is_inflectable_word=True, is_godan_imperative_inflection=True),
+                    SplitToken(token, surface="よ", base="よ", is_inflectable_word=False)]
         else:  # noqa: RET505
             godan_surface = token.surface[:-1]
             imperative_part = token.surface[-1]
             imperative_base = "い" if imperative_part == "い" else "え"
-            return [ReplacedToken(surface=godan_surface, base=godan_base, is_inflectable_word=True, is_godan_imperative_stem=True),
-                    ReplacedToken(surface=imperative_part, base=imperative_base, is_inflectable_word=True, is_godan_imperative_inflection=True)]
+            return [SplitToken(token, surface=godan_surface, base=godan_base, is_inflectable_word=True, is_godan_imperative_stem=True),
+                    SplitToken(token, surface=imperative_part, base=imperative_base, is_inflectable_word=True, is_godan_imperative_inflection=True)]
 
     @classmethod
-    def _split_godan_potential(cls, token: JNToken, godan_base: str) -> list[ReplacedToken]:
+    def _split_godan_potential(cls, token: JNToken, godan_base: str) -> list[IAnalysisToken]:
         godan_surface = token.surface.removesuffix("る")[:-1]
         potential_surface = token.surface.removeprefix(godan_surface)
         potential_base = potential_surface if potential_surface[-1] == "る" else potential_surface + "る"
 
-        return [ReplacedToken(surface=godan_surface, base=godan_base, is_inflectable_word=True, is_godan_potential_stem=True),
-                ReplacedToken(surface=potential_surface, base=potential_base, is_inflectable_word=True, is_godan_potential_inflection=True)]
+        return [SplitToken(token, surface=godan_surface, base=godan_base, is_inflectable_word=True, is_godan_potential_stem=True),
+                SplitToken(token, surface=potential_surface, base=potential_base, is_inflectable_word=True, is_godan_potential_inflection=True)]
 
     _potential_or_imperative_godan_last_compound_parts: set[str] = {"える", "え"}
     @classmethod
