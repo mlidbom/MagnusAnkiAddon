@@ -57,6 +57,7 @@ class Tags(Slots):
             class Requires(Slots):
                 a_stem: Tag = Tag.from_name(f"{f_vocab_matching_requires}a-stem")
                 e_stem: Tag = Tag.from_name(f"{f_vocab_matching_requires}e-stem")
+                masu_stem: Tag = Tag.from_name(f"{f_vocab_matching_requires}masu_stem")
                 past_tense_stem: Tag = Tag.from_name(f"{f_vocab_matching_requires}past-tense-stem")
                 ichidan_imperative: Tag = Tag.from_name(f"{f_vocab_matching_requires}ichidan_imperative")
                 godan_potential: Tag = Tag.from_name(f"{f_vocab_matching_requires}godan_potential")
@@ -72,6 +73,7 @@ class Tags(Slots):
             class Forbids(Slots):
                 a_stem: Tag = Tag.from_name(f"{f_vocab_matching_forbids}a-stem")
                 e_stem: Tag = Tag.from_name(f"{f_vocab_matching_forbids}e-stem")
+                masu_stem: Tag = Tag.from_name(f"{f_vocab_matching_forbids}masu_stem")
                 past_tense_stem: Tag = Tag.from_name(f"{f_vocab_matching_forbids}past-tense-stem")
                 ichidan_imperative: Tag = Tag.from_name(f"{f_vocab_matching_forbids}ichidan_imperative")
                 godan_potential: Tag = Tag.from_name(f"{f_vocab_matching_forbids}godan_potential")

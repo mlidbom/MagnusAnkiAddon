@@ -14,6 +14,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.head.has_pa
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_te_form_stem import RequiresOrForbidsHasTeFormStem
 from language_services.janome_ex.word_extraction.matches.state_tests.head.is_sentence_start import RequiresOrForbidsIsSentenceStart
 from language_services.janome_ex.word_extraction.matches.state_tests.head.prefix_is_in import ForbidsPrefixIsIn, RequiresPrefixIsIn
+from language_services.janome_ex.word_extraction.matches.state_tests.head.requires_forbids_masu_stem import RequiresOrForbidsMasuStem
 from language_services.janome_ex.word_extraction.matches.state_tests.is_exact_match import RequiresOrForbidsIsExactMatch
 from language_services.janome_ex.word_extraction.matches.state_tests.is_ichidan_imperative import RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection
 from language_services.janome_ex.word_extraction.matches.state_tests.is_poison_word import ForbidsIsPoisonWord
@@ -63,6 +64,7 @@ class VocabMatch(Match, Slots):
 
                                  # misc requirements
                                  ForbidsIsPoisonWord(inspector),
+                                 RequiresOrForbidsMasuStem.apply_to(inspector),
 
                                  RequiresOrForbidsIsExactMatch.for_if(inspector),
                                  RequiresOrForbidsIsSingleToken.for_if(inspector),

@@ -27,3 +27,7 @@ class JNTokenWrapper(ProcessedToken, Slots):
     @override
     def is_special_nai_negative(self) -> bool: return self.token.is_special_nai_negative()
 
+    @property
+    @override
+    def is_masu_stem(self) -> bool: return self.token.is_masu_stem
+

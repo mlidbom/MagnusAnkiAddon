@@ -16,7 +16,6 @@ class ProcessedToken(Slots):
                  is_godan_imperative_inflection: bool = False,
                  is_ichidan_imperative_inflection: bool = False
                  ) -> None:
-
         self.surface: str = surface
         self.base_form: str = base
         self.is_inflectable_word: bool = is_inflectable_word
@@ -33,6 +32,9 @@ class ProcessedToken(Slots):
     def is_te_form_stem(self) -> bool: return self.is_godan_potential_inflection
     def is_past_tense_marker(self) -> bool: return False
     def is_special_nai_negative(self) -> bool: return False
+
+    @property
+    def is_masu_stem(self) -> bool: return False
 
     @override
     def __repr__(self) -> str:

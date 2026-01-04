@@ -99,6 +99,10 @@ class MatchInspector(Slots):
                 .all(lambda it: it.non_compound_candidate.has_valid_words()))
 
     @property
+    def has_masu_stem(self) -> bool:
+        return self.word.start_location.previous is not None and self.word.start_location.previous().token.is_masu_stem
+
+    @property
     def is_end_of_statement(self) -> bool:
         if len(self.suffix) == 0:
             return True

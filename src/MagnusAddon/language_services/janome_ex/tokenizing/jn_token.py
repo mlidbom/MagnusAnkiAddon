@@ -94,6 +94,10 @@ class JNToken(WeakRefable, Slots):
                 (self.is_past_tense_stem() and self.surface.endswith("ん")))
 
     def is_ichidan_masu_stem(self) -> bool:
+        return self.is_masu_stem  # todo why is this checking for any masu stem and not checking anything ichidan specific?
+
+    @property
+    def is_masu_stem(self) -> bool:
         return self.inflected_form == InflectionForms.Continuative.renyoukei_masu_stem
 
     def is_special_nai_negative(self) -> bool:

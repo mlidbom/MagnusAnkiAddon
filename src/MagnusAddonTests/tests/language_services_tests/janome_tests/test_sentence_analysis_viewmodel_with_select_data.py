@@ -23,6 +23,13 @@ def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
+        ("平日に切れないよう", ["平日", "に", "切れる", "ない", "よう"]),
+        ("償いきれない", ["償い", "きれない"])
+])
+def test_requires_masu_stem(sentence: str, expected_output: list[str]) -> None:
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+
+@pytest.mark.parametrize("sentence, expected_output", [
         ("教えにしたがって", ["教え", "に", "したがって"])  # should not hide the compound when there parts with no valid matches.
 ])
 def test_hide_all_compounds(sentence: str, expected_output: list[str]) -> None:

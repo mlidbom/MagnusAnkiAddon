@@ -58,6 +58,7 @@ class VocabMatchingRulesConfigurationRequiresForbidsFlags(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.e_stem: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.e_stem, Tags.Vocab.Matching.Forbids.e_stem)
         self.a_stem: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.a_stem, Tags.Vocab.Matching.Forbids.a_stem)
+        self.masu_stem: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.masu_stem, Tags.Vocab.Matching.Forbids.masu_stem)
         self.past_tense_stem: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.past_tense_stem, Tags.Vocab.Matching.Forbids.past_tense_stem)
         self.te_form_stem: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.te_form_stem, Tags.Vocab.Matching.Forbids.te_form_stem)
         self.ichidan_imperative: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.ichidan_imperative, Tags.Vocab.Matching.Forbids.ichidan_imperative)
@@ -110,6 +111,8 @@ class VocabNoteMatchingConfiguration(WeakRefable, Slots):
                                        .flag("forbids_a_stem", self.requires_forbids.a_stem.is_forbidden)
                                        .flag("requires_e_stem", self.requires_forbids.e_stem.is_required)
                                        .flag("forbids_e_stem", self.requires_forbids.e_stem.is_forbidden)
+                                       .flag("requires_masu_stem", self.requires_forbids.masu_stem.is_required)
+                                       .flag("forbids_masu_stem", self.requires_forbids.masu_stem.is_forbidden)
                                        .flag("requires_past_tense_stem", self.requires_forbids.past_tense_stem.is_required)
                                        .flag("forbids_past_tense_stem", self.requires_forbids.past_tense_stem.is_forbidden)
                                        .flag("requires_godan_potential", self.requires_forbids.godan_potential.is_required)

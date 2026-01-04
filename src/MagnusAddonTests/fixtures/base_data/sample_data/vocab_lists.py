@@ -166,5 +166,7 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("られる", tags=[vm.is_inflecting_word]),
         VocabSpec("返せる", tos={POS.ICHIDAN_VERB}),  # exposes a bug in godan imperative detection
         VocabSpec("外出中", tags=[Tags.Vocab.is_compositionally_transparent_compound]),
-        VocabSpec("買い替える", tags=[Tags.Vocab.is_compositionally_transparent_compound])
+        VocabSpec("買い替える", tags=[Tags.Vocab.is_compositionally_transparent_compound]),
+
+        VocabSpec("きれない", forms=["[切れない]"], tags=[vm.Requires.masu_stem]),
 ]
