@@ -4,8 +4,9 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from PyQt6.QtCore import pyqtBoundSignal
-from PyQt6.QtWidgets import QButtonGroup, QCheckBox, QDialog, QDialogButtonBox, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QMessageBox, QRadioButton, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QCheckBox, QDialog, QDialogButtonBox, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QMessageBox, QVBoxLayout, QWidget
 from sysutils.typed import checked_cast
+from ui.menus.notes.vocab.require_forbid_widget import RequireForbidWidget
 
 if TYPE_CHECKING:
     from note.notefields.require_forbid_flag_field import RequireForbidFlagField
@@ -33,7 +34,7 @@ class VocabFlagsDialog(QDialog):
 
         # Right column
         right_layout = QVBoxLayout()
-        self._build_register_section(right_layout)
+        self._build_metadata_section(right_layout)
         right_layout.addStretch()
 
         content_layout.addLayout(left_layout)
@@ -64,65 +65,22 @@ class VocabFlagsDialog(QDialog):
         checked_cast(pyqtBoundSignal, checkbox.toggled).connect(on_changed)  # pyright: ignore[reportUnknownMemberType]
         layout.addWidget(checkbox)
 
+    def _on_reparse_flag_changed(self, title: str, should_add: bool) -> None:
+        """Callback for widgets to notify when a reparse-triggering flag changes."""
+        if should_add:
+            self.changed_reparse_flags.add(title)
+        elif title in self.changed_reparse_flags:
+            self.changed_reparse_flags.remove(title)
+
     def _add_require_forbid_field(self, grid: QGridLayout, row: int, title: str, field: RequireForbidFlagField, reparse_trigger: bool = True) -> None:
         label = QLabel(title)
         grid.addWidget(label, row, 0)
 
-        radio_layout = QHBoxLayout()
-        button_group = QButtonGroup(self)
-
-        unset_radio = QRadioButton("Unset")
-        required_radio = QRadioButton("Required")
-        forbidden_radio = QRadioButton("Forbidden")
-
-        button_group.addButton(unset_radio, 0)
-        button_group.addButton(required_radio, 1)
-        button_group.addButton(forbidden_radio, 2)
-
-        radio_layout.addWidget(unset_radio)
-        radio_layout.addWidget(required_radio)
-        radio_layout.addWidget(forbidden_radio)
-
-        # Set initial state
-        initial_required = field.is_configured_required
-        initial_forbidden = field.is_configured_forbidden
-
-        if initial_required:
-            required_radio.setChecked(True)
-            initial_state = 1
-        elif initial_forbidden:
-            forbidden_radio.setChecked(True)
-            initial_state = 2
-        else:
-            unset_radio.setChecked(True)
-            initial_state = 0
-
-        def on_changed(button_id: int) -> None:
-            if button_id == 0:  # Unset
-                if field.is_configured_required:
-                    field.set_required(False)
-                if field.is_configured_forbidden:
-                    field.set_forbidden(False)
-            elif button_id == 1:  # Required
-                if not field.is_configured_required:
-                    field.set_required(True)
-            elif button_id == 2:  # Forbidden
-                if not field.is_configured_forbidden:
-                    field.set_forbidden(True)
-
-            # Track changes for reparse based on button state, not field cache
-            changed = (button_id != initial_state)
-            if reparse_trigger and changed:
-                self.changed_reparse_flags.add(title)
-            elif title in self.changed_reparse_flags and not changed:
-                self.changed_reparse_flags.remove(title)
-
-        checked_cast(pyqtBoundSignal, button_group.idClicked).connect(on_changed)  # pyright: ignore[reportUnknownMemberType]
-
-        grid.addLayout(radio_layout, row, 1)
+        widget = RequireForbidWidget(field, title, self._on_reparse_flag_changed, reparse_trigger)
+        grid.addWidget(widget, row, 1)
 
     def _build_matching_settings_section(self, main_layout: QVBoxLayout) -> None:
-        matching_settings_group = QGroupBox("Matching Settings")
+        matching_settings_group = QGroupBox("Parsing")
         matching_settings_group.setSizePolicy(matching_settings_group.sizePolicy().horizontalPolicy(), matching_settings_group.sizePolicy().verticalPolicy())
         layout = QVBoxLayout()
 
@@ -171,8 +129,6 @@ class VocabFlagsDialog(QDialog):
         is_layout = QVBoxLayout()
         self._add_checkbox(is_layout, "Poison word", self.vocab.matching_configuration.bool_flags.is_poison_word)
         self._add_checkbox(is_layout, "Inflecting word", self.vocab.matching_configuration.bool_flags.is_inflecting_word)
-        self._add_checkbox(is_layout, "Compositionally transparent compound",
-                           self.vocab.matching_configuration.bool_flags.is_compositionally_transparent_compound, False)
         is_group.setLayout(is_layout)
         layout.addWidget(is_group)
 
@@ -189,7 +145,25 @@ class VocabFlagsDialog(QDialog):
         matching_settings_group.setLayout(layout)
         main_layout.addWidget(matching_settings_group)
 
-    def _build_register_section(self, main_layout: QVBoxLayout) -> None:
+    def _build_metadata_section(self, main_layout: QVBoxLayout) -> None:
+        metadata_group = QGroupBox("Meta Data")
+        layout = QVBoxLayout()
+
+        # Misc section
+        misc_group = QGroupBox("Misc")
+        misc_layout = QVBoxLayout()
+        self._add_checkbox(misc_layout, "Compositionally transparent compound",
+                           self.vocab.matching_configuration.bool_flags.is_compositionally_transparent_compound, False)
+        misc_group.setLayout(misc_layout)
+        layout.addWidget(misc_group)
+
+        # Register section
+        self._build_register_section_content(layout)
+
+        metadata_group.setLayout(layout)
+        main_layout.addWidget(metadata_group)
+
+    def _build_register_section_content(self, parent_layout: QVBoxLayout) -> None:
         register_group = QGroupBox("Register")
         layout = QVBoxLayout()
 
@@ -208,7 +182,7 @@ class VocabFlagsDialog(QDialog):
         self._add_checkbox(layout, "Literary", self.vocab.register.literary, False)
 
         register_group.setLayout(layout)
-        main_layout.addWidget(register_group)
+        parent_layout.addWidget(register_group)
 
     def accept(self) -> None:
         """Override accept to check if reparsing is needed."""
