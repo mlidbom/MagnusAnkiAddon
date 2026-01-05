@@ -22,10 +22,10 @@ class JapaneseOptionsDialog(QDialog): # Cannot inherit Slots for some QT interna
 
         window_layout = QVBoxLayout()
         main_content_layout = QHBoxLayout()
-        
+
         # Left side - numeric settings
         left_layout = QVBoxLayout()
-        
+
         # Right side - toggleable settings
         right_layout = QVBoxLayout()
 
@@ -149,10 +149,10 @@ class JapaneseOptionsDialog(QDialog): # Cannot inherit Slots for some QT interna
             for section_name, toggles in self.config.feature_toggles:
                 toggles_group = QGroupBox(section_name)
                 toggles_layout = QVBoxLayout()
-                
+
                 for toggle in toggles:
                     add_checkbox_value(toggles_layout, toggle)
-                
+
                 toggles_group.setLayout(toggles_layout)
                 right_layout.addWidget(toggles_group)
 
@@ -162,13 +162,13 @@ class JapaneseOptionsDialog(QDialog): # Cannot inherit Slots for some QT interna
         setup_decrease_failed_card_interval_section()
         setup_timeboxes_section()
         setup_debounce_section()
-        
+
         setup_feature_toggles_section()
-        
+
         # Add left and right layouts to main content layout
         main_content_layout.addLayout(left_layout)
         main_content_layout.addLayout(right_layout)
-        
+
         # Add main content to window layout
         window_layout.addLayout(main_content_layout)
 
