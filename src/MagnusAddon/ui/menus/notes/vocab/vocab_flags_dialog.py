@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from ankiutils import app
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtWidgets import QButtonGroup, QCheckBox, QDialog, QDialogButtonBox, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QMessageBox, QRadioButton, QVBoxLayout, QWidget
 from sysutils.typed import checked_cast
@@ -224,6 +225,8 @@ class VocabFlagsDialog(QDialog):
             if reply == QMessageBox.StandardButton.Yes:
                 from batches import local_note_updater
                 local_note_updater.reparse_sentences_for_vocab(self.vocab)
+
+        app.get_ui_utils().refresh()
 
         super().accept()
 
