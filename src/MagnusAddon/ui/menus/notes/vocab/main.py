@@ -12,6 +12,7 @@ from ui.menus.menu_utils import shortcutfinger
 from ui.menus.menu_utils.ex_qmenu import add_lookup_action, add_single_vocab_lookup_action, add_ui_action, add_vocab_dependencies_lookup
 from ui.menus.notes.vocab.create_note_menu import build_create_note_menu
 from ui.menus.notes.vocab.matching_settings_menu import build_tag_toggling_menu
+from ui.menus.notes.vocab.vocab_flags_dialog import show_vocab_flags_dialog
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
@@ -72,10 +73,11 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
 
     build_lookup_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Open"))))
     build_tag_toggling_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Toggle flags"))), vocab)
-    build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Create"))), vocab, selection, clipboard)
-    build_copy_menu(non_optional(note_menu.addMenu(shortcutfinger.home4("Copy"))))
-    build_misc_menu(non_optional(note_menu.addMenu(shortcutfinger.home5("Misc"))))
-    build_remove_menu(non_optional(note_menu.addMenu(shortcutfinger.up1("Remove"))))
+    note_menu.addAction(shortcutfinger.home3("Edit flags..."), lambda: show_vocab_flags_dialog(vocab))  # pyright: ignore[reportUnknownMemberType]
+    build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.home4("Create"))), vocab, selection, clipboard)
+    build_copy_menu(non_optional(note_menu.addMenu(shortcutfinger.home5("Copy"))))
+    build_misc_menu(non_optional(note_menu.addMenu(shortcutfinger.up1("Misc"))))
+    build_remove_menu(non_optional(note_menu.addMenu(shortcutfinger.up2("Remove"))))
 
 def format_vocab_meaning(meaning: str) -> str:
     return ex_str.strip_html_and_bracket_markup(meaning.replace(" SOURCE", "").replace(", ", "/").replace(" ", "-").lower())
