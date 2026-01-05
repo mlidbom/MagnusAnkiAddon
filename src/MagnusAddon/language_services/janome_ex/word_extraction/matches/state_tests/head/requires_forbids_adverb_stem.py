@@ -9,14 +9,14 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
-class RequiresOrForbidsMasuStem(Slots):
-    _required_reason: FailedMatchRequirement = FailedMatchRequirement("forbids::masu-stem")
-    _forbidden_reason: FailedMatchRequirement = FailedMatchRequirement("requires::masu-stem")
+class RequiresOrForbidsPrecedingAdverb(Slots):
+    _required_reason: FailedMatchRequirement = FailedMatchRequirement("forbids::preceding-adverb")
+    _forbidden_reason: FailedMatchRequirement = FailedMatchRequirement("requires::preceding-adverb")
 
     @classmethod
     def apply_to(cls, inspector: VocabMatchInspector) -> MatchRequirement | None:
-        if inspector.requires_forbids.masu_stem.is_required and not inspector.has_masu_stem:
-            return RequiresOrForbidsMasuStem._required_reason
-        if inspector.requires_forbids.masu_stem.is_forbidden and inspector.has_masu_stem:
-            return RequiresOrForbidsMasuStem._forbidden_reason
+        if inspector.requires_forbids.preceding_adverb.is_required and not inspector.has_preceding_adverb:
+            return cls._required_reason
+        if inspector.requires_forbids.preceding_adverb.is_forbidden and inspector.has_preceding_adverb:
+            return cls._forbidden_reason
         return None

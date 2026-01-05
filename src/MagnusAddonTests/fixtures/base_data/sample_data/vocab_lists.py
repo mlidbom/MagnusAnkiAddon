@@ -169,4 +169,7 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("買い替える", tags=[Tags.Vocab.is_compositionally_transparent_compound]),
 
         VocabSpec("きれない", forms=["[切れない]"], tags=[vm.Requires.masu_stem]),
+
+        VocabSpec("考えすぎ", tags=[vm.Forbids.preceding_adverb]),
+        VocabSpec("考えすぎる", tags=[vm.Forbids.preceding_adverb]),
 ]

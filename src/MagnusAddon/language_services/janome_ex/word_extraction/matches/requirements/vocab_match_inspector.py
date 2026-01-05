@@ -7,8 +7,8 @@ from language_services.janome_ex.word_extraction.matches.requirements.match_insp
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
+    from note.vocabulary.vocabnote_matching_rules import VocabMatchingRulesConfigurationRequiresForbidsFlags
     from sysutils.weak_ref import WeakRef
-
 
 class VocabMatchInspector(MatchInspector, Slots):
     """Base class providing access to VocabMatch context and helper properties.
@@ -18,9 +18,16 @@ class VocabMatchInspector(MatchInspector, Slots):
     """
 
     def __init__(self, match: WeakRef[VocabMatch]) -> None:
-        super().__init__(match)  # type: ignore[arg-type]
+        super().__init__(match)
+        self._requires_forbids: VocabMatchingRulesConfigurationRequiresForbidsFlags | None = None
 
     @property
     @override
     def match(self) -> VocabMatch:
         return cast("VocabMatch", self._match())
+
+    @property
+    def requires_forbids(self) -> VocabMatchingRulesConfigurationRequiresForbidsFlags:
+        if self._requires_forbids is None:
+            self._requires_forbids = self.match.requires_forbids
+        return self._requires_forbids

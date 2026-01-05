@@ -99,6 +99,10 @@ class MatchInspector(Slots):
         return self.start_location.previous is not None and self.start_location.previous().token.is_masu_stem
 
     @property
+    def has_preceding_adverb(self) -> bool:
+        return self.start_location.previous is not None and self.start_location.previous().token.is_adverb
+
+    @property
     def is_end_of_statement(self) -> bool:
         if len(self.suffix) == 0:
             return True

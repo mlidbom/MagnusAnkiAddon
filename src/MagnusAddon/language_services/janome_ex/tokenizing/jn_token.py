@@ -97,6 +97,11 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
     def is_masu_stem(self) -> bool: return self.inflected_form == InflectionForms.Continuative.renyoukei_masu_stem
     @property
     @override
+    def is_adverb(self) -> bool:
+        return (self.parts_of_speech == JNPOS.Adverb.general
+                or (self.parts_of_speech in JNPOS.Adjective.all_types and self.surface.endswith("く")))
+    @property
+    @override
     def surface(self) -> str: return self._surface
     @property
     @override
