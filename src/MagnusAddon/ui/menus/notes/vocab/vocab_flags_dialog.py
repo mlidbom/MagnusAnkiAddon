@@ -83,7 +83,6 @@ class VocabFlagsDialog(QDialog):
         radio_layout.addWidget(unset_radio)
         radio_layout.addWidget(required_radio)
         radio_layout.addWidget(forbidden_radio)
-        radio_layout.addStretch()
 
         # Set initial state
         initial_required = field.is_configured_required
@@ -126,11 +125,14 @@ class VocabFlagsDialog(QDialog):
 
     def _build_requires_forbids_section(self, main_layout: QVBoxLayout) -> None:
         requires_forbids_group = QGroupBox("Requires/Forbids")
+        requires_forbids_group.setSizePolicy(requires_forbids_group.sizePolicy().horizontalPolicy(), requires_forbids_group.sizePolicy().verticalPolicy())
         layout = QVBoxLayout()
 
         # Display section
         display_group = QGroupBox("Display")
         display_grid = QGridLayout()
+        display_grid.setColumnStretch(0, 0)
+        display_grid.setColumnStretch(1, 0)
         self._add_require_forbid_field(display_grid, 0, "Yield to overlapping following compound",
                                        self.vocab.matching_configuration.requires_forbids.yield_last_token, False)
         display_group.setLayout(display_grid)
@@ -139,6 +141,8 @@ class VocabFlagsDialog(QDialog):
         # Misc matching rules section
         misc_group = QGroupBox("Misc matching rules")
         misc_grid = QGridLayout()
+        misc_grid.setColumnStretch(0, 0)
+        misc_grid.setColumnStretch(1, 0)
         self._add_require_forbid_field(misc_grid, 0, "Sentence start", self.vocab.matching_configuration.requires_forbids.sentence_start)
         self._add_require_forbid_field(misc_grid, 1, "Sentence end", self.vocab.matching_configuration.requires_forbids.sentence_end)
         self._add_require_forbid_field(misc_grid, 2, "Exact match", self.vocab.matching_configuration.requires_forbids.exact_match)
@@ -149,6 +153,8 @@ class VocabFlagsDialog(QDialog):
         # Stem matching rules section
         stem_group = QGroupBox("Stem matching rules")
         stem_grid = QGridLayout()
+        stem_grid.setColumnStretch(0, 0)
+        stem_grid.setColumnStretch(1, 0)
         self._add_require_forbid_field(stem_grid, 0, "E stem", self.vocab.matching_configuration.requires_forbids.e_stem)
         self._add_require_forbid_field(stem_grid, 1, "A stem", self.vocab.matching_configuration.requires_forbids.a_stem)
         self._add_require_forbid_field(stem_grid, 2, "Masu stem", self.vocab.matching_configuration.requires_forbids.masu_stem)
