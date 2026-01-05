@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app, query_builder
 from language_services.jamdict_ex.dict_lookup import DictLookup
+from language_services.janome_ex.tokenizing.pre_processing_stage.ichidan_godan_potential_or_imperative_hybrid_splitter import IchidanGodanPotentialOrImperativeHybridSplitter
 from note.note_constants import CardTypes
 from note.sentences.parsed_match import ParsedMatch
 from note.sentences.sentencenote import SentenceNote
@@ -86,6 +87,7 @@ def tag_vocab_metadata() -> None:
         vocab.tags.toggle(Tags.Vocab.Matching.Uses.prefix_is_not, not vocab.matching_configuration.configurable_rules.prefix_is_not.none())
         vocab.tags.toggle(Tags.Vocab.Matching.Uses.suffix_is_not, not vocab.matching_configuration.configurable_rules.suffix_is_not.none())
         vocab.tags.toggle(Tags.Vocab.Matching.Uses.surface_is_not, not vocab.matching_configuration.configurable_rules.surface_is_not.none())
+        vocab.tags.toggle(Tags.Vocab.is_ichidan_hiding_godan_potential, IchidanGodanPotentialOrImperativeHybridSplitter.is_ichidan_hiding_godan(vocab))
 
     with TaskRunner.current("Tagging vocab") as runner:
         runner.process_with_progress(app.col().vocab.all(), tag_note, "Tag vocab notes")

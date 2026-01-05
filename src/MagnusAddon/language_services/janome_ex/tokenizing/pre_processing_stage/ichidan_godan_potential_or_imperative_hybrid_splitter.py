@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
     from language_services.janome_ex.tokenizing.jn_token import JNToken
     from note.collection.vocab_collection import VocabCollection
+    from note.vocabulary.vocabnote import VocabNote
 
 class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
 
@@ -93,11 +94,24 @@ class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
         return False
 
     @classmethod
+    def base_form_has_godan_potential_ending(cls, base_form: str) -> bool:
+        return base_form[-2:] in conjugator.godan_potential_verb_ending_to_dictionary_form_endings
+
+    @classmethod
     def _try_find_godan_hidden_in_ichidan_using_dictionary(cls, token: JNToken) -> str | None:
         if (len(token.base_form) >= 2
-                and token.base_form[-2:] in conjugator.godan_potential_verb_ending_to_dictionary_form_endings
+                and cls.base_form_has_godan_potential_ending(token.base_form)
                 and token.is_ichidan_verb()):
             possible_godan_form = conjugator.construct_root_verb_for_possibly_potential_godan_verb_dictionary_form(token.base_form)
             if WordInfo.is_godan(possible_godan_form):
                 return possible_godan_form
         return None
+
+    @classmethod
+    def is_ichidan_hiding_godan(cls, vocab: VocabNote) -> bool:
+        question = vocab.get_question()
+        if cls.base_form_has_godan_potential_ending(question):
+            possible_godan_form = conjugator.construct_root_verb_for_possibly_potential_godan_verb_dictionary_form(question)
+            godan_dict_entry = WordInfo.lookup_godan(possible_godan_form)
+            return godan_dict_entry is not None and godan_dict_entry.is_godan
+        return False

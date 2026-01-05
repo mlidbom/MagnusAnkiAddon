@@ -60,7 +60,9 @@
 
         .vocab_tag_list {
             white-space: nowrap;
-            padding-left: 10px; }
+            padding-left: 10px;
+            .vocab_tag_is-ichidan-hiding-godan-potential{ color: var(--colorTextWarningRed);}
+        }
 
         li { line-height: 1.2; }
         .sentenceVocabEntry {

@@ -49,6 +49,7 @@ class Tags(Slots):
         has_no_studying_sentences: Tag = Tag.from_name(f"{f_vocab}has-no-studying-sentences")
         question_overrides_form: Tag = Tag.from_name(f"{f_vocab}question-overrides-form")
         is_compositionally_transparent_compound: Tag = Tag.from_name(f"{f_vocab}is-compositionally-transparent-compound")
+        is_ichidan_hiding_godan_potential: Tag = Tag.from_name(f"{f_vocab}is-ichidan-hiding-godan-potential")
 
         class Register(Slots):
             polite: Tag = Tag.from_name(f"{f_vocab_register}polite")

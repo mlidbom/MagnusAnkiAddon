@@ -79,7 +79,6 @@ def get_meta_tags_html(vocab: VocabNote, display_extended_sentence_statistics: b
     if "auxiliary adjective" in tos: meta.append(VocabMetaTag("auxiliary-adjective", "a-い", "auxiliary adjective"))
 
     # misc
-
     if POS.COUNTER in tos: meta.append(VocabMetaTag("counter", "ctr", "counter"))
     if POS.NUMERAL in tos: meta.append(VocabMetaTag("numeral", "num", "numeral"))
     if POS.INTERJECTION in tos: meta.append(VocabMetaTag("interjection", "int", "interjection"))
@@ -103,6 +102,9 @@ def get_meta_tags_html(vocab: VocabNote, display_extended_sentence_statistics: b
     if Tags.Vocab.Register.soft_feminine in tags: meta.append(VocabMetaTag("register-soft-feminine", "S", "Soft speech, traditionally thought feminine"))
     if Tags.Vocab.Register.derogatory in tags: meta.append(VocabMetaTag("register-derogatory", "D", "Derogatory form, usually offensive"))
     if Tags.Vocab.Register.literary in tags: meta.append(VocabMetaTag("register-literary", "L", "literary, apt to stand out in speech"))
+
+    #other
+    if Tags.Vocab.is_ichidan_hiding_godan_potential in tags: meta.append(VocabMetaTag("is-ichidan-hiding-godan-potential", "HG", "Ichidan verb hiding godan potential form. Mark the ichidan as an incorrect match to see the godan potential in the breakdown. The parser cannot tell which it is on its own."))
 
     return """<ol class="vocab_tag_list">""" + "".join([f"""<li class="vocab_tag vocab_tag_{tag.name}" title="{tag.tooltip}">{tag.display}</li>""" for tag in meta]) + "</ol>"
 
