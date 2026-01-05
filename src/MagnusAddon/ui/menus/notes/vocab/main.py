@@ -11,7 +11,7 @@ from sysutils.typed import non_optional
 from ui.menus.menu_utils import shortcutfinger
 from ui.menus.menu_utils.ex_qmenu import add_lookup_action, add_single_vocab_lookup_action, add_ui_action, add_vocab_dependencies_lookup
 from ui.menus.notes.vocab.create_note_menu import build_create_note_menu
-from ui.menus.notes.vocab.matching_settings_menu import build_matching_settings_menu
+from ui.menus.notes.vocab.matching_settings_menu import build_tag_toggling_menu
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
@@ -71,7 +71,7 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
         add_ui_action(remove_menu, shortcutfinger.home4("User answer"), lambda: vocab.user.answer.empty(), True).setEnabled(vocab.user.answer.has_value())
 
     build_lookup_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Open"))))
-    build_matching_settings_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Toggle flags"))), vocab)
+    build_tag_toggling_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Toggle flags"))), vocab)
     build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Create"))), vocab, selection, clipboard)
     build_copy_menu(non_optional(note_menu.addMenu(shortcutfinger.home4("Copy"))))
     build_misc_menu(non_optional(note_menu.addMenu(shortcutfinger.home5("Misc"))))

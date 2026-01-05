@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from PyQt6.QtWidgets import QMenu
 
-def build_matching_settings_menu(toggle_flags_menu: QMenu, vocab: VocabNote) -> None:
+def build_tag_toggling_menu(toggle_flags_menu: QMenu, vocab: VocabNote) -> None:
     def add_tag_field_check_box(menu: QMenu, title: str, field: TagFlagField, reparse_sentences: bool = True) -> None:
         add_checkbox(menu, title, field.is_set, field.set_to, reparse_sentences=reparse_sentences)
 
@@ -69,6 +69,22 @@ def build_matching_settings_menu(toggle_flags_menu: QMenu, vocab: VocabNote) -> 
         add_tag_field_check_box(misc_menu, shortcutfinger.home1("Question overrides form: Show the question in results even if the match was another form"), vocab.matching_configuration.bool_flags.question_overrides_form)
         add_tag_field_check_box(misc_menu, shortcutfinger.home3("Match with preceding vowel"), vocab.matching_configuration.bool_flags.match_with_preceding_vowel)
 
+    def build_register_menu(register_menu: QMenu) -> None:
+        add_tag_field_check_box(register_menu, shortcutfinger.home1("Polite"), vocab.register.polite)
+        add_tag_field_check_box(register_menu, shortcutfinger.home2("Formal"), vocab.register.formal)
+        add_tag_field_check_box(register_menu, shortcutfinger.home3("Informal"), vocab.register.informal)
+        add_tag_field_check_box(register_menu, shortcutfinger.home4("Rough, traditionally considered male"), vocab.register.rough_masculine)
+        add_tag_field_check_box(register_menu, shortcutfinger.home5("Soft, traditionally considered feminine"), vocab.register.soft_feminine)
+        add_tag_field_check_box(register_menu, shortcutfinger.up1("Humble"), vocab.register.humble)
+        add_tag_field_check_box(register_menu, shortcutfinger.up2("Honorific"), vocab.register.honorific)
+        add_tag_field_check_box(register_menu, shortcutfinger.up3("Slang"), vocab.register.slang)
+        add_tag_field_check_box(register_menu, shortcutfinger.up4("Derogatory"), vocab.register.derogatory)
+        add_tag_field_check_box(register_menu, shortcutfinger.up5("Vulgar, usually offensive"), vocab.register.vulgar)
+        add_tag_field_check_box(register_menu, shortcutfinger.down1("Archaic"), vocab.register.archaic)
+        add_tag_field_check_box(register_menu, shortcutfinger.down2("Childish"), vocab.register.childish)
+        add_tag_field_check_box(register_menu, shortcutfinger.down3("Literary"), vocab.register.literary)
+
     build_requires_forbids_menu(non_optional(toggle_flags_menu.addMenu(shortcutfinger.home1("Requireds/Forbids"))))
     build_is_menu(non_optional(toggle_flags_menu.addMenu(shortcutfinger.home2("Is"))))
     build_misc_flags_menu(non_optional(toggle_flags_menu.addMenu(shortcutfinger.home3("Misc"))))
+    build_register_menu(non_optional(toggle_flags_menu.addMenu(shortcutfinger.home4("Register"))))

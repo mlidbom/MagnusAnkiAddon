@@ -20,6 +20,7 @@ from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfigurat
 from note.vocabulary.vocabnote_metadata import VocabNoteMetaData
 from note.vocabulary.vocabnote_parts_of_speech import VocabNotePartsOfSpeech
 from note.vocabulary.vocabnote_question import VocabNoteQuestion
+from note.vocabulary.vocabnote_register import VocabNoteRegister
 from note.vocabulary.vocabnote_sentences import VocabNoteSentences
 from note.vocabulary.vocabnote_usercompoundparts import VocabNoteUserCompoundParts
 from note.vocabulary.vocabnote_userfields import VocabNoteUserfields
@@ -63,6 +64,8 @@ class VocabNote(JPNote, Slots):
     def _source_answer(self) -> MutableStringField: return MutableStringField(self.weakref_vocab, NoteFields.Vocab.source_answer)
     @property
     def active_answer(self) -> MutableStringField: return MutableStringField(self.weakref_vocab, NoteFields.Vocab.active_answer)
+    @property
+    def register(self) -> VocabNoteRegister: return VocabNoteRegister(self.weakref_vocab)
 
 
     @override

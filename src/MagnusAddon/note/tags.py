@@ -9,6 +9,7 @@ f_kanji: str = f"{f_root}kanji::"
 f_sentence_uses: str = f"{f_sentence}uses::"
 f_vocab: str = f"{f_root}vocab::"
 f_vocab_matching: str = f"{f_vocab}matching::"
+f_vocab_register: str = f"{f_vocab}register::"
 f_vocab_matching_requires: str = f"{f_vocab_matching}requires::"
 f_vocab_matching_forbids: str = f"{f_vocab_matching}forbids::"
 f_vocab_matching_todo: str = f"{f_vocab_matching}todo::"
@@ -48,6 +49,21 @@ class Tags(Slots):
         has_no_studying_sentences: Tag = Tag.from_name(f"{f_vocab}has-no-studying-sentences")
         question_overrides_form: Tag = Tag.from_name(f"{f_vocab}question-overrides-form")
         is_compositionally_transparent_compound: Tag = Tag.from_name(f"{f_vocab}is-compositionally-transparent-compound")
+
+        class Register(Slots):
+            polite: Tag = Tag.from_name(f"{f_vocab_register}polite")
+            formal: Tag = Tag.from_name(f"{f_vocab_register}formal")
+            humble: Tag = Tag.from_name(f"{f_vocab_register}humble")
+            honorific: Tag = Tag.from_name(f"{f_vocab_register}honorific")
+            informal: Tag = Tag.from_name(f"{f_vocab_register}informal")
+            slang: Tag = Tag.from_name(f"{f_vocab_register}slang")
+            rough_masculine: Tag = Tag.from_name(f"{f_vocab_register}rough")
+            soft_feminine: Tag = Tag.from_name(f"{f_vocab_register}soft")
+            derogatory: Tag = Tag.from_name(f"{f_vocab_register}derogatory")
+            vulgar: Tag = Tag.from_name(f"{f_vocab_register}vulgar")
+            archaic: Tag = Tag.from_name(f"{f_vocab_register}archaic")
+            childish: Tag = Tag.from_name(f"{f_vocab_register}childish")
+            literary: Tag = Tag.from_name(f"{f_vocab_register}literary")
 
         class Matching(Slots):
             yield_last_token_to_overlapping_compound: Tag = Tag.from_name(f"{f_vocab_matching}yield-last-token-to-upcoming-compound")
