@@ -73,7 +73,7 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
     add_ui_action(note_menu, shortcutfinger.home2("Edit"), lambda: show_vocab_flags_dialog(vocab))
     build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Create"))), vocab, selection, clipboard)
     build_copy_menu(non_optional(note_menu.addMenu(shortcutfinger.home4("Copy"))))
-    build_misc_menu(non_optional(note_menu.addMenu(shortcutfinger.up5("Misc"))))
+    build_misc_menu(non_optional(note_menu.addMenu(shortcutfinger.home5("Misc"))))
     build_remove_menu(non_optional(note_menu.addMenu(shortcutfinger.up1("Remove"))))
 
 def format_vocab_meaning(meaning: str) -> str:
