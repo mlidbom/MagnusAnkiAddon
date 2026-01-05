@@ -139,15 +139,6 @@ class JapaneseOptionsDialog(QDialog): # Cannot inherit Slots for some QT interna
         setup_timeboxes_section()
         setup_debounce_section()
 
-        # checkbox_group = QGroupBox("Feature toggles")
-        # checkbox_layout = QVBoxLayout()
-        # self.checkbox = QCheckBox(self.config.yomitan_integration_copy_answer_to_clipboard.title)
-        # self.checkbox.setChecked(self.config.yomitan_integration_copy_answer_to_clipboard.get_value())
-        # qconnect(self.checkbox.toggled, self.config.yomitan_integration_copy_answer_to_clipboard.set_value)
-        # checkbox_layout.addWidget(self.checkbox)
-        # checkbox_group.setLayout(checkbox_layout)
-        # layout.addWidget(checkbox_group)
-
         self.button_box: QDialogButtonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
         checked_cast(pyqtBoundSignal, self.button_box.clicked).connect(self.accept)  # pyright: ignore[reportUnknownMemberType]
         window_layout.addWidget(self.button_box)
