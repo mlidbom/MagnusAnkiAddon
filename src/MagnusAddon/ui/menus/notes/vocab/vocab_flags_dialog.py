@@ -89,30 +89,29 @@ class VocabFlagsDialog(QDialog):
 
         if initial_required:
             required_radio.setChecked(True)
+            initial_state = 1
         elif initial_forbidden:
             forbidden_radio.setChecked(True)
+            initial_state = 2
         else:
             unset_radio.setChecked(True)
+            initial_state = 0
 
         def on_changed(button_id: int) -> None:
-            current_required = field.is_configured_required
-            current_forbidden = field.is_configured_forbidden
-
             if button_id == 0:  # Unset
-                if current_required:
+                if field.is_configured_required:
                     field.set_required(False)
-                if current_forbidden:
+                if field.is_configured_forbidden:
                     field.set_forbidden(False)
             elif button_id == 1:  # Required
-                if not current_required:
+                if not field.is_configured_required:
                     field.set_required(True)
             elif button_id == 2:  # Forbidden
-                if not current_forbidden:
+                if not field.is_configured_forbidden:
                     field.set_forbidden(True)
 
-            # Track changes for reparse
-            changed = (field.is_configured_required != initial_required or
-                       field.is_configured_forbidden != initial_forbidden)
+            # Track changes for reparse based on button state, not field cache
+            changed = (button_id != initial_state)
             if reparse_trigger and changed:
                 self.changed_reparse_flags.add(title)
             elif title in self.changed_reparse_flags and not changed:
