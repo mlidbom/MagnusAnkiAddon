@@ -27,9 +27,7 @@ class VocabFlagsDialog(QDialog):
         
         # Left column
         left_layout = QVBoxLayout()
-        self._build_requires_forbids_section(left_layout)
-        self._build_is_section(left_layout)
-        self._build_misc_section(left_layout)
+        self._build_matching_settings_section(left_layout)
         left_layout.addStretch()
         
         # Right column
@@ -123,12 +121,12 @@ class VocabFlagsDialog(QDialog):
 
         grid.addLayout(radio_layout, row, 1)
 
-    def _build_requires_forbids_section(self, main_layout: QVBoxLayout) -> None:
-        requires_forbids_group = QGroupBox("Requires/Forbids")
-        requires_forbids_group.setSizePolicy(requires_forbids_group.sizePolicy().horizontalPolicy(), requires_forbids_group.sizePolicy().verticalPolicy())
+    def _build_matching_settings_section(self, main_layout: QVBoxLayout) -> None:
+        matching_settings_group = QGroupBox("Matching Settings")
+        matching_settings_group.setSizePolicy(matching_settings_group.sizePolicy().horizontalPolicy(), matching_settings_group.sizePolicy().verticalPolicy())
         layout = QVBoxLayout()
 
-        # Display section
+        # Requires/Forbids Display section
         display_group = QGroupBox("Display")
         display_grid = QGridLayout()
         display_grid.setColumnStretch(0, 0)
@@ -139,16 +137,16 @@ class VocabFlagsDialog(QDialog):
         layout.addWidget(display_group)
 
         # Misc matching rules section
-        misc_group = QGroupBox("Misc matching rules")
-        misc_grid = QGridLayout()
-        misc_grid.setColumnStretch(0, 0)
-        misc_grid.setColumnStretch(1, 0)
-        self._add_require_forbid_field(misc_grid, 0, "Sentence start", self.vocab.matching_configuration.requires_forbids.sentence_start)
-        self._add_require_forbid_field(misc_grid, 1, "Sentence end", self.vocab.matching_configuration.requires_forbids.sentence_end)
-        self._add_require_forbid_field(misc_grid, 2, "Exact match", self.vocab.matching_configuration.requires_forbids.exact_match)
-        self._add_require_forbid_field(misc_grid, 3, "Single token", self.vocab.matching_configuration.requires_forbids.single_token)
-        misc_group.setLayout(misc_grid)
-        layout.addWidget(misc_group)
+        misc_matching_group = QGroupBox("Misc matching rules")
+        misc_matching_grid = QGridLayout()
+        misc_matching_grid.setColumnStretch(0, 0)
+        misc_matching_grid.setColumnStretch(1, 0)
+        self._add_require_forbid_field(misc_matching_grid, 0, "Sentence start", self.vocab.matching_configuration.requires_forbids.sentence_start)
+        self._add_require_forbid_field(misc_matching_grid, 1, "Sentence end", self.vocab.matching_configuration.requires_forbids.sentence_end)
+        self._add_require_forbid_field(misc_matching_grid, 2, "Exact match", self.vocab.matching_configuration.requires_forbids.exact_match)
+        self._add_require_forbid_field(misc_matching_grid, 3, "Single token", self.vocab.matching_configuration.requires_forbids.single_token)
+        misc_matching_group.setLayout(misc_matching_grid)
+        layout.addWidget(misc_matching_group)
 
         # Stem matching rules section
         stem_group = QGroupBox("Stem matching rules")
@@ -167,33 +165,29 @@ class VocabFlagsDialog(QDialog):
         self._add_require_forbid_field(stem_grid, 9, "Preceding adverb", self.vocab.matching_configuration.requires_forbids.preceding_adverb)
         stem_group.setLayout(stem_grid)
         layout.addWidget(stem_group)
-
-        requires_forbids_group.setLayout(layout)
-        main_layout.addWidget(requires_forbids_group)
-
-    def _build_is_section(self, main_layout: QVBoxLayout) -> None:
+        
+        # Is section
         is_group = QGroupBox("Is")
-        layout = QVBoxLayout()
-
-        self._add_checkbox(layout, "Poison word", self.vocab.matching_configuration.bool_flags.is_poison_word)
-        self._add_checkbox(layout, "Inflecting word", self.vocab.matching_configuration.bool_flags.is_inflecting_word)
-        self._add_checkbox(layout, "Compositionally transparent compound",
+        is_layout = QVBoxLayout()
+        self._add_checkbox(is_layout, "Poison word", self.vocab.matching_configuration.bool_flags.is_poison_word)
+        self._add_checkbox(is_layout, "Inflecting word", self.vocab.matching_configuration.bool_flags.is_inflecting_word)
+        self._add_checkbox(is_layout, "Compositionally transparent compound",
                            self.vocab.matching_configuration.bool_flags.is_compositionally_transparent_compound, False)
-
-        is_group.setLayout(layout)
-        main_layout.addWidget(is_group)
-
-    def _build_misc_section(self, main_layout: QVBoxLayout) -> None:
+        is_group.setLayout(is_layout)
+        layout.addWidget(is_group)
+        
+        # Misc section
         misc_group = QGroupBox("Misc")
-        layout = QVBoxLayout()
-
-        self._add_checkbox(layout, "Question overrides form: Show the question in results even if the match was another form",
+        misc_layout = QVBoxLayout()
+        self._add_checkbox(misc_layout, "Question overrides form: Show the question in results even if the match was another form",
                            self.vocab.matching_configuration.bool_flags.question_overrides_form)
-        self._add_checkbox(layout, "Match with preceding vowel",
+        self._add_checkbox(misc_layout, "Match with preceding vowel",
                            self.vocab.matching_configuration.bool_flags.match_with_preceding_vowel)
+        misc_group.setLayout(misc_layout)
+        layout.addWidget(misc_group)
 
-        misc_group.setLayout(layout)
-        main_layout.addWidget(misc_group)
+        matching_settings_group.setLayout(layout)
+        main_layout.addWidget(matching_settings_group)
 
     def _build_register_section(self, main_layout: QVBoxLayout) -> None:
         register_group = QGroupBox("Register")
