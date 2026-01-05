@@ -24,20 +24,20 @@ class VocabFlagsDialog(QDialog):
 
         # Create horizontal layout for left and right sections
         content_layout = QHBoxLayout()
-        
+
         # Left column
         left_layout = QVBoxLayout()
         self._build_matching_settings_section(left_layout)
         left_layout.addStretch()
-        
+
         # Right column
         right_layout = QVBoxLayout()
         self._build_register_section(right_layout)
         right_layout.addStretch()
-        
+
         content_layout.addLayout(left_layout)
         content_layout.addLayout(right_layout)
-        
+
         main_layout.addLayout(content_layout)
 
         # Add button box
@@ -165,7 +165,7 @@ class VocabFlagsDialog(QDialog):
         self._add_require_forbid_field(stem_grid, 9, "Preceding adverb", self.vocab.matching_configuration.requires_forbids.preceding_adverb)
         stem_group.setLayout(stem_grid)
         layout.addWidget(stem_group)
-        
+
         # Is section
         is_group = QGroupBox("Is")
         is_layout = QVBoxLayout()
@@ -175,7 +175,7 @@ class VocabFlagsDialog(QDialog):
                            self.vocab.matching_configuration.bool_flags.is_compositionally_transparent_compound, False)
         is_group.setLayout(is_layout)
         layout.addWidget(is_group)
-        
+
         # Misc section
         misc_group = QGroupBox("Misc")
         misc_layout = QVBoxLayout()
