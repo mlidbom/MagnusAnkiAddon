@@ -77,6 +77,11 @@
             .incorrect_reason, .hiding_reason, .not_shown_reason {font-size: 80%;}
             .incorrect_reason { color: var(--colorTextWarningRed);}
 
+            .incorrect_reason .configured, .hiding_reason .configured {
+                text-decoration: underline;
+                font-weight: bold;
+            }
+
             &.secondary_match {
                 &, & .vocab_tag { background-color: color-mix(in lch, var(--colorBgOffset1), white 30%);}
             }

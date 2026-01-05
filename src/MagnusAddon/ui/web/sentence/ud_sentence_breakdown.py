@@ -14,11 +14,13 @@ from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 if TYPE_CHECKING:
     from ui.web.sentence.match_viewmodel import MatchViewModel
 
+def format_reason(reason: str) -> str:
+    return f"""<span class="configured">{reason}</span>""" if "configured" in reason else reason
+
 def build_invalid_for_display_span(view_model: MatchViewModel) -> str:
     if not view_model.incorrect_reasons and not view_model.hiding_reasons: return ""
-
-    incorrect_reasons = [f"""<div class="incorrect_reason">{reason}</div>""" for reason in view_model.incorrect_reasons]
-    hiding_reasons = [f"""<div class="hiding_reason">{reason}</div>""" for reason in view_model.hiding_reasons]
+    incorrect_reasons = [f"""<div class="incorrect_reason">{format_reason(reason)}</div>""" for reason in view_model.incorrect_reasons]
+    hiding_reasons = [f"""<div class="hiding_reason">{format_reason(reason)}</div>""" for reason in view_model.hiding_reasons]
     return f"""<span>{newline.join(incorrect_reasons + hiding_reasons)}</span>"""
 
 def render_match_kanji(match: MatchViewModel) -> str:
