@@ -66,18 +66,8 @@ def build_debug_menu(debug_menu: QMenu) -> None:
     add_menu_ui_action(debug_menu, shortcutfinger.down1("Refresh UI ('F5')"), refresh)
 
 def build_config_menu(config_menu: QMenu) -> None:
-    def build_feature_toggles_menu(_title: str) -> None:
-        section_index = 0
-        toggles_menu = non_optional(config_menu.addMenu(_title))
-        for section_index, (section, toggles) in enumerate(app.config().feature_toggles):
-            section_menu = non_optional(toggles_menu.addMenu(shortcutfinger.finger_by_priority_order(section_index, section)))
-            ex_qmenu.build_checkbox_config_section_menu(section_menu, toggles)
-
-        add_menu_ui_action(toggles_menu, shortcutfinger.finger_by_priority_order(section_index + 1, "Toggle all sentence auto yield compound last token flags (Ctrl+Shift+Alt+d)"), app.config().toggle_all_sentence_display_auto_yield_flags)
-
-    build_feature_toggles_menu(shortcutfinger.home1("Feature Toggles"))
+    non_optional(config_menu.addAction(shortcutfinger.home1("Options"), show_japanese_options)).setShortcut("Ctrl+Shift+s")  # pyright: ignore[reportUnknownMemberType]
     non_optional(config_menu.addAction(shortcutfinger.home2("Readings mappings"), show_readings_mappings)).setShortcut("Ctrl+Shift+m")  # pyright: ignore[reportUnknownMemberType]
-    non_optional(config_menu.addAction(shortcutfinger.home3("Options"), show_japanese_options)).setShortcut("Ctrl+Shift+s")  # pyright: ignore[reportUnknownMemberType]
 
 def build_local_menu(local_menu: QMenu) -> None:
     def build_update_menu(update_menu: QMenu) -> None:

@@ -11,7 +11,6 @@ from sysutils.typed import non_optional
 from ui.menus.menu_utils import shortcutfinger
 from ui.menus.menu_utils.ex_qmenu import add_lookup_action, add_single_vocab_lookup_action, add_ui_action, add_vocab_dependencies_lookup
 from ui.menus.notes.vocab.create_note_menu import build_create_note_menu
-from ui.menus.notes.vocab.matching_settings_menu import build_tag_toggling_menu
 from ui.menus.notes.vocab.vocab_flags_dialog import show_vocab_flags_dialog
 
 if TYPE_CHECKING:
@@ -38,7 +37,7 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
                 for index, reading in enumerate(vocab.readings.get()):
                     add_lookup_action(readings_vocab_lookup_menu, shortcutfinger.finger_by_priority_order(index, f"Homonyms: {reading}"), query_builder.notes_lookup(app.col().vocab.with_reading(reading)))
 
-            add_lookup_action(vocab_lookup_menu, shortcutfinger.home1("Forms"), query_builder.notes_lookup(vocab.forms.all_list_notes())) # query_builder.notes_lookup(ex_sequence.flatten([app.col().vocab.with_question(form) for form in vocab.forms.all_set()])))
+            add_lookup_action(vocab_lookup_menu, shortcutfinger.home1("Forms"), query_builder.notes_lookup(vocab.forms.all_list_notes()))  # query_builder.notes_lookup(ex_sequence.flatten([app.col().vocab.with_question(form) for form in vocab.forms.all_set()])))
             add_lookup_action(vocab_lookup_menu, shortcutfinger.home2("Compound parts"), query_builder.vocabs_lookup_strings(vocab.compound_parts.all()))
             add_lookup_action(vocab_lookup_menu, shortcutfinger.home3("In compounds"), query_builder.notes_lookup(vocab.related_notes.in_compounds()))
             add_lookup_action(vocab_lookup_menu, shortcutfinger.home4("Synonyms"), query_builder.notes_lookup(vocab.related_notes.synonyms.notes()))
@@ -64,7 +63,6 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
 
         add_ui_action(misc_menu, shortcutfinger.home5("Autogenerate compounds"), lambda: vocab.compound_parts.auto_generate())
 
-
     def build_remove_menu(remove_menu: QMenu) -> None:
         add_ui_action(remove_menu, shortcutfinger.home1("User explanation"), lambda: vocab.user.explanation.empty()).setEnabled(vocab.user.explanation.has_value())
         add_ui_action(remove_menu, shortcutfinger.home2("User explanation long"), lambda: vocab.user.explanation_long.empty()).setEnabled(vocab.user.explanation_long.has_value())
@@ -72,12 +70,11 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
         add_ui_action(remove_menu, shortcutfinger.home4("User answer"), lambda: vocab.user.answer.empty(), True).setEnabled(vocab.user.answer.has_value())
 
     build_lookup_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Open"))))
-    build_tag_toggling_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Toggle flags"))), vocab)
-    note_menu.addAction(shortcutfinger.home3("Edit flags..."), lambda: show_vocab_flags_dialog(vocab))  # pyright: ignore[reportUnknownMemberType]
-    build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.home4("Create"))), vocab, selection, clipboard)
-    build_copy_menu(non_optional(note_menu.addMenu(shortcutfinger.home5("Copy"))))
-    build_misc_menu(non_optional(note_menu.addMenu(shortcutfinger.up1("Misc"))))
-    build_remove_menu(non_optional(note_menu.addMenu(shortcutfinger.up2("Remove"))))
+    add_ui_action(note_menu, shortcutfinger.home2("Edit"), lambda: show_vocab_flags_dialog(vocab))
+    build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Create"))), vocab, selection, clipboard)
+    build_copy_menu(non_optional(note_menu.addMenu(shortcutfinger.home4("Copy"))))
+    build_misc_menu(non_optional(note_menu.addMenu(shortcutfinger.up5("Misc"))))
+    build_remove_menu(non_optional(note_menu.addMenu(shortcutfinger.up1("Remove"))))
 
 def format_vocab_meaning(meaning: str) -> str:
     return ex_str.strip_html_and_bracket_markup(meaning.replace(" SOURCE", "").replace(", ", "/").replace(" ", "-").lower())
