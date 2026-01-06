@@ -16,20 +16,20 @@ class RequireForbidWidget(QWidget):
 
     def __init__(self, field: RequireForbidFlagField, title: str, on_change_callback: Callable[[str, bool], None], reparse_trigger: bool = True) -> None:
         super().__init__()
-        self.field = field
-        self.title = title
-        self.on_change_callback = on_change_callback
-        self.reparse_trigger = reparse_trigger
+        self.field: RequireForbidFlagField = field
+        self.title: str = title
+        self.on_change_callback: Callable[[str, bool], None] = on_change_callback
+        self.reparse_trigger: bool = reparse_trigger
 
         # Set up layout
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
 
         # Create radio buttons
-        self.button_group = QButtonGroup(self)
-        self.unset_radio = QRadioButton("Unset")
-        self.required_radio = QRadioButton("Required")
-        self.forbidden_radio = QRadioButton("Forbidden")
+        self.button_group: QButtonGroup = QButtonGroup(self)
+        self.unset_radio: QRadioButton = QRadioButton("Unset")
+        self.required_radio: QRadioButton = QRadioButton("Required")
+        self.forbidden_radio: QRadioButton = QRadioButton("Forbidden")
 
         self.button_group.addButton(self.unset_radio, 0)
         self.button_group.addButton(self.required_radio, 1)
@@ -47,7 +47,7 @@ class RequireForbidWidget(QWidget):
 
         if initial_required:
             self.required_radio.setChecked(True)
-            self.initial_state = 1
+            self.initial_state: int = 1
         elif initial_forbidden:
             self.forbidden_radio.setChecked(True)
             self.initial_state = 2

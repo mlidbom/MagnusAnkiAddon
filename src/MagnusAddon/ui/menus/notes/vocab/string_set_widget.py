@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QInputDialog, QLabel, QPushButton, QSizePolicy, QVBoxLayout, QWidget
-from sysutils.typed import checked_cast
+from sysutils.typed import checked_cast, non_optional
 
 if TYPE_CHECKING:
     from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
@@ -12,9 +12,9 @@ if TYPE_CHECKING:
 class StringChipWidget(QFrame):
     """A chip widget displaying a string with an X button to remove it."""
 
-    def __init__(self, text: str, on_remove: callable) -> None:
+    def __init__(self, text: str, on_remove: Callable[[],None]) -> None:
         super().__init__()
-        self.text = text
+        self.text: str = text
 
         # Style the chip
         self.setFrameShape(QFrame.Shape.StyledPanel)
@@ -62,7 +62,7 @@ class FlowLayout(QWidget):
     def __init__(self) -> None:
         super().__init__()
         self.items: list[QWidget] = []
-        self.main_layout = QVBoxLayout()
+        self.main_layout:QVBoxLayout = QVBoxLayout()
         self.main_layout.setContentsMargins(0, 0, 0, 0)
         self.main_layout.setSpacing(4)
         self.setLayout(self.main_layout)
@@ -84,9 +84,9 @@ class FlowLayout(QWidget):
         """Rebuild the layout."""
         # Clear existing layout
         while self.main_layout.count():
-            child = self.main_layout.takeAt(0)
+            child = non_optional(self.main_layout.takeAt(0))
             if child.widget():
-                child.widget().setParent(None)  # type: ignore
+                non_optional(child.widget()).setParent(None)  # type: ignore
 
         # Create new rows and add items
         if self.items:
@@ -104,11 +104,11 @@ class FlowLayout(QWidget):
 class StringSetWidget(QWidget):
     """Widget for editing a set of strings with add/remove functionality displayed as chips."""
 
-    def __init__(self, field: FieldSetWrapper[str], title: str, on_change_callback: callable | None = None) -> None:
+    def __init__(self, field: FieldSetWrapper[str], title: str, on_change_callback: Callable[[],None] | None = None) -> None:
         super().__init__()
-        self.field = field
-        self.title = title
-        self.on_change_callback = on_change_callback
+        self.field: FieldSetWrapper[str] = field
+        self.title: str = title
+        self.on_change_callback: Callable[[],None] | None = on_change_callback
 
         # Main horizontal layout
         main_layout = QHBoxLayout()
@@ -127,7 +127,7 @@ class StringSetWidget(QWidget):
         main_layout.addWidget(add_button)
 
         # Create flow layout to display chips
-        self.flow_layout = FlowLayout()
+        self.flow_layout:FlowLayout = FlowLayout()
         self._refresh_chips()
         main_layout.addWidget(self.flow_layout)
 

@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from ankiutils import app
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtWidgets import QCheckBox, QDialog, QDialogButtonBox, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QMessageBox, QScrollArea, QVBoxLayout, QWidget
-from sysutils.typed import checked_cast
+from sysutils.typed import checked_cast, non_optional
 from ui.menus.notes.vocab.require_forbid_widget import RequireForbidWidget
 from ui.menus.notes.vocab.string_set_widget import StringSetWidget
 
@@ -17,18 +17,18 @@ if TYPE_CHECKING:
 class VocabFlagsDialog(QDialog):
     def __init__(self, vocab: VocabNote, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.vocab = vocab
+        self.vocab:VocabNote = vocab
         self.changed_reparse_flags: set[str] = set()
-        self.string_sets_modified = False
+        self.string_sets_modified:bool = False
 
         self.setWindowTitle(f"Edit Flags: {vocab.get_question()}")
 
         main_layout = QVBoxLayout()
 
         # Create scroll area for content
-        self.scroll_area = QScrollArea()
+        self.scroll_area:QScrollArea = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
-        self.scroll_content = QWidget()
+        self.scroll_content:QWidget = QWidget()
 
         # Create horizontal layout for left and right sections
         content_layout = QHBoxLayout()
@@ -51,7 +51,7 @@ class VocabFlagsDialog(QDialog):
         main_layout.addWidget(self.scroll_area)
 
         # Add button box
-        self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
+        self.button_box:QDialogButtonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         checked_cast(pyqtBoundSignal, self.button_box.accepted).connect(self.accept)  # pyright: ignore[reportUnknownMemberType]
         checked_cast(pyqtBoundSignal, self.button_box.rejected).connect(self.reject)  # pyright: ignore[reportUnknownMemberType]
         main_layout.addWidget(self.button_box)
@@ -78,7 +78,7 @@ class VocabFlagsDialog(QDialog):
 
         # Calculate total needed height: content + button box + margins
         button_box_height = self.button_box.sizeHint().height()
-        dialog_margins = self.layout().contentsMargins()
+        dialog_margins = non_optional(self.layout()).contentsMargins()
         vertical_margins = dialog_margins.top() + dialog_margins.bottom()
 
         # Add some padding for scrollbar appearance threshold
@@ -255,6 +255,7 @@ class VocabFlagsDialog(QDialog):
         register_group.setLayout(layout)
         parent_layout.addWidget(register_group)
 
+    @override
     def accept(self) -> None:
         """Override accept to check if reparsing is needed."""
         if self.changed_reparse_flags or self.string_sets_modified:
