@@ -122,6 +122,9 @@ class VocabFlagsDialog(QDialog):
 
         widget = RequireForbidWidget(field, title, self._on_reparse_flag_changed, reparse_trigger)
         grid.addWidget(widget, row, 1)
+        
+        # Add stretch to push label and widget to the left
+        grid.setColumnStretch(2, 1)
 
     def _build_matching_settings_section(self, main_layout: QVBoxLayout) -> None:
         matching_settings_group = QGroupBox("Parsing")
