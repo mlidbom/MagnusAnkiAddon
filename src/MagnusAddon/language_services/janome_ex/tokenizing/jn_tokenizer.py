@@ -16,11 +16,11 @@ class JNTokenizer(Slots):
         self._tokenizer = Tokenizer()
 
     # apparently janome get's confused by some characters, so we replace them with ordinary spaces
-    _character_that_confuses_janome_so_we_replace_them_with_ordinary_full_width_spaces = {ex_str.invisible_space, "!", "！"}
+    _character_that_confuses_janome_so_we_replace_them_with_ordinary_full_width_spaces = {"!", "！"}
 
     def tokenize(self, text: str) -> JNTokenizedText:
         # apparently janome does not fully understand that invisible spaces are word separators, so we replace them with ordinary spaces since they are not anything that should need to be parsed...
-        sanitized_text = text
+        sanitized_text = text.replace(ex_str.invisible_space, JNToken.SPLITTER_TOKEN_TEXT)
         for character in self._character_that_confuses_janome_so_we_replace_them_with_ordinary_full_width_spaces:
             sanitized_text = sanitized_text.replace(character, " ")
 

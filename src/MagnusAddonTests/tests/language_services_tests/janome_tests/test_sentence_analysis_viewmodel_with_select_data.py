@@ -18,9 +18,16 @@ def setup_collection_with_select_data() -> Iterator[None]:
         yield
 
 @pytest.mark.parametrize("sentence, expected_output", [
-        ("おっせぇ<wbr>な　あいつら", ["おる", "せ", "ぇ:[MISSING]", "な:s.start", "あいつら"]) #todo: this should be the ordinary na, not the sentence ending. The wbr should not be interpreted as sentence start.
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+
+@pytest.mark.parametrize("sentence, expected_output", [
+        ("おっせぇ<wbr>な　あいつら", ["おる", "せ", "ぇ:[MISSING]", "な:s.end", "あいつら"]),
+        ("何て言うか<wbr>さ", ["何", "て言うか:ていうか", "さ"]),
+        ("だったら普通に金<wbr>貸せって言えよ", ["だったら", "普通に", "金", "貸す", "え", "って言う", "え", "よ"]),
+])
+def test_wbr_word_separation(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
@@ -152,7 +159,6 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("しても", ["する", "ても"]),
         ("見えなくなったって そんな", ["見える", "なくなる", "たって", "そんな"]),
         ("焼けたかな", ["焼ける", "た", "かな"]),
-        ("何て言うか<wbr>さ", ["何", "て言うか:ていうか", "さ"]),
         ("また来ような", ["また", "来る", "う", "な:s.end"]),
         ("何なんだろうな", ["何だ", "ん", "だろう", "な:s.end"]),
         ("存在したね", ["存在", "する", "た", "ね"]),
@@ -178,7 +184,6 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("ちょっと強引なところがあるから", ["ちょっと", "強引", "な", "ところ", "が", "ある", "う", "から"]),
         ("また寒くなるな", ["また", "寒い", "くなる", "う", "な:dict"]),
         ("空を飛べる機械", ["空を飛ぶ", "える", "機械"]),
-        ("だったら普通に金<wbr>貸せって言えよ", ["だったら", "普通に", "金", "貸す", "え", "って言う", "え", "よ"]),
         ("出会える", ["出会える"]),
         ("頑張れた", ["頑張る", "える", "た"]),
         ("頑張れ", ["頑張れ"]),

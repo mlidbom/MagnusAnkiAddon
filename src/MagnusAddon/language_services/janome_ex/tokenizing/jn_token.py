@@ -19,6 +19,7 @@ if TYPE_CHECKING:
 
 # noinspection PyUnusedFunction
 class JNToken(IAnalysisToken, WeakRefable, Slots):
+    SPLITTER_TOKEN_TEXT = "removethissplittertoken"
     def __init__(self,
                  parts_of_speech: JNPartsOfSpeech,
                  base_form: str,
