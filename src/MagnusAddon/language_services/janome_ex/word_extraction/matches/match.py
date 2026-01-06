@@ -13,6 +13,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_im
 from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_potential_surface_with_base import ForbidsIsGodanPotentialInflectionWithBase
 from language_services.janome_ex.word_extraction.matches.state_tests.is_inflected_surface_with_valid_base import ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb
 from language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import ForbidsIsShadowed
+from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
@@ -82,6 +83,8 @@ class Match(WeakRefable, Slots):
     def match_form(self) -> str: return self.tokenized_form
     @property
     def parsed_form(self) -> str: return self.tokenized_form
+    @property
+    def exclusion_form(self) -> str: return self.variant.form
 
     @property
     def word(self) -> CandidateWord: return self.variant.word
@@ -147,6 +150,8 @@ class Match(WeakRefable, Slots):
                                                                              + [requirement.failure_reason for requirement in self._interdependent_validity_requirements if not requirement.is_fulfilled])
     @property
     def hiding_reasons(self) -> list[str]: return [requirement.failure_reason for requirement in self._display_requirements if not requirement.is_fulfilled]
+
+    def to_exclusion(self) -> WordExclusion: return WordExclusion.at_index(self.exclusion_form, self.start_index)
 
     @override
     def __repr__(self) -> str: return f"""{self.parsed_form}, {self.match_form[:10]}: failure_reasons: {" ".join(self.failure_reasons) or "None"} ## hiding_reasons: {" ".join(self.hiding_reasons) or "None"}"""

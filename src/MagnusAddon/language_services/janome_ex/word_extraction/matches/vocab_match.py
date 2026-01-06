@@ -112,6 +112,15 @@ class VocabMatch(Match, Slots):
             if self.matching_configuration.bool_flags.question_overrides_form.is_set() \
             else super().parsed_form
 
+    @property
+    @override
+    def exclusion_form(self) -> str:
+        question = self.vocab.question
+        tokenized_form = super().tokenized_form
+        if question.raw == tokenized_form and question.is_disambiguated:
+            return question.disambiguation_name
+        return tokenized_form
+
     @override
     def _is_valid(self) -> bool:
         return (self._is_valid_internal

@@ -46,10 +46,11 @@ class VocabNote(JPNote, Slots):
         self.parts_of_speech: VocabNotePartsOfSpeech = VocabNotePartsOfSpeech(self.weakref_vocab)
         self.compound_parts: VocabNoteUserCompoundParts = VocabNoteUserCompoundParts(self.weakref_vocab)
         self.matching_configuration: VocabNoteMatchingConfiguration = VocabNoteMatchingConfiguration(self.weakref_vocab)
+        self.question: VocabNoteQuestion = VocabNoteQuestion(self.weakref_vocab)
 
+    @override
+    def get_question(self) -> str: return self.question.raw
 
-    @property
-    def question(self) -> VocabNoteQuestion: return VocabNoteQuestion(self.weakref_vocab)
     @property
     def meta_data(self) -> VocabNoteMetaData: return VocabNoteMetaData(self.weakref_vocab)
     @property
@@ -66,7 +67,6 @@ class VocabNote(JPNote, Slots):
     def active_answer(self) -> MutableStringField: return MutableStringField(self.weakref_vocab, NoteFields.Vocab.active_answer)
     @property
     def register(self) -> VocabNoteRegister: return VocabNoteRegister(self.weakref_vocab)
-
 
     @override
     def get_direct_dependencies(self) -> QSet[JPNote]:

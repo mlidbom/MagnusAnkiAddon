@@ -27,7 +27,7 @@ def render_vocab_list(vocab_list: list[CompoundPart], title: str, css_class: str
     def render_readings(_vocab_wrapper: CompoundPart) -> str:
         _vocab_note = _vocab_wrapper.vocab_note
         readings = ", ".join(_vocab_note.readings.get())
-        return f"""<span class="clipboard vocabReading">{readings}</span>""" if reading and readings != _vocab_note.get_question() else ""
+        return f"""<span class="clipboard vocabReading">{readings}</span>""" if reading and readings != _vocab_note.question.raw else ""
 
     return f'''
              <div class="relatedVocabListDiv page_section {css_class}">
@@ -37,7 +37,7 @@ def render_vocab_list(vocab_list: list[CompoundPart], title: str, css_class: str
                         {newline.join([f"""
                         <div class="relatedVocab {_create_classes(_vocab_wrapper.vocab_note, _vocab_wrapper.depth)}">
                             <audio src="{_vocab_wrapper.vocab_note.audio.get_primary_audio_path()}"></audio><a class="play-button"></a>
-                            <span class="question clipboard">{_vocab_wrapper.vocab_note.get_question()}</span>
+                            <span class="question clipboard">{_vocab_wrapper.vocab_note.question.disambiguation_name}</span>
                             {render_readings(_vocab_wrapper)}
                             {_vocab_wrapper.vocab_note.meta_data.meta_tags_html(no_sentense_statistics=True)}
                             <span class="meaning"> {_vocab_wrapper.vocab_note.get_answer()}</span>

@@ -15,7 +15,7 @@ class ForbidsIsConfiguredIncorrect(Slots):
 
     @classmethod
     def apply_to(cls, inspector: MatchInspector) -> MatchRequirement | None:
-        if inspector.configuration.incorrect_matches.excludes_at_index(inspector.tokenized_form,
+        if inspector.configuration.incorrect_matches.excludes_at_index(inspector.match.exclusion_form,
                                                                        inspector.match.start_index):
             return ForbidsIsConfiguredIncorrect._failed
         return None

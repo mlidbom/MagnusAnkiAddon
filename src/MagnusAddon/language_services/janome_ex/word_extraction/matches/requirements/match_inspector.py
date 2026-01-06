@@ -81,6 +81,10 @@ class MatchInspector(Slots):
         return self.start_location.token.is_godan_potential_inflection or self.start_location.token.is_godan_potential_stem
 
     @property
+    def is_verb_dictionary_form_compound(self) -> bool:
+        return self.word.location_count == 2 and self.start_location.token.is_dictionary_verb_form_stem and self.end_location.token.is_dictionary_verb_inflection
+
+    @property
     def is_ichidan_covering_godan_potential(self) -> bool:
         return self.word.location_count == 2 and self.has_godan_potential_start and self.has_godan_potential_ending
 
