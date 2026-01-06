@@ -10,6 +10,7 @@ vm = Tags.Vocab.Matching
 test_special_vocab: list[VocabSpec] = [
         # <non-standard-token-splitting-to-enable-more-pedagogical-breakdowns-for-conjugations>
         VocabSpec("る"),
+        VocabSpec("う", "dictionary form verb inflection", tags=[vm.Requires.dictionary_form_stem]),
         # godan potential
         VocabSpec("える", "to-be-able-to", ["える"],
                   forms=["える", "ける", "せる", "てる", "ねる", "へる", "める", "れる", "げる", "ぜる", "でる", "べる", "ぺる"],
@@ -23,6 +24,7 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("い", "_!/do! (godan-special imperative)", ["い"], tags=[vm.is_inflecting_word, vm.Requires.godan_imperative]),
 
         # needs exclusion
+        VocabSpec("う", "volational inflection", tags=[vm.Forbids.dictionary_form_stem]),
         VocabSpec("よ", "emphasis", ["よ"], tags=[vm.Forbids.ichidan_imperative]),
         VocabSpec("せよ", tags=[vm.Forbids.godan_imperative]),
         VocabSpec("させる", "get-_/is-_", ["させる"], forms=["せる"], tags=[vm.is_inflecting_word, vm.Forbids.godan_potential]),
