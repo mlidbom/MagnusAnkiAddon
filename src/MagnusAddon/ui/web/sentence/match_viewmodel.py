@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from configuration.configuration_cache_impl import ConfigurationCache
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
