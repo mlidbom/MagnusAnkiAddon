@@ -104,10 +104,11 @@ class FlowLayout(QWidget):
 class StringSetWidget(QWidget):
     """Widget for editing a set of strings with add/remove functionality displayed as chips."""
     
-    def __init__(self, field: FieldSetWrapper[str], title: str) -> None:
+    def __init__(self, field: FieldSetWrapper[str], title: str, on_change_callback: callable | None = None) -> None:
         super().__init__()
         self.field = field
         self.title = title
+        self.on_change_callback = on_change_callback
         
         # Main horizontal layout
         main_layout = QHBoxLayout()
@@ -144,6 +145,8 @@ class StringSetWidget(QWidget):
         """Remove a value from the set."""
         self.field.remove(value)
         self._refresh_chips()
+        if self.on_change_callback:
+            self.on_change_callback()
     
     def _on_add(self) -> None:
         """Handle add button click."""
@@ -151,3 +154,5 @@ class StringSetWidget(QWidget):
         if ok and text:
             self.field.add(text)
             self._refresh_chips()
+            if self.on_change_callback:
+                self.on_change_callback()

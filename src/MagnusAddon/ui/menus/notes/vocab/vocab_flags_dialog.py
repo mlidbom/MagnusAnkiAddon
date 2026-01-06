@@ -20,6 +20,7 @@ class VocabFlagsDialog(QDialog):
         super().__init__(parent)
         self.vocab = vocab
         self.changed_reparse_flags: set[str] = set()
+        self.string_sets_modified = False
 
         self.setWindowTitle(f"Edit Flags: {vocab.get_question()}")
 
@@ -116,6 +117,10 @@ class VocabFlagsDialog(QDialog):
         elif title in self.changed_reparse_flags:
             self.changed_reparse_flags.remove(title)
 
+    def _on_string_set_modified(self) -> None:
+        """Callback when any string set is modified."""
+        self.string_sets_modified = True
+
     def _add_require_forbid_field(self, grid: QGridLayout, row: int, title: str, field: RequireForbidFlagField, reparse_trigger: bool = True) -> None:
         label = QLabel(title)
         grid.addWidget(label, row, 0)
@@ -202,11 +207,11 @@ class VocabFlagsDialog(QDialog):
         layout = QVBoxLayout()
         
         # Add widgets for each string set in alphabetical order
-        layout.addWidget(StringSetWidget(self.vocab.matching_configuration.configurable_rules.prefix_is_not, "Prefix is not"))
-        layout.addWidget(StringSetWidget(self.vocab.matching_configuration.configurable_rules.required_prefix, "Required prefix"))
-        layout.addWidget(StringSetWidget(self.vocab.matching_configuration.configurable_rules.suffix_is_not, "Suffix is not"))
-        layout.addWidget(StringSetWidget(self.vocab.matching_configuration.configurable_rules.surface_is_not, "Surface is not"))
-        layout.addWidget(StringSetWidget(self.vocab.matching_configuration.configurable_rules.yield_to_surface, "Yield to surface"))
+        layout.addWidget(StringSetWidget(self.vocab.matching_configuration.configurable_rules.prefix_is_not, "Prefix is not", self._on_string_set_modified))
+        layout.addWidget(StringSetWidget(self.vocab.matching_configuration.configurable_rules.required_prefix, "Required prefix", self._on_string_set_modified))
+        layout.addWidget(StringSetWidget(self.vocab.matching_configuration.configurable_rules.suffix_is_not, "Suffix is not", self._on_string_set_modified))
+        layout.addWidget(StringSetWidget(self.vocab.matching_configuration.configurable_rules.surface_is_not, "Surface is not", self._on_string_set_modified))
+        layout.addWidget(StringSetWidget(self.vocab.matching_configuration.configurable_rules.yield_to_surface, "Yield to surface", self._on_string_set_modified))
         
         string_rules_group.setLayout(layout)
         parent_layout.addWidget(string_rules_group)
@@ -252,7 +257,7 @@ class VocabFlagsDialog(QDialog):
 
     def accept(self) -> None:
         """Override accept to check if reparsing is needed."""
-        if self.changed_reparse_flags:
+        if self.changed_reparse_flags or self.string_sets_modified:
             reply = QMessageBox.question(
                     self,
                     "Reparse Sentences?",
