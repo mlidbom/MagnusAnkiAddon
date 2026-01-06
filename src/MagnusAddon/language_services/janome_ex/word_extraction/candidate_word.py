@@ -108,7 +108,7 @@ class CandidateWord(WeakRefable, Slots):
     def starts_with_non_word_character(self) -> bool: return self.starts_with_non_word_token or self.surface_form in noise_characters
 
     @property
-    def is_shadowed(self) -> bool: return self.is_shadowed_by is not None
+    def is_shadowed(self) -> bool: return self.is_shadowed_by is not None and (not self.start_location.token.is_dictionary_verb_inflection or self.is_compound)
     @property
     def shadowed_by_text(self) -> str: return non_optional(self.is_shadowed_by).form if self.is_shadowed else ""
     @property

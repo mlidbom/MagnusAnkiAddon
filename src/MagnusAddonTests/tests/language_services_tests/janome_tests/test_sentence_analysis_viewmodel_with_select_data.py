@@ -23,6 +23,13 @@ def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
+        ("食べる", ["食べる", "る"]),
+        ("はしゃいでる", ["はしゃぐ", "でる"])
+])
+def test_dictionary_form_splitting(sentence: str, expected_output: list[str]) -> None:
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+
+@pytest.mark.parametrize("sentence, expected_output", [
         ("考えすぎ", ["考えすぎ"]),
         ("難しく考えすぎ", ["難しい", "考える", "すぎ"])
 ])
@@ -108,7 +115,7 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("幼すぎて よく覚えていないけど",
          ["幼い", "すぎる", "て", "よく", "覚える", "ている", "ない", "けど"]),
         ("ばら撒かれるなんて死んでもいやだ",
-         ["ばら撒く", "あれる", "なんて", "死んでも", "いや", "だ"]),
+         ["ばら撒く", "あれる", "る", "なんて", "死んでも", "いや", "だ"]),
         ("お前も色々考えてるんだなぁ",
          ["お前", "も", "色々", "考える", "てる", "んだ", "なぁ"]),
         ("教科書落ちちゃうから",
@@ -118,8 +125,8 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("分かってたら", ["分かる", "てたら"]),
         ("思い出せそうな気がする", ["思い出す", "える", "そうだ", "気がする"]),
         ("代筆を頼みたいんだが", ["代筆", "を", "頼む", "たい", "ん", "だが"]),
-        ("飛ばされる", ["飛ばす", "あれる"]),
-        ("食べれる", ["食べる", "れる"]),
+        ("飛ばされる", ["飛ばす", "あれる", "る"]),
+        ("食べれる", ["食べる", "れる", "る"]),
         ("破られたか", ["破る", "あれる", "た", "か"]),
         ("大家族だもの", ["大家族", "だもの"]),
         ("奪うんだもの", ["奪う", "ん", "だもの"]),
@@ -141,8 +148,8 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("横取りされたらたまらん", ["横取り", "される", "たら", "たまらん"]),
         ("ガチだったんでしょ", ["ガチ", "だった", "ん", "でしょ"]),
         ("どうしちゃったんだろうな", ["どう", "しちゃう", "たん:たの", "だろう", "な"]),
-        ("良いものを食べる", ["良い", "もの", "を", "食べる"]),
-        ("いいものを食べる", ["いい", "もの", "を", "食べる"]),
+        ("良いものを食べる", ["良い", "もの", "を", "食べる", "る"]),
+        ("いいものを食べる", ["いい", "もの", "を", "食べる", "る"]),
         ("うまく笑えずに", ["うまく", "笑える", "ずに"]),  # うまく disappeared when we made all verbs inflecting words by default
         ("慣れているんでね", ["慣れる", "ている", "んで", "ね"]),
         ("私が頼んだの", ["私", "が", "頼む", "んだ", "の"]),

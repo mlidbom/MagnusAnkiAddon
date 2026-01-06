@@ -26,7 +26,7 @@ class InflectionType(Slots):
 
 def _add_form(name: str, description: str) -> InflectionType:
     parts = name.split("・")
-    base = parts[0] if len(parts) > 1 else ""
+    base = parts[0]
     form = InflectionType(name, description, base)
     all_dict[name] = form
     return form

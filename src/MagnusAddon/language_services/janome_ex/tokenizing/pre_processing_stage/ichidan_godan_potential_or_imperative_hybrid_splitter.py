@@ -113,5 +113,7 @@ class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
         if cls.base_form_has_godan_potential_ending(question):
             possible_godan_form = conjugator.construct_root_verb_for_possibly_potential_godan_verb_dictionary_form(question)
             godan_dict_entry = WordInfo.lookup_godan(possible_godan_form)
-            return godan_dict_entry is not None and godan_dict_entry.is_godan
+            if godan_dict_entry is not None and godan_dict_entry.is_godan:  # noqa: SIM103
+                return True
+            return False
         return False

@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, override
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
 from language_services.janome_ex.word_extraction.matches.state_tests.forbids_compounds import ForbidsConfiguredToHideCompounds
+from language_services.janome_ex.word_extraction.matches.state_tests.forbids_split_token_surface import ForbidsSurfaceIsInvalidSurfaces
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_hidden import ForbidsIsConfiguredHidden
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_incorrect import ForbidsIsConfiguredIncorrect
 from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_imperative_surface_with_base import ForbidsIsGodanImperativeInflectionWithBase
@@ -38,6 +39,7 @@ class Match(WeakRefable, Slots):
         if self._validity_requirements_cache is None:
             self._validity_requirements_cache = [r for r in (
                     ForbidsIsConfiguredIncorrect.apply_to(self.inspector),
+                    ForbidsSurfaceIsInvalidSurfaces.apply_to(self.inspector),
                     ForbidsIsGodanPotentialInflectionWithBase.apply_to(self.inspector),
                     ForbidsIsGodanImperativeInflectionWithBase.apply_to(self.inspector),
                     ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb.apply_to(self.inspector),

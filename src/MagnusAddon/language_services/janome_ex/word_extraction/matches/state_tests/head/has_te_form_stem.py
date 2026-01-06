@@ -4,14 +4,13 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
-from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 class RequiresOrForbidsHasTeFormStem(Slots):
-    _te_forms: QSet[str] = QSet(("て", "って", "で"))
+    _te_forms: set[str] = {"て", "って", "で"}
     _required_failure: FailedMatchRequirement = FailedMatchRequirement.required("te_form_stem")
     _forbidden_failure: FailedMatchRequirement = FailedMatchRequirement.forbids("te_form_stem")
 
