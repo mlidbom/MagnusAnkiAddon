@@ -24,7 +24,9 @@ def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
 
 @pytest.mark.parametrize("sentence, expected_output", [
         ("食べる", ["食べる", "る"]),
-        ("はしゃいでる", ["はしゃぐ", "でる"])
+        ("はしゃいでる", ["はしゃぐ", "でる"]),
+        ("音がするの", ["音がする", "る", "の"]),
+        ("する", ["する", "る"])
 ])
 def test_dictionary_form_splitting(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -63,7 +65,7 @@ def test_hide_transparent_compounds(sentence: str, expected_output: list[str]) -
 @pytest.mark.parametrize("sentence, expected_output", [
         ("お金貸せって", ["お金", "貸す", "え", "って"]),
         ("お前に会えて", ["お前", "に", "会う", "える", "て"]),
-        ("逆に大丈夫に思えてくる", ["逆に", "大丈夫", "に", "思える", "て", "くる"]),
+        ("逆に大丈夫に思えてくる", ["逆に", "大丈夫", "に", "思える", "て", "くる", "る"]),
         ("黙れ", ["黙る", "え"]),
         ("楽しめてる", ["楽しむ", "える", "てる"]),
         ("会えたりしない", ["会う", "える", "たり", "する", "ない"]),
@@ -123,7 +125,7 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("待ってました", ["待つ", "て", "ます", "た"]),
         ("落ちてないかな", ["落ちる", "てる", "ないか", "な"]),
         ("分かってたら", ["分かる", "てたら"]),
-        ("思い出せそうな気がする", ["思い出す", "える", "そうだ", "気がする"]),
+        ("思い出せそうな気がする", ["思い出す", "える", "そうだ", "気がする", "る"]),
         ("代筆を頼みたいんだが", ["代筆", "を", "頼む", "たい", "ん", "だが"]),
         ("飛ばされる", ["飛ばす", "あれる", "る"]),
         ("食べれる", ["食べる", "れる", "る"]),
@@ -193,10 +195,10 @@ def test_yield_to_surface(sentence: str, expected_output: list[str]) -> None:
          ["厳密に言えば", "だけど", "俺", "一人", "が", "友達", "だけど"]),
         ("私は毎日ジョギングをすることを習慣にしています。",
          [WordExclusion.at_index("にして", 17), WordExclusion.at_index("にし", 17), WordExclusion.at_index("して", 18), WordExclusion.at_index("し", 18), WordExclusion.at_index("してい", 18), WordExclusion.at_index("い", 12), WordExclusion.global_("にする")],
-         ["私", "は", "毎日", "ジョギング", "を", "する", "こと", "を", "習慣", "に", "する", "ている", "ます"]),
+         ["私", "は", "毎日", "ジョギング", "を", "する", "る", "こと", "を", "習慣", "に", "する", "ている", "ます"]),
         ("私は毎日ジョギングをすることを習慣にしています。",
          [WordExclusion.at_index("にして", 17), WordExclusion.at_index("にし", 17), WordExclusion.at_index("して", 18), WordExclusion.at_index("し", 18), WordExclusion.at_index("してい", 18)],
-         ["私", "は", "毎日", "ジョギング", "を", "する", "こと", "を", "習慣", "にする", "ている", "ます"]),
+         ["私", "は", "毎日", "ジョギング", "を", "する", "る", "こと", "を", "習慣", "にする", "ている", "ます"]),
         ("頑張れたというか", [WordExclusion.global_("頑張る"), WordExclusion.global_("頑張れ")], ["える", "た", "というか"]),
         ("いらっしゃいません", [WordExclusion.global_("いらっしゃいませ")], ["いらっしゃいます", "ん"]),
         ("風の強さに驚きました", [WordExclusion.global_("風の強い")], ["風", "の", "強さ", "に", "驚き", "ます", "た"])

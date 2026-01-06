@@ -125,8 +125,17 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
     def is_ichidan_verb(self) -> bool:
         return self.inflection_type.base == InflectionTypes.Ichidan.base
 
+    _actually_suru_verbs_not_godan:set[str] = {"する", "為る"}
     def is_godan_verb(self) -> bool:
-        return self.inflection_type.base == InflectionTypes.Godan.base
+        return self.inflection_type.base == InflectionTypes.Godan.base and self.base_form not in JNToken._actually_suru_verbs_not_godan
+
+    @property
+    def is_kuru_verb(self) -> bool:
+        return self.inflection_type.base == InflectionTypes.Kahen.base
+
+    @property
+    def is_suru_verb(self) -> bool:
+        return self.inflection_type.base == InflectionTypes.Sahen.base or self.base_form in JNToken._actually_suru_verbs_not_godan
 
     def is_dictionary_form(self) -> bool:
         return self.inflected_form == InflectionForms.Basic.dictionary_form
@@ -137,8 +146,7 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
         return (self.parts_of_speech == JNPOS.Particle.conjunctive
                 and self.surface in JNToken._te_forms)
 
-
-    #_deru_te_form_roots: set[str] = {"ん", "い"}
+    # _deru_te_form_roots: set[str] = {"ん", "い"}
     _something_something: set[str] = {"でる", "どる"}
     def is_progressive_form(self) -> bool:
         return (self.surface == "てる"
