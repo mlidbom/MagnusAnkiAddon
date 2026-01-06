@@ -11,10 +11,12 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 class RequireForbidFlagField(Slots):
-    def __init__(self, note: WeakRef[JPNote], required_tag: Tag, forbidden_tag: Tag) -> None:
+    def __init__(self, note: WeakRef[JPNote], required_weight: int, forbidden_weight: int, required_tag: Tag, forbidden_tag: Tag) -> None:
         self._note: WeakRef[JPNote] = note
         self._required_tag: Tag = required_tag
         self._forbidden_tag: Tag = forbidden_tag
+        self.required_weight: int = required_weight
+        self.forbidden_weight: int = forbidden_weight
         # Cache tag states during construction - invalidated when matching_configuration is recreated
         self._cached_is_required: bool = note().tags.contains(required_tag)
         self._cached_is_forbidden: bool = note().tags.contains(forbidden_tag)
@@ -25,6 +27,9 @@ class RequireForbidFlagField(Slots):
     @property
     def is_configured_forbidden(self) -> bool:
         return self._cached_is_forbidden
+    @property
+    def match_weight(self) -> int:
+        return self.required_weight if self.is_required else self.forbidden_weight if self.is_forbidden else 0
 
     @property
     def name(self) -> str: return self._required_tag.name.replace(Tags.Vocab.Matching.Requires.folder_name, "")

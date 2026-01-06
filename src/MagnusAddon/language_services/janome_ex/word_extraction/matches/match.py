@@ -114,7 +114,7 @@ class Match(WeakRefable, Slots):
         return self._is_valid_internal_cache
 
     @property
-    def is_highlighted(self) -> bool: return self.match_form in self.variant.configuration.highlighted_words
+    def is_highlighted(self) -> bool: return self.exclusion_form in self.variant.configuration.highlighted_words
     @property
     def is_displayed(self) -> bool: return self.is_valid_for_display or self._is_emergency_displayed
 

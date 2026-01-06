@@ -143,7 +143,7 @@ class VocabMatch(Match, Slots):
     def _is_higher_priority_for_match(self, other: VocabMatch) -> bool:
         if self.vocab.forms.is_owned_form(self.tokenized_form) and not other.vocab.forms.is_owned_form(self.tokenized_form):  # noqa: SIM103
             return True
-        if self.vocab.matching_configuration.has_custom_requirements and not other.matching_configuration.has_custom_requirements:  # noqa: SIM103
+        if self.vocab.matching_configuration.custom_requirements_weight > other.matching_configuration.custom_requirements_weight:  # noqa: SIM103
             return True
         return False
 

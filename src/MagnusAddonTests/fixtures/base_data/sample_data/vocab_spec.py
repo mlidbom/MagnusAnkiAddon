@@ -24,7 +24,8 @@ class VocabSpec(Slots):
                  prefix_not: set[str] | None = None,
                  suffix_not: set[str] | None = None,
                  tos: set[str] | None = None) -> None:
-        self.question: str = question
+        self.disambiguation_name: str = question
+        self.question: str = question.replace("[", "").replace("]", "").split(":")[0]
         self.answer: str = answer or question
         self.readings: list[str] = readings or [self.question]
         self.extra_forms: QSet[str] = QSet(forms if forms else [])
@@ -81,4 +82,4 @@ class VocabSpec(Slots):
 
     def create_vocab_note(self) -> None:
         from note.vocabulary.vocabnote import VocabNote
-        VocabNote.factory.create(self.question, self.answer, self.readings, self._initialize_note)
+        VocabNote.factory.create(self.disambiguation_name, self.answer, self.readings, self._initialize_note)

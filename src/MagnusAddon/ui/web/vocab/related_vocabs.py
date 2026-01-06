@@ -27,7 +27,7 @@ def render_vocab_list(vocab_list: list[VocabNote], title: str, css_class: str, r
                         {newline.join([f"""
                         <div class="relatedVocab {_create_classes(_vocab_note)}">
                             <audio src="{_vocab_note.audio.get_primary_audio_path()}"></audio><a class="play-button"></a>
-                            <span class="question clipboard">{_vocab_note.get_question()}</span>
+                            <span class="question clipboard">{_vocab_note.question.disambiguation_name}</span>
                             {render_readings(_vocab_note)}
                             {_vocab_note.meta_data.meta_tags_html(no_sentense_statistics=no_sentense_statistics)}
                             <span class="meaning"> {_vocab_note.get_answer()}</span>

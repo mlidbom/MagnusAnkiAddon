@@ -20,7 +20,7 @@ class YieldLastTokenToOverlappingCompound(RequireForbidFlagField, WeakRefable, S
     automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound: ConfigurationValueBool = app.config().automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound
 
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
-        super().__init__(vocab, Tags.Vocab.Matching.yield_last_token_to_overlapping_compound, Tags.Vocab.Matching.Forbids.auto_yielding)
+        super().__init__(vocab, 0, 0, Tags.Vocab.Matching.yield_last_token_to_overlapping_compound, Tags.Vocab.Matching.Forbids.auto_yielding)
         self._pos: VocabNotePartsOfSpeech = vocab().parts_of_speech
 
     def _decide_if_required(self) -> bool:

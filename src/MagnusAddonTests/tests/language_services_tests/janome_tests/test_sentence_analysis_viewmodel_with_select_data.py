@@ -18,16 +18,17 @@ def setup_collection_with_select_data() -> Iterator[None]:
         yield
 
 @pytest.mark.parametrize("sentence, expected_output", [
+        ("おっせぇ<wbr>な　あいつら", ["おる", "せ", "ぇ:[MISSING]", "な:s.start", "あいつら"]) #todo: this should be the ordinary na, not the sentence ending. The wbr should not be interpreted as sentence start.
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
-        ("食べるな", ["食べる", "る", "な:dict-prefix"]),
-        ("食べな", ["食べる", "な:masu-stem"]),
-        ("そうだな", ["そうだ", "な"]),
-        ("頭突き以外でな", ["頭突き", "以外", "で", "な"]),
-        ("デカいな", ["デカい", "な:masu-stem"]),  # todo: Janome thinks it's いる、な... :/
+        ("食べるな", ["食べる", "る", "な:dict"]),
+        ("食べな", ["食べる", "な:masu"]),
+        ("そうだな", ["そうだ", "な:s.end"]),
+        ("頭突き以外でな", ["頭突き", "以外", "で", "な:s.end"]),
+        ("デカいな", ["デカい", "な:masu"]),  # todo: Janome thinks it's いる、な... :/
 ])
 def test_require_forbid_dictionary_form_prefix_and_masu_stem(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -133,7 +134,7 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("教科書落ちちゃうから",
          ["教科書", "落ちる", "ちゃう", "う", "から"]),
         ("待ってました", ["待つ", "て", "ます", "た"]),
-        ("落ちてないかな", ["落ちる", "てる", "ないか", "な"]),
+        ("落ちてないかな", ["落ちる", "てる", "ないか", "な:s.end"]),
         ("分かってたら", ["分かる", "てたら"]),
         ("思い出せそうな気がする", ["思い出す", "える", "そうだ", "気がする", "る"]),
         ("代筆を頼みたいんだが", ["代筆", "を", "頼む", "たい", "ん", "だが"]),
@@ -152,14 +153,14 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("見えなくなったって そんな", ["見える", "なくなる", "たって", "そんな"]),
         ("焼けたかな", ["焼ける", "た", "かな"]),
         ("何て言うか<wbr>さ", ["何", "て言うか:ていうか", "さ"]),
-        ("また来ような", ["また", "来る", "う", "な"]),
-        ("何なんだろうな", ["何だ", "ん", "だろう", "な"]),
+        ("また来ような", ["また", "来る", "う", "な:s.end"]),
+        ("何なんだろうな", ["何だ", "ん", "だろう", "な:s.end"]),
         ("存在したね", ["存在", "する", "た", "ね"]),
         ("作るに決まってるだろ", ["作る", "う", "に決まってる", "だろ"]),
         ("知らないんでしょう", ["知らない", "ん", "でしょう"]),
         ("横取りされたらたまらん", ["横取り", "される", "たら", "たまらん"]),
         ("ガチだったんでしょ", ["ガチ", "だった", "ん", "でしょ"]),
-        ("どうしちゃったんだろうな", ["どう", "しちゃう", "たん:たの", "だろう", "な"]),
+        ("どうしちゃったんだろうな", ["どう", "しちゃう", "たん:たの", "だろう", "な:s.end"]),
         ("良いものを食べる", ["良い", "もの", "を", "食べる", "る"]),
         ("いいものを食べる", ["いい", "もの", "を", "食べる", "る"]),
         ("うまく笑えずに", ["うまく", "笑える", "ずに"]),  # うまく disappeared when we made all verbs inflecting words by default
@@ -175,7 +176,7 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("死んどる", ["死ぬ", "んどる"]),
         ("馴染めないでいる", ["馴染む", "える", "ない", "でいる"]),
         ("ちょっと強引なところがあるから", ["ちょっと", "強引", "な", "ところ", "が", "ある", "う", "から"]),
-        ("また寒くなるな", ["また", "寒い", "くなる", "う", "な:dict-prefix"]),
+        ("また寒くなるな", ["また", "寒い", "くなる", "う", "な:dict"]),
         ("空を飛べる機械", ["空を飛ぶ", "える", "機械"]),
         ("だったら普通に金<wbr>貸せって言えよ", ["だったら", "普通に", "金", "貸す", "え", "って言う", "え", "よ"]),
         ("出会える", ["出会える"]),
