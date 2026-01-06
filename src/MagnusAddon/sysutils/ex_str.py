@@ -24,9 +24,9 @@ def strip_html_and_bracket_markup(string: str) -> str:
 def replace_html_and_bracket_markup_with(string: str, replacement:str) -> str:
     return _html_bracket_pattern.sub(replacement, string)
 
-_html_pattern = re.compile("<.*?>|&nbsp;")
+_html_pattern = re.compile("<.*?>")
 def strip_html_markup(string: str) -> str:
-    return _html_pattern.sub("", string)
+    return _html_pattern.sub("", string.replace("&nbsp;", " "))
 
 html_bracket_noise_pattern = re.compile('<.*?>|\[.*?\]|[〜]') # noqa  # pyright: ignore[reportInvalidStringEscapeSequence] don't know what's going on here but it has been working for ages
 def strip_html_and_bracket_markup_and_noise_characters(string: str) -> str:
