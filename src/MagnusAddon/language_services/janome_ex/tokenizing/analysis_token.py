@@ -29,6 +29,12 @@ class IAnalysisToken(Slots):
     @property
     def is_adverb(self) -> bool: return False
 
+    @property
+    def is_dictionary_verb_form_stem(self) -> bool: return False
+
+    @property
+    def is_dictionary_verb_inflection(self) -> bool: return False
+
     # <Only true for split tokens>
     @property
     def is_godan_potential_stem(self) -> bool: return False

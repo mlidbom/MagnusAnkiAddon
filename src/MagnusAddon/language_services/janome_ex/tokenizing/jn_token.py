@@ -123,7 +123,35 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
         return self.parts_of_speech in JNPOS.Adjective.all_types
 
     def is_ichidan_verb(self) -> bool:
-        return self.inflection_type == InflectionTypes.Ichidan.regular
+        return self.inflection_type.base == InflectionTypes.Ichidan.base
+
+    _actually_suru_verbs_not_godan:set[str] = {"する", "為る"}
+    def is_godan_verb(self) -> bool:
+        return self.inflection_type.base == InflectionTypes.Godan.base and self.base_form not in JNToken._actually_suru_verbs_not_godan
+
+    @property
+    def is_kuru_verb(self) -> bool:
+        return self.inflection_type.base == InflectionTypes.Kahen.base
+
+    @property
+    def is_suru_verb(self) -> bool:
+        return self.inflection_type.base == InflectionTypes.Sahen.base or self.base_form in JNToken._actually_suru_verbs_not_godan
+
+    def is_dictionary_form(self) -> bool:
+        return self.inflected_form == InflectionForms.Basic.dictionary_form
+
+    _te_forms: set[str] = {"て", "って", "で"}
+    @property
+    def is_te_form(self) -> bool:
+        return (self.parts_of_speech == JNPOS.Particle.conjunctive
+                and self.surface in JNToken._te_forms)
+
+    # _deru_te_form_roots: set[str] = {"ん", "い"}
+    _something_something: set[str] = {"でる", "どる"}
+    def is_progressive_form(self) -> bool:
+        return (self.surface == "てる"
+                or (self.surface in JNToken._something_something and self.previous is not None and self.previous.inflected_form == InflectionForms.Continuative.ta_connection)
+                or (self.surface == "いる" and self.previous is not None and self.previous.is_te_form))
 
     def is_t_form_marker(self) -> bool:
         return self.inflection_type == InflectionTypes.Special.ta  # "連用タ接続"

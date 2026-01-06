@@ -16,6 +16,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.head.is_sen
 from language_services.janome_ex.word_extraction.matches.state_tests.head.prefix_is_in import ForbidsPrefixIsIn, RequiresPrefixIsIn
 from language_services.janome_ex.word_extraction.matches.state_tests.head.requires_forbids_adverb_stem import RequiresOrForbidsPrecedingAdverb
 from language_services.janome_ex.word_extraction.matches.state_tests.head.requires_forbids_masu_stem import RequiresOrForbidsMasuStem
+from language_services.janome_ex.word_extraction.matches.state_tests.head.requires_or_forbids_dictionary_form_stem import RequiresOrForbidsDictionaryFormStem
 from language_services.janome_ex.word_extraction.matches.state_tests.is_exact_match import RequiresOrForbidsIsExactMatch
 from language_services.janome_ex.word_extraction.matches.state_tests.is_ichidan_imperative import RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection
 from language_services.janome_ex.word_extraction.matches.state_tests.is_poison_word import ForbidsIsPoisonWord
@@ -79,6 +80,7 @@ class VocabMatch(Match, Slots):
                 ForbidsIsPoisonWord.apply_to(self.vocab_inspector),
                 RequiresOrForbidsMasuStem.apply_to(self.vocab_inspector),
                 RequiresOrForbidsPrecedingAdverb.apply_to(self.vocab_inspector),
+                RequiresOrForbidsDictionaryFormStem.apply_to(self.vocab_inspector),
 
                 RequiresOrForbidsIsExactMatch.apply_to(self.vocab_inspector),
                 RequiresOrForbidsIsSingleToken.apply_to(self.vocab_inspector),
