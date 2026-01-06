@@ -139,9 +139,10 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
 
 
     #_deru_te_form_roots: set[str] = {"ん", "い"}
+    _something_something: set[str] = {"でる", "どる"}
     def is_progressive_form(self) -> bool:
         return (self.surface == "てる"
-                or (self.surface == "でる" and self.previous is not None and self.previous.inflected_form == InflectionForms.Continuative.ta_connection)
+                or (self.surface in JNToken._something_something and self.previous is not None and self.previous.inflected_form == InflectionForms.Continuative.ta_connection)
                 or (self.surface == "いる" and self.previous is not None and self.previous.is_te_form))
 
     def is_t_form_marker(self) -> bool:

@@ -149,7 +149,7 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("に行く", compounds=["に", "行く"], tags=[vm.yield_last_token_to_overlapping_compound]),
         VocabSpec("行った", compounds=["行く", "た"], tags=[vm.yield_last_token_to_overlapping_compound]),
 
-        VocabSpec("うと", compounds=["う", "と"], tags=[vm.yield_last_token_to_overlapping_compound]),
+        VocabSpec("うと", compounds=["う", "と"], tags=[vm.yield_last_token_to_overlapping_compound, vm.Forbids.dictionary_form_stem]),
         VocabSpec("と思って", compounds=["と思う", "て"], tags=[vm.yield_last_token_to_overlapping_compound]),
         VocabSpec("ませ", forms=["まし"], suffix_not={"ん"}),
         VocabSpec("ところが", tags=[vm.Requires.sentence_start]),

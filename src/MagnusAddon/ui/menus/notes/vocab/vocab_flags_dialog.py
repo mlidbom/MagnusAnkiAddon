@@ -119,8 +119,9 @@ class VocabFlagsDialog(QDialog):
         self._add_require_forbid_field(stem_grid, 5, "Ichidan imperative", self.vocab.matching_configuration.requires_forbids.ichidan_imperative)
         self._add_require_forbid_field(stem_grid, 6, "Masu stem", self.vocab.matching_configuration.requires_forbids.masu_stem)
         self._add_require_forbid_field(stem_grid, 7, "Past tense stem", self.vocab.matching_configuration.requires_forbids.past_tense_stem)
-        self._add_require_forbid_field(stem_grid, 8, "Preceding adverb", self.vocab.matching_configuration.requires_forbids.preceding_adverb)
-        self._add_require_forbid_field(stem_grid, 9, "て-form stem", self.vocab.matching_configuration.requires_forbids.te_form_stem)
+        self._add_require_forbid_field(stem_grid, 8, "Dictionary form stem", self.vocab.matching_configuration.requires_forbids.dictionary_form_stem)
+        self._add_require_forbid_field(stem_grid, 9, "Preceding adverb", self.vocab.matching_configuration.requires_forbids.preceding_adverb)
+        self._add_require_forbid_field(stem_grid, 10, "て-form stem", self.vocab.matching_configuration.requires_forbids.te_form_stem)
         stem_group.setLayout(stem_grid)
         layout.addWidget(stem_group)
 
