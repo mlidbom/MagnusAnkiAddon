@@ -94,7 +94,8 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
     def is_special_nai_negative(self) -> bool: return self.inflection_type == InflectionTypes.Special.nai
     @property
     @override
-    def is_masu_stem(self) -> bool: return self.inflected_form == InflectionForms.Continuative.renyoukei_masu_stem
+    def is_masu_stem(self) -> bool: return (self.inflected_form == InflectionForms.Continuative.renyoukei_masu_stem
+                                            and self.is_verb())
     @property
     @override
     def is_adverb(self) -> bool:

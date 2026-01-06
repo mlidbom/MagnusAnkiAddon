@@ -25,9 +25,11 @@ def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
 @pytest.mark.parametrize("sentence, expected_output", [
         ("食べるな", ["食べる", "る", "な:dict-prefix"]),
         ("食べな", ["食べる", "な:masu-stem"]),
-        ("そうだな", ["そうだ", "な"])
+        ("そうだな", ["そうだ", "な"]),
+        ("頭突き以外でな", ["頭突き", "以外", "で", "な"]),
+        ("デカいな", ["デカい", "な:masu-stem"]),  # todo: Janome thinks it's いる、な... :/
 ])
-def test_require_forbid_dictionary_form_prefix(sentence: str, expected_output: list[str]) -> None:
+def test_require_forbid_dictionary_form_prefix_and_masu_stem(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
