@@ -26,6 +26,9 @@ class GodanDictionaryFormStem(IAnalysisToken, Slots):
     @property
     @override
     def base_form(self) -> str: return self._base_form
+    @property
+    @override
+    def is_dictionary_verb_form_stem(self) -> bool: return True
     # </IAnalysisToken implementation>
 
     @override
@@ -75,7 +78,7 @@ class IchidanDictionaryFormStem(IAnalysisToken, Slots):
     def base_form(self) -> str: return self._base_form
     @property
     @override
-    def surface_is_invalid(self) -> bool: return True
+    def is_dictionary_verb_form_stem(self) -> bool: return True
     # </IAnalysisToken implementation>
 
     @override

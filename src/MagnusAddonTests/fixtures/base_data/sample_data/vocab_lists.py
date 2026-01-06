@@ -25,6 +25,7 @@ test_special_vocab: list[VocabSpec] = [
 
         # needs exclusion
         VocabSpec("う", "volational inflection", tags=[vm.Forbids.dictionary_form_stem]),
+        VocabSpec("うん", tags=[vm.Forbids.dictionary_form_stem]),
         VocabSpec("よ", "emphasis", ["よ"], tags=[vm.Forbids.ichidan_imperative]),
         VocabSpec("せよ", tags=[vm.Forbids.godan_imperative]),
         VocabSpec("させる", "get-_/is-_", ["させる"], forms=["せる"], tags=[vm.is_inflecting_word, vm.Forbids.godan_potential]),

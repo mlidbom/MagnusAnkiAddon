@@ -30,7 +30,7 @@ class IAnalysisToken(Slots):
     def is_adverb(self) -> bool: return False
 
     @property
-    def surface_is_invalid(self) -> bool: return False
+    def is_dictionary_verb_form_stem(self) -> bool: return False
 
     @property
     def is_dictionary_verb_inflection(self) -> bool: return False

@@ -15,8 +15,8 @@ class DictionaryFormVerbSplitter(Slots):
         if token.is_ichidan_verb() and token.is_dictionary_form() and not token.is_progressive_form():
             return cls.try_split_ichidan_dictionary_form(token)
 
-        # if token.is_godan_verb() and token.is_dictionary_form() and not token.is_progressive_form():
-        #     return cls.try_split_godan_dictionary_form(token)
+        if token.is_godan_verb() and token.is_dictionary_form() and not token.is_progressive_form():
+            return cls.try_split_godan_dictionary_form(token)
 
         return None
 
@@ -31,4 +31,4 @@ class DictionaryFormVerbSplitter(Slots):
         godan_surface = token.surface[:-1]
         godan_dictionary_ending = token.surface[-1]
         return [GodanDictionaryFormStem(token, surface=godan_surface, base=token.base_form),
-                GodanDictionaryFormInflection(token, surface=godan_dictionary_ending, base=godan_dictionary_ending)]
+                GodanDictionaryFormInflection(token, surface=godan_dictionary_ending, base="う")]

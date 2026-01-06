@@ -9,11 +9,11 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
     from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
 
-class ForbidsSurfaceIsInvalidSurfaces(Slots):
-    _failed: MatchRequirement = FailedMatchRequirement.forbids("split_token_surface")
+class ForbidsDictionaryVerbFormStemAsCompoundEnd(Slots):
+    _failed: MatchRequirement = FailedMatchRequirement.forbids("dictionary_form_verb_stem_as_compound_end")
 
     @classmethod
     def apply_to(cls, inspector: MatchInspector) -> MatchRequirement | None:
-        if inspector.variant.is_surface and inspector.word.end_location.token.surface_is_invalid:
+        if inspector.variant.is_surface and inspector.word.base_variant is not None and inspector.word.end_location.token.is_dictionary_verb_form_stem:
             return cls._failed
         return None
