@@ -21,7 +21,7 @@ class WordExclusion(Slots):
         self._match_part = word.split(":")[0]
 
     def excludes_form_at_index(self, form: str, index: int) -> bool:
-        return form == self._match_part and (self.index == WordExclusion._no_index or self.index == index)
+        return form == self.word and (self.index == WordExclusion._no_index or self.index == index)
 
     @classmethod
     def global_(cls, exclusion: str) -> WordExclusion: return WordExclusion(exclusion.strip(), WordExclusion._no_index, WordExclusion.secret)

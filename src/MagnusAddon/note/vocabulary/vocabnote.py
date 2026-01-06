@@ -48,6 +48,9 @@ class VocabNote(JPNote, Slots):
         self.matching_configuration: VocabNoteMatchingConfiguration = VocabNoteMatchingConfiguration(self.weakref_vocab)
         self.question: VocabNoteQuestion = VocabNoteQuestion(self.weakref_vocab)
 
+    @override
+    def get_question(self) -> str: return self.question.raw
+
     @property
     def meta_data(self) -> VocabNoteMetaData: return VocabNoteMetaData(self.weakref_vocab)
     @property

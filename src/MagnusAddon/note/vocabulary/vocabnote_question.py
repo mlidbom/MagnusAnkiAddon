@@ -37,6 +37,7 @@ class VocabNoteQuestion(Slots):
         else:
             self.raw = value
             self.disambiguation_name = value
+        if self.raw == "": self.raw = "[EMPTY]"
 
     @property
     def is_disambiguated(self) -> bool: return ":" in self.disambiguation_name

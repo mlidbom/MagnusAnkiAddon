@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, override
 
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from configuration.configuration_cache_impl import ConfigurationCache
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from sysutils import kana_utils, typed
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
@@ -27,7 +28,7 @@ class MatchViewModel(Slots):
         self.is_display_word: bool = word_variant_vm().is_display_word
         self.parsed_form: str = match.parsed_form
         self.answer: str = match.answer
-        self.vocab_form: str = match.match_form
+        self.vocab_form: str = match.match_form if not ConfigurationCache.show_breakdown_in_edit_mode() else match.exclusion_form
         self.compound_parts: list[CompoundPartViewModel] = []
         self.audio_path: str = ""
         self.is_highlighted: bool = self.parsed_form in self._config.highlighted_words or self.vocab_form in self._config.highlighted_words
@@ -66,7 +67,7 @@ class MatchViewModel(Slots):
 
     @property
     def is_displayed(self) -> bool:
-        if app.config().show_sentence_breakdown_in_edit_mode.get_value(): return True
+        if ConfigurationCache.show_breakdown_in_edit_mode(): return True
         #todo: this absolutely does not belong here. This is a viewmodel for crying out loud, it should not be implementing core domain logic.
         return (self.is_display_word
                 and self.match.is_displayed)
