@@ -176,4 +176,8 @@ test_special_vocab: list[VocabSpec] = [
 
         VocabSpec("考えすぎ", tags=[vm.Forbids.preceding_adverb]),
         VocabSpec("考えすぎる", tags=[vm.Forbids.preceding_adverb]),
+
+        VocabSpec("な:no-dict-prefix-no-masu-stem", forms=["な"], tags=[vm.Forbids.dictionary_form_prefix, vm.Forbids.masu_stem, Tags.Vocab.question_overrides_form]),
+        VocabSpec("な:dict-prefix", forms=["な"], tags=[vm.Requires.dictionary_form_prefix, Tags.Vocab.question_overrides_form]),
+        VocabSpec("な:masu-stem", forms=["な"], tags=[vm.Requires.masu_stem, Tags.Vocab.question_overrides_form]),
 ]

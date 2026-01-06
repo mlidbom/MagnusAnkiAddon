@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from PyQt6.QtCore import pyqtBoundSignal
-from PyQt6.QtGui import QScreen
 from PyQt6.QtWidgets import QCheckBox, QDialog, QDialogButtonBox, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QMessageBox, QScrollArea, QVBoxLayout, QWidget
 from sysutils.typed import checked_cast
 from ui.menus.notes.vocab.require_forbid_widget import RequireForbidWidget
@@ -30,7 +29,7 @@ class VocabFlagsDialog(QDialog):
         self.scroll_area = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
         self.scroll_content = QWidget()
-        
+
         # Create horizontal layout for left and right sections
         content_layout = QHBoxLayout()
 
@@ -58,7 +57,7 @@ class VocabFlagsDialog(QDialog):
         main_layout.addWidget(self.button_box)
 
         self.setLayout(main_layout)
-        
+
         # Auto-size the dialog to fit content, but constrain to screen size
         self._auto_resize_to_content()
 
@@ -70,29 +69,29 @@ class VocabFlagsDialog(QDialog):
             # Fallback if we can't get screen info
             self.resize(1200, 800)
             return
-        
+
         screen_geometry = screen.availableGeometry()
-        
+
         # Force layout updates to get accurate sizes
         self.scroll_content.adjustSize()
         content_size = self.scroll_content.sizeHint()
-        
+
         # Calculate total needed height: content + button box + margins
         button_box_height = self.button_box.sizeHint().height()
         dialog_margins = self.layout().contentsMargins()
         vertical_margins = dialog_margins.top() + dialog_margins.bottom()
-        
+
         # Add some padding for scrollbar appearance threshold
         needed_height = content_size.height() + button_box_height + vertical_margins + 20
         needed_width = max(content_size.width() + 40, 1200)  # Content width + some margin, min 1200
-        
+
         # Constrain to screen size (90%)
         max_width = int(screen_geometry.width() * 0.9)
         max_height = int(screen_geometry.height() * 0.9)
-        
+
         final_width = min(needed_width, max_width)
         final_height = min(needed_height, max_height)
-        
+
         self.resize(final_width, final_height)
 
     def _add_checkbox(self, layout: QVBoxLayout, title: str, field: TagFlagField, reparse_trigger: bool = True) -> None:
@@ -127,7 +126,7 @@ class VocabFlagsDialog(QDialog):
 
         widget = RequireForbidWidget(field, title, self._on_reparse_flag_changed, reparse_trigger)
         grid.addWidget(widget, row, 1)
-        
+
         # Add stretch to push label and widget to the left
         grid.setColumnStretch(2, 1)
 
@@ -172,8 +171,9 @@ class VocabFlagsDialog(QDialog):
         self._add_require_forbid_field(stem_grid, 6, "Masu stem", self.vocab.matching_configuration.requires_forbids.masu_stem)
         self._add_require_forbid_field(stem_grid, 7, "Past tense stem", self.vocab.matching_configuration.requires_forbids.past_tense_stem)
         self._add_require_forbid_field(stem_grid, 8, "Dictionary form stem", self.vocab.matching_configuration.requires_forbids.dictionary_form_stem)
-        self._add_require_forbid_field(stem_grid, 9, "Preceding adverb", self.vocab.matching_configuration.requires_forbids.preceding_adverb)
-        self._add_require_forbid_field(stem_grid, 10, "て-form stem", self.vocab.matching_configuration.requires_forbids.te_form_stem)
+        self._add_require_forbid_field(stem_grid, 9, "Dictionary form prefix", self.vocab.matching_configuration.requires_forbids.dictionary_form_prefix)
+        self._add_require_forbid_field(stem_grid, 10, "Preceding adverb", self.vocab.matching_configuration.requires_forbids.preceding_adverb)
+        self._add_require_forbid_field(stem_grid, 11, "て-form stem", self.vocab.matching_configuration.requires_forbids.te_form_stem)
         stem_group.setLayout(stem_grid)
         layout.addWidget(stem_group)
 
@@ -205,14 +205,14 @@ class VocabFlagsDialog(QDialog):
         """Build the string rules section with editable string sets."""
         string_rules_group = QGroupBox("String Rules")
         layout = QVBoxLayout()
-        
+
         # Add widgets for each string set in alphabetical order
         layout.addWidget(StringSetWidget(self.vocab.matching_configuration.configurable_rules.prefix_is_not, "Prefix is not", self._on_string_set_modified))
         layout.addWidget(StringSetWidget(self.vocab.matching_configuration.configurable_rules.required_prefix, "Required prefix", self._on_string_set_modified))
         layout.addWidget(StringSetWidget(self.vocab.matching_configuration.configurable_rules.suffix_is_not, "Suffix is not", self._on_string_set_modified))
         layout.addWidget(StringSetWidget(self.vocab.matching_configuration.configurable_rules.surface_is_not, "Surface is not", self._on_string_set_modified))
         layout.addWidget(StringSetWidget(self.vocab.matching_configuration.configurable_rules.yield_to_surface, "Yield to surface", self._on_string_set_modified))
-        
+
         string_rules_group.setLayout(layout)
         parent_layout.addWidget(string_rules_group)
 
