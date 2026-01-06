@@ -39,6 +39,9 @@ class VocabNoteQuestion(Slots):
             self.disambiguation_name = value
 
     @property
+    def is_disambiguated(self) -> bool: return ":" in self.disambiguation_name
+
+    @property
     def without_noise_characters(self) -> str: return self.raw.replace(Mine.VocabPrefixSuffixMarker, "")
 
     def stems(self) -> VocabStems: return VocabStems(self._vocab)

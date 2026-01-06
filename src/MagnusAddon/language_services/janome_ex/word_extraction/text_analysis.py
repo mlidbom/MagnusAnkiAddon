@@ -49,6 +49,7 @@ class TextAnalysis(WeakRefable, Slots):
         self.display_word_variants: QList[CandidateWordVariant] = query(self.locations).select_many(lambda location: location.display_variants).to_list()
 
         self.valid_matches: QList[Match] = self.indexing_word_variants.select_many(lambda variant: variant.valid_matches).to_list()
+        self.display_matches: QList[Match] = self.display_word_variants.select_many(lambda variant: variant.display_matches).to_list()
 
     @classmethod
     def from_text(cls, text: str) -> TextAnalysis:
