@@ -21,6 +21,7 @@ if TYPE_CHECKING:
 class _VocabSnapshot(CachedNote, Slots):
     def __init__(self, note: VocabNote) -> None:
         super().__init__(note)
+        self.disambiguation_name: str = note.question.disambiguation_name
         self.forms: tuple[str, ...] = note.forms.all_set().to_tuple()
         self.compound_parts: tuple[str, ...] = note.compound_parts.all().to_tuple()
         self.main_form_kanji: tuple[str, ...] = note.kanji.extract_main_form_kanji().to_tuple()
@@ -32,6 +33,7 @@ class _VocabSnapshot(CachedNote, Slots):
 class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
     def __init__(self, all_vocab: list[VocabNote], cache_runner: CacheRunner) -> None:
         # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
+        self._by_disambiguation_name: dict[str, list[VocabNote]] = dict[str, list[VocabNote]]()
         self._by_form: dict[str, list[VocabNote]] = dict[str, list[VocabNote]]()
         self._by_kanji_in_main_form: dict[str, list[VocabNote]] = dict[str, list[VocabNote]]()
         self._by_kanji_in_any_form: dict[str, list[VocabNote]] = dict[str, list[VocabNote]]()
@@ -42,6 +44,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
         super().__init__(all_vocab, VocabNote, cache_runner)
 
     def with_form(self, form: str) -> Iterable[VocabNote]: return self._by_form.get(form, [])
+    def with_disambiguation_name(self, form: str) -> Iterable[VocabNote]: return self._by_disambiguation_name.get(form, [])
 
     def with_compound_part(self, form: str) -> list[VocabNote]:
         compound_parts: QSet[VocabNote] = QSet()
@@ -71,6 +74,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
         for form in snapshot.forms: self._by_form[form].remove(note)
         for part in snapshot.compound_parts: self._by_compound_part[part].remove(note)
         self._by_derived_from[snapshot.derived_from].remove(note)
+        self._by_disambiguation_name[snapshot.disambiguation_name].remove(note)
         for kanji in snapshot.main_form_kanji: self._by_kanji_in_main_form[kanji].remove(note)
         for kanji in snapshot.all_kanji: self._by_kanji_in_any_form[kanji].remove(note)
         for kanji in snapshot.readings: self._by_reading[kanji].remove(note)
@@ -82,6 +86,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
         for compound_part in snapshot.compound_parts: self._by_compound_part.setdefault(compound_part, []).append(note)
         # todo: We add these regardless of whether they have a value in derived from? Won't there be a ton of instances for the empty string?
         self._by_derived_from.setdefault(snapshot.derived_from, []).append(note)
+        self._by_disambiguation_name.setdefault(snapshot.disambiguation_name, []).append(note)
         for kanji in snapshot.main_form_kanji: self._by_kanji_in_main_form.setdefault(kanji, []).append(note)
         for kanji in snapshot.all_kanji: self._by_kanji_in_any_form.setdefault(kanji, []).append(note)
         for reading in snapshot.readings: self._by_reading.setdefault(reading, []).append(note)
@@ -97,6 +102,7 @@ class VocabCollection(Slots):
     def is_word(self, form: str) -> bool: return any(self._cache.with_form(form))
     def all(self) -> list[VocabNote]: return self._cache.all()
     def with_id_or_none(self, note_id: NoteId) -> VocabNote | None: return self._cache.with_id_or_none(note_id)
+    def with_disambiguation_id(self, form: str) -> Iterable[VocabNote]: return self._cache.with_disambiguation_name(form)
     def with_form(self, form: str) -> Iterable[VocabNote]: return self._cache.with_form(form)
     def with_compound_part(self, compound_part: str) -> list[VocabNote]: return self._cache.with_compound_part(compound_part)
     def derived_from(self, derived_from: str) -> list[VocabNote]: return self._cache.derived_from(derived_from)
@@ -107,6 +113,10 @@ class VocabCollection(Slots):
     def with_stem(self, question: str) -> list[VocabNote]: return self._cache.with_stem(question)
 
     def with_form_prefer_exact_match(self, form: str) -> list[VocabNote]:
+        via_disambiguation_name: Iterable[VocabNote] = self.with_disambiguation_id(form)
+        if via_disambiguation_name:
+            return list(via_disambiguation_name)
+
         matches: Iterable[VocabNote] = self.with_form(form)
         exact_match = [voc for voc in matches if voc.question.without_noise_characters == form]
         sequence = exact_match if exact_match else matches
