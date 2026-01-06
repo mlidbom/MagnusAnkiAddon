@@ -49,5 +49,5 @@ def update_generated_data(vocab: VocabNote) -> None:
             if len(speech_types) == 0:
                 vocab.parts_of_speech.set_automatically_from_dictionary()
 
-        if vocab.get_question() not in vocab.forms.all_set():
+        if vocab.get_question() not in vocab.forms.all_set() and vocab.question.is_valid:
             vocab.forms.set_set(vocab.forms.all_set() | {vocab.get_question()})
