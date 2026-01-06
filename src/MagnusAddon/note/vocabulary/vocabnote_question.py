@@ -34,7 +34,6 @@ class VocabNoteQuestion(Slots):
                 self.raw = "INVALID QUESTION FORMAT. If you need to specify disambiguation, use [question:disambiguation] if not do NOT use [] characters"
             else:
                 self.raw = parts[0]
-                self.disambiguation_name = parts[1]
         else:
             self.raw = value
             self.disambiguation_name = value
