@@ -19,11 +19,11 @@ class VocabStems(Slots):
         return masu_stem if masu_stem != self._vocab().question.raw else None
 
 class VocabNoteQuestion(Slots):
+    INVALID_QUESTION_MESSAGE = "INVALID QUESTION FORMAT. If you need to specify disambiguation, use [question:disambiguation] if not do NOT use [] characters"
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
         self.raw: str = ""
         self.disambiguation_name: str = ""
-        self.is_valid = True
         self._init_value_raw()
 
     def _init_value_raw(self) -> None:
@@ -32,14 +32,16 @@ class VocabNoteQuestion(Slots):
             self.disambiguation_name = value[1:-1]
             parts = self.disambiguation_name.split(":")
             if len(parts) != 2:
-                self.is_valid = False
-                self.raw = "INVALID QUESTION FORMAT. If you need to specify disambiguation, use [question:disambiguation] if not do NOT use [] characters"
+                self.raw = VocabNoteQuestion.INVALID_QUESTION_MESSAGE
             else:
                 self.raw = parts[0]
         else:
             self.raw = value
             self.disambiguation_name = value
         if self.raw == "": self.raw = "[EMPTY]"
+
+    @property
+    def is_valid(self) -> bool: return self.raw != VocabNoteQuestion.INVALID_QUESTION_MESSAGE
 
     @property
     def is_disambiguated(self) -> bool: return ":" in self.disambiguation_name
