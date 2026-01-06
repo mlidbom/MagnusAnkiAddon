@@ -56,9 +56,8 @@ class VocabMatch(Match, Slots):
         )
 
     @override
-    def _create_validity_requirements(self) -> tuple[MatchRequirement | None, ...]:
+    def _create_primary_validity_requirements(self) -> tuple[MatchRequirement | None, ...]:
         return (
-                ForbidsAnotherMatchOwnsTheForm.apply_to(self.vocab_inspector),
                 # head requirements
                 ForbidsPrefixIsIn.apply_to(self.vocab_inspector, self.rules.prefix_is_not.get()),
                 RequiresPrefixIsIn.apply_to(self.vocab_inspector, self.rules.required_prefix.get()),
@@ -90,6 +89,10 @@ class VocabMatch(Match, Slots):
                 ForbidsSurfaceIsIn.apply_to(self.vocab_inspector, self.rules.yield_to_surface.get()),  # todo this should be in display requirements right?
         )
 
+    @override
+    def _create_interdependent_validity_requirements(self) -> tuple[MatchRequirement | None, ...]:
+        return ForbidsAnotherMatchOwnsTheForm.apply_to(self.vocab_inspector),
+
     @property
     def matching_configuration(self) -> VocabNoteMatchingConfiguration: return self.vocab.matching_configuration
     @property
@@ -116,19 +119,24 @@ class VocabMatch(Match, Slots):
                     and not any(match for match in self.variant.vocab_matches if match != self and match._is_valid_internal)))  # We never mix vocab matches with other matches so using the vocab specific collection is fine
 
     @property
-    def another_match_owns_the_form(self) -> bool:
+    def another_match_is_higher_priority(self) -> bool:
         if self._another_match_owns_the_form_cache is None:
-            if self.vocab.forms.is_owned_form(self.tokenized_form):
-                self._another_match_owns_the_form_cache = False
-            elif any(other_match for other_match in self.variant.vocab_matches  # noqa: SIM103
-                     if other_match != self
-                        and other_match.vocab.forms.is_owned_form(self.tokenized_form)
-                        and other_match._is_valid_internal):
+            if any(other_match for other_match in self.variant.vocab_matches  # noqa: SIM103
+                   if other_match != self
+                      and other_match.is_primarily_valid
+                      and other_match._is_higher_priority_for_match(self)):
                 self._another_match_owns_the_form_cache = True
             else:
                 self._another_match_owns_the_form_cache = False
 
         return self._another_match_owns_the_form_cache
+
+    def _is_higher_priority_for_match(self, other: VocabMatch) -> bool:
+        if self.vocab.forms.is_owned_form(self.tokenized_form) and not other.vocab.forms.is_owned_form(self.tokenized_form):  # noqa: SIM103
+            return True
+        if self.vocab.matching_configuration.has_custom_requirements and not other.matching_configuration.has_custom_requirements:  # noqa: SIM103
+            return True
+        return False
 
     @override
     def _start_index(self) -> int:

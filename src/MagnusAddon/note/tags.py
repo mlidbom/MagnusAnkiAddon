@@ -72,6 +72,7 @@ class Tags(Slots):
             is_inflecting_word: Tag = Tag.from_name(f"{f_vocab_matching}is-inflecting-word")
 
             class Requires(Slots):
+                folder_name: str = f_vocab_matching_requires
                 a_stem: Tag = Tag.from_name(f"{f_vocab_matching_requires}a-stem")
                 e_stem: Tag = Tag.from_name(f"{f_vocab_matching_requires}e-stem")
                 masu_stem: Tag = Tag.from_name(f"{f_vocab_matching_requires}masu_stem")

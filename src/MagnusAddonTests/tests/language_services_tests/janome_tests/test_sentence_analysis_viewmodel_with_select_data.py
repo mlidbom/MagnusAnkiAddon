@@ -25,7 +25,7 @@ def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
 @pytest.mark.parametrize("sentence, expected_output", [
         ("食べるな", ["食べる", "る", "な:dict-prefix"]),
         ("食べな", ["食べる", "な:masu-stem"]),
-        ("そうだな", ["そうだ", "な:no-dict-prefix-no-masu-stem"])
+        ("そうだな", ["そうだ", "な"])
 ])
 def test_require_forbid_dictionary_form_prefix(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -173,7 +173,7 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("死んどる", ["死ぬ", "んどる"]),
         ("馴染めないでいる", ["馴染む", "える", "ない", "でいる"]),
         ("ちょっと強引なところがあるから", ["ちょっと", "強引", "な", "ところ", "が", "ある", "う", "から"]),
-        ("また寒くなるな", ["また", "寒い", "くなる", "う", "な"]),
+        ("また寒くなるな", ["また", "寒い", "くなる", "う", "な:dict-prefix"]),
         ("空を飛べる機械", ["空を飛ぶ", "える", "機械"]),
         ("だったら普通に金<wbr>貸せって言えよ", ["だったら", "普通に", "金", "貸す", "え", "って言う", "え", "よ"]),
         ("出会える", ["出会える"]),

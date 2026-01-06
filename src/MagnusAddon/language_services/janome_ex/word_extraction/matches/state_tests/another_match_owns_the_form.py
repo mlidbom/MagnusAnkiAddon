@@ -14,6 +14,6 @@ class ForbidsAnotherMatchOwnsTheForm(Slots):
 
     @classmethod
     def apply_to(cls, inspector: VocabMatchInspector) -> MatchRequirement | None:
-        if inspector.match.another_match_owns_the_form:
+        if inspector.match.another_match_is_higher_priority:
             return cls._failed
         return None

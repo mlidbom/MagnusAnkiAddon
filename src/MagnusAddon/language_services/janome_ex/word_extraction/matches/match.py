@@ -28,26 +28,34 @@ class Match(WeakRefable, Slots):
         self.weakref: WeakRef[Match] = weakref_self
         self._variant: WeakRef[CandidateWordVariant] = word_variant
 
+        self._is_primarily_valid_internal_cache: bool | None = None
         self._is_valid_internal_cache: bool | None = None
         self._is_valid_cache: bool | None = None
         self._start_index_cache: int | None = None
 
-        self._validity_requirements_cache: list[MatchRequirement] | None = None
+        self._primary_validity_requirements_cache: list[MatchRequirement] | None = None
+        self._interdependent_validity_requirements_cache: list[MatchRequirement] | None = None
         self._display_requirements_cache: list[MatchRequirement] | None = None
 
     @property
-    def _validity_requirements(self) -> list[MatchRequirement]:
-        if self._validity_requirements_cache is None:
-            self._validity_requirements_cache = [r for r in (
+    def _primary_validity_requirements(self) -> list[MatchRequirement]:
+        if self._primary_validity_requirements_cache is None:
+            self._primary_validity_requirements_cache = [r for r in (
                     ForbidsIsConfiguredIncorrect.apply_to(self.inspector),
                     ForbidsDictionaryInflectionSurfaceWithBase.apply_to(self.inspector),
                     ForbidsDictionaryVerbFormStemAsCompoundEnd.apply_to(self.inspector),
                     ForbidsIsGodanPotentialInflectionWithBase.apply_to(self.inspector),
                     ForbidsIsGodanImperativeInflectionWithBase.apply_to(self.inspector),
                     ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb.apply_to(self.inspector),
-                    *self._create_validity_requirements()
+                    *self._create_primary_validity_requirements()
             ) if r is not None]
-        return self._validity_requirements_cache
+        return self._primary_validity_requirements_cache
+
+    @property
+    def _interdependent_validity_requirements(self) -> list[MatchRequirement]:
+        if self._interdependent_validity_requirements_cache is None:
+            self._interdependent_validity_requirements_cache = [r for r in self._create_interdependent_validity_requirements() if r is not None]
+        return self._interdependent_validity_requirements_cache
 
     @property
     def _display_requirements(self) -> list[MatchRequirement]:
@@ -59,7 +67,8 @@ class Match(WeakRefable, Slots):
                     *self._create_display_requirements()) if r is not None]
         return self._display_requirements_cache
 
-    def _create_validity_requirements(self) -> tuple[MatchRequirement | None, ...]: raise NotImplementedError()
+    def _create_primary_validity_requirements(self) -> tuple[MatchRequirement | None, ...]: raise NotImplementedError()
+    def _create_interdependent_validity_requirements(self) -> tuple[MatchRequirement | None, ...]: raise NotImplementedError()
     def _create_display_requirements(self) -> tuple[MatchRequirement | None, ...]: raise NotImplementedError()
 
     @property
@@ -90,9 +99,15 @@ class Match(WeakRefable, Slots):
         return self._is_valid_internal or self.is_highlighted
 
     @property
+    def is_primarily_valid(self) -> bool:
+        if self._is_primarily_valid_internal_cache is None:
+            self._is_primarily_valid_internal_cache = all(requirement.is_fulfilled for requirement in self._primary_validity_requirements)
+        return self._is_primarily_valid_internal_cache
+
+    @property
     def _is_valid_internal(self) -> bool:
         if self._is_valid_internal_cache is None:
-            self._is_valid_internal_cache = all(requirement.is_fulfilled for requirement in self._validity_requirements)
+            self._is_valid_internal_cache = self.is_primarily_valid and all(requirement.is_fulfilled for requirement in self._interdependent_validity_requirements)
         return self._is_valid_internal_cache
 
     @property
@@ -128,7 +143,8 @@ class Match(WeakRefable, Slots):
     @property
     def is_shadowed(self) -> bool: return self.word.is_shadowed
     @property
-    def failure_reasons(self) -> list[str]: return [] if self.is_valid else [requirement.failure_reason for requirement in self._validity_requirements if not requirement.is_fulfilled]
+    def failure_reasons(self) -> list[str]: return [] if self.is_valid else ([requirement.failure_reason for requirement in self._primary_validity_requirements if not requirement.is_fulfilled]
+                                                                             + [requirement.failure_reason for requirement in self._interdependent_validity_requirements if not requirement.is_fulfilled])
     @property
     def hiding_reasons(self) -> list[str]: return [requirement.failure_reason for requirement in self._display_requirements if not requirement.is_fulfilled]
 

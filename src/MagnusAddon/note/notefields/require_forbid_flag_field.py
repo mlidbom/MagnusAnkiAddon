@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
+from note.tags import Tags  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
@@ -24,6 +25,9 @@ class RequireForbidFlagField(Slots):
     @property
     def is_configured_forbidden(self) -> bool:
         return self._cached_is_forbidden
+
+    @property
+    def name(self) -> str: return self._required_tag.name.replace(Tags.Vocab.Matching.Requires.folder_name, "")
 
     @property
     def is_required(self) -> bool: return self._cached_is_required
@@ -48,4 +52,4 @@ class RequireForbidFlagField(Slots):
 
     @override
     def __repr__(self) -> str:
-        return f"""{self._required_tag.name.replace("requires::", "")} required: {self.is_required}, forbidden: {self.is_forbidden}"""
+        return f"""{self.name} required: {self.is_required}, forbidden: {self.is_forbidden}"""
