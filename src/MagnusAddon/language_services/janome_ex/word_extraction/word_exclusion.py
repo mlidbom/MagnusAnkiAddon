@@ -18,9 +18,10 @@ class WordExclusion(Slots):
         if _secret != "aoesunth9cgrcgf": raise ValueError("please use the factory methods instead of this private constructor")
         self.word = word
         self.index = index
+        self._match_part = word.split(":")[0]
 
     def excludes_form_at_index(self, form: str, index: int) -> bool:
-        return form == self.word and (self.index == WordExclusion._no_index or self.index == index)
+        return form == self._match_part and (self.index == WordExclusion._no_index or self.index == index)
 
     @classmethod
     def global_(cls, exclusion: str) -> WordExclusion: return WordExclusion(exclusion.strip(), WordExclusion._no_index, WordExclusion.secret)
