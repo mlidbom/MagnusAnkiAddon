@@ -4,14 +4,13 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction import analysis_constants
-from language_services.janome_ex.word_extraction.matches.requirements.custom_requires_or_forbids import CustomRequiresOrForbids
 from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
-class RequiresOrForbidsIsSentenceStart(CustomRequiresOrForbids, Slots):
+class RequiresOrForbidsIsSentenceStart(Slots):
     _required_failure: FailedMatchRequirement = FailedMatchRequirement.required("sentence_start")
     _forbidden_failure: FailedMatchRequirement = FailedMatchRequirement.forbids("sentence_start")
 

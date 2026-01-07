@@ -3,14 +3,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from language_services.janome_ex.word_extraction.matches.requirements.custom_requires_or_forbids import CustomRequiresOrForbids
 from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
-class RequiresOrForbidsStartsWithGodanImperativeStemOrInflection(CustomRequiresOrForbids, Slots):
+class RequiresOrForbidsStartsWithGodanImperativeStemOrInflection(Slots):
     _required_failure: FailedMatchRequirement = FailedMatchRequirement.required("godan_imperative")
     _forbidden_failure: FailedMatchRequirement = FailedMatchRequirement.forbids("godan_imperative")
 

@@ -51,6 +51,8 @@ class CandidateWordVariant(WeakRefable, Slots):
     def run_validity_analysis(self) -> None:
         ex_assert.that(not self._completed_validity_analysis)
 
+        for match in self.vocab_matches: match.run_primary_validity_analysis()
+
         self._valid_vocab_matches = [vm for vm in self.vocab_matches if vm.is_valid]
 
         if any(self._valid_vocab_matches) or self.vocabs_control_match_status:
@@ -63,6 +65,7 @@ class CandidateWordVariant(WeakRefable, Slots):
                 self.matches = [MissingMatch(self.weak_ref)]
             else:
                 self.matches = []
+            for match in self.matches: match.run_primary_validity_analysis()
             self._valid_matches = [match for match in self.matches if match.is_valid]
 
         self._is_valid = any(self._valid_matches)
