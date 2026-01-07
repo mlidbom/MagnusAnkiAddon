@@ -17,12 +17,23 @@ from language_services.janome_ex.word_extraction.word_exclusion import WordExclu
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
 
 class Match(WeakRefable, Slots):
+    _match_primary_validity_requirements: list[Callable[[MatchInspector], FailedMatchRequirement | None]] = [
+            ForbidsIsConfiguredIncorrect.apply_to,
+            ForbidsDictionaryInflectionSurfaceWithBase.apply_to,
+            ForbidsDictionaryVerbFormStemAsCompoundEnd.apply_to,
+            ForbidsIsGodanPotentialInflectionWithBase.apply_to,
+            ForbidsIsGodanImperativeInflectionWithBase.apply_to,
+            ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb.apply_to,
+    ]
+
     def __init__(self, word_variant: WeakRef[CandidateWordVariant]) -> None:
         weakref_self = WeakRef(self)
         inspector = MatchInspector(weakref_self)
@@ -42,15 +53,7 @@ class Match(WeakRefable, Slots):
     @property
     def _primary_validity_failures(self) -> list[FailedMatchRequirement]:
         if self._primary_validity_failures_cache is None:
-            self._primary_validity_failures_cache = [r for r in (
-                    ForbidsIsConfiguredIncorrect.apply_to(self.inspector),
-                    ForbidsDictionaryInflectionSurfaceWithBase.apply_to(self.inspector),
-                    ForbidsDictionaryVerbFormStemAsCompoundEnd.apply_to(self.inspector),
-                    ForbidsIsGodanPotentialInflectionWithBase.apply_to(self.inspector),
-                    ForbidsIsGodanImperativeInflectionWithBase.apply_to(self.inspector),
-                    ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb.apply_to(self.inspector),
-                    *self._create_primary_validity_failures()
-            ) if r is not None]
+            self._primary_validity_failures_cache = self._create_primary_validity_failures()
         return self._primary_validity_failures_cache
 
     @property
@@ -69,7 +72,10 @@ class Match(WeakRefable, Slots):
                     *self._create_display_requirements()) if r is not None]
         return self._display_requirements_cache
 
-    def _create_primary_validity_failures(self) -> list[FailedMatchRequirement | None]: return []
+    def _create_primary_validity_failures(self) -> list[FailedMatchRequirement]:
+        inspector = self.inspector
+        return [failure for failure in (requirement(inspector) for requirement in self._match_primary_validity_requirements) if failure is not None]
+
     def _create_interdependent_validity_failures(self) -> tuple[FailedMatchRequirement | None, ...]: return ()
     def _create_display_requirements(self) -> tuple[MatchRequirement | None, ...]: return ()
 

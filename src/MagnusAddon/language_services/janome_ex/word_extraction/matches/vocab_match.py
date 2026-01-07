@@ -59,7 +59,7 @@ class VocabMatch(Match, Slots):
                 ForbidsCompositionallyTransparentCompound.apply_to(self.vocab_inspector)
         )
 
-    _requirements_list: list[Callable[[VocabMatchInspector],FailedMatchRequirement | None]] = [
+    _requirements_list: list[Callable[[VocabMatchInspector], FailedMatchRequirement | None]] = [
             # head requirements
             ForbidsPrefixIsIn.apply_to,
             RequiresPrefixIsIn.apply_to,
@@ -91,10 +91,12 @@ class VocabMatch(Match, Slots):
             ForbidsYieldsToSurface.apply_to,  # todo this should be in display requirements right?
     ]
 
+    _combined_requirements: list[Callable[[VocabMatchInspector], FailedMatchRequirement | None]] = Match._match_primary_validity_requirements + _requirements_list
+
     @override
-    def _create_primary_validity_failures(self) -> list[FailedMatchRequirement | None]:
+    def _create_primary_validity_failures(self) -> list[FailedMatchRequirement]:
         inspector = self.vocab_inspector
-        return [requirement(inspector) for requirement in self._requirements_list]
+        return [failure for failure in (requirement(inspector) for requirement in self._combined_requirements) if failure is not None]
 
     @override
     def _create_interdependent_validity_failures(self) -> tuple[FailedMatchRequirement | None, ...]:
