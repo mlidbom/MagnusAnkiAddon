@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from language_services.jamdict_ex.dict_entry import DictEntry
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
+    from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
     from sysutils.weak_ref import WeakRef
 
 class DictionaryMatch(Match, Slots):
@@ -26,6 +27,6 @@ class DictionaryMatch(Match, Slots):
     @override
     def _create_display_requirements(self) -> tuple[MatchRequirement | None, ...]: return ()
     @override
-    def _create_primary_validity_requirements(self) -> tuple[MatchRequirement | None, ...]: return ()
+    def _create_primary_validity_failures(self) -> tuple[FailedMatchRequirement | None, ...]: return ()
     @override
-    def _create_interdependent_validity_requirements(self) -> tuple[MatchRequirement | None, ...]: return ()
+    def _create_interdependent_validity_failures(self) -> tuple[FailedMatchRequirement | None, ...]: return ()

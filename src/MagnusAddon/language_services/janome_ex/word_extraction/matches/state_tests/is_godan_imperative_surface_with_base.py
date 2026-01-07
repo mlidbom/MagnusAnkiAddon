@@ -7,13 +7,12 @@ from language_services.janome_ex.word_extraction.matches.state_tests.head.failed
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
-    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
 
 class ForbidsIsGodanImperativeInflectionWithBase(Slots):
-    _failed: MatchRequirement = FailedMatchRequirement.forbids("godan_imperative_surface_with_base")
+    _failed: FailedMatchRequirement = FailedMatchRequirement.forbids("godan_imperative_surface_with_base")
 
     @classmethod
-    def apply_to(cls, inspector: MatchInspector) -> MatchRequirement | None:
+    def apply_to(cls, inspector: MatchInspector) -> FailedMatchRequirement | None:
         if inspector.has_godan_imperative_part and inspector.word.location_count == 1 and inspector.variant.is_surface and inspector.word.base_variant is not None:  # noqa: SIM103
             return ForbidsIsGodanImperativeInflectionWithBase._failed
         return None

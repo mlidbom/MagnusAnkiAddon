@@ -6,7 +6,6 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 class RequiresOrForbidsIsSingleToken(Slots):
@@ -14,7 +13,7 @@ class RequiresOrForbidsIsSingleToken(Slots):
     _forbidden_failure: FailedMatchRequirement = FailedMatchRequirement.forbids("single_token")
 
     @classmethod
-    def apply_to(cls, inspector: VocabMatchInspector) -> MatchRequirement | None:
+    def apply_to(cls, inspector: VocabMatchInspector) -> FailedMatchRequirement | None:
         requirement = inspector.match.requires_forbids.single_token
         if requirement.is_active:
             is_in_state = not inspector.word.is_compound

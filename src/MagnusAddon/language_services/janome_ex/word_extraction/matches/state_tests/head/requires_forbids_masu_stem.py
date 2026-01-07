@@ -6,7 +6,6 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 class RequiresOrForbidsMasuStem(Slots):
@@ -14,7 +13,7 @@ class RequiresOrForbidsMasuStem(Slots):
     _forbidden_reason: FailedMatchRequirement = FailedMatchRequirement("requires::masu-stem")
 
     @classmethod
-    def apply_to(cls, inspector: VocabMatchInspector) -> MatchRequirement | None:
+    def apply_to(cls, inspector: VocabMatchInspector) -> FailedMatchRequirement | None:
         if inspector.requires_forbids.masu_stem.is_required and not inspector.has_masu_stem:
             return RequiresOrForbidsMasuStem._required_reason
         if inspector.requires_forbids.masu_stem.is_forbidden and inspector.has_masu_stem:

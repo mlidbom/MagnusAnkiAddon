@@ -7,13 +7,12 @@ from language_services.janome_ex.word_extraction.matches.state_tests.head.failed
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
-    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
 
 class ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb(Slots):
-    _failed: MatchRequirement = FailedMatchRequirement.forbids("inflected_surface_with_valid_base")
+    _failed: FailedMatchRequirement = FailedMatchRequirement.forbids("inflected_surface_with_valid_base")
 
     @classmethod
-    def apply_to(cls, inspector: MatchInspector) -> MatchRequirement | None:
+    def apply_to(cls, inspector: MatchInspector) -> FailedMatchRequirement | None:
         if (inspector.variant.is_surface
                 and inspector.word.has_base_variant_with_valid_match
                 and (inspector.word.is_inflected_word or (inspector.prefix.endswith("を") and inspector.is_end_of_statement))):

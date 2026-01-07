@@ -7,14 +7,13 @@ from configuration.configuration_cache_impl import ConfigurationCache
 from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 class ForbidsCompositionallyTransparentCompound(Slots):
-    _failed: MatchRequirement = FailedMatchRequirement.forbids("configured_to_hide_compositionally_transparent_compounds")
+    _failed: FailedMatchRequirement = FailedMatchRequirement.forbids("configured_to_hide_compositionally_transparent_compounds")
 
     @classmethod
-    def apply_to(cls, inspector: VocabMatchInspector) -> MatchRequirement | None:
+    def apply_to(cls, inspector: VocabMatchInspector) -> FailedMatchRequirement | None:
         _match = inspector.match
         if (ConfigurationCache.hide_transparent_compounds()
                 and _match.word.analysis.for_ui

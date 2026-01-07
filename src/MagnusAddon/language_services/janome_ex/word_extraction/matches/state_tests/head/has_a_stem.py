@@ -7,7 +7,6 @@ from language_services import conjugator
 from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 class RequiresOrForbidsHasAStem(Slots):
@@ -15,7 +14,7 @@ class RequiresOrForbidsHasAStem(Slots):
     _forbidden_failure: FailedMatchRequirement = FailedMatchRequirement.forbids("a_stem")
 
     @classmethod
-    def apply_to(cls, inspector: VocabMatchInspector) -> MatchRequirement | None:
+    def apply_to(cls, inspector: VocabMatchInspector) -> FailedMatchRequirement | None:
         requirement = inspector.match.requires_forbids.a_stem
         if requirement.is_active:
             is_in_state = len(inspector.prefix) > 0 and inspector.prefix[-1] in conjugator.a_stem_characters

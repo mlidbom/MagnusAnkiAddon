@@ -8,7 +8,6 @@ from language_services.janome_ex.word_extraction.matches.state_tests.head.failed
 from sysutils import kana_utils
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 class RequiresOrForbidsHasEStem(Slots):
@@ -16,7 +15,7 @@ class RequiresOrForbidsHasEStem(Slots):
     _forbidden_failure: FailedMatchRequirement = FailedMatchRequirement.forbids("e_stem")
 
     @classmethod
-    def apply_to(cls, inspector: VocabMatchInspector) -> MatchRequirement | None:
+    def apply_to(cls, inspector: VocabMatchInspector) -> FailedMatchRequirement | None:
         requirement = inspector.match.requires_forbids.e_stem
         if requirement.is_active:
             is_in_state = cls._internal_is_in_state(inspector)

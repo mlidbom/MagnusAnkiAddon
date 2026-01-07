@@ -7,7 +7,6 @@ from language_services.janome_ex.word_extraction import analysis_constants
 from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 class RequiresOrForbidsIsSentenceStart(Slots):
@@ -15,7 +14,7 @@ class RequiresOrForbidsIsSentenceStart(Slots):
     _forbidden_failure: FailedMatchRequirement = FailedMatchRequirement.forbids("sentence_start")
 
     @classmethod
-    def apply_to(cls, inspector: VocabMatchInspector) -> MatchRequirement | None:
+    def apply_to(cls, inspector: VocabMatchInspector) -> FailedMatchRequirement | None:
         requirement = inspector.match.matching_configuration.requires_forbids.sentence_start
         if requirement.is_active:
             is_in_state = len(inspector.prefix) == 0 or inspector.prefix[-1] in analysis_constants.sentence_start_characters

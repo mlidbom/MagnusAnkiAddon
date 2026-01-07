@@ -34,6 +34,7 @@ from sysutils.weak_ref import WeakRef
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
+    from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
     from note.vocabulary.vocabnote import VocabNote
     from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfiguration
 
@@ -57,7 +58,7 @@ class VocabMatch(Match, Slots):
         )
 
     @override
-    def _create_primary_validity_requirements(self) -> tuple[MatchRequirement | None, ...]:
+    def _create_primary_validity_failures(self) -> tuple[FailedMatchRequirement | None, ...]:
         return (
                 # head requirements
                 ForbidsPrefixIsIn.apply_to(self.vocab_inspector),
@@ -91,7 +92,7 @@ class VocabMatch(Match, Slots):
         )
 
     @override
-    def _create_interdependent_validity_requirements(self) -> tuple[MatchRequirement | None, ...]:
+    def _create_interdependent_validity_failures(self) -> tuple[FailedMatchRequirement | None, ...]:
         return ForbidsAnotherMatchOwnsTheForm.apply_to(self.vocab_inspector),
 
     @property

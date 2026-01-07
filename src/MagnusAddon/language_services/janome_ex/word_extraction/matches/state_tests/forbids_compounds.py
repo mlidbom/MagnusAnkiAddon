@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
 
 class ForbidsConfiguredToHideCompounds(Slots):
-    _failed: MatchRequirement = FailedMatchRequirement.forbids("configured_to_hide_all_compounds")
+    _failed: FailedMatchRequirement = FailedMatchRequirement.forbids("configured_to_hide_all_compounds")
 
     @classmethod
     def apply_to(cls, match: Match) -> MatchRequirement | None:

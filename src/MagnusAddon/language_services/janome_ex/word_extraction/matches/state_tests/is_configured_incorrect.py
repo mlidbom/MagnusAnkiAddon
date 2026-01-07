@@ -7,14 +7,13 @@ from language_services.janome_ex.word_extraction.matches.state_tests.head.failed
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
-    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
 
 class ForbidsIsConfiguredIncorrect(Slots):
 
-    _failed: MatchRequirement = FailedMatchRequirement.forbids("configured_incorrect")
+    _failed: FailedMatchRequirement = FailedMatchRequirement.forbids("configured_incorrect")
 
     @classmethod
-    def apply_to(cls, inspector: MatchInspector) -> MatchRequirement | None:
+    def apply_to(cls, inspector: MatchInspector) -> FailedMatchRequirement | None:
         if inspector.configuration.incorrect_matches.excludes_at_index(inspector.match.exclusion_form,
                                                                        inspector.match.start_index):
             return ForbidsIsConfiguredIncorrect._failed
