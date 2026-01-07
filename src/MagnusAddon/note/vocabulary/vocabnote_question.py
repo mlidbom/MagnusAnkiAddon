@@ -19,7 +19,7 @@ class VocabStems(Slots):
         return masu_stem if masu_stem != self._vocab().question.raw else None
 
 class VocabNoteQuestion(Slots):
-    INVALID_QUESTION_MESSAGE = "INVALID QUESTION FORMAT. If you need to specify disambiguation, use [question:disambiguation] if not do NOT use [] characters"
+    INVALID_QUESTION_MESSAGE: str = "INVALID QUESTION FORMAT. If you need to specify disambiguation, use [question:disambiguation] if not do NOT use [] characters"
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
         self.raw: str = ""

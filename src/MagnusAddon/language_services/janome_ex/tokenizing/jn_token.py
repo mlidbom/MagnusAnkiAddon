@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 # noinspection PyUnusedFunction
 class JNToken(IAnalysisToken, WeakRefable, Slots):
-    SPLITTER_TOKEN_TEXT = "removethissplittertoken"
+    SPLITTER_TOKEN_TEXT: str = "removethissplittertoken"
     def __init__(self,
                  parts_of_speech: JNPartsOfSpeech,
                  base_form: str,
@@ -127,7 +127,7 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
     def is_ichidan_verb(self) -> bool:
         return self.inflection_type.base == InflectionTypes.Ichidan.base
 
-    _actually_suru_verbs_not_godan:set[str] = {"する", "為る"}
+    _actually_suru_verbs_not_godan: set[str] = {"する", "為る"}
     def is_godan_verb(self) -> bool:
         return self.inflection_type.base == InflectionTypes.Godan.base and self.base_form not in JNToken._actually_suru_verbs_not_godan
 
