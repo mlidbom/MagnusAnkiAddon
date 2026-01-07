@@ -7,11 +7,11 @@ from language_services.janome_ex.word_extraction.matches.state_tests.head.failed
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
-    from typed_linq_collections.collections.q_set import QSet
 
 class ForbidsSuffixIsIn(Slots):
     @classmethod
-    def apply_to(cls, inspector: VocabMatchInspector, suffixes: QSet[str]) -> FailedMatchRequirement | None:
+    def apply_to(cls, inspector: VocabMatchInspector) -> FailedMatchRequirement | None:
+        suffixes = inspector.match.rules.suffix_is_not.get()
         if suffixes and any(suffix for suffix in suffixes if inspector.suffix.startswith(suffix)):
             return FailedMatchRequirement.forbids(f"""suffix_in:{",".join(suffixes)}""")
 
