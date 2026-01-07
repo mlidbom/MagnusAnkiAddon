@@ -32,6 +32,8 @@ from language_services.janome_ex.word_extraction.matches.state_tests.tail.suffix
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
@@ -57,39 +59,42 @@ class VocabMatch(Match, Slots):
                 ForbidsCompositionallyTransparentCompound.apply_to(self.vocab_inspector)
         )
 
+    _requirements_list: list[Callable[[VocabMatchInspector],FailedMatchRequirement | None]] = [
+            # head requirements
+            ForbidsPrefixIsIn.apply_to,
+            RequiresPrefixIsIn.apply_to,
+            RequiresOrForbidsIsSentenceStart.apply_to,
+            RequiresOrForbidsHasTeFormStem.apply_to,
+            RequiresOrForbidsHasAStem.apply_to,
+            RequiresOrForbidsHasPastTenseStem.apply_to,
+            RequiresOrForbidsHasEStem.apply_to,
+
+            RequiresOrForbidsHasGodanImperativePrefix.apply_to,
+            RequiresOrForbidsStartsWithGodanPotentialStemOrInflection.apply_to,
+            RequiresOrForbidsStartsWithGodanImperativeStemOrInflection.apply_to,
+            RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection.apply_to,
+
+            # tail requirements
+            RequiresOrForbidsIsSentenceEnd.apply_to,
+            ForbidsSuffixIsIn.apply_to,
+
+            # misc requirements
+            ForbidsIsPoisonWord.apply_to,
+            RequiresOrForbidsMasuStem.apply_to,
+            RequiresOrForbidsPrecedingAdverb.apply_to,
+            RequiresOrForbidsDictionaryFormStem.apply_to,
+            RequiresOrForbidsDictionaryFormPrefix.apply_to,
+
+            RequiresOrForbidsIsExactMatch.apply_to,
+            RequiresOrForbidsIsSingleToken.apply_to,
+            ForbidsSurfaceIsIn.apply_to,
+            ForbidsYieldsToSurface.apply_to,  # todo this should be in display requirements right?
+    ]
+
     @override
-    def _create_primary_validity_failures(self) -> tuple[FailedMatchRequirement | None, ...]:
-        return (
-                # head requirements
-                ForbidsPrefixIsIn.apply_to(self.vocab_inspector),
-                RequiresPrefixIsIn.apply_to(self.vocab_inspector),
-                RequiresOrForbidsIsSentenceStart.apply_to(self.vocab_inspector),
-                RequiresOrForbidsHasTeFormStem.apply_to(self.vocab_inspector),
-                RequiresOrForbidsHasAStem.apply_to(self.vocab_inspector),
-                RequiresOrForbidsHasPastTenseStem.apply_to(self.vocab_inspector),
-                RequiresOrForbidsHasEStem.apply_to(self.vocab_inspector),
-
-                RequiresOrForbidsHasGodanImperativePrefix.apply_to(self.vocab_inspector),
-                RequiresOrForbidsStartsWithGodanPotentialStemOrInflection.apply_to(self.vocab_inspector),
-                RequiresOrForbidsStartsWithGodanImperativeStemOrInflection.apply_to(self.vocab_inspector),
-                RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection.apply_to(self.vocab_inspector),
-
-                # tail requirements
-                RequiresOrForbidsIsSentenceEnd.apply_to(self.vocab_inspector),
-                ForbidsSuffixIsIn.apply_to(self.vocab_inspector),
-
-                # misc requirements
-                ForbidsIsPoisonWord.apply_to(self.vocab_inspector),
-                RequiresOrForbidsMasuStem.apply_to(self.vocab_inspector),
-                RequiresOrForbidsPrecedingAdverb.apply_to(self.vocab_inspector),
-                RequiresOrForbidsDictionaryFormStem.apply_to(self.vocab_inspector),
-                RequiresOrForbidsDictionaryFormPrefix.apply_to(self.vocab_inspector),
-
-                RequiresOrForbidsIsExactMatch.apply_to(self.vocab_inspector),
-                RequiresOrForbidsIsSingleToken.apply_to(self.vocab_inspector),
-                ForbidsSurfaceIsIn.apply_to(self.vocab_inspector),
-                ForbidsYieldsToSurface.apply_to(self.vocab_inspector),  # todo this should be in display requirements right?
-        )
+    def _create_primary_validity_failures(self) -> list[FailedMatchRequirement | None]:
+        inspector = self.vocab_inspector
+        return [requirement(inspector) for requirement in self._requirements_list]
 
     @override
     def _create_interdependent_validity_failures(self) -> tuple[FailedMatchRequirement | None, ...]:

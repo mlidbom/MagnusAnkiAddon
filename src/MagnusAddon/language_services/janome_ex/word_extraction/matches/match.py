@@ -69,7 +69,7 @@ class Match(WeakRefable, Slots):
                     *self._create_display_requirements()) if r is not None]
         return self._display_requirements_cache
 
-    def _create_primary_validity_failures(self) -> tuple[FailedMatchRequirement | None, ...]: raise NotImplementedError()
+    def _create_primary_validity_failures(self) -> list[FailedMatchRequirement | None]: raise NotImplementedError()
     def _create_interdependent_validity_failures(self) -> tuple[FailedMatchRequirement | None, ...]: raise NotImplementedError()
     def _create_display_requirements(self) -> tuple[MatchRequirement | None, ...]: raise NotImplementedError()
 

@@ -35,6 +35,6 @@ class MissingMatch(Match, Slots):
     @override
     def _create_display_requirements(self) -> tuple[MatchRequirement | None, ...]: return ()
     @override
-    def _create_primary_validity_failures(self) -> tuple[FailedMatchRequirement | None, ...]: return ()
+    def _create_primary_validity_failures(self) -> list[FailedMatchRequirement | None]: return []
     @override
     def _create_interdependent_validity_failures(self) -> tuple[FailedMatchRequirement | None, ...]: return ()
