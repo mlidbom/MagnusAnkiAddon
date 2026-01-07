@@ -7,8 +7,6 @@ from language_services.janome_ex.word_extraction.matches.match import Match
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
-    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
-    from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
     from sysutils.weak_ref import WeakRef
 
 class MissingMatch(Match, Slots):
@@ -31,10 +29,3 @@ class MissingMatch(Match, Slots):
     @override
     def failure_reasons(self) -> list[str]:
         return super().failure_reasons + ["no_dictionary_or_vocabulary_match_found"]
-
-    @override
-    def _create_display_requirements(self) -> tuple[MatchRequirement | None, ...]: return ()
-    @override
-    def _create_primary_validity_failures(self) -> list[FailedMatchRequirement | None]: return []
-    @override
-    def _create_interdependent_validity_failures(self) -> tuple[FailedMatchRequirement | None, ...]: return ()
