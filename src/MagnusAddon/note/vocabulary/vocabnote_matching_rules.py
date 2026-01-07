@@ -49,9 +49,6 @@ class VocabNoteMatchingRules(Slots):
         return wrapper
 
     @property
-    def all_sets(self) -> Iterable[FieldSetWrapper[str]]: return self._all_sets
-
-    @property
     def match_weight(self) -> int:
         weight = 0
         if self.required_prefix.any():
@@ -97,6 +94,7 @@ class VocabMatchingRulesConfigurationRequiresForbidsFlags(Slots):
         self.exact_match: RequireForbidFlagField = self._add_flag(10, 1, Tags.Vocab.Matching.Requires.exact_match, Tags.Vocab.Matching.Forbids.exact_match)
         self.yield_last_token: RequireForbidFlagField = YieldLastTokenToOverlappingCompound(vocab)
         self._all_flags.append(self.yield_last_token)
+        self._match_weight: int | None = None
 
     def _add_flag(self, required_weight: int, forbidden_weight: int, required_tag: Tag, forbidden_tag: Tag) -> RequireForbidFlagField:
         flag_field = RequireForbidFlagField(self._vocab, required_weight, forbidden_weight, required_tag, forbidden_tag)
@@ -135,13 +133,16 @@ class VocabNoteMatchingConfiguration(WeakRefable, Slots):
 
         self.requires_forbids: VocabMatchingRulesConfigurationRequiresForbidsFlags = VocabMatchingRulesConfigurationRequiresForbidsFlags(vocab)
         self.bool_flags: VocabMatchingRulesConfigurationBoolFlags = VocabMatchingRulesConfigurationBoolFlags(vocab)
+        self._custom_requirements_weight: int | None = None
 
     @property
     def configurable_rules(self) -> VocabNoteMatchingRules: return self._rules()
 
     @property
     def custom_requirements_weight(self) -> int:
-        return self.requires_forbids.match_weight + self._rules().match_weight
+        if self._custom_requirements_weight is None:
+            self._custom_requirements_weight = self.requires_forbids.match_weight + self._rules().match_weight
+        return self._custom_requirements_weight
 
     @override
     def __repr__(self) -> str:
