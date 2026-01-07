@@ -10,8 +10,8 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 class RequiresOrForbidsPrecedingAdverb(Slots):
-    _required_reason: FailedMatchRequirement = FailedMatchRequirement("forbids::preceding-adverb")
-    _forbidden_reason: FailedMatchRequirement = FailedMatchRequirement("requires::preceding-adverb")
+    _required_reason: FailedMatchRequirement = FailedMatchRequirement.forbids("preceding-adverb")
+    _forbidden_reason: FailedMatchRequirement = FailedMatchRequirement.required("preceding-adverb")
 
     @classmethod
     def apply_to(cls, inspector: VocabMatchInspector) -> MatchRequirement | None:
