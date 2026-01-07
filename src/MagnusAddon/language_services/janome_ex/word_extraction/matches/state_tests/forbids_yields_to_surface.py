@@ -10,10 +10,10 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
-class ForbidsSurfaceIsIn(CustomForbids, Slots):
+class ForbidsYieldsToSurface(CustomForbids, Slots):
     @classmethod
     def apply_to(cls, inspector: VocabMatchInspector) -> MatchRequirement | None:
-        surfaces = inspector.match.rules.surface_is_not.get()
+        surfaces = inspector.match.rules.yield_to_surface.get()
         if inspector.word.surface_variant.form in surfaces:
             return FailedMatchRequirement.forbids(f"""surface_in:{",".join(surfaces)}""")
 

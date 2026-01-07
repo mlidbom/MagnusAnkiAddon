@@ -7,6 +7,7 @@ from language_services.janome_ex.word_extraction.matches.match import Match
 from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import ForbidsAnotherMatchOwnsTheForm
 from language_services.janome_ex.word_extraction.matches.state_tests.forbids_compositionally_transparent_compound import ForbidsCompositionallyTransparentCompound
+from language_services.janome_ex.word_extraction.matches.state_tests.forbids_yields_to_surface import ForbidsYieldsToSurface
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_a_stem import RequiresOrForbidsHasAStem
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_e_stem import RequiresOrForbidsHasEStem
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_godan_imperative_prefix import RequiresOrForbidsHasGodanImperativePrefix
@@ -59,8 +60,8 @@ class VocabMatch(Match, Slots):
     def _create_primary_validity_requirements(self) -> tuple[MatchRequirement | None, ...]:
         return (
                 # head requirements
-                ForbidsPrefixIsIn.apply_to(self.vocab_inspector, self.rules.prefix_is_not.get()),
-                RequiresPrefixIsIn.apply_to(self.vocab_inspector, self.rules.required_prefix.get()),
+                ForbidsPrefixIsIn.apply_to(self.vocab_inspector),
+                RequiresPrefixIsIn.apply_to(self.vocab_inspector),
                 RequiresOrForbidsIsSentenceStart.apply_to(self.vocab_inspector),
                 RequiresOrForbidsHasTeFormStem.apply_to(self.vocab_inspector),
                 RequiresOrForbidsHasAStem.apply_to(self.vocab_inspector),
@@ -85,8 +86,8 @@ class VocabMatch(Match, Slots):
 
                 RequiresOrForbidsIsExactMatch.apply_to(self.vocab_inspector),
                 RequiresOrForbidsIsSingleToken.apply_to(self.vocab_inspector),
-                ForbidsSurfaceIsIn.apply_to(self.vocab_inspector, self.rules.surface_is_not.get()),
-                ForbidsSurfaceIsIn.apply_to(self.vocab_inspector, self.rules.yield_to_surface.get()),  # todo this should be in display requirements right?
+                ForbidsSurfaceIsIn.apply_to(self.vocab_inspector),
+                ForbidsYieldsToSurface.apply_to(self.vocab_inspector),  # todo this should be in display requirements right?
         )
 
     @override
