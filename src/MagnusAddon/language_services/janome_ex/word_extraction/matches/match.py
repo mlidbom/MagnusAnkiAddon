@@ -102,9 +102,6 @@ class Match(WeakRefable, Slots):
     def _is_valid(self) -> bool:
         return self._is_valid_internal or self.is_highlighted
 
-    def run_primary_validity_analysis(self) -> None:
-        _ = self.is_primarily_valid
-
     @property
     def is_primarily_valid(self) -> bool:
         if self._is_primarily_valid_internal_cache is None:
