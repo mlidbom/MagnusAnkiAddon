@@ -4,13 +4,13 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from configuration.configuration_cache_impl import ConfigurationCache
-from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
 from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
+    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
 
-class ForbidsConfiguredToHideCompounds(MatchRequirement, Slots):
+class ForbidsConfiguredToHideCompounds(Slots):
     _failed: MatchRequirement = FailedMatchRequirement.forbids("configured_to_hide_all_compounds")
 
     @classmethod
