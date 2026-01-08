@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from aqt import gui_hooks
+from configuration.configuration_cache_impl import ConfigurationCache
 from note.sentences.sentencenote import SentenceNote
 from sysutils import ex_str
 from sysutils.ex_str import newline
@@ -18,7 +19,7 @@ def format_reason(reason: str) -> str:
     return f"""<span class="configured">{reason}</span>""" if "configured" in reason else reason
 
 def build_invalid_for_display_span(view_model: MatchViewModel) -> str:
-    if not view_model.incorrect_reasons and not view_model.hiding_reasons: return ""
+    if not ConfigurationCache.show_breakdown_in_edit_mode() or (not view_model.incorrect_reasons and not view_model.hiding_reasons): return ""
     incorrect_reasons = [f"""<div class="incorrect_reason">{format_reason(reason)}</div>""" for reason in view_model.incorrect_reasons]
     hiding_reasons = [f"""<div class="hiding_reason">{format_reason(reason)}</div>""" for reason in view_model.hiding_reasons]
     return f"""<span>{newline.join(incorrect_reasons + hiding_reasons)}</span>"""
@@ -92,5 +93,5 @@ def render_sentence_analysis(note: SentenceNote) -> str:
 
 def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(SentenceNote, {
-        "##SENTENCE_ANALYSIS##": render_sentence_analysis
+            "##SENTENCE_ANALYSIS##": render_sentence_analysis
     }).render)

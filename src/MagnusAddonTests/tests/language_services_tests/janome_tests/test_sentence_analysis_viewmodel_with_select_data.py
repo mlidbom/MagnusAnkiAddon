@@ -44,7 +44,8 @@ def test_require_forbid_dictionary_form_prefix_and_masu_stem(sentence: str, expe
         ("食べる", ["食べる", "る"]),
         ("はしゃいでる", ["はしゃぐ", "でる"]),
         ("音がするの", ["音がする", "る", "の"]),
-        ("する", ["する", "る"])
+        ("する", ["する", "る"]),
+        ("大声出すな", ["大声出す", "う", "な:dict"])
 ])
 def test_dictionary_form_splitting(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)

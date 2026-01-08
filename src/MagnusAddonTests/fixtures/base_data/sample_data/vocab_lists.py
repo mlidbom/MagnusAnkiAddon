@@ -182,4 +182,5 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("[な:masu]", tags=[vm.Requires.masu_stem]),
         VocabSpec("[な:s.end]", tags=[vm.Requires.sentence_end, vm.Forbids.sentence_start]),
         VocabSpec("[な:s.start]", tags=[vm.Requires.sentence_start]),
+        VocabSpec("すんな", forms=["[すな]"], tags=[vm.Forbids.dictionary_form_stem]),
 ]

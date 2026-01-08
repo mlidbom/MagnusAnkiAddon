@@ -32,6 +32,8 @@ from language_services.janome_ex.word_extraction.matches.state_tests.tail.suffix
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
@@ -50,50 +52,80 @@ class VocabMatch(Match, Slots):
         self._another_match_owns_the_form_cache: bool | None = None
         super().__init__(word_variant)
 
+    _vocab_static_display_requirements_list: list[Callable[[VocabMatchInspector], FailedMatchRequirement | None]] = [
+            ForbidsCompositionallyTransparentCompound.apply_to
+    ]
+
+    _vocab_static_display_requirements_list_combined: list[Callable[[VocabMatchInspector], FailedMatchRequirement | None]] = _vocab_static_display_requirements_list + Match._match_static_display_requirements
+
     @override
-    def _create_display_requirements(self) -> tuple[MatchRequirement | None, ...]:
+    def _create_static_display_requinement_failures(self) -> list[FailedMatchRequirement]:
+        inspector = self.vocab_inspector
+        return [failure for failure in (requirement(inspector) for requirement in VocabMatch._vocab_static_display_requirements_list_combined) if failure is not None]
+
+    @override
+    def _static_display_requirements_fulfilled(self) -> bool:
+        inspector = self.vocab_inspector
+        return not any(failure for failure in (requirement(inspector) for requirement in VocabMatch._vocab_static_display_requirements_list_combined) if failure is not None)
+
+    @override
+    def _create_dynamic_display_requirements(self) -> tuple[MatchRequirement | None, ...]:
         return (
                 ForbidsHasDisplayedOverlappingFollowingCompound.apply_to(self.vocab_inspector, self.requires_forbids.yield_last_token.is_required),
-                ForbidsCompositionallyTransparentCompound.apply_to(self.vocab_inspector)
         )
 
+    _requirements_list: list[Callable[[VocabMatchInspector], FailedMatchRequirement | None]] = [
+            # head requirements
+            ForbidsPrefixIsIn.apply_to,
+            RequiresPrefixIsIn.apply_to,
+            RequiresOrForbidsIsSentenceStart.apply_to,
+            RequiresOrForbidsHasTeFormStem.apply_to,
+            RequiresOrForbidsHasAStem.apply_to,
+            RequiresOrForbidsHasPastTenseStem.apply_to,
+            RequiresOrForbidsHasEStem.apply_to,
+
+            RequiresOrForbidsHasGodanImperativePrefix.apply_to,
+            RequiresOrForbidsStartsWithGodanPotentialStemOrInflection.apply_to,
+            RequiresOrForbidsStartsWithGodanImperativeStemOrInflection.apply_to,
+            RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection.apply_to,
+
+            # tail requirements
+            RequiresOrForbidsIsSentenceEnd.apply_to,
+            ForbidsSuffixIsIn.apply_to,
+
+            # misc requirements
+            ForbidsIsPoisonWord.apply_to,
+            RequiresOrForbidsMasuStem.apply_to,
+            RequiresOrForbidsPrecedingAdverb.apply_to,
+            RequiresOrForbidsDictionaryFormStem.apply_to,
+            RequiresOrForbidsDictionaryFormPrefix.apply_to,
+
+            RequiresOrForbidsIsExactMatch.apply_to,
+            RequiresOrForbidsIsSingleToken.apply_to,
+            ForbidsSurfaceIsIn.apply_to,
+            ForbidsYieldsToSurface.apply_to,  # todo this should be in display requirements right?
+    ]
+
+    _combined_requirements: list[Callable[[VocabMatchInspector], FailedMatchRequirement | None]] = Match._match_primary_validity_requirements + _requirements_list
+
     @override
-    def _create_primary_validity_failures(self) -> tuple[FailedMatchRequirement | None, ...]:
-        return (
-                # head requirements
-                ForbidsPrefixIsIn.apply_to(self.vocab_inspector),
-                RequiresPrefixIsIn.apply_to(self.vocab_inspector),
-                RequiresOrForbidsIsSentenceStart.apply_to(self.vocab_inspector),
-                RequiresOrForbidsHasTeFormStem.apply_to(self.vocab_inspector),
-                RequiresOrForbidsHasAStem.apply_to(self.vocab_inspector),
-                RequiresOrForbidsHasPastTenseStem.apply_to(self.vocab_inspector),
-                RequiresOrForbidsHasEStem.apply_to(self.vocab_inspector),
-
-                RequiresOrForbidsHasGodanImperativePrefix.apply_to(self.vocab_inspector),
-                RequiresOrForbidsStartsWithGodanPotentialStemOrInflection.apply_to(self.vocab_inspector),
-                RequiresOrForbidsStartsWithGodanImperativeStemOrInflection.apply_to(self.vocab_inspector),
-                RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection.apply_to(self.vocab_inspector),
-
-                # tail requirements
-                RequiresOrForbidsIsSentenceEnd.apply_to(self.vocab_inspector),
-                ForbidsSuffixIsIn.apply_to(self.vocab_inspector),
-
-                # misc requirements
-                ForbidsIsPoisonWord.apply_to(self.vocab_inspector),
-                RequiresOrForbidsMasuStem.apply_to(self.vocab_inspector),
-                RequiresOrForbidsPrecedingAdverb.apply_to(self.vocab_inspector),
-                RequiresOrForbidsDictionaryFormStem.apply_to(self.vocab_inspector),
-                RequiresOrForbidsDictionaryFormPrefix.apply_to(self.vocab_inspector),
-
-                RequiresOrForbidsIsExactMatch.apply_to(self.vocab_inspector),
-                RequiresOrForbidsIsSingleToken.apply_to(self.vocab_inspector),
-                ForbidsSurfaceIsIn.apply_to(self.vocab_inspector),
-                ForbidsYieldsToSurface.apply_to(self.vocab_inspector),  # todo this should be in display requirements right?
-        )
+    def _create_primary_validity_failures(self) -> list[FailedMatchRequirement]:
+        inspector = self.vocab_inspector
+        return [failure for failure in (requirement(inspector) for requirement in VocabMatch._combined_requirements) if failure is not None]
 
     @override
-    def _create_interdependent_validity_failures(self) -> tuple[FailedMatchRequirement | None, ...]:
-        return ForbidsAnotherMatchOwnsTheForm.apply_to(self.vocab_inspector),
+    def _is_primarily_valid(self) -> bool:
+        inspector = self.vocab_inspector
+        return not any(failure for failure in (requirement(inspector) for requirement in VocabMatch._combined_requirements) if failure is not None)
+
+    @override
+    def _create_interdependent_validity_failures(self) -> list[FailedMatchRequirement]:
+        failure = ForbidsAnotherMatchOwnsTheForm.apply_to(self.vocab_inspector)
+        return [failure] if failure is not None else []
+
+    @override
+    def _is_interdepentently_valid(self) -> bool:
+        return ForbidsAnotherMatchOwnsTheForm.apply_to(self.vocab_inspector) is None
 
     @property
     def matching_configuration(self) -> VocabNoteMatchingConfiguration: return self.vocab.matching_configuration
@@ -121,13 +153,7 @@ class VocabMatch(Match, Slots):
         tokenized_form = super().tokenized_form
         if question.raw == tokenized_form and question.is_disambiguated:
             return question.disambiguation_name
-        return tokenized_form
-
-    @override
-    def _is_valid(self) -> bool:
-        return (self._is_valid_internal
-                or (self.is_highlighted
-                    and not any(match for match in self.variant.vocab_matches if match != self and match._is_valid_internal)))  # We never mix vocab matches with other matches so using the vocab specific collection is fine
+        return question.raw
 
     @property
     def another_match_is_higher_priority(self) -> bool:
@@ -155,14 +181,14 @@ class VocabMatch(Match, Slots):
             length_diff = (len(self.vocab.get_question()) - len(self.tokenized_form))
             if length_diff != 0 and self.tokenized_form in self.vocab.get_question():  # we often "steal" characters backwards, forwards is not supported so this should be sufficient, we don't need all the complexity below
                 return super()._start_index() - length_diff
-            if self.requires_forbids.a_stem.is_required or self.requires_forbids.e_stem.is_required:
-                return super()._start_index() - 1
-            if self.rules.required_prefix.any():
-                matched_prefixes = [prefix for prefix in self.rules.required_prefix.get()
-                                    if self.parsed_form.startswith(prefix)]
-                if matched_prefixes:
-                    matched_prefix_length = max(len(prefix) for prefix in matched_prefixes)
-                    return super()._start_index() - matched_prefix_length
+            # if self.requires_forbids.a_stem.is_required or self.requires_forbids.e_stem.is_required:
+            #     return super()._start_index() - 1
+            # if self.rules.required_prefix.any():
+            #     matched_prefixes = [prefix for prefix in self.rules.required_prefix.get()
+            #                         if self.parsed_form.startswith(prefix)]
+            #     if matched_prefixes:
+            #         matched_prefix_length = max(len(prefix) for prefix in matched_prefixes)
+            #         return super()._start_index() - matched_prefix_length
 
         return super()._start_index()
 

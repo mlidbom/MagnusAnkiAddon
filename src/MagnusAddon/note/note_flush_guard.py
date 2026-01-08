@@ -3,7 +3,9 @@ from __future__ import annotations
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
+import mylog
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from configuration.configuration_cache_impl import ConfigurationCache
 from sysutils import ex_assert
 
 if TYPE_CHECKING:
@@ -33,4 +35,6 @@ class NoteRecursiveFlushGuard(Slots):
     def flush(self) -> None:
         if self._should_flush():
             with self.pause_flushing():
+                if ConfigurationCache.log_when_flushing_notes():
+                    mylog.info(f"Flushing {self._note().__class__.__name__}: {self._note().get_question()}")
                 self._note().backend_note.col.update_note(self._note().backend_note)
