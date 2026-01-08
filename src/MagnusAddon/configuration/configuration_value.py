@@ -113,11 +113,11 @@ class JapaneseConfig(Slots):
         self.show_kanji_in_sentence_breakdown: ConfigurationValueBool = add_bool(ConfigurationValueBool("show_kanji_in_sentence_breakdown", "Show kanji in sentence breakdown", True))
         self.show_sentence_breakdown_in_edit_mode: ConfigurationValueBool = add_bool(ConfigurationValueBool("show_sentence_breakdown_in_edit_mode", "Show sentence breakdown in edit mode", False))
         self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound: ConfigurationValueBool = add_bool(ConfigurationValueBool("automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound",
-                                                                                                                                            "Automatically yield last token in suru verb compounds to overlapping compounds (Ctrl+Shift+Alt+s)", True))
+                                                                                                                                                     "Automatically yield last token in suru verb compounds to overlapping compounds (Ctrl+Shift+Alt+s)", True))
         self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound: ConfigurationValueBool = add_bool(ConfigurationValueBool("automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound",
-                                                                                                                                               "Automatically yield last token in passive verb compounds to overlapping compounds (Ctrl+Shift+Alt+h)", True))
+                                                                                                                                                        "Automatically yield last token in passive verb compounds to overlapping compounds (Ctrl+Shift+Alt+h)", True))
         self.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound: ConfigurationValueBool = add_bool(ConfigurationValueBool("automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound",
-                                                                                                                                                 "Automatically yield last token in causative verb compounds to overlapping compounds (Ctrl+Shift+Alt+t)", True))
+                                                                                                                                                          "Automatically yield last token in causative verb compounds to overlapping compounds (Ctrl+Shift+Alt+t)", True))
 
         self.decrease_failed_card_intervals_interval: ConfigurationValueInt = add_int(ConfigurationValueInt("decrease_failed_card_intervals_interval", "Failed card again seconds for next again", 60))
 
@@ -146,8 +146,10 @@ class JapaneseConfig(Slots):
         self.enable_garbage_collection_during_batches: ConfigurationValueBool = add_bool(ConfigurationValueBool("enable_garbage_collection_during_batches", "Enable Batch GC. [Requires restart]", True))
         self.enable_automatic_garbage_collection: ConfigurationValueBool = add_bool(ConfigurationValueBool("enable_automatic_garbage_collection", "Enable automatic GC. [Requires restart. Reduces memory usage the most but slows Anki down and may cause crashes due to Qt incompatibility.]", False))
         self.track_instances_in_memory: ConfigurationValueBool = add_bool(ConfigurationValueBool("track_instances_in_memory", "Track instances in memory. [Requires restart.. Only useful to developers and will use extra memory.]", False))
-        self.enable_trace_malloc: ConfigurationValueBool = add_bool(ConfigurationValueBool("enable_trace_malloc", "Enable tracemalloc. Will show memory usage in logs and increase memory usage A LOT. [Requires restart]", False))
         self.enable_auto_string_interning: ConfigurationValueBool = add_bool(ConfigurationValueBool("enable_auto_string_interning", "Enable automatic string interning. Reduces memory usage at the cost of some CPU overhead and slowdown. [Requires restart]", False))
+
+        self.enable_trace_malloc: ConfigurationValueBool = add_bool(ConfigurationValueBool("enable_trace_malloc", "Enable tracemalloc. Will show memory usage in logs and increase memory usage A LOT. [Requires restart]", False))
+        self.log_when_flushing_notes: ConfigurationValueBool = add_bool(ConfigurationValueBool("log_when_flushing_notes", "Log when flushing notes to backend.", False))
 
         self.feature_toggles: list[tuple[str, list[ConfigurationValueBool]]] = \
             [("Sentence Display", self.sentence_view_toggles),
@@ -164,9 +166,11 @@ class JapaneseConfig(Slots):
                                                self.disable_all_automatic_garbage_collection,
                                                self.enable_garbage_collection_during_batches,
                                                self.enable_automatic_garbage_collection,
-                                               self.track_instances_in_memory,
-                                               self.enable_trace_malloc,
-                                               self.enable_auto_string_interning])]
+                                               self.enable_auto_string_interning]),
+             ("Devolpers only", [self.enable_trace_malloc,
+                                 self.track_instances_in_memory,
+                                 self.log_when_flushing_notes])
+             ]
 
         self.readings_mappings_dict: dict[str, str] = self._read_reading_mappings_from_file()
 
