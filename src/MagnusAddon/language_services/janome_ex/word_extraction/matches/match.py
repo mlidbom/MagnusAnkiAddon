@@ -34,6 +34,11 @@ class Match(WeakRefable, Slots):
             ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb.apply_to,
     ]
 
+    _match_static_display_requirements: list[Callable[[MatchInspector], FailedMatchRequirement | None]] = [
+            ForbidsIsConfiguredHidden.apply_to,
+            ForbidsConfiguredToHideCompounds.apply_to
+    ]
+
     def __init__(self, word_variant: WeakRef[CandidateWordVariant]) -> None:
         weakref_self = WeakRef(self)
         inspector = MatchInspector(weakref_self)
@@ -45,18 +50,17 @@ class Match(WeakRefable, Slots):
         self._is_valid_internal_cache: bool | None = None
         self._is_valid_cache: bool | None = None
         self._start_index_cache: int | None = None
+        self._static_display_requirements_fulfilled_cache: bool | None = None
 
         self._is_interdepentently_valid_cache: bool | None = None
         self._display_requirements_cache: list[MatchRequirement] | None = None
 
     @property
-    def _display_requirements(self) -> list[MatchRequirement]:
+    def _dynamic_display_requirements(self) -> list[MatchRequirement]:
         if self._display_requirements_cache is None:
             self._display_requirements_cache = [r for r in (
                     ForbidsIsShadowed(self.inspector),
-                    ForbidsIsConfiguredHidden.apply_to(self.inspector),
-                    ForbidsConfiguredToHideCompounds.apply_to(self),
-                    *self._create_display_requirements()) if r is not None]
+                    *self._create_dynamic_display_requirements()) if r is not None]
         return self._display_requirements_cache
 
     def _create_primary_validity_failures(self) -> list[FailedMatchRequirement]:
@@ -70,7 +74,21 @@ class Match(WeakRefable, Slots):
     def _is_interdepentently_valid(self) -> bool: return True
 
     def _create_interdependent_validity_failures(self) -> list[FailedMatchRequirement]: return []
-    def _create_display_requirements(self) -> tuple[MatchRequirement | None, ...]: return ()
+    def _create_static_display_requinement_failures(self) -> list[FailedMatchRequirement]:
+        inspector = self.inspector
+        return [failure for failure in (requirement(inspector) for requirement in self._match_static_display_requirements) if failure is not None]
+
+    @property
+    def static_display_requirements_fulfilled(self) -> bool:
+        if self._static_display_requirements_fulfilled_cache is None:
+            self._static_display_requirements_fulfilled_cache = self._static_display_requirements_fulfilled()
+        return self._static_display_requirements_fulfilled_cache
+
+    def _static_display_requirements_fulfilled(self) -> bool:
+        inspector = self.inspector
+        return not any(failure for failure in (requirement(inspector) for requirement in self._match_static_display_requirements) if failure is not None)
+
+    def _create_dynamic_display_requirements(self) -> tuple[MatchRequirement | None, ...]: return ()
 
     @property
     def answer(self) -> str: raise NotImplementedError()
@@ -127,7 +145,7 @@ class Match(WeakRefable, Slots):
 
     def _start_index(self) -> int: return self.variant.start_index
     @property
-    def is_valid_for_display(self) -> bool: return self.is_valid and all(requirement.is_fulfilled for requirement in self._display_requirements)
+    def is_valid_for_display(self) -> bool: return self.is_valid and self.static_display_requirements_fulfilled and all(requirement.is_fulfilled for requirement in self._dynamic_display_requirements)
 
     @property
     def _is_emergency_displayed(self) -> bool:
@@ -149,7 +167,8 @@ class Match(WeakRefable, Slots):
     def failure_reasons(self) -> list[str]: return [] if self.is_valid else ([requirement.failure_reason for requirement in self._create_primary_validity_failures()]
                                                                              + [requirement.failure_reason for requirement in self._create_interdependent_validity_failures()])
     @property
-    def hiding_reasons(self) -> list[str]: return [requirement.failure_reason for requirement in self._display_requirements if not requirement.is_fulfilled]
+    def hiding_reasons(self) -> list[str]: return ([requirement.failure_reason for requirement in self._dynamic_display_requirements if not requirement.is_fulfilled] +
+                                                   [requirement.failure_reason for requirement in self._create_static_display_requinement_failures()])
 
     def to_exclusion(self) -> WordExclusion: return WordExclusion.at_index(self.exclusion_form, self.start_index)
 

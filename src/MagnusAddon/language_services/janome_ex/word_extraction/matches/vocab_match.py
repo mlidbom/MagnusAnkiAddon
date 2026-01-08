@@ -52,11 +52,26 @@ class VocabMatch(Match, Slots):
         self._another_match_owns_the_form_cache: bool | None = None
         super().__init__(word_variant)
 
+    _vocab_static_display_requirements_list: list[Callable[[VocabMatchInspector], FailedMatchRequirement | None]] = [
+            ForbidsCompositionallyTransparentCompound.apply_to
+    ]
+
+    _vocab_static_display_requirements_list_combined: list[Callable[[VocabMatchInspector], FailedMatchRequirement | None]] = _vocab_static_display_requirements_list + Match._match_static_display_requirements
+
     @override
-    def _create_display_requirements(self) -> tuple[MatchRequirement | None, ...]:
+    def _create_static_display_requinement_failures(self) -> list[FailedMatchRequirement]:
+        inspector = self.vocab_inspector
+        return [failure for failure in (requirement(inspector) for requirement in self._vocab_static_display_requirements_list_combined) if failure is not None]
+
+    @override
+    def _static_display_requirements_fulfilled(self) -> bool:
+        inspector = self.vocab_inspector
+        return not any(failure for failure in (requirement(inspector) for requirement in self._vocab_static_display_requirements_list_combined) if failure is not None)
+
+    @override
+    def _create_dynamic_display_requirements(self) -> tuple[MatchRequirement | None, ...]:
         return (
                 ForbidsHasDisplayedOverlappingFollowingCompound.apply_to(self.vocab_inspector, self.requires_forbids.yield_last_token.is_required),
-                ForbidsCompositionallyTransparentCompound.apply_to(self.vocab_inspector)
         )
 
     _requirements_list: list[Callable[[VocabMatchInspector], FailedMatchRequirement | None]] = [
