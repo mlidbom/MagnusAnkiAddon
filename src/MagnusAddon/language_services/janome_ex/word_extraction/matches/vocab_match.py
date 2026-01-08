@@ -61,12 +61,12 @@ class VocabMatch(Match, Slots):
     @override
     def _create_static_display_requinement_failures(self) -> list[FailedMatchRequirement]:
         inspector = self.vocab_inspector
-        return [failure for failure in (requirement(inspector) for requirement in self._vocab_static_display_requirements_list_combined) if failure is not None]
+        return [failure for failure in (requirement(inspector) for requirement in VocabMatch._vocab_static_display_requirements_list_combined) if failure is not None]
 
     @override
     def _static_display_requirements_fulfilled(self) -> bool:
         inspector = self.vocab_inspector
-        return not any(failure for failure in (requirement(inspector) for requirement in self._vocab_static_display_requirements_list_combined) if failure is not None)
+        return not any(failure for failure in (requirement(inspector) for requirement in VocabMatch._vocab_static_display_requirements_list_combined) if failure is not None)
 
     @override
     def _create_dynamic_display_requirements(self) -> tuple[MatchRequirement | None, ...]:
@@ -111,12 +111,12 @@ class VocabMatch(Match, Slots):
     @override
     def _create_primary_validity_failures(self) -> list[FailedMatchRequirement]:
         inspector = self.vocab_inspector
-        return [failure for failure in (requirement(inspector) for requirement in self._combined_requirements) if failure is not None]
+        return [failure for failure in (requirement(inspector) for requirement in VocabMatch._combined_requirements) if failure is not None]
 
     @override
     def _is_primarily_valid(self) -> bool:
         inspector = self.vocab_inspector
-        return not any(failure for failure in (requirement(inspector) for requirement in self._combined_requirements) if failure is not None)
+        return not any(failure for failure in (requirement(inspector) for requirement in VocabMatch._combined_requirements) if failure is not None)
 
     @override
     def _create_interdependent_validity_failures(self) -> list[FailedMatchRequirement]:
