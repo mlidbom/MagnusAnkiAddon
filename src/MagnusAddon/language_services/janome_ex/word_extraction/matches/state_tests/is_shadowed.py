@@ -20,4 +20,5 @@ class ForbidsIsShadowed(MatchRequirement, Slots):
     @property
     @override
     def failure_reason(self) -> str:
-        return f"""forbids::shadowed_by:{self.inspector.match.word.shadowed_by_text}""" if not self.is_fulfilled else ""
+        shadowed_by = self.inspector.match.word.shadowed_by
+        return f"""forbids::shadowed_by:{shadowed_by}""" if shadowed_by != "" else ""
