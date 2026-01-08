@@ -99,6 +99,11 @@ class VocabMatch(Match, Slots):
         return [failure for failure in (requirement(inspector) for requirement in self._combined_requirements) if failure is not None]
 
     @override
+    def _is_primarily_valid(self) -> bool:
+        inspector = self.vocab_inspector
+        return not any(failure for failure in (requirement(inspector) for requirement in self._combined_requirements) if failure is not None)
+
+    @override
     def _create_interdependent_validity_failures(self) -> list[FailedMatchRequirement]:
         failure = ForbidsAnotherMatchOwnsTheForm.apply_to(self.vocab_inspector)
         return [failure] if failure is not None else []

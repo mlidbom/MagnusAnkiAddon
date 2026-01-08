@@ -53,7 +53,7 @@ class Match(WeakRefable, Slots):
     @property
     def _primary_validity_failures(self) -> list[FailedMatchRequirement]:
         if self._primary_validity_failures_cache is None:
-            self._primary_validity_failures_cache = list(self._create_primary_validity_failures())
+            self._primary_validity_failures_cache = self._create_primary_validity_failures()
         return self._primary_validity_failures_cache
 
     @property
@@ -75,6 +75,10 @@ class Match(WeakRefable, Slots):
     def _create_primary_validity_failures(self) -> list[FailedMatchRequirement]:
         inspector = self.inspector
         return [failure for failure in (requirement(inspector) for requirement in self._match_primary_validity_requirements) if failure is not None]
+
+    def _is_primarily_valid(self) -> bool:
+        inspector = self.inspector
+        return not any(failure for failure in (requirement(inspector) for requirement in self._match_primary_validity_requirements) if failure is not None)
 
     def _create_interdependent_validity_failures(self) -> list[FailedMatchRequirement]: return []
     def _create_display_requirements(self) -> tuple[MatchRequirement | None, ...]: return ()
@@ -111,7 +115,7 @@ class Match(WeakRefable, Slots):
     @property
     def is_primarily_valid(self) -> bool:
         if self._is_primarily_valid_internal_cache is None:
-            self._is_primarily_valid_internal_cache = not self._primary_validity_failures
+            self._is_primarily_valid_internal_cache = self._is_primarily_valid()
         return self._is_primarily_valid_internal_cache
 
     @property
