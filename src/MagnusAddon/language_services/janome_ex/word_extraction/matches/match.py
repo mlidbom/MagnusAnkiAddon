@@ -94,7 +94,6 @@ class Match(WeakRefable, Slots):
     def answer(self) -> str: raise NotImplementedError()
     @property
     def readings(self) -> list[str]: raise NotImplementedError()
-
     @property
     def tokenized_form(self) -> str: return self.variant.form
     @property
@@ -113,7 +112,6 @@ class Match(WeakRefable, Slots):
     def is_valid(self) -> bool:
         if self._is_valid_cache is None:
             self._is_valid_cache = self._is_valid()
-
         return self._is_valid_cache
 
     def _is_valid(self) -> bool:
@@ -140,7 +138,6 @@ class Match(WeakRefable, Slots):
     def start_index(self) -> int:
         if self._start_index_cache is None:
             self._start_index_cache = self._start_index()
-
         return self._start_index_cache
 
     def _start_index(self) -> int: return self.variant.start_index
