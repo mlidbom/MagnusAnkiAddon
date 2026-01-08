@@ -8,8 +8,8 @@ from language_services.janome_ex.word_extraction.matches.state_tests.head.failed
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
-class ForbidsAnotherMatchOwnsTheForm(Slots):
-    _failed: FailedMatchRequirement = FailedMatchRequirement.forbids("another_match_owns_the_form")
+class ForbidsAnotherMatchIsHigherPriority(Slots):
+    _failed: FailedMatchRequirement = FailedMatchRequirement.forbids("another_match_owns_the_form_or_is_higher_priority_due_to_custom_requirements_weight")
 
     @classmethod
     def apply_to(cls, inspector: VocabMatchInspector) -> FailedMatchRequirement | None:

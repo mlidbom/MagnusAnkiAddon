@@ -45,7 +45,8 @@ def test_require_forbid_dictionary_form_prefix_and_masu_stem(sentence: str, expe
         ("はしゃいでる", ["はしゃぐ", "でる"]),
         ("音がするの", ["音がする", "る", "の"]),
         ("する", ["する", "る"]),
-        ("大声出すな", ["大声出す", "う", "な:dict"])
+        ("大声出すな", ["大声出す", "う", "な:dict"]),
+        ("止めるかな", ["止める", "かな"]) #todo: this is both an ichidan hiding a godan, and a dictionary form ending. How do we deal with that?
 ])
 def test_dictionary_form_splitting(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)

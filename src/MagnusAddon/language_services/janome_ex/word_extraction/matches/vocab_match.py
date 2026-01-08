@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, final, override
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.matches.match import Match
 from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
-from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import ForbidsAnotherMatchOwnsTheForm
+from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import ForbidsAnotherMatchIsHigherPriority
 from language_services.janome_ex.word_extraction.matches.state_tests.forbids_compositionally_transparent_compound import ForbidsCompositionallyTransparentCompound
 from language_services.janome_ex.word_extraction.matches.state_tests.forbids_yields_to_surface import ForbidsYieldsToSurface
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_a_stem import RequiresOrForbidsHasAStem
@@ -120,12 +120,12 @@ class VocabMatch(Match, Slots):
 
     @override
     def _create_interdependent_validity_failures(self) -> list[FailedMatchRequirement]:
-        failure = ForbidsAnotherMatchOwnsTheForm.apply_to(self.vocab_inspector)
+        failure = ForbidsAnotherMatchIsHigherPriority.apply_to(self.vocab_inspector)
         return [failure] if failure is not None else []
 
     @override
     def _is_interdepentently_valid(self) -> bool:
-        return ForbidsAnotherMatchOwnsTheForm.apply_to(self.vocab_inspector) is None
+        return ForbidsAnotherMatchIsHigherPriority.apply_to(self.vocab_inspector) is None
 
     @property
     def matching_configuration(self) -> VocabNoteMatchingConfiguration: return self.vocab.matching_configuration
@@ -169,8 +169,12 @@ class VocabMatch(Match, Slots):
         return self._another_match_owns_the_form_cache
 
     def _is_higher_priority_for_match(self, other: VocabMatch) -> bool:
-        if self.vocab.forms.is_owned_form(self.tokenized_form) and not other.vocab.forms.is_owned_form(self.tokenized_form):  # noqa: SIM103
+        owns_form = self.vocab.forms.is_owned_form(self.tokenized_form)
+        other_owns_form = other.vocab.forms.is_owned_form(self.tokenized_form)
+        if owns_form and not other_owns_form:  # noqa: SIM103
             return True
+        if not owns_form and other_owns_form:
+            return False
         if self.vocab.matching_configuration.custom_requirements_weight > other.matching_configuration.custom_requirements_weight:  # noqa: SIM103
             return True
         return False
