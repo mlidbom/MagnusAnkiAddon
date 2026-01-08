@@ -153,7 +153,7 @@ class VocabMatch(Match, Slots):
         tokenized_form = super().tokenized_form
         if question.raw == tokenized_form and question.is_disambiguated:
             return question.disambiguation_name
-        return tokenized_form
+        return question.raw
 
     @property
     def another_match_is_higher_priority(self) -> bool:
