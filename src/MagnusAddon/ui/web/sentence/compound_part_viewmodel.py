@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from configuration.configuration_cache_impl import ConfigurationCache
+from configuration.configuration_cache_impl import ActiveSettings
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
@@ -31,7 +31,7 @@ class CompoundPartViewModel(Slots):
 
     @classmethod
     def get_compound_parts_recursive(cls, match_viewmodel: MatchViewModel, vocab_note: VocabNote, config: SentenceConfiguration, depth: int = 0, visited: QSet[NoteId] | None = None) -> list[CompoundPartViewModel]:
-        if not ConfigurationCache.hide_all_compounds():
+        if not ActiveSettings.hide_all_compounds():
             if not app.config().show_compound_parts_in_sentence_breakdown.get_value(): return []
             if visited is None: visited = QSet()
             if vocab_note.get_id() in visited: return []
