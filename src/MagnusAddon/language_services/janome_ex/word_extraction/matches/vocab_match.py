@@ -108,6 +108,10 @@ class VocabMatch(Match, Slots):
         failure = ForbidsAnotherMatchOwnsTheForm.apply_to(self.vocab_inspector)
         return [failure] if failure is not None else []
 
+    @override
+    def _is_interdepentently_valid(self) -> bool:
+        return ForbidsAnotherMatchOwnsTheForm.apply_to(self.vocab_inspector) is None
+
     @property
     def matching_configuration(self) -> VocabNoteMatchingConfiguration: return self.vocab.matching_configuration
     @property
