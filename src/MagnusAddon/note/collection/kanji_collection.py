@@ -37,10 +37,19 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
     @override
     def _create_snapshot(self, note: KanjiNote) -> _KanjiSnapshot: return _KanjiSnapshot(note)
 
+    @classmethod
+    def remove_first_note_with_id(cls, note_list: list[KanjiNote], id: NoteId) -> None:
+        for index, note in enumerate(note_list):
+            if note.get_id() == id:
+                del note_list[index]
+                return
+        raise Exception(f"Could not find note with id {id} in list {note_list}")
+
     @override
     def _inheritor_remove_from_cache(self, note: KanjiNote, snapshot:_KanjiSnapshot) -> None:
-        for form in snapshot.radicals: self._by_radical[form].remove(note)
-        for reading in snapshot.readings: self.by_reading[reading].remove(note)
+        id = snapshot.id
+        for form in snapshot.radicals: self.remove_first_note_with_id(self._by_radical[form], id)
+        for reading in snapshot.readings: self.remove_first_note_with_id(self.by_reading[reading], id)
 
     @override
     def _inheritor_add_to_cache(self, note: KanjiNote, snapshot: _KanjiSnapshot) -> None:

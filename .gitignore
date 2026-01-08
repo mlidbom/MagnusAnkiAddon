@@ -19,3 +19,4 @@ collection.anki2
 /repomix-output.xml
 /repomix-queryable-collections.xml
 /.coverage
+*.speedscope.json

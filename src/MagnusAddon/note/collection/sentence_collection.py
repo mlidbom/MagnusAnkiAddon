@@ -9,6 +9,7 @@ from note.note_constants import NoteTypes
 from note.sentences.sentencenote import SentenceNote
 from typed_linq_collections.collections.q_default_dict import QDefaultDict
 from typed_linq_collections.collections.q_list import QList
+from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from anki.collection import Collection
@@ -26,9 +27,9 @@ class _SentenceSnapshot(CachedNote, Slots):
 class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
     def __init__(self, all_kanji: list[SentenceNote], cache_runner: CacheRunner) -> None:
         # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
-        self._by_vocab_form: QDefaultDict[str, QList[SentenceNote]] = QDefaultDict[str, QList[SentenceNote]](QList[SentenceNote])
+        self._by_vocab_form: QDefaultDict[str, QSet[SentenceNote]] = QDefaultDict[str, QSet[SentenceNote]](QSet[SentenceNote])
         self._by_user_highlighted_vocab: QDefaultDict[str, QList[SentenceNote]] = QDefaultDict[str, QList[SentenceNote]](QList[SentenceNote])
-        self._by_vocab_id: QDefaultDict[int, QList[SentenceNote]] = QDefaultDict[int, QList[SentenceNote]](QList[SentenceNote])
+        self._by_vocab_id: QDefaultDict[int, QSet[SentenceNote]] = QDefaultDict[int, QSet[SentenceNote]](QSet[SentenceNote])
         super().__init__(all_kanji, SentenceNote, cache_runner)
 
     @override
@@ -38,25 +39,27 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
     def with_vocab_form(self, form: str) -> QList[SentenceNote]: return self._by_vocab_form.get_value_or_default(form).to_list()
     def with_user_highlighted_vocab(self, form: str) -> QList[SentenceNote]: return self._by_user_highlighted_vocab.get_value_or_default(form).to_list()
 
+    @classmethod
+    def remove_first_note_with_id(cls, note_list: list[SentenceNote], id: NoteId) -> None:
+        for index, note in enumerate(note_list):
+            if note.get_id() == id:
+                del note_list[index]
+                return
+        raise Exception(f"Could not find note with id {id} in list {note_list}")
+
     @override
     def _inheritor_remove_from_cache(self, note: SentenceNote, snapshot: _SentenceSnapshot) -> None:
         id = snapshot.id
-        def remove_first_with_same_id(note_list: list[SentenceNote]) -> None:
-            for index, note in enumerate(note_list):
-                if note.get_id() == id:
-                    del note_list[index]
-                    return
-            raise Exception(f"Could not find note with id {id} in list {note_list}")
 
-        for vocab_form in snapshot.words: remove_first_with_same_id(self._by_vocab_form[vocab_form])
-        for vocab_form in snapshot.user_highlighted_vocab: remove_first_with_same_id(self._by_user_highlighted_vocab[vocab_form])
-        for vocab_id in snapshot.detected_vocab: remove_first_with_same_id(self._by_vocab_id[vocab_id])
+        for vocab_form in snapshot.words: self._by_vocab_form[vocab_form].remove(note)
+        for vocab_form in snapshot.user_highlighted_vocab: self.remove_first_note_with_id(self._by_user_highlighted_vocab[vocab_form], id)
+        for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].remove(note)
 
     @override
     def _inheritor_add_to_cache(self, note: SentenceNote, snapshot: _SentenceSnapshot) -> None:
-        for vocab_form in snapshot.words: self._by_vocab_form[vocab_form].append(note)
+        for vocab_form in snapshot.words: self._by_vocab_form[vocab_form].add(note)
         for vocab_form in snapshot.user_highlighted_vocab: self._by_user_highlighted_vocab[vocab_form].append(note)
-        for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].append(note)
+        for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].add(note)
 
 class SentenceCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:

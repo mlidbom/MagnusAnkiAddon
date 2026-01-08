@@ -69,16 +69,25 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
     @override
     def _create_snapshot(self, note: VocabNote) -> _VocabSnapshot: return _VocabSnapshot(note)
 
+    @classmethod
+    def remove_first_note_with_id(cls, note_list: list[VocabNote], id: NoteId) -> None:
+        for index, note in enumerate(note_list):
+            if note.get_id() == id:
+                del note_list[index]
+                return
+        raise Exception(f"Could not find note with id {id} in list {note_list}")
+
     @override
     def _inheritor_remove_from_cache(self, note: VocabNote, snapshot: _VocabSnapshot) -> None:
-        for form in snapshot.forms: self._by_form[form].remove(note)
-        for part in snapshot.compound_parts: self._by_compound_part[part].remove(note)
-        self._by_derived_from[snapshot.derived_from].remove(note)
-        self._by_disambiguation_name[snapshot.disambiguation_name].remove(note)
-        for kanji in snapshot.main_form_kanji: self._by_kanji_in_main_form[kanji].remove(note)
-        for kanji in snapshot.all_kanji: self._by_kanji_in_any_form[kanji].remove(note)
-        for kanji in snapshot.readings: self._by_reading[kanji].remove(note)
-        for stem in snapshot.stems: self._by_stem[stem].remove(note)
+        id = snapshot.id
+        for form in snapshot.forms: self.remove_first_note_with_id(self._by_form[form], id)
+        for part in snapshot.compound_parts: self.remove_first_note_with_id(self._by_compound_part[part], id)
+        self.remove_first_note_with_id(self._by_derived_from[snapshot.derived_from], id)
+        self.remove_first_note_with_id(self._by_disambiguation_name[snapshot.disambiguation_name], id)
+        for kanji in snapshot.main_form_kanji: self.remove_first_note_with_id(self._by_kanji_in_main_form[kanji], id)
+        for kanji in snapshot.all_kanji: self.remove_first_note_with_id(self._by_kanji_in_any_form[kanji], id)
+        for kanji in snapshot.readings: self.remove_first_note_with_id(self._by_reading[kanji], id)
+        for stem in snapshot.stems: self.remove_first_note_with_id(self._by_stem[stem], id)
 
     @override
     def _inheritor_add_to_cache(self, note: VocabNote, snapshot: _VocabSnapshot) -> None:
