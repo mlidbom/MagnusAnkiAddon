@@ -108,18 +108,19 @@ class CandidateWord(WeakRefable, Slots):
     def starts_with_non_word_character(self) -> bool: return self.starts_with_non_word_token or self.surface_form in noise_characters
 
     @property
-    def is_shadowed(self) -> bool: return (self.is_shadowed_by is not None
-                                           and not (self.start_location.token.is_dictionary_verb_inflection and self.is_shadowed_by.word.end_location.token_index <= self.end_location.token_index))
+    def is_shadowed(self) -> bool: return self.shadowed_by_text != ""
+
     @property
-    def shadowed_by_text(self) -> str: return non_optional(self.is_shadowed_by).form if self.is_shadowed else ""
-    @property
-    def is_shadowed_by(self) -> CandidateWordVariant | None:
-        if any(self.start_location.is_shadowed_by):
-            return self.start_location.is_shadowed_by[0]().display_variants[0]
-        if (any(self.start_location.display_variants)
-                and self.start_location.display_variants[0].word.location_count > self.location_count):
-            return self.start_location.display_variants[0]
-        return None
+    def shadowed_by_text(self) -> str:
+        start_location = self.start_location
+        if any(start_location.is_shadowed_by):
+            shadowed_by = start_location.is_shadowed_by[0]().display_variants[0]
+            if not (start_location.token.is_dictionary_verb_inflection and shadowed_by.word.end_location.token_index <= self.end_location.token_index): # special exception to allow dictionary form endings to be displayed
+                return shadowed_by.form
+        if (any(start_location.display_variants)
+                and start_location.display_variants[0].word.location_count > self.location_count):
+            return start_location.display_variants[0].form
+        return ""
 
     @override
     def __repr__(self) -> str: return f"""
