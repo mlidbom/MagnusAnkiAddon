@@ -19,7 +19,6 @@ from sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
-
     from anki.cards import Card
     from anki.notes import Note, NoteId
     from note.collection.jp_collection import JPCollection
@@ -31,9 +30,10 @@ class JPNote(WeakRefable, Slots):
         self.backend_note: Note = note
         self.__hash_value: int = 0
 
-        string_auto_interner.auto_intern_list(note.fields) # saves something like 20-30MB of memory on my collection
+        string_auto_interner.auto_intern_list(note.fields)  # saves something like 20-30MB of memory on my collection
 
         self.tags: NoteTags = NoteTags(self.weakref)
+        self._id_cache: NoteId = note.id
 
     @property
     def is_flushing(self) -> bool: return self.recursive_flush_guard.is_flushing
@@ -110,7 +110,11 @@ class JPNote(WeakRefable, Slots):
         return self._get_dependencies_recursive(QSet())
 
     def get_id(self) -> NoteId:
-        return self.backend_note.id
+        value = self._id_cache
+        if value: return value
+
+        self._id_cache = self.backend_note.id
+        return self._id_cache
 
     def cards(self) -> list[CardEx]:
         return [CardEx(card) for card in self.backend_note.cards()]

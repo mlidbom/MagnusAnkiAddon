@@ -40,9 +40,17 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
 
     @override
     def _inheritor_remove_from_cache(self, note: SentenceNote, snapshot: _SentenceSnapshot) -> None:
-        for vocab_form in snapshot.words: self._by_vocab_form[vocab_form].remove(note)
-        for vocab_form in snapshot.user_highlighted_vocab: self._by_user_highlighted_vocab[vocab_form].remove(note)
-        for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].remove(note)
+        id = snapshot.id
+        def remove_first_with_same_id(note_list: list[SentenceNote]) -> None:
+            for index, note in enumerate(note_list):
+                if note.get_id() == id:
+                    del note_list[index]
+                    return
+            raise Exception(f"Could not find note with id {id} in list {note_list}")
+
+        for vocab_form in snapshot.words: remove_first_with_same_id(self._by_vocab_form[vocab_form])
+        for vocab_form in snapshot.user_highlighted_vocab: remove_first_with_same_id(self._by_user_highlighted_vocab[vocab_form])
+        for vocab_id in snapshot.detected_vocab: remove_first_with_same_id(self._by_vocab_id[vocab_id])
 
     @override
     def _inheritor_add_to_cache(self, note: SentenceNote, snapshot: _SentenceSnapshot) -> None:
@@ -88,7 +96,7 @@ class SentenceCollection(Slots):
     def with_form(self, form: str) -> QList[SentenceNote]: return self._cache.with_vocab_form(form)
 
     def with_highlighted_vocab(self, vocab_note: VocabNote) -> QList[SentenceNote]:
-        return vocab_note.forms.all_set().select_many(self._cache.with_user_highlighted_vocab).to_list()  #ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_user_highlighted_vocab(form) for form in vocab_note.forms.all_set()]))
+        return vocab_note.forms.all_set().select_many(self._cache.with_user_highlighted_vocab).to_list()  # ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_user_highlighted_vocab(form) for form in vocab_note.forms.all_set()]))
 
     def search(self, query: str) -> QList[SentenceNote]: return self.collection.search(query)
 
