@@ -99,8 +99,9 @@ class VocabMatch(Match, Slots):
         return [failure for failure in (requirement(inspector) for requirement in self._combined_requirements) if failure is not None]
 
     @override
-    def _create_interdependent_validity_failures(self) -> tuple[FailedMatchRequirement | None, ...]:
-        return ForbidsAnotherMatchOwnsTheForm.apply_to(self.vocab_inspector),
+    def _create_interdependent_validity_failures(self) -> list[FailedMatchRequirement]:
+        failure = ForbidsAnotherMatchOwnsTheForm.apply_to(self.vocab_inspector)
+        return [failure] if failure is not None else []
 
     @property
     def matching_configuration(self) -> VocabNoteMatchingConfiguration: return self.vocab.matching_configuration
@@ -162,14 +163,14 @@ class VocabMatch(Match, Slots):
             length_diff = (len(self.vocab.get_question()) - len(self.tokenized_form))
             if length_diff != 0 and self.tokenized_form in self.vocab.get_question():  # we often "steal" characters backwards, forwards is not supported so this should be sufficient, we don't need all the complexity below
                 return super()._start_index() - length_diff
-            if self.requires_forbids.a_stem.is_required or self.requires_forbids.e_stem.is_required:
-                return super()._start_index() - 1
-            if self.rules.required_prefix.any():
-                matched_prefixes = [prefix for prefix in self.rules.required_prefix.get()
-                                    if self.parsed_form.startswith(prefix)]
-                if matched_prefixes:
-                    matched_prefix_length = max(len(prefix) for prefix in matched_prefixes)
-                    return super()._start_index() - matched_prefix_length
+            # if self.requires_forbids.a_stem.is_required or self.requires_forbids.e_stem.is_required:
+            #     return super()._start_index() - 1
+            # if self.rules.required_prefix.any():
+            #     matched_prefixes = [prefix for prefix in self.rules.required_prefix.get()
+            #                         if self.parsed_form.startswith(prefix)]
+            #     if matched_prefixes:
+            #         matched_prefix_length = max(len(prefix) for prefix in matched_prefixes)
+            #         return super()._start_index() - matched_prefix_length
 
         return super()._start_index()
 

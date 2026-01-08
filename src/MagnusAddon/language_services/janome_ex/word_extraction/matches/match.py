@@ -53,13 +53,13 @@ class Match(WeakRefable, Slots):
     @property
     def _primary_validity_failures(self) -> list[FailedMatchRequirement]:
         if self._primary_validity_failures_cache is None:
-            self._primary_validity_failures_cache = self._create_primary_validity_failures()
+            self._primary_validity_failures_cache = list(self._create_primary_validity_failures())
         return self._primary_validity_failures_cache
 
     @property
     def _interdependent_validity_failures(self) -> list[FailedMatchRequirement]:
         if self._interdependent_validity_failures_cache is None:
-            self._interdependent_validity_failures_cache = [r for r in self._create_interdependent_validity_failures() if r is not None]
+            self._interdependent_validity_failures_cache = self._create_interdependent_validity_failures()
         return self._interdependent_validity_failures_cache
 
     @property
@@ -76,7 +76,7 @@ class Match(WeakRefable, Slots):
         inspector = self.inspector
         return [failure for failure in (requirement(inspector) for requirement in self._match_primary_validity_requirements) if failure is not None]
 
-    def _create_interdependent_validity_failures(self) -> tuple[FailedMatchRequirement | None, ...]: return ()
+    def _create_interdependent_validity_failures(self) -> list[FailedMatchRequirement]: return []
     def _create_display_requirements(self) -> tuple[MatchRequirement | None, ...]: return ()
 
     @property
