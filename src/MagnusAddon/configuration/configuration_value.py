@@ -76,7 +76,6 @@ class JapaneseConfig(Slots):
             return value
 
         self.boost_failed_card_allowed_time_by_factor: ConfigurationValueFloat = add_float(ConfigurationValueFloat("boost_failed_card_allowed_time_by_factor", "Boost Failed Card Allowed Time Factor", 1.5))
-        self.boost_failed_card_allowed_time: ConfigurationValueBool = ConfigurationValueBool("boost_failed_card_allowed_time", "Boost failed card allowed time", True)
 
         def set_enable_fsrs_short_term_with_steps(toggle: bool) -> None:
             # noinspection PyProtectedMember, PyArgumentList
@@ -92,23 +91,35 @@ class JapaneseConfig(Slots):
         self.autoadvance_sentence_katakana_seconds: ConfigurationValueFloat = add_float(ConfigurationValueFloat("autoadvance_sentence_katakana_seconds", "Katakana Seconds", 0.7))
         self.autoadvance_sentence_kanji_seconds: ConfigurationValueFloat = add_float(ConfigurationValueFloat("autoadvance_sentence_kanji_seconds", "Kanji Seconds", 1.5))
 
+        self.minimum_time_viewing_question: ConfigurationValueFloat = add_float(ConfigurationValueFloat("minimum_time_viewing_question", "Minimum time viewing question", 0.5))
+        self.minimum_time_viewing_answer: ConfigurationValueFloat = add_float(ConfigurationValueFloat("minimum_time_viewing_answer", "Minimum time viewing answer", 0.5))
+
         self.timebox_vocab_read: ConfigurationValueInt = add_int(ConfigurationValueInt("time_box_length_vocab_read", "Vocab Read", 15))
         self.timebox_vocab_listen: ConfigurationValueInt = add_int(ConfigurationValueInt("time_box_length_vocab_listen", "Vocab Listen", 15))
         self.timebox_sentence_read: ConfigurationValueInt = add_int(ConfigurationValueInt("time_box_length_sentence_read", "Sentence Read", 15))
         self.timebox_sentence_listen: ConfigurationValueInt = add_int(ConfigurationValueInt("time_box_length_sentence_listen", "Sentence Listen", 15))
         self.timebox_kanji_read: ConfigurationValueInt = add_int(ConfigurationValueInt("time_box_length_kanji", "Kanji", 15))
-        self.yomitan_integration_copy_answer_to_clipboard: ConfigurationValueBool = add_bool(ConfigurationValueBool("yomitan_integration_copy_answer_to_clipboard", "Yomitan integration: Copy reviewer answer to clipboard", False))
+        self.decrease_failed_card_intervals_interval: ConfigurationValueInt = add_int(ConfigurationValueInt("decrease_failed_card_intervals_interval", "Failed card again seconds for next again", 60))
 
+        # misc toggles
+        self.boost_failed_card_allowed_time: ConfigurationValueBool = ConfigurationValueBool("boost_failed_card_allowed_time", "Boost failed card allowed time", True)
+        self.yomitan_integration_copy_answer_to_clipboard: ConfigurationValueBool = add_bool(ConfigurationValueBool("yomitan_integration_copy_answer_to_clipboard", "Yomitan integration: Copy reviewer answer to clipboard", False))
         self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps: ConfigurationValueBool = ConfigurationValueBool("fsrs_set_enable_fsrs_short_term_with_steps",
                                                                                                                        "FSRS: Enable short term scheduler with steps",
                                                                                                                        default=False,
                                                                                                                        feature_toggler=set_enable_fsrs_short_term_with_steps)
-
         self.decrease_failed_card_intervals: ConfigurationValueBool = add_bool(ConfigurationValueBool("decrease_failed_card_intervals", "Decrease failed card intervals", False))
-
         self.prevent_double_clicks: ConfigurationValueBool = add_bool(ConfigurationValueBool("prevent_double_clicks", "Prevent double clicks", True))
         self.prefer_default_mnemonics_to_source_mnemonics: ConfigurationValueBool = add_bool(ConfigurationValueBool("prefer_default_mnemocs_to_source_mnemonics", "Prefer default mnemonics to source mnemonics", False))
 
+        misc_toggles: list[ConfigurationValueBool] = [self.yomitan_integration_copy_answer_to_clipboard,
+                                                      self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps,
+                                                      self.decrease_failed_card_intervals,
+                                                      self.prevent_double_clicks,
+                                                      self.boost_failed_card_allowed_time,
+                                                      self.prefer_default_mnemonics_to_source_mnemonics]
+
+        # sentence_view_toggles
         self.show_compound_parts_in_sentence_breakdown: ConfigurationValueBool = add_bool(ConfigurationValueBool("show_compound_parts_in_sentence_breakdown", "Show compound parts in sentence breakdown", True))
         self.show_kanji_in_sentence_breakdown: ConfigurationValueBool = add_bool(ConfigurationValueBool("show_kanji_in_sentence_breakdown", "Show kanji in sentence breakdown", True))
         self.show_sentence_breakdown_in_edit_mode: ConfigurationValueBool = add_bool(ConfigurationValueBool("show_sentence_breakdown_in_edit_mode", "Show sentence breakdown in edit mode", False))
@@ -119,10 +130,6 @@ class JapaneseConfig(Slots):
         self.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound: ConfigurationValueBool = add_bool(ConfigurationValueBool("automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound",
                                                                                                                                                           "Automatically yield last token in causative verb compounds to overlapping compounds (Ctrl+Shift+Alt+t)", True))
 
-        self.decrease_failed_card_intervals_interval: ConfigurationValueInt = add_int(ConfigurationValueInt("decrease_failed_card_intervals_interval", "Failed card again seconds for next again", 60))
-
-        self.minimum_time_viewing_question: ConfigurationValueFloat = add_float(ConfigurationValueFloat("minimum_time_viewing_question", "Minimum time viewing question", 0.5))
-        self.minimum_time_viewing_answer: ConfigurationValueFloat = add_float(ConfigurationValueFloat("minimum_time_viewing_answer", "Minimum time viewing answer", 0.5))
         self.hide_compositionally_transparent_compounds: ConfigurationValueBool = add_bool(ConfigurationValueBool("hide_compositionally_transparent_compounds", "Hide compositionally transparent compounds", True))
         self.hide_all_compounds: ConfigurationValueBool = add_bool(ConfigurationValueBool("hide_all_compounds", "Hide all compounds", False))
 
@@ -135,42 +142,40 @@ class JapaneseConfig(Slots):
                                                                     self.show_sentence_breakdown_in_edit_mode,
                                                                     self.show_kanji_in_sentence_breakdown]
 
-        # performance
+        # performance toggles
         self.load_jamdict_db_into_memory: ConfigurationValueBool = add_bool(ConfigurationValueBool("load_jamdict_db_into_memory", "Load Jamdict DB into memory [Requires restart]", False))
         self.pre_cache_card_studying_status: ConfigurationValueBool = add_bool(ConfigurationValueBool("pre_cache_card_studying_status", "Cache card studying status on startup. Only disable for dev/testing purposes. [Requires restart]", False))
         self.prevent_anki_from_garbage_collecting_every_time_a_window_closes: ConfigurationValueBool = add_bool(ConfigurationValueBool("prevent_anki_from_garbage_collecting_every_time_a_window_closes", "Prevent Anki from garbage collecting every time a window closes, causing a short hang every time. [Requires restart]", True))
         self.disable_all_automatic_garbage_collection: ConfigurationValueBool = add_bool(ConfigurationValueBool("disable_periodic_garbage_collection", "Prevent all automatic garbage collection. Will stop the mini-hangs but memory usage will grow gradually. [Requires restart]", False))
         self.load_studio_in_foreground: ConfigurationValueBool = add_bool(ConfigurationValueBool("load_studio_in_foreground", "Load Studio in foreground. Makes it clear when done. Anki will be responsive when done. But you can't use anki while loading.", True))
 
-        # memory
+        # memory toggles
         self.enable_garbage_collection_during_batches: ConfigurationValueBool = add_bool(ConfigurationValueBool("enable_garbage_collection_during_batches", "Enable Batch GC. [Requires restart]", True))
         self.enable_automatic_garbage_collection: ConfigurationValueBool = add_bool(ConfigurationValueBool("enable_automatic_garbage_collection", "Enable automatic GC. [Requires restart. Reduces memory usage the most but slows Anki down and may cause crashes due to Qt incompatibility.]", False))
-        self.track_instances_in_memory: ConfigurationValueBool = add_bool(ConfigurationValueBool("track_instances_in_memory", "Track instances in memory. [Requires restart.. Only useful to developers and will use extra memory.]", False))
         self.enable_auto_string_interning: ConfigurationValueBool = add_bool(ConfigurationValueBool("enable_auto_string_interning", "Enable automatic string interning. Reduces memory usage at the cost of some CPU overhead and slowdown. [Requires restart]", False))
 
+        performance_and_memory_toggles: list[ConfigurationValueBool] = [self.load_studio_in_foreground,
+                                                                        self.load_jamdict_db_into_memory,
+                                                                        self.pre_cache_card_studying_status,
+                                                                        self.prevent_anki_from_garbage_collecting_every_time_a_window_closes,
+                                                                        self.disable_all_automatic_garbage_collection,
+                                                                        self.enable_garbage_collection_during_batches,
+                                                                        self.enable_automatic_garbage_collection,
+                                                                        self.enable_auto_string_interning]
+
+        # developer only toggles
+        self.track_instances_in_memory: ConfigurationValueBool = add_bool(ConfigurationValueBool("track_instances_in_memory", "Track instances in memory. [Requires restart.. Only useful to developers and will use extra memory.]", False))
         self.enable_trace_malloc: ConfigurationValueBool = add_bool(ConfigurationValueBool("enable_trace_malloc", "Enable tracemalloc. Will show memory usage in logs and increase memory usage A LOT. [Requires restart]", False))
         self.log_when_flushing_notes: ConfigurationValueBool = add_bool(ConfigurationValueBool("log_when_flushing_notes", "Log when flushing notes to backend.", False))
+        developer_only_toggles: list[ConfigurationValueBool] = [self.enable_trace_malloc,
+                                                                self.track_instances_in_memory,
+                                                                self.log_when_flushing_notes]
 
         self.feature_toggles: list[tuple[str, list[ConfigurationValueBool]]] = \
             [("Sentence Display", self.sentence_view_toggles),
-             ("Misc", [self.yomitan_integration_copy_answer_to_clipboard,
-                       self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps,
-                       self.decrease_failed_card_intervals,
-                       self.prevent_double_clicks,
-                       self.boost_failed_card_allowed_time,
-                       self.prefer_default_mnemonics_to_source_mnemonics]),
-             ("Performance and memory usage", [self.load_studio_in_foreground,
-                                               self.load_jamdict_db_into_memory,
-                                               self.pre_cache_card_studying_status,
-                                               self.prevent_anki_from_garbage_collecting_every_time_a_window_closes,
-                                               self.disable_all_automatic_garbage_collection,
-                                               self.enable_garbage_collection_during_batches,
-                                               self.enable_automatic_garbage_collection,
-                                               self.enable_auto_string_interning]),
-             ("Devolpers only", [self.enable_trace_malloc,
-                                 self.track_instances_in_memory,
-                                 self.log_when_flushing_notes])
-             ]
+             ("Misc", misc_toggles),
+             ("Performance and memory usage", performance_and_memory_toggles),
+             ("Devolpers only", developer_only_toggles)]
 
         self.readings_mappings_dict: dict[str, str] = self._read_reading_mappings_from_file()
 
