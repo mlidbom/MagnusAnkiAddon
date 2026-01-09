@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from configuration.configuration_cache_impl import ActiveSettings
+from configuration.settings import Settings
 from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
 
 if TYPE_CHECKING:
@@ -15,7 +15,7 @@ class ForbidsCompositionallyTransparentCompound(Slots):
     @classmethod
     def apply_to(cls, inspector: VocabMatchInspector) -> FailedMatchRequirement | None:
         _match = inspector.match
-        if (ActiveSettings.hide_transparent_compounds()
+        if (Settings.hide_transparent_compounds()
                 and _match.word.analysis.for_ui
                 and _match.word.is_compound
                 and inspector.compound_locations_all_have_valid_non_compound_matches
