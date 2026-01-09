@@ -18,8 +18,14 @@ class RequiresOrForbidsHasAStem(Slots):
         requirement = inspector.match.requires_forbids.a_stem
         if requirement.is_active:
             is_in_state = len(inspector.prefix) > 0 and inspector.prefix[-1] in conjugator.a_stem_characters
-            if requirement.is_required and not is_in_state:
+
+            new_is_in_state = inspector.previous_location and inspector.previous_location.token.is_a_stem
+
+            # if is_in_state != new_is_in_state:
+            #     raise Exception("oops")
+
+            if requirement.is_required and not new_is_in_state:
                 return cls._required_failure
-            if requirement.is_forbidden and is_in_state:
+            if requirement.is_forbidden and new_is_in_state:
                 return cls._forbidden_failure
         return None

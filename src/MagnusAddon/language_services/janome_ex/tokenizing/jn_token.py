@@ -116,6 +116,10 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
     @property
     @override
     def is_non_word_character(self) -> bool: return self.parts_of_speech.is_non_word_character()
+
+    @property
+    @override
+    def is_a_stem(self) -> bool: return self.is_godan_verb() and self.inflected_form in InflectionForms.Irrealis.all_forms
     # </IAnalysisToken implementation>
 
     def is_verb(self) -> bool:

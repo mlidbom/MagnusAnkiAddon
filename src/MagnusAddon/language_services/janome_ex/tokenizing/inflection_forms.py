@@ -63,6 +63,7 @@ class InflectionForms(Slots):
         u_connection: InflectionForm = _add_form("未然ウ接続", 'Irrealis u-connection - Connects to volitional auxiliary "u"')
         nu_connection: InflectionForm = _add_form("未然ヌ接続", 'Irrealis nu-connection - Connects to classical negative "nu"')
         reru_connection: InflectionForm = _add_form("未然レル接続", 'Irrealis reru-connection - Connects to passive/potential "reru"')
+        all_forms: set[InflectionForm] = {general_irrealis_mizenkei, special_irrealis, u_connection, nu_connection, reru_connection}
 
     # noinspection PyUnusedClass,PyUnusedName
     class Hypothetical(Slots):
