@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from language_services import conjugator
 from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
 
 if TYPE_CHECKING:
@@ -17,12 +16,7 @@ class RequiresOrForbidsHasAStem(Slots):
     def apply_to(cls, inspector: VocabMatchInspector) -> FailedMatchRequirement | None:
         requirement = inspector.match.requires_forbids.a_stem
         if requirement.is_active:
-            len(inspector.prefix) > 0 and inspector.prefix[-1] in conjugator.a_stem_characters
-
             new_is_in_state = inspector.previous_location and inspector.previous_location.token.is_a_stem
-
-            # if is_in_state != new_is_in_state:
-            #     raise Exception("oops")
 
             if requirement.is_required and not new_is_in_state:
                 return cls._required_failure

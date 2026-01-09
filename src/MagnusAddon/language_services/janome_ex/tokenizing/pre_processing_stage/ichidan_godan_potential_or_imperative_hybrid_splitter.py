@@ -103,7 +103,7 @@ class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
     def _try_find_godan_hidden_in_ichidan_using_dictionary(cls, token: JNToken) -> str | None:
         if (len(token.base_form) >= 2
                 and cls.base_form_has_godan_potential_ending(token.base_form)
-                and token.is_ichidan_verb()):
+                and token.is_ichidan_verb):
             possible_godan_form = conjugator.construct_root_verb_for_possibly_potential_godan_verb_dictionary_form(token.base_form)
             if WordInfo.is_godan(possible_godan_form):
                 return possible_godan_form

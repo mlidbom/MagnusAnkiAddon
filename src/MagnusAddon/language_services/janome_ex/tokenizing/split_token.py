@@ -53,6 +53,12 @@ class SplitToken(IAnalysisToken, Slots):
     def is_non_word_character(self) -> bool: return self._is_non_word_character
     @property
     @override
+    def is_godan_verb(self) -> bool: return self.is_godan_potential_stem or self.is_godan_imperative_stem or self.is_godan_potential_inflection or self.is_godan_imperative_inflection
+    @property
+    @override
+    def is_ichidan_verb(self) -> bool: return self.is_ichidan_imperative_stem or self.is_ichidan_imperative_inflection
+    @property
+    @override
     def is_godan_potential_stem(self) -> bool: return self._is_godan_potential_stem
     @property
     @override

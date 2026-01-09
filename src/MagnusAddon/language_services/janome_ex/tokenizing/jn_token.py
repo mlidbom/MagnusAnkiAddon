@@ -123,11 +123,11 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
 
     @property
     @override
-    def is_a_stem(self) -> bool: return self.is_godan_verb() and self.is_irrealis
+    def is_a_stem(self) -> bool: return self.is_godan_verb and self.is_irrealis
 
     @property
     @override
-    def is_e_stem(self) -> bool: return self.is_godan_verb() and self.is_irrealis
+    def is_e_stem(self) -> bool: return self.is_godan_verb and self.is_irrealis
     # </IAnalysisToken implementation>
 
     def is_verb(self) -> bool:
@@ -136,10 +136,14 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
     def is_adjective(self) -> bool:
         return self.parts_of_speech in JNPOS.Adjective.all_types
 
+    @property
+    @override
     def is_ichidan_verb(self) -> bool:
         return self.inflection_type.base == InflectionTypes.Ichidan.base
 
     _actually_suru_verbs_not_godan: set[str] = {"する", "為る"}
+    @property
+    @override
     def is_godan_verb(self) -> bool:
         return self.inflection_type.base == InflectionTypes.Godan.base and self.base_form not in JNToken._actually_suru_verbs_not_godan
 

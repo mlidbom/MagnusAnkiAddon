@@ -10,6 +10,11 @@ class IAnalysisToken(Slots):
     def surface(self) -> str: raise NotImplementedError()
     @property
     def base_form(self) -> str: raise NotImplementedError()
+
+    @property
+    def is_ichidan_verb(self) -> bool: return False
+    @property
+    def is_godan_verb(self) -> bool: return False
     @property
     def is_past_tense_stem(self) -> bool: return False
     @property
@@ -28,19 +33,14 @@ class IAnalysisToken(Slots):
     def is_masu_stem(self) -> bool: return False
     @property
     def is_adverb(self) -> bool: return False
-
     @property
     def is_a_stem(self) -> bool: return False
-
     @property
     def is_irrealis(self) -> bool: return False
-
     @property
     def is_e_stem(self) -> bool: return False
-
     @property
     def is_dictionary_verb_form_stem(self) -> bool: return False
-
     @property
     def is_dictionary_verb_inflection(self) -> bool: return False
 
