@@ -9,7 +9,6 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
 
 class ForbidsIsConfiguredIncorrect(Slots):
-
     _failed: FailedMatchRequirement = FailedMatchRequirement.forbids("configured_incorrect")
 
     @classmethod

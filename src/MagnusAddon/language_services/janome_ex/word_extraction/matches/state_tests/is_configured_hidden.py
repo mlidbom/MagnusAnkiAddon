@@ -13,6 +13,7 @@ class ForbidsIsConfiguredHidden(Slots):
 
     @classmethod
     def apply_to(cls, inspector: MatchInspector) -> FailedMatchRequirement | None:
-        if inspector.variant.configuration.hidden_matches.excludes_at_index(inspector.tokenized_form, inspector.variant.start_index):  # noqa: SIM103
+        if inspector.variant.configuration.hidden_matches.excludes_at_index(inspector.match.exclusion_form,
+                                                                            inspector.match.start_index):  # noqa: SIM103
             return ForbidsIsConfiguredHidden._failed
         return None
