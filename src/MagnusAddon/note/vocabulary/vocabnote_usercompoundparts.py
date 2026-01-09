@@ -37,7 +37,7 @@ class VocabNoteUserCompoundParts(Slots):
         return self.all().select_many(app.col().vocab.with_question).to_set()
 
     def primary_parts_notes(self) -> QList[VocabNote]:
-        return self.primary().select_many(app.col().vocab.with_form_prefer_exact_match).to_list()
+        return self.primary().select_many(app.col().vocab.with_form_prefer_disambiguation_name_or_exact_match).to_list()
 
     def auto_generate(self) -> None:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis

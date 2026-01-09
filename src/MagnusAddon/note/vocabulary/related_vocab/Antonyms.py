@@ -20,7 +20,7 @@ class Antonyms(Slots):
 
     def strings(self) -> QSet[str]: return self._data.get().antonyms
     def notes(self) -> list[VocabNote]:
-        return col().vocab.with_any_form_in_prefer_exact_match(list(self.strings()))
+        return col().vocab.with_any_form_in_prefer_disambiguation_name_or_exact_match(list(self.strings()))
 
     def add(self, antonym: str) -> None:
         self.strings().add(antonym)

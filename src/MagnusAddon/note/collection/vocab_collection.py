@@ -112,28 +112,30 @@ class VocabCollection(Slots):
     def is_word(self, form: str) -> bool: return any(self._cache.with_form(form))
     def all(self) -> list[VocabNote]: return self._cache.all()
     def with_id_or_none(self, note_id: NoteId) -> VocabNote | None: return self._cache.with_id_or_none(note_id)
-    def with_disambiguation_name(self, name: str) -> Iterable[VocabNote]:
-        return (self._cache.with_disambiguation_name(name) if VocabNoteQuestion.DISAMBIGUAATION_MARKER in name
-                else self._cache.with_question(name))
+    def with_disambiguation_name(self, name: str) -> Iterable[VocabNote]: return self._cache.with_disambiguation_name(name)
     def with_form(self, form: str) -> Iterable[VocabNote]: return self._cache.with_form(form)
     def with_compound_part(self, compound_part: str) -> list[VocabNote]: return self._cache.with_compound_part(compound_part)
     def derived_from(self, derived_from: str) -> list[VocabNote]: return self._cache.derived_from(derived_from)
     def with_kanji_in_main_form(self, kanji: KanjiNote) -> list[VocabNote]: return self._cache.with_kanji_in_main_form(kanji.get_question())
     def with_kanji_in_any_form(self, kanji: KanjiNote) -> list[VocabNote]: return self._cache.with_kanji_in_any_form(kanji.get_question())
     def with_question(self, question: str) -> list[VocabNote]: return self._cache.with_question(question)
+    def with_question_prefer_disambiguation_name(self, question: str) -> Iterable[VocabNote]:
+        return (self._cache.with_disambiguation_name(question) if VocabNoteQuestion.DISAMBIGUATION_MARKER in question
+                else self._cache.with_question(question))
     def with_reading(self, question: str) -> list[VocabNote]: return self._cache.with_reading(question)
     def with_stem(self, question: str) -> list[VocabNote]: return self._cache.with_stem(question)
 
-    def with_form_prefer_exact_match(self, form: str) -> list[VocabNote]:
-        if ":" in form: return list(self.with_disambiguation_name(form))
+    def with_form_prefer_disambiguation_name_or_exact_match(self, form: str) -> list[VocabNote]:
+        with_disambiguation_name = self.with_disambiguation_name(form)
+        if with_disambiguation_name: return list(with_disambiguation_name)
 
         matches: Iterable[VocabNote] = self.with_form(form)
         exact_match = [voc for voc in matches if voc.question.without_noise_characters == form]
         sequence = exact_match if exact_match else matches
         return query(sequence).distinct().to_list()
 
-    def with_any_form_in_prefer_exact_match(self, forms: list[str]) -> list[VocabNote]:
-        return query(forms).select_many(self.with_form_prefer_exact_match).distinct().to_list()  # ex_sequence.remove_duplicates_while_retaining_order(ex_sequence.flatten([self.with_form_prefer_exact_match(form) for form in forms]))
+    def with_any_form_in_prefer_disambiguation_name_or_exact_match(self, forms: list[str]) -> list[VocabNote]:
+        return query(forms).select_many(self.with_form_prefer_disambiguation_name_or_exact_match).distinct().to_list()  # ex_sequence.remove_duplicates_while_retaining_order(ex_sequence.flatten([self.with_form_prefer_exact_match(form) for form in forms]))
 
     def with_any_form_in(self, forms: list[str]) -> list[VocabNote]:
         return query(forms).select_many(self.with_form).distinct().to_list()  # ex_sequence.remove_duplicates_while_retaining_order(ex_sequence.flatten([self.with_form(form) for form in forms]))

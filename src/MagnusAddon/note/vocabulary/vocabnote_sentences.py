@@ -62,6 +62,9 @@ class VocabNoteSentences(WeakRefable, Slots):
     def all(self) -> list[SentenceNote]:
         return self._collection.sentences.with_vocab(self._vocab)
 
+    def invalid_in(self) -> list[SentenceNote]:
+        return self._collection.sentences.with_vocab_marked_invalid(self._vocab)
+
     def with_owned_form(self) -> list[SentenceNote]:
         return self._collection.sentences.with_vocab_owned_form(self._vocab)
 

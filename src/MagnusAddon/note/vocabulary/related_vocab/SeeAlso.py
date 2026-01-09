@@ -21,7 +21,7 @@ class SeeAlso(Slots):
 
     def strings(self) -> QSet[str]: return self._data.get().see_also
     def notes(self) -> list[VocabNote]:
-        return col().vocab.with_any_form_in_prefer_exact_match(list(self.strings()))
+        return col().vocab.with_any_form_in_prefer_disambiguation_name_or_exact_match(list(self.strings()))
 
     def add(self, to_add: str) -> None:
         self.strings().add(to_add)

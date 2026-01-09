@@ -51,8 +51,8 @@ class CompoundPartViewModel(Slots):
         if match.inspector.is_ichidan_covering_godan_potential:
             godan_base = match.word.start_location.token.base_form
             godan_potential_part_base = match.word.end_location.token.base_form
-            godan = app.col().vocab.with_form_prefer_exact_match(godan_base)
-            godan_potential = app.col().vocab.with_form_prefer_exact_match(godan_potential_part_base)
+            godan = app.col().vocab.with_form_prefer_disambiguation_name_or_exact_match(godan_base)
+            godan_potential = app.col().vocab.with_form_prefer_disambiguation_name_or_exact_match(godan_potential_part_base)
             if godan and godan_potential:
                 return [(CompoundPartViewModel(godan[0], depth, config)),
                         (CompoundPartViewModel(godan_potential[0], depth, config))]

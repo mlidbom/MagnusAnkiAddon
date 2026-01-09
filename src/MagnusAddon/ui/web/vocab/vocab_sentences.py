@@ -8,11 +8,33 @@ from ui.web.vocab.vocab_sentences_vocab_sentence_view_model import VocabSentence
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
 
-def generate_sentences_list_html(_vocab_note: VocabNote) -> str:
+def generate_marked_invalid_in_list_html(_vocab_note: VocabNote) -> str:
+    sentences = _vocab_note.sentences.invalid_in()[:30]
+    return f'''
+             <div id="invalidInSentencesSection" class="page_section invalid_in_sentences">
+                <div class="page_section_title" title="primary form hits: ">Marked as invalid in sentences</span></div>
+                <div id="highlightedSentencesList">
+                    <div>
+                        {newline.join([f"""
+                        <div class="highlightedSentenceDiv">
+                            <audio src="{_sentence.audio.first_audiofile_path()}"></audio><a class="play-button"></a>
+                            <div class="highlightedSentence">
+                                <div class="sentenceQuestion"><span class="clipboard">{_sentence.get_question()}</span></div>
+                                <div class="sentenceAnswer"> {_sentence.get_answer()}</span></div>
+                            </div>
+                        </div>
+                        """ for _sentence in sentences])}
+                    </div>
+                </div>
+            </div>
+            ''' if sentences else ""
+
+    return ""
+
+def generate_valid_in_list_html(_vocab_note: VocabNote) -> str:
     studying_sentences = set(_vocab_note.sentences.studying())
 
     def sort_sentences(_sentences: list[VocabSentenceViewModel]) -> list[VocabSentenceViewModel]:
-
         def prefer_highlighted(_sentence: VocabSentenceViewModel) -> int: return 0 if _sentence.is_highlighted() else 1
         def prefer_studying_read(_sentence: VocabSentenceViewModel) -> int: return 0 if _sentence.sentence.is_studying_read() else 1
         def prefer_studying_listening(_sentence: VocabSentenceViewModel) -> int: return 0 if _sentence.sentence.is_studying_listening() else 1
@@ -59,4 +81,7 @@ def generate_sentences_list_html(_vocab_note: VocabNote) -> str:
             ''' if sentences else ""
 
 def init() -> None:
-    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(VocabNote, {"##HIGHLIGHTED_SENTENCES##": generate_sentences_list_html}).render)
+    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(VocabNote,
+                                                                      {"##IN_SENTENCES##": generate_valid_in_list_html,
+                                                                       "##MARKED_INVALID_IN_SENTENCES##": generate_marked_invalid_in_list_html}
+                                                                      ).render)

@@ -19,7 +19,7 @@ class VocabStems(Slots):
         return masu_stem if masu_stem != self._vocab().question.raw else None
 
 class VocabNoteQuestion(Slots):
-    DISAMBIGUAATION_MARKER: str = ":"
+    DISAMBIGUATION_MARKER: str = ":"
     INVALID_QUESTION_MESSAGE: str = "INVALID QUESTION FORMAT. If you need to specify disambiguation, use [question:disambiguation] if not do NOT use [] characters"
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
@@ -31,7 +31,7 @@ class VocabNoteQuestion(Slots):
         value = self._vocab().get_field(NoteFields.Vocab.question)
         if value.startswith("["):
             self.disambiguation_name = value[1:-1]
-            parts = self.disambiguation_name.split(VocabNoteQuestion.DISAMBIGUAATION_MARKER)
+            parts = self.disambiguation_name.split(VocabNoteQuestion.DISAMBIGUATION_MARKER)
             if len(parts) != 2:
                 self.raw = VocabNoteQuestion.INVALID_QUESTION_MESSAGE
             else:
@@ -45,7 +45,7 @@ class VocabNoteQuestion(Slots):
     def is_valid(self) -> bool: return self.raw != VocabNoteQuestion.INVALID_QUESTION_MESSAGE
 
     @property
-    def is_disambiguated(self) -> bool: return VocabNoteQuestion.DISAMBIGUAATION_MARKER in self.disambiguation_name
+    def is_disambiguated(self) -> bool: return VocabNoteQuestion.DISAMBIGUATION_MARKER in self.disambiguation_name
 
     @property
     def without_noise_characters(self) -> str: return self.raw.replace(Mine.VocabPrefixSuffixMarker, "")

@@ -19,7 +19,7 @@ class WordExclusion(Slots):
         if _secret != "aoesunth9cgrcgf": raise ValueError("please use the factory methods instead of this private constructor")
         self.word = word
         self.index = index
-        self._match_part = word.split(VocabNoteQuestion.DISAMBIGUAATION_MARKER)[0]
+        self._match_part = word.split(VocabNoteQuestion.DISAMBIGUATION_MARKER)[0]
 
     def excludes_form_at_index(self, form: str, index: int) -> bool:
         return form == self.word and (self.index == WordExclusion._no_index or self.index == index)

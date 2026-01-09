@@ -165,7 +165,15 @@
 
     #metaData span { margin-right: 10pt;}
 
-    #highlightedSentencesSection {
+    #invalidInSentencesSection {
+        border-color: var(--colorTextBold);
+        border-width: 2px;
+        .page_section_title {
+            color: var(--colorTextWarningRed);
+        }
+    }
+
+    #highlightedSentencesSection, #invalidInSentencesSection {
         .studing_sentence_count { color: var(--colorTextGreen);}
         &.no_studying_sentences {
             border-color: var(--colorTextBold);
