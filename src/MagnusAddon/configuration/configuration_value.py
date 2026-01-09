@@ -122,6 +122,7 @@ class JapaneseConfig(Slots):
         # sentence_view_toggles
         self.show_compound_parts_in_sentence_breakdown: ConfigurationValueBool = add_bool(ConfigurationValueBool("show_compound_parts_in_sentence_breakdown", "Show compound parts in sentence breakdown", True))
         self.show_kanji_in_sentence_breakdown: ConfigurationValueBool = add_bool(ConfigurationValueBool("show_kanji_in_sentence_breakdown", "Show kanji in sentence breakdown", True))
+        self.show_kanji_mnemonics_in_sentence_breakdown: ConfigurationValueBool = add_bool(ConfigurationValueBool("show_kanji_mnemonics_in_sentence_breakdown", "Show kanji mnemonics in sentence breakdown", True))
         self.show_sentence_breakdown_in_edit_mode: ConfigurationValueBool = add_bool(ConfigurationValueBool("show_sentence_breakdown_in_edit_mode", "Show sentence breakdown in edit mode", False))
         self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound: ConfigurationValueBool = add_bool(ConfigurationValueBool("automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound",
                                                                                                                                                      "Automatically yield last token in suru verb compounds to overlapping compounds (Ctrl+Shift+Alt+s)", True))
@@ -140,7 +141,8 @@ class JapaneseConfig(Slots):
                                                                     self.hide_all_compounds,
                                                                     self.show_compound_parts_in_sentence_breakdown,
                                                                     self.show_sentence_breakdown_in_edit_mode,
-                                                                    self.show_kanji_in_sentence_breakdown]
+                                                                    self.show_kanji_in_sentence_breakdown,
+                                                                    self.show_kanji_mnemonics_in_sentence_breakdown]
 
         # performance toggles
         self.load_jamdict_db_into_memory: ConfigurationValueBool = add_bool(ConfigurationValueBool("load_jamdict_db_into_memory", "Load Jamdict DB into memory [Requires restart]", False))
