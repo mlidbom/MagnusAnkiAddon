@@ -74,7 +74,6 @@ class Tags(Slots):
             class Requires(Slots):
                 folder_name: str = f_vocab_matching_requires
                 a_stem: Tag = Tag.from_name(f"{f_vocab_matching_requires}a-stem")
-                e_stem: Tag = Tag.from_name(f"{f_vocab_matching_requires}e-stem")
                 masu_stem: Tag = Tag.from_name(f"{f_vocab_matching_requires}masu_stem")
                 godan: Tag = Tag.from_name(f"{f_vocab_matching_requires}godan")
                 ichidan: Tag = Tag.from_name(f"{f_vocab_matching_requires}ichidan")
@@ -96,7 +95,6 @@ class Tags(Slots):
 
             class Forbids(Slots):
                 a_stem: Tag = Tag.from_name(f"{f_vocab_matching_forbids}a-stem")
-                e_stem: Tag = Tag.from_name(f"{f_vocab_matching_forbids}e-stem")
                 masu_stem: Tag = Tag.from_name(f"{f_vocab_matching_forbids}masu_stem")
                 godan: Tag = Tag.from_name(f"{f_vocab_matching_forbids}godan")
                 ichidan: Tag = Tag.from_name(f"{f_vocab_matching_forbids}ichidan")

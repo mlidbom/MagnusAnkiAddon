@@ -6,6 +6,7 @@ from ankiutils import app
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtWidgets import QCheckBox, QDialog, QDialogButtonBox, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QMessageBox, QScrollArea, QVBoxLayout, QWidget
 from sysutils.typed import checked_cast, non_optional
+from ui.menus.notes.vocab.counter import Counter
 from ui.menus.notes.vocab.require_forbid_widget import RequireForbidWidget
 from ui.menus.notes.vocab.string_set_widget import StringSetWidget
 
@@ -162,21 +163,22 @@ class VocabFlagsDialog(QDialog):
         stem_grid = QGridLayout()
         stem_grid.setColumnStretch(0, 0)
         stem_grid.setColumnStretch(1, 0)
-        self._add_require_forbid_field(stem_grid, 0, "A stem", self.vocab.matching_configuration.requires_forbids.a_stem)
-        self._add_require_forbid_field(stem_grid, 1, "E stem", self.vocab.matching_configuration.requires_forbids.e_stem)
-        self._add_require_forbid_field(stem_grid, 2, "Godan imperative", self.vocab.matching_configuration.requires_forbids.godan_imperative)
-        self._add_require_forbid_field(stem_grid, 3, "Godan imperative prefix", self.vocab.matching_configuration.requires_forbids.godan_imperative_prefix)
-        self._add_require_forbid_field(stem_grid, 4, "Godan potential", self.vocab.matching_configuration.requires_forbids.godan_potential)
-        self._add_require_forbid_field(stem_grid, 5, "Ichidan imperative", self.vocab.matching_configuration.requires_forbids.ichidan_imperative)
-        self._add_require_forbid_field(stem_grid, 6, "Masu stem", self.vocab.matching_configuration.requires_forbids.masu_stem)
-        self._add_require_forbid_field(stem_grid, 7, "Godan", self.vocab.matching_configuration.requires_forbids.godan)
-        self._add_require_forbid_field(stem_grid, 8, "Ichidan", self.vocab.matching_configuration.requires_forbids.ichidan)
-        self._add_require_forbid_field(stem_grid, 9, "Irrealis", self.vocab.matching_configuration.requires_forbids.irrealis)
-        self._add_require_forbid_field(stem_grid, 10, "Past tense stem", self.vocab.matching_configuration.requires_forbids.past_tense_stem)
-        self._add_require_forbid_field(stem_grid, 11, "Dictionary form stem", self.vocab.matching_configuration.requires_forbids.dictionary_form_stem)
-        self._add_require_forbid_field(stem_grid, 12, "Dictionary form prefix", self.vocab.matching_configuration.requires_forbids.dictionary_form_prefix)
-        self._add_require_forbid_field(stem_grid, 13, "Preceding adverb", self.vocab.matching_configuration.requires_forbids.preceding_adverb)
-        self._add_require_forbid_field(stem_grid, 14, "て-form stem", self.vocab.matching_configuration.requires_forbids.te_form_stem)
+
+        row_number = Counter(start_number=-1)
+        self._add_require_forbid_field(stem_grid, row_number.increment(), "A stem", self.vocab.matching_configuration.requires_forbids.a_stem)
+        self._add_require_forbid_field(stem_grid, row_number.increment(), "Godan imperative", self.vocab.matching_configuration.requires_forbids.godan_imperative)
+        self._add_require_forbid_field(stem_grid, row_number.increment(), "Godan imperative prefix", self.vocab.matching_configuration.requires_forbids.godan_imperative_prefix)
+        self._add_require_forbid_field(stem_grid, row_number.increment(), "Godan potential", self.vocab.matching_configuration.requires_forbids.godan_potential)
+        self._add_require_forbid_field(stem_grid, row_number.increment(), "Ichidan imperative", self.vocab.matching_configuration.requires_forbids.ichidan_imperative)
+        self._add_require_forbid_field(stem_grid, row_number.increment(), "Masu stem", self.vocab.matching_configuration.requires_forbids.masu_stem)
+        self._add_require_forbid_field(stem_grid, row_number.increment(), "Godan", self.vocab.matching_configuration.requires_forbids.godan)
+        self._add_require_forbid_field(stem_grid, row_number.increment(), "Ichidan", self.vocab.matching_configuration.requires_forbids.ichidan)
+        self._add_require_forbid_field(stem_grid, row_number.increment(), "Irrealis", self.vocab.matching_configuration.requires_forbids.irrealis)
+        self._add_require_forbid_field(stem_grid, row_number.increment(), "Past tense stem", self.vocab.matching_configuration.requires_forbids.past_tense_stem)
+        self._add_require_forbid_field(stem_grid, row_number.increment(), "Dictionary form stem", self.vocab.matching_configuration.requires_forbids.dictionary_form_stem)
+        self._add_require_forbid_field(stem_grid, row_number.increment(), "Dictionary form prefix", self.vocab.matching_configuration.requires_forbids.dictionary_form_prefix)
+        self._add_require_forbid_field(stem_grid, row_number.increment(), "Preceding adverb", self.vocab.matching_configuration.requires_forbids.preceding_adverb)
+        self._add_require_forbid_field(stem_grid, row_number.increment(), "て-form stem", self.vocab.matching_configuration.requires_forbids.te_form_stem)
         stem_group.setLayout(stem_grid)
         layout.addWidget(stem_group)
 
