@@ -77,6 +77,8 @@ class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
 
     @classmethod
     def _is_imperative_godan(cls, token: JNToken, godan_base: str) -> bool:
+        if token.surface[-1] not in conjugator.godan_imperative_verb_endings and token.inflected_form != InflectionForms.ImperativeMeireikei.yo:
+            return False
         godan_word_info = WordInfo.lookup(godan_base)
         if WordInfo.lookup(token.base_form) is None:
             return True  # we check for potential godan before this, so if there is no ichidan verb in the dictonary, the only thing left is an imperative godan

@@ -35,6 +35,7 @@ class VocabNote(JPNote, Slots):
     def __init__(self, note: Note) -> None:
         super().__init__(note)
         self.weakref_vocab: WeakRef[VocabNote] = cast(WeakRef[VocabNote], self.weakref)
+        self.question: VocabNoteQuestion = VocabNoteQuestion(self.weakref_vocab)
 
         self.readings: MutableCommaSeparatedStringsListField = MutableCommaSeparatedStringsListField(self.weakref, NoteFields.Vocab.Reading)
 
@@ -46,7 +47,6 @@ class VocabNote(JPNote, Slots):
         self.parts_of_speech: VocabNotePartsOfSpeech = VocabNotePartsOfSpeech(self.weakref_vocab)
         self.compound_parts: VocabNoteUserCompoundParts = VocabNoteUserCompoundParts(self.weakref_vocab)
         self.matching_configuration: VocabNoteMatchingConfiguration = VocabNoteMatchingConfiguration(self.weakref_vocab)
-        self.question: VocabNoteQuestion = VocabNoteQuestion(self.weakref_vocab)
 
     @override
     def get_question(self) -> str: return self.question.raw

@@ -14,6 +14,8 @@ _godan_ru_or_ichidan_endings = _godan_ru_endings + _ichidan_endings
 
 godan_potential_verb_ending_to_dictionary_form_endings: dict[str, str] = {"える": "う", "ける": "く", "げる": "ぐ", "せる": "す", "てる": "つ", "ねる": "ぬ", "べる": "ぶ", "める": "む", "れる": "る"}
 
+godan_imperative_verb_endings: set[str] = {"え", "け", "げ", "せ", "て", "ね", "べ", "め", "れ"}
+
 e_stem_hiragana: set[str] = {"え", "け", "げ", "せ", "て", "ね", "べ", "め", "れ"}
 e_stem_katakana: set[str] = {"エ", "ケ", "ゲ", "セ", "テ", "ネ", "ベ", "メ", "レ"}
 e_stem_characters: set[str] = e_stem_hiragana | e_stem_katakana
