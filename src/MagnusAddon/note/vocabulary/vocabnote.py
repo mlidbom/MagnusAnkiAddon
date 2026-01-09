@@ -62,7 +62,7 @@ class VocabNote(JPNote, Slots):
     @property
     def conjugator(self) -> VocabNoteConjugator: return VocabNoteConjugator(self.weakref_vocab)
     @property
-    def _source_answer(self) -> MutableStringField: return MutableStringField(self.weakref_vocab, NoteFields.Vocab.source_answer)
+    def source_answer(self) -> MutableStringField: return MutableStringField(self.weakref_vocab, NoteFields.Vocab.source_answer)
     @property
     def active_answer(self) -> MutableStringField: return MutableStringField(self.weakref_vocab, NoteFields.Vocab.active_answer)
     @property
@@ -93,5 +93,5 @@ class VocabNote(JPNote, Slots):
     @override
     def get_answer(self) -> str:
         field = self.user.answer
-        string_field = self._source_answer
+        string_field = self.source_answer
         return field.value or string_field.value

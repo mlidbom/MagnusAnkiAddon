@@ -34,9 +34,18 @@ class VocabNoteFactory(Slots):
         backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
         note = VocabNote(backend_note)
         note.question.set(question)
-        note._source_answer.set(answer)  # pyright: ignore [reportPrivateUsage]
+        note.source_answer.set(answer)  # pyright: ignore [reportPrivateUsage]
         note.readings.set(readings)
         if initializer is not None: initializer(note)
         app.col().vocab.add(note)
         note.suspend_all_cards()
+        return note
+
+
+    @classmethod
+    def create_from_user_data(cls, question: str, answer: str, readings: list[str], initializer: Callable[[VocabNote], None] | None = None) -> VocabNote:
+        note = cls.create(question, answer, readings, initializer)
+        note.user.answer.set(note.source_answer.value)
+        note.source_answer.set("")
+
         return note

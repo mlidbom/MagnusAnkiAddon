@@ -218,7 +218,7 @@ class VocabCloner(Slots):
 
     def _create_new_vocab_with_some_data_copied(self, question: str, answer: str, readings: list[str], copy_vocab_tags: bool = True, copy_matching_rules: bool = True) -> VocabNote:
         from note.vocabulary.vocabnote import VocabNote
-        clone = VocabNote.factory.create(question, answer, readings)
+        clone = VocabNote.factory.create_from_user_data(question, answer, readings)
         if copy_vocab_tags:
             self._copy_vocab_tags_to(clone)
 
