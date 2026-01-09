@@ -33,6 +33,12 @@ class IAnalysisToken(Slots):
     def is_a_stem(self) -> bool: return False
 
     @property
+    def is_irrealis(self) -> bool: return False
+
+    @property
+    def is_e_stem(self) -> bool: return False
+
+    @property
     def is_dictionary_verb_form_stem(self) -> bool: return False
 
     @property

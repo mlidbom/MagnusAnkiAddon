@@ -119,7 +119,15 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
 
     @property
     @override
-    def is_a_stem(self) -> bool: return self.is_godan_verb() and self.inflected_form in InflectionForms.Irrealis.all_forms
+    def is_irrealis(self) -> bool: return self.inflected_form in InflectionForms.Irrealis.all_forms
+
+    @property
+    @override
+    def is_a_stem(self) -> bool: return self.is_godan_verb() and self.is_irrealis
+
+    @property
+    @override
+    def is_e_stem(self) -> bool: return self.is_godan_verb() and self.is_irrealis
     # </IAnalysisToken implementation>
 
     def is_verb(self) -> bool:

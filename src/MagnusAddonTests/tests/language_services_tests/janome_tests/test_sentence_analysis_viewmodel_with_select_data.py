@@ -25,6 +25,13 @@ def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
+        ("寝れない", ["寝る", "れない"]),
+        ("食べれる", ["食べる", "れる:ichidan", "る"])
+])
+def test_requires_e_stem(sentence: str, expected_output: list[str]) -> None:
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+
+@pytest.mark.parametrize("sentence, expected_output", [
         ("おっせぇ<wbr>な　あいつら", ["おる", "せ", "ぇ:[MISSING]", "な:s.end", "あいつら"]),
         ("何て言うか<wbr>さ", ["何", "て言うか:ていうか", "さ"]),
         ("だったら普通に金<wbr>貸せって言えよ", ["だったら", "普通に", "金", "貸す", "え", "って言う", "え", "よ"]),
