@@ -23,6 +23,7 @@ def build_invalid_for_display_span(view_model: MatchViewModel) -> str:
     hiding_reasons = [f"""<div class="hiding_reason">{format_reason(reason)}</div>""" for reason in view_model.hiding_reasons]
     return f"""<span>{newline.join(incorrect_reasons + hiding_reasons)}</span>"""
 
+
 def render_match_kanji(match: MatchViewModel) -> str:
     if not match.show_kanji: return ""
     viewmodel = sentence_kanji_list_viewmodel.create(match.kanji)
@@ -36,7 +37,7 @@ def render_match_kanji(match: MatchViewModel) -> str:
             <span class="kanji_answer">{kanji.answer()}</span>
             <span class="kanji_readings">{kanji.readings()}</span>
         </div>
-        <div class="kanji_mnemonic">{kanji.mnemonic()}</div>
+        {f"""<div class="kanji_mnemonic">{kanji.mnemonic()}</div>""" if match.show_kanji_mnemonics else ""}
     </div>
 ''' for kanji in viewmodel.kanji_list)}
 </div>

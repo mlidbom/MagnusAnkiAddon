@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from configuration.settings import Settings
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
@@ -73,7 +72,10 @@ class MatchViewModel(Slots):
                 and self.match.is_displayed)
 
     @property
-    def show_kanji(self) -> bool: return any(self.kanji) and not Settings.show_breakdown_in_edit_mode() and app.config().show_kanji_in_sentence_breakdown.get_value()
+    def show_kanji(self) -> bool: return any(self.kanji) and not Settings.show_breakdown_in_edit_mode() and Settings.show_kanji_in_sentence_breakdown()
+
+    @property
+    def show_kanji_mnemonics(self) -> bool: return Settings.show_kanji_mnemonics_in_sentence_breakdown()
 
     @property
     def show_compound_parts(self) -> bool: return any(self.compound_parts) and not Settings.show_breakdown_in_edit_mode()

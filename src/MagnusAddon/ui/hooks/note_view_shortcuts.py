@@ -78,6 +78,9 @@ def init() -> None:
     def toggle_show_kanji_in_sentence_breakdown() -> None:
         toggle_expando_flag(app.config().show_kanji_in_sentence_breakdown)
 
+    def toggle_show_kanji_mnemonics_in_sentence_breakdown() -> None:
+        toggle_expando_flag(app.config().show_kanji_mnemonics_in_sentence_breakdown)
+
     def toggle_show_sentence_breakdown_in_edit_mode() -> None:
         toggle_expando_flag(app.config().show_sentence_breakdown_in_edit_mode, exit_edit_mode=False)
 
@@ -121,6 +124,7 @@ def init() -> None:
                                                 "u": toggle_hide_all_compounds_in_sentence_breakdown,
                                                 "i": toggle_hide_transparent_compounds__in_sentence_breakdown,
                                                 "k": toggle_show_sentence_breakdown_in_edit_mode,
+                                                "q": toggle_show_kanji_mnemonics_in_sentence_breakdown,
                                                 "0": remove_mnemonic,
                                                 "7": reset_source_comments,
                                                 "8": reset_incorrect_matches,

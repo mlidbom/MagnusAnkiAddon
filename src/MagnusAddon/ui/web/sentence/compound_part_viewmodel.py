@@ -32,7 +32,7 @@ class CompoundPartViewModel(Slots):
     @classmethod
     def get_compound_parts_recursive(cls, match_viewmodel: MatchViewModel, vocab_note: VocabNote, config: SentenceConfiguration, depth: int = 0, visited: QSet[NoteId] | None = None) -> list[CompoundPartViewModel]:
         if not Settings.hide_all_compounds():
-            if not app.config().show_compound_parts_in_sentence_breakdown.get_value(): return []
+            if not Settings.show_compound_parts_in_sentence_breakdown(): return []
             if visited is None: visited = QSet()
             if vocab_note.get_id() in visited: return []
 
