@@ -18,8 +18,6 @@ def setup_collection_with_select_data() -> Iterator[None]:
         yield
 
 @pytest.mark.parametrize("sentence, expected_output", [
-        ("まだ割れんのか", ["まだ", "割れる", "のか"]),
-        ("があるの", ["がある", "うの"]),
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -55,6 +53,7 @@ def test_require_forbid_dictionary_form_prefix_and_masu_stem(sentence: str, expe
         ("音がするの", ["音がする", "うの"]),
         ("する", ["する", "る"]),
         ("大声出すな", ["大声出す", "う", "な:dict"]),
+        ("があるの", ["がある", "うの"]),
         ("止めるかな", ["止める", "かな"])  # todo: this is both an ichidan hiding a godan, and a dictionary form ending. How do we deal with that?
 ])
 def test_dictionary_form_splitting(sentence: str, expected_output: list[str]) -> None:
@@ -109,7 +108,8 @@ def test_hide_transparent_compounds(sentence: str, expected_output: list[str]) -
         ("聞けよ", ["聞え", "よ"]),
         ("返せったら", ["返す", "え", "ったら"]),
         ("返せ俺の", ["返す", "え", "俺", "の"]),
-        ("返せ盗人", ["返す", "え", "盗人"])
+        ("返せ盗人", ["返す", "え", "盗人"]),
+        ("カバンに入れっぱなし", ["カバン", "に", "入れる", "っぱなし:っ放し"])
 ])
 def test_godan_potential_and_imperative(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -200,7 +200,8 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("私たちなら嘘をつかずに付き合っていけるかもしれないね", ["私たち", "なら", "嘘をつく", "ずに", "付き合う", "ていける", "かもしれない", "ね"]),
         ("どやされても知らんぞ", ["どやす", "あれる", "ても知らん:ても知らない", "ぞ"]),
         ("服を引き出しの中に入れてください", ["服", "を", "引き出し", "の中", "に入る", "える", "て", "ください"]),
-        ("他人を気遣い", ["他人", "を", "気遣う"])
+        ("他人を気遣い", ["他人", "を", "気遣う"]),
+        ("まだ割れんのか", ["まだ", "割れる", "のか"]),
 ])
 def test_misc_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)

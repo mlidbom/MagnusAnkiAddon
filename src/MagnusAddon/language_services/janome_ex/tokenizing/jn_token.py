@@ -186,7 +186,7 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
 
     _pos_more_likely_to_follow_imperative_than_ichidan_stem: set[JNPartsOfSpeech] = set()
     def is_more_likely_to_follow_imperative_than_ichidan_stem(self) -> bool:
-        if self.parts_of_speech.is_noun():
+        if self.parts_of_speech.is_noun() and self.parts_of_speech != JNPOS.Noun.Suffix.general:
             return True
         return self.parts_of_speech in JNToken._pos_more_likely_to_follow_imperative_than_ichidan_stem
 

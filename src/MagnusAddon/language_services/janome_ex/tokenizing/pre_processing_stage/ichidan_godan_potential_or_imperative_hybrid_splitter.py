@@ -86,11 +86,11 @@ class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
             return False
         elif token.next and token.next.cannot_follow_ichidan_stem():  # noqa: SIM114
             return True
-        elif token.next and token.next.is_more_likely_to_follow_imperative_than_ichidan_stem():  # noqa: SIM114
-            return True
         elif token.next is None or token.is_end_of_statement():  # noqa: SIM114
             return True
-        elif token.inflected_form == InflectionForms.ImperativeMeireikei.yo:  # handles cases like 放せよ which janome turns into a single token and believes is an ichidan よ imperative
+        elif token.inflected_form == InflectionForms.ImperativeMeireikei.yo:  # handles cases like 放せよ which janome turns into a single token and believes is an ichidan よ imperative  # noqa: SIM114
+            return True
+        elif token.next and token.next.is_more_likely_to_follow_imperative_than_ichidan_stem():  # noqa: SIM114
             return True
 
         return False

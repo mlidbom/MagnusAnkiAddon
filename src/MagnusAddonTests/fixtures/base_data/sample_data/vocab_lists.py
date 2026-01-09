@@ -190,4 +190,5 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("寝れる", tags=[vm.is_poison_word]),
         VocabSpec("[れる:ichidan]", tags=[vm.Requires.ichidan, vm.Requires.irrealis]),
         VocabSpec("れない", tags=[vm.Requires.ichidan, vm.Requires.irrealis]),
+        VocabSpec("っ放し", forms=["っはなし", "っぱなし"], tags=[vm.is_inflecting_word])
 ]
