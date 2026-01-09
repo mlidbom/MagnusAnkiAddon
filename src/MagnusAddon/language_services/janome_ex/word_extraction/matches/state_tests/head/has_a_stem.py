@@ -16,7 +16,8 @@ class RequiresOrForbidsHasAStem(Slots):
     def apply_to(cls, inspector: VocabMatchInspector) -> FailedMatchRequirement | None:
         requirement = inspector.match.requires_forbids.a_stem
         if requirement.is_active:
-            new_is_in_state = inspector.previous_location and inspector.previous_location.token.is_a_stem
+            previous_location = inspector.previous_location
+            new_is_in_state = previous_location and previous_location.token.is_irrealis and previous_location.token.is_godan_verb
 
             if requirement.is_required and not new_is_in_state:
                 return cls._required_failure
