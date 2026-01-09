@@ -9,10 +9,12 @@ from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
 
 def generate_marked_invalid_in_list_html(_vocab_note: VocabNote) -> str:
-    sentences = _vocab_note.sentences.invalid_in()[:30]
+    all_invalid = _vocab_note.sentences.invalid_in()
+    shown_sentences = all_invalid[:30]
+
     return f'''
              <div id="invalidInSentencesSection" class="page_section invalid_in_sentences">
-                <div class="page_section_title" title="primary form hits: ">Marked as invalid in sentences</span></div>
+                <div class="page_section_title" title="primary form hits: ">Marked as invalid in {len(all_invalid)} sentences{" showing first 30" if len(all_invalid) > 30 else ""}</span></div>
                 <div id="highlightedSentencesList">
                     <div>
                         {newline.join([f"""
@@ -23,11 +25,11 @@ def generate_marked_invalid_in_list_html(_vocab_note: VocabNote) -> str:
                                 <div class="sentenceAnswer"> {_sentence.get_answer()}</span></div>
                             </div>
                         </div>
-                        """ for _sentence in sentences])}
+                        """ for _sentence in shown_sentences])}
                     </div>
                 </div>
             </div>
-            ''' if sentences else ""
+            ''' if shown_sentences else ""
 
     return ""
 
