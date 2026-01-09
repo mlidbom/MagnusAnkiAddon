@@ -7,6 +7,7 @@ from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
 from note.vocabulary.vocabnote import VocabNote
+from note.vocabulary.vocabnote_question import VocabNoteQuestion
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
 
@@ -111,7 +112,9 @@ class VocabCollection(Slots):
     def is_word(self, form: str) -> bool: return any(self._cache.with_form(form))
     def all(self) -> list[VocabNote]: return self._cache.all()
     def with_id_or_none(self, note_id: NoteId) -> VocabNote | None: return self._cache.with_id_or_none(note_id)
-    def with_disambiguation_name(self, form: str) -> Iterable[VocabNote]: return self._cache.with_disambiguation_name(form)
+    def with_disambiguation_name(self, name: str) -> Iterable[VocabNote]:
+        return (self._cache.with_disambiguation_name(name) if VocabNoteQuestion.DISAMBIGUAATION_MARKER in name
+                else self._cache.with_question(name))
     def with_form(self, form: str) -> Iterable[VocabNote]: return self._cache.with_form(form)
     def with_compound_part(self, compound_part: str) -> list[VocabNote]: return self._cache.with_compound_part(compound_part)
     def derived_from(self, derived_from: str) -> list[VocabNote]: return self._cache.derived_from(derived_from)
@@ -122,9 +125,7 @@ class VocabCollection(Slots):
     def with_stem(self, question: str) -> list[VocabNote]: return self._cache.with_stem(question)
 
     def with_form_prefer_exact_match(self, form: str) -> list[VocabNote]:
-        via_disambiguation_name: Iterable[VocabNote] = self.with_disambiguation_name(form)
-        if via_disambiguation_name:
-            return list(via_disambiguation_name)
+        if ":" in form: return list(self.with_disambiguation_name(form))
 
         matches: Iterable[VocabNote] = self.with_form(form)
         exact_match = [voc for voc in matches if voc.question.without_noise_characters == form]

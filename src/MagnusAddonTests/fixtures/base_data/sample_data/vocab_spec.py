@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from note.vocabulary.vocabnote_question import VocabNoteQuestion
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
@@ -25,7 +26,7 @@ class VocabSpec(Slots):
                  suffix_not: set[str] | None = None,
                  tos: set[str] | None = None) -> None:
         self.disambiguation_name: str = question
-        self.question: str = question.replace("[", "").replace("]", "").split(":")[0]
+        self.question: str = question.replace("[", "").replace("]", "").split(VocabNoteQuestion.DISAMBIGUAATION_MARKER)[0]
         self.answer: str = answer or question
         self.readings: list[str] = readings or [self.question]
         self.extra_forms: QSet[str] = QSet(forms if forms else [])
