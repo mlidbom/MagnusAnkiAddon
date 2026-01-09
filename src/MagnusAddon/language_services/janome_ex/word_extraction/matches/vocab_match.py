@@ -8,7 +8,6 @@ from language_services.janome_ex.word_extraction.matches.requirements.vocab_matc
 from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import ForbidsAnotherMatchIsHigherPriority
 from language_services.janome_ex.word_extraction.matches.state_tests.forbids_compositionally_transparent_compound import ForbidsCompositionallyTransparentCompound
 from language_services.janome_ex.word_extraction.matches.state_tests.forbids_yields_to_surface import ForbidsYieldsToSurface
-from language_services.janome_ex.word_extraction.matches.state_tests.head.has_a_stem import RequiresOrForbidsHasAStem
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_godan_imperative_prefix import RequiresOrForbidsHasGodanImperativePrefix
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_past_tense_stem import RequiresOrForbidsHasPastTenseStem
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_te_form_stem import RequiresOrForbidsHasTeFormStem
@@ -85,7 +84,6 @@ class VocabMatch(Match, Slots):
             RequiresPrefixIsIn.apply_to,
             RequiresOrForbidsIsSentenceStart.apply_to,
             RequiresOrForbidsHasTeFormStem.apply_to,
-            RequiresOrForbidsHasAStem.apply_to,
             RequiresOrForbidsHasPastTenseStem.apply_to,
 
             RequiresOrForbidsHasGodanImperativePrefix.apply_to,
