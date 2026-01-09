@@ -137,8 +137,8 @@ class VocabCollection(Slots):
     def with_any_form_in(self, forms: list[str]) -> list[VocabNote]:
         return query(forms).select_many(self.with_form).distinct().to_list()  # ex_sequence.remove_duplicates_while_retaining_order(ex_sequence.flatten([self.with_form(form) for form in forms]))
 
-    def with_any_question_in(self, questions: Iterable[str]) -> list[VocabNote]:
-        return query(questions).select(self.with_question).select_many(lambda x: x).to_list()
+    def with_any_disambiguation_name_in(self, questions: Iterable[str]) -> list[VocabNote]:
+        return query(questions).select(self.with_disambiguation_name).select_many(lambda x: x).to_list()
 
     def add(self, note: VocabNote) -> None:
         self.collection.anki_collection.addNote(note.backend_note)

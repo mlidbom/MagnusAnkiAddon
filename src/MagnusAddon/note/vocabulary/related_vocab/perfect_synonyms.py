@@ -17,7 +17,7 @@ class PerfectSynonyms(Slots):
         self._value: FieldSetWrapper[str] = data
         vocab().user.answer.on_change(self.push_answer_to_other_synonyms)
 
-    def notes(self) -> list[VocabNote]: return app.col().vocab.with_any_question_in(list(self._value.get()))
+    def notes(self) -> list[VocabNote]: return app.col().vocab.with_any_disambiguation_name_in(list(self._value.get()))
 
     def push_answer_to_other_synonyms(self) -> None:
         for synonym in self.notes():
