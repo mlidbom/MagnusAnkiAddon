@@ -165,7 +165,6 @@ class VocabFlagsDialog(QDialog):
         stem_grid.setColumnStretch(1, 0)
 
         row_number = Counter(start_number=-1)
-        self._add_require_forbid_field(stem_grid, row_number.increment(), "A stem", self.vocab.matching_configuration.requires_forbids.a_stem)
         self._add_require_forbid_field(stem_grid, row_number.increment(), "Godan imperative", self.vocab.matching_configuration.requires_forbids.godan_imperative)
         self._add_require_forbid_field(stem_grid, row_number.increment(), "Godan imperative prefix", self.vocab.matching_configuration.requires_forbids.godan_imperative_prefix)
         self._add_require_forbid_field(stem_grid, row_number.increment(), "Godan potential", self.vocab.matching_configuration.requires_forbids.godan_potential)

@@ -97,8 +97,8 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("解放する", "to{} release", ["かいほうする"]),
 
         # require a stems
-        VocabSpec("あれる", "get-_/is-_", ["あれる"], forms=["れる"], tags=[vm.Requires.a_stem, v.question_overrides_form, vm.is_inflecting_word]),
-        VocabSpec("あせる", "get-_/is-_", ["あせる"], forms=["せる"], tags=[vm.Requires.a_stem, v.question_overrides_form, vm.is_inflecting_word]),
+        VocabSpec("あれる", "get-_/is-_", ["あれる"], forms=["れる"], tags=[vm.Requires.irrealis, vm.Requires.godan, v.question_overrides_form, vm.is_inflecting_word]),
+        VocabSpec("あせる", "get-_/is-_", ["あせる"], forms=["せる"], tags=[vm.Requires.irrealis, vm.Requires.godan, v.question_overrides_form, vm.is_inflecting_word]),
 
         VocabSpec("する", "to: do", yield_to_surface={"しろ"}),
         VocabSpec("しろ", "do!", ["しろ"]),

@@ -76,7 +76,6 @@ class VocabMatchingRulesConfigurationRequiresForbidsFlags(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
         self._all_flags: list[RequireForbidFlagField] = []
-        self.a_stem: RequireForbidFlagField = self._add_flag(10, 1, Tags.Vocab.Matching.Requires.a_stem, Tags.Vocab.Matching.Forbids.a_stem)
         self.masu_stem: RequireForbidFlagField = self._add_flag(50, 1, Tags.Vocab.Matching.Requires.masu_stem, Tags.Vocab.Matching.Forbids.masu_stem)
         self.godan: RequireForbidFlagField = self._add_flag(50, 1, Tags.Vocab.Matching.Requires.godan, Tags.Vocab.Matching.Forbids.godan)
         self.ichidan: RequireForbidFlagField = self._add_flag(50, 1, Tags.Vocab.Matching.Requires.ichidan, Tags.Vocab.Matching.Forbids.ichidan)
