@@ -13,9 +13,9 @@ if TYPE_CHECKING:
 
 class RequiresOrForbids(Slots):
     def __init__(self, name: str,
-                 get_flag: Callable[[VocabMatchInspector], RequireForbidFlagField],
+                 get_requirement: Callable[[VocabMatchInspector], RequireForbidFlagField],
                  is_in_state: Callable[[VocabMatchInspector], bool]) -> None:
-        self._get_requirement: Callable[[VocabMatchInspector], RequireForbidFlagField] = get_flag
+        self._get_requirement: Callable[[VocabMatchInspector], RequireForbidFlagField] = get_requirement
         self._is_in_state: Callable[[VocabMatchInspector], bool] = is_in_state
         self._required_failure: FailedMatchRequirement = FailedMatchRequirement.required(name)
         self._forbidden_failure: FailedMatchRequirement = FailedMatchRequirement.forbids(name)

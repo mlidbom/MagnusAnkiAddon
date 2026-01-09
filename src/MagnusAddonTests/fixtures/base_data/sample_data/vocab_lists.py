@@ -188,6 +188,6 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("うの", forms=["うの", "くの", "ぐの", "すの", "つの", "ぬの", "ぶの", "むの", "るの"], tags=[vm.Requires.dictionary_form_stem, Tags.Vocab.question_overrides_form]),
 
         VocabSpec("寝れる", tags=[vm.is_poison_word]),
-        VocabSpec("[れる:ichidan]", tags=[vm.Requires.e_stem, vm.Forbids.a_stem, vm.Forbids.godan_potential]),
-        VocabSpec("れない", tags=[vm.Requires.e_stem, vm.Forbids.godan_potential]),
+        VocabSpec("[れる:ichidan]", tags=[vm.Requires.ichidan, vm.Requires.irrealis]),
+        VocabSpec("れない", tags=[vm.Requires.ichidan, vm.Requires.irrealis]),
 ]
