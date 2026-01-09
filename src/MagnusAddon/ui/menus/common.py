@@ -75,7 +75,7 @@ def build_string_menu(menu: QMenu, string: str, string_note_menu_factory: typing
         create_note_action(create_note_menu, shortcutfinger.home3("kanji"), ex_lambda.bind4(KanjiNote.create, to_create, "TODO", "", ""))
 
     def build_matching_note_menu(matching_note_menu: QMenu, search_string: str) -> None:
-        vocabs = list(app.col().vocab.with_question(search_string))
+        vocabs = list(app.col().vocab.with_disambiguation_name(search_string))
         sentences = app.col().sentences.with_question(search_string)
         kanjis = app.col().kanji.with_any_kanji_in([search_string]) if len(search_string) == 1 else QList[KanjiNote]()
 
