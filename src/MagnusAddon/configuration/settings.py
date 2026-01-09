@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-from ankiutils import app
-
 
 class Settings:
     _instance: Settings | None = None
     _initialized: bool = False
     def __init__(self) -> None:
+        from ankiutils import app
         self._hide_transparent_compounds: bool = app.config().hide_compositionally_transparent_compounds.get_value()
         self._show_breakdown_in_edit_mode: bool = app.config().show_sentence_breakdown_in_edit_mode.get_value()
         self._hide_all_compounds: bool = app.config().hide_all_compounds.get_value()
