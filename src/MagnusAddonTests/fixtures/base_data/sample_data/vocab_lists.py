@@ -183,4 +183,7 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("[な:s.end]", tags=[vm.Requires.sentence_end, vm.Forbids.sentence_start]),
         VocabSpec("[な:s.start]", tags=[vm.Requires.sentence_start]),
         VocabSpec("すんな", forms=["[すな]"], tags=[vm.Forbids.dictionary_form_stem]),
+
+        VocabSpec("がある", tags=[vm.yield_last_token_to_overlapping_compound]),
+        VocabSpec("うの", forms=["うの", "くの", "ぐの", "すの", "つの", "ぬの", "ぶの", "むの", "るの"], tags=[vm.Requires.dictionary_form_stem, Tags.Vocab.question_overrides_form]),
 ]

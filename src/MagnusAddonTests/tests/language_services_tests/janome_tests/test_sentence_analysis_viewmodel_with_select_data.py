@@ -18,7 +18,8 @@ def setup_collection_with_select_data() -> Iterator[None]:
         yield
 
 @pytest.mark.parametrize("sentence, expected_output", [
-        ("まだ割れんのか", ["まだ", "割れる", "のか"])
+        ("まだ割れんのか", ["まだ", "割れる", "のか"]),
+        ("があるの", ["がある", "うの"]),
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -44,7 +45,7 @@ def test_require_forbid_dictionary_form_prefix_and_masu_stem(sentence: str, expe
 @pytest.mark.parametrize("sentence, expected_output", [
         ("食べる", ["食べる", "る"]),
         ("はしゃいでる", ["はしゃぐ", "でる"]),
-        ("音がするの", ["音がする", "る", "の"]),
+        ("音がするの", ["音がする", "うの"]),
         ("する", ["する", "る"]),
         ("大声出すな", ["大声出す", "う", "な:dict"]),
         ("止めるかな", ["止める", "かな"])  # todo: this is both an ichidan hiding a godan, and a dictionary form ending. How do we deal with that?
@@ -184,7 +185,7 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("沈んで", ["沈む", "んで"]),
         ("死んどる", ["死ぬ", "んどる"]),
         ("馴染めないでいる", ["馴染む", "える", "ない", "でいる"]),
-        ("ちょっと強引なところがあるから", ["ちょっと", "強引", "な", "ところ", "が", "ある", "う", "から"]),
+        ("ちょっと強引なところがあるから", ["ちょっと", "強引", "な", "ところ", "がある", "う", "から"]),
         ("また寒くなるな", ["また", "寒い", "くなる", "う", "な:dict"]),
         ("空を飛べる機械", ["空を飛ぶ", "える", "機械"]),
         ("出会える", ["出会える"]),

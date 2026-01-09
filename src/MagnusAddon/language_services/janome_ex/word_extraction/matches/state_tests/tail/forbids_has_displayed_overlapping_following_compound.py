@@ -28,10 +28,19 @@ class ForbidsHasDisplayedOverlappingFollowingCompound(CustomForbidsNoCache, Slot
         # todo: this is a problematic reference to display_words. That collection is initialized using this class,
         # so this class will return different results depending on whether it is used after or before display_words is first initialized. Ouch
 
-        tail_location = self.inspector.end_location
+        end_location = self.inspector.end_location
+        tail_location = end_location
+        # The dictionary verb inflection is a special case that is shown as a separate token after the word in wich it is part, so it does not by itself cover/shadow anything
+        # thus, we skip such tokens as possible locations for following compounds to overlap, since that words starting with that token are shown after this compound anyway, and are not hidden by this compound.
+        # this logic is mirrored in is_shadowed logic
+        if end_location.token.is_dictionary_verb_inflection:
+            if end_location.previous is None:
+                return False
+            tail_location = end_location.previous()
+
         while tail_location is not self.inspector.word.start_location:
             for display_word in tail_location.display_words:
-                if display_word.end_location.token_index > self.inspector.word.end_location.token_index:
+                if display_word.end_location.token_index > end_location.token_index:
                     return True
 
             tail_location = non_optional(tail_location.previous)()
