@@ -19,6 +19,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.head.requir
 from language_services.janome_ex.word_extraction.matches.state_tests.head.requires_forbids_masu_stem import RequiresOrForbidsMasuStem
 from language_services.janome_ex.word_extraction.matches.state_tests.head.requires_or_forbids_dictionary_form_prefix import RequiresOrForbidsDictionaryFormPrefix
 from language_services.janome_ex.word_extraction.matches.state_tests.head.requires_or_forbids_dictionary_form_stem import RequiresOrForbidsDictionaryFormStem
+from language_services.janome_ex.word_extraction.matches.state_tests.head.requires_or_forbids_irrealis_prefix import RequiresOrForbids
 from language_services.janome_ex.word_extraction.matches.state_tests.is_exact_match import RequiresOrForbidsIsExactMatch
 from language_services.janome_ex.word_extraction.matches.state_tests.is_ichidan_imperative import RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection
 from language_services.janome_ex.word_extraction.matches.state_tests.is_poison_word import ForbidsIsPoisonWord
@@ -75,6 +76,11 @@ class VocabMatch(Match, Slots):
         )
 
     _requirements_list: list[Callable[[VocabMatchInspector], FailedMatchRequirement | None]] = [
+            #new style
+            RequiresOrForbids("irrealis", lambda it: it.requires_forbids.irrealis, lambda it: it.previous_location_is_irrealis).apply_to,
+            RequiresOrForbids("godan", lambda it: it.requires_forbids.godan, lambda it: it.previous_location_is_godan).apply_to,
+            RequiresOrForbids("ichidan", lambda it: it.requires_forbids.ichidan, lambda it: it.previous_location_is_ichidan).apply_to,
+
             # head requirements
             ForbidsPrefixIsIn.apply_to,
             RequiresPrefixIsIn.apply_to,

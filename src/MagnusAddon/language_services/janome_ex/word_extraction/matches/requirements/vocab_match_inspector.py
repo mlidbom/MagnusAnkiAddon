@@ -31,3 +31,15 @@ class VocabMatchInspector(MatchInspector, Slots):
         if self._requires_forbids is None:
             self._requires_forbids = self.match.requires_forbids
         return self._requires_forbids
+
+    @property
+    def previous_location_is_irrealis(self) -> bool:
+        return self.previous_location is not None and self.previous_location.token.is_irrealis
+
+    @property
+    def previous_location_is_godan(self) -> bool:
+        return self.previous_location is not None and self.previous_location.token.is_godan_verb
+
+    @property
+    def previous_location_is_ichidan(self) -> bool:
+        return self.previous_location is not None and self.previous_location.token.is_ichidan_verb
