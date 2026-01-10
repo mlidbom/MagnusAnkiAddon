@@ -92,7 +92,7 @@ class VocabMatchingRulesConfigurationRequiresForbidsFlags(Slots):
         self.single_token: RequireForbidFlagField = self._add_flag(30, 1, Tags.Vocab.Matching.Requires.single_token, Tags.Vocab.Matching.Requires.compound)
         self.sentence_end: RequireForbidFlagField = self._add_flag(10, 1, Tags.Vocab.Matching.Requires.sentence_end, Tags.Vocab.Matching.Forbids.sentence_end)
         self.sentence_start: RequireForbidFlagField = self._add_flag(10, 1, Tags.Vocab.Matching.Requires.sentence_start, Tags.Vocab.Matching.Forbids.sentence_start)
-        self.exact_match: RequireForbidFlagField = self._add_flag(10, 1, Tags.Vocab.Matching.Requires.exact_match, Tags.Vocab.Matching.Forbids.exact_match)
+        self.surface: RequireForbidFlagField = self._add_flag(10, 1, Tags.Vocab.Matching.Requires.surface, Tags.Vocab.Matching.Forbids.surface)
         self.yield_last_token: RequireForbidFlagField = YieldLastTokenToOverlappingCompound(vocab)
         self._all_flags.append(self.yield_last_token)
         self._match_weight: int | None = None

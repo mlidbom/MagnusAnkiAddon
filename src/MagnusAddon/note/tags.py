@@ -88,7 +88,7 @@ class Tags(Slots):
                 te_form_stem: Tag = Tag.from_name(f"{f_vocab_matching_requires}te-form-stem")
                 sentence_end: Tag = Tag.from_name(f"{f_vocab_matching_requires}sentence-end")
                 sentence_start: Tag = Tag.from_name(f"{f_vocab_matching_requires}sentence-start")
-                exact_match: Tag = Tag.from_name(f"{f_vocab_matching_requires}exact-match")
+                surface: Tag = Tag.from_name(f"{f_vocab_matching_requires}surface")
                 single_token: Tag = Tag.from_name(f"{f_vocab_matching_requires}single-token")
                 compound: Tag = Tag.from_name(f"{f_vocab_matching_requires}compound")
 
@@ -108,7 +108,7 @@ class Tags(Slots):
                 te_form_stem: Tag = Tag.from_name(f"{f_vocab_matching_forbids}te-form-stem")
                 sentence_end: Tag = Tag.from_name(f"{f_vocab_matching_forbids}sentence-end")
                 sentence_start: Tag = Tag.from_name(f"{f_vocab_matching_forbids}sentence-start")
-                exact_match: Tag = Tag.from_name(f"{f_vocab_matching_forbids}exact-match")
+                surface: Tag = Tag.from_name(f"{f_vocab_matching_forbids}surface")
                 auto_yielding: Tag = Tag.from_name(f"{f_vocab_matching_forbids}auto_yielding")
 
             class Todo(Slots):

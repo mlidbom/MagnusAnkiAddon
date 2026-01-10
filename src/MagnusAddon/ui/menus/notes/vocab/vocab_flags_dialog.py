@@ -151,7 +151,7 @@ class VocabFlagsDialog(QDialog):
         misc_matching_grid = QGridLayout()
         misc_matching_grid.setColumnStretch(0, 0)
         misc_matching_grid.setColumnStretch(1, 0)
-        self._add_require_forbid_field(misc_matching_grid, 0, "Exact match", self.vocab.matching_configuration.requires_forbids.exact_match)
+        self._add_require_forbid_field(misc_matching_grid, 0, "Surface", self.vocab.matching_configuration.requires_forbids.surface)
         self._add_require_forbid_field(misc_matching_grid, 1, "Sentence end", self.vocab.matching_configuration.requires_forbids.sentence_end)
         self._add_require_forbid_field(misc_matching_grid, 2, "Sentence start", self.vocab.matching_configuration.requires_forbids.sentence_start)
         self._add_require_forbid_field(misc_matching_grid, 3, "Single token", self.vocab.matching_configuration.requires_forbids.single_token)

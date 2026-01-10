@@ -18,7 +18,8 @@ def setup_collection_with_select_data() -> Iterator[None]:
         yield
 
 @pytest.mark.parametrize("sentence, expected_output", [
-        ("なぜかというと", ["なぜかというと"]) # todo: the second word should be shadowed..
+        ("なぜかというと", ["なぜかというと"]),
+        ("にある", ["にあう:に会う", "う"]) # todo verb compounds should not match on a surface ending with a dictionary form different from that of the base
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -93,7 +94,7 @@ def test_hide_transparent_compounds(sentence: str, expected_output: list[str]) -
 
 @pytest.mark.parametrize("sentence, expected_output", [
         ("お金貸せって", ["お金", "貸す", "え", "って"]),
-        ("お前に会えて", ["お前", "に", "会う", "える", "て"]),
+        ("お前に会えて", ["お前", "に会う", "える", "て"]),
         ("逆に大丈夫に思えてくる", ["逆に", "大丈夫", "に", "思える", "て", "くる", "る"]),
         ("黙れ", ["黙る", "え"]),
         ("楽しめてる", ["楽しむ", "える", "てる"]),

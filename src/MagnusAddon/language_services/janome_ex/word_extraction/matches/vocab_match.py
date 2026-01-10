@@ -18,7 +18,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.head.requir
 from language_services.janome_ex.word_extraction.matches.state_tests.head.requires_or_forbids_dictionary_form_prefix import RequiresOrForbidsDictionaryFormPrefix
 from language_services.janome_ex.word_extraction.matches.state_tests.head.requires_or_forbids_dictionary_form_stem import RequiresOrForbidsDictionaryFormStem
 from language_services.janome_ex.word_extraction.matches.state_tests.head.requires_or_forbids_generic import RequiresOrForbids
-from language_services.janome_ex.word_extraction.matches.state_tests.is_exact_match import RequiresOrForbidsIsExactMatch
+from language_services.janome_ex.word_extraction.matches.state_tests.is_exact_match import RequiresOrForbidsSurface
 from language_services.janome_ex.word_extraction.matches.state_tests.is_ichidan_imperative import RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection
 from language_services.janome_ex.word_extraction.matches.state_tests.is_poison_word import ForbidsIsPoisonWord
 from language_services.janome_ex.word_extraction.matches.state_tests.is_single_token import RequiresOrForbidsIsSingleToken
@@ -102,7 +102,7 @@ class VocabMatch(Match, Slots):
             RequiresOrForbidsDictionaryFormStem.apply_to,
             RequiresOrForbidsDictionaryFormPrefix.apply_to,
 
-            RequiresOrForbidsIsExactMatch.apply_to,
+            RequiresOrForbidsSurface.apply_to,
             RequiresOrForbidsIsSingleToken.apply_to,
             ForbidsSurfaceIsIn.apply_to,
             ForbidsYieldsToSurface.apply_to,  # todo this should be in display requirements right?

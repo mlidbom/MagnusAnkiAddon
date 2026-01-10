@@ -81,7 +81,7 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("んだ", "did/was", forms=["だ"], tags=[vm.Requires.past_tense_stem, vm.is_inflecting_word, Tags.Vocab.question_overrides_form]),
         # <past-tense-required>
         # <past-tense-forbidden>
-        VocabSpec("んだ", "thing-is", tags=[vm.Requires.exact_match, vm.yield_last_token_to_overlapping_compound, vm.Forbids.past_tense_stem]),
+        VocabSpec("んだ", "thing-is", tags=[vm.Requires.surface, vm.yield_last_token_to_overlapping_compound, vm.Forbids.past_tense_stem]),
         VocabSpec("たって", tags=[vm.Forbids.past_tense_stem]),
         VocabSpec("だ", surface_not={"なら", "な"}, tags=[vm.is_inflecting_word, vm.Forbids.past_tense_stem]),
         # </past-tense-forbidden>
@@ -91,7 +91,7 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("ても良い", "{concession/compromise} | {permission}", ["てもいい"], tags=[vm.is_inflecting_word]),
         VocabSpec("すぎる", "too-much", ["すぎる"], tags=[vm.is_inflecting_word]),
         VocabSpec("いらっしゃいます", "to: come/be/do", ["いらっしゃいます"]),
-        VocabSpec("を頼む", "I-entrust-to-you", ["を頼む"], tags=[vm.Requires.exact_match]),
+        VocabSpec("を頼む", "I-entrust-to-you", ["を頼む"], tags=[vm.Requires.surface]),
         VocabSpec("作れる", "to-be-able: to-make", ["つくれる"], compounds=["作る", "える"]),
         VocabSpec("たい", "want to", ["たい"], tags=[vm.is_inflecting_word]),
         VocabSpec("解放する", "to{} release", ["かいほうする"]),
@@ -133,14 +133,14 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("ていうか", forms=["と言うか", "というか", "っていうか", "[て言うか]"]),
         VocabSpec("鰻", forms=["[うな]"], prefix_not={"ろ", "よ"}),
         VocabSpec("書き"),
-        VocabSpec("風の強い", tags=[vm.Requires.exact_match]),
+        VocabSpec("風の強い", tags=[vm.Requires.surface]),
         VocabSpec("たね", tags=[vm.Requires.single_token]),
         VocabSpec("たらしい", tags=[vm.Requires.single_token]),
         VocabSpec("に決まる", forms=["に決る", "に決まる", "に極る"]),
         VocabSpec("に決まってる", forms=["に決っている", "に決まっている", "に極っている", "に決ってる", "に決まってる", "に極ってる"]),
         VocabSpec("された", surface_not={"されたら"}),
 
-        VocabSpec("んです", tags=[vm.Requires.exact_match, vm.yield_last_token_to_overlapping_compound]),
+        VocabSpec("んです", tags=[vm.Requires.surface, vm.yield_last_token_to_overlapping_compound]),
 
         VocabSpec("たん", forms=["たの"], tags=[vm.Requires.single_token]),
         VocabSpec("たの", forms=["たん"], tags=[vm.yield_last_token_to_overlapping_compound]),
@@ -194,4 +194,6 @@ test_special_vocab: list[VocabSpec] = [
 
         VocabSpec("なぜかというと"),
         VocabSpec("おうと", forms=["うと"]),
+
+        VocabSpec("に会う", forms=["にあう"]),
 ]
