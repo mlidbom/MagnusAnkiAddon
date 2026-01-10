@@ -42,10 +42,10 @@ class VocabCloner(Slots):
 
         if set_compounds:
             if not is_prefix:
-                compounds = [self.note.get_question(), addendum]
+                compounds = [self.note.question.disambiguation_name, addendum]
                 new_vocab.compound_parts.set(compounds)
             else:
-                compounds1 = [addendum, self.note.get_question()]
+                compounds1 = [addendum, self.note.question.disambiguation_name]
                 new_vocab.compound_parts.set(compounds1)
 
         new_vocab.parts_of_speech.set_raw_string_value(speech_type)
@@ -140,7 +140,7 @@ class VocabCloner(Slots):
         readings = [create_full_form(reading) for reading in vocab_note.readings.get()]
         clone.readings.set(readings)
         clone.parts_of_speech.set_raw_string_value(POS.EXPRESSION)
-        compounds = [self.note.get_question(), form_suffix]
+        compounds = [self.note.question.disambiguation_name, form_suffix]
         clone.compound_parts.set(compounds)
         return clone
 
@@ -213,7 +213,7 @@ class VocabCloner(Slots):
 
     def create_potential_godan(self) -> VocabNote:
         clone = self.suffix_to_e_stem("る")
-        clone.compound_parts.set([self.note.get_question(), "える"])
+        clone.compound_parts.set([self.note.question.disambiguation_name, "える"])
         return clone
 
     def _create_new_vocab_with_some_data_copied(self, question: str, answer: str, readings: list[str], copy_vocab_tags: bool = True, copy_matching_rules: bool = True) -> VocabNote:
