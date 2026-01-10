@@ -115,8 +115,8 @@ class CandidateWord(WeakRefable, Slots):
         start_location = self.start_location
         if any(start_location.is_shadowed_by):
             shadowed_by = start_location.is_shadowed_by[0]().display_variants[0]
-            # special exception to allow dictionary form endings to be displayed in spite of starting at the same token. This logic is mirrored in ForbidsHasDisplayedOverlappingFollowingCompound
-            if not (start_location.token.is_dictionary_verb_inflection and shadowed_by.word.end_location.token_index <= self.end_location.token_index):
+            # special exception to allow dictionary form endings to be displayed in spite of starting at the same token as the end of the compound including the dictionary ending. This logic is mirrored in ForbidsHasDisplayedOverlappingFollowingCompound
+            if not (start_location.token.is_dictionary_verb_inflection and shadowed_by.word.end_location.token_index == start_location.token_index):
                 return shadowed_by.form
         if (any(start_location.display_variants)
                 and start_location.display_variants[0].word.location_count > self.location_count):
