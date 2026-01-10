@@ -31,7 +31,9 @@ class PrerenderingAnswerContentRenderer[TNote: JPNote](Slots):
         return app_thread_pool.pool.submit(run_render_method if app.is_initialized() else lambda: Mine.app_still_loading_message)
 
     def render(self, html: str, card: Card, type_of_display: str) -> str:
-        note = app.col().note_from_note_id(card.nid if card.nid else card.note().id) # the card in the edit card view is corrupt somehow and one has to get the note id from the note.
+        if not app.is_initialized(): return Mine.app_still_loading_message
+
+        note = app.col().note_from_note_id(card.nid if card.nid else card.note().id)  # the card in the edit card view is corrupt somehow and one has to get the note id from the note.
 
         if isinstance(note, self._cls):
             def schedule_all() -> None:
