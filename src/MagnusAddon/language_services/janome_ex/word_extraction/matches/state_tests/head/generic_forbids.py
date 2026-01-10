@@ -11,10 +11,9 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 class Forbids(Slots):
-    def __init__(self, name: str,
-                 is_in_state: Callable[[VocabMatchInspector], bool]) -> None:
+    def __init__(self, name: str, is_in_state: Callable[[VocabMatchInspector], bool]) -> None:
         self._is_in_state: Callable[[VocabMatchInspector], bool] = is_in_state
-        self._required_failure: FailedMatchRequirement = FailedMatchRequirement.required(name)
+        self._required_failure: FailedMatchRequirement = FailedMatchRequirement.forbids(name)
 
     def apply_to(self, inspector: VocabMatchInspector) -> FailedMatchRequirement | None:
         if self._is_in_state(inspector):
