@@ -37,6 +37,9 @@ class MatchInspector(Slots):
         return self.variant.word
 
     @property
+    def is_base(self) -> bool: return not self.variant.is_surface
+
+    @property
     def start_location(self) -> TextAnalysisLocation:
         return self.word.start_location
 

@@ -18,8 +18,6 @@ def setup_collection_with_select_data() -> Iterator[None]:
         yield
 
 @pytest.mark.parametrize("sentence, expected_output", [
-        ("なぜかというと", ["なぜかというと"]),
-        ("にある", ["にあう:に会う", "う"]) # todo verb compounds should not match on a surface ending with a dictionary form different from that of the base
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -56,6 +54,8 @@ def test_require_forbid_dictionary_form_prefix_and_masu_stem(sentence: str, expe
         ("する", ["する", "る"]),
         ("大声出すな", ["大声出す", "う", "な:dict"]),
         ("があるの", ["がある", "うの"]),
+        ("にある", ["に", "ある", "う"]),  # matched に会う
+        ("なぜかというと", ["なぜかというと"]),  # matched うと
         ("止めるかな", ["止める", "かな"])  # todo: this is both an ichidan hiding a godan, and a dictionary form ending. How do we deal with that?
 ])
 def test_dictionary_form_splitting(sentence: str, expected_output: list[str]) -> None:
