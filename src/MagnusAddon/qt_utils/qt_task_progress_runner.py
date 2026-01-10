@@ -19,14 +19,15 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
 class QtTaskProgressRunner(ITaskRunner, Slots):
-    def __init__(self, window_title: str, label_text: str, allow_cancel: bool = True) -> None:
+    def __init__(self, window_title: str, label_text: str, allow_cancel: bool = True, modal: bool = True) -> None:
         self.allow_cancel: bool = allow_cancel
         dialog = QProgressDialog(f"""{window_title}...""", "Cancel" if allow_cancel else None, 0, 0)
         self.dialog: QProgressDialog = dialog
         dialog.setWindowTitle(f"""{window_title}""")
         dialog.setFixedWidth(600)
         non_optional(dialog.findChild(QLabel)).setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
-        dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
+        if modal:
+            dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
         self._set_spinning_with_message(label_text)
         dialog.show()
         QApplication.processEvents()
