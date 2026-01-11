@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from language_services.janome_ex.word_extraction import analysis_constants  # pyright: ignore[reportMissingTypeStubs]
 from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
@@ -115,14 +114,4 @@ class MatchInspector(Slots):
 
     @property
     def is_end_of_statement(self) -> bool:
-        if len(self.suffix) == 0:
-            return True
-
-        if self.suffix[0].isspace():
-            return True
-
-        #if self.suffix in analysis_constants.sentence_end_characters and non_optional(self.next_location).token.is_end_of_statement:  # noqa: SIM103
-        if self.suffix in analysis_constants.sentence_end_characters:  # noqa: SIM103
-            return True
-
-        return False
+        return self.end_location.token.is_end_of_statement
