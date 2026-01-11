@@ -200,6 +200,7 @@ def print_gc_status_and_collect() -> None:
     object_instance_tracker.print_instance_counts()
 
 def reparse_sentences_for_vocab(vocab: VocabNote) -> None:
+    vocab.update_generated_data()
     with TaskRunner.current("Fetching sentences to reparse") as runner:
         query = query_builder.potentially_matching_sentences_for_vocab(vocab)
         sentences: set[SentenceNote] = set(runner.run_on_background_thread_with_spinning_progress_dialog("Fetching sentences to reparse", lambda: app.col().sentences.search(query)))
