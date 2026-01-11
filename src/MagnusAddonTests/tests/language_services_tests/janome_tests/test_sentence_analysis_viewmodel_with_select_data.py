@@ -57,7 +57,7 @@ def test_require_forbid_dictionary_form_prefix_and_masu_stem(sentence: str, expe
         ("があるの", ["がある", "うの"]),
         ("にある", ["に", "ある", "う"]),  # matched に会う
         ("なぜかというと", ["なぜかというと"]),  # matched うと
-        ("止めるかな", ["止める", "かな"])  # todo: this is both an ichidan hiding a godan, and a dictionary form ending. How do we deal with that?
+        ("止めるかな", ["止める", "る", "かな"])  # this is both an ichidan hiding a godan, and a dictionary form ending.
 ])
 def test_dictionary_form_splitting(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -196,11 +196,11 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("馴染めないでいる", ["馴染む", "える", "ない", "でいる"]),
         ("ちょっと強引なところがあるから", ["ちょっと", "強引", "な", "ところ", "がある", "う", "から"]),
         ("また寒くなるな", ["また", "寒い", "くなる", "う", "な:dict"]),
-        ("空を飛べる機械", ["空を飛ぶ", "える", "機械"]),
-        ("出会える", ["出会える"]),
+        ("空を飛べる機械", ["空を飛ぶ", "える", "る", "機械"]),
+        ("出会える", ["出会える", "る"]),
         ("頑張れた", ["頑張る", "える", "た"]),
         ("頑張れ", ["頑張れ"]),
-        ("私たちなら嘘をつかずに付き合っていけるかもしれないね", ["私たち", "なら", "嘘をつく", "ずに", "付き合う", "ていける", "かもしれない", "ね"]),
+        ("私たちなら嘘をつかずに付き合っていけるかもしれないね", ["私たち", "なら", "嘘をつく", "ずに", "付き合う", "ていける", "る", "かもしれない", "ね"]),
         ("どやされても知らんぞ", ["どやす", "あれる", "ても知らん:ても知らない", "ぞ"]),
         ("服を引き出しの中に入れてください", ["服", "を", "引き出し", "の中", "に入る", "える", "て", "ください"]),
         ("他人を気遣い", ["他人", "を", "気遣う"]),

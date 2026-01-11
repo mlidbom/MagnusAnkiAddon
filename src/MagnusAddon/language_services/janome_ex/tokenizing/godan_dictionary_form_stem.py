@@ -49,6 +49,21 @@ class GodanDictionaryFormInflection(SplitTokenBase, Slots):
     @override
     def is_dictionary_verb_inflection(self) -> bool: return True
 
+class GodanPotentialDictionaryFormStem(SplitTokenBase, Slots):
+    def __init__(self, source: JNToken, surface: str, base: str) -> None:
+        super().__init__(source, surface, base)
+
+    @property
+    @override
+    def is_dictionary_verb_form_stem(self) -> bool: return True
+
+class GodanPotentialDictionaryFormInflection(SplitTokenBase, Slots):
+    def __init__(self, source: JNToken) -> None:
+        super().__init__(source, "る", "る")
+    @property
+    @override
+    def is_dictionary_verb_inflection(self) -> bool: return True
+
 class IchidanDictionaryFormStem(SplitTokenBase, Slots):
     def __init__(self, source: JNToken, surface: str, base: str) -> None:
         super().__init__(source, surface, base)
