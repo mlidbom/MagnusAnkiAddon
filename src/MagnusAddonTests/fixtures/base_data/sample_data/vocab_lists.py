@@ -199,4 +199,6 @@ test_special_vocab: list[VocabSpec] = [
 
         VocabSpec("よい", yield_to_surface={"よく"}),
         VocabSpec("よく", suffix_not={"て"}),
+
+        VocabSpec("ないし", tags=[vm.Forbids.irrealis, vm.Forbids.sentence_end, vm.Forbids.preceding_adverb]),
 ]

@@ -121,6 +121,7 @@ class MatchInspector(Slots):
         if self.suffix[0].isspace():
             return True
 
+        #if self.suffix in analysis_constants.sentence_end_characters and non_optional(self.next_location).token.is_end_of_statement:  # noqa: SIM103
         if self.suffix in analysis_constants.sentence_end_characters:  # noqa: SIM103
             return True
 

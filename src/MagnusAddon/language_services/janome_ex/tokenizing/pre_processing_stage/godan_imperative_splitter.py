@@ -26,7 +26,7 @@ class GodanImperativeSplitter(Slots):
 
         if (token.inflection_type.base == InflectionTypes.Godan.base  # noqa: SIM103
                 and token.inflected_form == InflectionForms.Hypothetical.general_hypothetical_kateikei
-                and token.is_end_of_statement()):
+                and token.is_end_of_statement):
             return True
 
         return False

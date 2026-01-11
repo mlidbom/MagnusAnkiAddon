@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 # this is the interface that is actually used in the text analysis pipeline
 
-class GodanDictionaryFormStem(IAnalysisToken, Slots):
+class SplitTokenBase(IAnalysisToken, Slots):
     def __init__(self,
                  source: JNToken,
                  surface: str,
@@ -19,185 +19,80 @@ class GodanDictionaryFormStem(IAnalysisToken, Slots):
         self._surface: str = surface
         self._base_form: str = base
 
-    # <IAnalysisToken implementation>
+    @property
+    @override
+    def source_token(self) -> JNToken: return self.source
     @property
     @override
     def surface(self) -> str: return self._surface
     @property
     @override
     def base_form(self) -> str: return self._base_form
+
+    @override
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}('{self.surface}', '{self.base_form}')"
+
+class GodanDictionaryFormStem(SplitTokenBase, Slots):
+    def __init__(self, source: JNToken, surface: str, base: str) -> None:
+        super().__init__(source, surface, base)
+
     @property
     @override
     def is_dictionary_verb_form_stem(self) -> bool: return True
-    # </IAnalysisToken implementation>
 
-    @override
-    def __repr__(self) -> str:
-        return f"GodanDictionaryFormStem('{self.surface}', '{self.base_form}')"
+class GodanDictionaryFormInflection(SplitTokenBase, Slots):
+    def __init__(self, source: JNToken, surface: str, base: str) -> None:
+        super().__init__(source, surface, base)
 
-class GodanDictionaryFormInflection(IAnalysisToken, Slots):
-    def __init__(self,
-                 source: JNToken,
-                 surface: str,
-                 base: str) -> None:
-        self.source: JNToken = source
-        self._surface: str = surface
-        self._base_form: str = base
-
-    # <IAnalysisToken implementation>
-    @property
-    @override
-    def surface(self) -> str: return self._surface
-    @property
-    @override
-    def base_form(self) -> str: return self._base_form
     @property
     @override
     def is_dictionary_verb_inflection(self) -> bool: return True
-    # </IAnalysisToken implementation>
 
-    @override
-    def __repr__(self) -> str:
-        return f"GodanDictionaryFormInflection('{self.surface}', '{self.base_form}')"
+class IchidanDictionaryFormStem(SplitTokenBase, Slots):
+    def __init__(self, source: JNToken, surface: str, base: str) -> None:
+        super().__init__(source, surface, base)
 
-class IchidanDictionaryFormStem(IAnalysisToken, Slots):
-    def __init__(self,
-                 source: JNToken,
-                 surface: str,
-                 base: str) -> None:
-        self.source: JNToken = source
-        self._surface: str = surface
-        self._base_form: str = base
-
-    # <IAnalysisToken implementation>
-    @property
-    @override
-    def surface(self) -> str: return self._surface
-    @property
-    @override
-    def base_form(self) -> str: return self._base_form
     @property
     @override
     def is_dictionary_verb_form_stem(self) -> bool: return True
-    # </IAnalysisToken implementation>
 
-    @override
-    def __repr__(self) -> str:
-        return f"IchidanDictionaryFormStem('{self.surface}', '{self.base_form}')"
+class IchidanDictionaryFormInflection(SplitTokenBase, Slots):
+    def __init__(self, source: JNToken) -> None:
+        super().__init__(source, "る", "る")
 
-class IchidanDictionaryFormInflection(IAnalysisToken, Slots):
-    def __init__(self,
-                 source: JNToken) -> None:
-        self.source: JNToken = source
-        self._surface: str = "る"
-
-    # <IAnalysisToken implementation>
-    @property
-    @override
-    def surface(self) -> str: return self._surface
-    @property
-    @override
-    def base_form(self) -> str: return self._surface
     @property
     @override
     def is_dictionary_verb_inflection(self) -> bool: return True
-    # </IAnalysisToken implementation>
 
-    @override
-    def __repr__(self) -> str:
-        return f"IchidanDictionaryFormInflection('{self.surface}', '{self.base_form}')"
+class KuruVerbDictionaryFormStem(SplitTokenBase, Slots):
+    def __init__(self, source: JNToken, surface: str, base: str) -> None:
+        super().__init__(source, surface, base)
 
-class KuruVerbDictionaryFormStem(IAnalysisToken, Slots):
-    def __init__(self,
-                 source: JNToken,
-                 surface: str,
-                 base: str) -> None:
-        self.source: JNToken = source
-        self._surface: str = surface
-        self._base_form: str = base
-
-    # <IAnalysisToken implementation>
-    @property
-    @override
-    def surface(self) -> str: return self._surface
-    @property
-    @override
-    def base_form(self) -> str: return self._base_form
     @property
     @override
     def is_dictionary_verb_form_stem(self) -> bool: return True
-    # </IAnalysisToken implementation>
 
-    @override
-    def __repr__(self) -> str:
-        return f"KuruVerbDictionaryFormStem('{self.surface}', '{self.base_form}')"
+class KuruVerbDictionaryFormInflection(SplitTokenBase, Slots):
+    def __init__(self, source: JNToken) -> None:
+        super().__init__(source, "る", "る")
 
-class KuruVerbDictionaryFormInflection(IAnalysisToken, Slots):
-    def __init__(self,
-                 source: JNToken) -> None:
-        self.source: JNToken = source
-        self._surface: str = "る"
-
-    # <IAnalysisToken implementation>
-    @property
-    @override
-    def surface(self) -> str: return self._surface
-    @property
-    @override
-    def base_form(self) -> str: return self._surface
     @property
     @override
     def is_dictionary_verb_inflection(self) -> bool: return True
-    # </IAnalysisToken implementation>
 
-    @override
-    def __repr__(self) -> str:
-        return f"KuruVerbDictionaryFormInflection('{self.surface}', '{self.base_form}')"
+class SuruVerbDictionaryFormStem(SplitTokenBase, Slots):
+    def __init__(self, source: JNToken, surface: str, base: str) -> None:
+        super().__init__(source, surface, base)
 
-
-class SuruVerbDictionaryFormStem(IAnalysisToken, Slots):
-    def __init__(self,
-                 source: JNToken,
-                 surface: str,
-                 base: str) -> None:
-        self.source: JNToken = source
-        self._surface: str = surface
-        self._base_form: str = base
-
-    # <IAnalysisToken implementation>
-    @property
-    @override
-    def surface(self) -> str: return self._surface
-    @property
-    @override
-    def base_form(self) -> str: return self._base_form
     @property
     @override
     def is_dictionary_verb_form_stem(self) -> bool: return True
-    # </IAnalysisToken implementation>
 
-    @override
-    def __repr__(self) -> str:
-        return f"SuruVerbDictionaryFormStem('{self.surface}', '{self.base_form}')"
+class SuruVerbDictionaryFormInflection(SplitTokenBase, Slots):
+    def __init__(self, source: JNToken) -> None:
+        super().__init__(source, "る", "る")
 
-class SuruVerbDictionaryFormInflection(IAnalysisToken, Slots):
-    def __init__(self,
-                 source: JNToken) -> None:
-        self.source: JNToken = source
-        self._surface: str = "る"
-
-    # <IAnalysisToken implementation>
-    @property
-    @override
-    def surface(self) -> str: return self._surface
-    @property
-    @override
-    def base_form(self) -> str: return self._surface
     @property
     @override
     def is_dictionary_verb_inflection(self) -> bool: return True
-    # </IAnalysisToken implementation>
-
-    @override
-    def __repr__(self) -> str:
-        return f"SuruVerbDictionaryFormInflection('{self.surface}', '{self.base_form}')"

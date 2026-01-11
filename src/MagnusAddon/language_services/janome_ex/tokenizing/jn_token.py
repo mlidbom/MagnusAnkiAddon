@@ -123,11 +123,7 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
 
     @property
     @override
-    def is_a_stem(self) -> bool: return self.is_godan_verb and self.is_irrealis
-
-    @property
-    @override
-    def is_e_stem(self) -> bool: return self.is_godan_verb and self.is_irrealis
+    def source_token(self) -> JNToken: return self
     # </IAnalysisToken implementation>
 
     def is_verb(self) -> bool:
@@ -174,6 +170,8 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
     def is_t_form_marker(self) -> bool:
         return self.inflection_type == InflectionTypes.Special.ta  # "連用タ接続"
 
+    @property
+    @override
     def is_end_of_statement(self) -> bool:
         return (self.next is None
                 or self.next.parts_of_speech == JNPOS.Particle.sentence_ending

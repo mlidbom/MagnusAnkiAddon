@@ -38,6 +38,9 @@ class SplitToken(IAnalysisToken, Slots):
     # <IAnalysisToken implementation>
     @property
     @override
+    def source_token(self) -> JNToken: return self.source
+    @property
+    @override
     def surface(self) -> str: return self._surface
     @property
     @override

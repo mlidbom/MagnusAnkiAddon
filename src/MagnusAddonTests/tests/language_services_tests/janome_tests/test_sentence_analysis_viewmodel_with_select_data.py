@@ -18,7 +18,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
         yield
 
 @pytest.mark.parametrize("sentence, expected_output", [
-
+        ("思えないしな", ["思える", "ないし", "な:s.end"]) # should detect that な is just part of the sentence end and refuse to show　ないし
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)

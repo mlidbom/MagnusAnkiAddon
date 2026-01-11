@@ -31,8 +31,6 @@ def generate_marked_invalid_in_list_html(_vocab_note: VocabNote) -> str:
             </div>
             ''' if shown_sentences else ""
 
-    return ""
-
 def generate_valid_in_list_html(_vocab_note: VocabNote) -> str:
     studying_sentences = set(_vocab_note.sentences.studying())
 
