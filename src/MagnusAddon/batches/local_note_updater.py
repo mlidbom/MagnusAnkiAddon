@@ -183,7 +183,8 @@ def reparse_sentences(sentences: list[SentenceNote], run_gc_during_batch: bool =
     def reparse_sentence(sentence: SentenceNote) -> None:
         sentence.update_parsed_words(force=True)
 
-    random.shuffle(sentences) # hopefully this will get us accurate time estimations by preventing all the long sentenences from turning up last
+    run_gc_during_batch = run_gc_during_batch and app.config().enable_garbage_collection_during_batches.get_value()
+    random.shuffle(sentences)  # hopefully this will get us accurate time estimations by preventing all the long sentenences from turning up last
 
     with TaskRunner.current("Reparse Sentences", inhibit_gc=run_gc_during_batch) as runner:
         runner.process_with_progress(sentences, reparse_sentence, "Reparsing sentences.", run_gc=run_gc_during_batch, minimum_items_to_gc=500)
@@ -199,11 +200,12 @@ def print_gc_status_and_collect() -> None:
     object_instance_tracker.print_instance_counts()
 
 def reparse_sentences_for_vocab(vocab: VocabNote) -> None:
-    query = query_builder.potentially_matching_sentences_for_vocab(vocab)
-    sentences: set[SentenceNote] = set(app.col().sentences.search(query))
-    # noinspection PyAugmentAssignment
-    sentences = sentences | set(vocab.sentences.all())
-    reparse_sentences(list(sentences), run_gc_during_batch=True)
+    with TaskRunner.current("Fetching sentences to reparse") as runner:
+        query = query_builder.potentially_matching_sentences_for_vocab(vocab)
+        sentences: set[SentenceNote] = set(runner.run_on_background_thread_with_spinning_progress_dialog("Fetching sentences to reparse", lambda: app.col().sentences.search(query)))
+        # noinspection PyAugmentAssignment
+        sentences = sentences | set(vocab.sentences.all())
+        reparse_sentences(list(sentences), run_gc_during_batch=True)
 
 def reparse_matching_sentences(question_substring: str) -> None:
     sentences_to_update = app.col().sentences.search(query_builder.sentences_with_question_substring(question_substring))
@@ -226,7 +228,7 @@ def create_missing_vocab_with_dictionary_entries() -> None:
                                                                                 .to_list())))
 
         def create_vocab_if_not_already_created(result: DictLookupResult) -> None:
-            if not any(app.col().vocab.with_form(result.word)): # we may well have created a vocab that provides this form already...
+            if not any(app.col().vocab.with_form(result.word)):  # we may well have created a vocab that provides this form already...
                 VocabNote.factory.create_with_dictionary(result.word)
 
         runner.process_with_progress(dictionary_words_with_no_vocab, create_vocab_if_not_already_created, "Creating vocab notes")

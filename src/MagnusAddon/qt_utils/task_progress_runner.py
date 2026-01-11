@@ -32,7 +32,7 @@ class TaskRunner(Slots):
         if cls._depth == 1:
             visible = (not app.is_testing) and not force_hide
             cls._current = cls.create(window_title, label_text or window_title, visible, allow_cancel, modal)
-            if not inhibit_gc:
+            if not inhibit_gc and app.config().enable_garbage_collection_during_batches.get_value():
                 cls._current.run_gc()
         else:
             non_optional(cls._current).set_label_text(label_text or window_title)
@@ -43,7 +43,7 @@ class TaskRunner(Slots):
         finally:
             cls._depth -= 1
             if cls._depth == 0:
-                if not inhibit_gc:
+                if not inhibit_gc and app.config().enable_garbage_collection_during_batches.get_value():
                     runner.run_gc()
                 runner.close()
                 cls._current = None
