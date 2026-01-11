@@ -22,8 +22,6 @@ class IAnalysisToken(Slots):
     @property
     def is_past_tense_stem(self) -> bool: return self.source_token.is_past_tense_stem
     @property
-    def is_ichidan_masu_stem(self) -> bool: return self.source_token.is_ichidan_masu_stem
-    @property
     def is_te_form_stem(self) -> bool: return self.source_token.is_te_form_stem
     @property
     def is_past_tense_marker(self) -> bool: return self.source_token.is_past_tense_marker

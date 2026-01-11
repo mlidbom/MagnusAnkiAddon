@@ -78,9 +78,6 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
     @property
     @override
     def is_past_tense_stem(self) -> bool: return self.inflected_form == InflectionForms.Continuative.ta_connection  # "連用タ接続"
-    @property
-    @override
-    def is_ichidan_masu_stem(self) -> bool: return self.is_masu_stem  # todo why is this checking for any masu stem and not checking anything ichidan specific?
     _te_connections: set[InflectionForm] = {InflectionForms.Continuative.te_connection, InflectionForms.Continuative.de_connection}
     @property
     @override

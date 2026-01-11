@@ -44,7 +44,7 @@ class RequiresOrForbidsHasTeFormStem(Slots):
         if previous_token.is_past_tense_stem:
             return True
 
-        if previous_token.is_ichidan_masu_stem:  # noqa: SIM103
+        if previous_token.is_masu_stem and not previous_token.is_godan_verb:  # noqa: SIM103
             return True
 
         return False
