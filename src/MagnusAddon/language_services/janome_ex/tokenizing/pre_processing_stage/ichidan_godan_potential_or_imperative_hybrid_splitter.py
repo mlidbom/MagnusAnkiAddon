@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from language_services import conjugator
-from language_services.janome_ex.tokenizing.godan_dictionary_form_stem import GodanPotentialDictionaryFormInflection
+from language_services.janome_ex.tokenizing.godan_dictionary_form_stem import GodanPotentialInflectionDictionaryFormInflection, GodanPotentialInflectionDictionaryFormStem
 from language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
 from language_services.janome_ex.tokenizing.pre_processing_stage.word_info import WordInfo
 from language_services.janome_ex.tokenizing.split_token import SplitToken
@@ -58,8 +58,8 @@ class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
         if is_dictionary_form:
             potential_surface = potential_surface[:-1]
             return [SplitToken(token, surface=godan_surface, base=godan_base, is_inflectable_word=True, is_godan_potential_stem=True),
-                    SplitToken(token, surface=potential_surface, base=potential_base, is_inflectable_word=True, is_godan_potential_inflection=True),
-                    GodanPotentialDictionaryFormInflection(token)]
+                    GodanPotentialInflectionDictionaryFormStem(token, surface=potential_surface, base=potential_base),
+                    GodanPotentialInflectionDictionaryFormInflection(token)]
 
         return [SplitToken(token, surface=godan_surface, base=godan_base, is_inflectable_word=True, is_godan_potential_stem=True),
                 SplitToken(token, surface=potential_surface, base=potential_base, is_inflectable_word=True, is_godan_potential_inflection=True)]

@@ -65,11 +65,15 @@ class GodanDictionaryFormInflection(DictionaryFormInflection, Slots):
     def __init__(self, source: JNToken, surface: str, base: str) -> None:
         super().__init__(source, surface, base)
 
-class GodanPotentialDictionaryFormStem(DictionaryFormStem, Slots):
+class GodanPotentialInflectionDictionaryFormStem(DictionaryFormStem, Slots):
     def __init__(self, source: JNToken, surface: str, base: str) -> None:
         super().__init__(source, surface, base)
 
-class GodanPotentialDictionaryFormInflection(DictionaryFormInflection, Slots):
+    @property
+    @override
+    def is_godan_potential_inflection(self) -> bool: return True
+
+class GodanPotentialInflectionDictionaryFormInflection(DictionaryFormInflection, Slots):
     def __init__(self, source: JNToken) -> None:
         super().__init__(source, "る", "る")
 
