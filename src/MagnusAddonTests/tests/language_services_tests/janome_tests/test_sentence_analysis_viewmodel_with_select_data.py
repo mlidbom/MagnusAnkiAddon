@@ -48,6 +48,7 @@ def test_require_forbid_dictionary_form_prefix_and_masu_stem(sentence: str, expe
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
+        ("なる", ["なる", "う"]),
         ("する", ["する", "る"]),
         ("くる", ["くる", "う"]),
         ("食べる", ["食べる", "る"]),
