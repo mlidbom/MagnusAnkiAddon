@@ -26,25 +26,5 @@ class RequiresOrForbidsHasTeFormStem(Slots):
 
     @classmethod
     def _internal_is_in_state(cls, inspector: VocabMatchInspector) -> bool:
-        # todo get this stuff moved into the tokenizing stage...
-        if inspector.previous_location is None:
-            return False
-
-        previous_token = inspector.previous_location.token
-
-        if previous_token.is_special_nai_negative:  # todo: review: this code means that we do not consider ない to be a te form stem, but it seems that janome does.....
-            return False
-
-        if previous_token.is_te_form_stem:
-            return True
-
-        if inspector.start_location.token.surface not in RequiresOrForbidsHasTeFormStem._te_form_token_surfaces:
-            return False
-
-        if previous_token.is_past_tense_stem:
-            return True
-
-        if previous_token.is_masu_stem and not previous_token.is_godan_verb:  # noqa: SIM103
-            return True
-
-        return False
+        previous_location = inspector.previous_location
+        return previous_location is not None and previous_location.token.is_te_form_stem

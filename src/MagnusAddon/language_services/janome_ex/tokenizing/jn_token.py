@@ -78,12 +78,30 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
     @property
     @override
     def is_past_tense_stem(self) -> bool: return self.inflected_form == InflectionForms.Continuative.ta_connection  # "連用タ接続"
+
+    _te_form_token_surfaces: set[str] = {"て", "って", "で", "てる"}
     _te_connections: set[InflectionForm] = {InflectionForms.Continuative.te_connection, InflectionForms.Continuative.de_connection}
     @property
     @override
     def is_te_form_stem(self) -> bool:
-        return (self.inflected_form in JNToken._te_connections or
-                (self.is_past_tense_stem and self.surface.endswith("ん")))
+        if self.is_special_nai_negative:
+            return False  # todo: review: this code means that we do not consider ない to be a te form stem, but it seems that janome does.....
+
+        if (self.inflected_form in JNToken._te_connections or
+                (self.is_past_tense_stem and self.surface.endswith("ん"))):
+            return True
+
+        if self.next is None or self.next.surface not in JNToken._te_form_token_surfaces:
+            return False
+
+        if self.is_past_tense_stem:  # noqa: SIM103
+            return True
+
+        if self.is_masu_stem and not self.is_godan_verb:  # noqa: SIM103
+            return True
+
+        return False
+
     @property
     @override
     def is_past_tense_marker(self) -> bool: return self.inflection_type == InflectionTypes.Special.ta  # "連用タ接続"
