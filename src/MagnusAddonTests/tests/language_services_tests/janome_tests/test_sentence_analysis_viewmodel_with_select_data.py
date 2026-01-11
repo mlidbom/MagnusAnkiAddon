@@ -18,7 +18,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
         yield
 
 @pytest.mark.parametrize("sentence, expected_output", [
-        ("天気がよくて", ["天気", "が", "よい", "て"])
+
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -205,6 +205,7 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("服を引き出しの中に入れてください", ["服", "を", "引き出し", "の中", "に入る", "える", "て", "ください"]),
         ("他人を気遣い", ["他人", "を", "気遣う"]),
         ("まだ割れんのか", ["まだ", "割れる", "のか"]),
+        ("天気がよくて", ["天気", "が", "よい", "て"]),  # yield to surface should be a display things and only yield to valid surfaces
 ])
 def test_misc_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
