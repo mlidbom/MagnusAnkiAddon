@@ -33,7 +33,15 @@ class SplitTokenBase(IAnalysisToken, Slots):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}('{self.surface}', '{self.base_form}')"
 
-class GodanDictionaryFormStem(SplitTokenBase, Slots):
+class DictionaryFormsTokenBase(SplitTokenBase, Slots):
+    def __init__(self, source: JNToken, surface: str, base: str) -> None:
+        super().__init__(source, surface, base)
+
+    @property
+    @override
+    def is_inflectable_word(self) -> bool: return True  # todo: this feels odd, but without it it seems that things go haywire...
+
+class DictionaryFormStem(DictionaryFormsTokenBase, Slots):
     def __init__(self, source: JNToken, surface: str, base: str) -> None:
         super().__init__(source, surface, base)
 
@@ -41,7 +49,7 @@ class GodanDictionaryFormStem(SplitTokenBase, Slots):
     @override
     def is_dictionary_verb_form_stem(self) -> bool: return True
 
-class DictionaryFormInflection(SplitTokenBase, Slots):
+class DictionaryFormInflection(DictionaryFormsTokenBase, Slots):
     def __init__(self, source: JNToken, surface: str, base: str) -> None:
         super().__init__(source, surface, base)
 
@@ -49,54 +57,41 @@ class DictionaryFormInflection(SplitTokenBase, Slots):
     @override
     def is_dictionary_verb_inflection(self) -> bool: return True
 
+class GodanDictionaryFormStem(DictionaryFormStem, Slots):
+    def __init__(self, source: JNToken, surface: str, base: str) -> None:
+        super().__init__(source, surface, base)
+
 class GodanDictionaryFormInflection(DictionaryFormInflection, Slots):
     def __init__(self, source: JNToken, surface: str, base: str) -> None:
         super().__init__(source, surface, base)
 
-
-class GodanPotentialDictionaryFormStem(SplitTokenBase, Slots):
+class GodanPotentialDictionaryFormStem(DictionaryFormStem, Slots):
     def __init__(self, source: JNToken, surface: str, base: str) -> None:
         super().__init__(source, surface, base)
-
-    @property
-    @override
-    def is_dictionary_verb_form_stem(self) -> bool: return True
 
 class GodanPotentialDictionaryFormInflection(DictionaryFormInflection, Slots):
     def __init__(self, source: JNToken) -> None:
         super().__init__(source, "る", "る")
 
-class IchidanDictionaryFormStem(SplitTokenBase, Slots):
+class IchidanDictionaryFormStem(DictionaryFormStem, Slots):
     def __init__(self, source: JNToken, surface: str, base: str) -> None:
         super().__init__(source, surface, base)
-
-    @property
-    @override
-    def is_dictionary_verb_form_stem(self) -> bool: return True
 
 class IchidanDictionaryFormInflection(DictionaryFormInflection, Slots):
     def __init__(self, source: JNToken) -> None:
         super().__init__(source, "る", "る")
 
-class KuruVerbDictionaryFormStem(SplitTokenBase, Slots):
+class KuruVerbDictionaryFormStem(DictionaryFormStem, Slots):
     def __init__(self, source: JNToken, surface: str, base: str) -> None:
         super().__init__(source, surface, base)
-
-    @property
-    @override
-    def is_dictionary_verb_form_stem(self) -> bool: return True
 
 class KuruVerbDictionaryFormInflection(DictionaryFormInflection, Slots):
     def __init__(self, source: JNToken) -> None:
         super().__init__(source, "る", "る")
 
-class SuruVerbDictionaryFormStem(SplitTokenBase, Slots):
+class SuruVerbDictionaryFormStem(DictionaryFormStem, Slots):
     def __init__(self, source: JNToken, surface: str, base: str) -> None:
         super().__init__(source, surface, base)
-
-    @property
-    @override
-    def is_dictionary_verb_form_stem(self) -> bool: return True
 
 class SuruVerbDictionaryFormInflection(DictionaryFormInflection, Slots):
     def __init__(self, source: JNToken) -> None:
