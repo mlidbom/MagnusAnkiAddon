@@ -8,8 +8,7 @@ from language_services.janome_ex.tokenizing.godan_dictionary_form_stem import Sp
 if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.jn_token import JNToken
 
-# this is the interface that is actually used in the text analysis pipeline
-
+#todo replace this jack of all trades class with custom classes
 class SplitToken(SplitTokenBase, Slots):
     def __init__(self,
                  source: JNToken,
