@@ -87,7 +87,13 @@ def generate_derived_from(_vocab_note: VocabNote) -> str:
     return render_vocab_list(derived_from, "derived from", css_class="derived_from")
 
 def generate_in_compounds_list(_vocab_note: VocabNote) -> str:
-    in_compounds = app.col().vocab.with_compound_part(_vocab_note.question.disambiguation_name)[:30]
+    def prefer_compounds_starting_with_this_vocab(_vocab: VocabNote) -> int: return 0 if _vocab.compound_parts.all()[0] == vocab_form else 1
+
+    vocab_form = _vocab_note.question.disambiguation_name
+    in_compounds = (query(app.col().vocab.with_compound_part(vocab_form))
+                    .order_by(lambda it: it.get_question())
+                    .order_by(prefer_compounds_starting_with_this_vocab)
+                    .take(30).to_list())
     return render_vocab_list(in_compounds, "part of compound", css_class="in_compound_words")
 
 def generate_stem_in_compounds_list(_vocab_note: VocabNote) -> str:
@@ -114,20 +120,20 @@ def generate_meta_tags(vocab_note: VocabNote) -> str:
 
 def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(VocabNote, {
-        "##FORMS_LIST##": generate_forms_list,
-        "##IN_COMPOUNDS##": generate_in_compounds_list,
-        "##STEM_IN_COMPOUNDS##": generate_stem_in_compounds_list,
-        "##DERIVED_VOCABULARY##": generate_derived_list,
-        "##ERGATIVE_TWIN##": generate_ergative_twin_html,
-        "##DERIVED_FROM##": generate_derived_from,
-        "##HOMOPHONES_LIST##": generate_homophones_html_list,
-        "##PERFECT_SYNONYMS_LIST##": generate_perfect_synonyms_meaning_html_list,
-        "##SYNONYMS_LIST##": generate_synonyms_meaning_html_list,
-        "##SEE_ALSO_LIST##": generate_see_also_html_list,
-        "##ANTONYMS_LIST##": generate_antonyms_meaning_html_list,
-        "##CONFUSED_WITH_LIST##": generate_confused_with_html_list,
-        "##VOCAB_META_TAGS_HTML##": generate_meta_tags,
-        "##VOCAB_CLASSES##": _create_classes,
-        "##STEM_VOCABULARY##": generate_stem_vocabs,
-        "##IS_STEM_OF##": generate_stem_of_vocabs
+            "##FORMS_LIST##": generate_forms_list,
+            "##IN_COMPOUNDS##": generate_in_compounds_list,
+            "##STEM_IN_COMPOUNDS##": generate_stem_in_compounds_list,
+            "##DERIVED_VOCABULARY##": generate_derived_list,
+            "##ERGATIVE_TWIN##": generate_ergative_twin_html,
+            "##DERIVED_FROM##": generate_derived_from,
+            "##HOMOPHONES_LIST##": generate_homophones_html_list,
+            "##PERFECT_SYNONYMS_LIST##": generate_perfect_synonyms_meaning_html_list,
+            "##SYNONYMS_LIST##": generate_synonyms_meaning_html_list,
+            "##SEE_ALSO_LIST##": generate_see_also_html_list,
+            "##ANTONYMS_LIST##": generate_antonyms_meaning_html_list,
+            "##CONFUSED_WITH_LIST##": generate_confused_with_html_list,
+            "##VOCAB_META_TAGS_HTML##": generate_meta_tags,
+            "##VOCAB_CLASSES##": _create_classes,
+            "##STEM_VOCABULARY##": generate_stem_vocabs,
+            "##IS_STEM_OF##": generate_stem_of_vocabs
     }).render)
