@@ -3,6 +3,7 @@ from __future__ import annotations
 import note.vocabulary.vocabnote_sorting
 from ankiutils import app
 from aqt import gui_hooks
+from language_services import conjugator
 from note.vocabulary.vocabnote import VocabNote
 from sysutils.ex_str import newline
 from typed_linq_collections.q_iterable import query
@@ -87,7 +88,10 @@ def generate_derived_from(_vocab_note: VocabNote) -> str:
     return render_vocab_list(derived_from, "derived from", css_class="derived_from")
 
 def generate_in_compounds_list(_vocab_note: VocabNote) -> str:
-    def prefer_compounds_starting_with_this_vocab(_vocab: VocabNote) -> int: return 0 if _vocab.compound_parts.all()[0] == vocab_form else 1
+    forms = conjugator.get_vocab_stems(_vocab_note) + [_vocab_note.question.raw]
+    def prefer_compounds_starting_with_this_vocab(_vocab: VocabNote) -> int:
+        question = _vocab.question.raw
+        return 0 if any(form for form in forms if question.startswith(form)) else 1
 
     vocab_form = _vocab_note.question.disambiguation_name
     in_compounds = (query(app.col().vocab.with_compound_part(vocab_form))
