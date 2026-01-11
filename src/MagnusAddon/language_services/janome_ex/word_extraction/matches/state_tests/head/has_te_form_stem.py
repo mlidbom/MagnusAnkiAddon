@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 class RequiresOrForbidsHasTeFormStem(Slots):
-    _te_forms: set[str] = {"て", "って", "で"}
+    _te_form_token_surfaces: set[str] = {"て", "って", "で", "てる"}
     _required_failure: FailedMatchRequirement = FailedMatchRequirement.required("te_form_stem")
     _forbidden_failure: FailedMatchRequirement = FailedMatchRequirement.forbids("te_form_stem")
 
@@ -38,7 +38,7 @@ class RequiresOrForbidsHasTeFormStem(Slots):
         if previous_token.is_te_form_stem:
             return True
 
-        if not any(te_form_start for te_form_start in RequiresOrForbidsHasTeFormStem._te_forms if inspector.parsed_form.startswith(te_form_start)):
+        if inspector.start_location.token.surface not in RequiresOrForbidsHasTeFormStem._te_form_token_surfaces:
             return False
 
         if previous_token.is_past_tense_stem:
