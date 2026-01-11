@@ -196,4 +196,7 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("おうと", forms=["うと"]),
 
         VocabSpec("に会う", forms=["にあう"]),
+
+        VocabSpec("よい", yield_to_surface={"よく"}),
+        VocabSpec("よく", suffix_not={"て"}),
 ]

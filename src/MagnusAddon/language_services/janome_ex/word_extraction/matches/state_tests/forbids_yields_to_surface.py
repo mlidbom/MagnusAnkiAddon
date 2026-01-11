@@ -8,11 +8,12 @@ from language_services.janome_ex.word_extraction.matches.state_tests.head.failed
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
-class ForbidsYieldsToSurface(Slots):
+class ForbidsYieldsToValidSurfaceSurface(Slots):
     @classmethod
     def apply_to(cls, inspector: VocabMatchInspector) -> FailedMatchRequirement | None:
         surfaces = inspector.match.rules.yield_to_surface.get()
-        if inspector.word.surface_variant.form in surfaces:
-            return FailedMatchRequirement.forbids(f"""surface_in:{",".join(surfaces)}""")
+        surface_variant = inspector.surface_variant
+        if surface_variant.has_valid_match and surface_variant.form in surfaces:
+            return FailedMatchRequirement.forbids(f"""valid_surface_in:{",".join(surfaces)}""")
 
         return None

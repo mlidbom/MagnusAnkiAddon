@@ -7,7 +7,7 @@ from language_services.janome_ex.word_extraction.matches.match import Match
 from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import ForbidsAnotherMatchIsHigherPriority
 from language_services.janome_ex.word_extraction.matches.state_tests.forbids_compositionally_transparent_compound import ForbidsCompositionallyTransparentCompound
-from language_services.janome_ex.word_extraction.matches.state_tests.forbids_yields_to_surface import ForbidsYieldsToSurface
+from language_services.janome_ex.word_extraction.matches.state_tests.forbids_yields_to_surface import ForbidsYieldsToValidSurfaceSurface
 from language_services.janome_ex.word_extraction.matches.state_tests.head.generic_forbids import Forbids
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_godan_imperative_prefix import RequiresOrForbidsHasGodanImperativePrefix
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_past_tense_stem import RequiresOrForbidsHasPastTenseStem
@@ -53,7 +53,8 @@ class VocabMatch(Match, Slots):
         super().__init__(word_variant)
 
     _vocab_static_display_requirements_list: list[Callable[[VocabMatchInspector], FailedMatchRequirement | None]] = [
-            ForbidsCompositionallyTransparentCompound.apply_to
+            ForbidsCompositionallyTransparentCompound.apply_to,
+            ForbidsYieldsToValidSurfaceSurface.apply_to,
     ]
 
     _vocab_static_display_requirements_list_combined: list[Callable[[VocabMatchInspector], FailedMatchRequirement | None]] = _vocab_static_display_requirements_list + Match._match_static_display_requirements
@@ -108,7 +109,6 @@ class VocabMatch(Match, Slots):
             RequiresOrForbidsSurface.apply_to,
             RequiresOrForbidsIsSingleToken.apply_to,
             ForbidsSurfaceIsIn.apply_to,
-            ForbidsYieldsToSurface.apply_to,  # todo this should be in display requirements right?
     ]
 
     _combined_requirements: list[Callable[[VocabMatchInspector], FailedMatchRequirement | None]] = Match._match_primary_validity_requirements + _requirements_list

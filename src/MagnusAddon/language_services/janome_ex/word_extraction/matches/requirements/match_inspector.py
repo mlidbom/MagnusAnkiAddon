@@ -37,6 +37,10 @@ class MatchInspector(Slots):
         return self.variant.word
 
     @property
+    def surface_variant(self) -> CandidateWordVariant:
+        return self.word.surface_variant
+
+    @property
     def is_base(self) -> bool: return not self.variant.is_surface
 
     @property
