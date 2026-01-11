@@ -114,5 +114,5 @@ class NoteFields(Slots):
 
 class Mine(Slots):
     app_name: str = "JA-Studio"
-    app_still_loading_message: str = f"{app_name} still loading....."
+    app_still_loading_message: str = f"{app_name} still loading, the view will refresh when done loading....."
     VocabPrefixSuffixMarker: str = "〜"
