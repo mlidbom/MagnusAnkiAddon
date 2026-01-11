@@ -18,18 +18,18 @@ if TYPE_CHECKING:
 class VocabFlagsDialog(QDialog):
     def __init__(self, vocab: VocabNote, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.vocab:VocabNote = vocab
+        self.vocab: VocabNote = vocab
         self.changed_reparse_flags: set[str] = set()
-        self.string_sets_modified:bool = False
+        self.string_sets_modified: bool = False
 
         self.setWindowTitle(f"Edit Flags: {vocab.get_question()}")
 
         main_layout = QVBoxLayout()
 
         # Create scroll area for content
-        self.scroll_area:QScrollArea = QScrollArea()
+        self.scroll_area: QScrollArea = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
-        self.scroll_content:QWidget = QWidget()
+        self.scroll_content: QWidget = QWidget()
 
         # Create horizontal layout for left and right sections
         content_layout = QHBoxLayout()
@@ -52,7 +52,7 @@ class VocabFlagsDialog(QDialog):
         main_layout.addWidget(self.scroll_area)
 
         # Add button box
-        self.button_box:QDialogButtonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
+        self.button_box: QDialogButtonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         checked_cast(pyqtBoundSignal, self.button_box.accepted).connect(self.accept)  # pyright: ignore[reportUnknownMemberType]
         checked_cast(pyqtBoundSignal, self.button_box.rejected).connect(self.reject)  # pyright: ignore[reportUnknownMemberType]
         main_layout.addWidget(self.button_box)
@@ -262,6 +262,8 @@ class VocabFlagsDialog(QDialog):
     @override
     def accept(self) -> None:
         """Override accept to check if reparsing is needed."""
+        super().accept()
+
         if self.changed_reparse_flags or self.string_sets_modified:
             reply = QMessageBox.question(
                     self,
@@ -276,8 +278,6 @@ class VocabFlagsDialog(QDialog):
                 local_note_updater.reparse_sentences_for_vocab(self.vocab)
 
         app.get_ui_utils().refresh()
-
-        super().accept()
 
 def show_vocab_flags_dialog(vocab: VocabNote, parent: QWidget | None = None) -> None:
     dialog = VocabFlagsDialog(vocab, parent)
