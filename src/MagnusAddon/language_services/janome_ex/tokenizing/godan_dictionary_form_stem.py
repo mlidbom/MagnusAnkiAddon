@@ -61,6 +61,18 @@ class GodanDictionaryFormStem(DictionaryFormStem, Slots):
     def __init__(self, source: JNToken, surface: str, base: str) -> None:
         super().__init__(source, surface, base)
 
+class GodanPotentialDictionaryFormStem(GodanDictionaryFormStem, Slots):
+    def __init__(self, source: JNToken, surface: str, base: str) -> None:
+        super().__init__(source, surface, base)
+
+    @property
+    @override
+    def is_godan_potential_stem(self) -> bool: return True
+
+    @property
+    @override
+    def is_godan_verb(self) -> bool: return True  # todo this leaves us with, these tokens claiming both to be an ichidan(via the base class) and a godan... We can't tell which, but still..
+
 class GodanDictionaryFormInflection(DictionaryFormInflection, Slots):
     def __init__(self, source: JNToken, surface: str, base: str) -> None:
         super().__init__(source, surface, base)
