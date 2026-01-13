@@ -53,8 +53,7 @@ _toggle_abbreviations: dict[str, str] = {
         "automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound": "YPV",
         "automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound": "YCV",
         "hide_compositionally_transparent_compounds": "HCTC",
-        "hide_all_compounds": "HAC",
-
+        "hide_all_compounds": "HAC"
 }
 
 def render_view_settings() -> str:
