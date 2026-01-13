@@ -93,8 +93,7 @@ def generate_in_compounds_list(_vocab_note: VocabNote) -> str:
         question = _vocab.question.raw
         return 0 if any(form for form in forms if question.startswith(form)) else 1
 
-    vocab_form = _vocab_note.question.disambiguation_name
-    in_compounds = (query(app.col().vocab.with_compound_part(vocab_form))
+    in_compounds = (query(_vocab_note.related_notes.in_compounds())
                     .order_by(lambda it: it.get_question())
                     .order_by(prefer_compounds_starting_with_this_vocab)
                     .take(30).to_list())

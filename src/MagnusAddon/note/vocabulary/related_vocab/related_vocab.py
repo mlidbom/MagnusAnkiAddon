@@ -45,7 +45,7 @@ class RelatedVocab(Slots): # todo performance: memory: do we need to cache all o
     def in_compound_ids(self) -> QSet[int]: return self._in_compound_ids()
 
     def in_compounds(self) -> list[VocabNote]:
-        return app.col().vocab.with_compound_part(self._vocab().question.without_noise_characters)
+        return app.col().vocab.with_compound_part(self._vocab().question.disambiguation_name)
 
     def homophones_notes(self) -> QSet[VocabNote]:
         return (query(self._vocab().readings.get())
