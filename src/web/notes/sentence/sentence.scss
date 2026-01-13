@@ -51,6 +51,7 @@
     .view_settings {
         .toggle {
             font-weight: bold;
+            text-transform: none;
             &.show_kanji_in_sentence_breakdown,
             &.show_kanji_mnemonics_in_sentence_breakdown,
             &.show_compound_parts_in_sentence_breakdown,

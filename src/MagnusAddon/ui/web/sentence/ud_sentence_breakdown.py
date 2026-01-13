@@ -67,18 +67,17 @@ def render_view_settings() -> str:
         return newline.join(render_toggle(toggle) for toggle in app.config().sentence_view_toggles if toggle.get_value())
 
     return f"""
-    <div class="view_settings">
-        <span class="view_settings_title">Active settings:</span>
+    <span class="view_settings">
+        <span class="view_settings_title">Settings:</span>
         {render_toggle_list()}
-    </div>
+    </span>
 """
 
 def render_sentence_analysis(note: SentenceNote) -> str:
     sentence_analysis: SentenceViewModel = SentenceViewModel(note)
     html = f"""
     <div class="breakdown page_section">
-        <div class="page_section_title">Sentence breakdown</div>
-        {render_view_settings()}
+        <div class="page_section_title">Sentence breakdown  #  {render_view_settings()}</div>
         <ul class="sentenceVocabList userExtra depth1">
     """
 
