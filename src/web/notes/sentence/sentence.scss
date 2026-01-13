@@ -48,6 +48,23 @@
         }
     }
 
+    .view_settings {
+        .toggle {
+            font-weight: bold;
+            &.show_kanji_in_sentence_breakdown,
+            &.show_kanji_mnemonics_in_sentence_breakdown,
+            &.show_compound_parts_in_sentence_breakdown,
+            &.hide_compositionally_transparent_compounds {color: var(--colorTextGreen)}
+
+            &.show_sentence_breakdown_in_edit_mode,
+            &.hide_all_compounds { color: var(--colorTextWarningRed);}
+
+            &.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound,
+            &.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound,
+            &.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound { color: var(--colorTextItalic);}
+        }
+    }
+
     .sentenceVocabList {
         padding-left: 0;
         ul {
@@ -61,7 +78,7 @@
         .vocab_tag_list {
             white-space: nowrap;
             padding-left: 10px;
-            .vocab_tag_is-ichidan-hiding-godan-potential{ color: var(--colorTextWarningRed);}
+            .vocab_tag_is-ichidan-hiding-godan-potential { color: var(--colorTextWarningRed);}
         }
 
         li { line-height: 1.2; }

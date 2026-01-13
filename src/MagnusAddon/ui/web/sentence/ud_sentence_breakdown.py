@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from ankiutils import app
 from aqt import gui_hooks
+from configuration.configuration_value import ConfigurationValueBool
 from configuration.settings import Settings
 from note.sentences.sentencenote import SentenceNote
 from sysutils import ex_str
@@ -23,7 +25,6 @@ def build_invalid_for_display_span(view_model: MatchViewModel) -> str:
     hiding_reasons = [f"""<div class="hiding_reason">{format_reason(reason)}</div>""" for reason in view_model.hiding_reasons]
     return f"""<span>{newline.join(incorrect_reasons + hiding_reasons)}</span>"""
 
-
 def render_match_kanji(match: MatchViewModel) -> str:
     if not match.show_kanji: return ""
     viewmodel = sentence_kanji_list_viewmodel.create(match.kanji)
@@ -43,11 +44,42 @@ def render_match_kanji(match: MatchViewModel) -> str:
 </div>
         """
 
+_toggle_abbreviations: dict[str, str] = {
+        "show_sentence_breakdown_in_edit_mode": "EM",
+        "show_kanji_in_sentence_breakdown": "SK",
+        "show_compound_parts_in_sentence_breakdown": "SCP",
+        "show_kanji_mnemonics_in_sentence_breakdown": "SKM",
+        "automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound": "YSV",
+        "automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound": "YPV",
+        "automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound": "YCV",
+        "hide_compositionally_transparent_compounds": "HCTC",
+        "hide_all_compounds": "HAC",
+
+}
+
+def render_view_settings() -> str:
+    def get_toggle_abbreviation(toggle: str) -> str:
+        return _toggle_abbreviations.get(toggle, f"MISSING_ABBREVIATION:{toggle}")
+
+    def render_toggle(toggle: ConfigurationValueBool) -> str:
+        return f"""<span class="toggle {toggle.name}" title="{toggle.title}">{get_toggle_abbreviation(toggle.name)}</span>  """
+
+    def render_toggle_list() -> str:
+        return newline.join(render_toggle(toggle) for toggle in app.config().sentence_view_toggles if toggle.get_value())
+
+    return f"""
+    <div class="view_settings">
+        <span class="view_settings_title">Active settings:</span>
+        {render_toggle_list()}
+    </div>
+"""
+
 def render_sentence_analysis(note: SentenceNote) -> str:
     sentence_analysis: SentenceViewModel = SentenceViewModel(note)
-    html = """
+    html = f"""
     <div class="breakdown page_section">
         <div class="page_section_title">Sentence breakdown</div>
+        {render_view_settings()}
         <ul class="sentenceVocabList userExtra depth1">
     """
 

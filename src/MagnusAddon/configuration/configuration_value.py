@@ -134,15 +134,16 @@ class JapaneseConfig(Slots):
         self.hide_compositionally_transparent_compounds: ConfigurationValueBool = add_bool(ConfigurationValueBool("hide_compositionally_transparent_compounds", "Hide compositionally transparent compounds", True))
         self.hide_all_compounds: ConfigurationValueBool = add_bool(ConfigurationValueBool("hide_all_compounds", "Hide all compounds", False))
 
-        self.sentence_view_toggles: list[ConfigurationValueBool] = [self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound,
-                                                                    self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound,
-                                                                    self.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound,
-                                                                    self.hide_compositionally_transparent_compounds,
-                                                                    self.hide_all_compounds,
-                                                                    self.show_compound_parts_in_sentence_breakdown,
-                                                                    self.show_sentence_breakdown_in_edit_mode,
-                                                                    self.show_kanji_in_sentence_breakdown,
-                                                                    self.show_kanji_mnemonics_in_sentence_breakdown]
+        self.sentence_view_toggles: list[ConfigurationValueBool] = [
+                self.show_kanji_in_sentence_breakdown,
+                self.show_compound_parts_in_sentence_breakdown,
+                self.show_kanji_mnemonics_in_sentence_breakdown,
+                self.hide_compositionally_transparent_compounds,
+                self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound,
+                self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound,
+                self.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound,
+                self.hide_all_compounds,
+                self.show_sentence_breakdown_in_edit_mode, ]
 
         # performance toggles
         self.load_jamdict_db_into_memory: ConfigurationValueBool = add_bool(ConfigurationValueBool("load_jamdict_db_into_memory", "Load Jamdict DB into memory [Requires restart]", False))
