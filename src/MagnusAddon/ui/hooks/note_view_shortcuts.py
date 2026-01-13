@@ -54,19 +54,14 @@ def init() -> None:
             sentence.source_comments.empty()
             refresh_shallow()
 
-    # noinspection DuplicatedCode
     def toggle_show_compound_parts_in_sentence_breakdown() -> None:
         app.config().show_compound_parts_in_sentence_breakdown.set_value(not app.config().show_compound_parts_in_sentence_breakdown.get_value())
         if app.config().show_compound_parts_in_sentence_breakdown.get_value():
             app.config().show_sentence_breakdown_in_edit_mode.set_value(False)
         refresh_shallow()
 
-    def toggle_expando_flag(flag: ConfigurationValueBool, exit_edit_mode: bool = True) -> None:
+    def toggle_expando_flag(flag: ConfigurationValueBool) -> None:
         flag.set_value(not flag.get_value())
-
-        if exit_edit_mode:
-            app.config().show_compound_parts_in_sentence_breakdown.set_value(False)
-
         refresh_shallow()
 
     def toggle_hide_transparent_compounds__in_sentence_breakdown() -> None:
@@ -82,7 +77,7 @@ def init() -> None:
         toggle_expando_flag(app.config().show_kanji_mnemonics_in_sentence_breakdown)
 
     def toggle_show_sentence_breakdown_in_edit_mode() -> None:
-        toggle_expando_flag(app.config().show_sentence_breakdown_in_edit_mode, exit_edit_mode=False)
+        toggle_expando_flag(app.config().show_sentence_breakdown_in_edit_mode)
 
     def toggle_yield_last_token_in_suru_verb_compounds_to_overlapping_compound() -> None:
         toggle_expando_flag(app.config().automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound)
@@ -95,7 +90,6 @@ def init() -> None:
 
     def toggle_all_yield_last_token_flags() -> None:
         app.config().toggle_all_sentence_display_auto_yield_flags()
-        app.config().show_compound_parts_in_sentence_breakdown.set_value(False)
         refresh_shallow()
 
     def set_shortcut(widget: QWidget, shortcut: str, callback: Callable[[], None]) -> None:
