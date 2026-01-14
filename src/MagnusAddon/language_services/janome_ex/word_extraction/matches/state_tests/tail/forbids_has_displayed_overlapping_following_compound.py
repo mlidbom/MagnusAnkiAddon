@@ -16,8 +16,8 @@ class ForbidsHasDisplayedOverlappingFollowingCompound(CustomForbidsNoCache, Slot
         super().__init__(inspector)
 
     @classmethod
-    def apply_to(cls, inspector: VocabMatchInspector, is_active: bool) -> ForbidsHasDisplayedOverlappingFollowingCompound | None:
-        return ForbidsHasDisplayedOverlappingFollowingCompound(inspector) if is_active else None
+    def apply_to(cls, inspector: VocabMatchInspector) -> ForbidsHasDisplayedOverlappingFollowingCompound | None:
+        return ForbidsHasDisplayedOverlappingFollowingCompound(inspector) if inspector.requires_forbids.yield_last_token.is_required and not inspector.match.is_highlighted else None
 
     @property
     @override
