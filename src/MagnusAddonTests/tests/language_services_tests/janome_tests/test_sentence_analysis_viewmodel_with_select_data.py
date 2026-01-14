@@ -18,15 +18,15 @@ def setup_collection_with_select_data() -> Iterator[None]:
         yield
 
 @pytest.mark.parametrize("sentence, expected_output", [
-        ("お腹空かしてない",["お腹", "空かす", "てない"]) #todo: should match てない which requires te form stem
+
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
-
 @pytest.mark.parametrize("sentence, expected_output", [
         ("座っているのはいただけない", ["座る", "ている", "の", "は", "いただける:acceptable", "ない"]),
-        ("お金を貸していただけないでしょうか", ["お金", "を", "貸す", "て", "いただける:able-to", "ない", "でしょうか"])
+        ("お金を貸していただけないでしょうか", ["お金", "を", "貸す", "て", "いただける:able-to", "ない", "でしょうか"]),
+        ("お腹空かしてない", ["お腹", "空かす", "てない"])
 ])
 def test_require_forbid_te_prefix(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)

@@ -23,17 +23,23 @@ class VocabCloner(Slots):
     @property
     def note(self) -> VocabNote: return self._note_ref()
 
-    def create_prefix_version(self, prefix: str, speech_type: str = POS.EXPRESSION, set_compounds: bool = True, truncate_characters: int = 0) -> VocabNote:
-        return self._create_postfix_prefix_version(prefix, speech_type, is_prefix=True, set_compounds=set_compounds, truncate_characters=truncate_characters)
+    def prefix_to_dictionary_form(self, prefix: str, speech_type: str = POS.EXPRESSION) -> VocabNote:
+        return self._create_postfix_prefix_version(prefix, speech_type, is_prefix=True)
+
+    def prefix_to_chopped(self, prefix: str, chop_characters: int) -> VocabNote:
+        return self._create_postfix_prefix_version(prefix, POS.EXPRESSION, is_prefix=True, chop_off_characters=chop_characters)
+
+    def prefix_to_chopped_preview(self, form_prefix: str, chop_characters: int) -> str:
+        return form_prefix + self.note.get_question()[chop_characters:]
 
     def create_suffix_version(self, suffix: str, speech_type: str = POS.EXPRESSION, set_compounds: bool = True, truncate_characters: int = 0) -> VocabNote:
-        return self._create_postfix_prefix_version(suffix, speech_type, set_compounds=set_compounds, truncate_characters=truncate_characters)
+        return self._create_postfix_prefix_version(suffix, speech_type, set_compounds=set_compounds, chop_off_characters=truncate_characters)
 
-    def _create_postfix_prefix_version(self, addendum: str, speech_type: str, is_prefix: bool = False, set_compounds: bool = True, truncate_characters: int = 0) -> VocabNote:
+    def _create_postfix_prefix_version(self, addendum: str, speech_type: str, is_prefix: bool = False, set_compounds: bool = True, chop_off_characters: int = 0) -> VocabNote:
         def append_prepend_addendum(base: str) -> str:
             if not is_prefix:
-                return base + addendum if truncate_characters == 0 else base[0:-truncate_characters] + addendum
-            return addendum + base if truncate_characters == 0 else base[truncate_characters:] + addendum
+                return base + addendum if chop_off_characters == 0 else base[0:-chop_off_characters] + addendum
+            return addendum + base[chop_off_characters:]
 
         vocab_note = self.note
         new_vocab = self._create_new_vocab_with_some_data_copied(question=append_prepend_addendum(self.note.get_question()),
@@ -126,10 +132,10 @@ class VocabCloner(Slots):
         return clone
 
     def create_ku_form(self) -> VocabNote:
-        return self._create_postfix_prefix_version("く", "adverb", set_compounds=True, truncate_characters=1)
+        return self._create_postfix_prefix_version("く", "adverb", set_compounds=True, chop_off_characters=1)
 
     def create_sa_form(self) -> VocabNote:
-        return self._create_postfix_prefix_version("さ", POS.NOUN, set_compounds=True, truncate_characters=1)
+        return self._create_postfix_prefix_version("さ", POS.NOUN, set_compounds=True, chop_off_characters=1)
 
     def clone_to_derived_form(self, form_suffix: str, create_form_root: Callable[[VocabNote, str], str]) -> VocabNote:
         def create_full_form(form: str) -> str: return create_form_root(self.note, form) + form_suffix
