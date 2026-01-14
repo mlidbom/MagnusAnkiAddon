@@ -63,6 +63,7 @@ class Tags(Slots):
             derogatory: Tag = Tag.from_name(f"{f_vocab_register}derogatory")
             vulgar: Tag = Tag.from_name(f"{f_vocab_register}vulgar")
             archaic: Tag = Tag.from_name(f"{f_vocab_register}archaic")
+            sensitive: Tag = Tag.from_name(f"{f_vocab_register}sensitive")
             childish: Tag = Tag.from_name(f"{f_vocab_register}childish")
             literary: Tag = Tag.from_name(f"{f_vocab_register}literary")
 
@@ -86,6 +87,7 @@ class Tags(Slots):
                 godan_imperative: Tag = Tag.from_name(f"{f_vocab_matching_requires}godan_imperative")
                 godan_imperative_prefix: Tag = Tag.from_name(f"{f_vocab_matching_forbids}godan_imperative_prefix")
                 te_form_stem: Tag = Tag.from_name(f"{f_vocab_matching_requires}te-form-stem")
+                te_form_prefix: Tag = Tag.from_name(f"{f_vocab_matching_requires}te-form-prefix")
                 sentence_end: Tag = Tag.from_name(f"{f_vocab_matching_requires}sentence-end")
                 sentence_start: Tag = Tag.from_name(f"{f_vocab_matching_requires}sentence-start")
                 surface: Tag = Tag.from_name(f"{f_vocab_matching_requires}surface")
@@ -106,6 +108,7 @@ class Tags(Slots):
                 godan_imperative: Tag = Tag.from_name(f"{f_vocab_matching_forbids}godan_imperative")
                 godan_imperative_prefix: Tag = Tag.from_name(f"{f_vocab_matching_forbids}godan_imperative_prefix")
                 te_form_stem: Tag = Tag.from_name(f"{f_vocab_matching_forbids}te-form-stem")
+                te_form_prefix: Tag = Tag.from_name(f"{f_vocab_matching_forbids}te-form-prefix")
                 sentence_end: Tag = Tag.from_name(f"{f_vocab_matching_forbids}sentence-end")
                 sentence_start: Tag = Tag.from_name(f"{f_vocab_matching_forbids}sentence-start")
                 surface: Tag = Tag.from_name(f"{f_vocab_matching_forbids}surface")

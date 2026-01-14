@@ -178,6 +178,7 @@ class VocabFlagsDialog(QDialog):
         self._add_require_forbid_field(stem_grid, row_number.increment(), "Dictionary form prefix", self.vocab.matching_configuration.requires_forbids.dictionary_form_prefix)
         self._add_require_forbid_field(stem_grid, row_number.increment(), "Preceding adverb", self.vocab.matching_configuration.requires_forbids.preceding_adverb)
         self._add_require_forbid_field(stem_grid, row_number.increment(), "て-form stem", self.vocab.matching_configuration.requires_forbids.te_form_stem)
+        self._add_require_forbid_field(stem_grid, row_number.increment(), "て-form prefix", self.vocab.matching_configuration.requires_forbids.te_form_prefix)
         stem_group.setLayout(stem_grid)
         layout.addWidget(stem_group)
 
@@ -252,6 +253,7 @@ class VocabFlagsDialog(QDialog):
         self._add_checkbox(layout, "Literary", self.vocab.register.literary, False)
         self._add_checkbox(layout, "Polite", self.vocab.register.polite, False)
         self._add_checkbox(layout, "Rough, traditionally considered male", self.vocab.register.rough_masculine, False)
+        self._add_checkbox(layout, "Sensitive", self.vocab.register.sensitive, False)
         self._add_checkbox(layout, "Slang", self.vocab.register.slang, False)
         self._add_checkbox(layout, "Soft, traditionally considered feminine", self.vocab.register.soft_feminine, False)
         self._add_checkbox(layout, "Vulgar, usually offensive", self.vocab.register.vulgar, False)

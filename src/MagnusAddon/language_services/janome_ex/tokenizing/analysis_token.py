@@ -35,6 +35,8 @@ class IAnalysisToken(Slots):
     def is_irrealis(self) -> bool: return self.source_token.is_irrealis
     @property
     def is_end_of_statement(self) -> bool: return self.source_token.is_end_of_statement
+    @property
+    def is_te_form(self) -> bool: return False
 
     @property
     def is_inflectable_word(self) -> bool: return False

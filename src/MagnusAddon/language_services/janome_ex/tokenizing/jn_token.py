@@ -171,6 +171,7 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
 
     _te_forms: set[str] = {"て", "って", "で"}
     @property
+    @override
     def is_te_form(self) -> bool:
         return (self.parts_of_speech == JNPOS.Particle.conjunctive
                 and self.surface in JNToken._te_forms)

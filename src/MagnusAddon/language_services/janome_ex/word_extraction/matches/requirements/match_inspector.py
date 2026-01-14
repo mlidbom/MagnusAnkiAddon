@@ -59,6 +59,16 @@ class MatchInspector(Slots):
         return self.start_location.previous() if self.start_location.previous else None
 
     @property
+    def has_te_form_stem(self) -> bool:
+        previous_location = self.previous_location
+        return previous_location is not None and previous_location.token.is_te_form_stem
+
+    @property
+    def has_te_form_prefix(self) -> bool:
+        previous_location = self.previous_location
+        return previous_location is not None and previous_location.token.is_te_form
+
+    @property
     def prefix(self) -> str:
         return self.previous_location.token.surface if self.previous_location else ""
 

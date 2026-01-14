@@ -24,6 +24,8 @@ class VocabNoteRegister(Slots):
     @property
     def archaic(self) -> TagFlagField: return TagFlagField(self._vocab, Tags.Vocab.Register.archaic)
     @property
+    def sensitive(self) -> TagFlagField: return TagFlagField(self._vocab, Tags.Vocab.Register.sensitive)
+    @property
     def vulgar(self) -> TagFlagField: return TagFlagField(self._vocab, Tags.Vocab.Register.vulgar)
     @property
     def humble(self) -> TagFlagField: return TagFlagField(self._vocab, Tags.Vocab.Register.humble)

@@ -85,6 +85,7 @@ class VocabMatchingRulesConfigurationRequiresForbidsFlags(Slots):
         self.dictionary_form_stem: RequireForbidFlagField = self._add_flag(30, 1, Tags.Vocab.Matching.Requires.dictionary_form_stem, Tags.Vocab.Matching.Forbids.dictionary_form_stem)
         self.dictionary_form_prefix: RequireForbidFlagField = self._add_flag(30, 1, Tags.Vocab.Matching.Requires.dictionary_form_prefix, Tags.Vocab.Matching.Forbids.dictionary_form_prefix)
         self.te_form_stem: RequireForbidFlagField = self._add_flag(20, 1, Tags.Vocab.Matching.Requires.te_form_stem, Tags.Vocab.Matching.Forbids.te_form_stem)
+        self.te_form_prefix: RequireForbidFlagField = self._add_flag(20, 1, Tags.Vocab.Matching.Requires.te_form_prefix, Tags.Vocab.Matching.Forbids.te_form_prefix)
         self.ichidan_imperative: RequireForbidFlagField = self._add_flag(30, 1, Tags.Vocab.Matching.Requires.ichidan_imperative, Tags.Vocab.Matching.Forbids.ichidan_imperative)
         self.godan_potential: RequireForbidFlagField = self._add_flag(30, 1, Tags.Vocab.Matching.Requires.godan_potential, Tags.Vocab.Matching.Forbids.godan_potential)
         self.godan_imperative: RequireForbidFlagField = self._add_flag(30, 1, Tags.Vocab.Matching.Requires.godan_imperative, Tags.Vocab.Matching.Forbids.godan_imperative)

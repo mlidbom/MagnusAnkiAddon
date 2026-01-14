@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from aqt import gui_hooks
-from configuration.configuration_value import ConfigurationValueBool
 from configuration.settings import Settings
 from note.sentences.sentencenote import SentenceNote
 from sysutils import ex_str
@@ -14,6 +13,7 @@ from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 
 if TYPE_CHECKING:
+    from configuration.configuration_value import ConfigurationValueBool
     from ui.web.sentence.match_viewmodel import MatchViewModel
 
 def format_reason(reason: str) -> str:

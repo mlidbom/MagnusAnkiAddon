@@ -87,6 +87,7 @@ class VocabMatch(Match, Slots):
             ForbidsPrefixIsIn.apply_to,
             RequiresPrefixIsIn.apply_to,
             RequiresOrForbidsIsSentenceStart.apply_to,
+            RequiresOrForbids("te_form_prefix", lambda it: it.requires_forbids.te_form_prefix, lambda it: it.has_te_form_prefix).apply_to,
             RequiresOrForbidsHasTeFormStem.apply_to,
             RequiresOrForbidsHasPastTenseStem.apply_to,
 

@@ -47,16 +47,16 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
     def with_form(self, form: str) -> Iterable[VocabNote]: return self._by_form.get(form, [])
     def with_disambiguation_name(self, form: str) -> Iterable[VocabNote]: return self._by_disambiguation_name.get(form, [])
 
-    def with_compound_part(self, form: str) -> list[VocabNote]:
+    def with_compound_part(self, disambiguation_name: str) -> list[VocabNote]:
         compound_parts: QSet[VocabNote] = QSet()
 
         def fetch_parts(part_form: str) -> None:
             for vocab in self._by_compound_part.get(part_form, []):
                 if vocab not in compound_parts:
                     compound_parts.add(vocab)
-                    fetch_parts(vocab.get_question())
+                    fetch_parts(vocab.question.disambiguation_name)
 
-        fetch_parts(form)
+        fetch_parts(disambiguation_name)
 
         def get_vocab_question(vocab: VocabNote) -> str: return vocab.get_question()
         return compound_parts.order_by(get_vocab_question).to_list()
@@ -114,7 +114,7 @@ class VocabCollection(Slots):
     def with_id_or_none(self, note_id: NoteId) -> VocabNote | None: return self._cache.with_id_or_none(note_id)
     def with_disambiguation_name(self, name: str) -> Iterable[VocabNote]: return self._cache.with_disambiguation_name(name)
     def with_form(self, form: str) -> Iterable[VocabNote]: return self._cache.with_form(form)
-    def with_compound_part(self, compound_part: str) -> list[VocabNote]: return self._cache.with_compound_part(compound_part)
+    def with_compound_part(self, disambiguation_name: str) -> list[VocabNote]: return self._cache.with_compound_part(disambiguation_name)
     def derived_from(self, derived_from: str) -> list[VocabNote]: return self._cache.derived_from(derived_from)
     def with_kanji_in_main_form(self, kanji: KanjiNote) -> list[VocabNote]: return self._cache.with_kanji_in_main_form(kanji.get_question())
     def with_kanji_in_any_form(self, kanji: KanjiNote) -> list[VocabNote]: return self._cache.with_kanji_in_any_form(kanji.get_question())

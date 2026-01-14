@@ -22,6 +22,14 @@ def setup_collection_with_select_data() -> Iterator[None]:
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
+
+@pytest.mark.parametrize("sentence, expected_output", [
+        ("座っているのはいただけない", ["座る", "ている", "の", "は", "いただける:acceptable", "ない"]),
+        ("お金を貸していただけないでしょうか", ["お金", "を", "貸す", "て", "いただける:able-to", "ない", "でしょうか"])
+])
+def test_require_forbid_te_prefix(sentence: str, expected_output: list[str]) -> None:
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+
 @pytest.mark.parametrize("sentence, expected_output", [
         ("寝れない", ["寝る", "れない"]),
         ("食べれる", ["食べる", "れる:ichidan", "る"])

@@ -201,4 +201,7 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("よく", suffix_not={"て"}),
 
         VocabSpec("ないし", tags=[vm.Forbids.irrealis, vm.Forbids.sentence_end, vm.Forbids.preceding_adverb]),
+
+        VocabSpec("[いただける:able-to]", tags=[vm.Requires.te_form_prefix]),
+        VocabSpec("[いただける:acceptable]", tags=[vm.Forbids.te_form_prefix]),
 ]
