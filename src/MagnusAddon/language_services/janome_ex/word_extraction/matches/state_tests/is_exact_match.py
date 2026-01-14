@@ -18,6 +18,6 @@ class RequiresOrForbidsSurface(Slots):
 
         if requirement.is_required and not inspector.variant.is_surface:
             return cls._required_failure
-        if requirement.is_forbidden and inspector.variant.is_surface:
+        if requirement.is_forbidden and inspector.variant.is_surface and not inspector.base_equals_surface:
             return cls._forbidden_failure
         return None

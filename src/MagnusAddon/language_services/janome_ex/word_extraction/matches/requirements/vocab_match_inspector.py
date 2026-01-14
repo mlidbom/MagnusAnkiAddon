@@ -47,3 +47,8 @@ class VocabMatchInspector(MatchInspector, Slots):
     @property
     def is_compound_ending_on_dictionary_form_where_surface_differs_from_base(self) -> bool:
         return self.word.is_compound and self.is_base and self.end_location.token.is_dictionary_verb_inflection and self.end_location.token.surface != self.end_location.token.base_form
+
+    @property
+    def base_equals_surface(self) -> bool:
+        word = self.word
+        return word.surface_form == word.base_form
