@@ -178,17 +178,17 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("考えすぎる", tags=[vm.Forbids.preceding_adverb]),
 
         VocabSpec("な", forms=["な"]),
-        VocabSpec("[な:dict]", tags=[vm.Requires.dictionary_form_prefix]),
-        VocabSpec("[な:masu]", tags=[vm.Requires.masu_stem]),
-        VocabSpec("[な:s.end]", tags=[vm.Requires.sentence_end, vm.Forbids.sentence_start]),
-        VocabSpec("[な:s.start]", tags=[vm.Requires.sentence_start]),
+        VocabSpec("な:dict", tags=[vm.Requires.dictionary_form_prefix]),
+        VocabSpec("な:masu", tags=[vm.Requires.masu_stem]),
+        VocabSpec("な:s.end", tags=[vm.Requires.sentence_end, vm.Forbids.sentence_start]),
+        VocabSpec("な:s.start", tags=[vm.Requires.sentence_start]),
         VocabSpec("すんな", forms=["[すな]"], tags=[vm.Forbids.dictionary_form_stem]),
 
         VocabSpec("がある", tags=[vm.yield_last_token_to_overlapping_compound]),
         VocabSpec("うの", forms=["うの", "くの", "ぐの", "すの", "つの", "ぬの", "ぶの", "むの", "るの"], tags=[vm.Requires.dictionary_form_stem, Tags.Vocab.question_overrides_form]),
 
         VocabSpec("寝れる", tags=[vm.is_poison_word]),
-        VocabSpec("[れる:ichidan]", tags=[vm.Requires.ichidan, vm.Requires.irrealis]),
+        VocabSpec("れる:ichidan", tags=[vm.Requires.ichidan, vm.Requires.irrealis]),
         VocabSpec("れない", tags=[vm.Requires.ichidan, vm.Requires.irrealis]),
         VocabSpec("っ放し", forms=["っはなし", "っぱなし"], tags=[vm.is_inflecting_word]),
 
@@ -202,6 +202,6 @@ test_special_vocab: list[VocabSpec] = [
 
         VocabSpec("ないし", tags=[vm.Forbids.irrealis, vm.Forbids.sentence_end, vm.Forbids.preceding_adverb]),
 
-        VocabSpec("[いただける:able-to]", tags=[vm.Requires.te_form_prefix]),
-        VocabSpec("[いただける:acceptable]", tags=[vm.Forbids.te_form_prefix]),
+        VocabSpec("いただける:able-to", tags=[vm.Requires.te_form_prefix]),
+        VocabSpec("いただける:acceptable", tags=[vm.Forbids.te_form_prefix]),
 ]

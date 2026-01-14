@@ -20,7 +20,7 @@ class VocabStems(Slots):
 
 class VocabNoteQuestion(Slots):
     DISAMBIGUATION_MARKER: str = ":"
-    INVALID_QUESTION_MESSAGE: str = "INVALID QUESTION FORMAT. If you need to specify disambiguation, use [question:disambiguation] if not do NOT use [] characters"
+    INVALID_QUESTION_MESSAGE: str = "INVALID QUESTION FORMAT. If you need to specify disambiguation, use question:disambiguation if not do NOT use : characters. More than one is invalid"
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
         self.raw: str = ""
@@ -29,8 +29,8 @@ class VocabNoteQuestion(Slots):
 
     def _init_value_raw(self) -> None:
         value = self._vocab().get_field(NoteFields.Vocab.question)
-        if value.startswith("["):
-            self.disambiguation_name = value[1:-1]
+        if VocabNoteQuestion.DISAMBIGUATION_MARKER in value:
+            self.disambiguation_name = value
             parts = self.disambiguation_name.split(VocabNoteQuestion.DISAMBIGUATION_MARKER)
             if len(parts) != 2:
                 self.raw = VocabNoteQuestion.INVALID_QUESTION_MESSAGE
