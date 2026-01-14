@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 from note.sentences.parsed_match import ParsedMatch
 from note.sentences.serialization.parsing_result_serializer import ParsingResultSerializer
+from sysutils import ex_str
 from sysutils.memory_usage import string_auto_interner
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.collections.q_set import QSet
@@ -17,7 +18,7 @@ class ParsingResult(Slots):
     serializer: ParsingResultSerializer = ParsingResultSerializer()
     def __init__(self, words: list[ParsedMatch], sentence: str, parser_version: str) -> None:
         self.parsed_words: QList[ParsedMatch] = QList(words)
-        self.sentence: str = string_auto_interner.auto_intern(sentence)
+        self.sentence: str = string_auto_interner.auto_intern(sentence.replace(ex_str.invisible_space, ""))
         self.parser_version: str = string_auto_interner.auto_intern(parser_version)
 
     @property
