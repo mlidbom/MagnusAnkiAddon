@@ -16,7 +16,7 @@ class InflectionType(Slots):
     @override
     def __repr__(self) -> str: return f"""{self.name} - {self.description}"""
     @override
-    def __str__(self) -> str: return self.name
+    def __str__(self) -> str: return self.__repr__()
 
     @override
     def __eq__(self, other: object) -> bool:
@@ -45,43 +45,42 @@ class InflectionTypes(Slots):
         tsu: InflectionType = _add_form("五段・タ行", "Godan verb with 'tsu' ending")
         nu: InflectionType = _add_form("五段・ナ行", "Godan verb with 'nu' ending")
         ru: InflectionType = _add_form("五段・ラ行", "Godan verb with 'ru' ending")
-        ru_special: InflectionType = _add_form("五段・ラ行特殊", "Special godan verb with 'ru' ending - Irregular 'ru' conjugation pattern")
-        ru_ending_aru: InflectionType = _add_form("五段・ラ行アル", "Godan verb 'aru' (to exist) with 'ru' ending - Special case verb")
+        ru_special: InflectionType = _add_form("五段・ラ行特殊", "Godan verb with 'ru' ending - Irregular conjugation")
+        ru_ending_aru: InflectionType = _add_form("五段・ラ行アル", "Godan verb 'aru'")
 
-        u_gemination: InflectionType = _add_form("五段・ワ行促音便", "Godan verb with 'u' ending and 'っ' consonant assimilation - Special 'u' conjugation pattern")
-        u_u_sound: InflectionType = _add_form("五段・ワ行ウ音便", "Godan verb with 'u' ending and 'u' sound change - Special 'u' conjugation pattern")
+        u_gemination: InflectionType = _add_form("五段・ワ行促音便", "Godan verb with 'u' ending and 'っ' consonant assimilation")
+        u_u_sound: InflectionType = _add_form("五段・ワ行ウ音便", "Godan verb with 'u' ending and 'u' sound change")
 
-        ku_gemination_yuku: InflectionType = _add_form("五段・カ行促音便ユク", "Godan verb 'yuku' (to go) with 'ku' ending and consonant assimilation - Special case verb")
-        ku_gemination: InflectionType = _add_form("五段・カ行促音便", "Godan verb with 'ku' ending and consonant assimilation - Special 'ku' conjugation pattern")
-        ku_i_sound: InflectionType = _add_form("五段・カ行イ音便", "Godan verb with 'ku' ending and 'i' sound change - Special 'ku' conjugation pattern")
+        ku_gemination_yuku: InflectionType = _add_form("五段・カ行促音便ユク", "Godan verb 'yuku'")
+        ku_gemination: InflectionType = _add_form("五段・カ行促音便", "Godan verb with 'ku' ending and consonant assimilation")
+        ku_i_sound: InflectionType = _add_form("五段・カ行イ音便", "Godan verb with 'ku' ending and 'i' sound change")
 
     # noinspection PyUnusedClass,PyUnusedName
     class Ichidan(Slots):
         base: str = "一段"
-        regular: InflectionType = _add_form("一段", "Ichidan (one-step) verb - Regular -eru/-iru verb pattern")
-        #turns out this is not what we need, rather it only occurs in rare cases like ありうる
-        eru: InflectionType = _add_form("一段・得ル", "Ichidan verb 'eru' (to get/obtain) - Special case ichidan verb")
-        kureru: InflectionType = _add_form("一段・クレル", "Ichidan verb 'kureru' (to give) - Special case ichidan verb")
+        regular: InflectionType = _add_form("一段", "Ichidan verb")
+        eru: InflectionType = _add_form("一段・得ル", "Ichidan verb 'eru'")
+        kureru: InflectionType = _add_form("一段・クレル", "Ichidan verb 'kureru'")
 
     # noinspection PyUnusedClass,PyUnusedName
     class Adjective(Slots):
         base: str = "形容詞"
-        i_ending: InflectionType = _add_form("形容詞・イ段", "I-adjective - Ends with 'i' and conjugates like 'takai' (high)")
-        auo_ending: InflectionType = _add_form("形容詞・アウオ段", "Adjective with 'a', 'u', 'o' row - Special adjective conjugation pattern")
-        ii: InflectionType = _add_form("形容詞・イイ", "Adjective 'ii' (good) - Special case adjective")
+        i_ending: InflectionType = _add_form("形容詞・イ段", "I-adjective")
+        auo_ending: InflectionType = _add_form("形容詞・アウオ段", "Adjective with 'a', 'u', 'o' row")
+        ii: InflectionType = _add_form("形容詞・イイ", "Adjective 'いい'")
 
     # noinspection PyUnusedClass,PyUnusedName
     class Sahen(Slots):
         base: str = "サ変"
-        suru: InflectionType = _add_form("サ変・スル", "Suru verb - Irregular verb 'suru' (to do)")
-        suru_compound: InflectionType = _add_form("サ変・−スル", "Suru compound verb - Noun + suru combination")
+        suru: InflectionType = _add_form("サ変・スル", "Suru verb")
+        suru_compound: InflectionType = _add_form("サ変・−スル", "Suru compound verb")
         zuru: InflectionType = _add_form("サ変・−ズル", "Zuru verb - Classical variation of suru")
 
     # noinspection PyUnusedClass,PyUnusedName
     class Kahen(Slots):
         base: str = "カ変"
-        kuru_kanji: InflectionType = _add_form("カ変・来ル", "Kuru verb - Irregular verb 'kuru' (to come) in kanji form")
-        kuru_kana: InflectionType = _add_form("カ変・クル", "Kuru verb - Irregular verb 'kuru' (to come) in kana form")
+        kuru_kanji: InflectionType = _add_form("カ変・来ル", "Kuru verb in kanji")
+        kuru_kana: InflectionType = _add_form("カ変・クル", "Kuru verb in kana")
 
     # noinspection PyUnusedClass,PyUnusedName
     class Bungo(Slots):
@@ -97,7 +96,7 @@ class InflectionTypes(Slots):
     # noinspection PyUnusedClass,PyUnusedName
     class Special(Slots):
         base: str = "特殊"
-        masu: InflectionType = _add_form("特殊・マス", "Special 'masu' form - Polite verb ending")
+        masu: InflectionType = _add_form("特殊・マス", "Special 'masu'")
         ya: InflectionType = _add_form("特殊・ヤ", "Special 'ya' - Dialectal copula/question marker")
         ja: InflectionType = _add_form("特殊・ジャ", "Special 'ja' - Dialectal copula")
         ta: InflectionType = _add_form("特殊・タ", "Special 'ta' - Past tense marker")
@@ -110,19 +109,19 @@ class InflectionTypes(Slots):
     # noinspection PyUnusedClass,PyUnusedName
     class Yodan(Slots):
         base: str = "四段"
-        ha_ending: InflectionType = _add_form("四段・ハ行", "Classical yodan verb with 'ha' ending - Classical conjugation pattern")
-        ba_ending: InflectionType = _add_form("四段・バ行", "Classical yodan verb with 'ba' ending - Classical conjugation pattern")
+        ha_ending: InflectionType = _add_form("四段・ハ行", "Classical yodan verb with 'ha' ending")
+        ba_ending: InflectionType = _add_form("四段・バ行", "Classical yodan verb with 'ba' ending")
 
     # noinspection PyUnusedClass,PyUnusedName
     class Ruhen(Slots):
         base: str = "ラ変"
-        ra_hen: InflectionType = _add_form("ラ変", "Classical ra-hen irregular verb - Classical irregular conjugation")
+        ra_hen: InflectionType = _add_form("ラ変", "Classical ra-hen irregular verb")
 
     # noinspection PyUnusedClass,PyUnusedName
     class Nidan(Slots):
         base: str = "下二"
-        lower_da: InflectionType = _add_form("下二・ダ行", "Lower bigrade with 'da' ending - Classical conjugation pattern")
-        lower_ta: InflectionType = _add_form("下二・タ行", "Lower bigrade with 'ta' ending - Classical conjugation pattern")
+        lower_da: InflectionType = _add_form("下二・ダ行", "Lower bigrade with 'da' ending")
+        lower_ta: InflectionType = _add_form("下二・タ行", "Lower bigrade with 'ta' ending")
 
     # noinspection PyUnusedClass,PyUnusedName
     class Other(Slots):

@@ -13,7 +13,10 @@ from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from configuration.configuration_value import ConfigurationValueBool
+    from language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
     from ui.web.sentence.match_viewmodel import MatchViewModel
 
 def format_reason(reason: str) -> str:
@@ -118,6 +121,85 @@ def render_sentence_analysis(note: SentenceNote) -> str:
     html += """</ul>
             </div>
         """
+
+    html += render_tokens(sentence_analysis)
+
+    return html
+
+_token_boolean_flags: list[tuple[Callable[[IAnalysisToken], bool], str, str]] = [
+        (lambda t: t.is_past_tense_stem, "PTS", "past_tense_stem"),
+        (lambda t: t.is_past_tense_marker, "PTM", "past_tense_marker"),
+        (lambda t: t.is_masu_stem, "Masu", "masu_stem"),
+        (lambda t: t.is_adverb, "Adv", "adverb"),
+        (lambda t: t.is_irrealis, "Irr", "irrealis"),
+        (lambda t: t.is_end_of_statement, "EOS", "end_of_statement"),
+        (lambda t: t.has_te_form_stem, "HTFS", "has_te_form_stem"),
+        (lambda t: t.is_non_word_character, "NWC", "non_word_character"),
+        (lambda t: t.is_dictionary_verb_form_stem, "DVS", "dictionary_verb_form_stem"),
+        (lambda t: t.is_dictionary_verb_inflection, "DVI", "dictionary_verb_inflection"),
+        (lambda t: t.is_godan_potential_stem, "GPS", "godan_potential_stem"),
+        (lambda t: t.is_godan_imperative_stem, "GIS", "godan_imperative_stem"),
+        (lambda t: t.is_ichidan_imperative_stem, "IIS", "ichidan_imperative_stem"),
+        (lambda t: t.is_godan_potential_inflection, "GPI", "godan_potential_inflection"),
+        (lambda t: t.is_godan_imperative_inflection, "GII", "godan_imperative_inflection"),
+        (lambda t: t.is_ichidan_imperative_inflection, "III", "ichidan_imperative_inflection"),
+        (lambda t: t.is_inflectable_word, "Infl", "inflectable_word"),
+        (lambda t: t.is_ichidan_verb, "一段", "ichidan_verb"),
+        (lambda t: t.is_godan_verb, "五弾", "godan_verb"),
+]
+def render_tokens(sentence_analysis: SentenceViewModel) -> str:
+    if not Settings.show_breakdown_in_edit_mode(): return ""
+
+    tokens: list[IAnalysisToken] = sentence_analysis.analysis.analysis.pre_processed_tokens
+
+    def render_token_properties(token: IAnalysisToken) -> str:
+        properties: list[str] = []
+        for prop_func, _, title in _token_boolean_flags:
+            if prop_func(token):
+                properties.append(f'<span class="token_property" title="{title}">{title}</span>')
+
+        return ", ".join(properties) if properties else ""
+
+    html = """
+    <div class="tokens page_section">
+        <div class="page_section_title">Tokens</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Surface</th>
+                    <th>Base</th>
+                    <th title="Parts of speech">POS1</th>
+                    <th title="Parts of speech">POS2</th>
+                    <th title="Parts of speech">POS3</th>
+                    <th title="Parts of speech">POS4</th>
+                    <th title="Inflected form">Inflected Form</th>
+                    <th title="Inflection type">Inflection Type</th>
+                    <th>Boolean flags</th>
+                </tr>
+            </thead>
+            <tbody>
+"""
+
+    for token in tokens:
+        html += f"""
+                    <tr>
+                        <td>{token.surface}</td>
+                        <td>{token.base_form}</td>
+                        <td>{token.source_token.parts_of_speech.level1.japanese}:{token.source_token.parts_of_speech.level1.english}</td>
+                        <td>{token.source_token.parts_of_speech.level2.japanese}:{token.source_token.parts_of_speech.level2.english}</td>
+                        <td>{token.source_token.parts_of_speech.level3.japanese}:{token.source_token.parts_of_speech.level3.english}</td>
+                        <td>{token.source_token.parts_of_speech.level4.japanese}:{token.source_token.parts_of_speech.level4.english}</td>
+                        <td>{token.source_token.inflected_form}</td>
+                        <td>{token.source_token.inflection_type}</td>
+                        <td class="token_properties">{render_token_properties(token)}</td>
+                    </tr>
+                """
+
+    html += """
+            </tbody>
+        </table>
+    </div>
+"""
     return html
 
 def init() -> None:
