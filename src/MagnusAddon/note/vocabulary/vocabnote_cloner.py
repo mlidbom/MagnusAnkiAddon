@@ -150,6 +150,12 @@ class VocabCloner(Slots):
     def suffix_to_a_stem(self, form_suffix: str) -> VocabNote:
         return self.clone_to_derived_form(form_suffix, conjugator.get_a_stem_vocab)
 
+    def suffix_to_chopped(self, form_suffix: str, chop_characters: int) -> VocabNote:
+        return self.clone_to_derived_form(form_suffix, lambda it, form: form[:-chop_characters])
+
+    def suffix_to_chopped_preview(self, form_suffix: str, chop_characters: int) -> str:
+        return self.note.get_question()[:-chop_characters] + form_suffix
+
     def suffix_to_a_stem_preview(self, form_suffix: str) -> str:
         return self._create_preview_form(form_suffix, conjugator.get_a_stem_vocab)
 
