@@ -22,11 +22,7 @@ class IAnalysisToken(Slots):
     @property
     def is_past_tense_stem(self) -> bool: return self.source_token.is_past_tense_stem
     @property
-    def is_te_form_stem(self) -> bool: return self.source_token.is_te_form_stem
-    @property
     def is_past_tense_marker(self) -> bool: return self.source_token.is_past_tense_marker
-    @property
-    def is_special_nai_negative(self) -> bool: return self.source_token.is_special_nai_negative
     @property
     def is_masu_stem(self) -> bool: return self.source_token.is_masu_stem
     @property
@@ -36,7 +32,7 @@ class IAnalysisToken(Slots):
     @property
     def is_end_of_statement(self) -> bool: return self.source_token.is_end_of_statement
     @property
-    def is_te_form(self) -> bool: return False
+    def has_te_form_stem(self) -> bool: return False
 
     @property
     def is_inflectable_word(self) -> bool: return False

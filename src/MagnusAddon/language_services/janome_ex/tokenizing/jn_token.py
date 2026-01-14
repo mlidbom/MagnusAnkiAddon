@@ -79,35 +79,9 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
     @override
     def is_past_tense_stem(self) -> bool: return self.inflected_form == InflectionForms.Continuative.ta_connection  # "連用タ接続"
 
-    _te_form_token_surfaces: set[str] = {"て", "って", "で", "てる"}
-    _te_connections: set[InflectionForm] = {InflectionForms.Continuative.te_connection, InflectionForms.Continuative.de_connection}
-    @property
-    @override
-    def is_te_form_stem(self) -> bool:
-        if self.is_special_nai_negative:
-            return False  # todo: review: this code means that we do not consider ない to be a te form stem, but it seems that janome does.....
-
-        if (self.inflected_form in JNToken._te_connections or
-                (self.is_past_tense_stem and self.surface.endswith("ん"))):
-            return True
-
-        if self.next is None or self.next.surface not in JNToken._te_form_token_surfaces:
-            return False
-
-        if self.is_past_tense_stem:  # noqa: SIM103
-            return True
-
-        if self.is_masu_stem and not self.is_godan_verb:  # noqa: SIM103
-            return True
-
-        return False
-
     @property
     @override
     def is_past_tense_marker(self) -> bool: return self.inflection_type == InflectionTypes.Special.ta  # "連用タ接続"
-    @property
-    @override
-    def is_special_nai_negative(self) -> bool: return self.inflection_type == InflectionTypes.Special.nai
     @property
     @override
     def is_masu_stem(self) -> bool: return (self.inflected_form == InflectionForms.Continuative.renyoukei_masu_stem
@@ -169,18 +143,39 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
     def is_dictionary_form(self) -> bool:
         return self.inflected_form == InflectionForms.Basic.dictionary_form
 
+    _progressive_forms: set[str] = {"でる", "どる", "てる"}
     _te_forms: set[str] = {"て", "って", "で"}
+    _possible_has_te_form_stem_token_surfaces: set[str] = {"て", "って", "で", "てる"} | _progressive_forms
     @property
     @override
+    def has_te_form_stem(self) -> bool:
+        if self.surface not in JNToken._possible_has_te_form_stem_token_surfaces:
+            return False
+        previous = self.previous
+        if previous is None:
+            return False
+        if not previous.is_verb():
+            return False
+
+        if previous.inflected_form in InflectionForms.Continuative.te_connection_forms:
+            return True
+
+        if self.parts_of_speech == JNPOS.Particle.conjunctive:
+            return True
+
+        if (previous.is_past_tense_stem or previous.is_masu_stem) and self.base_form in JNToken._progressive_forms:  # noqa: SIM103
+            return True
+
+        return False
+
+    @property
     def is_te_form(self) -> bool:
         return (self.parts_of_speech == JNPOS.Particle.conjunctive
                 and self.surface in JNToken._te_forms)
 
-    # _deru_te_form_roots: set[str] = {"ん", "い"}
-    _something_something: set[str] = {"でる", "どる"}
     def is_progressive_form(self) -> bool:
         return (self.surface == "てる"
-                or (self.surface in JNToken._something_something and self.previous is not None and self.previous.inflected_form == InflectionForms.Continuative.ta_connection)
+                or (self.surface in JNToken._progressive_forms and self.previous is not None and self.previous.inflected_form == InflectionForms.Continuative.ta_connection)
                 or (self.surface == "いる" and self.previous is not None and self.previous.is_te_form))
 
     def is_t_form_marker(self) -> bool:

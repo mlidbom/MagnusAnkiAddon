@@ -52,6 +52,8 @@ class InflectionForms(Slots):
         ni_connection: InflectionForm = _add_form("連用ニ接続", 'Continuative ni-connection - Connects to the particle "ni"')
         gozai_connection: InflectionForm = _add_form("連用ゴザイ接続", 'Continuative gozai connection - Links to polite auxiliary "gozai" (polite form)')
 
+        te_connection_forms: set[InflectionForm] = {te_connection, de_connection}
+
     # noinspection PyUnusedClass,PyUnusedName
     class Misc(Slots):
         garu_connection: InflectionForm = _add_form("ガル接続", 'Garu connection - Connects to suffix "garu" (showing signs of)')

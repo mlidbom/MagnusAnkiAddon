@@ -18,7 +18,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
         yield
 
 @pytest.mark.parametrize("sentence, expected_output", [
-        ("まったく 見てらんねえっつうの", ["まったく", "見る", "て", "らん:[MISSING]", "ね", "えっ", "つう:[MISSING]", "の"])
+        ("お腹空かしてない",["お腹", "空かす", "てない"]) #todo: should match てない which requires te form stem
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -165,7 +165,7 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("教科書落ちちゃうから",
          ["教科書", "落ちる", "ちゃう", "う", "から"]),
         ("待ってました", ["待つ", "て", "ます", "た"]),
-        ("落ちてないかな", ["落ちる", "てる", "ないか", "な:s.end"]),
+        ("落ちてないかな", ["落ちる", "てない", "かな"]),
         ("分かってたら", ["分かる", "てたら"]),
         ("思い出せそうな気がする", ["思い出す", "える", "そうだ", "気がする", "る"]),
         ("代筆を頼みたいんだが", ["代筆", "を", "頼む", "たい", "ん", "だが"]),
