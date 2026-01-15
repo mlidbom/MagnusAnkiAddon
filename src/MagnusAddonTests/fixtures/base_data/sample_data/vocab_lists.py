@@ -60,7 +60,9 @@ test_special_vocab: list[VocabSpec] = [
         # <te-stem-required>
         VocabSpec("て", "{continuing-action}", ["て"], tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
         VocabSpec("てる", tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
+        VocabSpec("とる:progressive", tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
         VocabSpec("てん", tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
+        VocabSpec("とん", tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
         VocabSpec("ている", "is-_-ing", readings=["ている"], tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
         VocabSpec("てた", "{was}-{_-ing|_ed}", ["てた"], tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
         VocabSpec("てたら", "{was}-{_-ing|_ed}", ["てたら"], tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
@@ -73,16 +75,17 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("で", tags=[vm.Forbids.te_form_stem]),
         VocabSpec("でいる", tags=[vm.Forbids.te_form_stem]),
         VocabSpec("んで", "thing-is", tags=[vm.Forbids.te_form_stem]),
+        VocabSpec("とんだ", tags=[vm.Forbids.te_form_stem]),
         # </te-stem-forbidden>
         VocabSpec("１人で", compounds=["で", "１人"], tags=[vm.yield_last_token_to_overlapping_compound]),
         VocabSpec("ないで", compounds=["ない", "で"], tags=[vm.yield_last_token_to_overlapping_compound]),
 
         # <past-tense-required>
         VocabSpec("た", "{past-tense} | (please)do", ["た"], surface_not={"たら"}, tags=[vm.is_inflecting_word, vm.Requires.past_tense_stem]),
-        VocabSpec("んだ", "did/was", forms=["だ"], tags=[vm.Requires.past_tense_stem, vm.is_inflecting_word, Tags.Vocab.question_overrides_form]),
+        VocabSpec("んだ:past", "did/was", forms=["だ"], tags=[vm.Requires.past_tense_stem, vm.is_inflecting_word, Tags.Vocab.question_overrides_form]),
         # <past-tense-required>
         # <past-tense-forbidden>
-        VocabSpec("んだ", "thing-is", tags=[vm.Requires.surface, vm.yield_last_token_to_overlapping_compound, vm.Forbids.past_tense_stem]),
+        VocabSpec("んだ:のだ", "thing-is", tags=[vm.Requires.surface, vm.yield_last_token_to_overlapping_compound, vm.Forbids.past_tense_stem]),
         VocabSpec("たって", tags=[vm.Forbids.past_tense_stem]),
         VocabSpec("だ", surface_not={"なら", "な"}, tags=[vm.is_inflecting_word, vm.Forbids.past_tense_stem]),
         # </past-tense-forbidden>

@@ -18,7 +18,6 @@ def setup_collection_with_select_data() -> Iterator[None]:
         yield
 
 @pytest.mark.parametrize("sentence, expected_output", [
-
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -28,8 +27,10 @@ def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
         ("お金を貸していただけないでしょうか", ["お金", "を", "貸す", "て", "いただける:able-to", "ない", "でしょうか"]),
         ("お腹空かしてない", ["お腹", "空かす", "てない"]),
         ("さっき殴ったから拗ねてんのか", ["さっき", "殴る", "た", "から", "拗ねる", "てん", "のか"]),
+        ("言っとる", ["言う", "とる:progressive"]),
+        ("何言っとんだ", ["何", "言う", "とん", "んだ:past"])  # janome thinks とんだ is the past tense of 飛ぶ, not much we can do about it.
 ])
-def test_require_forbid_te_prefix(sentence: str, expected_output: list[str]) -> None:
+def test_require_forbid_te_prefix_or_stem(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
@@ -162,7 +163,7 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("ばら撒かれるなんて死んでもいやだ",
          ["ばら撒く", "あれる", "る", "なんて", "死んでも", "いや", "だ"]),
         ("お前も色々考えてるんだなぁ",
-         ["お前", "も", "色々", "考える", "てる", "んだ", "なぁ"]),
+         ["お前", "も", "色々", "考える", "てる", "んだ:のだ", "なぁ"]),
         ("教科書落ちちゃうから",
          ["教科書", "落ちる", "ちゃう", "う", "から"]),
         ("待ってました", ["待つ", "て", "ます", "た"]),
@@ -195,8 +196,8 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("いいものを食べる", ["いい", "もの", "を", "食べる", "る"]),
         ("うまく笑えずに", ["うまく", "笑える", "ずに"]),  # うまく disappeared when we made all verbs inflecting words by default
         ("慣れているんでね", ["慣れる", "ている", "んで", "ね"]),
-        ("私が頼んだの", ["私", "が", "頼む", "んだ", "の"]),
-        ("月光が差し込んでるんだ", ["月光", "が", "差し込む", "んでる", "んだ"]),
+        ("私が頼んだの", ["私", "が", "頼む", "んだ:past", "の"]),
+        ("月光が差し込んでるんだ", ["月光", "が", "差し込む", "んでる", "んだ:のだ"]),
         ("悪かったって", ["悪い", "た", "って"]),
         ("落としたって何を", ["落とす", "た", "って", "何", "を"]),
         ("行ったって話", ["行く", "たって", "話"]),

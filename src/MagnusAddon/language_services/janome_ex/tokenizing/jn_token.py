@@ -143,9 +143,9 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
     def is_dictionary_form(self) -> bool:
         return self.inflected_form == InflectionForms.Basic.dictionary_form
 
-    _progressive_forms: set[str] = {"でる", "どる", "てる", "とる"}
+    _progressive_forms: set[str] = {"でる", "どる", "てる", "とる", "とん"}
     _te_forms: set[str] = {"て", "って", "で"}
-    _possible_has_te_form_stem_token_surfaces: set[str] = {"て", "って", "で", "てる", "てん"} | _progressive_forms
+    _possible_has_te_form_stem_token_surfaces: set[str] = {"て", "って", "で", "てる", "てん", "とん"} | _progressive_forms
     @property
     @override
     def has_te_form_stem(self) -> bool:
@@ -163,7 +163,7 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
         if self.parts_of_speech == JNPOS.Particle.conjunctive:
             return True
 
-        if (previous.is_past_tense_stem or previous.is_masu_stem) and self.base_form in JNToken._progressive_forms:  # noqa: SIM103
+        if (previous.is_past_tense_stem or previous.is_masu_stem) and (self.base_form in JNToken._progressive_forms or self.surface in JNToken._progressive_forms):  # noqa: SIM103
             return True
 
         return False
