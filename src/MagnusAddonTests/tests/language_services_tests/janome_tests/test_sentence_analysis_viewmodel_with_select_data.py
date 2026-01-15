@@ -26,7 +26,8 @@ def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
 @pytest.mark.parametrize("sentence, expected_output", [
         ("座っているのはいただけない", ["座る", "ている", "の", "は", "いただける:acceptable", "ない"]),
         ("お金を貸していただけないでしょうか", ["お金", "を", "貸す", "て", "いただける:able-to", "ない", "でしょうか"]),
-        ("お腹空かしてない", ["お腹", "空かす", "てない"])
+        ("お腹空かしてない", ["お腹", "空かす", "てない"]),
+        ("さっき殴ったから拗ねてんのか", ["さっき", "殴る", "た", "から", "拗ねる", "てん", "のか"]),
 ])
 def test_require_forbid_te_prefix(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)

@@ -143,9 +143,9 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
     def is_dictionary_form(self) -> bool:
         return self.inflected_form == InflectionForms.Basic.dictionary_form
 
-    _progressive_forms: set[str] = {"でる", "どる", "てる"}
+    _progressive_forms: set[str] = {"でる", "どる", "てる", "とる"}
     _te_forms: set[str] = {"て", "って", "で"}
-    _possible_has_te_form_stem_token_surfaces: set[str] = {"て", "って", "で", "てる"} | _progressive_forms
+    _possible_has_te_form_stem_token_surfaces: set[str] = {"て", "って", "で", "てる", "てん"} | _progressive_forms
     @property
     @override
     def has_te_form_stem(self) -> bool:

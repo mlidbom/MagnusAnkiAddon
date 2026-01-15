@@ -59,7 +59,8 @@ test_special_vocab: list[VocabSpec] = [
 
         # <te-stem-required>
         VocabSpec("て", "{continuing-action}", ["て"], tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
-        VocabSpec("てる", "{continuing-{activity | state}} / {progressive | perfect}", ["てる"], tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
+        VocabSpec("てる", tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
+        VocabSpec("てん", tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
         VocabSpec("ている", "is-_-ing", readings=["ている"], tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
         VocabSpec("てた", "{was}-{_-ing|_ed}", ["てた"], tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
         VocabSpec("てたら", "{was}-{_-ing|_ed}", ["てたら"], tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
