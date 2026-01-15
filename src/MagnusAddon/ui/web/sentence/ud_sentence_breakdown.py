@@ -168,13 +168,13 @@ def render_tokens(sentence_analysis: SentenceViewModel) -> str:
                 <tr>
                     <th>Surface</th>
                     <th>Base</th>
+                    <th>Boolean flags</th>
                     <th title="Parts of speech">POS1</th>
                     <th title="Parts of speech">POS2</th>
                     <th title="Parts of speech">POS3</th>
                     <th title="Parts of speech">POS4</th>
                     <th title="Inflected form">Inflected Form</th>
                     <th title="Inflection type">Inflection Type</th>
-                    <th>Boolean flags</th>
                 </tr>
             </thead>
             <tbody>
@@ -185,13 +185,13 @@ def render_tokens(sentence_analysis: SentenceViewModel) -> str:
                     <tr>
                         <td>{token.surface}</td>
                         <td>{token.base_form}</td>
+                        <td class="token_properties">{render_token_properties(token)}</td>
                         <td>{token.source_token.parts_of_speech.level1.japanese}:{token.source_token.parts_of_speech.level1.english}</td>
                         <td>{token.source_token.parts_of_speech.level2.japanese}:{token.source_token.parts_of_speech.level2.english}</td>
                         <td>{token.source_token.parts_of_speech.level3.japanese}:{token.source_token.parts_of_speech.level3.english}</td>
                         <td>{token.source_token.parts_of_speech.level4.japanese}:{token.source_token.parts_of_speech.level4.english}</td>
                         <td>{token.source_token.inflected_form}</td>
                         <td>{token.source_token.inflection_type}</td>
-                        <td class="token_properties">{render_token_properties(token)}</td>
                     </tr>
                 """
 
