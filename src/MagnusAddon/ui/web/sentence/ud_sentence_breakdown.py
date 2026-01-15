@@ -169,6 +169,7 @@ def render_tokens(sentence_analysis: SentenceViewModel) -> str:
                     <th>Surface</th>
                     <th>Base</th>
                     <th>Boolean flags</th>
+                    <th>Token class</th>
                     <th title="Parts of speech">POS1</th>
                     <th title="Parts of speech">POS2</th>
                     <th title="Parts of speech">POS3</th>
@@ -183,15 +184,16 @@ def render_tokens(sentence_analysis: SentenceViewModel) -> str:
     for token in tokens:
         html += f"""
                     <tr>
-                        <td>{token.surface}</td>
-                        <td>{token.base_form}</td>
+                        <td class="surface"><span class="japanese">{token.surface}</span></td>
+                        <td class="base"><span class="japanese">{token.base_form}</span></td>
                         <td class="token_properties">{render_token_properties(token)}</td>
-                        <td>{token.source_token.parts_of_speech.level1.japanese}:{token.source_token.parts_of_speech.level1.english}</td>
-                        <td>{token.source_token.parts_of_speech.level2.japanese}:{token.source_token.parts_of_speech.level2.english}</td>
-                        <td>{token.source_token.parts_of_speech.level3.japanese}:{token.source_token.parts_of_speech.level3.english}</td>
-                        <td>{token.source_token.parts_of_speech.level4.japanese}:{token.source_token.parts_of_speech.level4.english}</td>
-                        <td>{token.source_token.inflected_form}</td>
-                        <td>{token.source_token.inflection_type}</td>
+                        <td class="token_properties">{token.__class__.__name__}</td>
+                        <td class="pos pos1"><span class="japanese">{token.source_token.parts_of_speech.level1.japanese}</span>:{token.source_token.parts_of_speech.level1.english}</td>
+                        <td class="pos pos2"><span class="japanese">{token.source_token.parts_of_speech.level2.japanese}</span>:{token.source_token.parts_of_speech.level2.english}</td>
+                        <td class="pos pos3"><span class="japanese">{token.source_token.parts_of_speech.level3.japanese}</span>:{token.source_token.parts_of_speech.level3.english}</td>
+                        <td class="pos pos4"><span class="japanese">{token.source_token.parts_of_speech.level4.japanese}</span>:{token.source_token.parts_of_speech.level4.english}</td>
+                        <td class="inflected_form">{token.source_token.inflected_form}</td>
+                        <td class="inflection_type">{token.source_token.inflection_type}</td>
                     </tr>
                 """
 

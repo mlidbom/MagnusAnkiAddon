@@ -48,19 +48,17 @@
         }
     }
 
-    .tokens.page_section{
+    .tokens.page_section {
         text-align: left;
         table {
-            td {
+            td {}
+            .japanese {
+                font-size: 130%;
                 white-space: nowrap;
-                padding-right: 0pt;
             }
-            tbody tr:nth-child(odd) {
-                background-color: var(--colorBgOffset1);
-            }
-            tbody tr:nth-child(even) {
-                background-color: color-mix(in lch, var(--colorBgOffset1), var(--colorBgCard) 50%);
-            }
+
+            tbody tr:nth-child(odd) { background-color: var(--colorBgOffset1); }
+            tbody tr:nth-child(even) { background-color: color-mix(in lch, var(--colorBgOffset1), var(--colorBgCard) 50%); }
         }
     }
 
