@@ -9,8 +9,8 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 class RequiresOrForbidsMasuStem(Slots):
-    _required_reason: FailedMatchRequirement = FailedMatchRequirement("forbids::masu-stem")
-    _forbidden_reason: FailedMatchRequirement = FailedMatchRequirement("requires::masu-stem")
+    _required_reason: FailedMatchRequirement = FailedMatchRequirement.required("masu-stem")
+    _forbidden_reason: FailedMatchRequirement = FailedMatchRequirement.forbids("masu-stem")
 
     @classmethod
     def apply_to(cls, inspector: VocabMatchInspector) -> FailedMatchRequirement | None:

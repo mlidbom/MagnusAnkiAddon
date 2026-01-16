@@ -107,7 +107,9 @@ class SentenceCollection(Slots):
     def with_form(self, form: str) -> QList[SentenceNote]: return self._cache.with_vocab_form(form)
 
     def with_highlighted_vocab(self, vocab_note: VocabNote) -> QList[SentenceNote]:
-        return vocab_note.forms.all_set().select_many(self._cache.with_user_highlighted_vocab).to_list()  # ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_user_highlighted_vocab(form) for form in vocab_note.forms.all_set()]))
+        if vocab_note.question.is_disambiguated:
+            return self._cache.with_user_highlighted_vocab(vocab_note.question.disambiguation_name).to_list()
+        return vocab_note.forms.all_set().select_many(self._cache.with_user_highlighted_vocab).to_list()
 
     def search(self, query: str) -> QList[SentenceNote]: return self.collection.search(query)
 
