@@ -8,7 +8,6 @@ from language_services.janome_ex.word_extraction.matches.requirements.vocab_matc
 from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import ForbidsAnotherMatchIsHigherPriority
 from language_services.janome_ex.word_extraction.matches.state_tests.forbids_compositionally_transparent_compound import ForbidsCompositionallyTransparentCompound
 from language_services.janome_ex.word_extraction.matches.state_tests.forbids_yields_to_surface import ForbidsYieldsToValidSurfaceSurface
-from language_services.janome_ex.word_extraction.matches.state_tests.head.generic_forbids import Forbids
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_godan_imperative_prefix import RequiresOrForbidsHasGodanImperativePrefix
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_past_tense_stem import RequiresOrForbidsHasPastTenseStem
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_te_form_stem import RequiresOrForbidsHasTeFormStem
@@ -80,8 +79,6 @@ class VocabMatch(Match, Slots):
             RequiresOrForbids("irrealis", lambda it: it.requires_forbids.irrealis, lambda it: it.previous_location_is_irrealis).apply_to,
             RequiresOrForbids("godan", lambda it: it.requires_forbids.godan, lambda it: it.previous_location_is_godan).apply_to,
             RequiresOrForbids("ichidan", lambda it: it.requires_forbids.ichidan, lambda it: it.previous_location_is_ichidan).apply_to,
-
-            Forbids("compound_ending_on_dictionary_form_where_surface_differs_from_base", lambda it: it.is_compound_ending_on_dictionary_form_where_surface_differs_from_base).apply_to,
 
             # head requirements
             ForbidsPrefixIsIn.apply_to,

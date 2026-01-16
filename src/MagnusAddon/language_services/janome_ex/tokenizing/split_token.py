@@ -36,7 +36,7 @@ class SplitToken(SplitTokenBase, Slots):
     # <IAnalysisToken implementation>
     @property
     @override
-    def is_te_form_stem(self) -> bool: return self.is_godan_potential_inflection
+    def has_te_form_stem(self) -> bool: return self.is_godan_potential_inflection
     @property
     @override
     def is_inflectable_word(self) -> bool: return self._is_inflectable_word

@@ -7,6 +7,7 @@ from language_services.janome_ex.word_extraction.matches.requirements.match_insp
 from language_services.janome_ex.word_extraction.matches.state_tests.forbids_compounds import ForbidsConfiguredToHideAllCompounds
 from language_services.janome_ex.word_extraction.matches.state_tests.forbids_dictionary_form_verb_inflection import ForbidsDictionaryInflectionSurfaceWithBase
 from language_services.janome_ex.word_extraction.matches.state_tests.forbids_dictionary_form_verb_stem_surface_as_compound_end import ForbidsDictionaryVerbFormStemAsCompoundEnd
+from language_services.janome_ex.word_extraction.matches.state_tests.head.generic_forbids import Forbids
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_hidden import ForbidsIsConfiguredHidden
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_incorrect import ForbidsIsConfiguredIncorrect
 from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_imperative_surface_with_base import ForbidsIsGodanImperativeInflectionWithBase
@@ -32,6 +33,7 @@ class Match(WeakRefable, Slots):
             ForbidsIsGodanPotentialInflectionWithBase.apply_to,
             ForbidsIsGodanImperativeInflectionWithBase.apply_to,
             ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb.apply_to,
+            Forbids("compound_ending_on_dictionary_form_where_surface_differs_from_base", lambda it: it.is_compound_ending_on_dictionary_form_where_surface_differs_from_base).apply_to,
     ]
 
     _match_static_display_requirements: list[Callable[[MatchInspector], FailedMatchRequirement | None]] = [

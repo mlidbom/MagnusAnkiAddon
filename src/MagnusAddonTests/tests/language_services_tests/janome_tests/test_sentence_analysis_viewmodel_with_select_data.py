@@ -53,9 +53,10 @@ def test_wbr_word_separation(sentence: str, expected_output: list[str]) -> None:
         ("食べな", ["食べる", "な:masu"]),
         ("そうだな", ["そうだ", "な:s.end"]),
         ("頭突き以外でな", ["頭突き", "以外", "で", "な:s.end"]),
+        ("胸あるよ", ["胸", "ある", "う", "よ"]),  # あう should not match, it is a compound matching against the base where the end is a dictionary form with th surface differing from the base...
         ("デカいな", ["デカい", "な:masu"]),  # todo: Janome thinks it's いる、な... :/
 ])
-def test_require_forbid_dictionary_form_prefix_and_masu_stem(sentence: str, expected_output: list[str]) -> None:
+def test_require_forbid_dictionary_form_prefix_and_stem(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [

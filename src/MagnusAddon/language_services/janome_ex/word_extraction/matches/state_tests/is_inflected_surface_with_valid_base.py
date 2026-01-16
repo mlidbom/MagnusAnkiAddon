@@ -11,8 +11,7 @@ if TYPE_CHECKING:
 class ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb(Slots):
     _failed: FailedMatchRequirement = FailedMatchRequirement.forbids("inflected_surface_with_valid_base")
 
-
-    _prefixes_that_indicates_verb_if_followed_by_end_of_statement = ("を", "が")
+    _prefixes_that_indicates_verb_if_followed_by_end_of_statement: set[str] = {"を", "が"}
     @classmethod
     def apply_to(cls, inspector: MatchInspector) -> FailedMatchRequirement | None:
         if (inspector.variant.is_surface
