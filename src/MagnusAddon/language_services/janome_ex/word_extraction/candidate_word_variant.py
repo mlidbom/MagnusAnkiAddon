@@ -35,7 +35,7 @@ class CandidateWordVariant(WeakRefable, Slots):
         # will be completed in complete_analysis
         self._completed_validity_analysis = False
         self.completed_visibility_analysis = False
-        self.matches: Iterable[Match] = []
+        self.matches: list[Match] = []
         self._is_valid: bool = False
         self._valid_matches: Iterable[Match] = []
         self._display_matches: list[Match] = []
@@ -51,8 +51,9 @@ class CandidateWordVariant(WeakRefable, Slots):
     def run_validity_analysis(self) -> None:
         ex_assert.that(not self._completed_validity_analysis)
 
-        self.matches = self.vocab_matches
-        self._valid_vocab_matches = [vm for vm in self.vocab_matches if vm.is_valid]
+        if self.vocab_matches:
+            self.matches = list(self.vocab_matches)
+            self._valid_vocab_matches = [vm for vm in self.vocab_matches if vm.is_valid]
 
         if any(self._valid_vocab_matches) or self.vocabs_control_match_status:
             self._valid_matches = self._valid_vocab_matches
