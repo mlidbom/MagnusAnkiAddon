@@ -20,5 +20,3 @@ class SentenceUserFields(Slots):
     def answer(self) -> MutableStringField: return MutableStringField(self._sentence, SentenceNoteFields.user_answer)
     @property
     def question(self) -> MutableStringField: return MutableStringField(self._sentence, SentenceNoteFields.user_question)
-    @property
-    def answer_analysis(self) -> MutableStringField: return MutableStringField(self._sentence, SentenceNoteFields.user_answer_analysis)

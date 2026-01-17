@@ -48,7 +48,7 @@ def sentence_search(word: str, exact: bool = False) -> str:
     result = f"""{note_sentence} """
 
     def form_query(form: str) -> str:
-        return f"""(-{field_contains_word(SentenceNoteFields.user_excluded_vocab, form)} AND ({f_question}:*{form}* OR {field_contains_word(SentenceNoteFields.parsing_result, form)} OR {field_contains_word(SentenceNoteFields.user_extra_vocab, form)}))"""
+        return f"""(({f_question}:*{form}* OR {field_contains_word(SentenceNoteFields.parsing_result, form)}))"""
 
     if not exact:
         vocabs = app.col().vocab.with_form(word)

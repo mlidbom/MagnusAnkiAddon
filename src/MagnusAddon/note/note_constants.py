@@ -32,13 +32,10 @@ class SentenceNoteFields(Slots):
     source_comments: str = "Comments"
     user_comments: str = "__comments"
     user_question: str = "__question"
-    user_answer_analysis: str = "__answer_analysis"
     active_answer: str = MyNoteFields.answer
     source_answer: str = "source_answer"
     user_answer: str = "__answer"
     parsing_result: str = "__parsing_result"
-    user_excluded_vocab: str = "__excluded_vocab"
-    user_extra_vocab: str = "__extra_vocab"
     audio: str = "Audio Sentence"
     screenshot: str = "Screenshot"
     configuration: str = "__configuration"
