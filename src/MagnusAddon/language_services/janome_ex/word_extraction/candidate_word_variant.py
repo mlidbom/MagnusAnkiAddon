@@ -51,18 +51,16 @@ class CandidateWordVariant(WeakRefable, Slots):
     def run_validity_analysis(self) -> None:
         ex_assert.that(not self._completed_validity_analysis)
 
+        self.matches = self.vocab_matches
         self._valid_vocab_matches = [vm for vm in self.vocab_matches if vm.is_valid]
 
         if any(self._valid_vocab_matches) or self.vocabs_control_match_status:
-            self.matches = self.vocab_matches
             self._valid_matches = self._valid_vocab_matches
         else:
             if self._dict_lookup().found_words():
-                self.matches = [DictionaryMatch(self.weak_ref, self._dict_lookup().entries[0])]
+                self.matches += [DictionaryMatch(self.weak_ref, self._dict_lookup().entries[0])]
             elif not self.word.is_compound:
-                self.matches = [MissingMatch(self.weak_ref)]
-            else:
-                self.matches = []
+                self.matches += [MissingMatch(self.weak_ref)]
 
             self._valid_matches = [match for match in self.matches if match.is_valid]
 
