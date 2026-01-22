@@ -15,7 +15,8 @@ def surface_and_match_form(match_vm: MatchViewModel) -> str:
     if match_vm.vocab_match and match_vm.vocab_match.vocab.question.is_disambiguated:
         form_to_display = match_vm.vocab_match.vocab.question.disambiguation_name
 
-    return f"""{form_to_display}:{match_vm.vocab_form}""" if match_vm.display_vocab_form else form_to_display
+    emergency = ":emergency" if match_vm.match.is_emergency_displayed else ""
+    return f"""{form_to_display}:{match_vm.vocab_form}{emergency}""" if match_vm.display_vocab_form else form_to_display
 
 def assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
     def run_note_assertions(message: str) -> None:

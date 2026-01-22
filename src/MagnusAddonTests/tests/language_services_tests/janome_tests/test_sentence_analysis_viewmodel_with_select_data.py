@@ -42,7 +42,7 @@ def test_requires_e_stem(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
-        ("おっせぇ<wbr>な　あいつら", ["おる", "せ", "ぇ:[MISSING]", "な:s.end", "あいつら"]),
+        ("おっせぇ<wbr>な　あいつら", ["おる", "せ", "ぇ:[MISSING]:emergency", "な:s.end", "あいつら"]),
         ("何て言うか<wbr>さ", ["何", "て言うか:ていうか", "さ"]),
         ("だったら普通に金<wbr>貸せって言えよ", ["だったら", "普通に", "金", "貸す", "え", "って言う", "え", "よ"]),
 ])
@@ -118,15 +118,15 @@ def test_hide_transparent_compounds(sentence: str, expected_output: list[str]) -
         ("放せよ　俺は…", ["放す", "え", "よ", "俺", "は"]),
         ("出ていけ", ["出ていく", "え"]),
         ("進めない", ["進める", "ない"]),
-        ("さっさと傷を清めてこい", ["さっさと:[MISSING]", "傷", "を", "清める", "てこ", "い"]),
-        ("清めの一波", ["清め", "の", "一波:[MISSING]"]),
+        ("さっさと傷を清めてこい", ["さっさと:[MISSING]:emergency", "傷", "を", "清める", "てこ", "い"]),
+        ("清めの一波", ["清め", "の", "一波:[MISSING]:emergency"]),
         ("ここは清められ", ["ここ", "は", "清める", "られる"]),
         ("その物陰に隠れろ", ["その", "物陰", "に", "隠れる", "ろ"]),
         ("聞けよ", ["聞え", "よ"]),
         ("返せったら", ["返す", "え", "ったら"]),
         ("返せ俺の", ["返す", "え", "俺", "の"]),
         ("返せ盗人", ["返す", "え", "盗人"]),
-        ("カバンに入れっぱなし", ["カバン", "に", "入れる", "っぱなし:っ放し"])
+        ("カバンに入れっぱなし", ["カバン", "に", "入れる", "っぱなし:っ放し:emergency"])
 ])
 def test_godan_potential_and_imperative(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)

@@ -134,7 +134,7 @@ class Match(WeakRefable, Slots):
     @property
     def is_highlighted(self) -> bool: return self.exclusion_form in self.variant.configuration.highlighted_words
     @property
-    def is_displayed(self) -> bool: return self.is_valid_for_display or self._is_emergency_displayed
+    def is_displayed(self) -> bool: return self.is_valid_for_display or self.is_emergency_displayed
 
     @property
     def start_index(self) -> int:
@@ -147,7 +147,7 @@ class Match(WeakRefable, Slots):
     def is_valid_for_display(self) -> bool: return self.is_valid and self.static_display_requirements_fulfilled and all(requirement.is_fulfilled for requirement in self._dynamic_display_requirements)
 
     @property
-    def _is_emergency_displayed(self) -> bool:
+    def is_emergency_displayed(self) -> bool:
         return (self.variant.is_surface
                 and self._surface_is_seemingly_valid_single_token
                 and not self._base_is_valid_word
