@@ -117,7 +117,7 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
 
     @property
     def is_verb(self) -> bool:
-        return self.parts_of_speech in JNPOS.Verb.all_types or (self.parts_of_speech == JNPOS.bound_auxiliary and self.surface == "ます")
+        return self.parts_of_speech in JNPOS.Verb.all_types or self.inflection_type == InflectionTypes.Special.masu
 
     @property
     def is_adjective(self) -> bool:
