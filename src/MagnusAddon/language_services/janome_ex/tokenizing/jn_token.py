@@ -156,7 +156,7 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
         previous = self.previous
         if previous is None:
             return False
-        if not previous.is_verb:
+        if previous.inflection_type == InflectionTypes.Special.nai:
             return False
 
         if previous.inflected_form in InflectionForms.Continuative.te_connection_forms:

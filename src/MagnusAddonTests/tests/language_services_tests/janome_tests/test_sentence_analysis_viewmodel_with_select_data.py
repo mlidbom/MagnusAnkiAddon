@@ -29,7 +29,9 @@ def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
         ("さっき殴ったから拗ねてんのか", ["さっき", "殴る", "た", "から", "拗ねる", "てん", "のか"]),
         ("言っとる", ["言う", "とる:progressive"]),
         ("何言っとんだ", ["何", "言う", "とん", "んだ:past"]),  # janome thinks とんだ is the past tense of 飛ぶ, not much we can do about it.
-        ("長居してしまいまして",["長居", "する", "てしまいます", "て"]),
+        ("長居してしまいまして", ["長居", "する", "てしまいます", "て"]),
+        ("天気がよくて", ["天気", "が", "よい", "て"]),  # yield to surface should be a display things and only yield to valid surfaces
+        ("馴染めないでいる", ["馴染む", "える", "ない", "でいる"]),
 ])
 def test_require_forbid_te_prefix_or_stem(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -126,7 +128,7 @@ def test_hide_transparent_compounds(sentence: str, expected_output: list[str]) -
         ("返せったら", ["返す", "え", "ったら"]),
         ("返せ俺の", ["返す", "え", "俺", "の"]),
         ("返せ盗人", ["返す", "え", "盗人"]),
-        ("カバンに入れっぱなし", ["カバン", "に", "入れる", "っぱなし:っ放し"]) # todo: why is this an emergency display?
+        ("カバンに入れっぱなし", ["カバン", "に", "入れる", "っぱなし:っ放し"])
 ])
 def test_godan_potential_and_imperative(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -207,7 +209,6 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("聞こうと思ってた", ["聞く", "う", "と思う", "てた"]),
         ("沈んで", ["沈む", "んで"]),
         ("死んどる", ["死ぬ", "んどる"]),
-        ("馴染めないでいる", ["馴染む", "える", "ない", "でいる"]),
         ("ちょっと強引なところがあるから", ["ちょっと", "強引", "な", "ところ", "がある", "う", "から"]),
         ("また寒くなるな", ["また", "寒い", "くなる", "う", "な:dict"]),
         ("空を飛べる機械", ["空を飛ぶ", "える", "る", "機械"]),
@@ -219,7 +220,6 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("服を引き出しの中に入れてください", ["服", "を", "引き出し", "の中", "に入る", "える", "て", "ください"]),
         ("他人を気遣い", ["他人", "を", "気遣う"]),
         ("まだ割れんのか", ["まだ", "割れる", "のか"]),
-        ("天気がよくて", ["天気", "が", "よい", "て:emergency"]),  # todo: this is a valid て　form...  # yield to surface should be a display things and only yield to valid surfaces
         ("思えないしな", ["思える", "ない", "しな"]),  # should detect that な is just part of the sentence end and refuse to show　ないし
 ])
 def test_misc_stuff(sentence: str, expected_output: list[str]) -> None:
