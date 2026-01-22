@@ -29,7 +29,7 @@ def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
         ("さっき殴ったから拗ねてんのか", ["さっき", "殴る", "た", "から", "拗ねる", "てん", "のか"]),
         ("言っとる", ["言う", "とる:progressive"]),
         ("何言っとんだ", ["何", "言う", "とん", "んだ:past"]),  # janome thinks とんだ is the past tense of 飛ぶ, not much we can do about it.
-        ("長居してしまいまして",["長居", "して", "しまう", "まして"])
+        ("長居してしまいまして",["長居", "する", "てしまいます", "て"])
 ])
 def test_require_forbid_te_prefix_or_stem(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)

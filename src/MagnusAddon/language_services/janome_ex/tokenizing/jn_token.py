@@ -101,7 +101,7 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
     @property
     @override
     def is_inflectable_word(self) -> bool:
-        return self.is_verb or self.is_adjective() or self.base_form in self._pseudo_verbs_for_inflection_purposes
+        return self.is_verb or self.is_adjective or self.base_form in self._pseudo_verbs_for_inflection_purposes
     @property
     @override
     def is_non_word_character(self) -> bool: return self.parts_of_speech.is_non_word_character()
@@ -117,8 +117,9 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
 
     @property
     def is_verb(self) -> bool:
-        return self.parts_of_speech in JNPOS.Verb.all_types or self.parts_of_speech == JNPOS.bound_auxiliary and self.surface == "ます"
+        return self.parts_of_speech in JNPOS.Verb.all_types or (self.parts_of_speech == JNPOS.bound_auxiliary and self.surface == "ます")
 
+    @property
     def is_adjective(self) -> bool:
         return self.parts_of_speech in JNPOS.Adjective.all_types
 
