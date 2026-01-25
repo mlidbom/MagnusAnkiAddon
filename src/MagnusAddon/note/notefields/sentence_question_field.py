@@ -8,7 +8,6 @@ from sysutils import ex_str
 if TYPE_CHECKING:
     from note.notefields.mutable_string_field import MutableStringField
 
-
 class SentenceQuestionField(Slots):
     word_break_tag: str = "<wbr>"
     def __init__(self, primary_field: MutableStringField, fallback_field: MutableStringField) -> None:
@@ -25,4 +24,8 @@ class SentenceQuestionField(Slots):
         raw_value = self._sentence_question_field_raw_value()
         new_section = f"{section[0]}{self.word_break_tag}{section[1:]}"
         new_value = raw_value.replace(section, new_section)
-        self._field.set(new_value)
+
+        if self._field.has_value():
+            self._field.set(new_value)
+        else:
+            self._fallback_field.set(new_value)
