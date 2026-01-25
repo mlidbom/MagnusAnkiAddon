@@ -40,6 +40,6 @@ def test_vocab_added_correctly() -> None:
 
 def test_sentences_added_correctly() -> None:
     expected_sentences = sorted(sentence_spec.test_sentence_list, key=lambda x: x.question)
-    sentences_all:list[SentenceNote] = sorted(app.col().sentences.all(), key=lambda x: x.get_question())
-    saved_vocab = [SentenceSpec(sentence.get_question(), sentence.get_answer()) for sentence in sentences_all]
-    assert expected_sentences == saved_vocab
+    sentences_all:list[SentenceNote] = sorted(app.col().sentences.all(), key=lambda x: x.question.without_invisible_space())
+    saved_sentences = [SentenceSpec(sentence.question.without_invisible_space(), sentence.get_answer()) for sentence in sentences_all]
+    assert expected_sentences == saved_sentences

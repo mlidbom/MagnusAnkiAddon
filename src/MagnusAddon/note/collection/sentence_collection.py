@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 class _SentenceSnapshot(CachedNote, Slots):
     def __init__(self, note: SentenceNote) -> None:
         super().__init__(note)
-        self.question_without_invisible_space: str = note.question.get_without_invisible_spaces()
+        self.question_without_invisible_space: str = note.question.without_invisible_space()
         self.words: tuple[str, ...] = note.get_words().to_tuple()
         self.detected_vocab: tuple[int, ...] = note.parsing_result.get().matched_vocab_ids.to_tuple()
         self.user_highlighted_vocab: tuple[str, ...] = note.configuration.highlighted_words().to_tuple()

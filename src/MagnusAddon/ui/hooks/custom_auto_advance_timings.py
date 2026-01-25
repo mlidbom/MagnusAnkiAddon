@@ -34,7 +34,7 @@ def seconds_to_show_question(card: CardEx) -> float:
             return DifficultyCalculator(starting_seconds=app.config().autoadvance_sentence_starting_seconds.get_value(),
                                         hiragana_seconds=app.config().autoadvance_sentence_hiragana_seconds.get_value(),
                                         katakata_seconds=app.config().autoadvance_sentence_katakana_seconds.get_value(),
-                                        kanji_seconds=app.config().autoadvance_sentence_kanji_seconds.get_value()).allowed_seconds(note.get_question())
+                                        kanji_seconds=app.config().autoadvance_sentence_kanji_seconds.get_value()).allowed_seconds(note.question.without_invisible_space())
         if isinstance(note, VocabNote):
             return DifficultyCalculator(starting_seconds=app.config().autoadvance_vocab_starting_seconds.get_value(),
                                         hiragana_seconds=app.config().autoadvance_vocab_hiragana_seconds.get_value(),

@@ -21,7 +21,7 @@ def generate_marked_invalid_in_list_html(_vocab_note: VocabNote) -> str:
                         <div class="highlightedSentenceDiv">
                             <audio src="{_sentence.audio.first_audiofile_path()}"></audio><a class="play-button"></a>
                             <div class="highlightedSentence">
-                                <div class="sentenceQuestion"><span class="clipboard">{_sentence.get_question()}</span></div>
+                                <div class="sentenceQuestion"><span class="clipboard">{_sentence.question.without_invisible_space()}</span></div>
                                 <div class="sentenceAnswer"> {_sentence.get_answer()}</span></div>
                             </div>
                         </div>
@@ -40,7 +40,7 @@ def generate_valid_in_list_html(_vocab_note: VocabNote) -> str:
         def prefer_studying_listening(_sentence: VocabSentenceViewModel) -> int: return 0 if _sentence.sentence.is_studying_listening() else 1
         def prefer_primary_form(_sentence: VocabSentenceViewModel) -> int: return 0 if _sentence.contains_primary_form() else 1
         def dislike_tts_sentences(_sentence: VocabSentenceViewModel) -> int: return 1 if _sentence.sentence.tags.contains(Tags.TTSAudio) else 0
-        def prefer_short_questions(_sentence: VocabSentenceViewModel) -> int: return len(_sentence.sentence.get_question())
+        def prefer_short_questions(_sentence: VocabSentenceViewModel) -> int: return len(_sentence.sentence.question.without_invisible_space())
         def prefer_lower_priority_tag_values(_sentence: VocabSentenceViewModel) -> int: return _sentence.sentence.priority_tag_value()
         def dislike_no_translation(_sentence: VocabSentenceViewModel) -> int: return 1 if not _sentence.sentence.get_answer() else 0
 

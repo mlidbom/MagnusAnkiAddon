@@ -78,7 +78,7 @@ class SentenceNote(JPNote, Slots):
 
     def create_analysis(self, for_ui: bool = False) -> TextAnalysis:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-        return TextAnalysis(self.get_question(), self.configuration.configuration, for_ui=for_ui)
+        return TextAnalysis(self.question.with_invisible_space(), self.configuration.configuration, for_ui=for_ui)
 
     @override
     def get_direct_dependencies(self) -> QSet[JPNote]:
@@ -101,19 +101,19 @@ class SentenceNote(JPNote, Slots):
         super().update_generated_data()
         self.update_parsed_words()
         self.active_answer.set(self.get_answer())
-        self.active_question.set(self.get_question())
+        self.active_question.set(self.question.with_invisible_space()) #todo should this be with the invisible space?
 
     def update_parsed_words(self, force: bool = False) -> None:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
         parsing_result = self.parsing_result.get()
-        if not force and parsing_result and parsing_result.sentence == self.question.get_without_invisible_spaces() and parsing_result.parser_version == TextAnalysis.version:
+        if not force and parsing_result and parsing_result.sentence == self.question.without_invisible_space() and parsing_result.parser_version == TextAnalysis.version:
             return
 
         analysis = self.create_analysis()
         self.parsing_result.set(ParsingResult.from_analysis(analysis))
 
     def extract_kanji(self) -> list[str]:
-        clean = ex_str.strip_html_and_bracket_markup(self.get_question())
+        clean = ex_str.strip_html_and_bracket_markup(self.question.without_invisible_space())
         return [char for char in clean if kana_utils.character_is_kanji(char)]
 
     @classmethod

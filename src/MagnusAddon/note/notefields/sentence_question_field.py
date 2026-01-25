@@ -18,7 +18,7 @@ class SentenceQuestionField(Slots):
     def _sentence_question_field_raw_value(self) -> str: return self._field.value or self._fallback_field.value
 
     def with_invisible_space(self) -> str: return ex_str.strip_html_markup(self._sentence_question_field_raw_value().replace(self.word_break_tag, ex_str.invisible_space))
-    def get_without_invisible_spaces(self) -> str: return self.with_invisible_space().replace(ex_str.invisible_space, "")
+    def without_invisible_space(self) -> str: return self.with_invisible_space().replace(ex_str.invisible_space, "")
 
     def split_token_with_word_break_tag(self, section: str) -> None:
         if len(section) < 2: return
