@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from note.sentences.parsed_match import ParsedMatch
@@ -69,17 +68,28 @@ class VocabSentenceViewModel(Slots):
             tail = result.sentence[match.end_index:]
             return f"""{head}<span class="vocabInContext {match_class}">{match_range}</span>{tail}"""
         else:  # noqa: RET505
-            covering_match = non_optional(match.shaded_by or match.yields_to)
-            covering_match_class = "compound" if covering_match.vocab_id in self.vocab.related_notes.in_compound_ids else "shadingMatch"
-            head = result.sentence[:min(covering_match.start_index, match.start_index)]
-            shading_pre_range = result.sentence[covering_match.start_index:match.start_index]
+            shading_match = match.shaded_by
+
+            shading_start_index = shading_match.start_index if shading_match else match.start_index
+            shading_end_index = shading_match.end_index if shading_match else match.end_index
+
+            pre_covering_match_class = "compound" if (shading_match and shading_match.vocab_id in self.vocab.related_notes.in_compound_ids) else "shadingMatch"
+            post_covering_match_class = pre_covering_match_class
+
+            yields_to = match.yields_to
+            if yields_to:
+                shading_end_index = yields_to.end_index
+                post_covering_match_class = "yieldsTo"
+
+            head = result.sentence[:min(shading_start_index, match.start_index)]
+            shading_pre_range = result.sentence[shading_start_index:match.start_index]
             match_range = result.sentence[match.start_index:match.end_index]
-            shading_post_range = result.sentence[match.end_index:covering_match.end_index]
-            tail = result.sentence[max(covering_match.end_index, match.end_index):]
+            shading_post_range = result.sentence[match.end_index:shading_end_index]
+            tail = result.sentence[max(shading_end_index, match.end_index):]
             return "".join([head,
-                            f"""<span class="vocabInContext {match_class} {covering_match_class}">{shading_pre_range}</span>""",
+                            f"""<span class="vocabInContext {match_class} {pre_covering_match_class}">{shading_pre_range}</span>""",
                             f"""<span class="vocabInContext {match_class}">{match_range}</span>""",
-                            f"""<span class="vocabInContext {match_class} {covering_match_class}">{shading_post_range}</span>""",
+                            f"""<span class="vocabInContext {match_class} {post_covering_match_class}">{shading_post_range}</span>""",
                             tail])
 
     def is_highlighted(self) -> bool: return self.sentence in self.highlighted_sentences

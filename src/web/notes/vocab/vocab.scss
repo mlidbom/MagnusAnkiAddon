@@ -222,8 +222,8 @@
                             &.secondaryFormMatch { background-color: var(--colorBgRad); }
                             &.primaryFormMatch.compound { background-color: var(--colorBgRead); }
                             &.primaryFormMatch.compound { background-color: color-mix(in lch, var(--colorBgVoc), var(--colorBgRead) 80%); }
-                            //&.shadedMatch, &.yieldedMatch  { background-color: lightgrey }
-                            &.yieldedToMatch, &.shadingMatch { background-color: lightgrey }
+                            &.shadingMatch { background-color: lightgrey }
+                            &.yieldsTo { background-color: color-mix(in lch, darkgrey, white 35%); }
                         }
                     }
                     .sentenceAnswer { color: var(--colorTextMeaning);
