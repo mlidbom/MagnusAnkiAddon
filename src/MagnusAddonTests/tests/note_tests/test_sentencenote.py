@@ -24,4 +24,4 @@ def test_split_token() -> None:
     sentence_note = SentenceNote.create(sentence)
     sentence_note.question.split_token_with_word_break_tag("金貸")
 
-    assert sentence_note.question.get() == f"だったら普通に金{ex_str.invisible_space}貸せって言えよ"
+    assert sentence_note.question.with_invisible_space() == f"だったら普通に金{ex_str.invisible_space}貸せって言えよ"

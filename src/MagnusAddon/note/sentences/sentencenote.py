@@ -63,7 +63,7 @@ class SentenceNote(JPNote, Slots):
     def audio(self) -> WritableAudioField: return WritableAudioField(self.weakref, SentenceNoteFields.audio)
 
     @override
-    def get_question(self) -> str: return self.question.get()
+    def get_question(self) -> str: return self.question.with_invisible_space()
     @override
     def get_answer(self) -> str: return self.answer.get()
 
@@ -106,7 +106,7 @@ class SentenceNote(JPNote, Slots):
     def update_parsed_words(self, force: bool = False) -> None:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
         parsing_result = self.parsing_result.get()
-        if not force and parsing_result and parsing_result.sentence == self.get_question() and parsing_result.parser_version == TextAnalysis.version:
+        if not force and parsing_result and parsing_result.sentence == self.question.get_without_invisible_spaces() and parsing_result.parser_version == TextAnalysis.version:
             return
 
         analysis = self.create_analysis()
