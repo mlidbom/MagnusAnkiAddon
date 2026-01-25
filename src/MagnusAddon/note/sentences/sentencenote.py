@@ -63,7 +63,7 @@ class SentenceNote(JPNote, Slots):
     def audio(self) -> WritableAudioField: return WritableAudioField(self.weakref, SentenceNoteFields.audio)
 
     @override
-    def get_question(self) -> str: return self.question.with_invisible_space()
+    def get_question(self) -> str: return self.question.without_invisible_space()
     @override
     def get_answer(self) -> str: return self.answer.get()
 
