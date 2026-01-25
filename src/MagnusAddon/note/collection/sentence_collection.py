@@ -20,6 +20,7 @@ if TYPE_CHECKING:
 class _SentenceSnapshot(CachedNote, Slots):
     def __init__(self, note: SentenceNote) -> None:
         super().__init__(note)
+        self.question_without_invisible_space: str = note.question.get_without_invisible_spaces()
         self.words: tuple[str, ...] = note.get_words().to_tuple()
         self.detected_vocab: tuple[int, ...] = note.parsing_result.get().matched_vocab_ids.to_tuple()
         self.user_highlighted_vocab: tuple[str, ...] = note.configuration.highlighted_words().to_tuple()
@@ -32,6 +33,7 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
         self._by_user_highlighted_vocab: QDefaultDict[str, QList[SentenceNote]] = QDefaultDict[str, QList[SentenceNote]](QList[SentenceNote])
         self._by_user_marked_invalid_vocab: QDefaultDict[str, QList[SentenceNote]] = QDefaultDict[str, QList[SentenceNote]](QList[SentenceNote])
         self._by_vocab_id: QDefaultDict[int, QSet[SentenceNote]] = QDefaultDict[int, QSet[SentenceNote]](QSet[SentenceNote])
+        self._by_question_without_invisible_space: QDefaultDict[str, QList[SentenceNote]] = QDefaultDict[str, QList[SentenceNote]](QList[SentenceNote])
         super().__init__(all_kanji, SentenceNote, cache_runner)
 
     @override
@@ -41,6 +43,7 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
     def with_vocab_form(self, form: str) -> QList[SentenceNote]: return self._by_vocab_form.get_value_or_default(form).to_list()
     def with_user_highlighted_vocab(self, form: str) -> QList[SentenceNote]: return self._by_user_highlighted_vocab.get_value_or_default(form).to_list()
     def with_user_marked_invalid_vocab(self, form: str) -> QList[SentenceNote]: return self._by_user_marked_invalid_vocab.get_value_or_default(form).to_list()
+    def with_question_without_invisible_space(self, question: str) -> QList[SentenceNote]: return self._by_question_without_invisible_space.get_value_or_default(question).to_list()
 
     @classmethod
     def remove_first_note_with_id(cls, note_list: list[SentenceNote], id: NoteId) -> None:
@@ -58,6 +61,7 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
         for vocab_form in snapshot.user_highlighted_vocab: self.remove_first_note_with_id(self._by_user_highlighted_vocab[vocab_form], id)
         for vocab_form in snapshot.marked_incorrect_vocab: self.remove_first_note_with_id(self._by_user_marked_invalid_vocab[vocab_form], id)
         for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].remove(note)
+        self._by_question_without_invisible_space[snapshot.question_without_invisible_space].remove(note)
 
     @override
     def _inheritor_add_to_cache(self, note: SentenceNote, snapshot: _SentenceSnapshot) -> None:
@@ -65,6 +69,7 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
         for vocab_form in snapshot.user_highlighted_vocab: self._by_user_highlighted_vocab[vocab_form].append(note)
         for vocab_form in snapshot.marked_incorrect_vocab: self._by_user_marked_invalid_vocab[vocab_form].append(note)
         for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].add(note)
+        self._by_question_without_invisible_space[snapshot.question_without_invisible_space].append(note)
 
 class SentenceCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
@@ -80,6 +85,9 @@ class SentenceCollection(Slots):
 
     def with_question(self, question: str) -> QList[SentenceNote]:
         return self._cache.with_question(question)
+
+    def with_question_without_invisible_space(self, question: str) -> QList[SentenceNote]:
+        return self._cache.with_question_without_invisible_space(question)
 
     def with_vocab(self, vocab_note: VocabNote) -> QList[SentenceNote]:
         matches = self._cache.with_vocab(vocab_note)

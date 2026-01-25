@@ -56,7 +56,7 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
         add_ui_action(note_set_menu, shortcutfinger.home1("Ergative twin"), lambda: vocab.related_notes.ergative_twin.set(menu_string))
         add_ui_action(note_set_menu, shortcutfinger.home2("Derived from"), lambda: vocab.related_notes.derived_from.set(menu_string))
 
-    sentences = app.col().sentences.with_question(menu_string)
+    sentences = app.col().sentences.with_question_without_invisible_space(menu_string)
 
     build_add_menu(non_optional(string_menu.addMenu(shortcutfinger.home1("Add"))))
     build_set_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Set"))))
