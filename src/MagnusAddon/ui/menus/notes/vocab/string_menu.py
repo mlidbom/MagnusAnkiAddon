@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) -> None:
     def build_sentences_menu(sentence_menu: QMenu) -> None:
         def remove_highlight_from_sentences() -> None:
-            for sent in sentences: sent.configuration.remove_highlighted_word(vocab.get_question())
+            for sent in sentences: sent.configuration.remove_highlighted_word(vocab.question.disambiguation_name)
 
         def mark_as_incorrect_match_in_sentences() -> None:
             for sent in sentences: sent.configuration.incorrect_matches.add_global(vocab.question.disambiguation_name)
@@ -23,11 +23,11 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
         has_sentences = len(sentences) > 0
 
         add_ui_action(sentence_menu, shortcutfinger.home1("Add Highlight"),
-                      lambda: sentences[0].configuration.add_highlighted_word(vocab.get_question()),
-                      has_sentences and vocab.get_question() not in sentences[0].configuration.highlighted_words())
+                      lambda: sentences[0].configuration.add_highlighted_word(vocab.question.disambiguation_name),
+                      has_sentences and vocab.question.disambiguation_name not in sentences[0].configuration.highlighted_words())
         add_ui_action(sentence_menu, shortcutfinger.home2("Remove highlight"),
                       lambda: remove_highlight_from_sentences(),
-                      has_sentences and vocab.get_question() in sentences[0].configuration.highlighted_words())
+                      has_sentences and vocab.question.disambiguation_name in sentences[0].configuration.highlighted_words())
         add_ui_action(sentence_menu, shortcutfinger.home3("Remove-sentence: Mark as incorrect match in sentence"),
                       lambda: mark_as_incorrect_match_in_sentences(),
                       has_sentences)
