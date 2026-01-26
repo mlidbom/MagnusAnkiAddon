@@ -18,7 +18,7 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
             for sent in sentences: sent.configuration.remove_highlighted_word(vocab.get_question())
 
         def mark_as_incorrect_match_in_sentences() -> None:
-            for sent in sentences: sent.configuration.incorrect_matches.add_global(vocab.get_question())
+            for sent in sentences: sent.configuration.incorrect_matches.add_global(vocab.question.disambiguation_name)
 
         has_sentences = len(sentences) > 0
 
