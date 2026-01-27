@@ -149,20 +149,22 @@ _token_boolean_flags: list[tuple[Callable[[IAnalysisToken], bool], str, str]] = 
 ]
 def render_tokens(sentence_analysis: SentenceViewModel) -> str:
     if not Settings.show_breakdown_in_edit_mode(): return ""
+    html = render_token_list(sentence_analysis.analysis.analysis.pre_processed_tokens, "Tokens")
+    html += render_token_list(list(sentence_analysis.analysis.analysis.tokenized_text.tokens), "Unprocessed Tokens")
+    return html
 
-    tokens: list[IAnalysisToken] = sentence_analysis.analysis.analysis.pre_processed_tokens
-
-    def render_token_properties(token: IAnalysisToken) -> str:
+def render_token_list(tokens: list[IAnalysisToken], section_title: str) -> str:
+    def render_token_properties(token_: IAnalysisToken) -> str:
         properties: list[str] = []
         for prop_func, _, title in _token_boolean_flags:
-            if prop_func(token):
+            if prop_func(token_):
                 properties.append(f'<span class="token_property" title="{title}">{title}</span>')
 
         return ", ".join(properties) if properties else ""
 
-    html = """
+    html = f"""
     <div class="tokens page_section">
-        <div class="page_section_title">Tokens</div>
+        <div class="page_section_title">{section_title}</div>
         <table>
             <thead>
                 <tr>
