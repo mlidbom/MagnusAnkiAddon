@@ -5,9 +5,11 @@ from typing import TYPE_CHECKING
 from ankiutils import app
 from aqt import gui_hooks
 from configuration.settings import Settings
+from language_services.janome_ex.tokenizing.jn_token import JNToken
 from note.sentences.sentencenote import SentenceNote
 from sysutils import ex_str
 from sysutils.ex_str import newline
+from typed_linq_collections.collections.q_list import QList
 from ui.web.sentence.sentence_viewmodel import SentenceViewModel
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 from viewmodels.kanji_list import sentence_kanji_list_viewmodel
@@ -149,8 +151,12 @@ _token_boolean_flags: list[tuple[Callable[[IAnalysisToken], bool], str, str]] = 
 ]
 def render_tokens(sentence_analysis: SentenceViewModel) -> str:
     if not Settings.show_breakdown_in_edit_mode(): return ""
-    html = render_token_list(sentence_analysis.analysis.analysis.pre_processed_tokens, "Tokens")
-    html += render_token_list(list(sentence_analysis.analysis.analysis.tokenized_text.tokens), "Unprocessed Tokens")
+    tokens = QList(sentence_analysis.analysis.analysis.pre_processed_tokens)
+    html = render_token_list(tokens, "Tokens")
+
+    if tokens.any(lambda it: not isinstance(it, JNToken)):
+        html += render_token_list(list(sentence_analysis.analysis.analysis.tokenized_text.tokens), "Unprocessed Tokens")
+
     return html
 
 def render_token_list(tokens: list[IAnalysisToken], section_title: str) -> str:
@@ -189,7 +195,7 @@ def render_token_list(tokens: list[IAnalysisToken], section_title: str) -> str:
                         <td class="surface"><span class="japanese clipboard">{token.surface}</span></td>
                         <td class="base"><span class="japanese clipboard">{token.base_form}</span></td>
                         <td class="token_properties">{render_token_properties(token)}</td>
-                        <td class="token_properties">{token.__class__.__name__}</td>
+                        <td class="token_properties {"custom_token_class" if not isinstance(token, JNToken) else ""}">{token.__class__.__name__}</td>
                         <td class="pos pos1"><span class="japanese clipboard">{token.source_token.parts_of_speech.level1.japanese}</span>:{token.source_token.parts_of_speech.level1.english}</td>
                         <td class="pos pos2"><span class="japanese clipboard">{token.source_token.parts_of_speech.level2.japanese}</span>:{token.source_token.parts_of_speech.level2.english}</td>
                         <td class="pos pos3"><span class="japanese clipboard">{token.source_token.parts_of_speech.level3.japanese}</span>:{token.source_token.parts_of_speech.level3.english}</td>
