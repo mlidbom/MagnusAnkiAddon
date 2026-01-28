@@ -70,7 +70,10 @@ class DictEntry(Slots):
         return self.senses.all(lambda it: it.is_intransitive_verb())
 
     def format_answer(self) -> str:
-        return " | ".join(self.senses.select(lambda it: it.format_glosses()))
+        def default_sense_format(sense: SenseEX) -> str:
+            return "/".join(sense.glosses.select(lambda it: it.replace(" ", "-")))
+
+        return " | ".join(self.senses.select(default_sense_format))
 
     def parts_of_speech(self) -> QSet[str]:
         # POS values are already mapped and harmonized in SenseEX
