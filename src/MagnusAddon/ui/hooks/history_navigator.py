@@ -84,7 +84,8 @@ class CardHistoryNavigator(WeakRefable, Slots):
         if self._is_at_start_of_history():
             return
 
-        self.current_position -= 1
+        if not (self._is_at_end_of_history() and not app.get_ui_utils().is_preview_open()):
+            self.current_position -= 1
 
         while self.current_position >= 0 and not self._card_exists(self.card_history[self.current_position]):
             self.current_position -= 1

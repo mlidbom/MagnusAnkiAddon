@@ -14,3 +14,4 @@ class IUIUtils(Slots):
     def run_ui_action(self, callback: Callable[[],None]) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
     def activate_preview(self) -> None: raise NotImplementedError()
     def tool_tip(self, message:str, milliseconds:int = 3000) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
+    def is_preview_open(self) -> bool: return False

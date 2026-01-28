@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, override
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from PyQt6.QtWidgets import QApplication
+from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -102,9 +103,9 @@ class UIUtils(IUIUtils, Slots):
                 self._mw.reviewer.refresh_if_needed()
 
         def force_browser_rerender() -> None:
-            browser: list[Browser] = [window for window in self._mw.app.topLevelWidgets() if isinstance(window, Browser)]
-            if len(browser) > 0:
-                browser[0].onSearchActivated()  # pyright: ignore[reportUnknownMemberType]
+            browser = self._try_find_browser_window()
+            if browser:
+                browser.onSearchActivated()  # pyright: ignore[reportUnknownMemberType]
 
         app.col().flush_cache_updates()
         audio_suppressor.suppress_for_seconds(.3)
@@ -122,6 +123,14 @@ class UIUtils(IUIUtils, Slots):
             browser.onTogglePreview()
         else:
             browser._previewer.activateWindow()  # noqa  # pyright: ignore[reportPrivateUsage]
+
+    @override
+    def is_preview_open(self) -> bool:
+        browser = self._try_find_browser_window()
+        return browser is not None and browser._previewer is not None  # pyright: ignore [reportPrivateUsage]
+
+    def _try_find_browser_window(self) -> Browser | None:
+        return query(self._mw.app.topLevelWidgets()).of_type(Browser).single_or_none()
 
     @override
     def tool_tip(self, message: str, milliseconds: int = 3000) -> None:
