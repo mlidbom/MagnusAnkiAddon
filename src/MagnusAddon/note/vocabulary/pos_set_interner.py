@@ -17,6 +17,7 @@ class POSSetManager:
         "ichidan": [POS.ICHIDAN_VERB],
 
         # JMDict POS mappings
+        "な adjective": [POS.NA_ADJECTIVE],
         "noun or participle which takes the aux. verb suru": [POS.SURU_VERB],
         "noun (common) (futsuumeishi)": [POS.NOUN],
         "adjectival nouns or quasi-adjectives (keiyodoshi)": [POS.NA_ADJECTIVE],
