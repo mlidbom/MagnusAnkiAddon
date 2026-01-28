@@ -82,7 +82,7 @@ def test_valid_forms(word: str, readings: list[str], forms: set[str]) -> None:
     assert dict_entry.valid_forms() == forms
 
 @pytest.mark.parametrize("word, readings, answer", [
-        ("張り切る", ["はりきる"], "to{:?}{be-in-high-spirits/be-full-of-vigor-(vigour)/be-enthusiastic/be-eager/stretch-to-breaking-point}"),
+        ("張り切る", ["はりきる"], "to{?}{be-in-high-spirits/be-full-of-vigor-(vigour)/be-enthusiastic/be-eager/stretch-to-breaking-point}"),
         ("早まる", ["はやまる"], "to-be:{brought-forward-(e.g.-by-three-hours)/moved-up/advanced} | to-be:{hasty/rash} | to:{quicken/speed-up/gather-speed}"),
         ("部屋", ["へや"], "room/chamber | apartment/flat/pad | stable"),
         ("拭く", ["ふく"], "to{}{wipe/dry}"),

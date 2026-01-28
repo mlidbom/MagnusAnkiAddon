@@ -28,7 +28,7 @@ class SenseEX(Slots):
 
     def format_glosses(self) -> str:
         if POSSetManager.is_verb(self.pos):
-            type_marker = "{:?}"
+            type_marker = "{?}"
             if self.is_transitive_verb(): type_marker = "{}"
             if self.is_intransitive_verb(): type_marker = ":"
 
