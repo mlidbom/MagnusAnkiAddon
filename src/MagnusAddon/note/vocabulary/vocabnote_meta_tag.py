@@ -3,6 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
+from language_services.janome_ex.tokenizing.pre_processing_stage.ichidan_godan_potential_or_imperative_hybrid_splitter import IchidanGodanPotentialOrImperativeHybridSplitter
+from language_services.janome_ex.tokenizing.pre_processing_stage.word_info_entry import WordInfoEntry
 from note.tags import Tags
 from note.vocabulary.pos import POS
 from typed_linq_collections.collections.q_set import QSet
@@ -88,7 +90,7 @@ def get_meta_tags_html(vocab: VocabNote, display_extended_sentence_statistics: b
     # my own inventions
     if POS.MASU_SUFFIX in tos: meta.append(VocabMetaTag("masu-suffix", "連", "follows the 連用形/masu-stem form of a verb"))
 
-    #register
+    # register
     if Tags.Vocab.Register.polite in tags: meta.append(VocabMetaTag("register-polite", "P", "Polite"))
     if Tags.Vocab.Register.formal in tags: meta.append(VocabMetaTag("register-formal", "F", "Formal"))
     if Tags.Vocab.Register.informal in tags: meta.append(VocabMetaTag("register-informal", "I", "Informal"))
@@ -104,8 +106,14 @@ def get_meta_tags_html(vocab: VocabNote, display_extended_sentence_statistics: b
     if Tags.Vocab.Register.derogatory in tags: meta.append(VocabMetaTag("register-derogatory", "D", "Derogatory form, usually offensive"))
     if Tags.Vocab.Register.literary in tags: meta.append(VocabMetaTag("register-literary", "L", "literary, apt to stand out in speech"))
 
-    #other
-    if Tags.Vocab.is_ichidan_hiding_godan_potential in tags: meta.append(VocabMetaTag("is-ichidan-hiding-godan-potential", "HG", "Ichidan verb hiding godan potential form. Mark the ichidan as an incorrect match to see the godan potential in the breakdown. The parser cannot tell which it is on its own."))
+    # other
+    if Tags.Vocab.is_ichidan_hiding_godan_potential in tags:
+        hidden_godan: WordInfoEntry = IchidanGodanPotentialOrImperativeHybridSplitter.get_godan_hidden_by_ichidan(vocab)
+        meta.append(VocabMetaTag("is-ichidan-hiding-godan-potential", "HG",
+                                 f"""Ichidan verb hiding godan potential form of the verb: 
+{hidden_godan.word}:
+{hidden_godan.answer}
+Mark the ichidan as an incorrect match to see the godan potential in the breakdown. The parser cannot tell which it is on its own."""))
 
     return """<ol class="vocab_tag_list">""" + "".join([f"""<li class="vocab_tag vocab_tag_{tag.name}" title="{tag.tooltip}">{tag.display}</li>""" for tag in meta]) + "</ol>"
 

@@ -13,6 +13,7 @@ from sysutils.typed import non_optional
 if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
     from language_services.janome_ex.tokenizing.jn_token import JNToken
+    from language_services.janome_ex.tokenizing.pre_processing_stage.word_info_entry import WordInfoEntry
     from note.collection.vocab_collection import VocabCollection
     from note.vocabulary.vocabnote import VocabNote
 
@@ -120,11 +121,18 @@ class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
 
     @classmethod
     def is_ichidan_hiding_godan(cls, vocab: VocabNote) -> bool:
+        return cls.try_get_godan_hidden_by_ichidan(vocab) is not None
+
+    @classmethod
+    def get_godan_hidden_by_ichidan(cls, vocab: VocabNote) -> WordInfoEntry:
+        return non_optional(cls.try_get_godan_hidden_by_ichidan(vocab))
+
+    @classmethod
+    def try_get_godan_hidden_by_ichidan(cls, vocab: VocabNote) -> WordInfoEntry | None:
         question = vocab.get_question()
         if cls.base_form_has_godan_potential_ending(question):
             possible_godan_form = conjugator.construct_root_verb_for_possibly_potential_godan_verb_dictionary_form(question)
             godan_dict_entry = WordInfo.lookup_godan(possible_godan_form)
             if godan_dict_entry is not None and godan_dict_entry.is_godan:  # noqa: SIM103
-                return True
-            return False
-        return False
+                return godan_dict_entry
+        return None

@@ -3,7 +3,7 @@ from __future__ import annotations
 from ankiutils import app
 from autoslot import Slots
 from language_services.jamdict_ex.dict_lookup import DictLookup
-from language_services.janome_ex.tokenizing.pre_processing_stage.word_info_entry import WordInfoEntry
+from language_services.janome_ex.tokenizing.pre_processing_stage.word_info_entry import DictWordInfoEntry, VocabWordInfoEntry, WordInfoEntry
 from typed_linq_collections.q_iterable import query
 
 
@@ -14,12 +14,12 @@ class WordInfo(Slots):
         if vocab_entries.any():
             for vocab in vocab_entries:
                 if vocab.get_question() == word:
-                    return WordInfoEntry(word, vocab.parts_of_speech.get())
-            return WordInfoEntry(word, vocab_entries.first().parts_of_speech.get())
+                    return VocabWordInfoEntry(word, vocab)
+            return VocabWordInfoEntry(word, vocab_entries.first())
 
         dict_lookup_result = DictLookup.lookup_word(word)
         if dict_lookup_result.found_words():
-            return WordInfoEntry(word, dict_lookup_result.parts_of_speech())
+            return DictWordInfoEntry(word, dict_lookup_result)
 
         return None
 
