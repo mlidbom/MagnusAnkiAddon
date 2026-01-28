@@ -26,6 +26,8 @@ class SenseEX(Slots):
 
     def _all_glosses_start_with(self, prefix: str) -> bool: return self.glosses.all(lambda it: it.startswith(prefix))
 
+    def is_to_be_verb(self) -> bool: return self._all_glosses_start_with("to-be-")
+
     def format_glosses(self) -> str:
         if POSSetManager.is_verb(self.pos):
             type_marker = "{?}"
@@ -38,8 +40,8 @@ class SenseEX(Slots):
                 start_group = ""
                 end_group = ""
 
-            if self._all_glosses_start_with("to-be-"):
-                return f"""to-be{type_marker}{start_group}{"/".join(self.glosses.select(lambda it: it.removeprefix("to-be-")))}{end_group}"""
+            if self.is_to_be_verb():
+                return f"""to-be:{start_group}{"/".join(self.glosses.select(lambda it: it.removeprefix("to-be-")))}{end_group}"""
 
             if self._all_glosses_start_with("to-"):
                 return f"""to{type_marker}{start_group}{"/".join(self.glosses.select(lambda it: it.removeprefix("to-")))}{end_group}"""
@@ -90,8 +92,14 @@ class DictEntry(Slots):
     def is_intransitive_verb(self) -> bool:
         return self.senses.all(lambda it: it.is_intransitive_verb())
 
+    def is_to_be_verb(self) -> bool:
+        return self.senses.all(lambda it: it.is_to_be_verb())
+
     def format_answer(self) -> str:
         default_format = " | ".join(self.senses.select(lambda it: it.format_glosses()))
+
+        if self.is_to_be_verb():
+            return f"""to-be: {default_format.replace("to-be:", "").replace("{", "").replace("}", "")}"""
 
         if self.is_transitive_verb():
             return f"""to{{}} {default_format.replace("to{}", "").replace("{", "").replace("}", "")}"""
