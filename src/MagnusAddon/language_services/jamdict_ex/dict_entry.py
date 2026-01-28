@@ -94,8 +94,13 @@ class DictEntry(Slots):
         default_format = " | ".join(self.senses.select(lambda it: it.format_glosses()))
 
         if self.is_transitive_verb():
-            return f"""to{{}} {default_format.replace("to{}{", "").replace("}", "")}"""
+            return f"""to{{}} {default_format.replace("to{}", "").replace("{", "").replace("}", "")}"""
 
+        if self.is_intransitive_verb():
+            if "to-be:" in default_format:
+                return f"""to: {default_format.replace("to-be:", "be-").replace("to:", "")}"""
+            else:
+                return f"""to: {default_format.replace("to:", "").replace("{", "").replace("}", "")}"""
 
         return default_format
 
