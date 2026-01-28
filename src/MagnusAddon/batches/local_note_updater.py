@@ -233,3 +233,8 @@ def create_missing_vocab_with_dictionary_entries() -> None:
                 VocabNote.factory.create_with_dictionary(result.word)
 
         runner.process_with_progress(dictionary_words_with_no_vocab, create_vocab_if_not_already_created, "Creating vocab notes")
+
+def regenerate_jamdict_vocab_answers() -> None:
+    with TaskRunner.current("Regenerating vocab source answers from jamdict") as runner:
+        vocab_notes: list[VocabNote] = list(app.col().vocab.all())
+        runner.process_with_progress(vocab_notes, lambda vocab: vocab.generate_and_set_answer(), "Regenerating vocab source answers from jamdict")

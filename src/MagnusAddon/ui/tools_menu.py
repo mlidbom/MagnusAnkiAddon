@@ -84,6 +84,7 @@ def build_local_menu(local_menu: QMenu) -> None:
     add_menu_ui_action(local_menu, shortcutfinger.home2("Convert &Immersion Kit sentences"), local_note_updater.convert_immersion_kit_sentences)
     add_menu_ui_action(local_menu, shortcutfinger.home3("Update everyting except reparsing sentences"), local_note_updater.update_all)
     add_menu_ui_action(local_menu, shortcutfinger.home4("Create vocab notes for parsed words with no vocab notes"), local_note_updater.create_missing_vocab_with_dictionary_entries)
+    add_menu_ui_action(local_menu, shortcutfinger.home5("Regenerate vocab source answers from jamdict"), local_note_updater.regenerate_jamdict_vocab_answers)
 
 def init() -> None:
     build_main_menu()
