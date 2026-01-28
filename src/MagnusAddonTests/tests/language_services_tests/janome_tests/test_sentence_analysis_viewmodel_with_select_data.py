@@ -18,7 +18,6 @@ def setup_collection_with_select_data() -> Iterator[None]:
         yield
 
 @pytest.mark.parametrize("sentence, expected_output", [
-        ("綺麗 母様に見せよう", ["綺麗", "母様", "に", "見す", "よう"]) #todo: should render 見せる, not detect an imperative
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -129,7 +128,8 @@ def test_hide_transparent_compounds(sentence: str, expected_output: list[str]) -
         ("返せったら", ["返す", "え", "ったら"]),
         ("返せ俺の", ["返す", "え", "俺", "の"]),
         ("返せ盗人", ["返す", "え", "盗人"]),
-        ("カバンに入れっぱなし", ["カバン", "に", "入れる", "っぱなし:っ放し"])
+        ("カバンに入れっぱなし", ["カバン", "に", "入れる", "っぱなし:っ放し"]),
+        ("綺麗 母様に見せよう", ["綺麗", "母様", "に", "見せる", "う"])  # should render 見せる, not detect a potential godan and render 見す
 ])
 def test_godan_potential_and_imperative(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
