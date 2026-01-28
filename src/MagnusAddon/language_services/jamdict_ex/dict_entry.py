@@ -91,10 +91,13 @@ class DictEntry(Slots):
         return self.senses.all(lambda it: it.is_intransitive_verb())
 
     def format_answer(self) -> str:
-        def default_senses_format() -> str:
-            return " | ".join(self.senses.select(lambda it: it.format_glosses()))
+        default_format = " | ".join(self.senses.select(lambda it: it.format_glosses()))
 
-        return default_senses_format()
+        if self.is_transitive_verb():
+            return f"""to{{}} {default_format.replace("to{}{", "").replace("}", "")}"""
+
+
+        return default_format
 
     def parts_of_speech(self) -> QSet[str]:
         # POS values are already mapped and harmonized in SenseEX

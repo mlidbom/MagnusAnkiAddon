@@ -11,7 +11,6 @@ from note.vocabulary.vocabnote import VocabNote
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from language_services.jamdict_ex.dict_entry import DictEntry
     from language_services.jamdict_ex.dict_lookup_result import DictLookupResult
 
 # noinspection PyUnusedFunction
@@ -85,7 +84,7 @@ def test_valid_forms(word: str, readings: list[str], forms: set[str]) -> None:
         ("張り切る", ["はりきる"], "to{?}{be-in-high-spirits/be-full-of-vigor-(vigour)/be-enthusiastic/be-eager/stretch-to-breaking-point}"),
         ("早まる", ["はやまる"], "to-be:{brought-forward-(e.g.-by-three-hours)/moved-up/advanced} | to-be:{hasty/rash} | to:{quicken/speed-up/gather-speed}"),
         ("部屋", ["へや"], "room/chamber | apartment/flat/pad | stable"),
-        ("拭く", ["ふく"], "to{}{wipe/dry}"),
+        ("拭く", ["ふく"], "to{} wipe/dry"),
         ("歩く", ["あるく"], "to:walk")
 ])
 def test_generate_answer(word: str, readings: list[str], answer: str) -> None:
@@ -115,11 +114,6 @@ def test_pos(word: str, readings: list[str], pos: set[str]) -> None:
 
     assert dict_entry.entries[0].parts_of_speech() == pos
     assert dict_entry.parts_of_speech() == pos
-
-def get_single_dict_entry(word: str, readings: list[str]) -> DictEntry:
-    dict_entry = get_dict_entry(word, readings)
-    assert dict_entry.found_words_count() == 1
-    return dict_entry.entries[0]
 
 def get_dict_entry(word: str, readings: list[str]) -> DictLookupResult:
     vocab = VocabNote.factory.create(word, "", readings)
