@@ -85,8 +85,8 @@ class VocabNote(JPNote, Slots):
         from language_services.jamdict_ex.dict_lookup import DictLookup
         dict_lookup = DictLookup.lookup_vocab_word_or_name(self)
         if dict_lookup.found_words():
-            generated = dict_lookup.entries[0].format_answer()
-            self.user.answer.set(generated)
+            generated = dict_lookup.format_answer()
+            self.source_answer.set(generated)
 
         self.update_generated_data()
 
