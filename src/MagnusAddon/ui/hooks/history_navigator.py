@@ -46,31 +46,30 @@ class CardHistoryNavigator(WeakRefable, Slots):
                 self.card_history = [CardId(card_id) for card_id in saved_history]
                 self._set_current_position_to_end_of_history()
 
-    def on_card_shown(self, html: str, card: Card, _display_type: str) -> str:
+    def on_card_shown(self, html: str, card_being_displayed: Card, _display_type: str) -> str:
         if ui_utils.is_reviewer_display_type(_display_type):
-            if self._last_card_shown_in_reviewer_card_id == card.id: return html  # We don't want to pollute the history every single time the currently reviewed card is refreshed by our UI refresh code....
-            self._last_card_shown_in_reviewer_card_id = card.id
+            if self._last_card_shown_in_reviewer_card_id == card_being_displayed.id: return html  # We don't want to pollute the history every single time the currently reviewed card is refreshed by our UI refresh code....
+            self._last_card_shown_in_reviewer_card_id = card_being_displayed.id
 
         if self._is_navigating:  # don't mess up the history when navigating the history. Navigating the history is a read-only operation
             self._is_navigating = False
-            self._last_card_shown_was_navigated_card_id = card.id
+            self._last_card_shown_was_navigated_card_id = card_being_displayed.id
+            return html
+        else:
+            # if we navigate away from a card shown while navigating the history, that was probably the card we were searching for and if we hit back after that, we want that card
+            if self._last_card_shown_was_navigated_card_id is not None:
+                self.move_to_front_of_history(self._last_card_shown_was_navigated_card_id)
+                self._last_card_shown_was_navigated_card_id = None
+
+            self.move_to_front_of_history(card_being_displayed.id)
+
+            self._set_current_position_to_end_of_history()
+            self._save_last_hundred_items_to_file()
             return html
 
-        # if we navigate away from a card shown while navigating the history, that was probably the card we were searching for and if we hit back after that, we want that card
-        if self._last_card_shown_was_navigated_card_id is not None:
-            self._remove_from_history(self._last_card_shown_was_navigated_card_id)
-            self.card_history.append(self._last_card_shown_was_navigated_card_id)
-            self._last_card_shown_was_navigated_card_id = None
-
-        self._remove_from_history(card.id)  # no duplicates in the history please
-        self.card_history.append(card.id)
-
-        self._set_current_position_to_end_of_history()
-        self._save_last_hundred_items_to_file()
-        return html
-
-    def _remove_from_history(self, card_id: CardId) -> None:
+    def move_to_front_of_history(self, card_id: CardId) -> None:
         while card_id in self.card_history: self.card_history.remove(card_id)  # no duplicates in the history please
+        self.card_history.append(card_id)
 
     @classmethod
     def _card_exists(cls, card_id: CardId) -> bool:
