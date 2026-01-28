@@ -45,3 +45,5 @@ class POS:
     IRREGULAR: str = "irregular"
     UNKNOWN: str = "Unknown"
     MASU_SUFFIX: str = "masu-suffix"  # non-standard, follows the 連用形/masu-stem form of a verb
+
+    ALL_VERB_POSES: frozenset[str] = frozenset([GODAN_VERB, ICHIDAN_VERB, SURU_VERB, KURU_VERB, NU_VERB, SU_VERB, YODAN_VERB, NIDAN_VERB])

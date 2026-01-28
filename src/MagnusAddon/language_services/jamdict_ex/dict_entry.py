@@ -16,14 +16,35 @@ if TYPE_CHECKING:
 
 class SenseEX(Slots):
     def __init__(self, source: Sense) -> None:
-        self.glosses: QList[str] = query(source.gloss).select(lambda it: cast(str, it.text)).to_list()  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
+        self.glosses: QList[str] = query(source.gloss).select(lambda it: cast(str, it.text).replace(" ", "-")).to_list()  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
         # POSSetManager handles JMDict -> our names mapping and interning
         self.pos: frozenset[str] = POSSetManager.intern_and_harmonize_from_list(cast(list[str], source.pos))  # pyright: ignore [reportUnknownMemberType]
         self.is_kana_only: bool = "word usually written using kana alone" in cast(list[str], source.misc)  # pyright: ignore [reportUnknownMemberType]
 
     def is_transitive_verb(self) -> bool: return POSSetManager.is_transitive_verb(self.pos)
     def is_intransitive_verb(self) -> bool: return POSSetManager.is_intransitive_verb(self.pos)
-    def format_glosses(self) -> str: return "/".join(self.glosses.select(lambda it: it.replace(" ", "-")))
+
+    def _all_glosses_start_with(self, prefix: str) -> bool: return self.glosses.all(lambda it: it.startswith(prefix))
+
+    def format_glosses(self) -> str:
+        if POSSetManager.is_verb(self.pos):
+            type_marker = "{:?}"
+            if self.is_transitive_verb(): type_marker = "{}"
+            if self.is_intransitive_verb(): type_marker = ":"
+
+            start_group = "{"
+            end_group = "}"
+            if len(self.glosses) == 1:
+                start_group = ""
+                end_group = ""
+
+            if self._all_glosses_start_with("to-be-"):
+                return f"""to-be{type_marker}{start_group}{"/".join(self.glosses.select(lambda it: it.removeprefix("to-be-")))}{end_group}"""
+
+            if self._all_glosses_start_with("to-"):
+                return f"""to{type_marker}{start_group}{"/".join(self.glosses.select(lambda it: it.removeprefix("to-")))}{end_group}"""
+
+        return "/".join(self.glosses)
 
 class KanaFormEX(Slots):
     def __init__(self, source: KanaForm) -> None:
@@ -70,15 +91,8 @@ class DictEntry(Slots):
         return self.senses.all(lambda it: it.is_intransitive_verb())
 
     def format_answer(self) -> str:
-        def default_sense_format(sense: SenseEX, remove_prefix: str = "") -> str:
-            return "/".join(sense.glosses.select(lambda it: it.removeprefix(remove_prefix).replace(" ", "-")))
-
-        def default_senses_format(remove_prefix: str = "") -> str:
-            return " | ".join(self.senses.select(lambda it: default_sense_format(it, remove_prefix)))
-
-        all_senses_start_with_to = self.senses.select_many(lambda sense: sense.glosses).all(lambda it: it.startswith("to "))
-        if all_senses_start_with_to:
-            return "to: " + default_senses_format(remove_prefix="to ")
+        def default_senses_format() -> str:
+            return " | ".join(self.senses.select(lambda it: it.format_glosses()))
 
         return default_senses_format()
 
