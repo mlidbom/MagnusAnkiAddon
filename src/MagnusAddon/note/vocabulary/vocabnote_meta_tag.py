@@ -108,11 +108,11 @@ def get_meta_tags_html(vocab: VocabNote, display_extended_sentence_statistics: b
 
     # other
     if Tags.Vocab.is_ichidan_hiding_godan_potential in tags:
-        hidden_godan: WordInfoEntry = IchidanGodanPotentialOrImperativeHybridSplitter.get_godan_hidden_by_ichidan(vocab)
+        hidden_godan: WordInfoEntry | None = IchidanGodanPotentialOrImperativeHybridSplitter.try_get_godan_hidden_by_ichidan(vocab)
         meta.append(VocabMetaTag("is-ichidan-hiding-godan-potential", "HG",
-                                 f"""Ichidan verb hiding godan potential form of the verb: 
-{hidden_godan.word}:
-{hidden_godan.answer}
+                                 f"""Ichidan verb hiding godan potential form of the verb:
+{hidden_godan.word if hidden_godan is not None else "unknown"}:
+{hidden_godan.answer if hidden_godan is not None else "unknown"}
 Mark the ichidan as an incorrect match to see the godan potential in the breakdown. The parser cannot tell which it is on its own."""))
 
     return """<ol class="vocab_tag_list">""" + "".join([f"""<li class="vocab_tag vocab_tag_{tag.name}" title="{tag.tooltip}">{tag.display}</li>""" for tag in meta]) + "</ol>"
