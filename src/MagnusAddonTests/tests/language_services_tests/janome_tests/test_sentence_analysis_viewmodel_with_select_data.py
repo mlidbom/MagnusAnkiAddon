@@ -18,6 +18,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
         yield
 
 @pytest.mark.parametrize("sentence, expected_output", [
+
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -38,7 +39,7 @@ def test_require_forbid_te_prefix_or_stem(sentence: str, expected_output: list[s
 
 @pytest.mark.parametrize("sentence, expected_output", [
         ("寝れない", ["寝る", "れない"]),
-        ("食べれる", ["食べる", "れる:ichidan", "る"])
+        ("食べれる", ["食べる", "れる:ichidan", "る:う"])
 ])
 def test_requires_e_stem(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -52,11 +53,12 @@ def test_wbr_word_separation(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
-        ("食べるな", ["食べる", "る", "な:dict"]),
+        ("食べるな", ["食べる", "る:う", "な:dict"]),
         ("食べな", ["食べる", "な:masu"]),
         ("そうだな", ["そうだ", "な:s.end"]),
         ("頭突き以外でな", ["頭突き", "以外", "で", "な:s.end"]),
         ("胸あるよ", ["胸", "ある", "う", "よ"]),  # あう should not match, it is a compound matching against the base where the end is a dictionary form with th surface differing from the base...
+        ("和むし", ["和む", "う", "し"]),  # todo: should be ["和む", "う", "し"], not ["和む", "むし"], Unless requiring dict form stem, it should be forbidden.
         ("デカいな", ["デカい", "な:masu"]),  # todo: Janome thinks it's いる、な... :/
 ])
 def test_require_forbid_dictionary_form_prefix_and_stem(sentence: str, expected_output: list[str]) -> None:
@@ -64,16 +66,16 @@ def test_require_forbid_dictionary_form_prefix_and_stem(sentence: str, expected_
 
 @pytest.mark.parametrize("sentence, expected_output", [
         ("なる", ["なる", "う"]),
-        ("する", ["する", "る"]),
+        ("する", ["する", "る:う"]),
         ("くる", ["くる", "う"]),
-        ("食べる", ["食べる", "る"]),
+        ("食べる", ["食べる", "る:う"]),
         ("はしゃいでる", ["はしゃぐ", "でる"]),
         ("音がするの", ["音がする", "うの"]),
         ("大声出すな", ["大声出す", "う", "な:dict"]),
         ("があるの", ["がある", "うの"]),
         ("にある", ["に", "ある", "う"]),  # matched に会う
         ("なぜかというと", ["なぜかというと"]),  # matched うと
-        ("止めるかな", ["止める", "る", "かな"])  # this is both an ichidan hiding a godan, and a dictionary form ending.
+        ("止めるかな", ["止める", "る:う", "かな"])  # this is both an ichidan hiding a godan, and a dictionary form ending.
 ])
 def test_dictionary_form_splitting(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -112,7 +114,7 @@ def test_hide_transparent_compounds(sentence: str, expected_output: list[str]) -
 @pytest.mark.parametrize("sentence, expected_output", [
         ("お金貸せって", ["お金", "貸す", "え", "って"]),
         ("お前に会えて", ["お前", "に会う", "える", "て"]),
-        ("逆に大丈夫に思えてくる", ["逆に", "大丈夫", "に", "思える", "て", "くる", "る"]),
+        ("逆に大丈夫に思えてくる", ["逆に", "大丈夫", "に", "思える", "て", "くる", "る:う"]),
         ("黙れ", ["黙る", "え"]),
         ("楽しめてる", ["楽しむ", "える", "てる"]),
         ("会えたりしない", ["会う", "える", "たり", "する", "ない"]),
@@ -166,7 +168,7 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("幼すぎて よく覚えていないけど",
          ["幼い", "すぎる", "て", "よく", "覚える", "ている", "ない", "けど"]),
         ("ばら撒かれるなんて死んでもいやだ",
-         ["ばら撒く", "あれる", "る", "なんて", "死んでも", "いや", "だ"]),
+         ["ばら撒く", "あれる", "る:う", "なんて", "死んでも", "いや", "だ"]),
         ("お前も色々考えてるんだなぁ",
          ["お前", "も", "色々", "考える", "てる", "んだ:のだ", "なぁ"]),
         ("教科書落ちちゃうから",
@@ -174,9 +176,9 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("待ってました", ["待つ", "て", "ます", "た"]),
         ("落ちてないかな", ["落ちる", "てない", "かな"]),
         ("分かってたら", ["分かる", "てたら"]),
-        ("思い出せそうな気がする", ["思い出す", "える", "そうだ", "気がする", "る"]),
+        ("思い出せそうな気がする", ["思い出す", "える", "そうだ", "気がする", "る:う"]),
         ("代筆を頼みたいんだが", ["代筆", "を", "頼む", "たい", "ん", "だが"]),
-        ("飛ばされる", ["飛ばす", "あれる", "る"]),
+        ("飛ばされる", ["飛ばす", "あれる", "る:う"]),
         ("破られたか", ["破る", "あれる", "た", "か"]),
         ("大家族だもの", ["大家族", "だもの"]),
         ("奪うんだもの", ["奪う", "う", "ん", "だもの"]),
@@ -197,8 +199,8 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("横取りされたらたまらん", ["横取り", "される", "たら", "たまらん"]),
         ("ガチだったんでしょ", ["ガチ", "だった", "ん", "でしょ"]),
         ("どうしちゃったんだろうな", ["どう", "しちゃう", "たん:たの", "だろう", "な:s.end"]),
-        ("良いものを食べる", ["良い", "もの", "を", "食べる", "る"]),
-        ("いいものを食べる", ["いい", "もの", "を", "食べる", "る"]),
+        ("良いものを食べる", ["良い", "もの", "を", "食べる", "る:う"]),
+        ("いいものを食べる", ["いい", "もの", "を", "食べる", "る:う"]),
         ("うまく笑えずに", ["うまく", "笑える", "ずに"]),  # うまく disappeared when we made all verbs inflecting words by default
         ("慣れているんでね", ["慣れる", "ている", "んで", "ね"]),
         ("私が頼んだの", ["私", "が", "頼む", "んだ:past", "の"]),
@@ -212,11 +214,11 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("死んどる", ["死ぬ", "んどる"]),
         ("ちょっと強引なところがあるから", ["ちょっと", "強引", "な", "ところ", "がある", "う", "から"]),
         ("また寒くなるな", ["また", "寒い", "くなる", "う", "な:dict"]),
-        ("空を飛べる機械", ["空を飛ぶ", "える", "る", "機械"]),
-        ("出会える", ["出会える", "る"]),
+        ("空を飛べる機械", ["空を飛ぶ", "える", "る:う", "機械"]),
+        ("出会える", ["出会える", "る:う"]),
         ("頑張れた", ["頑張る", "える", "た"]),
         ("頑張れ", ["頑張れ"]),
-        ("私たちなら嘘をつかずに付き合っていけるかもしれないね", ["私たち", "なら", "嘘をつく", "ずに", "付き合う", "ていける", "る", "かもしれない", "ね"]),
+        ("私たちなら嘘をつかずに付き合っていけるかもしれないね", ["私たち", "なら", "嘘をつく", "ずに", "付き合う", "ていける", "る:う", "かもしれない", "ね"]),
         ("どやされても知らんぞ", ["どやす", "あれる", "ても知らん:ても知らない", "ぞ"]),
         ("服を引き出しの中に入れてください", ["服", "を", "引き出し", "の中", "に入る", "える", "て", "ください"]),
         ("他人を気遣い", ["他人", "を", "気遣う"]),
@@ -242,10 +244,10 @@ def test_yield_to_surface(sentence: str, expected_output: list[str]) -> None:
          ["厳密に言えば", "俺", "一人", "が", "友達", "だけど"]),
         ("私は毎日ジョギングをすることを習慣にしています。",
          [WordExclusion.at_index("にして", 17), WordExclusion.at_index("にし", 17), WordExclusion.at_index("して", 18), WordExclusion.at_index("し", 18), WordExclusion.at_index("してい", 18), WordExclusion.at_index("い", 12), WordExclusion.global_("にする")],
-         ["私", "は", "毎日", "ジョギング", "を", "する", "る", "こと", "を", "習慣", "に", "する", "ている", "ます"]),
+         ["私", "は", "毎日", "ジョギング", "を", "する", "る:う", "こと", "を", "習慣", "に", "する", "ている", "ます"]),
         ("私は毎日ジョギングをすることを習慣にしています。",
          [WordExclusion.at_index("にして", 17), WordExclusion.at_index("にし", 17), WordExclusion.at_index("して", 18), WordExclusion.at_index("し", 18), WordExclusion.at_index("してい", 18)],
-         ["私", "は", "毎日", "ジョギング", "を", "する", "る", "こと", "を", "習慣", "にする", "ている", "ます"]),
+         ["私", "は", "毎日", "ジョギング", "を", "する", "る:う", "こと", "を", "習慣", "にする", "ている", "ます"]),
         ("頑張れたというか", [WordExclusion.global_("頑張る"), WordExclusion.global_("頑張れ")], ["える", "た", "というか"]),
         ("いらっしゃいません", [WordExclusion.global_("いらっしゃいませ")], ["いらっしゃいます", "ん"]),
         ("風の強さに驚きました", [WordExclusion.global_("風の強い")], ["風", "の", "強さ", "に", "驚き", "ます", "た"])

@@ -47,6 +47,10 @@ class MatchInspector(Slots):
         return self.word.start_location
 
     @property
+    def start_location_is_dictionary_verb_inflection(self) -> bool:
+        return self.start_location.token.is_dictionary_verb_inflection
+
+    @property
     def end_location(self) -> TextAnalysisLocation:
         return self.word.end_location
 

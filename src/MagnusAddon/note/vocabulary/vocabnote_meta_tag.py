@@ -4,12 +4,12 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from language_services.janome_ex.tokenizing.pre_processing_stage.ichidan_godan_potential_or_imperative_hybrid_splitter import IchidanGodanPotentialOrImperativeHybridSplitter
-from language_services.janome_ex.tokenizing.pre_processing_stage.word_info_entry import WordInfoEntry
 from note.tags import Tags
 from note.vocabulary.pos import POS
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
+    from language_services.janome_ex.tokenizing.pre_processing_stage.word_info_entry import WordInfoEntry
     from note.vocabulary.vocabnote import VocabNote
 
 class VocabMetaTag(Slots):

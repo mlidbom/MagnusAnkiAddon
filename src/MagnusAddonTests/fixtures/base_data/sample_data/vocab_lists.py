@@ -9,8 +9,7 @@ vm = Tags.Vocab.Matching
 
 test_special_vocab: list[VocabSpec] = [
         # <non-standard-token-splitting-to-enable-more-pedagogical-breakdowns-for-conjugations>
-        VocabSpec("る"),
-        VocabSpec("う", "dictionary form verb inflection", tags=[vm.Requires.dictionary_form_stem]),
+        VocabSpec("う", "dictionary form verb inflection", forms=["る"], tags=[vm.Requires.dictionary_form_stem]),
         # godan potential
         VocabSpec("える", "to-be-able-to", ["える"],
                   forms=["える", "ける", "せる", "てる", "ねる", "へる", "める", "れる", "げる", "ぜる", "でる", "べる", "ぺる"],

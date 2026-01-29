@@ -11,21 +11,28 @@ if TYPE_CHECKING:
 class RequiresOrForbidsDictionaryFormStem(Slots):
     _required_failure: FailedMatchRequirement = FailedMatchRequirement.required("dictionary_form_stem")
     _forbidden_failure: FailedMatchRequirement = FailedMatchRequirement.forbids("dictionary_form_stem")
+    _forbidden_by_default_failure: FailedMatchRequirement = FailedMatchRequirement.forbids("dictionary_form_stem_forbidden_by_default")
 
     @classmethod
     def apply_to(cls, inspector: VocabMatchInspector) -> FailedMatchRequirement | None:
         requirement = inspector.match.requires_forbids.dictionary_form_stem
-        if requirement.is_active:
-            is_in_state = cls._internal_is_in_state(inspector)
-            if requirement.is_required and not is_in_state:
-                return cls._required_failure
-            if requirement.is_forbidden and is_in_state:
+
+        is_in_state = cls._internal_is_in_state(inspector)
+        if is_in_state:
+            if requirement.is_required:
+                return None
+            if requirement.is_forbidden:
                 return cls._forbidden_failure
+            return cls._forbidden_by_default_failure
+
+        if requirement.is_required:
+            return cls._required_failure
+
         return None
 
     @classmethod
     def _internal_is_in_state(cls, inspector: VocabMatchInspector) -> bool:
-        if inspector.start_location.token.is_dictionary_verb_inflection:  # noqa: SIM103
+        if inspector.start_location_is_dictionary_verb_inflection:  # noqa: SIM103
             return True
 
         return False
