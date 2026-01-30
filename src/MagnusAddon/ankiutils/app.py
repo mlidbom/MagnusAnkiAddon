@@ -4,6 +4,7 @@ import os
 from typing import TYPE_CHECKING
 
 import mylog
+from dotnet import dotnet_runtime_loader
 from sysutils.typed import checked_cast, non_optional
 from testutils import ex_pytest
 from typed_linq_collections.collections.q_set import QSet
@@ -139,3 +140,5 @@ def _setup_gui_hooks() -> None:
 user_files_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..\\user_files")
 
 _setup_gui_hooks()
+
+dotnet_runtime_loader.load_clr()
