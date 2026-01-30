@@ -12,6 +12,7 @@ target_dir = os.path.join(script_dir, "src/MagnusAddon/_lib")
 
 # One line per library and its dependencies
 pip_libraries_to_copy = [
+    "pythonnet", "clr_loader", "cffi", "_cffi_backend.cp313-win_amd64.pyd", "pycparser",
     "typed_linq_collections",
     "janome",
     "pyperclip",
