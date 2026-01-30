@@ -6,14 +6,6 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 import _lib # noqa NOTE: this line sets up lib paths, lib imports before here do not work when running in anki  # pyright: ignore[reportUnusedImport]
 
-from dotnet import dotnet_runtime_loader
-
-try:
-    dotnet_runtime_loader.ensure_clr_loaded()
-except RuntimeError as e:
-    print(f"Failed to load .NET runtime: {e}")
-
-
 import ui # noqa
 from ankiutils import app # noqa
 if app.config().enable_automatic_garbage_collection.get_value():
