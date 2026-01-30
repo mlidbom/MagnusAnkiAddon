@@ -141,4 +141,4 @@ user_files_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..\\u
 
 _setup_gui_hooks()
 
-dotnet_runtime_loader.load_clr()
+dotnet_runtime_loader.ensure_clr_loaded()
