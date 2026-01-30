@@ -209,4 +209,6 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("いただける:acceptable", tags=[vm.Forbids.te_form_prefix]),
         VocabSpec("てない", tags=[vm.Requires.te_form_stem]),
         VocabSpec("てしまいます", tags=[vm.Requires.te_form_stem]),
+
+        VocabSpec("う以上", tags=[vm.Requires.dictionary_form_stem]),
 ]

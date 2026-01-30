@@ -12,17 +12,18 @@ if TYPE_CHECKING:
 class DictionaryFormVerbSplitter(Slots):
     @classmethod
     def try_split(cls, token: JNToken) -> list[IAnalysisToken] | None:
-        if token.is_ichidan_verb and token.is_dictionary_form() and not token.is_progressive_form():
-            return cls.split_ichidan_dictionary_form(token)
+        if token.is_dictionary_form() and not token.is_progressive_form():
+            if token.is_ichidan_verb:
+                return cls.split_ichidan_dictionary_form(token)
 
-        if token.is_godan_verb and token.is_dictionary_form() and not token.is_progressive_form():
-            return cls.split_godan_dictionary_form(token)
+            if token.is_godan_verb:
+                return cls.split_godan_dictionary_form(token)
 
-        if token.is_kuru_verb and token.is_dictionary_form() and not token.is_progressive_form():
-            return cls.split_kuru_verb(token)
+            if token.is_kuru_verb:
+                return cls.split_kuru_verb(token)
 
-        if token.is_suru_verb and token.is_dictionary_form() and not token.is_progressive_form():
-            return cls.split_suru_verb(token)
+            if token.is_suru_verb:
+                return cls.split_suru_verb(token)
 
         return None
 
