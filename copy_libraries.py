@@ -18,10 +18,9 @@ pip_libraries_to_copy = [
     "pyperclip",
     "beartype",
     "jamdict", "jamdict_data", "puchikarui", "chirptext",
-    "pykakasi", "jaconv", "deprecated",
+    "pykakasi", "jaconv", "deprecated", "wrapt",
     "romkan",
-    "autoslot.py",
-    "line_profiler_pycharm", "line_profiler", "wrapt"
+    "autoslot.py"
     ]
 
 # Create the target directory if it doesn't exist
