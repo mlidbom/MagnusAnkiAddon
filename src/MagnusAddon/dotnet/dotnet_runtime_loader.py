@@ -1,12 +1,15 @@
 from __future__ import annotations
 
+import os
+
 import mylog
 from pythonnet import load  # pyright: ignore [reportMissingTypeStubs]
 
+config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dotnet_runtimeconfig.json")
 
 def load_clr() -> None:
     try:
-        load("coreclr")
+        load("coreclr", runtime_config=config_file)
         # load("coreclr", runtime_config="path/to/runtimeconfig.json")
         mylog.info("Loaded .NET runtime")
         import clr
