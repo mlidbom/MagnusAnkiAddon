@@ -1,67 +1,28 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using JAStudio.Core.Domain;
 using JAStudio.Core.Tokenization;
-using JetBrains.Annotations;
 using Python.Runtime;
 
 namespace JAStudio.PythonInterop;
 
 public class JanomeTokenizer : ITokenizer
 {
-    private dynamic? _janomeTokenizer;
-    private readonly Lock _initLock = new();
+    private readonly dynamic? _janomeTokenizer;
 
-    [UsedImplicitly]
-    public void InitializeFromPython(dynamic janomeTokenizer)
+    public JanomeTokenizer()
     {
-        lock (_initLock)
+        using (Py.GIL())
         {
-            _janomeTokenizer = janomeTokenizer;
-            Console.WriteLine("[JanomeProvider] Initialized from Python with existing tokenizer");
+            dynamic janome = Py.Import("janome.tokenizer");
+            _janomeTokenizer = janome.Tokenizer();
         }
     }
 
-    private void EnsureInitialized()
-    {
-        if (_janomeTokenizer != null) return;
-
-        lock (_initLock)
-        {
-            if (_janomeTokenizer != null) return;
-
-            Console.WriteLine("[JanomeProvider] Auto-initializing Python runtime...");
-            
-            if (!PythonEngine.IsInitialized)
-            {
-                PythonEngine.Initialize();
-                PythonEngine.BeginAllowThreads();
-            }
-
-            using (Py.GIL())
-            {
-                try
-                {
-                    dynamic janome = Py.Import("janome.tokenizer");
-                    _janomeTokenizer = janome.Tokenizer();
-                }
-                catch (PythonException ex)
-                {
-                    throw new InvalidOperationException(
-                        "Failed to initialize janome. Make sure janome is installed in the Python environment. " +
-                        $"Error: {ex.Message}", ex);
-                }
-            }
-        }
-    }
 
     public List<Token> Tokenize(string text)
     {
-        EnsureInitialized();
-
         List<Token> tokens;
-
         using (Py.GIL())
         {
             try

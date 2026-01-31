@@ -47,13 +47,13 @@ def test_can_pass_python_object_to_dotnet() -> None:
 
 def test_can_tokenize_japanese_text_via_dotnet() -> None:
     """Test that we can tokenize Japanese text through the .NET provider."""
-    from janome.tokenizer import Tokenizer
+    #from janome.tokenizer import Tokenizer
     from JAStudio.PythonInterop import JanomeTokenizer
 
     # Create and initialize provider
-    python_tokenizer = Tokenizer()
+    #python_tokenizer = Tokenizer()
     provider = JanomeTokenizer()
-    provider.InitializeFromPython(python_tokenizer)
+    #provider.InitializeFromPython(python_tokenizer)
 
     # Tokenize Japanese sentence
     sentence = "昨日、友達と映画を見ました。"
@@ -68,3 +68,11 @@ def test_can_tokenize_japanese_text_via_dotnet() -> None:
     assert hasattr(first_token, "Surface")
     assert hasattr(first_token, "BaseForm")
     assert first_token.Surface == "昨日"
+
+def test_is_initialized() -> None:
+    """Test that the provider is correctly initialized."""
+    from JAStudio.PythonInterop import JanomeTokenizer, PythonEnvironment
+
+    tokenizer = JanomeTokenizer()
+    assert tokenizer.IsInitialized is True
+    assert PythonEnvironment.IsInitialized is True

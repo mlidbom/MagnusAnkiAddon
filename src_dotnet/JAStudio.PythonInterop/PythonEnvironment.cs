@@ -8,27 +8,24 @@ namespace JAStudio.PythonInterop;
 public static class PythonEnvironment
 {
     private static readonly object _lock = new();
-    private static bool _initialized;
-    
+
     /// <param name="venvPath">Optional path to venv. If not provided, uses JASTUDIO_VENV_PATH environment variable or auto-detects.</param>
     public static void EnsureInitialized(string? venvPath = null)
     {
+        if (PythonEngine.IsInitialized) return;
         lock (_lock)
         {
-            if (_initialized || PythonEngine.IsInitialized)
-            {
-                return;
-            }
+            if (PythonEngine.IsInitialized) return;
 
             venvPath ??= GetVenvPath();
 
             if (!Directory.Exists(venvPath))
             {
-                throw new Exception(
-                    $"Python venv not found at: {venvPath}\n" +
-                    $"Please set JASTUDIO_VENV_PATH environment variable to your venv location.\n" +
-                    $"Current directory: {Directory.GetCurrentDirectory()}"
-                );
+                throw new Exception($"""
+                                     Python venv not found at: {venvPath}
+                                     Please set JASTUDIO_VENV_PATH environment variable to your venv location.
+                                     Current directory: {Directory.GetCurrentDirectory()}
+                                     """);
             }
 
             // Read pyvenv.cfg to find base Python installation
@@ -67,26 +64,17 @@ public static class PythonEnvironment
 
             PythonEngine.Initialize();
             PythonEngine.BeginAllowThreads();
-
-            _initialized = true;
         }
     }
 
-    /// <summary>
-    /// Get the venv path from environment variable or auto-detect.
-    /// </summary>
     private static string GetVenvPath()
     {
-        // First try environment variable (required for NCrunch and other test runners)
         var envPath = Environment.GetEnvironmentVariable("JASTUDIO_VENV_PATH");
         if (!string.IsNullOrEmpty(envPath))
         {
             return envPath;
         }
 
-        // Fallback: try to find venv relative to current directory
-        // This works when running from the project directory
-        // Navigate up from bin/Debug/net10.0 (3 levels) + JAStudio.Core.Tests (1 level) + src_dotnet (1 level) = 5 levels
         var projectRoot = Path.GetFullPath(Path.Combine(
             Directory.GetCurrentDirectory(),
             "..", "..", "..", "..", ".."
@@ -94,28 +82,16 @@ public static class PythonEnvironment
         return Path.Combine(projectRoot, "venv");
     }
 
-    /// <summary>
-    /// Read pyvenv.cfg to find the base Python installation path.
-    /// </summary>
     private static string? GetBasePythonFromConfig(string pyvenvCfgPath)
     {
-        foreach (var line in File.ReadAllLines(pyvenvCfgPath))
-        {
-            if (line.StartsWith("home = "))
-            {
-                return line.Substring(7).Trim();
-            }
-        }
-
-        return null;
+        return File.ReadAllLines(pyvenvCfgPath)
+            .Where(line => line.StartsWith("home = "))
+            .Select(line => line[7..].Trim())
+            .FirstOrDefault();
     }
 
-    /// <summary>
-    /// Find the Python DLL, preferring version-specific DLLs over generic ones.
-    /// </summary>
     private static string? FindPythonDll(string venvPath, string basePython)
     {
-        // Prefer version-specific DLLs (python313.dll) over generic (python3.dll)
         var venvScripts = Path.Combine(venvPath, "Scripts");
 
         if (Directory.Exists(venvScripts))
@@ -130,19 +106,6 @@ public static class PythonEnvironment
             }
         }
 
-        // Fallback to base Python
-        if (Directory.Exists(basePython))
-        {
-            return Directory.GetFiles(basePython, "python3??.dll")
-                .OrderByDescending(f => f)
-                .FirstOrDefault();
-        }
-
         return null;
     }
-
-    /// <summary>
-    /// Check if Python environment is initialized.
-    /// </summary>
-    public static bool IsInitialized => _initialized && PythonEngine.IsInitialized;
 }
