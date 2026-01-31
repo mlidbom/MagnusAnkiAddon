@@ -7,26 +7,34 @@ from __future__ import annotations
 
 from autoslot import Slots
 from dotnet import dotnet_runtime_loader
+
+#from typing import override
 from sysutils.timeutil import StopWatch
 
 dotnet_runtime_loader.ensure_clr_loaded()
 
+from typing import TYPE_CHECKING
+
+from JAStudio.Core.InteropExperiments import CustomTypeReceiver  # noqa: E402
 from JAStudio.PythonInterop import JanomeTokenizer  # noqa: E402
+
+if TYPE_CHECKING:
+    from JAStudio.Core.Tokenization import Token
 
 
 class PythonToken:
     def __init__(self, surface: str) -> None:
-        self._surface = surface
+        self._surface:str = surface
 
     @property
-    def Surface(self) -> str: return self._surface
+    def surface(self) -> str: return self._surface
 
 class PythonTokenSlots(Slots):
     def __init__(self, surface: str) -> None:
-        self._surface = surface
+        self._surface:str = surface
 
     @property
-    def Surface(self) -> str: return self._surface
+    def surface(self) -> str: return self._surface
 
 def test_can_tokenize_japanese_text_via_dotnet() -> None:
     provider = JanomeTokenizer()
@@ -50,27 +58,38 @@ def test_can_tokenize_japanese_text_via_dotnet() -> None:
 
     property_access_iterations = 100000
     left = property_access_iterations
-    token = tokens[0]
+    net_token:Token = tokens[0]
     with StopWatch.print_execution_time(f"Access {property_access_iterations} properties"):
         while left > 0:
             left -= 1
-            something = token.Surface  # pyright: ignore  # noqa: F841
+            something = net_token.Surface  # pyright: ignore  # noqa: F841
 
     left = property_access_iterations
-    token = PythonToken(token.Surface)
+    py_token = PythonToken(net_token.Surface)
     with StopWatch.print_execution_time(f"Loop with python object property access {property_access_iterations}"):
         while left > 0:
             left -= 1
-            something = token.Surface  # pyright: ignore  # noqa: F841
+            something = py_token.surface  # pyright: ignore  # noqa: F841
 
     left = property_access_iterations
-    token = PythonTokenSlots(token.Surface)
+    py_token_slots = PythonTokenSlots(net_token.Surface)
     with StopWatch.print_execution_time(f"Loop with python slots object property access {property_access_iterations}"):
         while left > 0:
             left -= 1
-            something = token.Surface  # pyright: ignore  # noqa: F841
+            something = py_token_slots.surface  # pyright: ignore  # noqa: F841
 
     left = property_access_iterations
     with StopWatch.print_execution_time(f"Loop with no property access {property_access_iterations}"):
         while left > 0:
             left -= 1
+
+class CustomClass:
+    @property
+    def AValue(self) -> str: return "Ao"
+
+
+def test_passing_custom_class_instance() -> None:
+    receiver = CustomTypeReceiver()
+    custom_subclass_instance = CustomClass()
+    assert custom_subclass_instance.AValue == "Ao"
+    assert receiver.ReceiveClass(custom_subclass_instance) == "Ao"

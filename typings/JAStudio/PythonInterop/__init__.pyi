@@ -1,7 +1,6 @@
 import abc
-from JAStudio.Core.Tokenization import ITokenizer
+from JAStudio.Core.Tokenization import ITokenizer, Token
 from System.Collections.Generic import List_1
-from JAStudio.Core.Domain import Token
 
 class JanomeTokenizer(ITokenizer):
     def __init__(self) -> None: ...

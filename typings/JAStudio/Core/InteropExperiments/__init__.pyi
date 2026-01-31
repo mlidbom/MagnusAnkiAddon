@@ -1,0 +1,6 @@
+import typing
+
+class CustomTypeReceiver:
+    def __init__(self) -> None: ...
+    def ReceiveClass(self, value: typing.Any) -> str: ...
+
