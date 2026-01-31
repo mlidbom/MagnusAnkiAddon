@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+from pathlib import Path
 
 import mylog
 from pythonnet import load
@@ -8,21 +9,40 @@ from pythonnet import load
 config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "runtimeconfig.json")
 
 loaded: bool = False
+
+def _get_workspace_root() -> Path:
+    """Get the workspace root directory."""
+    # From src/MagnusAddon/dotnet/dotnet_runtime_loader.py, go up to workspace root
+    return Path(__file__).parent.parent.parent.parent
+
 def ensure_clr_loaded() -> None:
+    """Ensure the .NET CLR is loaded with all required assemblies."""
     global loaded
-    if loaded: return
+    if loaded:
+        return
+
     try:
         load("coreclr", runtime_config=config_file)
-        # load("coreclr", runtime_config="path/to/runtimeconfig.json")
         mylog.info("Loaded .NET runtime")
         import clr  # pyright: ignore [reportMissingTypeStubs]
         clr.AddReference("System.Runtime")  # pyright: ignore [reportAttributeAccessIssue, reportUnknownMemberType]
         from System import Environment  # pyright: ignore [reportMissingModuleSource]
         dotnet_version = Environment.Version
         print(f"Running .NET version: {dotnet_version}")
+
+        # Load JAStudio assemblies
+        workspace_root = _get_workspace_root()
+        jastudio_dlls = [
+                workspace_root / "src_dotnet" / "JAStudio.Core" / "bin" / "Debug" / "net10.0" / "JAStudio.Core.dll",
+                workspace_root / "src_dotnet" / "JAStudio.PythonInterop" / "bin" / "Debug" / "net10.0" / "JAStudio.PythonInterop.dll",
+        ]
+
+        for dll_path in jastudio_dlls:
+            clr.AddReference(str(dll_path))  # pyright: ignore [reportAttributeAccessIssue, reportUnknownMemberType]
+            mylog.info(f"Loaded assembly: {dll_path.name}")
+
     except RuntimeError as e:
         if "Failed to create a .NET runtime" in str(e):
-            # Show user-friendly error with installation instructions
             mylog.error(
                     """This addon requires .NET 10.0 or newer.
                     Please install from: https://dotnet.microsoft.com/download"""
@@ -31,4 +51,5 @@ def ensure_clr_loaded() -> None:
     except ImportError as e:
         mylog.error(f"Python.NET package {e.name} not found.")
         raise
+
     loaded = True
