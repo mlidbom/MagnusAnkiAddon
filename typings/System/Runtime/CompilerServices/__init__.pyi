@@ -1168,9 +1168,8 @@ class IteratorStateMachineAttribute(StateMachineAttribute):
 
 class ITuple(typing.Protocol):
     @property
-    def Item(self) -> typing.Any: ...
-    @property
     def Length(self) -> int: ...
+    def __getitem__(self, index: int) -> typing.Any: ...
 
 
 class LoadHint(typing.SupportsInt):
