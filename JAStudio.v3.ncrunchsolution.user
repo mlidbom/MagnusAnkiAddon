@@ -1,6 +1,7 @@
 ﻿<SolutionConfiguration>
   <Settings>
     <AutoEnable>True</AutoEnable>
+    <CurrentEngineMode>All [Global]</CurrentEngineMode>
     <StatusIndicatorSplitterDistance>15%</StatusIndicatorSplitterDistance>
     <TestsWindowMenuOptions>
       <VerticalSplitMenuOption>false</VerticalSplitMenuOption>

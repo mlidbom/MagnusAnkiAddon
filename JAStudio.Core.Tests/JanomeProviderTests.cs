@@ -20,26 +20,42 @@ public class JanomeProviderTests : IDisposable
         {
             Console.WriteLine("Initializing Python runtime for tests...");
             
-            // Auto-detect venv relative to project
-            var projectRoot = Path.GetFullPath(Path.Combine(
-                Directory.GetCurrentDirectory(),
-                "..", "..", "..", ".."
-            ));
-            var venvPath = Path.Combine(projectRoot, "venv");
+            // Get venv path from environment variable or use default relative location
+            var venvPath = Environment.GetEnvironmentVariable("JASTUDIO_VENV_PATH");
+            
+            if (string.IsNullOrEmpty(venvPath))
+            {
+                // Fallback: try to find venv relative to project
+                var projectRoot = Path.GetFullPath(Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "..", "..", "..", ".."
+                ));
+                venvPath = Path.Combine(projectRoot, "venv");
+            }
+            
+            if (!Directory.Exists(venvPath))
+            {
+                throw new Exception(
+                    $"Python venv not found at: {venvPath}\n" +
+                    $"Please set JASTUDIO_VENV_PATH environment variable to your venv location.\n" +
+                    $"Current directory: {Directory.GetCurrentDirectory()}"
+                );
+            }
             
             // Read pyvenv.cfg to find base Python installation
             var pyvenvCfg = Path.Combine(venvPath, "pyvenv.cfg");
-            string? basePython = null;
-            
-            if (File.Exists(pyvenvCfg))
+            if (!File.Exists(pyvenvCfg))
             {
-                foreach (var line in File.ReadAllLines(pyvenvCfg))
+                throw new Exception($"pyvenv.cfg not found at: {pyvenvCfg}");
+            }
+            
+            string? basePython = null;
+            foreach (var line in File.ReadAllLines(pyvenvCfg))
+            {
+                if (line.StartsWith("home = "))
                 {
-                    if (line.StartsWith("home = "))
-                    {
-                        basePython = line.Substring(7).Trim();
-                        break;
-                    }
+                    basePython = line.Substring(7).Trim();
+                    break;
                 }
             }
             
