@@ -84,10 +84,6 @@ class MatchInspector(Slots):
         return self.next_location.token.surface if self.next_location else ""
 
     @property
-    def tokenized_form(self) -> str:
-        return self.match.tokenized_form
-
-    @property
     def parsed_form(self) -> str:
         return self.match.parsed_form
 

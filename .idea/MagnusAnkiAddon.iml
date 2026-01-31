@@ -29,6 +29,20 @@
       <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddon/language_services/english_dictionary/data" />
       <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddon/manually_copied_in_libraries" />
       <excludeFolder url="file://$MODULE_DIR$/typings" />
+      <excludeFolder url="file://$MODULE_DIR$/src_dotnet/JAStudio.Console/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/src_dotnet/JAStudio.Console/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/src_dotnet/JAStudio.Core.Tests/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/src_dotnet/JAStudio.Core.Tests/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/src_dotnet/JAStudio.Core/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/src_dotnet/JAStudio.Core/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/src_dotnet/JAStudio.PythonInterop/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/src_dotnet/JAStudio.PythonInterop/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/src_dotnet/pythonnet-stub-generator/csharp/PythonNetStubGenerator/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/src_dotnet/pythonnet-stub-generator/csharp/PythonNetStubGenerator/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/src_dotnet/pythonnet-stub-generator/csharp/PythonNetStubTask/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/src_dotnet/pythonnet-stub-generator/csharp/PythonNetStubTask/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/src_dotnet/pythonnet-stub-generator/csharp/PythonNetStubTool/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/src_dotnet/pythonnet-stub-generator/csharp/PythonNetStubTool/obj" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.13 (MagnusAnkiAddon)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

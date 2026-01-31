@@ -4,7 +4,6 @@ import os
 import sys
 from typing import TYPE_CHECKING
 
-import mylog
 from ankiutils import app
 from typed_linq_collections.collections.q_dict import QDict
 from typed_linq_collections.collections.string_interning import set_default_intern_func
@@ -45,9 +44,6 @@ if use_sys_intern:  # noqa: SIM114
 
         return strings
 
-    def flush_store_and_disable() -> None:  # call this after populating the application memory cache, thus discarding the unhelpful strings from interning and ensuring that the helpful ones stay using a single instance.
-        pass
-
 elif use_simple_interner:
     simple_store = dict[str, str]()
     def auto_intern(string: str) -> str:  # replace every string placed in any memory cache in the application with the value returned by this function
@@ -67,12 +63,6 @@ elif use_simple_interner:
             strings[index] = simple_store.setdefault(value, value)
 
         return strings
-
-    def flush_store_and_disable() -> None:  # call this after populating the application memory cache, thus discarding the unhelpful strings from interning and ensuring that the helpful ones stay using a single instance.
-        pass
-        # global _is_enabled
-        # _is_enabled = False
-        # simple_store.clear()
 else:
     intern_hit_count = 0
     intern_miss_count = 0
@@ -113,12 +103,5 @@ else:
             for index, value in enumerate(strings):
                 strings[index] = auto_intern(value)
         return strings
-
-    def flush_store_and_disable() -> None:  # call this after populating the application memory cache, thus discarding the unhelpful strings from interning and ensuring that the helpful ones stay using a single instance.
-        global _is_enabled
-        _is_enabled = False
-        non_interned = store.qcount()
-        store.clear()
-        mylog.info(f"string_auto_interner: interned {len(interned_hashes)} strings, removed {non_interned}: hit_count={intern_hit_count}, miss_count={intern_miss_count}")
 
 set_default_intern_func(auto_intern)

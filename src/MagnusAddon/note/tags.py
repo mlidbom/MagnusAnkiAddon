@@ -22,6 +22,7 @@ class Tags(Slots):
             incorrect_matches: Tag = Tag.from_name(f"{f_sentence_uses}incorrect-matches")
             hidden_matches: Tag = Tag.from_name(f"{f_sentence_uses}hidden-matches")
 
+    # noinspection DuplicatedCode
     class Kanji(Slots):
         is_radical: Tag = Tag.from_name(f"{f_kanji}is-radical")
         is_radical_purely: Tag = Tag.from_name(f"{f_kanji}is-radical-purely")
@@ -94,6 +95,7 @@ class Tags(Slots):
                 single_token: Tag = Tag.from_name(f"{f_vocab_matching_requires}single-token")
                 compound: Tag = Tag.from_name(f"{f_vocab_matching_requires}compound")
 
+            # noinspection DuplicatedCode
             class Forbids(Slots):
                 masu_stem: Tag = Tag.from_name(f"{f_vocab_matching_forbids}masu_stem")
                 godan: Tag = Tag.from_name(f"{f_vocab_matching_forbids}godan")

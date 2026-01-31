@@ -53,7 +53,7 @@ class VocabNoteMatchingRules(Slots):
         weight = 0
         if self.required_prefix.any():
             weight += 10
-        for _ in (set for set in self._all_sets if set):
+        for _ in (set_ for set_ in self._all_sets if set_):
             weight += 2
         return weight
 
