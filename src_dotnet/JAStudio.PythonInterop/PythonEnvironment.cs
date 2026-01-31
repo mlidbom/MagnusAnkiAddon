@@ -1,14 +1,14 @@
-namespace JAStudio.PythonInterop;
-
 using System;
 using System.IO;
 using System.Linq;
 using Python.Runtime;
 
+namespace JAStudio.PythonInterop;
+
 public static class PythonEnvironment
 {
     private static readonly object _lock = new();
-    private static bool _initialized = false;
+    private static bool _initialized;
     
     /// <param name="venvPath">Optional path to venv. If not provided, uses JASTUDIO_VENV_PATH environment variable or auto-detects.</param>
     public static void EnsureInitialized(string? venvPath = null)
