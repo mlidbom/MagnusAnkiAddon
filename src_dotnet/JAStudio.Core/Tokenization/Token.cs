@@ -1,4 +1,4 @@
-namespace JAStudio.Core.Domain;
+namespace JAStudio.Core.Tokenization;
 
 public record Token(
     string Surface,

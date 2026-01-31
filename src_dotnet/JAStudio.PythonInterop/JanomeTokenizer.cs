@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using JAStudio.Core.Domain;
 using JAStudio.Core.Tokenization;
 using Python.Runtime;
 

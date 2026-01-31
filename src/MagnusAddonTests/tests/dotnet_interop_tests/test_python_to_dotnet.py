@@ -5,6 +5,7 @@ These tests verify that Python can successfully load and call the C# JAStudio li
 """
 from __future__ import annotations
 
+from autoslot import Slots
 from dotnet import dotnet_runtime_loader
 from sysutils.timeutil import StopWatch
 
@@ -12,6 +13,20 @@ dotnet_runtime_loader.ensure_clr_loaded()
 
 from JAStudio.PythonInterop import JanomeTokenizer  # noqa: E402
 
+
+class PythonToken:
+    def __init__(self, surface: str) -> None:
+        self._surface = surface
+
+    @property
+    def Surface(self) -> str: return self._surface
+
+class PythonTokenSlots(Slots):
+    def __init__(self, surface: str) -> None:
+        self._surface = surface
+
+    @property
+    def Surface(self) -> str: return self._surface
 
 def test_can_tokenize_japanese_text_via_dotnet() -> None:
     provider = JanomeTokenizer()
@@ -28,12 +43,34 @@ def test_can_tokenize_japanese_text_via_dotnet() -> None:
 
     print()
 
-    iterations = 100
-    with StopWatch.print_execution_time(f"Tokenize {iterations} sentences"):
-        for _loop in range(iterations):  # pyright: ignore [reportUnusedVariable]
+    tokenizing_iterations = 100
+    with StopWatch.print_execution_time(f"Tokenize {tokenizing_iterations} sentences"):
+        for _loop in range(tokenizing_iterations):  # pyright: ignore [reportUnusedVariable]
             tokens = provider.Tokenize(sentence)
 
-    print("""
-    Done
+    property_access_iterations = 100000
+    left = property_access_iterations
+    token = tokens[0]
+    with StopWatch.print_execution_time(f"Access {property_access_iterations} properties"):
+        while left > 0:
+            left -= 1
+            something = token.Surface  # pyright: ignore  # noqa: F841
 
-""")
+    left = property_access_iterations
+    token = PythonToken(token.Surface)
+    with StopWatch.print_execution_time(f"Loop with python object property access {property_access_iterations}"):
+        while left > 0:
+            left -= 1
+            something = token.Surface  # pyright: ignore  # noqa: F841
+
+    left = property_access_iterations
+    token = PythonTokenSlots(token.Surface)
+    with StopWatch.print_execution_time(f"Loop with python slots object property access {property_access_iterations}"):
+        while left > 0:
+            left -= 1
+            something = token.Surface  # pyright: ignore  # noqa: F841
+
+    left = property_access_iterations
+    with StopWatch.print_execution_time(f"Loop with no property access {property_access_iterations}"):
+        while left > 0:
+            left -= 1
