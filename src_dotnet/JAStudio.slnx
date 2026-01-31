@@ -4,7 +4,6 @@
     <Project Path="pythonnet-stub-generator\csharp\PythonNetStubTask\PythonNetStubTask.csproj" />
     <Project Path="pythonnet-stub-generator\csharp\PythonNetStubTool\PythonNetStubGenerator.Tool.csproj" />
   </Folder>
-  <Project Path="JAStudio.Console\JAStudio.Console.csproj" />
   <Project Path="JAStudio.Core.Tests\JAStudio.Core.Tests.csproj" />
   <Project Path="JAStudio.Core\JAStudio.Core.csproj" />
   <Project Path="JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
