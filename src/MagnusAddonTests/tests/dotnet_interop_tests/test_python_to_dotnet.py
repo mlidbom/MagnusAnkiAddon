@@ -8,6 +8,7 @@ from __future__ import annotations
 import pytest
 
 
+# noinspection PyUnusedFunction
 @pytest.fixture(scope="module", autouse=True)
 def ensure_dotnet_loaded() -> None:
     """Ensure .NET runtime and assemblies are loaded before any tests run."""
