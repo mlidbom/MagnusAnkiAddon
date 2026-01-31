@@ -1,9 +1,11 @@
 <Solution>
+  <Folder Name="/StubGenerator/">
+    <Project Path="pythonnet-stub-generator\csharp\PythonNetStubGenerator\PythonNetStubGenerator.csproj" />
+    <Project Path="pythonnet-stub-generator\csharp\PythonNetStubTask\PythonNetStubTask.csproj" />
+    <Project Path="pythonnet-stub-generator\csharp\PythonNetStubTool\PythonNetStubGenerator.Tool.csproj" />
+  </Folder>
   <Project Path="JAStudio.Console\JAStudio.Console.csproj" />
   <Project Path="JAStudio.Core.Tests\JAStudio.Core.Tests.csproj" />
   <Project Path="JAStudio.Core\JAStudio.Core.csproj" />
   <Project Path="JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
-  <Project Path="pythonnet-stub-generator\csharp\PythonNetStubGenerator\PythonNetStubGenerator.csproj" />
-  <Project Path="pythonnet-stub-generator\csharp\PythonNetStubTask\PythonNetStubTask.csproj" />
-  <Project Path="pythonnet-stub-generator\csharp\PythonNetStubTool\PythonNetStubGenerator.Tool.csproj" />
 </Solution>
