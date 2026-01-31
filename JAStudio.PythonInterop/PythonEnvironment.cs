@@ -1,5 +1,8 @@
 namespace JAStudio.PythonInterop;
 
+using System;
+using System.IO;
+using System.Linq;
 using Python.Runtime;
 
 /// <summary>

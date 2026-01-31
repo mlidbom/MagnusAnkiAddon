@@ -1,7 +1,10 @@
 namespace JAStudio.Core.Tests;
 
+using System;
+using System.Linq;
 using JAStudio.Core.Services;
 using JAStudio.PythonInterop;
+using Xunit;
 
 /// <summary>
 /// Tests for janome integration via Python.NET

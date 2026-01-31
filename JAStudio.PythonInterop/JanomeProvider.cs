@@ -1,5 +1,7 @@
 namespace JAStudio.PythonInterop;
 
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using JAStudio.Core.Domain;
 using JAStudio.Core.Ports;

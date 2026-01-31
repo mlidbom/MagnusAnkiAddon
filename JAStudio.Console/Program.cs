@@ -1,4 +1,6 @@
-﻿using JAStudio.Core.Services;
+﻿using System;
+using System.Linq;
+using JAStudio.Core.Services;
 using JAStudio.PythonInterop;
 
 Console.WriteLine("=== JAStudio Core - Standalone Example ===");
