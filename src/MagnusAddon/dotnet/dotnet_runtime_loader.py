@@ -11,12 +11,9 @@ config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "runtimec
 loaded: bool = False
 
 def _get_workspace_root() -> Path:
-    """Get the workspace root directory."""
-    # From src/MagnusAddon/dotnet/dotnet_runtime_loader.py, go up to workspace root
     return Path(__file__).parent.parent.parent.parent
 
 def ensure_clr_loaded() -> None:
-    """Ensure the .NET CLR is loaded with all required assemblies."""
     global loaded
     if loaded:
         return
