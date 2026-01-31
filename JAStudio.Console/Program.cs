@@ -6,66 +6,8 @@ Console.WriteLine("=== JAStudio Core - Standalone Example ===");
 
 try
 {
-    // Auto-detect venv relative to executable
-    var exeDir = AppDomain.CurrentDomain.BaseDirectory;
-    var projectRoot = Path.GetFullPath(Path.Combine(exeDir, "..", "..", "..", ".."));
-    var venvPath = Path.Combine(projectRoot, "venv");
-    
-    // Read pyvenv.cfg to find base Python
-    var pyvenvCfg = Path.Combine(venvPath, "pyvenv.cfg");
-    string? basePython = null;
-    
-    if (File.Exists(pyvenvCfg))
-    {
-        foreach (var line in File.ReadAllLines(pyvenvCfg))
-        {
-            if (line.StartsWith("home = "))
-            {
-                basePython = line.Substring(7).Trim();
-                break;
-            }
-        }
-    }
-    
-    if (basePython == null)
-    {
-        Console.WriteLine($"ERROR: Could not find base Python from {pyvenvCfg}");
-        Console.WriteLine("Make sure the venv exists and has pyvenv.cfg");
-        return 1;
-    }
-    
-    // Find Python DLL (try venv first, then base)
-    // Prefer version-specific DLLs (python313.dll) over generic (python3.dll)
-    var pythonDll = Directory.GetFiles(Path.Combine(venvPath, "Scripts"), "python3??.dll")
-        .OrderByDescending(f => f)
-        .FirstOrDefault()
-        ?? Directory.GetFiles(basePython, "python3??.dll")
-        .OrderByDescending(f => f)
-        .FirstOrDefault();
-    
-    if (pythonDll == null)
-    {
-        Console.WriteLine($"ERROR: Could not find Python DLL in {venvPath} or {basePython}");
-        return 1;
-    }
-    
-    Console.WriteLine($"Using venv: {venvPath}");
-    Console.WriteLine($"Base Python: {basePython}");
-    Console.WriteLine($"Python DLL: {pythonDll}");
-    
-    Runtime.PythonDLL = pythonDll;
-    PythonEngine.PythonHome = basePython;
-    PythonEngine.PythonPath = string.Join(
-        Path.PathSeparator.ToString(),
-        Path.Combine(basePython, "Lib"),
-        Path.Combine(venvPath, "Lib", "site-packages"),
-        Path.Combine(basePython, "DLLs")
-    );
-
-    // Initialize Python runtime
-    PythonEngine.Initialize();
-    PythonEngine.BeginAllowThreads();
-
+    // Initialize Python environment
+    PythonEnvironment.Initialize();
     Console.WriteLine("Python runtime initialized successfully!\n");
 
     // Create provider (will auto-initialize janome)

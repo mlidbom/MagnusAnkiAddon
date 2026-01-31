@@ -15,85 +15,8 @@ public class JanomeProviderTests : IDisposable
 
     public JanomeProviderTests()
     {
-        // Initialize Python.NET if not already done
-        if (!PythonEngine.IsInitialized)
-        {
-            Console.WriteLine("Initializing Python runtime for tests...");
-            
-            // Get venv path from environment variable or use default relative location
-            var venvPath = Environment.GetEnvironmentVariable("JASTUDIO_VENV_PATH");
-            
-            if (string.IsNullOrEmpty(venvPath))
-            {
-                // Fallback: try to find venv relative to project
-                var projectRoot = Path.GetFullPath(Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    "..", "..", "..", ".."
-                ));
-                venvPath = Path.Combine(projectRoot, "venv");
-            }
-            
-            if (!Directory.Exists(venvPath))
-            {
-                throw new Exception(
-                    $"Python venv not found at: {venvPath}\n" +
-                    $"Please set JASTUDIO_VENV_PATH environment variable to your venv location.\n" +
-                    $"Current directory: {Directory.GetCurrentDirectory()}"
-                );
-            }
-            
-            // Read pyvenv.cfg to find base Python installation
-            var pyvenvCfg = Path.Combine(venvPath, "pyvenv.cfg");
-            if (!File.Exists(pyvenvCfg))
-            {
-                throw new Exception($"pyvenv.cfg not found at: {pyvenvCfg}");
-            }
-            
-            string? basePython = null;
-            foreach (var line in File.ReadAllLines(pyvenvCfg))
-            {
-                if (line.StartsWith("home = "))
-                {
-                    basePython = line.Substring(7).Trim();
-                    break;
-                }
-            }
-            
-            if (basePython == null)
-            {
-                throw new Exception($"Could not find base Python from {pyvenvCfg}");
-            }
-            
-            // Find the Python DLL (try venv first, then base)
-            // Prefer version-specific DLLs (python313.dll) over generic (python3.dll)
-            var pythonDll = Directory.GetFiles(Path.Combine(venvPath, "Scripts"), "python3??.dll")
-                .OrderByDescending(f => f)  // python313.dll > python3.dll alphabetically
-                .FirstOrDefault()
-                ?? Directory.GetFiles(basePython, "python3??.dll")
-                .OrderByDescending(f => f)
-                .FirstOrDefault();
-            
-            if (pythonDll == null)
-            {
-                throw new Exception($"Could not find Python DLL in {venvPath} or {basePython}");
-            }
-            
-            Console.WriteLine($"Using venv: {venvPath}");
-            Console.WriteLine($"Base Python: {basePython}");
-            Console.WriteLine($"Python DLL: {pythonDll}");
-            
-            Runtime.PythonDLL = pythonDll;
-            PythonEngine.PythonHome = basePython;
-            PythonEngine.PythonPath = string.Join(
-                Path.PathSeparator.ToString(),
-                Path.Combine(basePython, "Lib"),
-                Path.Combine(venvPath, "Lib", "site-packages"),
-                Path.Combine(basePython, "DLLs")
-            );
-            
-            PythonEngine.Initialize();
-            PythonEngine.BeginAllowThreads();
-        }
+        // Initialize Python environment once for all tests
+        PythonEnvironment.Initialize();
 
         _provider = new JanomeProvider();
         _service = new TokenizerService(_provider);
