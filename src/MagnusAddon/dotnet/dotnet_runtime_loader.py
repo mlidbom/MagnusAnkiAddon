@@ -24,8 +24,8 @@ def ensure_clr_loaded() -> None:
     try:
         load("coreclr", runtime_config=config_file)
         mylog.info("Loaded .NET runtime")
-        import clr  # pyright: ignore [reportMissingTypeStubs]
-        clr.AddReference("System.Runtime")  # pyright: ignore [reportAttributeAccessIssue, reportUnknownMemberType]
+        import clr
+        clr.AddReference("System.Runtime")
         from System import Environment  # pyright: ignore [reportMissingModuleSource]
         dotnet_version = Environment.Version
         print(f"Running .NET version: {dotnet_version}")
@@ -38,7 +38,7 @@ def ensure_clr_loaded() -> None:
         ]
 
         for dll_path in jastudio_dlls:
-            clr.AddReference(str(dll_path))  # pyright: ignore [reportAttributeAccessIssue, reportUnknownMemberType]
+            clr.AddReference(str(dll_path))
             mylog.info(f"Loaded assembly: {dll_path.name}")
 
     except RuntimeError as e:
