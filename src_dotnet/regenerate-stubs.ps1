@@ -9,8 +9,13 @@ param(
     [switch]$OnlyTargetTypes
 )
 
-Write-Host "Building stub generator..." -ForegroundColor Cyan
-dotnet build pythonnet-stub-generator\csharp\PythonNetStubTool\PythonNetStubGenerator.Tool.csproj
+# Always work relative to script location
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+Push-Location $ScriptDir
+
+try {
+    Write-Host "Building stub generator..." -ForegroundColor Cyan
+    dotnet build pythonnet-stub-generator\csharp\PythonNetStubTool\PythonNetStubGenerator.Tool.csproj
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Build failed!" -ForegroundColor Red
@@ -39,10 +44,7 @@ $args = @(
 )
 
 if ($OnlyTargetTypes) {
-    Write-Host "Only generating JAStudio types (faster)..." -ForegroundColor Yellow
     $args += "--only-target-types"
-} else {
-    Write-Host "Generating all types including System.* (this will be slow)..." -ForegroundColor Yellow
 }
 
 dotnet @args
@@ -52,4 +54,8 @@ if ($LASTEXITCODE -eq 0) {
 } else {
     Write-Host "`nStub generation failed!" -ForegroundColor Red
     exit 1
+}
+}
+finally {
+    Pop-Location
 }
