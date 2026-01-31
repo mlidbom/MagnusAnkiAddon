@@ -22,3 +22,5 @@ collection.anki2
 *.speedscope.json
 */bin/*
 */obj/*
+obj
+bin

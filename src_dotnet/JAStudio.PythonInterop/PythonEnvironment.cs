@@ -94,9 +94,10 @@ public static class PythonEnvironment
 
         // Fallback: try to find venv relative to current directory
         // This works when running from the project directory
+        // Navigate up from bin/Debug/net10.0 (3 levels) + JAStudio.Core.Tests (1 level) + src_dotnet (1 level) = 5 levels
         var projectRoot = Path.GetFullPath(Path.Combine(
             Directory.GetCurrentDirectory(),
-            "..", "..", "..", ".."
+            "..", "..", "..", "..", ".."
         ));
         return Path.Combine(projectRoot, "venv");
     }
