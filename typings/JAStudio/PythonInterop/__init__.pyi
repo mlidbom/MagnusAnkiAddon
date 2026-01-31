@@ -1,0 +1,19 @@
+import typing, abc
+from JAStudio.Core.Ports import IJapaneseNlpProvider
+from System.Collections.Generic import List_1
+from JAStudio.Core.Domain import Token
+
+class JanomeProvider(IJapaneseNlpProvider):
+    def __init__(self) -> None: ...
+    def GetInitializationMode(self) -> str: ...
+    def InitializeFromPython(self, janomeTokenizer: typing.Any) -> None: ...
+    def Tokenize(self, text: str) -> List_1[Token]: ...
+
+
+class PythonEnvironment(abc.ABC):
+    @classmethod
+    @property
+    def IsInitialized(cls) -> bool: ...
+    @staticmethod
+    def Initialize(venvPath: str = ...) -> None: ...
+
