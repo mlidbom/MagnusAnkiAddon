@@ -5,8 +5,6 @@ These tests verify that Python can successfully load and call the C# JAStudio li
 """
 from __future__ import annotations
 
-from time import sleep
-
 from dotnet import dotnet_runtime_loader
 from sysutils.timeutil import StopWatch
 
@@ -17,7 +15,7 @@ from JAStudio.PythonInterop import JanomeTokenizer  # noqa: E402
 
 def test_can_tokenize_japanese_text_via_dotnet() -> None:
     provider = JanomeTokenizer()
-    sentence = "昨日、友達と映画を見ました。"
+    sentence = "すべての事実に一致する以上　それが正しい事は間違いない"
     tokens = provider.Tokenize(sentence)
 
     # Verify we got tokens back
@@ -26,12 +24,11 @@ def test_can_tokenize_japanese_text_via_dotnet() -> None:
 
     # Check first token
     first_token = tokens[0]
-    assert first_token.Surface
-    assert first_token.Surface == "昨日"
+    assert first_token.Surface == "すべて"
 
     print()
 
-    iterations = 1000
+    iterations = 100
     with StopWatch.print_execution_time(f"Tokenize {iterations} sentences"):
         for _loop in range(iterations):  # pyright: ignore [reportUnusedVariable]
             tokens = provider.Tokenize(sentence)
