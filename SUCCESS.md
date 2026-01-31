@@ -102,7 +102,7 @@ python test_dotnet_simple.py
 
 ## Important Notes for Future Work
 
-### Python.NET 3.x with .NET Core
+### Python.NET 3.x with .NET 10
 The import syntax is different from .NET Framework:
 
 **❌ This doesn't work:**

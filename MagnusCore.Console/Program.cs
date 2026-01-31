@@ -96,7 +96,7 @@ catch (Exception ex)
 }
 finally
 {
-    // Note: PythonEngine.Shutdown() has issues with .NET 8 (BinaryFormatter)
+    // Note: PythonEngine.Shutdown() has issues with .NET 10 (BinaryFormatter)
     // Not calling it is fine - process exit will clean up Python
     // if (PythonEngine.IsInitialized)
     // {

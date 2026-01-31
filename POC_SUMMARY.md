@@ -213,6 +213,8 @@ You'll know this POC is successful when:
 
 ## Ready to Proceed?
 
+**Using .NET 10** for modern C# features and performance.
+
 **Next Steps:**
 1. Open in Rider: `MagnusAnkiAddon.sln`
 2. Run all tests: `dotnet test`
