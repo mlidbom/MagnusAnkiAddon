@@ -6,10 +6,6 @@ using JAStudio.Core.Services;
 using JAStudio.PythonInterop;
 using Xunit;
 
-/// <summary>
-/// Tests for janome integration via Python.NET
-/// These tests will initialize Python runtime and create janome instances
-/// </summary>
 public class JanomeProviderTests : IDisposable
 {
     private readonly JanomeProvider _provider;
@@ -17,8 +13,7 @@ public class JanomeProviderTests : IDisposable
 
     public JanomeProviderTests()
     {
-        // Initialize Python environment once for all tests
-        PythonEnvironment.Initialize();
+        PythonEnvironment.EnsureInitialized();
 
         _provider = new JanomeProvider();
         _service = new TokenizerService(_provider);

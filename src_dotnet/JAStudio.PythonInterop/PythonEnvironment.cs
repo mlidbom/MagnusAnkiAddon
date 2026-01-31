@@ -5,21 +5,13 @@ using System.IO;
 using System.Linq;
 using Python.Runtime;
 
-/// <summary>
-/// Manages Python environment initialization for the application.
-/// Ensures the correct venv is used with all required packages.
-/// </summary>
 public static class PythonEnvironment
 {
     private static readonly object _lock = new();
     private static bool _initialized = false;
-
-    /// <summary>
-    /// Initialize the Python runtime using the project's venv.
-    /// Safe to call multiple times - will only initialize once.
-    /// </summary>
+    
     /// <param name="venvPath">Optional path to venv. If not provided, uses JASTUDIO_VENV_PATH environment variable or auto-detects.</param>
-    public static void Initialize(string? venvPath = null)
+    public static void EnsureInitialized(string? venvPath = null)
     {
         lock (_lock)
         {
@@ -114,6 +106,7 @@ public static class PythonEnvironment
                 return line.Substring(7).Trim();
             }
         }
+
         return null;
     }
 
@@ -124,13 +117,13 @@ public static class PythonEnvironment
     {
         // Prefer version-specific DLLs (python313.dll) over generic (python3.dll)
         var venvScripts = Path.Combine(venvPath, "Scripts");
-        
+
         if (Directory.Exists(venvScripts))
         {
             var venvDll = Directory.GetFiles(venvScripts, "python3??.dll")
                 .OrderByDescending(f => f)
                 .FirstOrDefault();
-            
+
             if (venvDll != null)
             {
                 return venvDll;

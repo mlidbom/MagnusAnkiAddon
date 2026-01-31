@@ -5,22 +5,10 @@ using System.Linq;
 using Domain;
 using Ports;
 
-/// <summary>
-/// Example service showing how to use the NLP provider
-/// This will eventually become your TextAnalysisService
-/// </summary>
-public class TokenizerService
+public class TokenizerService(IJapaneseNlpProvider nlpProvider)
 {
-    private readonly IJapaneseNlpProvider _nlpProvider;
+    private readonly IJapaneseNlpProvider _nlpProvider = nlpProvider;
 
-    public TokenizerService(IJapaneseNlpProvider nlpProvider)
-    {
-        _nlpProvider = nlpProvider;
-    }
-
-    /// <summary>
-    /// Tokenize and return basic statistics
-    /// </summary>
     public TokenizationResult Analyze(string text)
     {
         var tokens = _nlpProvider.Tokenize(text);
@@ -33,9 +21,6 @@ public class TokenizerService
         );
     }
 
-    /// <summary>
-    /// Example: Find all verbs in the text
-    /// </summary>
     public List<Token> ExtractVerbs(string text)
     {
         var tokens = _nlpProvider.Tokenize(text);
