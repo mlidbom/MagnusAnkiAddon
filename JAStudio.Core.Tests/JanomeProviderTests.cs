@@ -1,8 +1,7 @@
 namespace JAStudio.Core.Tests;
 
-using Infrastructure;
-using Python.Runtime;
-using Services;
+using JAStudio.Core.Services;
+using JAStudio.PythonInterop;
 
 /// <summary>
 /// Tests for janome integration via Python.NET

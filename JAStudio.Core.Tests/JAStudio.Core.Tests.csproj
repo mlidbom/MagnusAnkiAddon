@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\JAStudio.Core\JAStudio.Core.csproj" />
+    <ProjectReference Include="..\JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
   </ItemGroup>
 
 </Project>

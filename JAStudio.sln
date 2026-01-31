@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JAStudio.Core.Tests", "JASt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JAStudio.Console", "JAStudio.Console\JAStudio.Console.csproj", "{C9337D25-E1AA-4030-9069-33B37083D3B3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JAStudio.PythonInterop", "JAStudio.PythonInterop\JAStudio.PythonInterop.csproj", "{FB2D9A11-5F3D-4FF2-88CA-BAB9AF2E20FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{C9337D25-E1AA-4030-9069-33B37083D3B3}.Release|x64.Build.0 = Release|Any CPU
 		{C9337D25-E1AA-4030-9069-33B37083D3B3}.Release|x86.ActiveCfg = Release|Any CPU
 		{C9337D25-E1AA-4030-9069-33B37083D3B3}.Release|x86.Build.0 = Release|Any CPU
+		{FB2D9A11-5F3D-4FF2-88CA-BAB9AF2E20FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB2D9A11-5F3D-4FF2-88CA-BAB9AF2E20FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB2D9A11-5F3D-4FF2-88CA-BAB9AF2E20FB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FB2D9A11-5F3D-4FF2-88CA-BAB9AF2E20FB}.Debug|x64.Build.0 = Debug|Any CPU
+		{FB2D9A11-5F3D-4FF2-88CA-BAB9AF2E20FB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FB2D9A11-5F3D-4FF2-88CA-BAB9AF2E20FB}.Debug|x86.Build.0 = Debug|Any CPU
+		{FB2D9A11-5F3D-4FF2-88CA-BAB9AF2E20FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB2D9A11-5F3D-4FF2-88CA-BAB9AF2E20FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB2D9A11-5F3D-4FF2-88CA-BAB9AF2E20FB}.Release|x64.ActiveCfg = Release|Any CPU
+		{FB2D9A11-5F3D-4FF2-88CA-BAB9AF2E20FB}.Release|x64.Build.0 = Release|Any CPU
+		{FB2D9A11-5F3D-4FF2-88CA-BAB9AF2E20FB}.Release|x86.ActiveCfg = Release|Any CPU
+		{FB2D9A11-5F3D-4FF2-88CA-BAB9AF2E20FB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,4 @@
-namespace JAStudio.Core.Infrastructure;
+namespace JAStudio.PythonInterop;
 
 using Python.Runtime;
 

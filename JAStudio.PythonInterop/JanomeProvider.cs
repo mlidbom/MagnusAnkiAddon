@@ -1,8 +1,8 @@
-namespace JAStudio.Core.Infrastructure;
+namespace JAStudio.PythonInterop;
 
 using System.Diagnostics;
-using Domain;
-using Ports;
+using JAStudio.Core.Domain;
+using JAStudio.Core.Ports;
 using Python.Runtime;
 
 /// <summary>

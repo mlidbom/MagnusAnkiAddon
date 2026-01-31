@@ -1,6 +1,5 @@
-﻿using JAStudio.Core.Infrastructure;
-using JAStudio.Core.Services;
-using Python.Runtime;
+﻿using JAStudio.Core.Services;
+using JAStudio.PythonInterop;
 
 Console.WriteLine("=== JAStudio Core - Standalone Example ===");
 
