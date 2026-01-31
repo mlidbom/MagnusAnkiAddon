@@ -1,4 +1,4 @@
-namespace MagnusCore.Tests;
+namespace JAStudio.Core.Tests;
 
 using Infrastructure;
 using Python.Runtime;

@@ -14,7 +14,7 @@ set_runtime(rt)
 # Now import clr with the correct runtime
 import clr
 
-dll_path = r"C:\Users\magnu\PycharmProjects\MagnusAnkiAddon\MagnusCore\bin\Debug\net8.0\MagnusCore.dll"
+dll_path = r"C:\Users\magnu\PycharmProjects\MagnusAnkiAddon\JAStudio.Core\bin\Debug\net10.0\JAStudio.Core.dll"
 
 print(f"Loading: {dll_path}")
 clr.AddReference(dll_path)
@@ -25,8 +25,8 @@ print("Imported! Accessing types...")
 from System import Type, Activator
 
 # Get the types by full name
-janome_type = Type.GetType("MagnusCore.Infrastructure.JanomeProvider, MagnusCore")
-service_type = Type.GetType("MagnusCore.Services.TokenizerService, MagnusCore")
+janome_type = Type.GetType("JAStudio.Core.Infrastructure.JanomeProvider, JAStudio.Core")
+service_type = Type.GetType("JAStudio.Core.Services.TokenizerService, JAStudio.Core")
 
 print(f"✓ Found types: {janome_type.Name}, {service_type.Name}")
 

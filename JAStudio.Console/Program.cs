@@ -1,8 +1,8 @@
-﻿using MagnusCore.Infrastructure;
-using MagnusCore.Services;
+﻿using JAStudio.Core.Infrastructure;
+using JAStudio.Core.Services;
 using Python.Runtime;
 
-Console.WriteLine("=== Magnus Core - Standalone Example ===\n");
+Console.WriteLine("=== JAStudio Core - Standalone Example ===");
 
 try
 {

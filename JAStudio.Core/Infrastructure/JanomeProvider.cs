@@ -1,4 +1,4 @@
-namespace MagnusCore.Infrastructure;
+namespace JAStudio.Core.Infrastructure;
 
 using System.Diagnostics;
 using Domain;

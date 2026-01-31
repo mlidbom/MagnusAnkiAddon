@@ -1,4 +1,4 @@
-namespace MagnusCore.Domain;
+namespace JAStudio.Core.Domain;
 
 /// <summary>
 /// DTO representing a janome token - pure C# data, no Python dependencies

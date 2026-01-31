@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MagnusCore\MagnusCore.csproj" />
+    <ProjectReference Include="..\JAStudio.Core\JAStudio.Core.csproj" />
   </ItemGroup>
 
 </Project>

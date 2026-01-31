@@ -1,5 +1,7 @@
 # ✅ SUCCESS! Python.NET Integration is Working
 
+## JAStudio - Japanese Analysis Studio
+
 ## What Was Built
 
 A complete proof-of-concept demonstrating:
@@ -53,16 +55,17 @@ PS> python test_dotnet_simple.py
 ## Key Files Created
 
 ### C# Projects
-- `MagnusCore/` - Class library with janome integration
+- `JAStudio.Core/` - Class library with janome integration
   - `Domain/Token.cs` - Pure C# DTO
   - `Ports/IJapaneseNlpProvider.cs` - Interface
   - `Infrastructure/JanomeProvider.cs` - Python.NET bridge
   - `Services/TokenizerService.cs` - Business logic
 
-- `MagnusCore.Tests/` - xUnit test project
+- `JAStudio.Core.Tests/` - xUnit test project
   - `JanomeProviderTests.cs` - Comprehensive tests
 
-- `MagnusCore.Console/` - Standalone demo
+- `JAStudio.Console/` - Standalone demo
+  - `Program.cs` - Examples
   - `Program.cs` - Examples
 
 ### Python Files
@@ -79,7 +82,7 @@ PS> python test_dotnet_simple.py
 
 ### Open in Rider
 ```
-1. Open MagnusAnkiAddon.sln in Rider
+1. Open JAStudio.sln in Rider
 2. Explore the code with full IntelliSense
 3. Run tests from Test Explorer
 4. Debug across Python/C# boundary
@@ -92,7 +95,7 @@ dotnet test
 
 ### Run Standalone
 ```powershell
-dotnet run --project MagnusCore.Console
+dotnet run --project JAStudio.Console
 ```
 
 ### Python Integration
@@ -113,7 +116,7 @@ from MagnusCore.Infrastructure import JanomeProvider
 **✅ This works:**
 ```python
 from System import Type, Activator
-janome_type = Type.GetType("MagnusCore.Infrastructure.JanomeProvider, MagnusCore")
+janome_type = Type.GetType("JAStudio.Core.Infrastructure.JanomeProvider, JAStudio.Core")
 provider = Activator.CreateInstance(janome_type)
 ```
 
@@ -168,7 +171,7 @@ Tokenization timing (from console output):
 │  └─ Calls ↓                         │
 ├─────────────────────────────────────┤
 │  .NET Runtime (embedded)            │
-│  ├─ MagnusCore.dll                  │
+│  ├─ JAStudio.Core.dll               │
 │  │  ├─ Business logic (C#)          │
 │  │  ├─ Collections (concurrent)     │
 │  │  ├─ Caching (efficient)          │

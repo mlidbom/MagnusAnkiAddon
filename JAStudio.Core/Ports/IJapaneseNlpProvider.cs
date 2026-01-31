@@ -1,4 +1,4 @@
-namespace MagnusCore.Ports;
+namespace JAStudio.Core.Ports;
 
 using Domain;
 
