@@ -67,6 +67,7 @@ class ObjectInstanceTracker(Slots):
     @classmethod
     def tracker_for(cls, obj: object) -> ObjectInstanceTracker: return ObjectInstanceTracker(obj.__class__)
 
+# noinspection PyPep8
 def print_instance_counts() -> None:
     print("################### Instance counts ###################")
     for type_name, count in (current_instance_count.qitems()
