@@ -66,6 +66,7 @@ reportUnnecessaryTypeIgnoreComment = "none"
 
 # not too sure about this one. Gives some hella confusing results making me wonder if it is really accurate....
 reportImportCycles =  "none"
+reportMissingModuleSource = "none"
 
 #  "questionable if these are useful =  "",
 reportUnusedCallResult = "none"

@@ -26,7 +26,7 @@ def ensure_clr_loaded() -> None:
         mylog.info("Loaded .NET runtime")
         import clr
         clr.AddReference("System.Runtime")
-        from System import Environment  # pyright: ignore [reportMissingModuleSource]
+        from System import Environment
         dotnet_version = Environment.Version
         print(f"Running .NET version: {dotnet_version}")
 
