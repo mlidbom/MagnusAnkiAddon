@@ -98,7 +98,7 @@
     <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES">
       <option name="ignoredIdentifiers">
         <list>
-          <option value="PyQt6.QtGui.QTextCursor.QTextCursor.*" />
+          <option value="clr.AddReference" />
         </list>
       </option>
     </inspection_tool>
