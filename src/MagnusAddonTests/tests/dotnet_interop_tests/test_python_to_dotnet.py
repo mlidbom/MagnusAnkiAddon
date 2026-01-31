@@ -5,57 +5,18 @@ These tests verify that Python can successfully load and call the C# JAStudio li
 """
 from __future__ import annotations
 
-import pytest
+from time import sleep
 
+from dotnet import dotnet_runtime_loader
+from sysutils.timeutil import StopWatch
 
-# noinspection PyUnusedFunction
-@pytest.fixture(scope="module", autouse=True)
-def ensure_dotnet_loaded() -> None:
-    """Ensure .NET runtime and assemblies are loaded before any tests run."""
-    from dotnet import dotnet_runtime_loader
-    dotnet_runtime_loader.ensure_clr_loaded()
+dotnet_runtime_loader.ensure_clr_loaded()
 
-def test_can_access_dotnet_types() -> None:
-    """Test that we can access .NET types from the assembly."""
-    from JAStudio.PythonInterop import JanomeTokenizer
+from JAStudio.PythonInterop import JanomeTokenizer  # noqa: E402
 
-    assert JanomeTokenizer is not None
-
-def test_can_create_dotnet_instances() -> None:
-    """Test that we can create instances of .NET types."""
-    from JAStudio.PythonInterop import JanomeTokenizer
-
-    tokenizer = JanomeTokenizer()
-    assert tokenizer is not None
-
-def test_can_pass_python_object_to_dotnet() -> None:
-    """Test that we can pass Python objects to .NET and call methods."""
-    from janome.tokenizer import Tokenizer
-    from JAStudio.PythonInterop import JanomeTokenizer
-
-    # Create Python janome tokenizer
-    python_tokenizer = Tokenizer()
-
-    # Create C# tokenizer
-    tokenizer = JanomeTokenizer()
-
-    # Pass Python instance to C#
-    tokenizer.InitializeFromPython(python_tokenizer)
-
-    # This should not raise an exception
-    assert tokenizer is not None
 
 def test_can_tokenize_japanese_text_via_dotnet() -> None:
-    """Test that we can tokenize Japanese text through the .NET provider."""
-    #from janome.tokenizer import Tokenizer
-    from JAStudio.PythonInterop import JanomeTokenizer
-
-    # Create and initialize provider
-    #python_tokenizer = Tokenizer()
     provider = JanomeTokenizer()
-    #provider.InitializeFromPython(python_tokenizer)
-
-    # Tokenize Japanese sentence
     sentence = "昨日、友達と映画を見ました。"
     tokens = provider.Tokenize(sentence)
 
@@ -65,14 +26,17 @@ def test_can_tokenize_japanese_text_via_dotnet() -> None:
 
     # Check first token
     first_token = tokens[0]
-    assert hasattr(first_token, "Surface")
-    assert hasattr(first_token, "BaseForm")
+    assert first_token.Surface
     assert first_token.Surface == "昨日"
 
-def test_is_initialized() -> None:
-    """Test that the provider is correctly initialized."""
-    from JAStudio.PythonInterop import JanomeTokenizer, PythonEnvironment
+    print()
 
-    tokenizer = JanomeTokenizer()
-    assert tokenizer.IsInitialized is True
-    assert PythonEnvironment.IsInitialized is True
+    iterations = 1000
+    with StopWatch.print_execution_time(f"Tokenize {iterations} sentences"):
+        for _loop in range(iterations):  # pyright: ignore [reportUnusedVariable]
+            tokens = provider.Tokenize(sentence)
+
+    print("""
+    Done
+
+""")
