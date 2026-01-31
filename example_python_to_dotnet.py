@@ -7,9 +7,10 @@ This demonstrates how to:
 3. Call C# services from Python
 4. Get results back as Python objects
 """
+from __future__ import annotations
 
-import sys
 import os
+import sys
 
 # Ensure pythonnet is installed
 try:
@@ -101,7 +102,7 @@ for verb in verbs:
     print(f"  {verb.Surface} (base: {verb.BaseForm})")
 
 # Show how it was initialized
-print(f"\n=== Initialization Info ===")
+print("\n=== Initialization Info ===")
 print(f"Mode: {provider.GetInitializationMode()}")
 
 print("\n✓ Successfully called C# from Python!")

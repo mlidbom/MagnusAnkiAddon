@@ -1,10 +1,10 @@
 """
 Simple test to verify Python can load and call the C# DLL
 """
-import sys
-import os
 
 # Set the runtime to .NET Core BEFORE importing clr
+from __future__ import annotations
+
 from clr_loader import get_coreclr
 from pythonnet import set_runtime
 
@@ -22,7 +22,7 @@ clr.AddReference(dll_path)
 print("Imported! Accessing types...")
 
 # The correct way to access .NET Core types with pythonnet 3.x
-from System import Type, Activator
+from System import Activator, Type
 
 # Get the types by full name
 janome_type = Type.GetType("JAStudio.Core.Infrastructure.JanomeProvider, JAStudio.Core")
@@ -32,6 +32,7 @@ print(f"✓ Found types: {janome_type.Name}, {service_type.Name}")
 
 # Create Python janome
 from janome.tokenizer import Tokenizer
+
 python_tokenizer = Tokenizer()
 print("✓ Created Python janome tokenizer")
 

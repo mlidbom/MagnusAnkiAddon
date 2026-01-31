@@ -64,12 +64,10 @@ def test_can_tokenize_japanese_text_via_dotnet() -> None:
     assert tokens is not None
     assert tokens.Count > 0
 
-    tokens.Count
-
     # Check first token
     first_token = tokens[0]
-    assert hasattr(first_token, 'Surface')
-    assert hasattr(first_token, 'BaseForm')
+    assert hasattr(first_token, "Surface")
+    assert hasattr(first_token, "BaseForm")
     assert first_token.Surface == "昨日"
 
 def test_can_use_tokenizer_service() -> None:
