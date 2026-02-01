@@ -22,3 +22,4 @@ collection.anki2
 *.speedscope.json
 bin
 obj
+/src/jastudio/user_files/logs/*

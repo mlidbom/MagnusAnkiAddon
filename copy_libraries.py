@@ -20,7 +20,6 @@ pip_libraries_to_copy = [
     "pykakasi", "jaconv", "deprecated",
     "romkan",
     "autoslot.py",
-    "line_profiler_pycharm", "line_profiler", "wrapt"
     ]
 
 # Create the target directory if it doesn't exist
