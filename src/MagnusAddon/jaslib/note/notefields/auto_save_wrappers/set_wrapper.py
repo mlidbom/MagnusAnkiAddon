@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from jaslib.note.notefields.json_object_field import MutableSerializedObjectField
     from typed_linq_collections.collections.q_set import QSet
 
+# noinspection PyUnusedFunction
 class FieldSetWrapper[TValue](Slots):
     _secret: str = "aoeulrcaboeusthb"
     def __init__(self, save_callback: Callable[[], None], value: Callable[[], QSet[TValue]], secret: str) -> None:

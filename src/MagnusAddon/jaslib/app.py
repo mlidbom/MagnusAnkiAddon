@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING
 
-from jaslib.dotnet import dotnet_runtime_loader
+from jaslib.dotnet import load_dotnet_runtime  # pyright: ignore [reportUnusedImport]  # noqa: F401
 from jaslib.testutils import ex_pytest
 from typed_linq_collections.collections.q_set import QSet
 
@@ -20,7 +20,7 @@ _collection: JPCollection | None = None
 _init_hooks: QSet[Callable[[], None]] = QSet()
 
 def add_init_hook(hook: Callable[[], None]) -> None:
-    _init_hooks.add(hook) # todo migration
+    _init_hooks.add(hook)  # todo migration
 
 def config() -> JapaneseConfig:
     from jaslib.configuration import configuration_value
@@ -31,5 +31,3 @@ def col() -> JPCollection:
     return _collection
 
 user_files_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "user_files")
-
-dotnet_runtime_loader.ensure_clr_loaded()

@@ -4,6 +4,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jaslib.sysutils.simple_string_list_builder import SimpleStringListBuilder
 
 
+# noinspection PyUnusedFunction
 class SimpleStringBuilder(Slots):
     def __init__(self, auto_separator: str = "") -> None:
         self._builder: SimpleStringListBuilder = SimpleStringListBuilder()

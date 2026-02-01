@@ -5,16 +5,12 @@ These tests verify that Python can successfully load and call the C# JAStudio li
 """
 from __future__ import annotations
 
+from typing import TYPE_CHECKING  # noqa: E402
+
 from autoslot import Slots
-from jaslib.dotnet import dotnet_runtime_loader
 
 #from typing import override
 from jaslib.sysutils.timeutil import StopWatch
-
-dotnet_runtime_loader.ensure_clr_loaded()
-
-from typing import TYPE_CHECKING  # noqa: E402
-
 from JAStudio.Core.InteropExperiments import CustomTypeReceiver  # noqa: E402
 from JAStudio.PythonInterop import JanomeTokenizer  # noqa: E402
 

@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
     from concurrent.futures import Future
 
+# noinspection PyUnusedLocal
 class PrerenderingAnswerContentRenderer[TNote: JPNote](Slots):
     def __init__(self, cls: type[TNote], render_methods: dict[str, Callable[[TNote], str]]) -> None:
         self._cls: type[TNote] = cls

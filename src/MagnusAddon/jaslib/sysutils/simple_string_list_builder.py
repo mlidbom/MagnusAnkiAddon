@@ -3,6 +3,7 @@ from __future__ import annotations
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
 
+# noinspection PyUnusedFunction
 class SimpleStringListBuilder(Slots):
     def __init__(self) -> None:
         self.value: list[str] = []
