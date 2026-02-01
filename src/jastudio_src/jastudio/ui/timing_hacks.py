@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-
 from jastudio.ankiutils.audio_suppressor import audio_suppressor
 
 if TYPE_CHECKING:

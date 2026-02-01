@@ -4,7 +4,6 @@ from typing import cast
 
 from anki.decks import DeckDict, DeckId
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-
 from jastudio.anki_extentions.deck_configdict_ex import DeckConfigDictEx
 from jastudio.ankiutils import app
 from jastudio.sysutils.typed import str_

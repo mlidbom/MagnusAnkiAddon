@@ -3,8 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
-from typed_linq_collections.collections.q_list import QList
-
 from jastudio.ankiutils import app
 from jastudio.configuration.settings import Settings
 from jastudio.language_services.janome_ex.tokenizing.jn_token import JNToken
@@ -14,6 +12,7 @@ from jastudio.sysutils.ex_str import newline
 from jastudio.ui.web.sentence.sentence_viewmodel import SentenceViewModel
 from jastudio.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 from jastudio.viewmodels.kanji_list import sentence_kanji_list_viewmodel
+from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:
     from collections.abc import Callable

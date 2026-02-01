@@ -3,14 +3,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from typed_linq_collections.collections.q_list import QList
-from typed_linq_collections.collections.q_set import QSet
-from typed_linq_collections.collections.q_unique_list import QUniqueList
-
 from jastudio.note.sentences.parsed_match import ParsedMatch
 from jastudio.note.sentences.serialization.parsing_result_serializer import ParsingResultSerializer
 from jastudio.sysutils import ex_str
 from jastudio.sysutils.memory_usage import string_auto_interner
+from typed_linq_collections.collections.q_list import QList
+from typed_linq_collections.collections.q_set import QSet
+from typed_linq_collections.collections.q_unique_list import QUniqueList
 
 if TYPE_CHECKING:
     from jastudio.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis

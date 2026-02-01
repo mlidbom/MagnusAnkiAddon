@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-
 from jastudio.note.notefields.fallback_string_field import FallbackStringField
 from jastudio.sysutils import ex_str
 

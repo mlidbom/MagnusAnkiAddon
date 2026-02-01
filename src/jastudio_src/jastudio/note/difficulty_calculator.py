@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from typed_linq_collections.q_iterable import query
-
 from jastudio.sysutils import kana_utils
+from typed_linq_collections.q_iterable import query
 
 
 class DifficultyCalculator(Slots):

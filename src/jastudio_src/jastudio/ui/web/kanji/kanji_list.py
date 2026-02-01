@@ -4,7 +4,6 @@ import re
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
-
 from jastudio.ankiutils import app
 from jastudio.note.kanjinote import KanjiNote
 from jastudio.sysutils import ex_str, kana_utils

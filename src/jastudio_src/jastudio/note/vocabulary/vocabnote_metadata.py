@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-
 from jastudio.note.note_constants import NoteFields
 from jastudio.note.notefields.integer_field import IntegerField
 from jastudio.note.vocabulary import vocabnote_meta_tag

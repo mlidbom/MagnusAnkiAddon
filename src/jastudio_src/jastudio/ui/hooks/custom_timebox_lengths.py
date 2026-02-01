@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 import aqt.utils
 from aqt import gui_hooks
 from aqt.overview import Overview
-
 from jastudio.anki_extentions.card_ex import CardEx
 from jastudio.anki_extentions.deck_ex import DeckEx
 from jastudio.ankiutils import app

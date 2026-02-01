@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from anki.notes import Note
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-
 from jastudio.ankiutils import app
 from jastudio.language_services.jamdict_ex.dict_lookup import DictLookup
 from jastudio.note.note_constants import NoteTypes

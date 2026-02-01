@@ -18,10 +18,9 @@ from jastudio.sysutils import ex_str
 
 if TYPE_CHECKING:
     from anki.notes import NoteId
-    from typed_linq_collections.collections.q_list import QList
-
     from jastudio.language_services.jamdict_ex.dict_lookup_result import DictLookupResult
     from jastudio.note.kanjinote import KanjiNote
+    from typed_linq_collections.collections.q_list import QList
 
 def update_all() -> None:
     with TaskRunner.current("Updating everything but sentence reparsing"):

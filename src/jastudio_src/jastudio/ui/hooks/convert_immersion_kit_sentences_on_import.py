@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
 from aqt.import_export.import_dialog import ImportDialog
-
 from jastudio.batches import local_note_updater
 
 if TYPE_CHECKING:

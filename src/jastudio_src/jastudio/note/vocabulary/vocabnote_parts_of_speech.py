@@ -3,14 +3,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
-from typed_linq_collections.collections.q_frozen_set import QFrozenSet
-from typed_linq_collections.collections.q_set import QSet
-
 from jastudio.language_services.janome_ex.word_extraction import analysis_constants
 from jastudio.note.note_constants import NoteFields
 from jastudio.note.tags import Tags
 from jastudio.note.vocabulary.pos import POS
 from jastudio.note.vocabulary.pos_set_interner import POSSetManager
+from typed_linq_collections.collections.q_frozen_set import QFrozenSet
+from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

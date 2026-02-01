@@ -3,7 +3,6 @@ from __future__ import annotations
 import re
 
 from aqt import gui_hooks
-
 from jastudio.note.kanjinote import KanjiNote
 from jastudio.sysutils import ex_str, kana_utils
 from jastudio.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer

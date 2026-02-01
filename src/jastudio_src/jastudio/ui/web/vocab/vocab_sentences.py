@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from aqt import gui_hooks
-
 from jastudio.note.tags import Tags
 from jastudio.note.vocabulary.vocabnote import VocabNote
 from jastudio.sysutils.ex_str import newline

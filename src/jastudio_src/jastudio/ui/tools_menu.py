@@ -2,10 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from PyQt6.QtCore import pyqtBoundSignal
-from PyQt6.QtGui import QAction
-from PyQt6.QtWidgets import QInputDialog, QLineEdit, QMenu
-
 from jastudio.ankiutils import app, ui_utils
 from jastudio.ankiutils.app import get_ui_utils, main_window
 from jastudio.batches import local_note_updater
@@ -17,6 +13,9 @@ from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.open_in_anki import build_open_in_anki_menu
 from jastudio.ui.menus.web_search import build_web_search_menu
 from jastudio.ui.open_note.open_note_dialog import NoteSearchDialog
+from PyQt6.QtCore import pyqtBoundSignal
+from PyQt6.QtGui import QAction
+from PyQt6.QtWidgets import QInputDialog, QLineEdit, QMenu
 
 if TYPE_CHECKING:
     from collections.abc import Callable

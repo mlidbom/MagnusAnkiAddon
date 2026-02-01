@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, cast
 import pyperclip
 from anki.models import NotetypeDict
 from aqt import gui_hooks
-
 from jastudio.ankiutils import app
 from jastudio.ankiutils.app import get_ui_utils
 from jastudio.sysutils import app_thread_pool, ex_str, typed
