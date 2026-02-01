@@ -3,7 +3,7 @@ from __future__ import annotations
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
-import mylog
+from jaslib import mylog
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jaslib.configuration.settings import Settings
 from jaslib.sysutils import ex_assert

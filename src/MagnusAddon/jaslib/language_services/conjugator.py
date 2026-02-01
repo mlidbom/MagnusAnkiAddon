@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import mylog
+from jaslib import mylog
 
 if TYPE_CHECKING:
     from jaslib.note.vocabulary.vocabnote import VocabNote

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-import mylog
+from jaslib import mylog
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jaslib.note.notefields.json_object_field import ObjectSerializer
 from jaslib.note.sentences.parsed_match import ParsedMatch
