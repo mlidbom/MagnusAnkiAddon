@@ -20,7 +20,6 @@
       <excludeFolder url="file://$MODULE_DIR$/src/ExploratoryTests/test_parsing_libraries/.pytest_cache" />
       <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddon/_lib_patched" />
       <excludeFolder url="file://$MODULE_DIR$/venv311" />
-      <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddonTests/tests/language_services_tests/.pytest_cache" />
       <excludeFolder url="file://$MODULE_DIR$/venv11" />
       <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddon/user_files" />
       <excludeFolder url="file://$MODULE_DIR$/src/web/Properties" />
@@ -29,6 +28,7 @@
       <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddon/language_services/english_dictionary/data" />
       <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddon/manually_copied_in_libraries" />
       <excludeFolder url="file://$MODULE_DIR$/typings" />
+      <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddonTests/jastudio_tests/tests/language_services_tests/.pytest_cache" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.13 (MagnusAnkiAddon)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
