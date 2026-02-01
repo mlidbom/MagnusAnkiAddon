@@ -10,7 +10,7 @@
     "**/node_modules",
     "**/__pycache__",
     "**/.*",
-    "src/MagnusAddon/_lib/",
+    "src/jastudio/_lib/",
     "**/_lib_patched/*",
     "**venv/*",
     "**/manually_copied_in_libraries/*",

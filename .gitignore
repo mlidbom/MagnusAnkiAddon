@@ -1,7 +1,7 @@
 /mpv.exe
 __pycache__/
 /src/jastudio/_lib/jamdict_data/jamdict.db
-/src/MagnusAddonTests/collection.anki2.bak
+/src/tests/collection.anki2.bak
 collection.anki2
 /src/jastudio/_lib/
 !/src/jastudio/_lib/__init__.py
