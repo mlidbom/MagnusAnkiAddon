@@ -9,7 +9,7 @@ import sys
 sys.path.append(f"c:\\Users\\magnu\\PycharmProjects\\MagnusAnkiAddon\\venv\\Lib\\site-packages\\")
 sys.path.append(f"c:\\Users\\magnu\\PycharmProjects\\MagnusAnkiAddon\\venv\\Lib\\site-packages\\win32\\lib\\")
 sys.path.append(f"c:\\Users\\magnu\\PycharmProjects\\MagnusAnkiAddon\\venv\\Lib\\site-packages\\win32\\")
-sys.path.append("c:\\Users\\magnu\\PycharmProjects\\MagnusAnkiAddon\\src\\MagnusAddon\\")
+sys.path.append("c:\\Users\\magnu\\PycharmProjects\\MagnusAnkiAddon\\src\\jastudio\\")
 
 import aqt # noqa
 

@@ -4,7 +4,10 @@
     <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
-    <option name="SDK_HOME" value="" />
+    <envs>
+      <env name="PC_LINE_PROFILER_STATS_FILENAME" value="C:\Users\magnu\AppData\Local\Temp\line_profile5248879723611447015" />
+    </envs>
+    <option name="SDK_HOME" value="C:\Users\magnu\PycharmProjects\MagnusAnkiAddon\venv311\Scripts\python.exe" />
     <option name="WORKING_DIRECTORY" value="" />
     <option name="IS_MODULE_SDK" value="true" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -14,7 +17,7 @@
     <option name="_new_keywords" value="&quot;&quot;" />
     <option name="_new_parameters" value="&quot;&quot;" />
     <option name="_new_additionalArguments" value="&quot;&quot;" />
-    <option name="_new_target" value="&quot;$PROJECT_DIR$/src/MagnusAddonTests&quot;" />
+    <option name="_new_target" value="&quot;$PROJECT_DIR$/src/tests&quot;" />
     <option name="_new_targetType" value="&quot;PATH&quot;" />
     <method v="2" />
   </configuration>
