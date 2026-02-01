@@ -4,7 +4,7 @@ import os
 from typing import TYPE_CHECKING
 
 from dotnet import dotnet_runtime_loader
-from testutils import ex_pytest
+from jaslib.testutils import ex_pytest
 from typed_linq_collections.collections.q_set import QSet
 
 is_testing = ex_pytest.is_testing

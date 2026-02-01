@@ -4,7 +4,7 @@ import os
 from typing import TYPE_CHECKING
 
 from sysutils.lazy import Lazy
-from testutils import ex_pytest
+from jaslib.testutils import ex_pytest
 
 if TYPE_CHECKING:
     import logging
