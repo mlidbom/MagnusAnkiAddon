@@ -66,6 +66,12 @@ class SentenceCollection(Slots):
     def __init__(self) -> None:
         self._cache: _SentenceCache = _SentenceCache()
 
+    def potentially_matching_vocab(self, vocab: VocabNote) -> list[SentenceNote]:
+        raise NotImplementedError()
+
+    def sentences_with_substring(self, substring: str) -> list[SentenceNote]:
+        raise NotImplementedError()
+
     def all(self) -> QList[SentenceNote]: return self._cache.all()
 
     def with_id_or_none(self, note_id: NoteId) -> SentenceNote | None:
