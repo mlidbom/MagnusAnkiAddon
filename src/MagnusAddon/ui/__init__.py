@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from qt_utils.qt_task_progress_runner import QtTaskProgressRunner
+from qt_utils.task_progress_runner import TaskRunner
+
 
 def init() -> None:
     from ui import garbage_collection_fixes, hooks, menus, timing_hacks, tools_menu, web
@@ -9,3 +12,5 @@ def init() -> None:
     web.init()
     menus.init()
     garbage_collection_fixes.init()
+
+    TaskRunner.set_ui_task_runner_factory(QtTaskProgressRunner)

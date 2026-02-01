@@ -6,21 +6,30 @@ from typing import TYPE_CHECKING
 from ankiutils import app
 from autoslot import Slots
 from qt_utils.invisible_task_progress_runner import InvisibleTaskRunner
-from qt_utils.qt_task_progress_runner import QtTaskProgressRunner
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Callable, Iterator
 
     from qt_utils.i_task_progress_runner import ITaskRunner
 
 class TaskRunner(Slots):
+    _ui_task_runner_factory: Callable[[str, str, bool, bool], ITaskRunner] | None = None
+
+    @classmethod
+    def set_ui_task_runner_factory(cls, factory: Callable[[str, str, bool, bool], ITaskRunner]) -> None:
+        if cls._ui_task_runner_factory is not None: raise RuntimeError("UI task runner factory already set.")
+        cls._ui_task_runner_factory = factory
+
     @classmethod
     def create(cls, window_title: str, label_text: str, visible: bool | None = None, allow_cancel: bool = True, modal: bool = False) -> ITaskRunner:
         if visible is None: visible = not app.is_testing
         if not visible:
             return InvisibleTaskRunner(window_title, label_text)
-        return QtTaskProgressRunner(window_title, label_text, allow_cancel, modal)
+
+        if cls._ui_task_runner_factory is None: raise RuntimeError("No UI task runner factory set. Set it with TaskRunner.set_ui_task_runner_factory().")
+
+        return cls._ui_task_runner_factory(window_title, label_text, allow_cancel, modal)
 
     _depth: int = 0
     _current: ITaskRunner | None = None
