@@ -27,6 +27,7 @@ if TYPE_CHECKING:
     from typed_linq_collections.collections.q_list import QList
     from typed_linq_collections.collections.q_unique_list import QUniqueList
 
+# noinspection PyUnusedFunction
 class SentenceNote(JPNote, Slots):
     def __init__(self) -> None:
         super().__init__()

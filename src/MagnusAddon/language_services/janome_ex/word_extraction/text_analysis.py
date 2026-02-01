@@ -18,6 +18,7 @@ from note.sentences.sentence_configuration import SentenceConfiguration
 
 _tokenizer = JNTokenizer()
 
+# noinspection PyUnusedFunction
 @final
 class TextAnalysis(WeakRefable, Slots):
     version = "text_analysis_0.1"

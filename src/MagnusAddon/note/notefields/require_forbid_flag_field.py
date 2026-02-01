@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from note.tag import Tag
     from sysutils.weak_ref import WeakRef
 
+# noinspection PyUnusedFunction
 class RequireForbidFlagField(Slots):
     def __init__(self, note: WeakRef[JPNote], required_weight: int, forbidden_weight: int, required_tag: Tag, forbidden_tag: Tag) -> None:
         self._note: WeakRef[JPNote] = note

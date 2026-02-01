@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
     from typed_linq_collections.collections.q_set import QSet
 
+# noinspection PyUnusedFunction
 class Synonyms(Slots):
     def __init__(self, vocab: WeakRef[VocabNote], data: MutableSerializedObjectField[RelatedVocabData]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
