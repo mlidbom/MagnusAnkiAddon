@@ -6,12 +6,12 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 from jaslib import app
 from jaslib.sysutils.typed import non_optional
-from task_runners.invisible_task_progress_runner import InvisibleTaskRunner
+from jaslib.task_runners.invisible_task_progress_runner import InvisibleTaskRunner
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator
 
-    from task_runners.i_task_progress_runner import ITaskRunner
+    from jaslib.task_runners.i_task_progress_runner import ITaskRunner
 
 class TaskRunner(Slots):
     _ui_task_runner_factory: Callable[[str, str, bool, bool], ITaskRunner] | None = None

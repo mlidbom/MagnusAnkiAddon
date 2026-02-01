@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, override
 import mylog
 from autoslot import Slots
 from jaslib.sysutils.timeutil import StopWatch
-from task_runners.i_task_progress_runner import ITaskRunner
+from jaslib.task_runners.i_task_progress_runner import ITaskRunner
 
 if TYPE_CHECKING:
     from collections.abc import Callable
