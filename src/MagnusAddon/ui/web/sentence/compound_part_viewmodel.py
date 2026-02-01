@@ -8,7 +8,7 @@ from configuration.settings import Settings
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
-    from anki.notes import NoteId
+    from note.jpnote import NoteId
     from note.sentences.sentence_configuration import SentenceConfiguration
     from note.vocabulary.vocabnote import VocabNote
     from ui.web.sentence.match_viewmodel import MatchViewModel

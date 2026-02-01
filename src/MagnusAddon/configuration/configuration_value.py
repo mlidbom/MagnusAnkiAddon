@@ -4,26 +4,20 @@ import os
 from typing import TYPE_CHECKING, cast
 
 from ankiutils import app
-from aqt import mw
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils.lazy import Lazy
-from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRefable
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-_addon_dir = os.path.dirname(os.path.dirname(__file__))
-_addon_name = os.path.basename(_addon_dir)
-
 def _get_config_dict() -> dict[str, object]:
-    return mw.addonManager.getConfig(_addon_name) or {} if not app.is_testing else {}
+    return {}
 
 _config_dict: Lazy[dict[str, object]] = Lazy(_get_config_dict)
 
 def _write_config_dict() -> None:
-    if not app.is_testing:
-        mw.addonManager.writeConfig(_addon_name, _config_dict())  # pyright: ignore[reportUnknownMemberType]
+    pass # todo implement
 
 class ConfigurationValue[T](WeakRefable, Slots):
     def __init__(self, name: str, title: str, default: T, feature_toggler: Callable[[T], None] | None = None) -> None:
@@ -77,10 +71,6 @@ class JapaneseConfig(Slots):
 
         self.boost_failed_card_allowed_time_by_factor: ConfigurationValueFloat = add_float(ConfigurationValueFloat("boost_failed_card_allowed_time_by_factor", "Boost Failed Card Allowed Time Factor", 1.5))
 
-        def set_enable_fsrs_short_term_with_steps(toggle: bool) -> None:
-            # noinspection PyProtectedMember, PyArgumentList
-            non_optional(mw.col)._set_enable_fsrs_short_term_with_steps(toggle)  # pyright: ignore[reportPrivateUsage]
-
         self.autoadvance_vocab_starting_seconds: ConfigurationValueFloat = add_float(ConfigurationValueFloat("autoadvance_vocab_starting_seconds", "Starting Seconds", 3.0))
         self.autoadvance_vocab_hiragana_seconds: ConfigurationValueFloat = add_float(ConfigurationValueFloat("autoadvance_vocab_hiragana_seconds", "Hiragana Seconds", 0.7))
         self.autoadvance_vocab_katakana_seconds: ConfigurationValueFloat = add_float(ConfigurationValueFloat("autoadvance_vocab_katakana_seconds", "Katakana Seconds", 0.7))
@@ -106,8 +96,7 @@ class JapaneseConfig(Slots):
         self.yomitan_integration_copy_answer_to_clipboard: ConfigurationValueBool = add_bool(ConfigurationValueBool("yomitan_integration_copy_answer_to_clipboard", "Yomitan integration: Copy reviewer answer to clipboard", False))
         self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps: ConfigurationValueBool = ConfigurationValueBool("fsrs_set_enable_fsrs_short_term_with_steps",
                                                                                                                        "FSRS: Enable short term scheduler with steps",
-                                                                                                                       default=False,
-                                                                                                                       feature_toggler=set_enable_fsrs_short_term_with_steps)
+                                                                                                                       default=False)
         self.decrease_failed_card_intervals: ConfigurationValueBool = add_bool(ConfigurationValueBool("decrease_failed_card_intervals", "Decrease failed card intervals", False))
         self.prevent_double_clicks: ConfigurationValueBool = add_bool(ConfigurationValueBool("prevent_double_clicks", "Prevent double clicks", True))
         self.prefer_default_mnemonics_to_source_mnemonics: ConfigurationValueBool = add_bool(ConfigurationValueBool("prefer_default_mnemocs_to_source_mnemonics", "Prefer default mnemonics to source mnemonics", False))

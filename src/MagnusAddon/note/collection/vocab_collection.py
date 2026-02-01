@@ -3,9 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
-from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
-from note.note_constants import NoteTypes
 from note.vocabulary.vocabnote import VocabNote
 from note.vocabulary.vocabnote_question import VocabNoteQuestion
 from typed_linq_collections.collections.q_set import QSet
@@ -14,9 +12,7 @@ from typed_linq_collections.q_iterable import query
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from anki.collection import Collection
-    from anki.notes import Note, NoteId
-    from note.collection.cache_runner import CacheRunner
+    from note.jpnote import NoteId
     from note.kanjinote import KanjiNote
 
 class _VocabSnapshot(CachedNote, Slots):
@@ -32,7 +28,7 @@ class _VocabSnapshot(CachedNote, Slots):
         self.stems: tuple[str, ...] = note.conjugator.get_stems_for_primary_form().to_tuple()
 
 class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
-    def __init__(self, all_vocab: list[VocabNote], cache_runner: CacheRunner) -> None:
+    def __init__(self) -> None:
         # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
         self._by_disambiguation_name: dict[str, list[VocabNote]] = dict[str, list[VocabNote]]()
         self._by_form: dict[str, list[VocabNote]] = dict[str, list[VocabNote]]()
@@ -42,7 +38,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
         self._by_derived_from: dict[str, list[VocabNote]] = dict[str, list[VocabNote]]()
         self._by_reading: dict[str, list[VocabNote]] = dict[str, list[VocabNote]]()
         self._by_stem: dict[str, list[VocabNote]] = dict[str, list[VocabNote]]()
-        super().__init__(all_vocab, VocabNote, cache_runner)
+        super().__init__(VocabNote)
 
     def with_form(self, form: str) -> Iterable[VocabNote]: return self._by_form.get(form, [])
     def with_disambiguation_name(self, form: str) -> Iterable[VocabNote]: return self._by_disambiguation_name.get(form, [])
@@ -103,11 +99,8 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
         for stem in snapshot.stems: self._by_stem.setdefault(stem, []).append(note)
 
 class VocabCollection(Slots):
-    def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
-        def vocab_constructor_call_while_populating_vocab_collection(note: Note) -> VocabNote: return VocabNote(note)
-        self.collection: BackEndFacade[VocabNote] = BackEndFacade[VocabNote](collection, vocab_constructor_call_while_populating_vocab_collection, NoteTypes.Vocab)
-        all_vocab = self.collection.all()
-        self._cache: _VocabCache = _VocabCache(all_vocab, cache_manager)
+    def __init__(self) -> None:
+        self._cache: _VocabCache = _VocabCache()
 
     def is_word(self, form: str) -> bool: return any(self._cache.with_form(form))
     def all(self) -> list[VocabNote]: return self._cache.all()
@@ -144,5 +137,4 @@ class VocabCollection(Slots):
         return query(questions).select(self.with_disambiguation_name).select_many(lambda x: x).to_list()
 
     def add(self, note: VocabNote) -> None:
-        self.collection.anki_collection.addNote(note.backend_note)
         self._cache.add_note_to_cache(note)

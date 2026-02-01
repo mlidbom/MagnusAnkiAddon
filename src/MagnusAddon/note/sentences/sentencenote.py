@@ -2,11 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast, override
 
-from anki.notes import Note
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.jpnote import JPNote
-from note.note_constants import ImmersionKitSentenceNoteFields, NoteFields, NoteTypes, SentenceNoteFields
+from note.note_constants import SentenceNoteFields
 from note.notefields.audio_field import WritableAudioField
 from note.notefields.json_object_field import MutableSerializedObjectField
 from note.notefields.mutable_string_field import MutableStringField
@@ -29,8 +28,8 @@ if TYPE_CHECKING:
     from typed_linq_collections.collections.q_unique_list import QUniqueList
 
 class SentenceNote(JPNote, Slots):
-    def __init__(self, note: Note) -> None:
-        super().__init__(note)
+    def __init__(self) -> None:
+        super().__init__()
         self.weakref_sentence: WeakRef[SentenceNote] = cast(WeakRef[SentenceNote], self.weakref)
 
         self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self.weakref_sentence)
@@ -66,9 +65,6 @@ class SentenceNote(JPNote, Slots):
     def get_question(self) -> str: return self.question.without_invisible_space()
     @override
     def get_answer(self) -> str: return self.answer.get()
-
-    def is_studying_read(self) -> bool: return self.is_studying(NoteFields.SentencesNoteType.Card.Reading)
-    def is_studying_listening(self) -> bool: return self.is_studying(NoteFields.SentencesNoteType.Card.Listening)
 
     def get_valid_parsed_non_child_words_strings(self) -> QList[str]:
         return self.get_valid_parsed_non_child_words().select(lambda word: word.form).to_list()  #[w.form for w in self.get_valid_parsed_non_child_words()]
@@ -118,8 +114,7 @@ class SentenceNote(JPNote, Slots):
 
     @classmethod
     def create_test_note(cls, question: str, answer: str) -> SentenceNote:
-        inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
-        note = SentenceNote(inner_note)
+        note = SentenceNote()
         note.source_question.set(question)
         note.user.answer.set(answer)
         note.update_generated_data()
@@ -128,8 +123,7 @@ class SentenceNote(JPNote, Slots):
 
     @classmethod
     def add_sentence(cls, question: str, answer: str, audio: str = "", screenshot: str = "", highlighted_vocab: QSet[str] | None = None, tags: QSet[Tag] | None = None) -> SentenceNote:
-        inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
-        note = SentenceNote(inner_note)
+        note = SentenceNote()
         note.source_question.set(question)
         note._source_answer.set(answer)
         note._screenshot.set(screenshot)
@@ -152,23 +146,10 @@ class SentenceNote(JPNote, Slots):
         app.col().sentences.add(note)
         return note
 
-    @classmethod
-    def import_immersion_kit_sentence(cls, immersion_kit_note: Note) -> SentenceNote:
-        created = cls.add_sentence(question=immersion_kit_note[ImmersionKitSentenceNoteFields.question],
-                                   answer=immersion_kit_note[ImmersionKitSentenceNoteFields.answer],
-                                   audio=immersion_kit_note[ImmersionKitSentenceNoteFields.audio],
-                                   screenshot=immersion_kit_note[ImmersionKitSentenceNoteFields.screenshot],
-                                   tags=QSet([Tags.Source.immersion_kit]))
-
-        created.id.set(immersion_kit_note[ImmersionKitSentenceNoteFields.id])
-        created.reading.set(immersion_kit_note[ImmersionKitSentenceNoteFields.reading])
-
-        return created
 
     @classmethod
     def create(cls, question: str) -> SentenceNote:
-        inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
-        note = SentenceNote(inner_note)
+        note = SentenceNote()
         note.source_question.set(question)
         note.update_generated_data()
         app.col().sentences.add(note)

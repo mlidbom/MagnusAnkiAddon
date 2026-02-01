@@ -52,8 +52,7 @@ class VocabNoteUserCompoundParts(Slots):
 
         segments_missing_vocab = [segment for segment in compound_parts if not self._collection.vocab.is_word(segment)]
         for missing in segments_missing_vocab:
-            created = VocabNote.factory.create_with_dictionary(missing)
-            created.suspend_all_cards()
+            VocabNote.factory.create_with_dictionary(missing)
 
         self.set(compound_parts)
 

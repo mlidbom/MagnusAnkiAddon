@@ -3,27 +3,25 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING, cast, override
 
-from anki.notes import Note
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note import kanjinote_mnemonic_maker
 from note.vocabulary import vocabnote_sorting
 from sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_list import QList
-from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from typed_linq_collections.collections.q_set import QSet
 
 from note.jpnote import JPNote
-from note.note_constants import CardTypes, NoteFields, NoteTypes
+from note.note_constants import NoteFields
 from sysutils import ex_str, kana_utils, typed
 
 
 class KanjiNote(JPNote, Slots):
-    def __init__(self, note: Note) -> None:
-        super().__init__(note)
+    def __init__(self) -> None:
+        super().__init__()
         self.weakref_kanji: WeakRef[KanjiNote] = cast(WeakRef[KanjiNote], self.weakref)
 
     @override
@@ -247,22 +245,7 @@ class KanjiNote(JPNote, Slots):
         return kanji_reading in vocab_reading[1:-1]
 
     def generate_default_primary_vocab(self) -> list[str]:
-        result: list[str] = []
-
-        def sort_key(_vocab: VocabNote) -> tuple[int, int]:
-            return -len(_vocab.sentences.studying()), len(_vocab.get_question())
-
-        studying_reading_vocab_in_descending_studying_sentences_order = sorted((voc for voc in self.get_vocab_notes() if voc.is_studying(CardTypes.reading)), key=sort_key)
-
-        sequence = self.get_primary_readings()
-        primary_readings = query(sequence).distinct().to_list()
-        for primary_reading in primary_readings:
-            for vocab in studying_reading_vocab_in_descending_studying_sentences_order:
-                if any(vocab.readings.get()) and self.reading_in_vocab_reading(primary_reading, vocab.readings.get()[0], vocab.get_question()):
-                    result.append(vocab.get_question())
-                    break
-
-        return result
+        raise NotImplementedError()
 
     def position_primary_vocab(self, vocab: str, new_index: int = -1) -> None:
         vocab = vocab.strip()
@@ -310,8 +293,7 @@ class KanjiNote(JPNote, Slots):
 
     @classmethod
     def create(cls, question: str, answer: str, on_readings: str, kun_reading: str) -> KanjiNote:
-        backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Kanji))
-        note = KanjiNote(backend_note)
+        note = KanjiNote()
         note.set_question(question)
         note.set_user_answer(answer)
         note.set_reading_on(on_readings)

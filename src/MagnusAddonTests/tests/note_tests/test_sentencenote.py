@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 import pytest
 from fixtures.collection_factory import inject_empty_collection
-from fixtures.stub_factory import stub_ui_dependencies
 from note.sentences.sentencenote import SentenceNote
 from sysutils import ex_str
 
@@ -15,7 +14,7 @@ if TYPE_CHECKING:
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
 def setup() -> Iterator[None]:
-    with (stub_ui_dependencies(), inject_empty_collection()):
+    with (inject_empty_collection()):
         yield
 
 def test_split_token() -> None:

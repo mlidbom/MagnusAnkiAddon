@@ -3,18 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
-from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
-from note.note_constants import NoteTypes
 from note.sentences.sentencenote import SentenceNote
 from typed_linq_collections.collections.q_default_dict import QDefaultDict
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
-    from anki.collection import Collection
-    from anki.notes import Note, NoteId
-    from note.collection.cache_runner import CacheRunner
+    from note.jpnote import NoteId
     from note.vocabulary.vocabnote import VocabNote
 
 class _SentenceSnapshot(CachedNote, Slots):
@@ -26,13 +22,13 @@ class _SentenceSnapshot(CachedNote, Slots):
         self.marked_incorrect_vocab: tuple[str, ...] = note.configuration.incorrect_matches.words().to_tuple()
 
 class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
-    def __init__(self, all_kanji: list[SentenceNote], cache_runner: CacheRunner) -> None:
+    def __init__(self) -> None:
         # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
         self._by_vocab_form: QDefaultDict[str, QSet[SentenceNote]] = QDefaultDict[str, QSet[SentenceNote]](QSet[SentenceNote])
         self._by_user_highlighted_vocab: QDefaultDict[str, QList[SentenceNote]] = QDefaultDict[str, QList[SentenceNote]](QList[SentenceNote])
         self._by_user_marked_invalid_vocab: QDefaultDict[str, QList[SentenceNote]] = QDefaultDict[str, QList[SentenceNote]](QList[SentenceNote])
         self._by_vocab_id: QDefaultDict[int, QSet[SentenceNote]] = QDefaultDict[int, QSet[SentenceNote]](QSet[SentenceNote])
-        super().__init__(all_kanji, SentenceNote, cache_runner)
+        super().__init__(SentenceNote)
 
     @override
     def _create_snapshot(self, note: SentenceNote) -> _SentenceSnapshot: return _SentenceSnapshot(note)
@@ -67,11 +63,8 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
         for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].add(note)
 
 class SentenceCollection(Slots):
-    def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
-        def sentence_constructor_call_while_populating_sentence_collection(note: Note) -> SentenceNote: return SentenceNote(note)
-        self.collection: BackEndFacade[SentenceNote] = BackEndFacade[SentenceNote](collection, sentence_constructor_call_while_populating_sentence_collection, NoteTypes.Sentence)
-        all_sentences = list(self.collection.all())
-        self._cache: _SentenceCache = _SentenceCache(all_sentences, cache_manager)
+    def __init__(self) -> None:
+        self._cache: _SentenceCache = _SentenceCache()
 
     def all(self) -> QList[SentenceNote]: return self._cache.all()
 
@@ -111,8 +104,5 @@ class SentenceCollection(Slots):
             return self._cache.with_user_highlighted_vocab(vocab_note.question.disambiguation_name).to_list()
         return vocab_note.forms.all_set().select_many(self._cache.with_user_highlighted_vocab).to_list()
 
-    def search(self, query: str) -> QList[SentenceNote]: return self.collection.search(query)
-
     def add(self, note: SentenceNote) -> None:
-        self.collection.anki_collection.addNote(note.backend_note)
         self._cache.add_note_to_cache(note)

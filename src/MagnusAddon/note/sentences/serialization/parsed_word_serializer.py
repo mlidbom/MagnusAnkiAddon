@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast
 
-from anki.notes import NoteId
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from note.jpnote import NoteId
 from sysutils.ex_str import invisible_space
 
 if TYPE_CHECKING:
@@ -30,4 +30,4 @@ class ParsedWordSerializer(Slots):
                            int(values[1]),
                            values[2] != "0",
                            values[3],
-                           cast(NoteId, int(values[4])))
+                           cast(NoteId, int(values[4])))  # pyright: ignore [reportUnnecessaryCast]

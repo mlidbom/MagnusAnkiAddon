@@ -1,14 +1,7 @@
 from __future__ import annotations
 
-from anki.models import NotetypeDict
-from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa  # pyright: ignore[reportUnusedImport]
 from sysutils import typed
 
-
-def test_notetypedict() -> None:
-    mydict:NotetypeDict = NotetypeDict()
-    assert typed.checked_cast_generics(NotetypeDict, mydict) is mydict
-    assert typed.checked_cast_dynamic(NotetypeDict, mydict) is mydict
 
 def test_int() -> None:
     assert typed.int_(1) == 1

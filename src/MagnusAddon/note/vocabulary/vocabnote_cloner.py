@@ -2,11 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from anki.notes import Note
-from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules, app  # noqa  # pyright: ignore[reportUnusedImport]
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services import conjugator
-from note.note_constants import NoteTypes
 from note.tags import Tags
 from note.vocabulary.pos import POS
 
@@ -103,23 +100,25 @@ class VocabCloner(Slots):
     def create_shimasu_verb(self) -> VocabNote: return self.create_suru_verb(shimasu=True)
 
     def clone(self) -> VocabNote:
-        from note.vocabulary.vocabnote import VocabNote
+        #from note.vocabulary.vocabnote import VocabNote
 
-        clone_backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
 
-        for i in range(len(self.note.backend_note.fields)):
-            clone_backend_note.fields[i] = self.note.backend_note.fields[i]
-
-        clone = VocabNote(clone_backend_note)
-
-        self._copy_vocab_tags_to(clone)
-
-        for related in clone.related_notes.synonyms.strings():
-            clone.related_notes.synonyms.add(related)
-
-        app.col().vocab.add(clone)
-
-        return clone
+        raise NotImplementedError()
+        # # clone_backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
+        # #
+        # # for i in range(len(self.note.backend_note.fields)):
+        # #     clone_backend_note.fields[i] = self.note.backend_note.fields[i]
+        # #
+        # clone = VocabNote()
+        #
+        # self._copy_vocab_tags_to(clone)
+        #
+        # for related in clone.related_notes.synonyms.strings():
+        #     clone.related_notes.synonyms.add(related)
+        #
+        # app.col().vocab.add(clone)
+        #
+        # return clone
 
     def _copy_vocab_tags_to(self, target: VocabNote) -> None:
         for tag in self.note.tags.where(lambda it: it.name.startswith(Tags.Vocab.root)):

@@ -35,8 +35,8 @@ class SentenceCounts(Slots):
             if self._total < 100: return 600
             return 6000
 
-        def get_studying_sentence_count(card: str = "") -> int:
-            return len([sentence for sentence in sentences if sentence.is_studying(card)])
+        def get_studying_sentence_count(card: str = "") -> int:  # pyright: ignore
+            return len(sentences) #todo bug
 
         if time.time() - self._last_update_time > self._cache_seconds:
             self._last_update_time = time.time()
@@ -73,6 +73,3 @@ class VocabNoteSentences(WeakRefable, Slots):
 
     def user_highlighted(self) -> list[SentenceNote]:
         return list(self._collection.sentences.with_highlighted_vocab(self._vocab))
-
-    def studying(self) -> list[SentenceNote]:
-        return [sentence for sentence in self.all() if sentence.is_studying()]

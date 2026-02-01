@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from anki.notes import NoteId
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from note.sentences.serialization.parsed_word_serializer import ParsedWordSerializer
@@ -10,9 +9,10 @@ from sysutils.memory_usage import string_auto_interner
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
+    from note.jpnote import NoteId
 
 class ParsedMatch(Slots):
-    missing_note_id:NoteId = NoteId(-1)
+    missing_note_id:NoteId = -1
     serializer: ParsedWordSerializer = ParsedWordSerializer()
     def __init__(self, variant: str, start_index: int, is_displayed: bool, word: str, vocab_id: NoteId) -> None:
         self.start_index: int = start_index

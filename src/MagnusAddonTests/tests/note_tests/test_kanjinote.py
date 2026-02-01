@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 import pytest
 from ankiutils import app
 from fixtures import collection_factory
-from fixtures.stub_factory import stub_ui_dependencies
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
@@ -15,7 +14,7 @@ if TYPE_CHECKING:
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
 def setup() -> Iterator[None]:
-    with (stub_ui_dependencies(), collection_factory.inject_collection_with_select_data(kanji=True)):
+    with (collection_factory.inject_collection_with_select_data(kanji=True)):
         app.config().set_readings_mappings_for_testing(_readings_mappings)
         yield
 

@@ -22,15 +22,8 @@ class NoteTags(QIterable[Tag]):
     def __init__(self, note: WeakRef[JPNote]) -> None:
         self._note: WeakRef[JPNote] = note
         self._flags = BitFlagsSet()
-        backend_note = self._note().backend_note
-
-        for tag_name in backend_note.tags:
-            self._flags.set_flag(Tag.from_name(tag_name).id)
-
-        backend_note.tags = self.to_interned_string_list()
 
     def _persist(self) -> None:
-        self._note().backend_note.tags = self.to_interned_string_list()
         self._note()._flush()  # pyright: ignore [reportPrivateUsage]
         self._note()._on_tags_updated()  # pyright: ignore [reportPrivateUsage]
 

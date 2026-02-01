@@ -37,4 +37,5 @@ class NoteRecursiveFlushGuard(Slots):
             with self.pause_flushing():
                 if Settings.log_when_flushing_notes():
                     mylog.info(f"Flushing {self._note().__class__.__name__}: {self._note().get_question()}")
-                self._note().backend_note.col.update_note(self._note().backend_note)
+                raise NotImplementedError()
+                #self._note().backend_note.col.update_note(self._note().backend_note)

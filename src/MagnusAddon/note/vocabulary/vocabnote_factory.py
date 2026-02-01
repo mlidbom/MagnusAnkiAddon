@@ -2,11 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from anki.notes import Note
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.jamdict_ex.dict_lookup import DictLookup
-from note.note_constants import NoteTypes
 from note.tags import Tags
 
 if TYPE_CHECKING:
@@ -31,14 +29,12 @@ class VocabNoteFactory(Slots):
     @classmethod
     def create(cls, question: str, answer: str, readings: list[str], initializer: Callable[[VocabNote], None] | None = None) -> VocabNote:
         from note.vocabulary.vocabnote import VocabNote
-        backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
-        note = VocabNote(backend_note)
+        note = VocabNote()
         note.question.set(question)
         note.source_answer.set(answer)  # pyright: ignore [reportPrivateUsage]
         note.readings.set(readings)
         if initializer is not None: initializer(note)
         app.col().vocab.add(note)
-        note.suspend_all_cards()
         return note
 
 

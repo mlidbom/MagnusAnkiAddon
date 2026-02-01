@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast, override
 
-from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa  # pyright: ignore[reportUnusedImport]
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.jpnote import JPNote
 from note.note_constants import NoteFields
@@ -27,13 +26,12 @@ from note.vocabulary.vocabnote_userfields import VocabNoteUserfields
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
-    from anki.notes import Note
     from typed_linq_collections.collections.q_set import QSet
 
 class VocabNote(JPNote, Slots):
     factory: VocabNoteFactory = VocabNoteFactory()
-    def __init__(self, note: Note) -> None:
-        super().__init__(note)
+    def __init__(self) -> None:
+        super().__init__()
         self.weakref_vocab: WeakRef[VocabNote] = cast(WeakRef[VocabNote], self.weakref)
         self.question: VocabNoteQuestion = VocabNoteQuestion(self.weakref_vocab)
 
