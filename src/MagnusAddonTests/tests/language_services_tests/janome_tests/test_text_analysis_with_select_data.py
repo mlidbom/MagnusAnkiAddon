@@ -11,7 +11,7 @@ from typed_linq_collections.q_iterable import query
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator
 
-    from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
+    from jaslib.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 
 
 

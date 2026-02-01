@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import note.vocabulary.vocabnote_sorting
 from ankiutils import app
+from jaslib.language_services import conjugator
 from jaslib.note.vocabulary.vocabnote import VocabNote
 from jaslib.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
-from language_services import conjugator
 from sysutils.ex_str import newline
 from typed_linq_collections.q_iterable import query
 

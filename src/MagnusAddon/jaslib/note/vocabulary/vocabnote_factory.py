@@ -4,14 +4,14 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.language_services.jamdict_ex.dict_lookup import DictLookup
 from jaslib.note.tags import Tags
-from language_services.jamdict_ex.dict_lookup import DictLookup
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from jaslib.language_services.jamdict_ex.dict_lookup_result import DictLookupResult
     from jaslib.note.vocabulary.vocabnote import VocabNote
-    from language_services.jamdict_ex.dict_lookup_result import DictLookupResult
 
 class VocabNoteFactory(Slots):
     @classmethod

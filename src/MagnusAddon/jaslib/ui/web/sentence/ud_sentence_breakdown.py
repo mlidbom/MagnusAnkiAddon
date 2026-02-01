@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from configuration.settings import Settings
+from jaslib.language_services.janome_ex.tokenizing.jn_token import JNToken
 from jaslib.note.sentences.sentencenote import SentenceNote
 from jaslib.ui.web.sentence.sentence_viewmodel import SentenceViewModel
 from jaslib.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
-from language_services.janome_ex.tokenizing.jn_token import JNToken
 from sysutils import ex_str
 from sysutils.ex_str import newline
 from typed_linq_collections.collections.q_list import QList
@@ -17,8 +17,8 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from configuration.configuration_value import ConfigurationValueBool
+    from jaslib.language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
     from jaslib.ui.web.sentence.match_viewmodel import MatchViewModel
-    from language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
 
 def format_reason(reason: str) -> str:
     return f"""<span class="configured">{reason}</span>""" if "configured" in reason else reason

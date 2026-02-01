@@ -4,17 +4,17 @@ from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from configuration.settings import Settings
+from jaslib.language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from jaslib.ui.web.sentence.compound_part_viewmodel import CompoundPartViewModel
-from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from sysutils import kana_utils, typed
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
 from sysutils.simple_string_list_builder import SimpleStringListBuilder
 from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
+    from jaslib.language_services.janome_ex.word_extraction.matches.match import Match
     from jaslib.note.sentences.sentence_configuration import SentenceConfiguration
     from jaslib.ui.web.sentence.candidate_word_variant_viewmodel import CandidateWordVariantViewModel
-    from language_services.janome_ex.word_extraction.matches.match import Match
     from sysutils.weak_ref import WeakRef
 
 class MatchViewModel(Slots):

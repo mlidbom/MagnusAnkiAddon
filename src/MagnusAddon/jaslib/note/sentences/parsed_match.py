@@ -3,13 +3,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from jaslib.note.sentences.serialization.parsed_word_serializer import ParsedWordSerializer
-from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from sysutils.memory_usage import string_auto_interner
 
 if TYPE_CHECKING:
+    from jaslib.language_services.janome_ex.word_extraction.matches.match import Match
     from jaslib.note.jpnote import NoteId
-    from language_services.janome_ex.word_extraction.matches.match import Match
 
 class ParsedMatch(Slots):
     missing_note_id:NoteId = -1

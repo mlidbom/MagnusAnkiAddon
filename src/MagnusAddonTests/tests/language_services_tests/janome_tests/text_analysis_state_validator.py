@@ -5,8 +5,8 @@
 # from sysutils import ex_assert
 #
 # if TYPE_CHECKING:
-#     from language_services.janome_ex.word_extraction.matches.match import Match
-#     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
+#     from jaslib.language_services.janome_ex.word_extraction.matches.match import Match
+#     from jaslib.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 #     from typed_linq_collections.collections.q_set import QSet
 #
 # class TextAnalysisValidator:

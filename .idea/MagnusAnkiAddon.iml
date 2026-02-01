@@ -26,7 +26,6 @@
       <excludeFolder url="file://$MODULE_DIR$/src/web/Properties" />
       <excludeFolder url="file://$MODULE_DIR$/src/web/bin" />
       <excludeFolder url="file://$MODULE_DIR$/src/web/obj" />
-      <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddon/language_services/english_dictionary/data" />
       <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddon/manually_copied_in_libraries" />
       <excludeFolder url="file://$MODULE_DIR$/typings" />
       <excludeFolder url="file://$MODULE_DIR$/src_dotnet/JAStudio.Console/bin" />
@@ -43,6 +42,7 @@
       <excludeFolder url="file://$MODULE_DIR$/src_dotnet/pythonnet-stub-generator/csharp/PythonNetStubTask/obj" />
       <excludeFolder url="file://$MODULE_DIR$/src_dotnet/pythonnet-stub-generator/csharp/PythonNetStubTool/bin" />
       <excludeFolder url="file://$MODULE_DIR$/src_dotnet/pythonnet-stub-generator/csharp/PythonNetStubTool/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddon/jaslib/language_services/english_dictionary/data" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.13 (MagnusAnkiAddon)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

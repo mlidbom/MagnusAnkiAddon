@@ -15,7 +15,7 @@ def update_generated_data(vocab: VocabNote) -> None:
     vocab.active_answer.set(vocab.get_answer())
     vocab.related_notes.perfect_synonyms.push_answer_to_other_synonyms()
 
-    from language_services.jamdict_ex.dict_lookup import DictLookup
+    from jaslib.language_services.jamdict_ex.dict_lookup import DictLookup
 
     question = vocab.question.without_noise_characters.strip()
     readings = ",".join(vocab.readings.get())

@@ -20,10 +20,10 @@ from sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
+    from jaslib.language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
+    from jaslib.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
     from jaslib.note.tag import Tag
     from jaslib.note.vocabulary.vocabnote import VocabNote
-    from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
-    from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
     from typed_linq_collections.collections.q_list import QList
     from typed_linq_collections.collections.q_unique_list import QUniqueList
 
@@ -77,7 +77,7 @@ class SentenceNote(JPNote, Slots):
         return self.create_analysis().display_word_variants
 
     def create_analysis(self, for_ui: bool = False) -> TextAnalysis:
-        from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
+        from jaslib.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
         return TextAnalysis(self.question.with_invisible_space(), self.configuration.configuration, for_ui=for_ui)
 
     @override
@@ -104,7 +104,7 @@ class SentenceNote(JPNote, Slots):
         self.active_question.set(self.question.with_invisible_space()) #todo should this be with the invisible space?
 
     def update_parsed_words(self, force: bool = False) -> None:
-        from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
+        from jaslib.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
         parsing_result = self.parsing_result.get()
         if not force and parsing_result and parsing_result.sentence == self.question.without_invisible_space() and parsing_result.parser_version == TextAnalysis.version:
             return

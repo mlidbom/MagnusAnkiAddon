@@ -12,7 +12,7 @@ from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.collections.q_unique_list import QUniqueList
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
+    from jaslib.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 
 class ParsingResult(Slots):
     serializer: ParsingResultSerializer = ParsingResultSerializer()

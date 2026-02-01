@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import pytest
-from language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
-from language_services.janome_ex.tokenizing.inflection_types import InflectionTypes
-from language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPOS
-from language_services.janome_ex.tokenizing.jn_token import JNToken
-from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
+from jaslib.language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
+from jaslib.language_services.janome_ex.tokenizing.inflection_types import InflectionTypes
+from jaslib.language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPOS
+from jaslib.language_services.janome_ex.tokenizing.jn_token import JNToken
+from jaslib.language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 
 _tokenizer: JNTokenizer
 

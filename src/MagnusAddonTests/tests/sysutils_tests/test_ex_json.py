@@ -4,9 +4,9 @@ from typing import override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from deepdiff import DeepDiff
+from jaslib.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from jaslib.note.sentences.sentence_configuration import SentenceConfiguration
 from jaslib.note.sentences.word_exclusion_set import WordExclusionSet
-from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils.json import ex_json
 from sysutils.json.json_reader import JsonReader
 from typed_linq_collections.collections.q_unique_list import QUniqueList

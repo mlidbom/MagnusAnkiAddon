@@ -10,7 +10,7 @@ from sysutils.lazy import Lazy  # pyright: ignore[reportMissingTypeStubs]
 from typed_linq_collections.collections.q_unique_list import QUniqueList
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
+    from jaslib.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 
 class SentenceConfiguration(Slots):
     serializer: Lazy[SentenceConfigurationSerializer] = Lazy(SentenceConfigurationSerializer)

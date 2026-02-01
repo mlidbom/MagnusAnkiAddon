@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.language_services import conjugator
 from jaslib.note.tags import Tags
 from jaslib.note.vocabulary.pos import POS
-from language_services import conjugator
 
 if TYPE_CHECKING:
     from collections.abc import Callable

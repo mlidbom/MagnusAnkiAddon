@@ -8,7 +8,7 @@ from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
+    from jaslib.language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
 
 class CandidateWordVariantViewModel(WeakRefable, Slots):
     def __init__(self, variant: CandidateWordVariant) -> None:
