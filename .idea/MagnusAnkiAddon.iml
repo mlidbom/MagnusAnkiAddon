@@ -20,7 +20,6 @@
       <excludeFolder url="file://$MODULE_DIR$/src/ExploratoryTests/test_parsing_libraries/.pytest_cache" />
       <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddon/_lib_patched" />
       <excludeFolder url="file://$MODULE_DIR$/venv311" />
-      <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddonTests/tests/language_services_tests/.pytest_cache" />
       <excludeFolder url="file://$MODULE_DIR$/venv11" />
       <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddon/user_files" />
       <excludeFolder url="file://$MODULE_DIR$/src/web/Properties" />
@@ -43,6 +42,7 @@
       <excludeFolder url="file://$MODULE_DIR$/src_dotnet/pythonnet-stub-generator/csharp/PythonNetStubTool/bin" />
       <excludeFolder url="file://$MODULE_DIR$/src_dotnet/pythonnet-stub-generator/csharp/PythonNetStubTool/obj" />
       <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddon/jaslib/language_services/english_dictionary/data" />
+      <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddonTests/jaslib_tests/tests/language_services_tests/.pytest_cache" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.13 (JAStudio)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
