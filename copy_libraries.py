@@ -8,7 +8,7 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Define the source directory (venv) and target directory (project) relative to the script location
 source_dir = os.path.join(script_dir, "venv/lib/site-packages")
-target_dir = os.path.join(script_dir, "src/jastudio/_lib")
+target_dir = os.path.join(script_dir, "src/jastudio_src/_lib")
 
 # One line per library and its dependencies
 pip_libraries_to_copy = [

@@ -6,8 +6,8 @@
       <sourceFolder url="file://$MODULE_DIR$/src/ExploratoryTests/test_parsing_libraries" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/separate_libraries/queryablecollections/queryablecollections_tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/separate_libraries/queryablecollections/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/jastudio" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/jastudio_src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/.mypy_cache" />
       <excludeFolder url="file://$MODULE_DIR$/src/.mypy_cache" />
       <excludeFolder url="file://$MODULE_DIR$/src/JLab" />
@@ -22,14 +22,14 @@
       <excludeFolder url="file://$MODULE_DIR$/src/web/bin" />
       <excludeFolder url="file://$MODULE_DIR$/src/web/obj" />
       <excludeFolder url="file://$MODULE_DIR$/typings" />
-      <excludeFolder url="file://$MODULE_DIR$/src/jastudio/_lib" />
-      <excludeFolder url="file://$MODULE_DIR$/src/jastudio/_lib_patched" />
-      <excludeFolder url="file://$MODULE_DIR$/src/jastudio/manually_copied_in_libraries" />
-      <excludeFolder url="file://$MODULE_DIR$/src/jastudio/user_files" />
       <excludeFolder url="file://$MODULE_DIR$/src/tests/.pytest_cache" />
       <excludeFolder url="file://$MODULE_DIR$/src/tests/jastudio_tests/tests/language_services_tests/.pytest_cache" />
-      <excludeFolder url="file://$MODULE_DIR$/src/jastudio/jastudio/language_services/english_dictionary/data" />
-      <excludeFolder url="file://$MODULE_DIR$/src/jastudio/jastudio/user_files" />
+      <excludeFolder url="file://$MODULE_DIR$/src/jastudio_src/_lib" />
+      <excludeFolder url="file://$MODULE_DIR$/src/jastudio_src/_lib_patched" />
+      <excludeFolder url="file://$MODULE_DIR$/src/jastudio_src/jastudio/language_services/english_dictionary/data" />
+      <excludeFolder url="file://$MODULE_DIR$/src/jastudio_src/jastudio/user_files" />
+      <excludeFolder url="file://$MODULE_DIR$/src/jastudio_src/manually_copied_in_libraries" />
+      <excludeFolder url="file://$MODULE_DIR$/src/jastudio_src/user_files" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.13 (MagnusAnkiAddon)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
