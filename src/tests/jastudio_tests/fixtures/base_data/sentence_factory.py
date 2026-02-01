@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
-from anki_extentions.notetype_ex.note_type_field import NoteFieldEx
-from anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
+from jastudio.anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
+from jastudio.anki_extentions.notetype_ex.note_type_field import NoteFieldEx
+from jastudio.anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
 from note.note_constants import NoteTypes, SentenceNoteFields
 
 

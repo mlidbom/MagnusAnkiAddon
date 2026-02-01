@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, final
 
-from anki_extentions.note_ex import NoteBulkLoader
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.jpnote import JPNote
 from qt_utils.task_progress_runner import TaskRunner
 from typed_linq_collections.collections.q_list import QList
+
+from jastudio.anki_extentions.note_ex import NoteBulkLoader
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence

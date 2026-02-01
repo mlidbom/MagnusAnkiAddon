@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from anki_extentions.card_ex import Card2Ex
-from anki_extentions.sheduling_states_ex import SchedulingStatesEx
 from ankiutils import app
 from aqt.reviewer import V3CardInfo
 from sysutils.timeutil import StopWatch
+
+from jastudio.anki_extentions.card_ex import Card2Ex
+from jastudio.anki_extentions.sheduling_states_ex import SchedulingStatesEx
 
 if TYPE_CHECKING:
     from anki.scheduler.v3 import QueuedCards  # pyright: ignore[reportMissingTypeStubs]

@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import cast
 
 from anki.models import NotetypeDict, NotetypeId
-from anki_extentions.notetype_ex.note_type_field import NoteFieldEx
-from anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jastudio.anki_extentions.notetype_ex.note_type_field import NoteFieldEx
+from jastudio.anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
 from sysutils import ex_assert, typed
 
 

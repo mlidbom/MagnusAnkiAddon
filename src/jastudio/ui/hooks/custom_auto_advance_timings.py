@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from anki_extentions.card_ex import CardEx
 from ankiutils import app, ui_utils
 from aqt import gui_hooks, mw
 from aqt.reviewer import Reviewer
@@ -13,6 +12,8 @@ from note.note_constants import CardTypes
 from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
 from sysutils.typed import non_optional
+
+from jastudio.anki_extentions.card_ex import CardEx
 
 if TYPE_CHECKING:
     from anki.cards import Card

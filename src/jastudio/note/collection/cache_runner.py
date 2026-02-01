@@ -5,13 +5,14 @@ from typing import TYPE_CHECKING
 
 from anki import hooks
 from anki.models import ModelManager
-from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.note_constants import NoteTypes
 from sysutils import app_thread_pool, ex_assert, ex_thread
 from sysutils.typed import checked_cast, non_optional
 from typed_linq_collections.collections.q_list import QList
+
+from jastudio.anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence

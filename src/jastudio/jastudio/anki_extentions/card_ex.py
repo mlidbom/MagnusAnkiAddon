@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from anki import consts
-from anki_extentions.deck_ex import DeckEx
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jastudio.anki_extentions.deck_ex import DeckEx
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 from typed_linq_collections.collections.q_list import QList
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from anki.dbproxy import Row
     from anki.decks import DeckManager
     from anki.scheduler.v3 import Scheduler  # pyright: ignore[reportMissingTypeStubs]
-    from anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
+    from jastudio.anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
     from note.jpnote import JPNote
 
 import anki.cards
@@ -52,7 +52,7 @@ class CardEx(Slots):
             self._scheduler().unsuspend_cards([self.card.id])
 
     def type(self) -> NoteTemplateEx:
-        from anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
+        from jastudio.anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
         return NoteTemplateEx.from_dict(self.card.template())
 
     def sequential_again_answers_today(self) -> int:
