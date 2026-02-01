@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from ankiutils import app
 from fixtures import collection_factory
+from jaslib import app
 from jaslib.sysutils.typed import non_optional
 
 if TYPE_CHECKING:

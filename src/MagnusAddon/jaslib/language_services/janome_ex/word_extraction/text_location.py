@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, final, override
 
-from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib import app
 from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:

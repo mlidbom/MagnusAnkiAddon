@@ -4,7 +4,7 @@ import os
 import sys
 from typing import TYPE_CHECKING
 
-from ankiutils import app
+from jaslib import app
 from typed_linq_collections.collections.q_dict import QDict
 from typed_linq_collections.collections.string_interning import set_default_intern_func
 

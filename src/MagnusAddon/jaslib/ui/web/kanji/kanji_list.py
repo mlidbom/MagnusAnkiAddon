@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
 
-from ankiutils import app
+from jaslib import app
 from jaslib.note.kanjinote import KanjiNote
 from jaslib.sysutils import ex_str, kana_utils
 from jaslib.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer

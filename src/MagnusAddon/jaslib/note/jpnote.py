@@ -3,8 +3,8 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING, override
 
-from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib import app
 from jaslib.note.note_constants import MyNoteFields
 from jaslib.note.note_flush_guard import NoteRecursiveFlushGuard
 from jaslib.note.note_tags import NoteTags

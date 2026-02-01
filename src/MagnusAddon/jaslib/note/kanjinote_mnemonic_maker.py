@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ankiutils import app
+from jaslib import app
 from jaslib.sysutils import kana_utils
 from jaslib.sysutils.ex_str import newline
 

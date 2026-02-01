@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import mylog
-from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib import app
 from jaslib.language_services.janome_ex.tokenizing.pre_processing_stage.pre_processing_stage import PreProcessingStage
 
 if TYPE_CHECKING:

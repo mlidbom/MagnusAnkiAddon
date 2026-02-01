@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ankiutils import app
+from jaslib import app
 from jaslib.configuration.settings import Settings
 from jaslib.language_services.janome_ex.tokenizing.jn_token import JNToken
 from jaslib.note.sentences.sentencenote import SentenceNote

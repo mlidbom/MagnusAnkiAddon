@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import note.vocabulary.vocabnote_sorting
-from ankiutils import app
+from jaslib import app
 from jaslib.language_services import conjugator
 from jaslib.note.vocabulary.vocabnote import VocabNote
 from jaslib.sysutils.ex_str import newline

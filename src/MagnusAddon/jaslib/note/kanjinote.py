@@ -3,8 +3,8 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING, cast, override
 
-from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib import app
 from jaslib.note import kanjinote_mnemonic_maker
 from jaslib.note.vocabulary import vocabnote_sorting
 from jaslib.sysutils.weak_ref import WeakRef

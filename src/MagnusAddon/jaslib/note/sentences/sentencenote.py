@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast, override
 
-from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib import app
 from jaslib.note.jpnote import JPNote
 from jaslib.note.note_constants import SentenceNoteFields
 from jaslib.note.notefields.audio_field import WritableAudioField

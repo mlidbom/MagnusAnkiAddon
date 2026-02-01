@@ -30,6 +30,6 @@ def col() -> JPCollection:
     if _collection is None: raise AssertionError("Collection not initialized")
     return _collection
 
-user_files_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..\\user_files")
+user_files_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "user_files")
 
 dotnet_runtime_loader.ensure_clr_loaded()

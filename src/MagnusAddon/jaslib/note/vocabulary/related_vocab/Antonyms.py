@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ankiutils import app
-from ankiutils.app import col
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib import app
+from jaslib.app import col
 
 if TYPE_CHECKING:
     from jaslib.note.notefields.json_object_field import MutableSerializedObjectField

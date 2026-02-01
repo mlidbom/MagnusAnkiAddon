@@ -21,7 +21,7 @@ def inject_empty_collection() -> Iterator[JPCollection]:
 
 
     jp_collection = JPCollection()
-    with unittest.mock.patch("ankiutils.app.col", new=get_jp_collection):
+    with unittest.mock.patch("jaslib.app.col", new=get_jp_collection):
         yield jp_collection
         jp_collection.destruct_sync()
 

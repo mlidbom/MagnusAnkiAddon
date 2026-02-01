@@ -4,7 +4,7 @@ import random
 import re
 from typing import TYPE_CHECKING
 
-from ankiutils import app
+from jaslib import app
 from jaslib.language_services.jamdict_ex.dict_lookup import DictLookup
 from jaslib.language_services.janome_ex.tokenizing.pre_processing_stage.ichidan_godan_potential_or_imperative_hybrid_splitter import IchidanGodanPotentialOrImperativeHybridSplitter
 from jaslib.note.sentences.parsed_match import ParsedMatch

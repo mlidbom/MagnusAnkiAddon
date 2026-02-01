@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib import app
 from jaslib.note.note_constants import NoteFields
 from jaslib.note.notefields.auto_save_wrappers.field_wrapper import FieldWrapper
 from jaslib.note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
