@@ -36,6 +36,9 @@ class SentenceNote(JPNote, Slots):
         self.parsing_result: MutableSerializedObjectField[ParsingResult] = MutableSerializedObjectField[ParsingResult](self.weakref, SentenceNoteFields.parsing_result, ParsingResult.serializer)
 
 
+    @override
+    def _update_in_cache(self) -> None: self.collection.sentences._cache.refresh_in_cache(self)  # pyright: ignore [reportPrivateUsage]
+
     @property
     def id(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.id)
     @property

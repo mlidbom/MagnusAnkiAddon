@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import defaultdict
 from typing import TYPE_CHECKING, override
 
 from ankiutils import app
@@ -18,8 +19,6 @@ if TYPE_CHECKING:
 type NoteId = int
 
 class JPNote(WeakRefable, Slots):
-    _next_note_id: NoteId = 1
-
     def __init__(self) -> None:
         self.weakref: WeakRef[JPNote] = WeakRef(self)
         self.recursive_flush_guard: NoteRecursiveFlushGuard = NoteRecursiveFlushGuard(self.weakref)
@@ -27,10 +26,9 @@ class JPNote(WeakRefable, Slots):
 
         self.tags: NoteTags = NoteTags(self.weakref)
 
-        self._fields: dict[str, str] = {}
+        self._fields: dict[str, str] = defaultdict(str)
 
-        self._id_cache: NoteId = JPNote._next_note_id
-        JPNote._next_note_id += 1
+        self._id_cache: NoteId = 0
 
     @property
     def is_flushing(self) -> bool: return self.recursive_flush_guard.is_flushing
@@ -39,6 +37,8 @@ class JPNote(WeakRefable, Slots):
     def __eq__(self, other: object) -> bool:
         ex_assert.not_none(self.get_id(), "You cannot compare or hash a note that has not been saved yet since it has no id")
         return isinstance(other, JPNote) and other.get_id() == self.get_id()
+
+    def _update_in_cache(self) -> None: raise NotImplementedError()
 
     @override
     def __hash__(self) -> int:
@@ -84,6 +84,10 @@ class JPNote(WeakRefable, Slots):
     def get_id(self) -> NoteId:
         return self._id_cache
 
+    def set_id(self, id: NoteId) -> None:
+        if self._id_cache != 0: raise RuntimeError("Cannot change id of a note that has already been saved")
+        self._id_cache = id
+
 
     def update_generated_data(self) -> None:
         pass
@@ -92,7 +96,8 @@ class JPNote(WeakRefable, Slots):
         return self._fields[field_name]
 
     def _is_persisted(self) -> bool:
-        raise NotImplementedError()
+        return self._id_cache != 0
+        #raise NotImplementedError()
         #return int(self.backend_note.id) != 0
 
     def _flush(self) -> None:

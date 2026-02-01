@@ -28,6 +28,9 @@ class KanjiNote(JPNote, Slots):
     def get_direct_dependencies(self) -> QSet[JPNote]:
         return self.get_radicals_notes().cast.to(JPNote).to_set()
 
+    @override
+    def _update_in_cache(self) -> None: self.collection.kanji._cache.refresh_in_cache(self)  # pyright: ignore [reportPrivateUsage]
+
     def tag_vocab_readings(self, vocab: VocabNote) -> list[str]:
         def primary_reading(read: str) -> str:
             return f'<span class="kanjiReadingPrimary">{read}</span>'
