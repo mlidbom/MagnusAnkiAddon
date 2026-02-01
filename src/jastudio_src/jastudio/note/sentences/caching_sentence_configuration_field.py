@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 from jastudio.ankiutils import app
 from jastudio.note.note_constants import SentenceNoteFields
 from jastudio.note.notefields.mutable_string_field import MutableStringField
 from jastudio.note.sentences.sentence_configuration import SentenceConfiguration
-from jastudio.sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:

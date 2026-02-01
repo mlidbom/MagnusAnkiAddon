@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jastudio.sysutils.typed import non_optional
+from jaslib.sysutils.typed import non_optional
 from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.menu_utils.ex_qmenu import create_vocab_note_action
 

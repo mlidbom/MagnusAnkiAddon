@@ -3,16 +3,16 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 from jastudio.ankiutils import app
-from jastudio.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from jastudio.language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
     from jastudio.language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from jastudio.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 
+from jaslib.sysutils.ex_str import newline
 from jastudio.language_services.janome_ex.word_extraction.candidate_word import CandidateWord
-from jastudio.sysutils.ex_str import newline
 
 _max_lookahead = 12  # In my collection the longest so far is 9, so 12 seems a pretty good choice.
 

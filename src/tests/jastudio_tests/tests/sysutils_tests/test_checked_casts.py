@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from anki.models import NotetypeDict
+from jaslib.sysutils import typed
 from jastudio.ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa  # pyright: ignore[reportUnusedImport]
-from jastudio.sysutils import typed
 
 
 def test_notetypedict() -> None:

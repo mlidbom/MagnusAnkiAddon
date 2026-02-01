@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 from jastudio.language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
 from jastudio.language_services.janome_ex.word_extraction.matches.state_tests.forbids_compounds import ForbidsConfiguredToHideAllCompounds
 from jastudio.language_services.janome_ex.word_extraction.matches.state_tests.forbids_dictionary_form_verb_inflection import ForbidsDictionaryInflectionSurfaceWithBase
@@ -15,7 +16,6 @@ from jastudio.language_services.janome_ex.word_extraction.matches.state_tests.is
 from jastudio.language_services.janome_ex.word_extraction.matches.state_tests.is_inflected_surface_with_valid_base import ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb
 from jastudio.language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import ForbidsIsShadowed
 from jastudio.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from jastudio.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from collections.abc import Callable

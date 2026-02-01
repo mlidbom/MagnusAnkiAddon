@@ -4,10 +4,10 @@ import collections
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from jastudio.sysutils import typed
+from jaslib.sysutils import typed
 
 if TYPE_CHECKING:
-    from jastudio.sysutils.standard_type_aliases import Func
+    from jaslib.sysutils.standard_type_aliases import Func
     pass
 
 class DefaultDictCaseInsensitive[VT](collections.defaultdict[str, VT], Slots):

@@ -7,9 +7,9 @@ from jastudio.ankiutils import app
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
+    from jaslib.sysutils.weak_ref import WeakRef
     from jastudio.note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
     from jastudio.note.vocabulary.vocabnote import VocabNote
-    from jastudio.sysutils.weak_ref import WeakRef
 
 class PerfectSynonyms(Slots):
     def __init__(self, vocab: WeakRef[VocabNote], data: FieldSetWrapper[str]) -> None:

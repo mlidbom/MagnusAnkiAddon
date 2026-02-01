@@ -3,12 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
+from jaslib.sysutils import typed
+from jaslib.sysutils.typed import try_cast
 from jastudio.ankiutils import app, ui_utils
 from jastudio.note.kanjinote import KanjiNote
 from jastudio.note.sentences.sentencenote import SentenceNote
 from jastudio.note.vocabulary.vocabnote import VocabNote
-from jastudio.sysutils import typed
-from jastudio.sysutils.typed import try_cast
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtGui import QKeySequence, QShortcut
 

@@ -5,9 +5,9 @@ from typing import TYPE_CHECKING, override
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:
+    from jaslib.sysutils.weak_ref import WeakRef
     from jastudio.note.jpnote import JPNote
     from jastudio.note.tag import Tag
-    from jastudio.sysutils.weak_ref import WeakRef
 
 class TagFlagField(Slots):
     def __init__(self, note: WeakRef[JPNote], tag: Tag) -> None:

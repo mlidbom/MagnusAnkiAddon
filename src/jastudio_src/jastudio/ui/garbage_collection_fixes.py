@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import aqt
+from jaslib.sysutils.typed import checked_cast
 from jastudio.ankiutils import app
 from jastudio.sysutils import ex_gc
-from jastudio.sysutils.typed import checked_cast
 from PyQt6.QtCore import pyqtBoundSignal
 
 if TYPE_CHECKING:

@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks, mw
+from jaslib.sysutils import ex_assert, typed
+from jaslib.sysutils.typed import checked_cast
 from jastudio.ankiutils import app
-from jastudio.sysutils import ex_assert, typed
-from jastudio.sysutils.typed import checked_cast
 from jastudio.ui.english_dict.find_english_words_dialog import EnglishWordSearchDialog
 from jastudio.ui.hooks import history_navigator
 from jastudio.ui.open_note.open_note_dialog import NoteSearchDialog

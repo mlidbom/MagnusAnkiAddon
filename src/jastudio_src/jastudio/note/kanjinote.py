@@ -5,10 +5,10 @@ from typing import TYPE_CHECKING, cast, override
 
 from anki.notes import Note
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.sysutils.weak_ref import WeakRef
 from jastudio.ankiutils import app
 from jastudio.note import kanjinote_mnemonic_maker
 from jastudio.note.vocabulary import vocabnote_sorting
-from jastudio.sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.q_iterable import query
 
@@ -16,9 +16,9 @@ if TYPE_CHECKING:
     from jastudio.note.vocabulary.vocabnote import VocabNote
     from typed_linq_collections.collections.q_set import QSet
 
+from jaslib.sysutils import ex_str, kana_utils, typed
 from jastudio.note.jpnote import JPNote
 from jastudio.note.note_constants import CardTypes, NoteFields, NoteTypes
-from jastudio.sysutils import ex_str, kana_utils, typed
 
 
 class KanjiNote(JPNote, Slots):

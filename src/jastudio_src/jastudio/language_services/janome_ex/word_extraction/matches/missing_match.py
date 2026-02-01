@@ -6,8 +6,8 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jastudio.language_services.janome_ex.word_extraction.matches.match import Match
 
 if TYPE_CHECKING:
+    from jaslib.sysutils.weak_ref import WeakRef
     from jastudio.language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
-    from jastudio.sysutils.weak_ref import WeakRef
 
 class MissingMatch(Match, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant]) -> None:

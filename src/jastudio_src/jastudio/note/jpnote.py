@@ -4,6 +4,10 @@ from typing import TYPE_CHECKING, cast, override
 
 from anki.models import NotetypeDict
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.sysutils import ex_assert, ex_str
+from jaslib.sysutils.memory_usage import string_auto_interner
+from jaslib.sysutils.typed import non_optional, str_
+from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 from jastudio.anki_extentions.card_ex import CardEx
 from jastudio.anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from jastudio.ankiutils import app
@@ -12,10 +16,6 @@ from jastudio.note.note_constants import CardTypes, MyNoteFields, NoteTypes
 from jastudio.note.note_flush_guard import NoteRecursiveFlushGuard
 from jastudio.note.note_tags import NoteTags
 from jastudio.note.tags import Tags
-from jastudio.sysutils import ex_assert, ex_str
-from jastudio.sysutils.memory_usage import string_auto_interner
-from jastudio.sysutils.typed import non_optional, str_
-from jastudio.sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:

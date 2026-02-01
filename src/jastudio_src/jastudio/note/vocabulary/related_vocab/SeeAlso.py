@@ -7,10 +7,10 @@ from jastudio.ankiutils import app
 from jastudio.ankiutils.app import col
 
 if TYPE_CHECKING:
+    from jaslib.sysutils.weak_ref import WeakRef
     from jastudio.note.notefields.json_object_field import MutableSerializedObjectField
     from jastudio.note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
     from jastudio.note.vocabulary.vocabnote import VocabNote
-    from jastudio.sysutils.weak_ref import WeakRef
     from typed_linq_collections.collections.q_set import QSet
 
 

@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING, override
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:
+    from jaslib.sysutils.weak_ref import WeakRef
     from jastudio.note.jpnote import JPNote
-    from jastudio.sysutils.weak_ref import WeakRef
 
 # this field is used extremely much, so its design is crucial for both performance and memory usage, keep in mind when changing anything
 # if a field is read-only, make sure to to use ReadOnlyStringField instead, which uses less memory

@@ -12,11 +12,11 @@ if TYPE_CHECKING:
     from jastudio.note.collection.cache_runner import CacheRunner
     from typed_linq_collections.collections.q_set import QSet
 
+from jaslib.sysutils import kana_utils
 from jastudio.note.collection.backend_facade import BackEndFacade
 from jastudio.note.collection.note_cache import CachedNote, NoteCache
 from jastudio.note.kanjinote import KanjiNote
 from jastudio.note.note_constants import NoteTypes
-from jastudio.sysutils import kana_utils
 from typed_linq_collections.collections.q_list import QList
 
 

@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
+from jaslib.sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
+from jaslib.sysutils.lazy import Lazy  # pyright: ignore[reportMissingTypeStubs]
 from jastudio.note.sentences.serialization.sentence_configuration_serializer import SentenceConfigurationSerializer
 from jastudio.note.sentences.word_exclusion_set import WordExclusionSet
-from jastudio.sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
-from jastudio.sysutils.lazy import Lazy  # pyright: ignore[reportMissingTypeStubs]
 from typed_linq_collections.collections.q_unique_list import QUniqueList
 
 if TYPE_CHECKING:

@@ -8,8 +8,8 @@ from jastudio.note.notefields.integer_field import IntegerField
 from jastudio.note.vocabulary import vocabnote_meta_tag
 
 if TYPE_CHECKING:
+    from jaslib.sysutils.weak_ref import WeakRef
     from jastudio.note.vocabulary.vocabnote import VocabNote
-    from jastudio.sysutils.weak_ref import WeakRef
 
 
 class VocabNoteMetaData(Slots):

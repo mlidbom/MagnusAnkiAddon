@@ -4,15 +4,15 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.sysutils import ex_assert
 from jastudio import mylog
 from jastudio.configuration.settings import Settings
-from jastudio.sysutils import ex_assert
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
+    from jaslib.sysutils.weak_ref import WeakRef
     from jastudio.note.jpnote import JPNote
-    from jastudio.sysutils.weak_ref import WeakRef
 
 class NoteRecursiveFlushGuard(Slots):
     def __init__(self, note: WeakRef[JPNote]) -> None:

@@ -4,7 +4,7 @@ import json
 from typing import Any, cast, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from jastudio.sysutils.json.json_library_shim import JsonLibraryShim
+from jaslib.sysutils.json.json_library_shim import JsonLibraryShim
 
 
 # noinspection PyUnusedClass,PyUnusedFunction

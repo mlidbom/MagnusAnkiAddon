@@ -3,12 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
+from jaslib.sysutils.typed import non_optional
 from jastudio.language_services import conjugator
 from jastudio.language_services.janome_ex.tokenizing.godan_dictionary_form_stem import GodanPotentialDictionaryFormStem, GodanPotentialInflectionDictionaryFormInflection, GodanPotentialInflectionDictionaryFormStem
 from jastudio.language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
 from jastudio.language_services.janome_ex.tokenizing.pre_processing_stage.word_info import WordInfo
 from jastudio.language_services.janome_ex.tokenizing.split_token import SplitToken
-from jastudio.sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from jastudio.language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken

@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING, override
 
 from anki.notes import NoteId
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.sysutils.memory_usage import string_auto_interner
 from jastudio.language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from jastudio.note.sentences.serialization.parsed_word_serializer import ParsedWordSerializer
-from jastudio.sysutils.memory_usage import string_auto_interner
 
 if TYPE_CHECKING:
     from jastudio.language_services.janome_ex.word_extraction.matches.match import Match

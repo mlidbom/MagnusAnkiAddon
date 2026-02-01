@@ -6,8 +6,8 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jastudio.note.notefields.mutable_string_field import MutableStringField
 
 if TYPE_CHECKING:
+    from jaslib.sysutils.weak_ref import WeakRef
     from jastudio.note.jpnote import JPNote
-    from jastudio.sysutils.weak_ref import WeakRef
 
 class ObjectSerializer[T](Slots):
     def serialize(self, instance: T) -> str: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]

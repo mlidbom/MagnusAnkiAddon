@@ -3,16 +3,16 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots
+from jaslib.sysutils.typed import non_optional
+from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 from jastudio.language_services.janome_ex.word_extraction.analysis_constants import noise_characters
 from jastudio.language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
-from jastudio.sysutils.typed import non_optional
-from jastudio.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from jastudio.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
     from jastudio.language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
 
-from jastudio.sysutils.ex_str import newline
+from jaslib.sysutils.ex_str import newline
 
 
 @final

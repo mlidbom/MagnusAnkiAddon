@@ -3,15 +3,15 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
+from jaslib.sysutils import ex_str
 from jastudio.note.notefields.caching_mutable_string_field import CachingMutableStringField
-from jastudio.sysutils import ex_str
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from jaslib.sysutils.lazy import Lazy
+    from jaslib.sysutils.weak_ref import WeakRef
     from jastudio.note.jpnote import JPNote
-    from jastudio.sysutils.lazy import Lazy
-    from jastudio.sysutils.weak_ref import WeakRef
     from typed_linq_collections.collections.q_list import QList
     from typed_linq_collections.collections.string_interning import QInterningList
 

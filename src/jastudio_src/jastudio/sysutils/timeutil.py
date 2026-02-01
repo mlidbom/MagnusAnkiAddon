@@ -6,14 +6,14 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.sysutils import typed
+from jaslib.sysutils.time_span import TimeSpan
 from jastudio import mylog
-from jastudio.sysutils import typed
-from jastudio.sysutils.time_span import TimeSpan
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from jastudio.sysutils.standard_type_aliases import Action
+    from jaslib.sysutils.standard_type_aliases import Action
 
 SECONDS_PER_DAY = 24 * 60 * 60
 MILLISECONDS_PER_SECOND = 1000

@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pyperclip
+from jaslib.sysutils import ex_str
+from jaslib.sysutils.ex_str import newline
+from jaslib.sysutils.typed import non_optional
 from jastudio.ankiutils import app, query_builder
 from jastudio.note.note_constants import NoteFields, NoteTypes
-from jastudio.sysutils import ex_str
-from jastudio.sysutils.ex_str import newline
-from jastudio.sysutils.typed import non_optional
 from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.menu_utils.ex_qmenu import add_lookup_action, add_single_vocab_lookup_action, add_ui_action, add_vocab_dependencies_lookup
 from jastudio.ui.menus.notes.vocab.create_note_menu import build_create_note_menu

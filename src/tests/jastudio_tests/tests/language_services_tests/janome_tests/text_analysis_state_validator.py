@@ -2,7 +2,7 @@
 #
 # from typing import TYPE_CHECKING
 #
-# from jastudio.sysutils import ex_assert
+# from jaslib.sysutils import ex_assert
 #
 # if TYPE_CHECKING:
 #     from jastudio.language_services.janome_ex.word_extraction.matches.match import Match

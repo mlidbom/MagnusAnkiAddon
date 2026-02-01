@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from jaslib.sysutils import kana_utils
+from jaslib.sysutils.ex_str import newline
 from jastudio.ankiutils import app
-from jastudio.sysutils import kana_utils
-from jastudio.sysutils.ex_str import newline
 
 if TYPE_CHECKING:
     from jastudio.note.kanjinote import KanjiNote

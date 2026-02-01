@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import aqt
+from jaslib.sysutils.typed import non_optional
 from jastudio.ankiutils import app
-from jastudio.sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from collections.abc import Callable

@@ -9,11 +9,11 @@ from jastudio.language_services.janome_ex.word_extraction.matches.state_tests.he
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from jaslib.sysutils.weak_ref import WeakRef
     from jastudio.language_services.jamdict_ex.dict_entry import DictEntry
     from jastudio.language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from jastudio.language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
     from jastudio.language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
-    from jastudio.sysutils.weak_ref import WeakRef
 
 class DictionaryMatch(Match, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant], dictionary_entry: DictEntry) -> None:

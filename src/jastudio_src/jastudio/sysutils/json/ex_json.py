@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from jastudio.sysutils.json.json_library_shim_builtin import JsonLibraryShimBuiltInJson
+from jaslib.sysutils.json.json_library_shim_builtin import JsonLibraryShimBuiltInJson
 
-#from jastudio.sysutils.json.json_library_shim_orjson import JsonLibraryShimOrjson
+#from jaslib.sysutils.json.json_library_shim_orjson import JsonLibraryShimOrjson
 
 json_library_shim = JsonLibraryShimBuiltInJson()
 # To use orjson instead, uncomment the following line:

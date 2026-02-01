@@ -5,10 +5,10 @@ from typing import TYPE_CHECKING, cast
 
 from aqt import mw
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.sysutils.lazy import Lazy
+from jaslib.sysutils.typed import non_optional
+from jaslib.sysutils.weak_ref import WeakRefable
 from jastudio.ankiutils import app
-from jastudio.sysutils.lazy import Lazy
-from jastudio.sysutils.typed import non_optional
-from jastudio.sysutils.weak_ref import WeakRefable
 
 if TYPE_CHECKING:
     from collections.abc import Callable

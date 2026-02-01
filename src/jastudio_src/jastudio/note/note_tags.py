@@ -2,17 +2,17 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
+from jaslib.sysutils.bit_flags_set import BitFlagsSet
+from jaslib.sysutils.memory_usage import string_auto_interner
 from jastudio.note.tag import Tag
-from jastudio.sysutils.bit_flags_set import BitFlagsSet
-from jastudio.sysutils.memory_usage import string_auto_interner
 from typed_linq_collections.collections.q_dict import QDict
 from typed_linq_collections.q_iterable import QIterable, query
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
+    from jaslib.sysutils.weak_ref import WeakRef
     from jastudio.note.jpnote import JPNote
-    from jastudio.sysutils.weak_ref import WeakRef
 
 class NoteTags(QIterable[Tag]):
     __slots__: tuple[str, ...] = ("_note", "_flags")

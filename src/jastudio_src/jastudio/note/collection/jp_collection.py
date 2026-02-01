@@ -4,6 +4,10 @@ import threading
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.sysutils.memory_usage import string_auto_interner
+from jaslib.sysutils.timeutil import StopWatch
+from jaslib.sysutils.typed import non_optional
+from jaslib.sysutils.weak_ref import WeakRefable
 from jastudio import mylog
 from jastudio.ankiutils import app
 from jastudio.note import noteutils
@@ -15,11 +19,7 @@ from jastudio.note.jpnote import JPNote
 from jastudio.note.note_constants import Mine
 from jastudio.qt_utils.task_progress_runner import TaskRunner
 from jastudio.sysutils import app_thread_pool
-from jastudio.sysutils.memory_usage import string_auto_interner
 from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
-from jastudio.sysutils.timeutil import StopWatch
-from jastudio.sysutils.typed import non_optional
-from jastudio.sysutils.weak_ref import WeakRefable
 
 if TYPE_CHECKING:
     from anki.collection import Collection

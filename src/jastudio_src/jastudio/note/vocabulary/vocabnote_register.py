@@ -7,8 +7,8 @@ from jastudio.note.notefields.tag_flag_field import TagFlagField
 from jastudio.note.tags import Tags
 
 if TYPE_CHECKING:
+    from jaslib.sysutils.weak_ref import WeakRef
     from jastudio.note.vocabulary.vocabnote import VocabNote
-    from jastudio.sysutils.weak_ref import WeakRef
 
 # todo performance: memory: high-priority: combine into a single bitfield in memory
 class VocabNoteRegister(Slots):

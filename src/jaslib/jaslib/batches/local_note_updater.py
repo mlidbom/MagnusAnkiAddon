@@ -188,7 +188,7 @@ def reparse_sentences(sentences: list[SentenceNote], run_gc_during_batch: bool =
         runner.process_with_progress(sentences, reparse_sentence, "Reparsing sentences.", run_gc=run_gc_during_batch, minimum_items_to_gc=500)
 
 # def print_gc_status_and_collect() -> None:
-#     from jaslib.sysutils import object_instance_tracker
+#     from jastudio.sysutils import object_instance_tracker
 #     object_instance_tracker.print_instance_counts()
 #
 #     app.get_ui_utils().tool_tip(f"Gc.isenabled(): {gc.isenabled()}, Collecting ...", 10000)

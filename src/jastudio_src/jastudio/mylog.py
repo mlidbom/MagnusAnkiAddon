@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING
 
-from jastudio.sysutils.lazy import Lazy
+from jaslib.sysutils.lazy import Lazy
 from jastudio.testutils import ex_pytest
 
 if TYPE_CHECKING:

@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.sysutils.ex_str import newline
 from jastudio.note.vocabulary.vocabnote import VocabNote
-from jastudio.sysutils.ex_str import newline
 from jastudio.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 from typed_linq_collections.collections.q_set import QSet
 

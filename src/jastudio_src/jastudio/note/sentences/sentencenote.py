@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING, cast, override
 
 from anki.notes import Note
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.sysutils import ex_str, kana_utils
+from jaslib.sysutils.weak_ref import WeakRef
 from jastudio.ankiutils import app
 from jastudio.note.jpnote import JPNote
 from jastudio.note.note_constants import ImmersionKitSentenceNoteFields, NoteFields, NoteTypes, SentenceNoteFields
@@ -16,8 +18,6 @@ from jastudio.note.sentences.caching_sentence_configuration_field import Caching
 from jastudio.note.sentences.parsing_result import ParsingResult
 from jastudio.note.sentences.user_fields import SentenceUserFields
 from jastudio.note.tags import Tags
-from jastudio.sysutils import ex_str, kana_utils
-from jastudio.sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:

@@ -5,11 +5,12 @@ from typing import TYPE_CHECKING, cast
 import pyperclip
 from anki.models import NotetypeDict
 from aqt import gui_hooks
+from jaslib.sysutils import ex_str, typed
+from jaslib.sysutils.timeutil import StopWatch
 from jastudio.ankiutils import app
 from jastudio.ankiutils.app import get_ui_utils
-from jastudio.sysutils import app_thread_pool, ex_str, typed
+from jastudio.sysutils import app_thread_pool
 from jastudio.sysutils.collections.recent_items import RecentItems
-from jastudio.sysutils.timeutil import StopWatch
 
 if TYPE_CHECKING:
     from anki.cards import Card

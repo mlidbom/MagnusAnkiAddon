@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from jaslib.sysutils.typed import non_optional
 from jastudio.ankiutils import app
-from jastudio.sysutils.typed import non_optional
 from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.menu_utils.ex_qmenu import add_ui_action
 from jastudio.ui.menus.notes.vocab.common import build_create_prefix_postfix_note_menu

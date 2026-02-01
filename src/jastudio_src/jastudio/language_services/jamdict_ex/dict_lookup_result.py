@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
+from jaslib.sysutils import ex_str, kana_utils
 from jastudio.language_services.jamdict_ex.priority_spec import PrioritySpec
-from jastudio.sysutils import ex_str, kana_utils
 from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:

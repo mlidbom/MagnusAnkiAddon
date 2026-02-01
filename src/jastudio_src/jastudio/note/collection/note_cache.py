@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
+from jaslib.sysutils.typed import checked_cast
 from jastudio.note.jpnote import JPNote
 from jastudio.qt_utils.task_progress_runner import TaskRunner
-from jastudio.sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
-from jastudio.sysutils.typed import checked_cast
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.collections.q_set import QSet
 

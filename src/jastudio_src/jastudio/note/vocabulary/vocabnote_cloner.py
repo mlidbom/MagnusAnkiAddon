@@ -13,8 +13,8 @@ from jastudio.note.vocabulary.pos import POS
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from jaslib.sysutils.weak_ref import WeakRef
     from jastudio.note.vocabulary.vocabnote import VocabNote
-    from jastudio.sysutils.weak_ref import WeakRef
 
 class VocabCloner(Slots):
     def __init__(self, note: WeakRef[VocabNote]) -> None:

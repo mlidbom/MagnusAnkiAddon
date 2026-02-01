@@ -7,8 +7,8 @@ from jastudio.language_services import conjugator
 from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
+    from jaslib.sysutils.weak_ref import WeakRef
     from jastudio.note.vocabulary.vocabnote import VocabNote
-    from jastudio.sysutils.weak_ref import WeakRef
     from typed_linq_collections.collections.q_list import QList
 
 class VocabNoteConjugator(Slots):

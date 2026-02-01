@@ -3,14 +3,14 @@ from __future__ import annotations
 from concurrent.futures.thread import ThreadPoolExecutor
 from typing import TYPE_CHECKING
 
+from jaslib.sysutils.typed import non_optional
 from jastudio.ankiutils import app
 from jastudio.sysutils import ex_thread
-from jastudio.sysutils.typed import non_optional
 from PyQt6.QtCore import QCoreApplication, QThread
 
 if TYPE_CHECKING:
 
-    from jastudio.sysutils.standard_type_aliases import Action, Func
+    from jaslib.sysutils.standard_type_aliases import Action, Func
 
 pool = ThreadPoolExecutor()
 

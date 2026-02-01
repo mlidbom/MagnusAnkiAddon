@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.sysutils.lazy import Lazy
 from jastudio.ankiutils import app
 from jastudio.note.note_constants import NoteFields
 from jastudio.note.notefields.auto_save_wrappers.field_wrapper import FieldWrapper
@@ -14,15 +15,14 @@ from jastudio.note.vocabulary.related_vocab.perfect_synonyms import PerfectSynon
 from jastudio.note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
 from jastudio.note.vocabulary.related_vocab.SeeAlso import SeeAlso
 from jastudio.note.vocabulary.related_vocab.Synonyms import Synonyms
-from jastudio.sysutils.lazy import Lazy
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
+    from jaslib.sysutils.weak_ref import WeakRef
     from jastudio.note.jpnote import JPNote
     from jastudio.note.kanjinote import KanjiNote
     from jastudio.note.vocabulary.vocabnote import VocabNote
-    from jastudio.sysutils.weak_ref import WeakRef
 
 class RelatedVocab(Slots): # todo performance: memory: do we need to cache all of this, could it be created on demand by properties instead?
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:

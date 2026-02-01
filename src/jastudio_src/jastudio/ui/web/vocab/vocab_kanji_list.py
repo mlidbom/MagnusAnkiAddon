@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from aqt import gui_hooks
+from jaslib.sysutils import ex_str
 from jastudio.note.vocabulary.vocabnote import VocabNote
-from jastudio.sysutils import ex_str
 from jastudio.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 from jastudio.viewmodels.kanji_list import sentence_kanji_list_viewmodel
 

@@ -3,18 +3,18 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.sysutils import kana_utils, typed
+from jaslib.sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
+from jaslib.sysutils.simple_string_list_builder import SimpleStringListBuilder
 from jastudio.configuration.settings import Settings
 from jastudio.language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-from jastudio.sysutils import kana_utils, typed
-from jastudio.sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
-from jastudio.sysutils.simple_string_list_builder import SimpleStringListBuilder
 from jastudio.ui.web.sentence.compound_part_viewmodel import CompoundPartViewModel
 from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
+    from jaslib.sysutils.weak_ref import WeakRef
     from jastudio.language_services.janome_ex.word_extraction.matches.match import Match
     from jastudio.note.sentences.sentence_configuration import SentenceConfiguration
-    from jastudio.sysutils.weak_ref import WeakRef
     from jastudio.ui.web.sentence.candidate_word_variant_viewmodel import CandidateWordVariantViewModel
 
 class MatchViewModel(Slots):

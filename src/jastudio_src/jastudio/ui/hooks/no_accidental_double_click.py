@@ -5,9 +5,9 @@ from typing import Literal
 from aqt import mw
 from aqt.reviewer import Reviewer
 from aqt.utils import tooltip
+from jaslib.sysutils.timeutil import StopWatch
+from jaslib.sysutils.typed import non_optional
 from jastudio.ankiutils import app
-from jastudio.sysutils.timeutil import StopWatch
-from jastudio.sysutils.typed import non_optional
 
 # noinspection PyProtectedMember
 _real_show_answer = Reviewer._showAnswer  # pyright: ignore[reportPrivateUsage]

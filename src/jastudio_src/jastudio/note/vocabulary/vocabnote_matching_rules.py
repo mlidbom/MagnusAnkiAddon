@@ -3,6 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
+from jaslib.sysutils.lazy import Lazy
+from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 from jastudio.note.note_constants import NoteFields
 from jastudio.note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
 from jastudio.note.notefields.json_object_field import MutableSerializedObjectField
@@ -12,9 +15,6 @@ from jastudio.note.tags import Tags
 from jastudio.note.vocabulary.serialization.matching_rules_serializer import VocabNoteMatchingRulesSerializer
 from jastudio.note.vocabulary.vocabnote_matching_rules_is_inflecting_word import IsInflectingWord
 from jastudio.note.vocabulary.vocabnote_matching_rules_yield_last_token_to_next_compound import YieldLastTokenToOverlappingCompound
-from jastudio.sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
-from jastudio.sysutils.lazy import Lazy
-from jastudio.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

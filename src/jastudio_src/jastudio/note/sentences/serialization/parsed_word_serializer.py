@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, cast
 
 from anki.notes import NoteId
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from jastudio.sysutils.ex_str import invisible_space
+from jaslib.sysutils.ex_str import invisible_space
 
 if TYPE_CHECKING:
     from jastudio.note.sentences.parsed_match import ParsedMatch

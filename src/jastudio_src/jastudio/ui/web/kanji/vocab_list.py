@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
+from jaslib.sysutils.ex_str import newline
 from jastudio.note.kanjinote import KanjiNote
-from jastudio.sysutils.ex_str import newline
 from jastudio.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
 if TYPE_CHECKING:

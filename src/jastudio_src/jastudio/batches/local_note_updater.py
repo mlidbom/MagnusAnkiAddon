@@ -5,6 +5,7 @@ import random
 import re
 from typing import TYPE_CHECKING
 
+from jaslib.sysutils import ex_str
 from jastudio.ankiutils import app, query_builder
 from jastudio.language_services.jamdict_ex.dict_lookup import DictLookup
 from jastudio.language_services.janome_ex.tokenizing.pre_processing_stage.ichidan_godan_potential_or_imperative_hybrid_splitter import IchidanGodanPotentialOrImperativeHybridSplitter
@@ -14,7 +15,6 @@ from jastudio.note.sentences.sentencenote import SentenceNote
 from jastudio.note.tags import Tags
 from jastudio.note.vocabulary.vocabnote import VocabNote
 from jastudio.qt_utils.task_progress_runner import TaskRunner
-from jastudio.sysutils import ex_str
 
 if TYPE_CHECKING:
     from anki.notes import NoteId

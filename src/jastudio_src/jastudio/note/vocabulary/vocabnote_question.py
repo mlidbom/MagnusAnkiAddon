@@ -7,8 +7,8 @@ from jastudio.language_services import conjugator
 from jastudio.note.note_constants import Mine, NoteFields
 
 if TYPE_CHECKING:
+    from jaslib.sysutils.weak_ref import WeakRef
     from jastudio.note.vocabulary.vocabnote import VocabNote
-    from jastudio.sysutils.weak_ref import WeakRef
 
 class VocabStems(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:

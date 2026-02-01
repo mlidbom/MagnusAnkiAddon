@@ -23,10 +23,11 @@ from aqt.editor import Editor
 from aqt.reviewer import RefreshNeeded
 from aqt.utils import tooltip
 from aqt.webview import AnkiWebView, AnkiWebViewKind
+from jaslib.sysutils import timeutil
+from jaslib.sysutils.typed import checked_cast, non_optional
 from jastudio.ankiutils.audio_suppressor import audio_suppressor
 from jastudio.ankiutils.ui_utils_interface import IUIUtils
-from jastudio.sysutils import app_thread_pool, timeutil
-from jastudio.sysutils.typed import checked_cast, non_optional
+from jastudio.sysutils import app_thread_pool
 
 _ANSWER_DISPLAY_TYPES = {"reviewAnswer", "previewAnswer", "clayoutAnswer"}
 

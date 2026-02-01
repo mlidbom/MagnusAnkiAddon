@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.sysutils.json import ex_json
+from jaslib.sysutils.json.json_reader import JsonReader
 from jastudio.note.notefields.auto_save_wrappers.value_wrapper import ValueWrapper
 from jastudio.note.notefields.json_object_field import ObjectSerializer
-from jastudio.sysutils.json import ex_json
-from jastudio.sysutils.json.json_reader import JsonReader
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:

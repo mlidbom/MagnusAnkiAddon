@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from urllib import parse
 
 from aqt.utils import openLink
-from jastudio.sysutils.typed import non_optional
+from jaslib.sysutils.typed import non_optional
 from jastudio.ui.menus.menu_utils import shortcutfinger
 
 if TYPE_CHECKING:
