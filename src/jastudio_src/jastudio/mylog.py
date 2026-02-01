@@ -19,7 +19,7 @@ def log_file_path(addon: str) -> Path:
     from pathlib import Path
 
     from aqt import mw
-    logs_dir = Path(mw.addonManager.addonsFolder(addon)) / "user_files" / "logs"
+    logs_dir = Path(mw.addonManager.addonsFolder(addon)) / "jastudio" / "user_files" / "logs"
     logs_dir.mkdir(parents=True, exist_ok=True)
     return logs_dir / f"{addon}.log"
 
@@ -71,7 +71,7 @@ def get_logger(module: str) -> logging.Logger:
 
     return logger
 
-_addon_name = os.path.basename(os.path.dirname(__file__))
+_addon_name = os.path.basename(os.path.dirname(os.path.dirname(__file__)))
 _logger: Lazy[logging.Logger] = Lazy(lambda: get_logger(_addon_name))
 
 def debug(msg: str) -> None:
