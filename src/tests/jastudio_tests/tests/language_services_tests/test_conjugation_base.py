@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from jastudio.language_services import  conjugator
 import pytest
+from jastudio.language_services import conjugator
 
 
 @pytest.mark.parametrize("word, conjugation_bases", [
