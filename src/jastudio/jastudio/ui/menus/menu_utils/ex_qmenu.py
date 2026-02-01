@@ -75,7 +75,7 @@ def create_note_action(menu: QMenu, name: str, callback: Callable[[], JPNote]) -
 def create_vocab_note_action(menu: QMenu, name: str, callback: Callable[[], VocabNote]) -> None:
     def do_it() -> VocabNote:
         new_note = callback()
-        from batches import local_note_updater
+        from jastudio.batches import local_note_updater
         local_note_updater.reparse_sentences_for_vocab(new_note)
         return new_note
 

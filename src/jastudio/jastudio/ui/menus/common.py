@@ -4,7 +4,7 @@ import typing
 
 import pyperclip
 from aqt import gui_hooks
-from batches import local_note_updater
+from jastudio.batches import local_note_updater
 from jastudio.ankiutils import app, query_builder, search_executor, ui_utils
 from jastudio.note.kanjinote import KanjiNote
 from jastudio.note.note_constants import Mine

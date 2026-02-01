@@ -18,5 +18,5 @@ def setup() -> Iterator[None]:
 
 @pytest.mark.usefixtures("setup")
 def test_smoke_full_rebuild() -> None:
-    from batches import local_note_updater
+    from jastudio.batches import local_note_updater
     local_note_updater.full_rebuild()

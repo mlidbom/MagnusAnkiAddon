@@ -58,7 +58,7 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
         add_ui_action(misc_menu, shortcutfinger.home1("Accept meaning"), lambda: vocab.user.answer.set(format_vocab_meaning(vocab.get_answer())), not vocab.user.answer.value)
         add_ui_action(misc_menu, shortcutfinger.home2("Generate answer"), lambda: vocab.generate_and_set_answer())
 
-        from batches import local_note_updater
+        from jastudio.batches import local_note_updater
         add_ui_action(misc_menu, shortcutfinger.home3("Reparse potentially matching sentences: (Only reparse all sentences is sure to catch everything)"), lambda: local_note_updater.reparse_sentences_for_vocab(vocab))
         add_ui_action(misc_menu, shortcutfinger.home4("Repopulate TOS"), lambda: vocab.parts_of_speech.set_automatically_from_dictionary())
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from batches import local_note_updater
+from jastudio.batches import local_note_updater
 from jastudio.ankiutils import app, ui_utils
 from jastudio.ankiutils.app import get_ui_utils, main_window
 from jastudio.configuration.configuration import show_japanese_options
