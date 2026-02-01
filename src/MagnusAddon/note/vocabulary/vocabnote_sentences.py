@@ -57,8 +57,12 @@ class VocabNoteSentences(WeakRefable, Slots):
     @property
     def _vocab(self) -> VocabNote: return self.__vocab()
 
+
+
     @property
     def _collection(self) -> JPCollection: return self._vocab.collection
+
+    def studying(self) -> list[SentenceNote]: raise NotImplementedError()
 
     def all(self) -> list[SentenceNote]:
         return self._collection.sentences.with_vocab(self._vocab)

@@ -41,6 +41,11 @@ class JPNote(WeakRefable, Slots):
 
     def _update_in_cache(self) -> None: raise NotImplementedError()
 
+    def is_studying(self) -> bool: raise NotImplementedError()
+    def is_studying_read(self) -> bool: raise NotImplementedError()
+    def is_studying_listening(self) -> bool: raise NotImplementedError()
+
+
     @override
     def __hash__(self) -> int:
         if not self.__hash_value:
