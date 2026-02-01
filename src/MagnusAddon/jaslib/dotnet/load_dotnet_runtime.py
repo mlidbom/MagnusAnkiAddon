@@ -17,6 +17,7 @@ try:
     import clr
 
     clr.AddReference("System.Runtime")
+    # noinspection PyPackageRequirements
     from System import Environment
 
     dotnet_version = Environment.Version

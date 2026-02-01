@@ -35,7 +35,7 @@ class SentenceCounts(Slots):
             if self._total < 100: return 600
             return 6000
 
-        # noinspection PyUnusedLocal
+        # noinspection PyUnusedLocal, Annotator
         def get_studying_sentence_count(card: str = "") -> int:  # pyright: ignore
             return len(sentences) #todo migration bug
 

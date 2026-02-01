@@ -7,5 +7,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
 # noinspection PyUnusedFunction
 class JsonLibraryShim(Slots):
+    # noinspection Annotator
     def loads(self, json_str: str) -> dict[str, Any]: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter, reportExplicitAny]
+    # noinspection Annotator
     def dumps(self, object_dict: dict[str, Any], indent: int | None = None) -> str: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter, reportExplicitAny]

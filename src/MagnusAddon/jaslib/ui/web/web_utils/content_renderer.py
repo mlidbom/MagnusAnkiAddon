@@ -18,6 +18,7 @@ class PrerenderingAnswerContentRenderer[TNote: JPNote](Slots):
         self._promises: dict[str, Future[str]] | None = None
 
 
+    # noinspection Annotator
     def render(self, html: str, note: JPNote, type_of_display: str) -> str:  # pyright: ignore
 
         if isinstance(note, self._cls):
