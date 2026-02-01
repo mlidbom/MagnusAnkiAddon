@@ -7,7 +7,6 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.dictionary_match import DictionaryMatch
 from language_services.janome_ex.word_extraction.matches.missing_match import MissingMatch
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils import ex_assert
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
@@ -98,9 +97,6 @@ class CandidateWordVariant(WeakRefable, Slots):
     def _once_visibility_analyzed(self) -> CandidateWordVariant:
         if not self._completed_validity_analysis: raise Exception("Analysis not completed yet")
         return self
-
-    def to_exclusion(self) -> WordExclusion:
-        return WordExclusion.at_index(self.form, self.start_index)
 
     @override
     def __repr__(self) -> str:

@@ -58,6 +58,7 @@ def reset(delay_seconds: float = 0) -> None:
     _destruct()
     _init(delay_seconds)
 
+# noinspection Annotator
 def _reset(_col: object | None = None) -> None:
     mylog.info("_reset")
     reset()
@@ -72,6 +73,7 @@ def _destruct() -> None:
 
         _collection = None
 
+# noinspection Annotator
 def _collection_is_being_invalidated(_col: object | None = None) -> None:
     mylog.info("_collection_is_being_invalidated")
     _destruct()
@@ -120,6 +122,7 @@ def get_ui_utils() -> IUIUtils:
     from ankiutils.ui_utils import UIUtils
     return UIUtils(main_window())
 
+# noinspection Annotator
 def _collection_closed(_collection: Collection, _downgrade: bool = False) -> None:
     for hook in _collection_closed_hooks:
         hook()

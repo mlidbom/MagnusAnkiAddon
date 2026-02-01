@@ -42,4 +42,4 @@ class VocabNoteRegister(Slots):
     @property
     def derogatory(self) -> TagFlagField: return TagFlagField(self._vocab, Tags.Vocab.Register.derogatory)
     @property
-    def childish(self) -> TagFlagField: return TagFlagField(self._vocab, Tags.Vocab.Register.childish   )
+    def childish(self) -> TagFlagField: return TagFlagField(self._vocab, Tags.Vocab.Register.childish)

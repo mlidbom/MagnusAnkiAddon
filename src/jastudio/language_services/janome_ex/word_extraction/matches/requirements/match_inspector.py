@@ -84,14 +84,6 @@ class MatchInspector(Slots):
         return self.next_location.token.surface if self.next_location else ""
 
     @property
-    def tokenized_form(self) -> str:
-        return self.match.tokenized_form
-
-    @property
-    def parsed_form(self) -> str:
-        return self.match.parsed_form
-
-    @property
     def has_godan_imperative_part(self) -> bool:
         return self.start_location.token.is_godan_imperative_inflection or self.start_location.token.is_godan_imperative_stem
 

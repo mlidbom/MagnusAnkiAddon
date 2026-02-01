@@ -69,10 +69,12 @@ class ObjectInstanceTracker(Slots):
 
 def print_instance_counts() -> None:
     print("################### Instance counts ###################")
-    for type_name, count in (current_instance_count.qitems()
-            .order_by(lambda kv: kv.key)
-            .order_by_descending(lambda kv: kv.value)
-            .to_list()):
+
+    counts = (current_instance_count.qitems()
+              .order_by(lambda kv: kv.key)
+              .order_by_descending(lambda kv: kv.value)
+              .to_list())
+    for type_name, count in counts:
         print(f"{count} {type_name}")
 
 def single_line_report() -> str:

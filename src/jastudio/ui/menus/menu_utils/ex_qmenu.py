@@ -18,10 +18,6 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
     from note.vocabulary.vocabnote import VocabNote
 
-def build_checkbox_config_section_menu(menu: QMenu, toggles: list[ConfigurationValueBool]) -> None:
-    for index, toggle in enumerate(toggles):
-        add_checkbox_config(menu, toggle, shortcutfinger.finger_by_priority_order(index, toggle.title))
-
 def add_checkbox_config(menu: QMenu, config_value: ConfigurationValueBool, _title: str) -> None:
     checkbox_action = QAction(_title, app.main_window())
     checkbox_action.setCheckable(True)

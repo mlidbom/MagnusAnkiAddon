@@ -16,13 +16,13 @@ godan_potential_verb_ending_to_dictionary_form_endings: dict[str, str] = {"え�
 
 godan_imperative_verb_endings: set[str] = {"え", "け", "げ", "せ", "て", "ね", "べ", "め", "れ"}
 
-e_stem_hiragana: set[str] = {"え", "け", "げ", "せ", "て", "ね", "べ", "め", "れ"}
-e_stem_katakana: set[str] = {"エ", "ケ", "ゲ", "セ", "テ", "ネ", "ベ", "メ", "レ"}
-e_stem_characters: set[str] = e_stem_hiragana | e_stem_katakana
-
-a_stem_hiragana: set[str] = {"わ", "か", "が", "さ", "た", "な", "ば", "ま", "ら", }
-a_stem_katakana: set[str] = {"ワ", "カ", "ガ", "サ", "タ", "ナ", "バ", "マ", "ラ"}
-a_stem_characters: set[str] = a_stem_hiragana | a_stem_katakana
+# e_stem_hiragana: set[str] = {"え", "け", "げ", "せ", "て", "ね", "べ", "め", "れ"}
+# e_stem_katakana: set[str] = {"エ", "ケ", "ゲ", "セ", "テ", "ネ", "ベ", "メ", "レ"}
+# e_stem_characters: set[str] = e_stem_hiragana | e_stem_katakana
+#
+# a_stem_hiragana: set[str] = {"わ", "か", "が", "さ", "た", "な", "ば", "ま", "ら", }
+# a_stem_katakana: set[str] = {"ワ", "カ", "ガ", "サ", "タ", "ナ", "バ", "マ", "ラ"}
+# a_stem_characters: set[str] = a_stem_hiragana | a_stem_katakana
 
 # o_row_hiragana: set[str] = {"を", "こ", "ご", "そ", "と", "の", "ぼ", "も", "ろ"}
 # o_row_katakana: set[str] = {"オ", "コ", "ゴ", "ソ", "ト", "ノ", "ボ", "モ", "ロ"}

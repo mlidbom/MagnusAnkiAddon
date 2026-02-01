@@ -124,10 +124,6 @@ class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
         return cls.try_get_godan_hidden_by_ichidan(vocab) is not None
 
     @classmethod
-    def get_godan_hidden_by_ichidan(cls, vocab: VocabNote) -> WordInfoEntry:
-        return non_optional(cls.try_get_godan_hidden_by_ichidan(vocab))
-
-    @classmethod
     def try_get_godan_hidden_by_ichidan(cls, vocab: VocabNote) -> WordInfoEntry | None:
         question = vocab.get_question()
         if cls.base_form_has_godan_potential_ending(question):

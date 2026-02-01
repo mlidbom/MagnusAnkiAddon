@@ -19,6 +19,7 @@ def checked_cast[CastT](cls: type[CastT], instance: object) -> CastT:
         raise TypeError(f"{repr(instance)}: expected {cls.__name__}, not {instance.__class__.__name__}")
     return instance
 
+# noinspection Annotator
 def checked_cast_generics[CastT](cls: type[CastT], instance: object) -> CastT:
     """ Runtime-check an object for a specific generic type and return it cast as such """
     if not is_bearable(instance, cls):  # pyright: ignore [reportArgumentType]
