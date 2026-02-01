@@ -1,0 +1,19 @@
+﻿<SolutionConfiguration>
+  <Settings>
+    <AutoEnable>True</AutoEnable>
+    <CurrentEngineMode>All [Global]</CurrentEngineMode>
+    <DisabledNodes>
+      <Value>localhost:41141</Value>
+      <Value>manges-laptop:41141</Value>
+    </DisabledNodes>
+    <StatusIndicatorSplitterDistance>13.1578950881958%</StatusIndicatorSplitterDistance>
+    <TestsWindowMenuOptions>
+      <VerticalSplitMenuOption>false</VerticalSplitMenuOption>
+      <ShowPassingTestsMenuOption>true</ShowPassingTestsMenuOption>
+      <ShowFailingTestsMenuOption>true</ShowFailingTestsMenuOption>
+      <ShowUnexecutedTestsMenuOption>true</ShowUnexecutedTestsMenuOption>
+      <ShowIgnoredTestsMenuOption>false</ShowIgnoredTestsMenuOption>
+    </TestsWindowMenuOptions>
+    <TestsWindowSplitterDistance>48.61111068725586%</TestsWindowSplitterDistance>
+  </Settings>
+</SolutionConfiguration>
