@@ -23,7 +23,7 @@ from jaslib.note.vocabulary.vocabnote_register import VocabNoteRegister
 from jaslib.note.vocabulary.vocabnote_sentences import VocabNoteSentences
 from jaslib.note.vocabulary.vocabnote_usercompoundparts import VocabNoteUserCompoundParts
 from jaslib.note.vocabulary.vocabnote_userfields import VocabNoteUserfields
-from sysutils.weak_ref import WeakRef
+from jaslib.sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from typed_linq_collections.collections.q_set import QSet

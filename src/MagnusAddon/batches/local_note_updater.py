@@ -10,8 +10,8 @@ from jaslib.language_services.janome_ex.tokenizing.pre_processing_stage.ichidan_
 from jaslib.note.sentences.parsed_match import ParsedMatch
 from jaslib.note.tags import Tags
 from jaslib.note.vocabulary.vocabnote import VocabNote
+from jaslib.sysutils import ex_str
 from qt_utils.task_progress_runner import TaskRunner
-from sysutils import ex_str
 
 if TYPE_CHECKING:
     from jaslib.language_services.jamdict_ex.dict_lookup_result import DictLookupResult
@@ -187,7 +187,7 @@ def reparse_sentences(sentences: list[SentenceNote], run_gc_during_batch: bool =
         runner.process_with_progress(sentences, reparse_sentence, "Reparsing sentences.", run_gc=run_gc_during_batch, minimum_items_to_gc=500)
 
 # def print_gc_status_and_collect() -> None:
-#     from sysutils import object_instance_tracker
+#     from jaslib.sysutils import object_instance_tracker
 #     object_instance_tracker.print_instance_counts()
 #
 #     app.get_ui_utils().tool_tip(f"Gc.isenabled(): {gc.isenabled()}, Collecting ...", 10000)

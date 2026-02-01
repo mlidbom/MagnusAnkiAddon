@@ -8,7 +8,7 @@ from jaslib.note.notefields.audio_field import WritableAudioField
 
 if TYPE_CHECKING:
     from jaslib.note.vocabulary.vocabnote import VocabNote
-    from sysutils.weak_ref import WeakRef
+    from jaslib.sysutils.weak_ref import WeakRef
 
 class VocabNoteAudio(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:

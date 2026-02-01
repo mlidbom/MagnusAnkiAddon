@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jaslib.note.vocabulary.related_vocab.related_vocab_data_serializer import RelatedVocabDataSerializer
-from sysutils.lazy import Lazy
+from jaslib.sysutils.lazy import Lazy
 
 if TYPE_CHECKING:
     from jaslib.note.notefields.auto_save_wrappers.value_wrapper import ValueWrapper

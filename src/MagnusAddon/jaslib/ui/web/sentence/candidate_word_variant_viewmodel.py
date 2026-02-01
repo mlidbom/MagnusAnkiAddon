@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
+from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 from jaslib.ui.web.sentence.match_viewmodel import MatchViewModel
-from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
-from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from jaslib.language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jaslib.note.notefields.fallback_string_field import FallbackStringField
-from sysutils import ex_str
+from jaslib.sysutils import ex_str
 
 if TYPE_CHECKING:
     from jaslib.note.notefields.mutable_string_field import MutableStringField

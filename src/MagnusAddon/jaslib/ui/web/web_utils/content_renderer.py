@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jaslib.note.jpnote import JPNote
-from sysutils.timeutil import StopWatch
+from jaslib.sysutils.timeutil import StopWatch
 
 if TYPE_CHECKING:
     from collections.abc import Callable

@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from jaslib.note.tag import Tag
-from sysutils.bit_flags_set import BitFlagsSet
-from sysutils.memory_usage import string_auto_interner
+from jaslib.sysutils.bit_flags_set import BitFlagsSet
+from jaslib.sysutils.memory_usage import string_auto_interner
 from typed_linq_collections.collections.q_dict import QDict
 from typed_linq_collections.q_iterable import QIterable, query
 
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from jaslib.note.jpnote import JPNote
-    from sysutils.weak_ref import WeakRef
+    from jaslib.sysutils.weak_ref import WeakRef
 
 class NoteTags(QIterable[Tag]):
     __slots__: tuple[str, ...] = ("_note", "_flags")

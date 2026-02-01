@@ -9,8 +9,8 @@ from jaslib.note.note_constants import MyNoteFields
 from jaslib.note.note_flush_guard import NoteRecursiveFlushGuard
 from jaslib.note.note_tags import NoteTags
 from jaslib.note.tags import Tags
-from sysutils import ex_assert, ex_str
-from sysutils.weak_ref import WeakRef, WeakRefable
+from jaslib.sysutils import ex_assert, ex_str
+from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:

@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from jaslib.note.kanjinote import KanjiNote
+from jaslib.sysutils import ex_str, kana_utils
 from jaslib.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
-from sysutils import ex_str, kana_utils
 from viewmodels.kanji_list.sentence_kanji_viewmodel import KanjiViewModel
 
 if TYPE_CHECKING:

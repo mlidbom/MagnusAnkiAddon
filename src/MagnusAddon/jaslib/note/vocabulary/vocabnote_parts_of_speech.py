@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from jaslib.note.vocabulary.vocabnote import VocabNote
-    from sysutils.weak_ref import WeakRef
+    from jaslib.sysutils.weak_ref import WeakRef
 
 class VocabNotePartsOfSpeech(Slots):
     _field_name: str = NoteFields.Vocab.parts_of_speech

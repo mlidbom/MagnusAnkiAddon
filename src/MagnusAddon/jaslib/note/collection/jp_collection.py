@@ -7,8 +7,8 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jaslib.note.collection.kanji_collection import KanjiCollection
 from jaslib.note.collection.sentence_collection import SentenceCollection
 from jaslib.note.collection.vocab_collection import VocabCollection
-from sysutils.typed import non_optional
-from sysutils.weak_ref import WeakRefable
+from jaslib.sysutils.typed import non_optional
+from jaslib.sysutils.weak_ref import WeakRefable
 
 
 class JPCollection(WeakRefable, Slots):

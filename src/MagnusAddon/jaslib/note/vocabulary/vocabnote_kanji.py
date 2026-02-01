@@ -3,13 +3,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from sysutils import ex_str, kana_utils
+from jaslib.sysutils import ex_str, kana_utils
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
     from jaslib.note.vocabulary.vocabnote import VocabNote
-    from sysutils.weak_ref import WeakRef
+    from jaslib.sysutils.weak_ref import WeakRef
     from typed_linq_collections.collections.q_list import QList
 
 class VocabNoteKanji(Slots):

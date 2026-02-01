@@ -8,7 +8,7 @@ from jaslib.note.tags import Tags
 
 if TYPE_CHECKING:
     from jaslib.note.vocabulary.vocabnote import VocabNote
-    from sysutils.weak_ref import WeakRef
+    from jaslib.sysutils.weak_ref import WeakRef
 
 # todo performance: memory: high-priority: combine into a single bitfield in memory
 # noinspection PyUnusedFunction

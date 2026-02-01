@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sysutils import typed
+from jaslib.sysutils import typed
 
 
 def test_int() -> None:

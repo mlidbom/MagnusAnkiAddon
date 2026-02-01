@@ -9,8 +9,8 @@ from jaslib.language_services.janome_ex.tokenizing.inflection_forms import Infle
 from jaslib.language_services.janome_ex.tokenizing.inflection_types import InflectionTypes
 from jaslib.language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPOS, JNPartsOfSpeech
 from jaslib.language_services.janome_ex.word_extraction import analysis_constants
-from sysutils import kana_utils, typed
-from sysutils.weak_ref import WeakRef, WeakRefable
+from jaslib.sysutils import kana_utils, typed
+from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from janome.tokenizer import Token  # pyright: ignore[reportMissingTypeStubs]

@@ -7,9 +7,9 @@ from ankiutils.app import col
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jaslib.note.note_constants import Mine, NoteFields
 from jaslib.note.notefields.comma_separated_strings_list_field_de_duplicated import MutableCommaSeparatedStringsListFieldDeDuplicated
-from sysutils import ex_str
-from sysutils.lazy import Lazy
-from sysutils.weak_ref import WeakRef, WeakRefable
+from jaslib.sysutils import ex_str
+from jaslib.sysutils.lazy import Lazy
+from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
 

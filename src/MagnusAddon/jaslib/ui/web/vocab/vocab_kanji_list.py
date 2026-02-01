@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from jaslib.note.vocabulary.vocabnote import VocabNote
+from jaslib.sysutils import ex_str
 from jaslib.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
-from sysutils import ex_str
 from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 
 

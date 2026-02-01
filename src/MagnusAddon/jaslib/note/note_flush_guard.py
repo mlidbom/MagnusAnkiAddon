@@ -6,13 +6,13 @@ from typing import TYPE_CHECKING
 import mylog
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jaslib.configuration.settings import Settings
-from sysutils import ex_assert
+from jaslib.sysutils import ex_assert
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from jaslib.note.jpnote import JPNote
-    from sysutils.weak_ref import WeakRef
+    from jaslib.sysutils.weak_ref import WeakRef
 
 class NoteRecursiveFlushGuard(Slots):
     def __init__(self, note: WeakRef[JPNote]) -> None:

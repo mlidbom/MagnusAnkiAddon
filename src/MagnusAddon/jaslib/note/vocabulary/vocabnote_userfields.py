@@ -9,7 +9,7 @@ from jaslib.note.notefields.mutable_string_field import MutableStringField
 
 if TYPE_CHECKING:
     from jaslib.note.vocabulary.vocabnote import VocabNote
-    from sysutils.weak_ref import WeakRef
+    from jaslib.sysutils.weak_ref import WeakRef
 
 class VocabNoteUserfields(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, cast, final
 
 from autoslot import Slots
 from jaslib.note.vocabulary.pos_set_interner import POSSetManager
-from sysutils import kana_utils
+from jaslib.sysutils import kana_utils
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.q_iterable import query
 

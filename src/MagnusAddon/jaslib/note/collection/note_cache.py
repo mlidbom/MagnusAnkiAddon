@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jaslib.note.jpnote import JPNote, NoteId
-from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
+from jaslib.sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.collections.q_set import QSet
 

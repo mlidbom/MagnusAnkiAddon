@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, cast
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jaslib.note.jpnote import NoteId
-from sysutils.ex_str import invisible_space
+from jaslib.sysutils.ex_str import invisible_space
 
 if TYPE_CHECKING:
     from jaslib.note.sentences.parsed_match import ParsedMatch

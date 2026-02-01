@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import pytest
 from fixtures.collection_factory import inject_empty_collection
 from jaslib.note.sentences.sentencenote import SentenceNote
-from sysutils import ex_str
+from jaslib.sysutils import ex_str
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

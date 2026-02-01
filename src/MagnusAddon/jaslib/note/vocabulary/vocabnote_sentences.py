@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jaslib.note.note_constants import NoteFields
-from sysutils.lazy import Lazy
-from sysutils.weak_ref import WeakRef, WeakRefable
+from jaslib.sysutils.lazy import Lazy
+from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from jaslib.note.collection.jp_collection import JPCollection

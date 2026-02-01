@@ -7,7 +7,7 @@ from jaslib.note.notefields.mutable_string_field import MutableStringField
 
 if TYPE_CHECKING:
     from jaslib.note.jpnote import JPNote
-    from sysutils.weak_ref import WeakRef
+    from jaslib.sysutils.weak_ref import WeakRef
 
 class IntegerField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:

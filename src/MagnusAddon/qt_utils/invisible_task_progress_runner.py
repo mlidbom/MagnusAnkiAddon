@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING, override
 
 import mylog
 from autoslot import Slots
+from jaslib.sysutils.timeutil import StopWatch
 from qt_utils.i_task_progress_runner import ITaskRunner
-from sysutils.timeutil import StopWatch
 
 if TYPE_CHECKING:
     from collections.abc import Callable

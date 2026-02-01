@@ -4,8 +4,8 @@ import note.vocabulary.vocabnote_sorting
 from ankiutils import app
 from jaslib.language_services import conjugator
 from jaslib.note.vocabulary.vocabnote import VocabNote
+from jaslib.sysutils.ex_str import newline
 from jaslib.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
-from sysutils.ex_str import newline
 from typed_linq_collections.q_iterable import query
 
 

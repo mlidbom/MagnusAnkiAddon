@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from autoslot import Slots
+from jaslib.sysutils.typed import non_optional
 from qt_utils.invisible_task_progress_runner import InvisibleTaskRunner
-from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

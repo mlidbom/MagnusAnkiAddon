@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import pytest
 from ankiutils import app
 from fixtures import collection_factory
-from sysutils.typed import non_optional
+from jaslib.sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

@@ -15,8 +15,8 @@ from jaslib.note.sentences.caching_sentence_configuration_field import CachingSe
 from jaslib.note.sentences.parsing_result import ParsingResult
 from jaslib.note.sentences.user_fields import SentenceUserFields
 from jaslib.note.tags import Tags
-from sysutils import ex_str, kana_utils
-from sysutils.weak_ref import WeakRef
+from jaslib.sysutils import ex_str, kana_utils
+from jaslib.sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:

@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING, cast
 
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from sysutils.lazy import Lazy
-from sysutils.weak_ref import WeakRefable
+from jaslib.sysutils.lazy import Lazy
+from jaslib.sysutils.weak_ref import WeakRefable
 
 if TYPE_CHECKING:
     from collections.abc import Callable

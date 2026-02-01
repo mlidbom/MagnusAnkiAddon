@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from jaslib.note.tags import Tags
 from jaslib.note.vocabulary.vocabnote import VocabNote
+from jaslib.sysutils.ex_str import newline
 from jaslib.ui.web.vocab.vocab_sentences_vocab_sentence_view_model import VocabSentenceViewModel
 from jaslib.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
-from sysutils.ex_str import newline
 
 
 def generate_marked_invalid_in_list_html(_vocab_note: VocabNote) -> str:

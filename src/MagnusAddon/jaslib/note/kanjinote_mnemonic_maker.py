@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ankiutils import app
-from sysutils import kana_utils
-from sysutils.ex_str import newline
+from jaslib.sysutils import kana_utils
+from jaslib.sysutils.ex_str import newline
 
 if TYPE_CHECKING:
     from jaslib.note.kanjinote import KanjiNote

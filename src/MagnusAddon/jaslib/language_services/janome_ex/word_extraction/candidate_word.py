@@ -5,14 +5,14 @@ from typing import TYPE_CHECKING, final, override
 from autoslot import Slots
 from jaslib.language_services.janome_ex.word_extraction.analysis_constants import noise_characters
 from jaslib.language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
-from sysutils.typed import non_optional
-from sysutils.weak_ref import WeakRef, WeakRefable
+from jaslib.sysutils.typed import non_optional
+from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from jaslib.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
     from jaslib.language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
 
-from sysutils.ex_str import newline
+from jaslib.sysutils.ex_str import newline
 
 
 @final

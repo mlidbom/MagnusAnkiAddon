@@ -6,8 +6,8 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jaslib.configuration.settings import Settings
 from jaslib.note.notefields.require_forbid_flag_field import RequireForbidFlagField
 from jaslib.note.tags import Tags
-from sysutils.simple_string_builder import SimpleStringBuilder
-from sysutils.weak_ref import WeakRef, WeakRefable
+from jaslib.sysutils.simple_string_builder import SimpleStringBuilder
+from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from jaslib.note.vocabulary.vocabnote import VocabNote

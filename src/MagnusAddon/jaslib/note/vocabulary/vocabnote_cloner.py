@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from jaslib.note.vocabulary.vocabnote import VocabNote
-    from sysutils.weak_ref import WeakRef
+    from jaslib.sysutils.weak_ref import WeakRef
 
 # noinspection PyUnusedFunction
 class VocabCloner(Slots):

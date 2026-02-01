@@ -15,7 +15,7 @@ from jaslib.language_services.janome_ex.word_extraction.matches.state_tests.is_g
 from jaslib.language_services.janome_ex.word_extraction.matches.state_tests.is_inflected_surface_with_valid_base import ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb
 from jaslib.language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import ForbidsIsShadowed
 from jaslib.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from sysutils.weak_ref import WeakRef, WeakRefable
+from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from collections.abc import Callable

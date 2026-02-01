@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from jaslib.note.notefields.json_object_field import MutableSerializedObjectField
     from jaslib.note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
     from jaslib.note.vocabulary.vocabnote import VocabNote
-    from sysutils.weak_ref import WeakRef
+    from jaslib.sysutils.weak_ref import WeakRef
 
 class ErgativeTwin(Slots):
     def __init__(self, vocab: WeakRef[VocabNote], data: MutableSerializedObjectField[RelatedVocabData]) -> None:

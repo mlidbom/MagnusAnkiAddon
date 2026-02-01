@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from jaslib.note.kanjinote import KanjiNote
+from jaslib.sysutils import kana_utils
 from jaslib.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
-from sysutils import kana_utils
 
 
 def render_katakana_onyomi(kanji_note: KanjiNote) -> str:

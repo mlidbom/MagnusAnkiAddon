@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 from jaslib.note.sentences.parsed_match import ParsedMatch
 from jaslib.note.sentences.serialization.parsing_result_serializer import ParsingResultSerializer
-from sysutils import ex_str
-from sysutils.memory_usage import string_auto_interner
+from jaslib.sysutils import ex_str
+from jaslib.sysutils.memory_usage import string_auto_interner
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.collections.q_unique_list import QUniqueList

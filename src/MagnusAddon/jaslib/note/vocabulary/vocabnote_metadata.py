@@ -9,7 +9,7 @@ from jaslib.note.vocabulary import vocabnote_meta_tag
 
 if TYPE_CHECKING:
     from jaslib.note.vocabulary.vocabnote import VocabNote
-    from sysutils.weak_ref import WeakRef
+    from jaslib.sysutils.weak_ref import WeakRef
 
 
 class VocabNoteMetaData(Slots):

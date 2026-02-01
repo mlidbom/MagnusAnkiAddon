@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from jaslib.note.kanjinote import KanjiNote
+from jaslib.sysutils.ex_str import newline
 from jaslib.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
-from sysutils.ex_str import newline
 
 if TYPE_CHECKING:
     from jaslib.note.vocabulary.vocabnote import VocabNote

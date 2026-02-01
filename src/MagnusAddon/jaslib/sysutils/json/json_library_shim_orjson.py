@@ -3,7 +3,7 @@
 # from typing import Any
 #
 # from ex_autoslot import ProfilableSlots
-# from sysutils.json.json_library_shim import JsonLibraryShim
+# from jaslib.sysutils.json.json_library_shim import JsonLibraryShim
 #
 #
 # # noinspection PyUnusedClass,PyUnusedFunction

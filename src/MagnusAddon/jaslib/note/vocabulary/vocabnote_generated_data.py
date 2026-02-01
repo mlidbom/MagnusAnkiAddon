@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from jaslib.note.tags import Tags
 from jaslib.note.vocabulary.pos import POS
-from sysutils import kana_utils
+from jaslib.sysutils import kana_utils
 from typed_linq_collections.collections.q_frozen_set import QFrozenSet
 
 if TYPE_CHECKING:

@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING, Any, override
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jaslib.note.notefields.auto_save_wrappers.value_wrapper import ValueWrapper
 from jaslib.note.notefields.json_object_field import ObjectSerializer
-from sysutils.json import ex_json
-from sysutils.json.json_reader import JsonReader
+from jaslib.sysutils.json import ex_json
+from jaslib.sysutils.json.json_reader import JsonReader
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:

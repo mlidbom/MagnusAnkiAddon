@@ -8,7 +8,7 @@ from jaslib.language_services.janome_ex.word_extraction.matches.requirements.mat
 if TYPE_CHECKING:
     from jaslib.language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
     from jaslib.note.vocabulary.vocabnote_matching_rules import VocabMatchingRulesConfigurationRequiresForbidsFlags
-    from sysutils.weak_ref import WeakRef
+    from jaslib.sysutils.weak_ref import WeakRef
 
 class VocabMatchInspector(MatchInspector, Slots):
     """Base class providing access to VocabMatch context and helper properties.

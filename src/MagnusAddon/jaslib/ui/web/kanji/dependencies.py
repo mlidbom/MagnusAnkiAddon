@@ -3,8 +3,8 @@ from __future__ import annotations
 import re
 
 from jaslib.note.kanjinote import KanjiNote
+from jaslib.sysutils import ex_str, kana_utils
 from jaslib.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
-from sysutils import ex_str, kana_utils
 
 
 def render_dependencies_list(note: KanjiNote) -> str:

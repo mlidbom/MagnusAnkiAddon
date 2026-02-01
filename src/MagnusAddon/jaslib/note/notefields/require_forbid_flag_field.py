@@ -8,7 +8,7 @@ from jaslib.note.tags import Tags  # pyright: ignore[reportMissingTypeStubs]
 if TYPE_CHECKING:
     from jaslib.note.jpnote import JPNote
     from jaslib.note.tag import Tag
-    from sysutils.weak_ref import WeakRef
+    from jaslib.sysutils.weak_ref import WeakRef
 
 # noinspection PyUnusedFunction
 class RequireForbidFlagField(Slots):

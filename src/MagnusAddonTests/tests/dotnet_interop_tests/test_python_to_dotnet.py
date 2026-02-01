@@ -9,7 +9,7 @@ from autoslot import Slots
 from dotnet import dotnet_runtime_loader
 
 #from typing import override
-from sysutils.timeutil import StopWatch
+from jaslib.sysutils.timeutil import StopWatch
 
 dotnet_runtime_loader.ensure_clr_loaded()
 

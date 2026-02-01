@@ -7,7 +7,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jaslib.note.note_constants import SentenceNoteFields
 from jaslib.note.notefields.mutable_string_field import MutableStringField
 from jaslib.note.sentences.sentence_configuration import SentenceConfiguration
-from sysutils.weak_ref import WeakRef, WeakRefable
+from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:

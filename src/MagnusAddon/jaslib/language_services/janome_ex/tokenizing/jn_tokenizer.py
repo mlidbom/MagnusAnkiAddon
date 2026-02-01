@@ -7,7 +7,7 @@ from janome.tokenizer import Token, Tokenizer  # pyright: ignore[reportMissingTy
 from jaslib.language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPartsOfSpeech
 from jaslib.language_services.janome_ex.tokenizing.jn_token import JNToken
 from jaslib.language_services.janome_ex.tokenizing.jn_tokenized_text import JNTokenizedText
-from sysutils import ex_str, typed
+from jaslib.sysutils import ex_str, typed
 
 
 @final

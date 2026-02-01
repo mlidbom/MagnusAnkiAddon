@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 from jaslib.note.collection.note_cache import CachedNote, NoteCache
 from jaslib.note.kanjinote import KanjiNote
-from sysutils import kana_utils
+from jaslib.sysutils import kana_utils
 from typed_linq_collections.collections.q_list import QList
 
 

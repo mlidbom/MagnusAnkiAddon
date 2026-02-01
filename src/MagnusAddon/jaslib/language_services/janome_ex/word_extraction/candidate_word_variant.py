@@ -8,9 +8,9 @@ from jaslib.language_services.janome_ex.word_extraction.matches.dictionary_match
 from jaslib.language_services.janome_ex.word_extraction.matches.missing_match import MissingMatch
 from jaslib.language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from jaslib.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from sysutils import ex_assert
-from sysutils.lazy import Lazy
-from sysutils.weak_ref import WeakRef, WeakRefable
+from jaslib.sysutils import ex_assert
+from jaslib.sysutils.lazy import Lazy
+from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
