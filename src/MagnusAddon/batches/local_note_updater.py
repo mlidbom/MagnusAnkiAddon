@@ -11,7 +11,7 @@ from jaslib.note.sentences.parsed_match import ParsedMatch
 from jaslib.note.tags import Tags
 from jaslib.note.vocabulary.vocabnote import VocabNote
 from jaslib.sysutils import ex_str
-from qt_utils.task_progress_runner import TaskRunner
+from task_runners.task_progress_runner import TaskRunner
 
 if TYPE_CHECKING:
     from jaslib.language_services.jamdict_ex.dict_lookup_result import DictLookupResult
