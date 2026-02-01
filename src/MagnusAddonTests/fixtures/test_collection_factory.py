@@ -14,9 +14,9 @@ if TYPE_CHECKING:
 
     from collections.abc import Iterator
 
-    from note.kanjinote import KanjiNote
-    from note.sentences.sentencenote import SentenceNote
-    from note.vocabulary.vocabnote import VocabNote
+    from jaslib.note.kanjinote import KanjiNote
+    from jaslib.note.sentences.sentencenote import SentenceNote
+    from jaslib.note.vocabulary.vocabnote import VocabNote
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="module", autouse=True)

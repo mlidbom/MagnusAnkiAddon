@@ -4,9 +4,9 @@ from typing import override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from deepdiff import DeepDiff
+from jaslib.note.sentences.sentence_configuration import SentenceConfiguration
+from jaslib.note.sentences.word_exclusion_set import WordExclusionSet
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from note.sentences.sentence_configuration import SentenceConfiguration
-from note.sentences.word_exclusion_set import WordExclusionSet
 from sysutils.json import ex_json
 from sysutils.json.json_reader import JsonReader
 from typed_linq_collections.collections.q_unique_list import QUniqueList
@@ -52,8 +52,8 @@ def test_round_object_list() -> None:
     assert_object_graphs_identical(start_value, round_tripped_value)
 
 def test_roundtrip_parsing_result() -> None:
-    from note.sentences.parsed_match import ParsedMatch
-    from note.sentences.parsing_result import ParsingResult
+    from jaslib.note.sentences.parsed_match import ParsedMatch
+    from jaslib.note.sentences.parsing_result import ParsingResult
 
     parsing_result = ParsingResult([ParsedMatch("B", 0, True, "foo", 1), #the information string is not read when loading so don't set it to anything
                                     ParsedMatch("B", 4, False, "bar", 2)], "foo bar", "1.0") #the information string is not read when loading so don't set it to anything

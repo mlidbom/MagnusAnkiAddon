@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import mylog
 
 if TYPE_CHECKING:
-    from note.vocabulary.vocabnote import VocabNote
+    from jaslib.note.vocabulary.vocabnote import VocabNote
 
 _ichidan_endings = ["", "ろ", "な"]
 

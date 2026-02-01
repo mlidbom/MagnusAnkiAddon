@@ -6,8 +6,8 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
 
 if TYPE_CHECKING:
+    from jaslib.note.vocabulary.vocabnote_matching_rules import VocabMatchingRulesConfigurationRequiresForbidsFlags
     from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-    from note.vocabulary.vocabnote_matching_rules import VocabMatchingRulesConfigurationRequiresForbidsFlags
     from sysutils.weak_ref import WeakRef
 
 class VocabMatchInspector(MatchInspector, Slots):

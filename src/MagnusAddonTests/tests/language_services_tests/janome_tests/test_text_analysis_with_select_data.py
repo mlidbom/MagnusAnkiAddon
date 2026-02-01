@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 from fixtures.collection_factory import inject_collection_with_select_data
-from note.sentences.sentencenote import SentenceNote
+from jaslib.note.sentences.sentencenote import SentenceNote
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
 

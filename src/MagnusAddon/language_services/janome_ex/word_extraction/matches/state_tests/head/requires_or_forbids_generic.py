@@ -8,8 +8,8 @@ from language_services.janome_ex.word_extraction.matches.state_tests.head.failed
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from jaslib.note.notefields.require_forbid_flag_field import RequireForbidFlagField
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
-    from note.notefields.require_forbid_flag_field import RequireForbidFlagField
 
 class RequiresOrForbids(Slots):
     def __init__(self, name: str,

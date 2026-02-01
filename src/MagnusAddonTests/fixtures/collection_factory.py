@@ -5,17 +5,17 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 from fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_lists
-from note.kanjinote import KanjiNote
-from note.sentences.sentencenote import SentenceNote
+from jaslib.note.kanjinote import KanjiNote
+from jaslib.note.sentences.sentencenote import SentenceNote
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from note.collection.jp_collection import JPCollection
+    from jaslib.note.collection.jp_collection import JPCollection
 
 @contextmanager
 def inject_empty_collection() -> Iterator[JPCollection]:
-    from note.collection.jp_collection import JPCollection
+    from jaslib.note.collection.jp_collection import JPCollection
     jp_collection: JPCollection
     def get_jp_collection() -> JPCollection: return jp_collection
 

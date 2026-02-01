@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from note.sentences.sentence_configuration import SentenceConfiguration
-from note.sentences.sentencenote import SentenceNote
-from ui.web.sentence.sentence_viewmodel import SentenceViewModel
+from jaslib.note.sentences.sentence_configuration import SentenceConfiguration
+from jaslib.note.sentences.sentencenote import SentenceNote
+from jaslib.ui.web.sentence.sentence_viewmodel import SentenceViewModel
 
 if TYPE_CHECKING:
+    from jaslib.ui.web.sentence.match_viewmodel import MatchViewModel
     from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-    from ui.web.sentence.match_viewmodel import MatchViewModel
 
 def surface_and_match_form(match_vm: MatchViewModel) -> str:
     form_to_display = match_vm.parsed_form

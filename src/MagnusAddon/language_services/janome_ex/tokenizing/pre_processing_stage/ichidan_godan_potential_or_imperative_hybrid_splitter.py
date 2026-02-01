@@ -11,11 +11,11 @@ from language_services.janome_ex.tokenizing.split_token import SplitToken
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
+    from jaslib.note.collection.vocab_collection import VocabCollection
+    from jaslib.note.vocabulary.vocabnote import VocabNote
     from language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
     from language_services.janome_ex.tokenizing.jn_token import JNToken
     from language_services.janome_ex.tokenizing.pre_processing_stage.word_info_entry import WordInfoEntry
-    from note.collection.vocab_collection import VocabCollection
-    from note.vocabulary.vocabnote import VocabNote
 
 class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
 

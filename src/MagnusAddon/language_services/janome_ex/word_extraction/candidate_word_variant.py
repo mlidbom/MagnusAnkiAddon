@@ -15,10 +15,10 @@ from sysutils.weak_ref import WeakRef, WeakRefable
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
+    from jaslib.note.sentences.sentence_configuration import SentenceConfiguration
     from language_services.jamdict_ex.dict_lookup_result import DictLookupResult
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
     from language_services.janome_ex.word_extraction.matches.match import Match
-    from note.sentences.sentence_configuration import SentenceConfiguration
 
 @final
 class CandidateWordVariant(WeakRefable, Slots):

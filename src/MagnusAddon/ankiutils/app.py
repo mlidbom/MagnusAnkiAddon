@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from configuration.configuration_value import JapaneseConfig
-    from note.collection.jp_collection import JPCollection
+    from jaslib.note.collection.jp_collection import JPCollection
 
 _collection: JPCollection | None = None
 

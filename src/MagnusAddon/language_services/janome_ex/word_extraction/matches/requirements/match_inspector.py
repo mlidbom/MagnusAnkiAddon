@@ -6,11 +6,11 @@ from autoslot import Slots
 from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
+    from jaslib.note.sentences.sentence_configuration import SentenceConfiguration
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.matches.match import Match
     from language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
-    from note.sentences.sentence_configuration import SentenceConfiguration
     from sysutils.weak_ref import WeakRef
 
 class MatchInspector(Slots):

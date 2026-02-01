@@ -5,18 +5,18 @@ import re
 from typing import TYPE_CHECKING
 
 from ankiutils import app
+from jaslib.note.sentences.parsed_match import ParsedMatch
+from jaslib.note.tags import Tags
+from jaslib.note.vocabulary.vocabnote import VocabNote
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.tokenizing.pre_processing_stage.ichidan_godan_potential_or_imperative_hybrid_splitter import IchidanGodanPotentialOrImperativeHybridSplitter
-from note.sentences.parsed_match import ParsedMatch
-from note.tags import Tags
-from note.vocabulary.vocabnote import VocabNote
 from qt_utils.task_progress_runner import TaskRunner
 from sysutils import ex_str
 
 if TYPE_CHECKING:
+    from jaslib.note.kanjinote import KanjiNote
+    from jaslib.note.sentences.sentencenote import SentenceNote
     from language_services.jamdict_ex.dict_lookup_result import DictLookupResult
-    from note.kanjinote import KanjiNote
-    from note.sentences.sentencenote import SentenceNote
     from typed_linq_collections.collections.q_list import QList
 
 def update_all() -> None:

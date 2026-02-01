@@ -4,13 +4,13 @@ from typing import TYPE_CHECKING
 
 import pytest
 from fixtures.collection_factory import inject_empty_collection
-from note.vocabulary.vocabnote import VocabNote
+from jaslib.note.vocabulary.vocabnote import VocabNote
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from note.collection.jp_collection import JPCollection
+    from jaslib.note.collection.jp_collection import JPCollection
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)

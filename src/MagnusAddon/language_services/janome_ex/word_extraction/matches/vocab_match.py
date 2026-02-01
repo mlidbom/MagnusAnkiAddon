@@ -33,11 +33,11 @@ from sysutils.weak_ref import WeakRef
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from jaslib.note.vocabulary.vocabnote import VocabNote
+    from jaslib.note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfiguration
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
-    from note.vocabulary.vocabnote import VocabNote
-    from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfiguration
 
 @final
 class VocabMatch(Match, Slots):

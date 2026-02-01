@@ -10,8 +10,8 @@ from language_services.janome_ex.tokenizing.pre_processing_stage.ichidan_godan_p
 from language_services.janome_ex.tokenizing.pre_processing_stage.ichidan_imperative_splitter import IchidanImperativeSplitter
 
 if TYPE_CHECKING:
+    from jaslib.note.collection.vocab_collection import VocabCollection
     from language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
-    from note.collection.vocab_collection import VocabCollection
 
 class PreProcessingStage(Slots):
     def __init__(self, vocabs: VocabCollection) -> None:

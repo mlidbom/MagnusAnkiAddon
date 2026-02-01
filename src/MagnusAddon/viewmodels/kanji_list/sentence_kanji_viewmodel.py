@@ -6,7 +6,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils import ex_str, kana_utils
 
 if TYPE_CHECKING:
-    from note.kanjinote import KanjiNote
+    from jaslib.note.kanjinote import KanjiNote
 
 
 class KanjiViewModel(Slots):
