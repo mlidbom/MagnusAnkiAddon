@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from fixtures.collection_factory import inject_empty_collection
 from jaslib.note.vocabulary.vocabnote import VocabNote
+from jaslib_tests.fixtures.collection_factory import inject_empty_collection
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:

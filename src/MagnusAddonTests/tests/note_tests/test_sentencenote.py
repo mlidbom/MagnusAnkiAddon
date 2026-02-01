@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from fixtures.collection_factory import inject_empty_collection
 from jaslib.note.sentences.sentencenote import SentenceNote
 from jaslib.sysutils import ex_str
+from jaslib_tests.fixtures.collection_factory import inject_empty_collection
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

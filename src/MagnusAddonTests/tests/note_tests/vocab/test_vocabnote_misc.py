@@ -4,8 +4,8 @@ import re
 from typing import TYPE_CHECKING
 
 import pytest
-from fixtures.collection_factory import inject_empty_collection
 from jaslib.note.vocabulary.vocabnote import VocabNote
+from jaslib_tests.fixtures.collection_factory import inject_empty_collection
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

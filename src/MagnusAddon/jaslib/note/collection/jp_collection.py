@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import threading
 
-from jaslib import mylog
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib import mylog
 from jaslib.note.collection.kanji_collection import KanjiCollection
 from jaslib.note.collection.sentence_collection import SentenceCollection
 from jaslib.note.collection.vocab_collection import VocabCollection

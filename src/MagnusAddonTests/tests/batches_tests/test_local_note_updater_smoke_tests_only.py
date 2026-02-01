@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from fixtures.collection_factory import inject_collection_with_all_sample_data
+from jaslib_tests.fixtures.collection_factory import inject_collection_with_all_sample_data
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

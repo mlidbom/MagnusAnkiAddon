@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from fixtures import collection_factory
 from jaslib import app
 from jaslib.sysutils.typed import non_optional
+from jaslib_tests.fixtures import collection_factory
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

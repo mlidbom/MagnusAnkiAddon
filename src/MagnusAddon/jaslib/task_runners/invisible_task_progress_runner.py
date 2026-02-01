@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from jaslib import mylog
 from autoslot import Slots
+from jaslib import mylog
 from jaslib.sysutils.timeutil import StopWatch
 from jaslib.task_runners.i_task_progress_runner import ITaskRunner
 
