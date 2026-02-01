@@ -12,15 +12,15 @@ target_dir = os.path.join(script_dir, "src/jastudio/_lib")
 
 # One line per library and its dependencies
 pip_libraries_to_copy = [
-    "typed_linq_collections",
-    "janome",
-    "pyperclip",
-    "beartype",
-    "jamdict", "jamdict_data", "puchikarui", "chirptext",
-    "pykakasi", "jaconv", "deprecated",
-    "romkan",
-    "autoslot.py",
-    ]
+        "typed_linq_collections",
+        "janome",
+        "pyperclip",
+        "beartype",
+        "jamdict", "jamdict_data", "puchikarui", "chirptext",
+        "pykakasi", "jaconv", "deprecated", "wrapt",
+        "romkan",
+        "autoslot.py",
+]
 
 # Create the target directory if it doesn't exist
 os.makedirs(target_dir, exist_ok=True)
