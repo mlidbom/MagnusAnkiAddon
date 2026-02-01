@@ -25,6 +25,7 @@ pykakasi==2.3.0
 python-romkan-ng==0.3.0
 ruff==0.14.14
 deepdiff==8.6.1
+typed_linq_collections==0.9.19
 typing_extensions~=4.15.0
 autoslot~=2025.11.1
 basedpyright # used via the basedpyright-wrapper.bat since it messes up source navigation in the IDE and because the IDE only reports some errors on code insection. To get all errors the command line is needed&
