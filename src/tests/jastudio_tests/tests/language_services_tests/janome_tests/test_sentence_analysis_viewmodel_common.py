@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from note.sentences.sentence_configuration import SentenceConfiguration
-from note.sentences.sentencenote import SentenceNote
+from jastudio.note.sentences.sentence_configuration import SentenceConfiguration
+from jastudio.note.sentences.sentencenote import SentenceNote
 from ui.web.sentence.sentence_viewmodel import SentenceViewModel
 
 if TYPE_CHECKING:

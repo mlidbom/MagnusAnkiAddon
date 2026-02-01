@@ -3,12 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
-from note.kanjinote import KanjiNote
+from jastudio.note.kanjinote import KanjiNote
 from sysutils.ex_str import newline
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
 if TYPE_CHECKING:
-    from note.vocabulary.vocabnote import VocabNote
+    from jastudio.note.vocabulary.vocabnote import VocabNote
 
 
 def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:

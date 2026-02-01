@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
-from note import queue_manager
-from note.jpnote import JPNote
-from note.sentences.sentencenote import SentenceNote
+from jastudio.note import queue_manager
+from jastudio.note.jpnote import JPNote
+from jastudio.note.sentences.sentencenote import SentenceNote
 from sysutils import ex_lambda
 from sysutils.typed import non_optional
 from ui import menus

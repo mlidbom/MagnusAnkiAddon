@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from anki.notes import Note
-    from note.jpnote import JPNote
+    from jastudio.note.jpnote import JPNote
 
 import aqt
 from aqt import AnkiQt  # type: ignore[attr-defined]  # pyright: ignore[reportPrivateImportUsage]
@@ -66,7 +66,7 @@ def get_note_from_web_view(view: AnkiWebView) -> JPNote | None:
     else:
         return None
 
-    from note.jpnote import JPNote
+    from jastudio.note.jpnote import JPNote
     return JPNote.note_from_note(inner_note)
 
 class UIUtils(IUIUtils, Slots):
@@ -141,5 +141,5 @@ class UIUtils(IUIUtils, Slots):
         app_thread_pool.run_on_ui_thread_fire_and_forget(show_tooltip)
 
 def try_get_review_note() -> JPNote | None:
-    from note.jpnote import JPNote
+    from jastudio.note.jpnote import JPNote
     return JPNote.note_from_card(non_optional(main_window().reviewer.card)) if main_window().reviewer.card else None

@@ -10,7 +10,7 @@ from ui.menus.menu_utils.ex_qmenu import add_lookup_action, add_ui_action
 from jastudio.ankiutils import app, query_builder
 
 if TYPE_CHECKING:
-    from note.kanjinote import KanjiNote
+    from jastudio.note.kanjinote import KanjiNote
     from PyQt6.QtWidgets import QMenu
 
 def build_note_menu(note_menu: QMenu, kanji: KanjiNote) -> None:

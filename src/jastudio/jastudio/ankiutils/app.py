@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from configuration.configuration_value import JapaneseConfig
     from jastudio.anki_extentions.config_manager_ex import ConfigManagerEx
     from jastudio.ankiutils.ui_utils_interface import IUIUtils
-    from note.collection.jp_collection import JPCollection
+    from jastudio.note.collection.jp_collection import JPCollection
 
 _collection: JPCollection | None = None
 
@@ -42,7 +42,7 @@ def _init(delay_seconds: float = 1.0) -> None:
     mylog.info(f"_init delay= {delay_seconds}")
 
     from aqt import mw
-    from note.collection.jp_collection import JPCollection
+    from jastudio.note.collection.jp_collection import JPCollection
     global _collection
     if _collection is not None:
         _collection.reshchedule_init_for(delay_seconds)

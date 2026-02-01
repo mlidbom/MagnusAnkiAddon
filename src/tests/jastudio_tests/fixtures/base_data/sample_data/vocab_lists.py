@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from jastudio_tests.fixtures.base_data.sample_data.vocab_spec import VocabSpec
-from note.tags import Tags
-from note.vocabulary.pos import POS
+from jastudio.note.tags import Tags
+from jastudio.note.vocabulary.pos import POS
 
 v = Tags.Vocab
 vm = Tags.Vocab.Matching

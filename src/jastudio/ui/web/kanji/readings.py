@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from aqt import gui_hooks
-from note.kanjinote import KanjiNote
+from jastudio.note.kanjinote import KanjiNote
 from sysutils import kana_utils
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 

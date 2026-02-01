@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 from jastudio_tests.fixtures.collection_factory import inject_collection_with_select_data
-from note.sentences.sentencenote import SentenceNote
+from jastudio.note.sentences.sentencenote import SentenceNote
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

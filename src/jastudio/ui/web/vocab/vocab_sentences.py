@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from aqt import gui_hooks
-from note.tags import Tags
-from note.vocabulary.vocabnote import VocabNote
+from jastudio.note.tags import Tags
+from jastudio.note.vocabulary.vocabnote import VocabNote
 from sysutils.ex_str import newline
 from ui.web.vocab.vocab_sentences_vocab_sentence_view_model import VocabSentenceViewModel
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer

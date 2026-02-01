@@ -6,7 +6,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from ui.web.sentence.text_analysis_viewmodel import TextAnalysisViewModel
 
 if TYPE_CHECKING:
-    from note.sentences.sentencenote import SentenceNote
+    from jastudio.note.sentences.sentencenote import SentenceNote
     from ui.web.sentence.match_viewmodel import MatchViewModel
 
 class SentenceViewModel(Slots):

@@ -3,12 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from note.vocabulary.vocabnote_question import VocabNoteQuestion
+from jastudio.note.vocabulary.vocabnote_question import VocabNoteQuestion
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
-    from note.tag import Tag
-    from note.vocabulary.vocabnote import VocabNote
+    from jastudio.note.tag import Tag
+    from jastudio.note.vocabulary.vocabnote import VocabNote
 
 
 class VocabSpec(Slots):
@@ -82,5 +82,5 @@ class VocabSpec(Slots):
             vocab_note.parts_of_speech.set(self.tos)
 
     def create_vocab_note(self) -> None:
-        from note.vocabulary.vocabnote import VocabNote
+        from jastudio.note.vocabulary.vocabnote import VocabNote
         VocabNote.factory.create(self.disambiguation_name, self.answer, self.readings, self._initialize_note)

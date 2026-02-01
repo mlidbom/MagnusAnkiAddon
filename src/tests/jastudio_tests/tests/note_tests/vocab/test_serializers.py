@@ -3,14 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from note.notefields.auto_save_wrappers.value_wrapper import ValueWrapper
-from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
-from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingRulesData
+from jastudio.note.notefields.auto_save_wrappers.value_wrapper import ValueWrapper
+from jastudio.note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
+from jastudio.note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingRulesData
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
-    from note.vocabulary.related_vocab.related_vocab_data_serializer import RelatedVocabDataSerializer
-    from note.vocabulary.serialization.matching_rules_serializer import VocabNoteMatchingRulesSerializer
+    from jastudio.note.vocabulary.related_vocab.related_vocab_data_serializer import RelatedVocabDataSerializer
+    from jastudio.note.vocabulary.serialization.matching_rules_serializer import VocabNoteMatchingRulesSerializer
 
 
 class TestRelatedVocabDataSerializer:

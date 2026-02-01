@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
-from note.vocabulary.pos import POS
+from jastudio.note.vocabulary.pos import POS
 
 if TYPE_CHECKING:
     from jastudio.language_services.jamdict_ex.dict_lookup_result import DictLookupResult
-    from note.vocabulary.vocabnote import VocabNote
+    from jastudio.note.vocabulary.vocabnote import VocabNote
 
 
 class WordInfoEntry(Slots):

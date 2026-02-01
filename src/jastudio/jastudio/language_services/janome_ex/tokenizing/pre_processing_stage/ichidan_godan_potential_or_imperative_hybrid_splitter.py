@@ -14,8 +14,8 @@ if TYPE_CHECKING:
     from jastudio.language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
     from jastudio.language_services.janome_ex.tokenizing.jn_token import JNToken
     from jastudio.language_services.janome_ex.tokenizing.pre_processing_stage.word_info_entry import WordInfoEntry
-    from note.collection.vocab_collection import VocabCollection
-    from note.vocabulary.vocabnote import VocabNote
+    from jastudio.note.collection.vocab_collection import VocabCollection
+    from jastudio.note.vocabulary.vocabnote import VocabNote
 
 class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
 

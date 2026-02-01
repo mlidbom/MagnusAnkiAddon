@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from jastudio.language_services.jamdict_ex.dict_lookup_result import DictLookupResult
     from jastudio.language_services.janome_ex.word_extraction.candidate_word import CandidateWord
     from jastudio.language_services.janome_ex.word_extraction.matches.match import Match
-    from note.sentences.sentence_configuration import SentenceConfiguration
+    from jastudio.note.sentences.sentence_configuration import SentenceConfiguration
 
 @final
 class CandidateWordVariant(WeakRefable, Slots):

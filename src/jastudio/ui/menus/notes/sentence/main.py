@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from note.note_constants import NoteFields, NoteTypes
+from jastudio.note.note_constants import NoteFields, NoteTypes
 from sysutils.typed import non_optional
 from ui.menus.menu_utils import shortcutfinger
 from ui.menus.menu_utils.ex_qmenu import add_checkbox_config, add_lookup_action, add_ui_action
@@ -10,7 +10,7 @@ from ui.menus.menu_utils.ex_qmenu import add_checkbox_config, add_lookup_action,
 from jastudio.ankiutils import app, query_builder
 
 if TYPE_CHECKING:
-    from note.sentences.sentencenote import SentenceNote
+    from jastudio.note.sentences.sentencenote import SentenceNote
     from PyQt6.QtWidgets import QMenu
 
 def build_note_menu(note_menu: QMenu, sentence: SentenceNote) -> None:

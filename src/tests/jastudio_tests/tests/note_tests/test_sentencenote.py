@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import pytest
 from jastudio_tests.fixtures.collection_factory import inject_empty_collection
 from jastudio_tests.fixtures.stub_factory import stub_ui_dependencies
-from note.sentences.sentencenote import SentenceNote
+from jastudio.note.sentences.sentencenote import SentenceNote
 from sysutils import ex_str
 
 if TYPE_CHECKING:

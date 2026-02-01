@@ -1,0 +1,98 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, cast, override
+
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jastudio.note.jpnote import JPNote
+from jastudio.note.note_constants import NoteFields
+from jastudio.note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
+from jastudio.note.notefields.mutable_string_field import MutableStringField
+from jastudio.note.vocabulary import vocabnote_generated_data
+from jastudio.note.vocabulary.related_vocab.related_vocab import RelatedVocab
+from jastudio.note.vocabulary.vocabnote_audio import VocabNoteAudio
+from jastudio.note.vocabulary.vocabnote_cloner import VocabCloner
+from jastudio.note.vocabulary.vocabnote_conjugator import VocabNoteConjugator
+from jastudio.note.vocabulary.vocabnote_factory import VocabNoteFactory
+from jastudio.note.vocabulary.vocabnote_forms import VocabNoteForms
+from jastudio.note.vocabulary.vocabnote_kanji import VocabNoteKanji
+from jastudio.note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfiguration
+from jastudio.note.vocabulary.vocabnote_metadata import VocabNoteMetaData
+from jastudio.note.vocabulary.vocabnote_parts_of_speech import VocabNotePartsOfSpeech
+from jastudio.note.vocabulary.vocabnote_question import VocabNoteQuestion
+from jastudio.note.vocabulary.vocabnote_register import VocabNoteRegister
+from jastudio.note.vocabulary.vocabnote_sentences import VocabNoteSentences
+from jastudio.note.vocabulary.vocabnote_usercompoundparts import VocabNoteUserCompoundParts
+from jastudio.note.vocabulary.vocabnote_userfields import VocabNoteUserfields
+from sysutils.weak_ref import WeakRef
+
+from jastudio.ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa  # pyright: ignore[reportUnusedImport]
+
+if TYPE_CHECKING:
+    from anki.notes import Note
+    from typed_linq_collections.collections.q_set import QSet
+
+class VocabNote(JPNote, Slots):
+    factory: VocabNoteFactory = VocabNoteFactory()
+    def __init__(self, note: Note) -> None:
+        super().__init__(note)
+        self.weakref_vocab: WeakRef[VocabNote] = cast(WeakRef[VocabNote], self.weakref)
+        self.question: VocabNoteQuestion = VocabNoteQuestion(self.weakref_vocab)
+
+        self.readings: MutableCommaSeparatedStringsListField = MutableCommaSeparatedStringsListField(self.weakref, NoteFields.Vocab.Reading)
+
+        self.user: VocabNoteUserfields = VocabNoteUserfields(self.weakref_vocab)
+
+        self.related_notes: RelatedVocab = RelatedVocab(self.weakref_vocab)
+        self.sentences: VocabNoteSentences = VocabNoteSentences(self.weakref_vocab)
+        self.forms: VocabNoteForms = VocabNoteForms(self.weakref_vocab)
+        self.parts_of_speech: VocabNotePartsOfSpeech = VocabNotePartsOfSpeech(self.weakref_vocab)
+        self.compound_parts: VocabNoteUserCompoundParts = VocabNoteUserCompoundParts(self.weakref_vocab)
+        self.matching_configuration: VocabNoteMatchingConfiguration = VocabNoteMatchingConfiguration(self.weakref_vocab)
+
+    @override
+    def get_question(self) -> str: return self.question.raw
+
+    @property
+    def meta_data(self) -> VocabNoteMetaData: return VocabNoteMetaData(self.weakref_vocab)
+    @property
+    def kanji(self) -> VocabNoteKanji: return VocabNoteKanji(self.weakref_vocab)
+    @property
+    def audio(self) -> VocabNoteAudio: return VocabNoteAudio(self.weakref_vocab)
+    @property
+    def cloner(self) -> VocabCloner: return VocabCloner(self.weakref_vocab)
+    @property
+    def conjugator(self) -> VocabNoteConjugator: return VocabNoteConjugator(self.weakref_vocab)
+    @property
+    def source_answer(self) -> MutableStringField: return MutableStringField(self.weakref_vocab, NoteFields.Vocab.source_answer)
+    @property
+    def active_answer(self) -> MutableStringField: return MutableStringField(self.weakref_vocab, NoteFields.Vocab.active_answer)
+    @property
+    def register(self) -> VocabNoteRegister: return VocabNoteRegister(self.weakref_vocab)
+
+    @override
+    def get_direct_dependencies(self) -> QSet[JPNote]:
+        return self.related_notes.get_direct_dependencies()
+
+    @override
+    def _on_tags_updated(self) -> None:
+        self.matching_configuration = VocabNoteMatchingConfiguration(self.weakref_vocab)
+
+    @override
+    def update_generated_data(self) -> None:
+        super().update_generated_data()
+        vocabnote_generated_data.update_generated_data(self)
+
+    def generate_and_set_answer(self) -> None:
+        from jastudio.language_services.jamdict_ex.dict_lookup import DictLookup
+        dict_lookup = DictLookup.lookup_vocab_word_or_name(self)
+        if dict_lookup.found_words():
+            generated = dict_lookup.format_answer()
+            self.source_answer.set(generated)
+
+        self.update_generated_data()
+
+    @override
+    def get_answer(self) -> str:
+        field = self.user.answer
+        string_field = self.source_answer
+        return field.value or string_field.value

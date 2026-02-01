@@ -5,10 +5,10 @@ from typing import TYPE_CHECKING, cast, final
 
 from anki.notes import NoteId
 from jastudio.ankiutils.app import col
-from note.jpnote import JPNote
-from note.kanjinote import KanjiNote
-from note.sentences.sentencenote import SentenceNote
-from note.vocabulary.vocabnote import VocabNote
+from jastudio.note.jpnote import JPNote
+from jastudio.note.kanjinote import KanjiNote
+from jastudio.note.sentences.sentencenote import SentenceNote
+from jastudio.note.vocabulary.vocabnote import VocabNote
 from PyQt6.QtCore import Qt, pyqtBoundSignal
 from PyQt6.QtWidgets import QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QProgressBar, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
 from sysutils import ex_str, kana_utils, typed

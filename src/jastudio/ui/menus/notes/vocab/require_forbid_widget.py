@@ -9,7 +9,7 @@ from sysutils.typed import checked_cast
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from note.notefields.require_forbid_flag_field import RequireForbidFlagField
+    from jastudio.note.notefields.require_forbid_flag_field import RequireForbidFlagField
 
 class RequireForbidWidget(QWidget):
     """Widget for editing a require/forbid flag field with three radio buttons."""

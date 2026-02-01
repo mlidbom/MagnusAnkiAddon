@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 @contextmanager
 def inject_full_anki_collection_for_testing() -> Iterator[None]:
-    from note.collection.jp_collection import JPCollection
+    from jastudio.note.collection.jp_collection import JPCollection
     jp_collection: JPCollection
     def get_jp_collection() -> JPCollection: return jp_collection
 

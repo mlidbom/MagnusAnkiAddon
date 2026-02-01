@@ -5,10 +5,10 @@ from typing import TYPE_CHECKING, override
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:
-    from note.sentences.parsed_match import ParsedMatch
-    from note.sentences.parsing_result import ParsingResult
-    from note.sentences.sentencenote import SentenceNote
-    from note.vocabulary.vocabnote import VocabNote
+    from jastudio.note.sentences.parsed_match import ParsedMatch
+    from jastudio.note.sentences.parsing_result import ParsingResult
+    from jastudio.note.sentences.sentencenote import SentenceNote
+    from jastudio.note.vocabulary.vocabnote import VocabNote
 
 class VocabSentenceMatchViewModel(Slots):
     def __init__(self, match: ParsedMatch, sentence_view_model: VocabSentenceViewModel) -> None:

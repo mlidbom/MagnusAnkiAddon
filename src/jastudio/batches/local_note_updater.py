@@ -5,11 +5,11 @@ import random
 import re
 from typing import TYPE_CHECKING
 
-from note.note_constants import CardTypes
-from note.sentences.parsed_match import ParsedMatch
-from note.sentences.sentencenote import SentenceNote
-from note.tags import Tags
-from note.vocabulary.vocabnote import VocabNote
+from jastudio.note.note_constants import CardTypes
+from jastudio.note.sentences.parsed_match import ParsedMatch
+from jastudio.note.sentences.sentencenote import SentenceNote
+from jastudio.note.tags import Tags
+from jastudio.note.vocabulary.vocabnote import VocabNote
 from qt_utils.task_progress_runner import TaskRunner
 from sysutils import ex_str
 
@@ -19,7 +19,7 @@ from jastudio.language_services.janome_ex.tokenizing.pre_processing_stage.ichida
 
 if TYPE_CHECKING:
     from anki.notes import NoteId
-    from note.kanjinote import KanjiNote
+    from jastudio.note.kanjinote import KanjiNote
     from typed_linq_collections.collections.q_list import QList
 
     from jastudio.language_services.jamdict_ex.dict_lookup_result import DictLookupResult

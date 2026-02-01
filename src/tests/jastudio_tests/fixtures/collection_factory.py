@@ -11,17 +11,17 @@ from jastudio.ankiutils import app
 from jastudio_tests.fixtures.base_data import note_type_factory
 from jastudio_tests.fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_lists
 from jastudio_tests.fixtures.stub_factory import stub_ui_dependencies
-from note.kanjinote import KanjiNote
-from note.sentences.sentencenote import SentenceNote
+from jastudio.note.kanjinote import KanjiNote
+from jastudio.note.sentences.sentencenote import SentenceNote
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from note.collection.jp_collection import JPCollection
+    from jastudio.note.collection.jp_collection import JPCollection
 
 @contextmanager
 def inject_empty_collection() -> Iterator[JPCollection]:
-    from note.collection.jp_collection import JPCollection
+    from jastudio.note.collection.jp_collection import JPCollection
     jp_collection: JPCollection
     def get_jp_collection() -> JPCollection: return jp_collection
 

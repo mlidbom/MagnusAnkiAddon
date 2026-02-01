@@ -29,7 +29,7 @@ class NoteBulkLoader:
                        notes.usn, -- 4
                        notes.tags,-- 5
                        notes.flds -- 6
-                FROM notes
+                from notes
                 WHERE notes.mid = ?
                 """
 

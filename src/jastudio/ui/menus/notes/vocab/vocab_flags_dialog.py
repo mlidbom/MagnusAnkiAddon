@@ -12,9 +12,9 @@ from ui.menus.notes.vocab.string_set_widget import StringSetWidget
 from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
-    from note.notefields.require_forbid_flag_field import RequireForbidFlagField
-    from note.notefields.tag_flag_field import TagFlagField
-    from note.vocabulary.vocabnote import VocabNote
+    from jastudio.note.notefields.require_forbid_flag_field import RequireForbidFlagField
+    from jastudio.note.notefields.tag_flag_field import TagFlagField
+    from jastudio.note.vocabulary.vocabnote import VocabNote
 
 class VocabFlagsDialog(QDialog):
     def __init__(self, vocab: VocabNote, parent: QWidget | None = None) -> None:

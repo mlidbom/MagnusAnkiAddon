@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
 from configuration.settings import Settings
-from note.sentences.sentencenote import SentenceNote
+from jastudio.note.sentences.sentencenote import SentenceNote
 from sysutils import ex_str
 from sysutils.ex_str import newline
 from typed_linq_collections.collections.q_list import QList

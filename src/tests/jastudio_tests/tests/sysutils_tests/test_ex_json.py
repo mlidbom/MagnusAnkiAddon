@@ -7,8 +7,8 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from deepdiff import DeepDiff
 from jastudio.ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa  # pyright: ignore[reportUnusedImport]
 from jastudio.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from note.sentences.sentence_configuration import SentenceConfiguration
-from note.sentences.word_exclusion_set import WordExclusionSet
+from jastudio.note.sentences.sentence_configuration import SentenceConfiguration
+from jastudio.note.sentences.word_exclusion_set import WordExclusionSet
 from sysutils.json import ex_json
 from sysutils.json.json_reader import JsonReader
 from typed_linq_collections.collections.q_unique_list import QUniqueList
@@ -54,8 +54,8 @@ def test_round_object_list() -> None:
     assert_object_graphs_identical(start_value, round_tripped_value)
 
 def test_roundtrip_parsing_result() -> None:
-    from note.sentences.parsed_match import ParsedMatch
-    from note.sentences.parsing_result import ParsingResult
+    from jastudio.note.sentences.parsed_match import ParsedMatch
+    from jastudio.note.sentences.parsing_result import ParsingResult
 
     parsing_result = ParsingResult([ParsedMatch("B", 0, True, "foo", NoteId(1)), #the information string is not read when loading so don't set it to anything
                                     ParsedMatch("B", 4, False, "bar", NoteId(2))], "foo bar", "1.0") #the information string is not read when loading so don't set it to anything

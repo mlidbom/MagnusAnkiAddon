@@ -6,7 +6,7 @@ import pytest
 from jastudio.ankiutils import app  # noqa  # pyright: ignore[reportUnusedImport]
 from jastudio.language_services.jamdict_ex.dict_lookup import DictLookup
 from jastudio_tests.fixtures.collection_factory import inject_empty_collection
-from note.vocabulary.vocabnote import VocabNote
+from jastudio.note.vocabulary.vocabnote import VocabNote
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

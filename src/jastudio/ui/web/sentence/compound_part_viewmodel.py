@@ -10,8 +10,8 @@ from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
     from anki.notes import NoteId
-    from note.sentences.sentence_configuration import SentenceConfiguration
-    from note.vocabulary.vocabnote import VocabNote
+    from jastudio.note.sentences.sentence_configuration import SentenceConfiguration
+    from jastudio.note.vocabulary.vocabnote import VocabNote
     from ui.web.sentence.match_viewmodel import MatchViewModel
 
 class CompoundPartViewModel(Slots):

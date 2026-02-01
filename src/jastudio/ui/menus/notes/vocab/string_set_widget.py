@@ -9,7 +9,7 @@ from sysutils.typed import checked_cast, non_optional
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
+    from jastudio.note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
 
 class StringChipWidget(QFrame):
     """A chip widget displaying a string with an X button to remove it."""

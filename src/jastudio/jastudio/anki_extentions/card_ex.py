@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from anki.decks import DeckManager
     from anki.scheduler.v3 import Scheduler  # pyright: ignore[reportMissingTypeStubs]
     from jastudio.anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
-    from note.jpnote import JPNote
+    from jastudio.note.jpnote import JPNote
 
 import anki.cards
 import anki.cards_pb2
@@ -60,7 +60,7 @@ class CardEx(Slots):
         return answers.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN).qcount() # len(list(ex_iterable.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN, answers)))
 
     def note(self) -> JPNote:
-        from note.jpnote import JPNote
+        from jastudio.note.jpnote import JPNote
         return JPNote.note_from_card(self.card)
 
     @classmethod

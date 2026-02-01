@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from jastudio.ankiutils import app
 from jastudio.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-from note.note_constants import Builtin, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
+from jastudio.note.note_constants import Builtin, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
 from sysutils import kana_utils
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
@@ -14,9 +14,9 @@ if TYPE_CHECKING:
 
     from anki.cards import CardId
     from anki.notes import NoteId
-    from note.jpnote import JPNote
-    from note.kanjinote import KanjiNote
-    from note.vocabulary.vocabnote import VocabNote
+    from jastudio.note.jpnote import JPNote
+    from jastudio.note.kanjinote import KanjiNote
+    from jastudio.note.vocabulary.vocabnote import VocabNote
 
 f_question = MyNoteFields.question
 f_reading = NoteFields.Vocab.Reading

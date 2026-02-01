@@ -11,7 +11,7 @@ from jastudio.language_services.janome_ex.tokenizing.pre_processing_stage.ichida
 
 if TYPE_CHECKING:
     from jastudio.language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
-    from note.collection.vocab_collection import VocabCollection
+    from jastudio.note.collection.vocab_collection import VocabCollection
 
 class PreProcessingStage(Slots):
     def __init__(self, vocabs: VocabCollection) -> None:

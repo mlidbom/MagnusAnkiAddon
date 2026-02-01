@@ -4,7 +4,7 @@ import re
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
-from note.kanjinote import KanjiNote
+from jastudio.note.kanjinote import KanjiNote
 from sysutils import ex_str, kana_utils
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 from viewmodels.kanji_list.sentence_kanji_viewmodel import KanjiViewModel
@@ -12,7 +12,7 @@ from viewmodels.kanji_list.sentence_kanji_viewmodel import KanjiViewModel
 from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
-    from note.jpnote import JPNote
+    from jastudio.note.jpnote import JPNote
 
 
 def render_list(note:JPNote, kanjis:list[KanjiNote], kanji_readings:list[str]) -> str:

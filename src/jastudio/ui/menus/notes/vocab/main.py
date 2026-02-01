@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pyperclip
-from note.note_constants import NoteFields, NoteTypes
+from jastudio.note.note_constants import NoteFields, NoteTypes
 from sysutils import ex_str
 from sysutils.ex_str import newline
 from sysutils.typed import non_optional
@@ -15,7 +15,7 @@ from ui.menus.notes.vocab.vocab_flags_dialog import show_vocab_flags_dialog
 from jastudio.ankiutils import app, query_builder
 
 if TYPE_CHECKING:
-    from note.vocabulary.vocabnote import VocabNote
+    from jastudio.note.vocabulary.vocabnote import VocabNote
     from PyQt6.QtWidgets import QMenu
 
 def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboard: str) -> None:

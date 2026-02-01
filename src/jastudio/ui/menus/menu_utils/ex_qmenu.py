@@ -16,8 +16,8 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from configuration.configuration_value import ConfigurationValueBool
-    from note.jpnote import JPNote
-    from note.vocabulary.vocabnote import VocabNote
+    from jastudio.note.jpnote import JPNote
+    from jastudio.note.vocabulary.vocabnote import VocabNote
 
 def add_checkbox_config(menu: QMenu, config_value: ConfigurationValueBool, _title: str) -> None:
     checkbox_action = QAction(_title, app.main_window())

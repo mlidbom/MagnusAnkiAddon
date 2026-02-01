@@ -14,7 +14,7 @@ from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:
     from jamdict.jmdict import JMDEntry  # pyright: ignore[reportMissingTypeStubs]
-    from note.vocabulary.vocabnote import VocabNote
+    from jastudio.note.vocabulary.vocabnote import VocabNote
     from typed_linq_collections.q_iterable import QIterable
 
 from jastudio.language_services.jamdict_ex.dict_entry import DictEntry

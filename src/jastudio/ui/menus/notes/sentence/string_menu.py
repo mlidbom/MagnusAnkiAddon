@@ -11,8 +11,8 @@ from ui.menus.menu_utils.ex_qmenu import add_ui_action
 from jastudio.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 
 if TYPE_CHECKING:
-    from note.sentences.sentencenote import SentenceNote
-    from note.sentences.word_exclusion_set import WordExclusionSet
+    from jastudio.note.sentences.sentencenote import SentenceNote
+    from jastudio.note.sentences.word_exclusion_set import WordExclusionSet
     from PyQt6.QtWidgets import QMenu
 
     from jastudio.language_services.janome_ex.word_extraction.matches.match import Match

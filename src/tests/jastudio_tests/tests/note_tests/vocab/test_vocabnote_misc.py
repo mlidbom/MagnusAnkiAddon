@@ -5,12 +5,12 @@ from typing import TYPE_CHECKING
 
 import pytest
 from jastudio_tests.fixtures.collection_factory import inject_empty_collection
-from note.vocabulary.vocabnote import VocabNote
+from jastudio.note.vocabulary.vocabnote import VocabNote
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from note.collection.jp_collection import JPCollection
+    from jastudio.note.collection.jp_collection import JPCollection
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="module", autouse=True)

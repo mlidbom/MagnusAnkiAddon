@@ -7,7 +7,7 @@ from jastudio.language_services.janome_ex.word_extraction.matches.requirements.m
 
 if TYPE_CHECKING:
     from jastudio.language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-    from note.vocabulary.vocabnote_matching_rules import VocabMatchingRulesConfigurationRequiresForbidsFlags
+    from jastudio.note.vocabulary.vocabnote_matching_rules import VocabMatchingRulesConfigurationRequiresForbidsFlags
     from sysutils.weak_ref import WeakRef
 
 class VocabMatchInspector(MatchInspector, Slots):

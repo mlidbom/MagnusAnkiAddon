@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from note.jpnote import JPNote
-from note.note_constants import Mine
+from jastudio.note.jpnote import JPNote
+from jastudio.note.note_constants import Mine
 from sysutils import app_thread_pool
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional

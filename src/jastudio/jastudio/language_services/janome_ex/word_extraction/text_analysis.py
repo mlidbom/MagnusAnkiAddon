@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 from jastudio.language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from jastudio.language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
-from note.sentences.sentence_configuration import SentenceConfiguration
+from jastudio.note.sentences.sentence_configuration import SentenceConfiguration
 
 _tokenizer = JNTokenizer()
 
