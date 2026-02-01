@@ -3,8 +3,8 @@ from __future__ import annotations
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
-from jastudio.ankiutils import app
 from autoslot import Slots
+from jastudio.ankiutils import app
 from qt_utils.invisible_task_progress_runner import InvisibleTaskRunner
 from sysutils.typed import non_optional
 

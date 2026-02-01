@@ -16,12 +16,11 @@ if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.dbproxy import DBProxy
     from anki.scheduler.v3 import Scheduler  # pyright: ignore[reportMissingTypeStubs]
-    from jastudio.ankiutils.ui_utils_interface import IUIUtils
     from aqt import AnkiQt  # type: ignore[attr-defined]  # pyright: ignore[reportPrivateImportUsage]
     from configuration.configuration_value import JapaneseConfig
-    from note.collection.jp_collection import JPCollection
-
     from jastudio.anki_extentions.config_manager_ex import ConfigManagerEx
+    from jastudio.ankiutils.ui_utils_interface import IUIUtils
+    from note.collection.jp_collection import JPCollection
 
 _collection: JPCollection | None = None
 
@@ -100,7 +99,6 @@ def _profile_opened() -> None:
 
 def anki_config() -> ConfigManagerEx:
     from aqt import mw
-
     from jastudio.anki_extentions.config_manager_ex import ConfigManagerEx
     return ConfigManagerEx(non_optional(mw.col).conf)
 

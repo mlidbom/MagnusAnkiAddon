@@ -3,8 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
-from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from typed_linq_collections.collections.q_unique_list import QUniqueList
+
+from jastudio.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 
 if TYPE_CHECKING:
     from collections.abc import Callable

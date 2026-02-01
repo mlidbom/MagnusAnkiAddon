@@ -3,13 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
-from language_services.janome_ex.word_extraction import analysis_constants
 from note.note_constants import NoteFields
 from note.tags import Tags
 from note.vocabulary.pos import POS
 from note.vocabulary.pos_set_interner import POSSetManager
 from typed_linq_collections.collections.q_frozen_set import QFrozenSet
 from typed_linq_collections.collections.q_set import QSet
+
+from jastudio.language_services.janome_ex.word_extraction import analysis_constants
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -57,7 +58,7 @@ class VocabNotePartsOfSpeech(Slots):
         return self._vocab.tags.contains(Tags.UsuallyKanaOnly)
 
     def set_automatically_from_dictionary(self) -> None:
-        from language_services.jamdict_ex.dict_lookup import DictLookup
+        from jastudio.language_services.jamdict_ex.dict_lookup import DictLookup
 
         lookup = DictLookup.lookup_vocab_word_or_name(self._vocab)
         if lookup.found_words():

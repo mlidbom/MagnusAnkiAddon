@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import aqt.utils
-from jastudio.ankiutils import app
 from aqt import gui_hooks
 from aqt.overview import Overview
 from note.note_constants import CardTypes, NoteTypes
@@ -11,6 +10,7 @@ from sysutils import typed
 
 from jastudio.anki_extentions.card_ex import CardEx
 from jastudio.anki_extentions.deck_ex import DeckEx
+from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
     from anki.cards import CardId

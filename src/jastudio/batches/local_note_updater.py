@@ -5,9 +5,6 @@ import random
 import re
 from typing import TYPE_CHECKING
 
-from jastudio.ankiutils import app, query_builder
-from language_services.jamdict_ex.dict_lookup import DictLookup
-from language_services.janome_ex.tokenizing.pre_processing_stage.ichidan_godan_potential_or_imperative_hybrid_splitter import IchidanGodanPotentialOrImperativeHybridSplitter
 from note.note_constants import CardTypes
 from note.sentences.parsed_match import ParsedMatch
 from note.sentences.sentencenote import SentenceNote
@@ -16,11 +13,16 @@ from note.vocabulary.vocabnote import VocabNote
 from qt_utils.task_progress_runner import TaskRunner
 from sysutils import ex_str
 
+from jastudio.ankiutils import app, query_builder
+from jastudio.language_services.jamdict_ex.dict_lookup import DictLookup
+from jastudio.language_services.janome_ex.tokenizing.pre_processing_stage.ichidan_godan_potential_or_imperative_hybrid_splitter import IchidanGodanPotentialOrImperativeHybridSplitter
+
 if TYPE_CHECKING:
     from anki.notes import NoteId
-    from language_services.jamdict_ex.dict_lookup_result import DictLookupResult
     from note.kanjinote import KanjiNote
     from typed_linq_collections.collections.q_list import QList
+
+    from jastudio.language_services.jamdict_ex.dict_lookup_result import DictLookupResult
 
 def update_all() -> None:
     with TaskRunner.current("Updating everything but sentence reparsing"):

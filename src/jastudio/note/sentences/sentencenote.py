@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast, override
 
 from anki.notes import Note
-from jastudio.ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.jpnote import JPNote
 from note.note_constants import ImmersionKitSentenceNoteFields, NoteFields, NoteTypes, SentenceNoteFields
@@ -20,13 +19,16 @@ from sysutils import ex_str, kana_utils
 from sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_set import QSet
 
+from jastudio.ankiutils import app
+
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
-    from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
     from note.tag import Tag
     from note.vocabulary.vocabnote import VocabNote
     from typed_linq_collections.collections.q_list import QList
     from typed_linq_collections.collections.q_unique_list import QUniqueList
+
+    from jastudio.language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
+    from jastudio.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 
 class SentenceNote(JPNote, Slots):
     def __init__(self, note: Note) -> None:
@@ -77,7 +79,7 @@ class SentenceNote(JPNote, Slots):
         return self.create_analysis().display_word_variants
 
     def create_analysis(self, for_ui: bool = False) -> TextAnalysis:
-        from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
+        from jastudio.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
         return TextAnalysis(self.question.with_invisible_space(), self.configuration.configuration, for_ui=for_ui)
 
     @override
@@ -104,7 +106,7 @@ class SentenceNote(JPNote, Slots):
         self.active_question.set(self.question.with_invisible_space()) #todo should this be with the invisible space?
 
     def update_parsed_words(self, force: bool = False) -> None:
-        from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
+        from jastudio.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
         parsing_result = self.parsing_result.get()
         if not force and parsing_result and parsing_result.sentence == self.question.without_invisible_space() and parsing_result.parser_version == TextAnalysis.version:
             return

@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from jastudio.ankiutils import app
 from aqt import gui_hooks
 from note.notefields.sentence_question_field import SentenceQuestionField
 from note.sentences.sentencenote import SentenceNote
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
+
+from jastudio.ankiutils import app
 
 
 def render_wbr(question: str) -> str:

@@ -4,7 +4,6 @@ import threading
 from typing import TYPE_CHECKING
 
 import mylog
-from jastudio.ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note import noteutils
 from note.collection.cache_runner import CacheRunner
@@ -20,6 +19,8 @@ from sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRefable
+
+from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
     from anki.collection import Collection
@@ -91,7 +92,7 @@ class JPCollection(WeakRefable, Slots):
                 self._cache_runner.start()
 
                 if app.config().load_jamdict_db_into_memory.get_value():
-                    from language_services.jamdict_ex.dict_lookup import DictLookup
+                    from jastudio.language_services.jamdict_ex.dict_lookup import DictLookup
                     task_runner.run_on_background_thread_with_spinning_progress_dialog("Loading Jamdict db into memory", DictLookup.ensure_loaded_into_memory)
 
                 if app.config().pre_cache_card_studying_status.get_value():

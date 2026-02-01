@@ -6,9 +6,10 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from ui.web.sentence.candidate_word_variant_viewmodel import CandidateWordVariantViewModel
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
     from typed_linq_collections.collections.q_list import QList
     from ui.web.sentence.match_viewmodel import MatchViewModel
+
+    from jastudio.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 
 
 class TextAnalysisViewModel(Slots):

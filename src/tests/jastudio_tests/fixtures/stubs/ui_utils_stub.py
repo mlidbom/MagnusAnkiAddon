@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from jastudio.ankiutils.ui_utils_interface import IUIUtils
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jastudio.ankiutils.ui_utils_interface import IUIUtils
 
 if TYPE_CHECKING:
     from collections.abc import Callable

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast, override
 
-from jastudio.ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa  # pyright: ignore[reportUnusedImport]
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.jpnote import JPNote
 from note.note_constants import NoteFields
@@ -25,6 +24,8 @@ from note.vocabulary.vocabnote_sentences import VocabNoteSentences
 from note.vocabulary.vocabnote_usercompoundparts import VocabNoteUserCompoundParts
 from note.vocabulary.vocabnote_userfields import VocabNoteUserfields
 from sysutils.weak_ref import WeakRef
+
+from jastudio.ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa  # pyright: ignore[reportUnusedImport]
 
 if TYPE_CHECKING:
     from anki.notes import Note
@@ -82,7 +83,7 @@ class VocabNote(JPNote, Slots):
         vocabnote_generated_data.update_generated_data(self)
 
     def generate_and_set_answer(self) -> None:
-        from language_services.jamdict_ex.dict_lookup import DictLookup
+        from jastudio.language_services.jamdict_ex.dict_lookup import DictLookup
         dict_lookup = DictLookup.lookup_vocab_word_or_name(self)
         if dict_lookup.found_words():
             generated = dict_lookup.format_answer()

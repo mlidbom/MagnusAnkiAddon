@@ -7,7 +7,7 @@ from note.sentences.sentencenote import SentenceNote
 from ui.web.sentence.sentence_viewmodel import SentenceViewModel
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
+    from jastudio.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
     from ui.web.sentence.match_viewmodel import MatchViewModel
 
 def surface_and_match_form(match_vm: MatchViewModel) -> str:

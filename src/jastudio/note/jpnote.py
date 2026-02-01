@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast, override
 
 from anki.models import NotetypeDict
-from jastudio.ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note import noteutils
 from note.note_constants import CardTypes, MyNoteFields, NoteTypes
@@ -18,6 +17,7 @@ from typed_linq_collections.collections.q_set import QSet
 
 from jastudio.anki_extentions.card_ex import CardEx
 from jastudio.anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
+from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
     from anki.cards import Card

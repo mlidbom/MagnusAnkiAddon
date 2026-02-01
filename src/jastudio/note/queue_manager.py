@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jastudio.ankiutils import app
 from aqt import dialogs, mw
 from aqt.browser import Browser  # pyright: ignore[reportPrivateImportUsage]
 from note.cardutils import CardUtils
 from sysutils import typed
+
+from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

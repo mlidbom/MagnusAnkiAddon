@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jastudio.ankiutils import app, ui_utils
 from aqt import gui_hooks
 from note.kanjinote import KanjiNote
 from note.sentences.sentencenote import SentenceNote
@@ -11,6 +10,8 @@ from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtGui import QKeySequence, QShortcut
 from sysutils import typed
 from sysutils.typed import try_cast
+
+from jastudio.ankiutils import app, ui_utils
 
 if TYPE_CHECKING:
     from collections.abc import Callable

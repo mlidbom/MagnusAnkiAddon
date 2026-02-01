@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jastudio.ankiutils import app, ui_utils
 from aqt import gui_hooks, mw
 from aqt.reviewer import Reviewer
 from note.difficulty_calculator import DifficultyCalculator
@@ -14,6 +13,7 @@ from note.vocabulary.vocabnote import VocabNote
 from sysutils.typed import non_optional
 
 from jastudio.anki_extentions.card_ex import CardEx
+from jastudio.ankiutils import app, ui_utils
 
 if TYPE_CHECKING:
     from anki.cards import Card

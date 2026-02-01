@@ -2,10 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jastudio.ankiutils import app
 from aqt import gui_hooks
 from configuration.settings import Settings
-from language_services.janome_ex.tokenizing.jn_token import JNToken
 from note.sentences.sentencenote import SentenceNote
 from sysutils import ex_str
 from sysutils.ex_str import newline
@@ -14,12 +12,16 @@ from ui.web.sentence.sentence_viewmodel import SentenceViewModel
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 
+from jastudio.ankiutils import app
+from jastudio.language_services.janome_ex.tokenizing.jn_token import JNToken
+
 if TYPE_CHECKING:
     from collections.abc import Callable
 
     from configuration.configuration_value import ConfigurationValueBool
-    from language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
     from ui.web.sentence.match_viewmodel import MatchViewModel
+
+    from jastudio.language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
 
 def format_reason(reason: str) -> str:
     return f"""<span class="configured">{reason}</span>""" if "configured" in reason else reason

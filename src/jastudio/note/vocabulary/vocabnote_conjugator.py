@@ -3,8 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from language_services import conjugator
 from typed_linq_collections.q_iterable import query
+
+from jastudio.language_services import conjugator
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote

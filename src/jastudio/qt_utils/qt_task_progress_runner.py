@@ -5,8 +5,8 @@ import time
 from typing import TYPE_CHECKING, override
 
 import mylog
-from jastudio.ankiutils import app
 from autoslot import Slots
+from jastudio.ankiutils import app
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QLabel, QProgressDialog
 from qt_utils.i_task_progress_runner import ITaskRunner

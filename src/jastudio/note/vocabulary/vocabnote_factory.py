@@ -3,17 +3,19 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from anki.notes import Note
-from jastudio.ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from language_services.jamdict_ex.dict_lookup import DictLookup
 from note.note_constants import NoteTypes
 from note.tags import Tags
+
+from jastudio.ankiutils import app
+from jastudio.language_services.jamdict_ex.dict_lookup import DictLookup
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from language_services.jamdict_ex.dict_lookup_result import DictLookupResult
     from note.vocabulary.vocabnote import VocabNote
+
+    from jastudio.language_services.jamdict_ex.dict_lookup_result import DictLookupResult
 
 class VocabNoteFactory(Slots):
     @classmethod

@@ -2,13 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jastudio.ankiutils import app, ui_utils
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.jpnote import JPNote
 from note.note_constants import Mine
 from sysutils import app_thread_pool
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
+
+from jastudio.ankiutils import app, ui_utils
 
 if TYPE_CHECKING:
     from collections.abc import Callable

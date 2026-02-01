@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from autoslot import Slots
-from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
+from jastudio.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.sentences.word_exclusion_set import WordExclusionSet
 from sysutils.json import ex_json
 from sysutils.json.json_reader import JsonReader

@@ -4,13 +4,14 @@ import re
 from typing import TYPE_CHECKING, cast, override
 
 from anki.notes import Note
-from jastudio.ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note import kanjinote_mnemonic_maker
 from note.vocabulary import vocabnote_sorting
 from sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.q_iterable import query
+
+from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote

@@ -18,8 +18,8 @@ if TYPE_CHECKING:
 
 import anki.cards
 import anki.cards_pb2
-from jastudio.ankiutils import app
 from aqt.reviewer import AnswerAction
+from jastudio.ankiutils import app
 from sysutils import timeutil, typed
 
 

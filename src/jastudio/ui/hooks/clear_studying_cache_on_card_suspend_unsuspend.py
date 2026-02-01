@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jastudio.ankiutils import app
 from aqt import gui_hooks
 from note import noteutils
+
+from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import note.vocabulary.vocabnote_sorting
-from jastudio.ankiutils import app
 from aqt import gui_hooks
-from language_services import conjugator
 from note.vocabulary.vocabnote import VocabNote
 from sysutils.ex_str import newline
 from typed_linq_collections.q_iterable import query
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
+
+from jastudio.ankiutils import app
+from jastudio.language_services import conjugator
 
 
 def _create_classes(_vocab: VocabNote) -> str:

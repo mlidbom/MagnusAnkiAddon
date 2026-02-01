@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import sys
 
-from jastudio.ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils.ex_str import newline
 from typed_linq_collections.collections.q_dict import QDict
+
+from jastudio.ankiutils import app
 
 current_instance_count: QDict[str, int] = QDict()
 

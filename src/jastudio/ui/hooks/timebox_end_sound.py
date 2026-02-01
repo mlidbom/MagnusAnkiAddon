@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from os.path import dirname
 
-from jastudio.ankiutils import app
 from aqt.reviewer import Reviewer
 from aqt.sound import av_player
 from aqt.utils import askUserDialog
 from PyQt6.QtWidgets import QMessageBox
 from sysutils import timeutil, typed
+
+from jastudio.ankiutils import app
 
 addon_path: str = dirname(__file__)
 sound_file: str = addon_path + "/timebox_complete.mp3"

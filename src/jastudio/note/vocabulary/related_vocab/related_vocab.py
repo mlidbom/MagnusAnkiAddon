@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jastudio.ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.note_constants import NoteFields
 from note.notefields.auto_save_wrappers.field_wrapper import FieldWrapper
@@ -17,6 +16,8 @@ from note.vocabulary.related_vocab.Synonyms import Synonyms
 from sysutils.lazy import Lazy
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
+
+from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote

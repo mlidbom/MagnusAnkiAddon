@@ -3,8 +3,9 @@ from __future__ import annotations
 import gc
 
 import mylog
-from jastudio.ankiutils import app
 from sysutils import app_thread_pool
+
+from jastudio.ankiutils import app
 
 
 def collect_on_on_ui_thread_if_collection_during_batches_enabled(display: bool = True) -> bool:

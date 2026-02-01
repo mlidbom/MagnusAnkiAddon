@@ -3,7 +3,6 @@ from __future__ import annotations
 import typing
 
 import pyperclip
-from jastudio.ankiutils import app, query_builder, search_executor, ui_utils
 from aqt import gui_hooks
 from batches import local_note_updater
 from note.kanjinote import KanjiNote
@@ -19,6 +18,8 @@ from ui.menus.menu_utils import shortcutfinger
 from ui.menus.menu_utils.ex_qmenu import add_ui_action, create_note_action, create_vocab_note_action
 from ui.menus.open_in_anki import build_open_in_anki_menu
 from ui.menus.web_search import build_web_search_menu
+
+from jastudio.ankiutils import app, query_builder, search_executor, ui_utils
 
 if typing.TYPE_CHECKING:
     from aqt.webview import AnkiWebView

@@ -4,12 +4,13 @@ from typing import TYPE_CHECKING, override
 
 from anki.notes import NoteId
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from note.sentences.serialization.parsed_word_serializer import ParsedWordSerializer
 from sysutils.memory_usage import string_auto_interner
 
+from jastudio.language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
+
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.match import Match
+    from jastudio.language_services.janome_ex.word_extraction.matches.match import Match
 
 class ParsedMatch(Slots):
     missing_note_id:NoteId = NoteId(-1)

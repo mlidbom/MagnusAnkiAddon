@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jastudio.ankiutils import app
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtWidgets import QCheckBox, QDialog, QDialogButtonBox, QDoubleSpinBox, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QSpinBox, QVBoxLayout, QWidget
 from sysutils.typed import checked_cast
+
+from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
     from configuration.configuration_value import ConfigurationValueBool, ConfigurationValueFloat, ConfigurationValueInt, JapaneseConfig

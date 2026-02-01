@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from typing import Literal
 
-from jastudio.ankiutils import app
 from aqt import mw
 from aqt.reviewer import Reviewer
 from aqt.utils import tooltip
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
+
+from jastudio.ankiutils import app
 
 # noinspection PyProtectedMember
 _real_show_answer = Reviewer._showAnswer  # pyright: ignore[reportPrivateUsage]

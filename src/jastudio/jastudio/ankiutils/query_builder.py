@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from jastudio.ankiutils import app
-from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
+from jastudio.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.note_constants import Builtin, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
 from sysutils import kana_utils
 from typed_linq_collections.collections.q_set import QSet

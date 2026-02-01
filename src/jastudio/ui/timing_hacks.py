@@ -3,9 +3,10 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 
-from jastudio.ankiutils.audio_suppressor import audio_suppressor
 from aqt import gui_hooks
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+
+from jastudio.ankiutils.audio_suppressor import audio_suppressor
 
 if TYPE_CHECKING:
     from anki.cards import Card

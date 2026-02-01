@@ -2,18 +2,20 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils import ex_lambda
 from sysutils.lazy import Lazy
 from sysutils.typed import non_optional
 from ui.menus.menu_utils import shortcutfinger
 from ui.menus.menu_utils.ex_qmenu import add_ui_action
 
+from jastudio.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
+
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.match import Match
     from note.sentences.sentencenote import SentenceNote
     from note.sentences.word_exclusion_set import WordExclusionSet
     from PyQt6.QtWidgets import QMenu
+
+    from jastudio.language_services.janome_ex.word_extraction.matches.match import Match
 
 def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: str) -> None:
     def add_add_word_exclusion_action(add_menu: QMenu, exclusion_type_title: str, exclusion_set: WordExclusionSet) -> None:

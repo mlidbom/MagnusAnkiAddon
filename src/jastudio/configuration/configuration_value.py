@@ -3,12 +3,13 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING, cast
 
-from jastudio.ankiutils import app
 from aqt import mw
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils.lazy import Lazy
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRefable
+
+from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
     from collections.abc import Callable

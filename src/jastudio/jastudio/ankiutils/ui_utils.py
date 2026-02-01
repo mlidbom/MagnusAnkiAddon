@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from jastudio.ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jastudio.ankiutils import app
 from PyQt6.QtWidgets import QApplication
 from typed_linq_collections.q_iterable import query
 
@@ -14,8 +14,6 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
 
 import aqt
-from jastudio.ankiutils.audio_suppressor import audio_suppressor
-from jastudio.ankiutils.ui_utils_interface import IUIUtils
 from aqt import AnkiQt  # type: ignore[attr-defined]  # pyright: ignore[reportPrivateImportUsage]
 from aqt.browser import Browser  # type: ignore[attr-defined]  # pyright: ignore[reportPrivateImportUsage]
 from aqt.browser.previewer import Previewer
@@ -25,6 +23,8 @@ from aqt.editor import Editor
 from aqt.reviewer import RefreshNeeded
 from aqt.utils import tooltip
 from aqt.webview import AnkiWebView, AnkiWebViewKind
+from jastudio.ankiutils.audio_suppressor import audio_suppressor
+from jastudio.ankiutils.ui_utils_interface import IUIUtils
 from sysutils import app_thread_pool, timeutil
 from sysutils.typed import checked_cast, non_optional
 

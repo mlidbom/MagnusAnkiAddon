@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jastudio.ankiutils import app
 from aqt import gui_hooks, mw
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtGui import QKeySequence, QShortcut
@@ -12,6 +11,8 @@ from sysutils.typed import checked_cast
 from ui.english_dict.find_english_words_dialog import EnglishWordSearchDialog
 from ui.hooks import history_navigator
 from ui.open_note.open_note_dialog import NoteSearchDialog
+
+from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
     from collections.abc import Callable

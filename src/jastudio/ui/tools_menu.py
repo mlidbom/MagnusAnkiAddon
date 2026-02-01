@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jastudio.ankiutils import app, ui_utils
-from jastudio.ankiutils.app import get_ui_utils, main_window
 from batches import local_note_updater
 from configuration.configuration import show_japanese_options
 from configuration.readings_mapping_dialog import show_readings_mappings
@@ -16,6 +14,9 @@ from ui.menus.menu_utils import shortcutfinger
 from ui.menus.open_in_anki import build_open_in_anki_menu
 from ui.menus.web_search import build_web_search_menu
 from ui.open_note.open_note_dialog import NoteSearchDialog
+
+from jastudio.ankiutils import app, ui_utils
+from jastudio.ankiutils.app import get_ui_utils, main_window
 
 if TYPE_CHECKING:
     from collections.abc import Callable

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import language_services.conjugator
+from jastudio.language_services import  conjugator
 import pytest
 
 
@@ -76,21 +76,21 @@ def test_known_godan(word: str, conjugation_bases: list[str]) -> None:
     run_tests(word, conjugation_bases, is_godan=True)
 
 def run_tests(word: str, conjugation_bases: list[str], is_ichidan: bool = False, is_godan: bool = False) -> None:
-    result = language_services.conjugator.get_word_stems(word, is_ichidan, is_godan)
+    result = conjugator.get_word_stems(word, is_ichidan, is_godan)
     assert result == conjugation_bases
     if len(conjugation_bases) > 1:
-        i_stem = language_services.conjugator.get_i_stem(word, is_ichidan, is_godan)
+        i_stem = conjugator.get_i_stem(word, is_ichidan, is_godan)
         assert i_stem == conjugation_bases[0]
 
     if is_ichidan:
         return
 
     if len(conjugation_bases) > 2:
-        a_stem = language_services.conjugator.get_a_stem(word, is_ichidan, is_godan)
+        a_stem = conjugator.get_a_stem(word, is_ichidan, is_godan)
         assert a_stem == conjugation_bases[1]
     if len(conjugation_bases) > 3:
-        e_stem = language_services.conjugator.get_e_stem(word, is_ichidan, is_godan)
+        e_stem = conjugator.get_e_stem(word, is_ichidan, is_godan)
         assert e_stem == conjugation_bases[2]
     if len(conjugation_bases) > 4:
-        te_stem = language_services.conjugator.get_te_stem(word, is_ichidan, is_godan)
+        te_stem = conjugator.get_te_stem(word, is_ichidan, is_godan)
         assert te_stem == conjugation_bases[3]
