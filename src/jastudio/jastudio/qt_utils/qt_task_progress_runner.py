@@ -8,12 +8,12 @@ import mylog
 from autoslot import Slots
 from jastudio.ankiutils import app
 from jastudio.qt_utils.i_task_progress_runner import ITaskRunner
+from jastudio.sysutils import app_thread_pool, ex_thread, timeutil
+from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
+from jastudio.sysutils.timeutil import StopWatch
+from jastudio.sysutils.typed import non_optional
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QLabel, QProgressDialog
-from sysutils import app_thread_pool, ex_thread, timeutil
-from sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
-from sysutils.timeutil import StopWatch
-from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from collections.abc import Callable

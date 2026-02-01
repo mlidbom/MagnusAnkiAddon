@@ -7,7 +7,7 @@ from jastudio.language_services.janome_ex.word_extraction.matches.match import M
 
 if TYPE_CHECKING:
     from jastudio.language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
-    from sysutils.weak_ref import WeakRef
+    from jastudio.sysutils.weak_ref import WeakRef
 
 class MissingMatch(Match, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant]) -> None:

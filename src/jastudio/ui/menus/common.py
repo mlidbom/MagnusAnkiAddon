@@ -5,8 +5,6 @@ import typing
 import pyperclip
 from aqt import gui_hooks
 from batches import local_note_updater
-from sysutils import ex_lambda, typed
-from sysutils.typed import non_optional
 from typed_linq_collections.collections.q_list import QList
 from ui import menus
 from ui.menus.menu_utils import shortcutfinger
@@ -20,6 +18,8 @@ from jastudio.note.note_constants import Mine
 from jastudio.note.sentences.sentencenote import SentenceNote
 from jastudio.note.vocabulary.vocabnote import VocabNote
 from jastudio.qt_utils.ex_qmenu import ExQmenu
+from jastudio.sysutils import ex_lambda, typed
+from jastudio.sysutils.typed import non_optional
 
 if typing.TYPE_CHECKING:
     from aqt.webview import AnkiWebView

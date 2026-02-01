@@ -5,9 +5,9 @@ from typing import TYPE_CHECKING
 from anki.consts import QUEUE_TYPE_SUSPENDED
 from anki.notes import NoteId
 from jastudio.note.note_constants import NoteTypes
-from sysutils import typed
-from sysutils.memory_usage import string_auto_interner
-from sysutils.typed import non_optional, str_
+from jastudio.sysutils import typed
+from jastudio.sysutils.memory_usage import string_auto_interner
+from jastudio.sysutils.typed import non_optional, str_
 from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:

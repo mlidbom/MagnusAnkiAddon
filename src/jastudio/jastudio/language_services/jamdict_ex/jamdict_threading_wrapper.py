@@ -8,9 +8,9 @@ from typing import TYPE_CHECKING, Any
 from autoslot import Slots
 from jamdict import Jamdict  # pyright: ignore [reportMissingTypeStubs]
 from jastudio.ankiutils import app
-from sysutils.lazy import Lazy
-from sysutils.typed import non_optional, str_
-from sysutils.weak_ref import WeakRef, WeakRefable
+from jastudio.sysutils.lazy import Lazy
+from jastudio.sysutils.typed import non_optional, str_
+from jastudio.sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:

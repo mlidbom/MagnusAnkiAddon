@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING
 from anki import consts
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jastudio.anki_extentions.deck_ex import DeckEx
-from sysutils.timeutil import StopWatch
-from sysutils.typed import non_optional
+from jastudio.sysutils.timeutil import StopWatch
+from jastudio.sysutils.typed import non_optional
 from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:
@@ -20,7 +20,7 @@ import anki.cards
 import anki.cards_pb2
 from aqt.reviewer import AnswerAction
 from jastudio.ankiutils import app
-from sysutils import timeutil, typed
+from jastudio.sysutils import timeutil, typed
 
 
 def _latest_day_cutoff_timestamp() -> int:

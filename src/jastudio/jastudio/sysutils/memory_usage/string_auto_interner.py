@@ -4,9 +4,8 @@ import os
 import sys
 from typing import TYPE_CHECKING
 
-from typed_linq_collections.collections.string_interning import set_default_intern_func
-
 from jastudio.ankiutils import app
+from typed_linq_collections.collections.string_interning import set_default_intern_func
 
 if TYPE_CHECKING:
     from typed_linq_collections.collections.q_list import QList

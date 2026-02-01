@@ -6,7 +6,7 @@ from anki.models import NotetypeDict, NotetypeId
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jastudio.anki_extentions.notetype_ex.note_type_field import NoteFieldEx
 from jastudio.anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
-from sysutils import ex_assert, typed
+from jastudio.sysutils import ex_assert, typed
 
 
 class NoteTypeEx(Slots):

@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from sysutils import ex_lambda, kana_utils
-from sysutils.typed import non_optional
 from ui.menus.menu_utils import shortcutfinger
 from ui.menus.menu_utils.ex_qmenu import add_ui_action
+
+from jastudio.sysutils import ex_lambda, kana_utils
+from jastudio.sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     import collections.abc

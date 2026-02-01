@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from jastudio.note.vocabulary.pos import POS
-from sysutils import ex_str
-from sysutils.memory_usage import string_auto_interner
+from jastudio.sysutils import ex_str
+from jastudio.sysutils.memory_usage import string_auto_interner
 
 
 class POSSetManager:

@@ -14,7 +14,7 @@ from jastudio.note.vocabulary.related_vocab.perfect_synonyms import PerfectSynon
 from jastudio.note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
 from jastudio.note.vocabulary.related_vocab.SeeAlso import SeeAlso
 from jastudio.note.vocabulary.related_vocab.Synonyms import Synonyms
-from sysutils.lazy import Lazy
+from jastudio.sysutils.lazy import Lazy
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
 
@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     from jastudio.note.jpnote import JPNote
     from jastudio.note.kanjinote import KanjiNote
     from jastudio.note.vocabulary.vocabnote import VocabNote
-    from sysutils.weak_ref import WeakRef
+    from jastudio.sysutils.weak_ref import WeakRef
 
 class RelatedVocab(Slots): # todo performance: memory: do we need to cache all of this, could it be created on demand by properties instead?
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:

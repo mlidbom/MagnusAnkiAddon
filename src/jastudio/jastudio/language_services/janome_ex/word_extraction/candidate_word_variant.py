@@ -7,9 +7,9 @@ from jastudio.ankiutils import app
 from jastudio.language_services.janome_ex.word_extraction.matches.dictionary_match import DictionaryMatch
 from jastudio.language_services.janome_ex.word_extraction.matches.missing_match import MissingMatch
 from jastudio.language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-from sysutils import ex_assert
-from sysutils.lazy import Lazy
-from sysutils.weak_ref import WeakRef, WeakRefable
+from jastudio.sysutils import ex_assert
+from jastudio.sysutils.lazy import Lazy
+from jastudio.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

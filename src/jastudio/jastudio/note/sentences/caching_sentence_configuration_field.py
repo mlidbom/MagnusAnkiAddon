@@ -7,7 +7,7 @@ from jastudio.ankiutils import app
 from jastudio.note.note_constants import SentenceNoteFields
 from jastudio.note.notefields.mutable_string_field import MutableStringField
 from jastudio.note.sentences.sentence_configuration import SentenceConfiguration
-from sysutils.weak_ref import WeakRef, WeakRefable
+from jastudio.sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:

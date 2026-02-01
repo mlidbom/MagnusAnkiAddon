@@ -9,10 +9,10 @@ from jastudio.note.jpnote import JPNote
 from jastudio.note.kanjinote import KanjiNote
 from jastudio.note.sentences.sentencenote import SentenceNote
 from jastudio.note.vocabulary.vocabnote import VocabNote
+from jastudio.sysutils import ex_str, kana_utils, typed
+from jastudio.sysutils.typed import non_optional
 from PyQt6.QtCore import Qt, pyqtBoundSignal
 from PyQt6.QtWidgets import QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QProgressBar, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
-from sysutils import ex_str, kana_utils, typed
-from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from collections.abc import Callable

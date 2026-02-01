@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from aqt import gui_hooks, mw
 from aqt.reviewer import Reviewer
-from sysutils.typed import non_optional
 
 from jastudio.anki_extentions.card_ex import CardEx
 from jastudio.ankiutils import app, ui_utils
@@ -14,6 +13,7 @@ from jastudio.note.kanjinote import KanjiNote
 from jastudio.note.note_constants import CardTypes
 from jastudio.note.sentences.sentencenote import SentenceNote
 from jastudio.note.vocabulary.vocabnote import VocabNote
+from jastudio.sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from anki.cards import Card

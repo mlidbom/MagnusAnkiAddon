@@ -3,13 +3,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from sysutils.lazy import Lazy
+from jastudio.sysutils.lazy import Lazy
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
     from jastudio.note.jpnote import JPNote
-    from sysutils.weak_ref import WeakRef
+    from jastudio.sysutils.weak_ref import WeakRef
 
 # this field is used extremely much, so its design is crucial for both performance and memory usage, keep in mind when changing anything
 # if a field is read-only, make sure to to use ReadOnlyStringField instead, which uses less memory

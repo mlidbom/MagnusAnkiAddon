@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from sysutils.typed import non_optional
 from ui.menus.menu_utils import shortcutfinger
 from ui.menus.menu_utils.ex_qmenu import create_vocab_note_action
+
+from jastudio.sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from PyQt6.QtWidgets import QMenu

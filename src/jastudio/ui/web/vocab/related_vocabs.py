@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from aqt import gui_hooks
-from sysutils.ex_str import newline
 from typed_linq_collections.q_iterable import query
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
@@ -9,6 +8,7 @@ from jastudio.ankiutils import app
 from jastudio.language_services import conjugator
 from jastudio.note.vocabulary import vocabnote_sorting
 from jastudio.note.vocabulary.vocabnote import VocabNote
+from jastudio.sysutils.ex_str import newline
 
 
 def _create_classes(_vocab: VocabNote) -> str:

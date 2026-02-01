@@ -9,8 +9,8 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jastudio.anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from jastudio.ankiutils import app
 from jastudio.note.note_constants import NoteTypes
-from sysutils import app_thread_pool, ex_assert, ex_thread
-from sysutils.typed import checked_cast, non_optional
+from jastudio.sysutils import app_thread_pool, ex_assert, ex_thread
+from jastudio.sysutils.typed import checked_cast, non_optional
 from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:

@@ -8,7 +8,7 @@ from jastudio.language_services.janome_ex.tokenizing.godan_dictionary_form_stem 
 from jastudio.language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
 from jastudio.language_services.janome_ex.tokenizing.pre_processing_stage.word_info import WordInfo
 from jastudio.language_services.janome_ex.tokenizing.split_token import SplitToken
-from sysutils.typed import non_optional
+from jastudio.sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from jastudio.language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken

@@ -3,8 +3,9 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING
 
-from sysutils.lazy import Lazy
 from testutils import ex_pytest
+
+from jastudio.sysutils.lazy import Lazy
 
 if TYPE_CHECKING:
     import logging

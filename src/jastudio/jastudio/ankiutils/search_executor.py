@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import aqt
 from jastudio.ankiutils import app
-from sysutils.typed import non_optional
+from jastudio.sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from collections.abc import Callable

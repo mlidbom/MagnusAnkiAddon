@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from aqt import gui_hooks
-from sysutils import ex_str
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 
 from jastudio.note.vocabulary.vocabnote import VocabNote
+from jastudio.sysutils import ex_str
 
 
 def render_kanji_list_from_kanji(kanjis: list[str]) -> str:

@@ -4,7 +4,8 @@ from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QInputDialog, QLabel, QPushButton, QSizePolicy, QVBoxLayout, QWidget
-from sysutils.typed import checked_cast, non_optional
+
+from jastudio.sysutils.typed import checked_cast, non_optional
 
 if TYPE_CHECKING:
     from collections.abc import Callable

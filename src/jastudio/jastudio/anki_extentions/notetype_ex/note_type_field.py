@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from sysutils import typed
+from jastudio.sysutils import typed
 
 
 class NoteFieldEx(Slots):

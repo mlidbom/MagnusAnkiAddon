@@ -4,8 +4,8 @@ import pykakasi
 
 # noinspection PyPackageRequirements
 import romkan  # pyright: ignore[reportMissingTypeStubs]
-from sysutils import typed
-from sysutils.ex_str import full_width_space
+from jastudio.sysutils import typed
+from jastudio.sysutils.ex_str import full_width_space
 
 # ruff: noqa: PLR2004
 

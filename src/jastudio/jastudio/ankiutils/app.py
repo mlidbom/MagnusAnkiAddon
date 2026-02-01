@@ -4,7 +4,7 @@ import os
 from typing import TYPE_CHECKING
 
 import mylog
-from sysutils.typed import checked_cast, non_optional
+from jastudio.sysutils.typed import checked_cast, non_optional
 from testutils import ex_pytest
 from typed_linq_collections.collections.q_set import QSet
 
@@ -65,7 +65,7 @@ def _reset(_col: object | None = None) -> None:
 
 def _destruct() -> None:
     mylog.info("_destruct_ja_app")
-    from sysutils.timeutil import StopWatch
+    from jastudio.sysutils.timeutil import StopWatch
     with StopWatch.log_warning_if_slower_than(0.2):
         global _collection
         if _collection is not None:

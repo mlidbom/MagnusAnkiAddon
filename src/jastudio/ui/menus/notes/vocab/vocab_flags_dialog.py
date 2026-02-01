@@ -4,12 +4,12 @@ from typing import TYPE_CHECKING, override
 
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtWidgets import QCheckBox, QDialog, QDialogButtonBox, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QMessageBox, QScrollArea, QVBoxLayout, QWidget
-from sysutils.typed import checked_cast, non_optional
 from ui.menus.notes.vocab.counter import Counter
 from ui.menus.notes.vocab.require_forbid_widget import RequireForbidWidget
 from ui.menus.notes.vocab.string_set_widget import StringSetWidget
 
 from jastudio.ankiutils import app
+from jastudio.sysutils.typed import checked_cast, non_optional
 
 if TYPE_CHECKING:
     from jastudio.note.notefields.require_forbid_flag_field import RequireForbidFlagField

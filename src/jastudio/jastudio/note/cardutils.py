@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from anki.consts import QUEUE_TYPE_NEW
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jastudio.note.note_constants import NoteTypes
-from sysutils import typed
+from jastudio.sysutils import typed
 
 if TYPE_CHECKING:
     from anki.cards import Card

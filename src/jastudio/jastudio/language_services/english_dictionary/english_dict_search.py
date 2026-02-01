@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from sysutils.lazy import Lazy
+from jastudio.sysutils.lazy import Lazy
 
 
 class WordSense(Slots):

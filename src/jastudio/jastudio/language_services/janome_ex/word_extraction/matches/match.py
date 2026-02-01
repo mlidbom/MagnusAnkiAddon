@@ -15,7 +15,7 @@ from jastudio.language_services.janome_ex.word_extraction.matches.state_tests.is
 from jastudio.language_services.janome_ex.word_extraction.matches.state_tests.is_inflected_surface_with_valid_base import ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb
 from jastudio.language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import ForbidsIsShadowed
 from jastudio.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from sysutils.weak_ref import WeakRef, WeakRefable
+from jastudio.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from collections.abc import Callable

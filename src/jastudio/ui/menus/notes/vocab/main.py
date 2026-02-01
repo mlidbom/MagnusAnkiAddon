@@ -3,9 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pyperclip
-from sysutils import ex_str
-from sysutils.ex_str import newline
-from sysutils.typed import non_optional
 from ui.menus.menu_utils import shortcutfinger
 from ui.menus.menu_utils.ex_qmenu import add_lookup_action, add_single_vocab_lookup_action, add_ui_action, add_vocab_dependencies_lookup
 from ui.menus.notes.vocab.create_note_menu import build_create_note_menu
@@ -13,6 +10,9 @@ from ui.menus.notes.vocab.vocab_flags_dialog import show_vocab_flags_dialog
 
 from jastudio.ankiutils import app, query_builder
 from jastudio.note.note_constants import NoteFields, NoteTypes
+from jastudio.sysutils import ex_str
+from jastudio.sysutils.ex_str import newline
+from jastudio.sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from PyQt6.QtWidgets import QMenu

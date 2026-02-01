@@ -9,8 +9,8 @@ from jastudio.ankiutils import anki_module_import_issues_fix_just_import_this_mo
 from jastudio.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from jastudio.note.sentences.sentence_configuration import SentenceConfiguration
 from jastudio.note.sentences.word_exclusion_set import WordExclusionSet
-from sysutils.json import ex_json
-from sysutils.json.json_reader import JsonReader
+from jastudio.sysutils.json import ex_json
+from jastudio.sysutils.json.json_reader import JsonReader
 from typed_linq_collections.collections.q_unique_list import QUniqueList
 
 

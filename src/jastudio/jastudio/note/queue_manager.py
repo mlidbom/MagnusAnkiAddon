@@ -6,7 +6,7 @@ from aqt import dialogs, mw
 from aqt.browser import Browser  # pyright: ignore[reportPrivateImportUsage]
 from jastudio.ankiutils import app
 from jastudio.note.cardutils import CardUtils
-from sysutils import typed
+from jastudio.sysutils import typed
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

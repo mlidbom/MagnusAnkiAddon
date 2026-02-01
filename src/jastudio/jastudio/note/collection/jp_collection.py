@@ -14,12 +14,12 @@ from jastudio.note.collection.vocab_collection import VocabCollection
 from jastudio.note.jpnote import JPNote
 from jastudio.note.note_constants import Mine
 from jastudio.qt_utils.task_progress_runner import TaskRunner
-from sysutils import app_thread_pool
-from sysutils.memory_usage import string_auto_interner
-from sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
-from sysutils.timeutil import StopWatch
-from sysutils.typed import non_optional
-from sysutils.weak_ref import WeakRefable
+from jastudio.sysutils import app_thread_pool
+from jastudio.sysutils.memory_usage import string_auto_interner
+from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
+from jastudio.sysutils.timeutil import StopWatch
+from jastudio.sysutils.typed import non_optional
+from jastudio.sysutils.weak_ref import WeakRefable
 
 if TYPE_CHECKING:
     from anki.collection import Collection
@@ -29,7 +29,7 @@ class JPCollection(WeakRefable, Slots):
     _is_inital_load: bool = True  # running the GC on initial load slows startup a lot but does not decrease memory usage in any significant way.
 
     def __init__(self, anki_collection: Collection, delay_seconds: float | None = None) -> None:
-        from sysutils.object_instance_tracker import ObjectInstanceTracker
+        from jastudio.sysutils.object_instance_tracker import ObjectInstanceTracker
         self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.tracker_for(self)
         self.anki_collection: Collection = anki_collection
         self._is_initialized: bool = False

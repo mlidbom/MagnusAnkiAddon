@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING
 
 import pytest
 from jastudio.note.sentences.sentencenote import SentenceNote
+from jastudio.sysutils import ex_str
 from jastudio_tests.fixtures.collection_factory import inject_empty_collection
 from jastudio_tests.fixtures.stub_factory import stub_ui_dependencies
-from sysutils import ex_str
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

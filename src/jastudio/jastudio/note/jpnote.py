@@ -12,10 +12,10 @@ from jastudio.note.note_constants import CardTypes, MyNoteFields, NoteTypes
 from jastudio.note.note_flush_guard import NoteRecursiveFlushGuard
 from jastudio.note.note_tags import NoteTags
 from jastudio.note.tags import Tags
-from sysutils import ex_assert, ex_str
-from sysutils.memory_usage import string_auto_interner
-from sysutils.typed import non_optional, str_
-from sysutils.weak_ref import WeakRef, WeakRefable
+from jastudio.sysutils import ex_assert, ex_str
+from jastudio.sysutils.memory_usage import string_auto_interner
+from jastudio.sysutils.typed import non_optional, str_
+from jastudio.sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:

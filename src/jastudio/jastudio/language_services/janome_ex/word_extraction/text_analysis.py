@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots
-from sysutils.weak_ref import WeakRef, WeakRefable
+from jastudio.sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.q_iterable import query  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:

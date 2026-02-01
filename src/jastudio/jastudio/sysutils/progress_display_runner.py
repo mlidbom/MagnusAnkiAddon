@@ -3,12 +3,12 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 
+from jastudio.sysutils import ex_gc, timeutil
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QProgressDialog
-from sysutils import ex_gc, timeutil
 
 if TYPE_CHECKING:
-    from sysutils.standard_type_aliases import Action1
+    from jastudio.sysutils.standard_type_aliases import Action1
 
 def process_with_progress[T](items: list[T], process_item: Action1[T], message: str, allow_cancel: bool = True, display_delay_seconds: float = 0.0, run_gc:bool = False) -> None:
     total_items = len(items)

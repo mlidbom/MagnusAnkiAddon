@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from jastudio.ankiutils import app, query_builder
 from jastudio.note.note_constants import CardTypes, Tags
 from jastudio.note.sentences.sentencenote import SentenceNote
-from sysutils import ex_str
+from jastudio.sysutils import ex_str
 
 if TYPE_CHECKING:
     from anki.notes import NoteId
@@ -26,28 +26,28 @@ def full_rebuild() -> None:
     reparse_all_sentences()
 
 def update_sentences() -> None:
-    from sysutils import progress_display_runner
+    from jastudio.sysutils import progress_display_runner
     def update_sentence(sentence: SentenceNote) -> None:
         sentence.update_generated_data()
 
     progress_display_runner.process_with_progress(app.col().sentences.all(), update_sentence, "Updating sentences")
 
 def update_kanji() -> None:
-    from sysutils import progress_display_runner
+    from jastudio.sysutils import progress_display_runner
     def _update_kanji(kanji: KanjiNote) -> None:
         kanji.update_generated_data()
 
     progress_display_runner.process_with_progress(app.col().kanji.all(), _update_kanji, "Updating kanji")
 
 def update_vocab() -> None:
-    from sysutils import progress_display_runner
+    from jastudio.sysutils import progress_display_runner
     def _update_vocab(vocab: VocabNote) -> None:
         vocab.update_generated_data()
 
     progress_display_runner.process_with_progress(app.col().vocab.all(), _update_vocab, "Updating vocab")
 
 def convert_immersion_kit_sentences() -> None:
-    from sysutils import progress_display_runner
+    from jastudio.sysutils import progress_display_runner
     def convert_note(note_id: NoteId) -> None:
         immersion_kit_note = app.anki_collection().get_note(note_id)
         SentenceNote.import_immersion_kit_sentence(immersion_kit_note)
@@ -62,7 +62,7 @@ def tag_note_metadata() -> None:
     tag_sentence_metadata()
 
 def tag_sentence_metadata() -> None:
-    from sysutils import progress_display_runner
+    from jastudio.sysutils import progress_display_runner
     def tag_sentence(sentence: SentenceNote) -> None:
         sentence.toggle_tag(Tags.Sentence.Uses.incorrect_matches, any(sentence.configuration.incorrect_matches.get()))
         sentence.toggle_tag(Tags.Sentence.Uses.hidden_matches, any(sentence.configuration.hidden_matches.get()))
@@ -70,7 +70,7 @@ def tag_sentence_metadata() -> None:
     progress_display_runner.process_with_progress(app.col().sentences.all(), tag_sentence, "Tag sentence notes")
 
 def tag_vocab_metadata() -> None:
-    from sysutils import progress_display_runner
+    from jastudio.sysutils import progress_display_runner
     def tag_note(vocab: VocabNote) -> None:
         vocab.toggle_tag(Tags.Vocab.has_no_studying_sentences, not any(vocab.sentences.studying()))
         vocab.toggle_tag(Tags.Vocab.Matching.Uses.required_prefix, not vocab.matching_configuration.configurable_rules.required_prefix.none())
@@ -81,7 +81,7 @@ def tag_vocab_metadata() -> None:
     progress_display_runner.process_with_progress(app.col().vocab.all(), tag_note, "Tag vocab notes")
 
 def tag_kanji_metadata() -> None:
-    from sysutils import progress_display_runner
+    from jastudio.sysutils import progress_display_runner
     primary_reading = re.compile(r"<primary>(.*?)</primary>")
 
     known_kanji = {kanji.get_question() for kanji in app.col().kanji.all() if kanji.is_studying()}
@@ -171,14 +171,14 @@ def reading_in_vocab_reading(kanji: KanjiNote, kanji_reading: str, vocab_reading
     return kanji_reading in vocab_reading[1:-1]
 
 def reparse_sentences(sentences: list[SentenceNote], run_gc:bool = False) -> None:
-    from sysutils import progress_display_runner
+    from jastudio.sysutils import progress_display_runner
     def reparse_sentence(sentence: SentenceNote) -> None:
         sentence.update_parsed_words(force=True)
 
     progress_display_runner.process_with_progress(sentences, reparse_sentence, "Reparsing sentences.", run_gc=run_gc)
 
 def print_gc_status_and_collect() -> None:
-    from sysutils import object_instance_tracker
+    from jastudio.sysutils import object_instance_tracker
     object_instance_tracker.print_instance_counts()
 
     app.get_ui_utils().tool_tip(f"Gc.isenabled(): {gc.isenabled()}, Collecting ...", 10000)

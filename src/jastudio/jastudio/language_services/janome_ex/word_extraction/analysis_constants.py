@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sysutils import ex_str
+from jastudio.sysutils import ex_str
 
 real_quote_characters: set[str] = {"「", "」", '"'}
 pseudo_quote_characters: set[str] = {"と", "って"}

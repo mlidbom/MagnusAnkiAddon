@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from jastudio.language_services.janome_ex.word_extraction.matches.match import Match
     from jastudio.language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
     from jastudio.note.sentences.sentence_configuration import SentenceConfiguration
-    from sysutils.weak_ref import WeakRef
+    from jastudio.sysutils.weak_ref import WeakRef
 
 class MatchInspector(Slots):
     """Base class providing access to Match context and helper properties.

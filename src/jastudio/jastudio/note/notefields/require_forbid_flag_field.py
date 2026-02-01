@@ -8,7 +8,7 @@ from jastudio.note.tags import Tags  # pyright: ignore[reportMissingTypeStubs]
 if TYPE_CHECKING:
     from jastudio.note.jpnote import JPNote
     from jastudio.note.tag import Tag
-    from sysutils.weak_ref import WeakRef
+    from jastudio.sysutils.weak_ref import WeakRef
 
 class RequireForbidFlagField(Slots):
     def __init__(self, note: WeakRef[JPNote], required_weight: int, forbidden_weight: int, required_tag: Tag, forbidden_tag: Tag) -> None:

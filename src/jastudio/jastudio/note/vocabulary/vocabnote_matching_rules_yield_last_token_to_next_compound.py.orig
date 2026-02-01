@@ -6,8 +6,8 @@ from jastudio.ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jastudio.note.note_constants import Tags
 from jastudio.note.notefields.require_forbid_flag_field import RequireForbidFlagField
-from sysutils.simple_string_builder import SimpleStringBuilder
-from sysutils.weak_ref import WeakRef, WeakRefable
+from jastudio.sysutils.simple_string_builder import SimpleStringBuilder
+from jastudio.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from configuration.configuration_value import ConfigurationValueBool

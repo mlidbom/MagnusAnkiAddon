@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtWidgets import QCheckBox, QDialog, QDialogButtonBox, QDoubleSpinBox, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QSpinBox, QVBoxLayout, QWidget
-from sysutils.typed import checked_cast
 
 from jastudio.ankiutils import app
+from jastudio.sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
     from configuration.configuration_value import ConfigurationValueBool, ConfigurationValueFloat, ConfigurationValueInt, JapaneseConfig

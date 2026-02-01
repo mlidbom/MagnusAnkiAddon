@@ -5,8 +5,6 @@ import random
 import re
 from typing import TYPE_CHECKING
 
-from sysutils import ex_str
-
 from jastudio.ankiutils import app, query_builder
 from jastudio.language_services.jamdict_ex.dict_lookup import DictLookup
 from jastudio.language_services.janome_ex.tokenizing.pre_processing_stage.ichidan_godan_potential_or_imperative_hybrid_splitter import IchidanGodanPotentialOrImperativeHybridSplitter
@@ -16,6 +14,7 @@ from jastudio.note.sentences.sentencenote import SentenceNote
 from jastudio.note.tags import Tags
 from jastudio.note.vocabulary.vocabnote import VocabNote
 from jastudio.qt_utils.task_progress_runner import TaskRunner
+from jastudio.sysutils import ex_str
 
 if TYPE_CHECKING:
     from anki.notes import NoteId
@@ -192,7 +191,7 @@ def reparse_sentences(sentences: list[SentenceNote], run_gc_during_batch: bool =
         runner.process_with_progress(sentences, reparse_sentence, "Reparsing sentences.", run_gc=run_gc_during_batch, minimum_items_to_gc=500)
 
 def print_gc_status_and_collect() -> None:
-    from sysutils import object_instance_tracker
+    from jastudio.sysutils import object_instance_tracker
     object_instance_tracker.print_instance_counts()
 
     app.get_ui_utils().tool_tip(f"Gc.isenabled(): {gc.isenabled()}, Collecting ...", 10000)

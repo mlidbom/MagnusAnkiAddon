@@ -12,9 +12,9 @@ from jastudio.note.tags import Tags
 from jastudio.note.vocabulary.serialization.matching_rules_serializer import VocabNoteMatchingRulesSerializer
 from jastudio.note.vocabulary.vocabnote_matching_rules_is_inflecting_word import IsInflectingWord
 from jastudio.note.vocabulary.vocabnote_matching_rules_yield_last_token_to_next_compound import YieldLastTokenToOverlappingCompound
-from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
-from sysutils.lazy import Lazy
-from sysutils.weak_ref import WeakRef, WeakRefable
+from jastudio.sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
+from jastudio.sysutils.lazy import Lazy
+from jastudio.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

@@ -28,7 +28,7 @@ from jastudio.language_services.janome_ex.word_extraction.matches.state_tests.su
 from jastudio.language_services.janome_ex.word_extraction.matches.state_tests.tail.forbids_has_displayed_overlapping_following_compound import ForbidsHasDisplayedOverlappingFollowingCompound
 from jastudio.language_services.janome_ex.word_extraction.matches.state_tests.tail.is_sentence_end import RequiresOrForbidsIsSentenceEnd
 from jastudio.language_services.janome_ex.word_extraction.matches.state_tests.tail.suffix_is_in import ForbidsSuffixIsIn
-from sysutils.weak_ref import WeakRef
+from jastudio.sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from collections.abc import Callable

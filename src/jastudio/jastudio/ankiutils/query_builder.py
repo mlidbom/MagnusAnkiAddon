@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from jastudio.ankiutils import app
 from jastudio.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from jastudio.note.note_constants import Builtin, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
-from sysutils import kana_utils
+from jastudio.sysutils import kana_utils
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
 

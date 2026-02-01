@@ -6,7 +6,7 @@ import mylog
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jastudio.note.notefields.json_object_field import ObjectSerializer
 from jastudio.note.sentences.parsed_match import ParsedMatch
-from sysutils.ex_str import invisible_space, newline
+from jastudio.sysutils.ex_str import invisible_space, newline
 
 if TYPE_CHECKING:
     from jastudio.note.sentences.parsing_result import ParsingResult

@@ -8,7 +8,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jastudio.ankiutils import app
 from jastudio.note import kanjinote_mnemonic_maker
 from jastudio.note.vocabulary import vocabnote_sorting
-from sysutils.weak_ref import WeakRef
+from jastudio.sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.q_iterable import query
 
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 from jastudio.note.jpnote import JPNote
 from jastudio.note.note_constants import CardTypes, NoteFields, NoteTypes
-from sysutils import ex_str, kana_utils, typed
+from jastudio.sysutils import ex_str, kana_utils, typed
 
 
 class KanjiNote(JPNote, Slots):

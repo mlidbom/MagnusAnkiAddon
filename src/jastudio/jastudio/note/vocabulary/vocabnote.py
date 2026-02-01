@@ -24,7 +24,7 @@ from jastudio.note.vocabulary.vocabnote_register import VocabNoteRegister
 from jastudio.note.vocabulary.vocabnote_sentences import VocabNoteSentences
 from jastudio.note.vocabulary.vocabnote_usercompoundparts import VocabNoteUserCompoundParts
 from jastudio.note.vocabulary.vocabnote_userfields import VocabNoteUserfields
-from sysutils.weak_ref import WeakRef
+from jastudio.sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from anki.notes import Note

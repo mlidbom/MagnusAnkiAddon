@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from sysutils.weak_ref import WeakRefable
+from jastudio.sysutils.weak_ref import WeakRefable
 
 if TYPE_CHECKING:
     from jastudio.note.notefields.mutable_string_field import MutableStringField

@@ -16,8 +16,8 @@ from jastudio.note.sentences.caching_sentence_configuration_field import Caching
 from jastudio.note.sentences.parsing_result import ParsingResult
 from jastudio.note.sentences.user_fields import SentenceUserFields
 from jastudio.note.tags import Tags
-from sysutils import ex_str, kana_utils
-from sysutils.weak_ref import WeakRef
+from jastudio.sysutils import ex_str, kana_utils
+from jastudio.sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:

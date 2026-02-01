@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING
 
 import aqt
 from PyQt6.QtCore import pyqtBoundSignal
-from sysutils import ex_gc
-from sysutils.typed import checked_cast
 
 from jastudio.ankiutils import app
+from jastudio.sysutils import ex_gc
+from jastudio.sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
     from aqt.main import AnkiQt

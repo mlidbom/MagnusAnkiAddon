@@ -3,10 +3,10 @@ from __future__ import annotations
 import re
 
 from aqt import gui_hooks
-from sysutils import ex_str, kana_utils
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
 from jastudio.note.kanjinote import KanjiNote
+from jastudio.sysutils import ex_str, kana_utils
 
 
 def render_dependencies_list(note: KanjiNote) -> str:

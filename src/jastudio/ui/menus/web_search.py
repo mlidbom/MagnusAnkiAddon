@@ -4,8 +4,9 @@ from typing import TYPE_CHECKING
 from urllib import parse
 
 from aqt.utils import openLink
-from sysutils.typed import non_optional
 from ui.menus.menu_utils import shortcutfinger
+
+from jastudio.sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from collections.abc import Callable

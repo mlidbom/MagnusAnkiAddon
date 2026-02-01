@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING
 from anki.models import FieldDict, NotetypeDict, NotetypeId
 from anki.notes import Note, NoteId
 from jastudio.qt_utils.task_progress_runner import TaskRunner
-from sysutils import typed
-from sysutils.typed import non_optional
+from jastudio.sysutils import typed
+from jastudio.sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from anki.collection import Collection

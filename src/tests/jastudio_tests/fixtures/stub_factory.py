@@ -5,9 +5,9 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 from jastudio.ankiutils import app
+from jastudio.sysutils import progress_display_runner
+from jastudio.sysutils.typed import checked_cast
 from jastudio_tests.fixtures.stubs.ui_utils_stub import UIUtilsStub
-from sysutils import progress_display_runner
-from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator

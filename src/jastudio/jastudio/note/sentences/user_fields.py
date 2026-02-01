@@ -8,7 +8,7 @@ from jastudio.note.notefields.mutable_string_field import MutableStringField
 
 if TYPE_CHECKING:
     from jastudio.note.sentences.sentencenote import SentenceNote
-    from sysutils.weak_ref import WeakRef
+    from jastudio.sysutils.weak_ref import WeakRef
 
 class SentenceUserFields(Slots):
     def __init__(self, sentence: WeakRef[SentenceNote]) -> None:

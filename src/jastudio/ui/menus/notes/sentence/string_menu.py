@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from sysutils import ex_lambda
-from sysutils.lazy import Lazy
-from sysutils.typed import non_optional
 from ui.menus.menu_utils import shortcutfinger
 from ui.menus.menu_utils.ex_qmenu import add_ui_action
 
 from jastudio.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
+from jastudio.sysutils import ex_lambda
+from jastudio.sysutils.lazy import Lazy
+from jastudio.sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from PyQt6.QtWidgets import QMenu

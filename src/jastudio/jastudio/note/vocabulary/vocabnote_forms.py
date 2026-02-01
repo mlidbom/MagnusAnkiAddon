@@ -7,9 +7,9 @@ from jastudio.ankiutils import app
 from jastudio.ankiutils.app import col
 from jastudio.note.note_constants import Mine, NoteFields
 from jastudio.note.notefields.comma_separated_strings_list_field_de_duplicated import MutableCommaSeparatedStringsListFieldDeDuplicated
-from sysutils import ex_str
-from sysutils.lazy import Lazy
-from sysutils.weak_ref import WeakRef, WeakRefable
+from jastudio.sysutils import ex_str
+from jastudio.sysutils.lazy import Lazy
+from jastudio.sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
 

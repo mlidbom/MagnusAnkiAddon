@@ -5,9 +5,8 @@ import tracemalloc
 
 import mylog
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from sysutils import ex_gc
-
 from jastudio.ankiutils import app
+from jastudio.sysutils import ex_gc
 
 
 class ExMalloc(Slots):
