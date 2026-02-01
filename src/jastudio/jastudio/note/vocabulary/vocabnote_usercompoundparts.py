@@ -3,14 +3,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jastudio.ankiutils import app
+from jastudio.language_services.jamdict_ex.dict_lookup import DictLookup
+from jastudio.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from jastudio.note.note_constants import NoteFields
 from jastudio.note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
 from jastudio.note.sentences.sentence_configuration import SentenceConfiguration
 from typed_linq_collections.q_iterable import query
-
-from jastudio.ankiutils import app
-from jastudio.language_services.jamdict_ex.dict_lookup import DictLookup
-from jastudio.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 
 if TYPE_CHECKING:
     from jastudio.note.collection.jp_collection import JPCollection
@@ -41,9 +40,8 @@ class VocabNoteUserCompoundParts(Slots):
         return self.primary().select_many(app.col().vocab.with_form_prefer_disambiguation_name_or_exact_match).to_list()
 
     def auto_generate(self) -> None:
-        from jastudio.note.vocabulary.vocabnote import VocabNote
-
         from jastudio.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
+        from jastudio.note.vocabulary.vocabnote import VocabNote
         analysis = TextAnalysis(self._vocab.get_question(), SentenceConfiguration.from_incorrect_matches([WordExclusion.global_(form) for form in self._vocab.forms.all_set()]))
         compound_parts = [a.form for a in analysis.display_word_variants if a.form not in self._vocab.forms.all_set()]
         if not len(compound_parts) > 1:  # time to brute force it

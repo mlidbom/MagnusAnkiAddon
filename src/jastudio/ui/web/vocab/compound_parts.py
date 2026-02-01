@@ -4,10 +4,11 @@ from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from jastudio.note.vocabulary.vocabnote import VocabNote
 from sysutils.ex_str import newline
 from typed_linq_collections.collections.q_set import QSet
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
+
+from jastudio.note.vocabulary.vocabnote import VocabNote
 
 if TYPE_CHECKING:
     from anki.notes import NoteId

@@ -3,9 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
-from jastudio.note.kanjinote import KanjiNote
 from sysutils.ex_str import newline
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
+
+from jastudio.note.kanjinote import KanjiNote
 
 if TYPE_CHECKING:
     from jastudio.note.vocabulary.vocabnote import VocabNote

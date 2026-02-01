@@ -3,16 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
+from jastudio.language_services.janome_ex.tokenizing.pre_processing_stage.ichidan_godan_potential_or_imperative_hybrid_splitter import IchidanGodanPotentialOrImperativeHybridSplitter
 from jastudio.note.tags import Tags
 from jastudio.note.vocabulary.pos import POS
 from typed_linq_collections.collections.q_set import QSet
 
-from jastudio.language_services.janome_ex.tokenizing.pre_processing_stage.ichidan_godan_potential_or_imperative_hybrid_splitter import IchidanGodanPotentialOrImperativeHybridSplitter
-
 if TYPE_CHECKING:
-    from jastudio.note.vocabulary.vocabnote import VocabNote
-
     from jastudio.language_services.janome_ex.tokenizing.pre_processing_stage.word_info_entry import WordInfoEntry
+    from jastudio.note.vocabulary.vocabnote import VocabNote
 
 class VocabMetaTag(Slots):
     def __init__(self, name: str, display: str, tooltip: str) -> None:

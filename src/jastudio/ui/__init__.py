@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from qt_utils.qt_task_progress_runner import QtTaskProgressRunner
-from qt_utils.task_progress_runner import TaskRunner
+from jastudio.qt_utils.qt_task_progress_runner import QtTaskProgressRunner
+from jastudio.qt_utils.task_progress_runner import TaskRunner
 
 
 def init() -> None:

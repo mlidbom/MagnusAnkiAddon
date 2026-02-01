@@ -10,8 +10,9 @@ from ui.menus.menu_utils.ex_qmenu import add_ui_action
 if TYPE_CHECKING:
     import collections.abc
 
-    from jastudio.note.kanjinote import KanjiNote
     from PyQt6.QtWidgets import QMenu
+
+    from jastudio.note.kanjinote import KanjiNote
 
 
 def build(string_menu: QMenu, kanji: KanjiNote, menu_string: str) -> None:

@@ -10,9 +10,10 @@ from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
     from anki.notes import NoteId
+    from ui.web.sentence.match_viewmodel import MatchViewModel
+
     from jastudio.note.sentences.sentence_configuration import SentenceConfiguration
     from jastudio.note.vocabulary.vocabnote import VocabNote
-    from ui.web.sentence.match_viewmodel import MatchViewModel
 
 class CompoundPartViewModel(Slots):
     def __init__(self, vocab_note: VocabNote, depth: int, config: SentenceConfiguration) -> None:

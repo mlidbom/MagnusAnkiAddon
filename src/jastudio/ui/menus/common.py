@@ -5,11 +5,6 @@ import typing
 import pyperclip
 from aqt import gui_hooks
 from batches import local_note_updater
-from jastudio.note.kanjinote import KanjiNote
-from jastudio.note.note_constants import Mine
-from jastudio.note.sentences.sentencenote import SentenceNote
-from jastudio.note.vocabulary.vocabnote import VocabNote
-from qt_utils.ex_qmenu import ExQmenu
 from sysutils import ex_lambda, typed
 from sysutils.typed import non_optional
 from typed_linq_collections.collections.q_list import QList
@@ -20,11 +15,17 @@ from ui.menus.open_in_anki import build_open_in_anki_menu
 from ui.menus.web_search import build_web_search_menu
 
 from jastudio.ankiutils import app, query_builder, search_executor, ui_utils
+from jastudio.note.kanjinote import KanjiNote
+from jastudio.note.note_constants import Mine
+from jastudio.note.sentences.sentencenote import SentenceNote
+from jastudio.note.vocabulary.vocabnote import VocabNote
+from jastudio.qt_utils.ex_qmenu import ExQmenu
 
 if typing.TYPE_CHECKING:
     from aqt.webview import AnkiWebView
-    from jastudio.note.jpnote import JPNote
     from PyQt6.QtWidgets import QMenu
+
+    from jastudio.note.jpnote import JPNote
 
 def build_browser_right_click_menu(root_menu: QMenu, note: JPNote) -> None:
     build_right_click_menu(root_menu, note, "", "")

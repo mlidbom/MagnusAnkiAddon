@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 import pytest
 from jastudio.ankiutils import query_builder
-from jastudio_tests.fixtures.collection_factory import inject_empty_collection
 from jastudio.note.vocabulary.vocabnote import VocabNote
+from jastudio_tests.fixtures.collection_factory import inject_empty_collection
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

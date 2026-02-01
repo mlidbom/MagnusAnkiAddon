@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jastudio.ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa  # pyright: ignore[reportUnusedImport]
 from jastudio.note.jpnote import JPNote
 from jastudio.note.note_constants import NoteFields
 from jastudio.note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
@@ -24,8 +25,6 @@ from jastudio.note.vocabulary.vocabnote_sentences import VocabNoteSentences
 from jastudio.note.vocabulary.vocabnote_usercompoundparts import VocabNoteUserCompoundParts
 from jastudio.note.vocabulary.vocabnote_userfields import VocabNoteUserfields
 from sysutils.weak_ref import WeakRef
-
-from jastudio.ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa  # pyright: ignore[reportUnusedImport]
 
 if TYPE_CHECKING:
     from anki.notes import Note

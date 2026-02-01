@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
 from configuration.settings import Settings
-from jastudio.note.sentences.sentencenote import SentenceNote
 from sysutils import ex_str
 from sysutils.ex_str import newline
 from typed_linq_collections.collections.q_list import QList
@@ -14,6 +13,7 @@ from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 
 from jastudio.ankiutils import app
 from jastudio.language_services.janome_ex.tokenizing.jn_token import JNToken
+from jastudio.note.sentences.sentencenote import SentenceNote
 
 if TYPE_CHECKING:
     from collections.abc import Callable

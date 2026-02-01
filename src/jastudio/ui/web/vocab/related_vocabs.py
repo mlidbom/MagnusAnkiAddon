@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-import note.vocabulary.vocabnote_sorting
 from aqt import gui_hooks
-from jastudio.note.vocabulary.vocabnote import VocabNote
 from sysutils.ex_str import newline
 from typed_linq_collections.q_iterable import query
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
 from jastudio.ankiutils import app
 from jastudio.language_services import conjugator
+from jastudio.note.vocabulary import vocabnote_sorting
+from jastudio.note.vocabulary.vocabnote import VocabNote
 
 
 def _create_classes(_vocab: VocabNote) -> str:
@@ -41,7 +41,7 @@ def render_vocab_list(vocab_list: list[VocabNote], title: str, css_class: str, r
             '''
 
 def generate_homophones_html_list(vocab_note: VocabNote) -> str:
-    homophone_notes = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(vocab_note.related_notes.homophones_notes())
+    homophone_notes = vocabnote_sorting.sort_vocab_list_by_studying_status(vocab_note.related_notes.homophones_notes())
     if len(homophone_notes) > 0:
         homophone_notes = [vocab_note] + homophone_notes
     return render_vocab_list(homophone_notes, "homophones", css_class="homophones")
@@ -50,32 +50,32 @@ def generate_synonyms_meaning_html_list(_vocab_note: VocabNote) -> str:
     synonym_notes = _vocab_note.related_notes.synonyms.notes()
     perfect_synonyms = set(_vocab_note.related_notes.perfect_synonyms.notes())
     synonym_notes = query(synonym_notes).where(lambda synonym: synonym not in perfect_synonyms).to_list()
-    synonym_notes = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(synonym_notes)
+    synonym_notes = vocabnote_sorting.sort_vocab_list_by_studying_status(synonym_notes)
 
     return render_vocab_list(synonym_notes, "synonyms", css_class="similar")
 
 def generate_perfect_synonyms_meaning_html_list(_vocab_note: VocabNote) -> str:
     perfect_synonym_notes = _vocab_note.related_notes.perfect_synonyms.notes()
-    perfect_synonym_notes = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(perfect_synonym_notes)
+    perfect_synonym_notes = vocabnote_sorting.sort_vocab_list_by_studying_status(perfect_synonym_notes)
 
     return render_vocab_list(perfect_synonym_notes, "perfect synonyms, answer automatically synced", css_class="similar")
 
 def generate_antonyms_meaning_html_list(_vocab_note: VocabNote) -> str:
     antonym_notes = _vocab_note.related_notes.antonyms.notes()
-    antonym_notes = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(antonym_notes)
+    antonym_notes = vocabnote_sorting.sort_vocab_list_by_studying_status(antonym_notes)
 
     return render_vocab_list(antonym_notes, "antonyms", css_class="similar")
 
 def generate_see_also_html_list(_vocab_note: VocabNote) -> str:
     see_also = _vocab_note.related_notes.see_also.notes()
-    see_also = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(see_also)
+    see_also = vocabnote_sorting.sort_vocab_list_by_studying_status(see_also)
 
     return render_vocab_list(see_also, "see also", css_class="similar")
 
 def generate_confused_with_html_list(_vocab_note: VocabNote) -> str:
     vocabs = list(_vocab_note.related_notes.confused_with.get())
     confused_with = app.col().vocab.with_any_form_in_prefer_disambiguation_name_or_exact_match(vocabs)
-    confused_with = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(confused_with)
+    confused_with = vocabnote_sorting.sort_vocab_list_by_studying_status(confused_with)
 
     return render_vocab_list(confused_with, "confused with", css_class="confused_with")
 

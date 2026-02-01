@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from aqt import gui_hooks
-from jastudio.note.kanjinote import KanjiNote
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
+
+from jastudio.note.kanjinote import KanjiNote
 
 
 def render_mnemonic(note: KanjiNote) -> str:

@@ -5,13 +5,13 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from jastudio.ankiutils import app
-from qt_utils.invisible_task_progress_runner import InvisibleTaskRunner
+from jastudio.qt_utils.invisible_task_progress_runner import InvisibleTaskRunner
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator
 
-    from qt_utils.i_task_progress_runner import ITaskRunner
+    from jastudio.qt_utils.i_task_progress_runner import ITaskRunner
 
 class TaskRunner(Slots):
     _ui_task_runner_factory: Callable[[str, str, bool, bool], ITaskRunner] | None = None

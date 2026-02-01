@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.dbproxy import Row
     from anki.notes import Note
-    from qt_utils.i_task_progress_runner import ITaskRunner
+    from jastudio.qt_utils.i_task_progress_runner import ITaskRunner
 
 _studying_status_cache: dict[NoteId, dict[str, bool]] = {}
 

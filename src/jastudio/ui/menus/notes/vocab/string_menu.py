@@ -10,8 +10,9 @@ from ui.menus.notes.vocab.common import build_create_prefix_postfix_note_menu
 from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
-    from jastudio.note.vocabulary.vocabnote import VocabNote
     from PyQt6.QtWidgets import QMenu
+
+    from jastudio.note.vocabulary.vocabnote import VocabNote
 
 def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) -> None:
     def build_sentences_menu(sentence_menu: QMenu) -> None:

@@ -7,9 +7,9 @@ from typing import TYPE_CHECKING, override
 import mylog
 from autoslot import Slots
 from jastudio.ankiutils import app
+from jastudio.qt_utils.i_task_progress_runner import ITaskRunner
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QLabel, QProgressDialog
-from qt_utils.i_task_progress_runner import ITaskRunner
 from sysutils import app_thread_pool, ex_thread, timeutil
 from sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
 from sysutils.timeutil import StopWatch

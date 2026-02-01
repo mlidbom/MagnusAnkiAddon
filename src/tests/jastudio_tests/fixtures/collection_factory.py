@@ -8,11 +8,11 @@ from typing import TYPE_CHECKING
 
 from anki.collection import Collection
 from jastudio.ankiutils import app
+from jastudio.note.kanjinote import KanjiNote
+from jastudio.note.sentences.sentencenote import SentenceNote
 from jastudio_tests.fixtures.base_data import note_type_factory
 from jastudio_tests.fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_lists
 from jastudio_tests.fixtures.stub_factory import stub_ui_dependencies
-from jastudio.note.kanjinote import KanjiNote
-from jastudio.note.sentences.sentencenote import SentenceNote
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

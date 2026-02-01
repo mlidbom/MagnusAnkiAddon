@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, cast, override
 
 from anki.notes import Note
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jastudio.ankiutils import app
 from jastudio.note.jpnote import JPNote
 from jastudio.note.note_constants import ImmersionKitSentenceNoteFields, NoteFields, NoteTypes, SentenceNoteFields
 from jastudio.note.notefields.audio_field import WritableAudioField
@@ -19,16 +20,13 @@ from sysutils import ex_str, kana_utils
 from sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_set import QSet
 
-from jastudio.ankiutils import app
-
 if TYPE_CHECKING:
+    from jastudio.language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
+    from jastudio.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
     from jastudio.note.tag import Tag
     from jastudio.note.vocabulary.vocabnote import VocabNote
     from typed_linq_collections.collections.q_list import QList
     from typed_linq_collections.collections.q_unique_list import QUniqueList
-
-    from jastudio.language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
-    from jastudio.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 
 class SentenceNote(JPNote, Slots):
     def __init__(self, note: Note) -> None:

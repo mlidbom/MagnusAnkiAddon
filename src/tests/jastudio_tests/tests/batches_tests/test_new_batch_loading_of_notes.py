@@ -7,7 +7,7 @@
 # from jastudio_tests.fixtures.collection_factory import inject_collection_with_all_sample_data
 # from jastudio_tests.fixtures.stub_factory import stub_ui_dependencies
 # from jastudio.note.collection.jp_collection import JPCollection
-# from qt_utils.task_runner_progress_dialog import TaskRunner
+# from jastudio.qt_utils.task_runner_progress_dialog import TaskRunner
 #
 # if TYPE_CHECKING:
 #     from collections.abc import Iterator, Sequence
