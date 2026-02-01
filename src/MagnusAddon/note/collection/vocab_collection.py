@@ -98,6 +98,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
         for reading in snapshot.readings: self._by_reading.setdefault(reading, []).append(note)
         for stem in snapshot.stems: self._by_stem.setdefault(stem, []).append(note)
 
+# noinspection PyUnusedFunction
 class VocabCollection(Slots):
     def __init__(self) -> None:
         self._cache: _VocabCache = _VocabCache()

@@ -128,6 +128,7 @@ class Tags(Slots):
 
     priority_folder: str = f"{f_root}priority::"  # Keep as string for startswith() checks
 
+    # noinspection PyUnusedName
     class Source(Slots):
         folder: str = f_source  # Keep as string for startswith() checks
         immersion_kit: Tag = Tag.from_name(f"{f_source}immersion_kit")

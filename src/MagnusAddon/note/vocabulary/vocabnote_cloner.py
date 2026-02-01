@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
+# noinspection PyUnusedFunction
 class VocabCloner(Slots):
     def __init__(self, note: WeakRef[VocabNote]) -> None:
         self._note_ref: WeakRef[VocabNote] = note

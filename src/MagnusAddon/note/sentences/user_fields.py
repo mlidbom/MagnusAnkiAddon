@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from note.sentences.sentencenote import SentenceNote
     from sysutils.weak_ref import WeakRef
 
+# noinspection PyUnusedFunction
 class SentenceUserFields(Slots):
     def __init__(self, sentence: WeakRef[SentenceNote]) -> None:
         self._sentence: WeakRef[SentenceNote] = sentence

@@ -18,12 +18,14 @@ if TYPE_CHECKING:
 SECONDS_PER_DAY = 24 * 60 * 60
 MILLISECONDS_PER_SECOND = 1000
 
+# noinspection PyUnusedFunction
 def time_execution(callback: Action) -> str:
     start_time = time.time()
     callback()
     span = TimeSpan(time.time() - start_time)
     return f"{span.seconds}:{span.milliseconds:03}"
 
+# noinspection PyUnusedFunction
 def format_seconds_as_hh_mm_ss(seconds: float) -> str:
     return TimeSpan(seconds).format_as_hh_mm_ss()
 

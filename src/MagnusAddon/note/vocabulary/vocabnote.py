@@ -28,6 +28,7 @@ from sysutils.weak_ref import WeakRef
 if TYPE_CHECKING:
     from typed_linq_collections.collections.q_set import QSet
 
+# noinspection PyUnusedFunction
 class VocabNote(JPNote, Slots):
     factory: VocabNoteFactory = VocabNoteFactory()
     def __init__(self) -> None:
