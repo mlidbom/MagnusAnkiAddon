@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, override
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:
-    from viewmodels.kanji_list.sentence_kanji_viewmodel import KanjiViewModel
+    from jastudio.viewmodels.kanji_list.sentence_kanji_viewmodel import KanjiViewModel
 
 
 class KanjiListViewModel(Slots):

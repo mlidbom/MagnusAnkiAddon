@@ -5,11 +5,11 @@ from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
-from viewmodels.kanji_list.sentence_kanji_viewmodel import KanjiViewModel
 
 from jastudio.ankiutils import app
 from jastudio.note.kanjinote import KanjiNote
 from jastudio.sysutils import ex_str, kana_utils
+from jastudio.viewmodels.kanji_list.sentence_kanji_viewmodel import KanjiViewModel
 
 if TYPE_CHECKING:
     from jastudio.note.jpnote import JPNote
