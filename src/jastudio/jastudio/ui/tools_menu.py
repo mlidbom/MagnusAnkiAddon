@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from batches import local_note_updater
-from configuration.configuration import show_japanese_options
-from configuration.readings_mapping_dialog import show_readings_mappings
 from jastudio.ankiutils import app, ui_utils
 from jastudio.ankiutils.app import get_ui_utils, main_window
+from jastudio.configuration.configuration import show_japanese_options
+from jastudio.configuration.readings_mapping_dialog import show_readings_mappings
 from jastudio.sysutils import object_instance_tracker
 from jastudio.sysutils.typed import checked_cast, non_optional
 from jastudio.ui.menus.menu_utils import shortcutfinger

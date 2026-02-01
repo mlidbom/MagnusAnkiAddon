@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
-from configuration.settings import Settings
 from jastudio.ankiutils import app
+from jastudio.configuration.settings import Settings
 from jastudio.language_services.janome_ex.tokenizing.jn_token import JNToken
 from jastudio.note.sentences.sentencenote import SentenceNote
 from jastudio.sysutils import ex_str
@@ -17,7 +17,7 @@ from typed_linq_collections.collections.q_list import QList
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from configuration.configuration_value import ConfigurationValueBool
+    from jastudio.configuration.configuration_value import ConfigurationValueBool
     from jastudio.language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
     from jastudio.ui.web.sentence.match_viewmodel import MatchViewModel
 

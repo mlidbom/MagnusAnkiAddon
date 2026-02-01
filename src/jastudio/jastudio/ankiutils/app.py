@@ -17,9 +17,9 @@ if TYPE_CHECKING:
     from anki.dbproxy import DBProxy
     from anki.scheduler.v3 import Scheduler  # pyright: ignore[reportMissingTypeStubs]
     from aqt import AnkiQt  # type: ignore[attr-defined]  # pyright: ignore[reportPrivateImportUsage]
-    from configuration.configuration_value import JapaneseConfig
     from jastudio.anki_extentions.config_manager_ex import ConfigManagerEx
     from jastudio.ankiutils.ui_utils_interface import IUIUtils
+    from jastudio.configuration.configuration_value import JapaneseConfig
     from jastudio.note.collection.jp_collection import JPCollection
 
 _collection: JPCollection | None = None
@@ -35,7 +35,7 @@ def add_init_hook(hook: Callable[[], None]) -> None:
     _init_hooks.add(hook)
 
 def config() -> JapaneseConfig:
-    from configuration import configuration_value
+    from jastudio.configuration import configuration_value
     return configuration_value.config()
 
 def _init(delay_seconds: float = 1.0) -> None:

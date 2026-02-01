@@ -14,7 +14,7 @@ from PyQt6.QtWidgets import QMenu, QMessageBox
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from configuration.configuration_value import ConfigurationValueBool
+    from jastudio.configuration.configuration_value import ConfigurationValueBool
     from jastudio.note.jpnote import JPNote
     from jastudio.note.vocabulary.vocabnote import VocabNote
 

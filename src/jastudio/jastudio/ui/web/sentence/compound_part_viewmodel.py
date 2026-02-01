@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from configuration.settings import Settings
 from jastudio.ankiutils import app
+from jastudio.configuration.settings import Settings
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:

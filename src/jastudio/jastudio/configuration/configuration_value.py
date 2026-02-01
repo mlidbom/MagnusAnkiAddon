@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, cast
 
 from aqt import mw
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-
 from jastudio.ankiutils import app
 from jastudio.sysutils.lazy import Lazy
 from jastudio.sysutils.typed import non_optional

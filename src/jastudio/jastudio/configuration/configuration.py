@@ -2,14 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from jastudio.ankiutils import app
+from jastudio.sysutils.typed import checked_cast
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtWidgets import QCheckBox, QDialog, QDialogButtonBox, QDoubleSpinBox, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QSpinBox, QVBoxLayout, QWidget
 
-from jastudio.ankiutils import app
-from jastudio.sysutils.typed import checked_cast
-
 if TYPE_CHECKING:
-    from configuration.configuration_value import ConfigurationValueBool, ConfigurationValueFloat, ConfigurationValueInt, JapaneseConfig
+    from jastudio.configuration.configuration_value import ConfigurationValueBool, ConfigurationValueFloat, ConfigurationValueInt, JapaneseConfig
 
 class JapaneseOptionsDialog(QDialog): # Cannot inherit Slots for some QT internal reason
     def __init__(self, parent: QWidget | None = None) -> None:

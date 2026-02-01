@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from aqt.main import MainWindowState
-    from configuration.configuration_value import ConfigurationValueBool
+    from jastudio.configuration.configuration_value import ConfigurationValueBool
     from PyQt6.QtWidgets import QWidget
 
 def init() -> None:

@@ -10,7 +10,7 @@ from jastudio.sysutils.simple_string_builder import SimpleStringBuilder
 from jastudio.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
-    from configuration.configuration_value import ConfigurationValueBool
+    from jastudio.configuration.configuration_value import ConfigurationValueBool
     from jastudio.note.vocabulary.vocabnote import VocabNote
     from jastudio.note.vocabulary.vocabnote_parts_of_speech import VocabNotePartsOfSpeech
 
