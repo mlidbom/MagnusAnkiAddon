@@ -10,8 +10,8 @@ from jaslib.sysutils import ex_str
 from jaslib.sysutils.ex_str import newline
 from jaslib.ui.web.sentence.sentence_viewmodel import SentenceViewModel
 from jaslib.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
+from jaslib.viewmodels.kanji_list import sentence_kanji_list_viewmodel
 from typed_linq_collections.collections.q_list import QList
-from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 
 if TYPE_CHECKING:
     from collections.abc import Callable

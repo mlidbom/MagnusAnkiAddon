@@ -7,7 +7,7 @@ from ankiutils import app
 from jaslib.note.kanjinote import KanjiNote
 from jaslib.sysutils import ex_str, kana_utils
 from jaslib.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
-from viewmodels.kanji_list.sentence_kanji_viewmodel import KanjiViewModel
+from jaslib.viewmodels.kanji_list.sentence_kanji_viewmodel import KanjiViewModel
 
 if TYPE_CHECKING:
     from jaslib.note.jpnote import JPNote
