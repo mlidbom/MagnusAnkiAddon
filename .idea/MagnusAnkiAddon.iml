@@ -8,6 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/ExploratoryTests/test_parsing_libraries" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/separate_libraries/queryablecollections/queryablecollections_tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/separate_libraries/queryablecollections/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/jaslib" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/.mypy_cache" />
       <excludeFolder url="file://$MODULE_DIR$/src/.mypy_cache" />
       <excludeFolder url="file://$MODULE_DIR$/src/JLab" />
