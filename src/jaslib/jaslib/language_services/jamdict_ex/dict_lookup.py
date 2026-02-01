@@ -4,13 +4,14 @@ from functools import cache
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from jaslib import app
 from jaslib.language_services.jamdict_ex.dict_lookup_result import DictLookupResult
 from jaslib.language_services.jamdict_ex.jamdict_threading_wrapper import JamdictThreadingWrapper
 from jaslib.sysutils.lazy import Lazy
 from jaslib.sysutils.memory_usage import string_auto_interner
 from jaslib.sysutils.timeutil import StopWatch
 from typed_linq_collections.collections.q_list import QList
+
+from jaslib import app
 
 if TYPE_CHECKING:
     from jamdict.jmdict import JMDEntry  # pyright: ignore[reportMissingTypeStubs]

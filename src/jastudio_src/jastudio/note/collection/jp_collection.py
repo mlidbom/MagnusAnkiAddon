@@ -4,7 +4,6 @@ import threading
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-
 from jastudio import mylog
 from jastudio.ankiutils import app
 from jastudio.note import noteutils

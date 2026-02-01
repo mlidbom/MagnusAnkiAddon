@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-
 from jastudio.language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
 from jastudio.language_services.janome_ex.tokenizing.inflection_types import InflectionTypes
 from jastudio.language_services.janome_ex.tokenizing.split_token import SplitToken

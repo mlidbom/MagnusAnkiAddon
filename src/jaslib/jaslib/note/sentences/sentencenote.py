@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from jaslib import app
 from jaslib.note.jpnote import JPNote
 from jaslib.note.note_constants import SentenceNoteFields
 from jaslib.note.notefields.audio_field import WritableAudioField
@@ -18,6 +17,8 @@ from jaslib.note.tags import Tags
 from jaslib.sysutils import ex_str, kana_utils
 from jaslib.sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_set import QSet
+
+from jaslib import app
 
 if TYPE_CHECKING:
     from jaslib.language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant

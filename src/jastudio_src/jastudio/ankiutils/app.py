@@ -3,11 +3,10 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING
 
-from typed_linq_collections.collections.q_set import QSet
-
 from jastudio import mylog
 from jastudio.sysutils.typed import checked_cast, non_optional
 from jastudio.testutils import ex_pytest
+from typed_linq_collections.collections.q_set import QSet
 
 is_testing = ex_pytest.is_testing
 
@@ -18,7 +17,6 @@ if TYPE_CHECKING:
     from anki.dbproxy import DBProxy
     from anki.scheduler.v3 import Scheduler  # pyright: ignore[reportMissingTypeStubs]
     from aqt import AnkiQt  # type: ignore[attr-defined]  # pyright: ignore[reportPrivateImportUsage]
-
     from jastudio.anki_extentions.config_manager_ex import ConfigManagerEx
     from jastudio.ankiutils.ui_utils_interface import IUIUtils
     from jastudio.configuration.configuration_value import JapaneseConfig
@@ -44,7 +42,6 @@ def _init(delay_seconds: float = 1.0) -> None:
     mylog.info(f"_init delay= {delay_seconds}")
 
     from aqt import mw
-
     from jastudio.note.collection.jp_collection import JPCollection
     global _collection
     if _collection is not None:
@@ -102,7 +99,6 @@ def _profile_opened() -> None:
 
 def anki_config() -> ConfigManagerEx:
     from aqt import mw
-
     from jastudio.anki_extentions.config_manager_ex import ConfigManagerEx
     return ConfigManagerEx(non_optional(mw.col).conf)
 

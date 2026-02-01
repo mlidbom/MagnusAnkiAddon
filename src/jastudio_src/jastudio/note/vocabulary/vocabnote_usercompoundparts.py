@@ -3,22 +3,20 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from typed_linq_collections.q_iterable import query
-
 from jastudio.ankiutils import app
 from jastudio.language_services.jamdict_ex.dict_lookup import DictLookup
 from jastudio.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from jastudio.note.note_constants import NoteFields
 from jastudio.note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
 from jastudio.note.sentences.sentence_configuration import SentenceConfiguration
+from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
-    from typed_linq_collections.collections.q_list import QList
-    from typed_linq_collections.collections.q_set import QSet
-
     from jastudio.note.collection.jp_collection import JPCollection
     from jastudio.note.vocabulary.vocabnote import VocabNote
     from jastudio.sysutils.weak_ref import WeakRef
+    from typed_linq_collections.collections.q_list import QList
+    from typed_linq_collections.collections.q_set import QSet
 
 class VocabNoteUserCompoundParts(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:

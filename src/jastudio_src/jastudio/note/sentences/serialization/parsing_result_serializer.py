@@ -3,11 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jastudio import mylog
 from jastudio.note.notefields.json_object_field import ObjectSerializer
 from jastudio.note.sentences.parsed_match import ParsedMatch
 from jastudio.sysutils.ex_str import invisible_space, newline
-
-from jastudio import mylog
 
 if TYPE_CHECKING:
     from jastudio.note.sentences.parsing_result import ParsingResult

@@ -3,15 +3,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jastudio.language_services import conjugator
 from typed_linq_collections.q_iterable import query
 
-from jastudio.language_services import conjugator
-
 if TYPE_CHECKING:
-    from typed_linq_collections.collections.q_list import QList
-
     from jastudio.note.vocabulary.vocabnote import VocabNote
     from jastudio.sysutils.weak_ref import WeakRef
+    from typed_linq_collections.collections.q_list import QList
 
 class VocabNoteConjugator(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:

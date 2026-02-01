@@ -9,9 +9,8 @@ from jastudio.ui.menus.menu_utils.ex_qmenu import add_ui_action
 from jastudio.ui.menus.notes.vocab.common import build_create_prefix_postfix_note_menu
 
 if TYPE_CHECKING:
-    from PyQt6.QtWidgets import QMenu
-
     from jastudio.note.vocabulary.vocabnote import VocabNote
+    from PyQt6.QtWidgets import QMenu
 
 def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) -> None:
     def build_sentences_menu(sentence_menu: QMenu) -> None:

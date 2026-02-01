@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-
 from jastudio.sysutils import typed
 
 

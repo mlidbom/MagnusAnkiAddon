@@ -4,9 +4,10 @@ import os
 import sys
 from typing import TYPE_CHECKING
 
-from jaslib import app
 from typed_linq_collections.collections.q_dict import QDict
 from typed_linq_collections.collections.string_interning import set_default_intern_func
+
+from jaslib import app
 
 if TYPE_CHECKING:
     from typed_linq_collections.collections.q_list import QList

@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from jaslib import app
 from jaslib.note.notefields.sentence_question_field import SentenceQuestionField
 from jaslib.note.sentences.sentencenote import SentenceNote
 from jaslib.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
+
+from jaslib import app
 
 
 def render_wbr(question: str) -> str:

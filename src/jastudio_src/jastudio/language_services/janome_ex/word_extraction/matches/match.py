@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-
 from jastudio.language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
 from jastudio.language_services.janome_ex.word_extraction.matches.state_tests.forbids_compounds import ForbidsConfiguredToHideAllCompounds
 from jastudio.language_services.janome_ex.word_extraction.matches.state_tests.forbids_dictionary_form_verb_inflection import ForbidsDictionaryInflectionSurfaceWithBase

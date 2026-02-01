@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from autoslot import Slots
-from jaslib import app
 from jaslib.language_services.jamdict_ex.dict_lookup import DictLookup
 from jaslib.language_services.janome_ex.tokenizing.pre_processing_stage.word_info_entry import DictWordInfoEntry, VocabWordInfoEntry, WordInfoEntry
 from typed_linq_collections.q_iterable import query
+
+from jaslib import app
 
 
 class WordInfo(Slots):

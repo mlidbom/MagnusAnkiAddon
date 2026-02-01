@@ -9,17 +9,15 @@ from typed_linq_collections.q_iterable import query
 if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import Note, NoteId
-    from typed_linq_collections.collections.q_set import QSet
-
     from jastudio.note.collection.cache_runner import CacheRunner
-
-from typed_linq_collections.collections.q_list import QList
+    from typed_linq_collections.collections.q_set import QSet
 
 from jastudio.note.collection.backend_facade import BackEndFacade
 from jastudio.note.collection.note_cache import CachedNote, NoteCache
 from jastudio.note.kanjinote import KanjiNote
 from jastudio.note.note_constants import NoteTypes
 from jastudio.sysutils import kana_utils
+from typed_linq_collections.collections.q_list import QList
 
 
 @final

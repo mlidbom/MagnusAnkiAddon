@@ -4,11 +4,12 @@ import re
 from typing import TYPE_CHECKING, cast, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from jaslib import app
 from jaslib.note import kanjinote_mnemonic_maker
 from jaslib.note.vocabulary import vocabnote_sorting
 from jaslib.sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_list import QList
+
+from jaslib import app
 
 if TYPE_CHECKING:
     from jaslib.note.vocabulary.vocabnote import VocabNote

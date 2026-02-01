@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from autoslot import Slots
-
 from jastudio.note.tag import Tag
 
 f_root = "-::"

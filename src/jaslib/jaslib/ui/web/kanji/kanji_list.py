@@ -3,11 +3,12 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
 
-from jaslib import app
 from jaslib.note.kanjinote import KanjiNote
 from jaslib.sysutils import ex_str, kana_utils
 from jaslib.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 from jaslib.viewmodels.kanji_list.sentence_kanji_viewmodel import KanjiViewModel
+
+from jaslib import app
 
 if TYPE_CHECKING:
     from jaslib.note.jpnote import JPNote

@@ -3,9 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from typed_linq_collections.collections.q_dict import QDict
-
 from jastudio.note.vocabulary.vocabnote_question import VocabNoteQuestion
+from typed_linq_collections.collections.q_dict import QDict
 
 if TYPE_CHECKING:
     from jastudio.sysutils.json.json_reader import JsonReader

@@ -3,10 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from jaslib import app
 from jaslib.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from jaslib_tests.fixtures.collection_factory import inject_collection_with_select_data
 from jaslib_tests.tests.language_services_tests.janome_tests.test_sentence_analysis_viewmodel_common import assert_all_words_equal, assert_display_words_equal_and_that_analysis_internal_state_is_valid
+
+from jaslib import app
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

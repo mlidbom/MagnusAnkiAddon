@@ -3,9 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from typed_linq_collections.collections.q_set import QSet
-from typed_linq_collections.q_iterable import query
-
 from jastudio.ankiutils import app
 from jastudio.ankiutils.app import col
 from jastudio.note.note_constants import Mine, NoteFields
@@ -13,11 +10,12 @@ from jastudio.note.notefields.comma_separated_strings_list_field_de_duplicated i
 from jastudio.sysutils import ex_str
 from jastudio.sysutils.lazy import Lazy
 from jastudio.sysutils.weak_ref import WeakRef, WeakRefable
+from typed_linq_collections.collections.q_set import QSet
+from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
-    from typed_linq_collections.collections.q_list import QList
-
     from jastudio.note.vocabulary.vocabnote import VocabNote
+    from typed_linq_collections.collections.q_list import QList
 
 # todo performance: memory: this class seems to be using a ton of memory. Do we need all of this cached?
 class VocabNoteForms(WeakRefable, Slots):

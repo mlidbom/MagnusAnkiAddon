@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from jaslib import app
 from jaslib.app import col
 from jaslib.note.note_constants import Mine, NoteFields
 from jaslib.note.notefields.comma_separated_strings_list_field_de_duplicated import MutableCommaSeparatedStringsListFieldDeDuplicated
@@ -12,6 +11,8 @@ from jaslib.sysutils.lazy import Lazy
 from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
+
+from jaslib import app
 
 if TYPE_CHECKING:
     from jaslib.note.vocabulary.vocabnote import VocabNote

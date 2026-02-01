@@ -6,9 +6,10 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from jaslib import mylog
 from jaslib.sysutils import typed
 from jaslib.sysutils.time_span import TimeSpan
+
+from jaslib import mylog
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

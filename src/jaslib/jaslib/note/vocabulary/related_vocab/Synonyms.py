@@ -3,8 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from jaslib import app
 from typed_linq_collections.q_iterable import query
+
+from jaslib import app
 
 if TYPE_CHECKING:
     from jaslib.note.notefields.json_object_field import MutableSerializedObjectField

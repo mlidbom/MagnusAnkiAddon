@@ -2,20 +2,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from typed_linq_collections.collections.q_set import QSet
-from typed_linq_collections.q_iterable import query
-
 from jastudio.ankiutils import app
 from jastudio.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from jastudio.note.note_constants import Builtin, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
 from jastudio.sysutils import kana_utils
+from typed_linq_collections.collections.q_set import QSet
+from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from anki.cards import CardId
     from anki.notes import NoteId
-
     from jastudio.note.jpnote import JPNote
     from jastudio.note.kanjinote import KanjiNote
     from jastudio.note.vocabulary.vocabnote import VocabNote

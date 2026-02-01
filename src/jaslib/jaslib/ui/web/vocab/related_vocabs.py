@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from jaslib import app
 from jaslib.language_services import conjugator
 from jaslib.note.vocabulary import vocabnote_sorting
 from jaslib.note.vocabulary.vocabnote import VocabNote
 from jaslib.sysutils.ex_str import newline
 from jaslib.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 from typed_linq_collections.q_iterable import query
+
+from jaslib import app
 
 
 def _create_classes(_vocab: VocabNote) -> str:

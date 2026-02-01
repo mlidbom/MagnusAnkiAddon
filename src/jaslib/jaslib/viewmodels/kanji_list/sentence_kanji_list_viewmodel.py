@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from jaslib import app
 from jaslib.viewmodels.kanji_list.kanji_list_viewmodel import KanjiListViewModel
 from jaslib.viewmodels.kanji_list.sentence_kanji_viewmodel import KanjiViewModel
+
+from jaslib import app
 
 
 def create(kanji: list[str]) -> KanjiListViewModel:

@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-
 from jastudio.language_services.janome_ex.tokenizing.jn_token import JNToken
 from jastudio.language_services.janome_ex.tokenizing.pre_processing_stage.dictionary_form_verb_splitter import DictionaryFormVerbSplitter
 from jastudio.language_services.janome_ex.tokenizing.pre_processing_stage.godan_imperative_splitter import GodanImperativeSplitter

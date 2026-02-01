@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-
 from jastudio.note.note_constants import NoteFields
 from jastudio.note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
 from jastudio.note.notefields.json_object_field import MutableSerializedObjectField
@@ -20,10 +19,9 @@ from jastudio.sysutils.weak_ref import WeakRef, WeakRefable
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from typed_linq_collections.collections.q_set import QSet
-
     from jastudio.note.tag import Tag
     from jastudio.note.vocabulary.vocabnote import VocabNote
+    from typed_linq_collections.collections.q_set import QSet
 
 class VocabNoteMatchingRulesData(Slots):
     serializer: Lazy[VocabNoteMatchingRulesSerializer] = Lazy(VocabNoteMatchingRulesSerializer)

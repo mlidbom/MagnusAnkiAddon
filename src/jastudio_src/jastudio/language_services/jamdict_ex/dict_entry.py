@@ -3,11 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast, final
 
 from autoslot import Slots
-from typed_linq_collections.collections.q_list import QList
-from typed_linq_collections.q_iterable import query
-
 from jastudio.note.vocabulary.pos_set_interner import POSSetManager
 from jastudio.sysutils import kana_utils
+from typed_linq_collections.collections.q_list import QList
+from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

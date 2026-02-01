@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-
 from jastudio.note.note_constants import NoteFields
 from jastudio.note.notefields.audio_field import WritableAudioField
 

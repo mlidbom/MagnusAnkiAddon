@@ -3,10 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from jaslib import app  # noqa  # pyright: ignore[reportUnusedImport]
 from jaslib.language_services.jamdict_ex.dict_lookup import DictLookup
 from jaslib.note.vocabulary.vocabnote import VocabNote
 from jaslib_tests.fixtures.collection_factory import inject_empty_collection
+
+from jaslib import app  # noqa  # pyright: ignore[reportUnusedImport]
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

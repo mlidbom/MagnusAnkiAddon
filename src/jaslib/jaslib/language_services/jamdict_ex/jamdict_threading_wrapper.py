@@ -7,11 +7,12 @@ from typing import TYPE_CHECKING, Any
 
 from autoslot import Slots
 from jamdict import Jamdict  # pyright: ignore [reportMissingTypeStubs]
-from jaslib import app
 from jaslib.sysutils.lazy import Lazy
 from jaslib.sysutils.typed import non_optional, str_
 from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_list import QList
+
+from jaslib import app
 
 if TYPE_CHECKING:
     from collections.abc import Callable

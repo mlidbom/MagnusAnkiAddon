@@ -4,9 +4,10 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from jaslib import mylog
 from jaslib.configuration.settings import Settings
 from jaslib.sysutils import ex_assert
+
+from jaslib import mylog
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

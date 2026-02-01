@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from anki.notes import Note
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-
 from jastudio.ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules, app  # noqa  # pyright: ignore[reportUnusedImport]
 from jastudio.language_services import conjugator
 from jastudio.note.note_constants import NoteTypes

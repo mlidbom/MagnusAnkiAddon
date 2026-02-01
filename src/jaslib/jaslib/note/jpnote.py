@@ -4,7 +4,6 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from jaslib import app
 from jaslib.note.note_constants import MyNoteFields
 from jaslib.note.note_flush_guard import NoteRecursiveFlushGuard
 from jaslib.note.note_tags import NoteTags
@@ -12,6 +11,8 @@ from jaslib.note.tags import Tags
 from jaslib.sysutils import ex_assert, ex_str
 from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_set import QSet
+
+from jaslib import app
 
 if TYPE_CHECKING:
     from jaslib.note.collection.jp_collection import JPCollection

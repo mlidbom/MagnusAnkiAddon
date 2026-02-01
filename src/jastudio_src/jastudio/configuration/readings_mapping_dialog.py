@@ -2,13 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from PyQt6.QtCore import pyqtBoundSignal
-from PyQt6.QtGui import QColor, QKeySequence, QShortcut, QTextBlock, QTextCharFormat, QTextCursor
-from PyQt6.QtWidgets import QDialog, QDialogButtonBox, QHBoxLayout, QLabel, QLineEdit, QTextEdit, QVBoxLayout, QWidget
-
 from jastudio.ankiutils import app
 from jastudio.sysutils.ex_str import newline
 from jastudio.sysutils.typed import checked_cast, non_optional
+from PyQt6.QtCore import pyqtBoundSignal
+from PyQt6.QtGui import QColor, QKeySequence, QShortcut, QTextBlock, QTextCharFormat, QTextCursor
+from PyQt6.QtWidgets import QDialog, QDialogButtonBox, QHBoxLayout, QLabel, QLineEdit, QTextEdit, QVBoxLayout, QWidget
 
 if TYPE_CHECKING:
     from jastudio.configuration.configuration_value import JapaneseConfig

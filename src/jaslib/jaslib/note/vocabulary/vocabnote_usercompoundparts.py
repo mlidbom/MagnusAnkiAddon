@@ -3,13 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from jaslib import app
 from jaslib.language_services.jamdict_ex.dict_lookup import DictLookup
 from jaslib.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from jaslib.note.note_constants import NoteFields
 from jaslib.note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
 from jaslib.note.sentences.sentence_configuration import SentenceConfiguration
 from typed_linq_collections.q_iterable import query
+
+from jaslib import app
 
 if TYPE_CHECKING:
     from jaslib.note.collection.jp_collection import JPCollection
