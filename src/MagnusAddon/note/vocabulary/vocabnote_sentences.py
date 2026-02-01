@@ -36,7 +36,7 @@ class SentenceCounts(Slots):
             return 6000
 
         def get_studying_sentence_count(card: str = "") -> int:  # pyright: ignore
-            return len(sentences) #todo bug
+            return len(sentences) #todo migration bug
 
         if time.time() - self._last_update_time > self._cache_seconds:
             self._last_update_time = time.time()
@@ -47,6 +47,7 @@ class SentenceCounts(Slots):
             self._cache_seconds = _how_long_to_cache_for()
         return self
 
+# noinspection PyUnusedFunction
 class VocabNoteSentences(WeakRefable, Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab = vocab

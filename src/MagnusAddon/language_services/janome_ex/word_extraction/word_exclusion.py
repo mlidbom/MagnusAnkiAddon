@@ -43,6 +43,7 @@ class WordExclusion(Slots):
     def __repr__(self) -> str:
         return f"WordExclusion('{self.word}', {self.index})"
 
+    # noinspection PyUnusedFunction
     def excludes_all_words_excluded_by(self, other: WordExclusion) -> bool:
         return self.word == other.word and (self.index == WordExclusion._no_index or self.index == other.index)
 

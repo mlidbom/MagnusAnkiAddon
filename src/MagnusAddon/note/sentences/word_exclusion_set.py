@@ -9,6 +9,7 @@ from typed_linq_collections.collections.q_unique_list import QUniqueList
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+# noinspection PyUnusedFunction
 class WordExclusionSet(Slots):
     def __init__(self, save_callback: Callable[[], None], exclusions: list[WordExclusion]) -> None:
         self._save: Callable[[], None] = save_callback

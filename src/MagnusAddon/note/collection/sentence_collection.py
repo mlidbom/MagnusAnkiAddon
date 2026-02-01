@@ -62,14 +62,15 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
         for vocab_form in snapshot.marked_incorrect_vocab: self._by_user_marked_invalid_vocab[vocab_form].append(note)
         for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].add(note)
 
+# noinspection PyUnusedFunction
 class SentenceCollection(Slots):
     def __init__(self) -> None:
         self._cache: _SentenceCache = _SentenceCache()
 
-    def potentially_matching_vocab(self, vocab: VocabNote) -> list[SentenceNote]:
+    def potentially_matching_vocab(self, vocab: VocabNote) -> list[SentenceNote]:  # pyright: ignore
         raise NotImplementedError()
 
-    def sentences_with_substring(self, substring: str) -> list[SentenceNote]:
+    def sentences_with_substring(self, substring: str) -> list[SentenceNote]:  # pyright: ignore
         raise NotImplementedError()
 
     def all(self) -> QList[SentenceNote]: return self._cache.all()

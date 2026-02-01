@@ -18,6 +18,7 @@ if TYPE_CHECKING:
     from typed_linq_collections.collections.q_list import QList
     from typed_linq_collections.collections.q_set import QSet
 
+# noinspection PyUnusedFunction
 class VocabNoteUserCompoundParts(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab = vocab

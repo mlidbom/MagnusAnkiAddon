@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 # todo performance: memory: high-priority: combine into a single bitfield in memory
+# noinspection PyUnusedFunction
 class VocabNoteRegister(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
