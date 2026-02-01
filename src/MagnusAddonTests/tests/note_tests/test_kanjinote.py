@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 import pytest
 from ankiutils import app
-from fixtures import collection_factory
-from fixtures.stub_factory import stub_ui_dependencies
+from jastudio_tests.fixtures import collection_factory
+from jastudio_tests.fixtures.stub_factory import stub_ui_dependencies
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:

@@ -5,7 +5,7 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 from ankiutils import app
-from fixtures.stubs.ui_utils_stub import UIUtilsStub
+from jastudio_tests.fixtures.stubs.ui_utils_stub import UIUtilsStub
 from sysutils import progress_display_runner
 from sysutils.typed import checked_cast
 

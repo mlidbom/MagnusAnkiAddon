@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from fixtures.collection_factory import inject_collection_with_all_sample_data
-from fixtures.stub_factory import stub_ui_dependencies
+from jastudio_tests.fixtures.collection_factory import inject_collection_with_all_sample_data
+from jastudio_tests.fixtures.stub_factory import stub_ui_dependencies
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

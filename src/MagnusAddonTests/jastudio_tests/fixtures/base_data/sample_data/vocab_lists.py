@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from fixtures.base_data.sample_data.vocab_spec import VocabSpec
+from jastudio_tests.fixtures.base_data.sample_data.vocab_spec import VocabSpec
 from note.tags import Tags
 from note.vocabulary.pos import POS
 

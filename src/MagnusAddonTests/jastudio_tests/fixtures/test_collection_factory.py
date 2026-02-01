@@ -4,11 +4,11 @@ from typing import TYPE_CHECKING
 
 import pytest
 from ankiutils import app
-from fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_lists
-from fixtures.base_data.sample_data.kanji_spec import KanjiSpec
-from fixtures.base_data.sample_data.sentence_spec import SentenceSpec
-from fixtures.base_data.sample_data.vocab_spec import VocabSpec
-from fixtures.collection_factory import inject_collection_with_all_sample_data
+from jastudio_tests.fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_lists
+from jastudio_tests.fixtures.base_data.sample_data.kanji_spec import KanjiSpec
+from jastudio_tests.fixtures.base_data.sample_data.sentence_spec import SentenceSpec
+from jastudio_tests.fixtures.base_data.sample_data.vocab_spec import VocabSpec
+from jastudio_tests.fixtures.collection_factory import inject_collection_with_all_sample_data
 
 if TYPE_CHECKING:
 

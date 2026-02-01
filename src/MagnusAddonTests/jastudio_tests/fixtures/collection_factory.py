@@ -8,9 +8,9 @@ from typing import TYPE_CHECKING
 
 from anki.collection import Collection
 from ankiutils import app
-from fixtures.base_data import note_type_factory
-from fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_lists
-from fixtures.stub_factory import stub_ui_dependencies
+from jastudio_tests.fixtures.base_data import note_type_factory
+from jastudio_tests.fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_lists
+from jastudio_tests.fixtures.stub_factory import stub_ui_dependencies
 from note.kanjinote import KanjiNote
 from note.sentences.sentencenote import SentenceNote
 

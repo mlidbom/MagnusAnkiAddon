@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from fixtures.collection_factory import inject_empty_collection
-from fixtures.stub_factory import stub_ui_dependencies
+from jastudio_tests.fixtures.collection_factory import inject_empty_collection
+from jastudio_tests.fixtures.stub_factory import stub_ui_dependencies
 from note.sentences.sentencenote import SentenceNote
 from sysutils import ex_str
 
