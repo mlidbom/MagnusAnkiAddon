@@ -18,8 +18,8 @@ puchikarui==0.2a2.post5
 requests==2.32.5
 types-requests
 pytest
-beartype~=0.21.0
-pyperclip~=1.9.0
+beartype==0.22.9
+pyperclip==1.11.0
 typing_extensions
 PyQt6-sip
 pykakasi~=2.3.0
