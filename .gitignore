@@ -20,3 +20,5 @@ collection.anki2
 /repomix-queryable-collections.xml
 /.coverage
 *.speedscope.json
+bin
+obj
