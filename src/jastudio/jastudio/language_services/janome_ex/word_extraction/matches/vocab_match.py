@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots
+
 from jastudio.language_services.janome_ex.word_extraction.matches.match import Match
 from jastudio.language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 from jastudio.language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import ForbidsAnotherMatchIsHigherPriority

@@ -9,8 +9,9 @@ from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.menu_utils.ex_qmenu import add_checkbox_config, add_lookup_action, add_ui_action
 
 if TYPE_CHECKING:
-    from jastudio.note.sentences.sentencenote import SentenceNote
     from PyQt6.QtWidgets import QMenu
+
+    from jastudio.note.sentences.sentencenote import SentenceNote
 
 def build_note_menu(note_menu: QMenu, sentence: SentenceNote) -> None:
     def build_lookup_menu(note_lookup_menu: QMenu) -> None:

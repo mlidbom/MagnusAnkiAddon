@@ -4,17 +4,19 @@ from typing import TYPE_CHECKING
 
 from anki.consts import QUEUE_TYPE_SUSPENDED
 from anki.notes import NoteId
+from typed_linq_collections.q_iterable import query
+
 from jastudio.note.note_constants import NoteTypes
 from jastudio.sysutils import typed
 from jastudio.sysutils.memory_usage import string_auto_interner
 from jastudio.sysutils.typed import non_optional, str_
-from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
     from anki.cards import Card
     from anki.collection import Collection
     from anki.dbproxy import Row
     from anki.notes import Note
+
     from jastudio.qt_utils.i_task_progress_runner import ITaskRunner
 
 _studying_status_cache: dict[NoteId, dict[str, bool]] = {}

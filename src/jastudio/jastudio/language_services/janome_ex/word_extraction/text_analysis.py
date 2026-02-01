@@ -3,14 +3,16 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots
-from jastudio.sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.q_iterable import query  # pyright: ignore[reportMissingTypeStubs]
 
+from jastudio.sysutils.weak_ref import WeakRef, WeakRefable
+
 if TYPE_CHECKING:
+    from typed_linq_collections.collections.q_list import QList
+
     from jastudio.language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
     from jastudio.language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from jastudio.language_services.janome_ex.word_extraction.matches.match import Match
-    from typed_linq_collections.collections.q_list import QList
 
 from jastudio.language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from jastudio.language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation

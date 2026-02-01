@@ -7,8 +7,9 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from jastudio.note.notefields.json_object_field import MutableSerializedObjectField
     from typed_linq_collections.collections.q_set import QSet
+
+    from jastudio.note.notefields.json_object_field import MutableSerializedObjectField
 
 class FieldSetWrapper[TValue](Slots):
     _secret: str = "aoeulrcaboeusthb"

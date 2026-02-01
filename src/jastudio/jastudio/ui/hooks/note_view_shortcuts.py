@@ -3,21 +3,23 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
+from PyQt6.QtCore import pyqtBoundSignal
+from PyQt6.QtGui import QKeySequence, QShortcut
+
 from jastudio.ankiutils import app, ui_utils
 from jastudio.note.kanjinote import KanjiNote
 from jastudio.note.sentences.sentencenote import SentenceNote
 from jastudio.note.vocabulary.vocabnote import VocabNote
 from jastudio.sysutils import typed
 from jastudio.sysutils.typed import try_cast
-from PyQt6.QtCore import pyqtBoundSignal
-from PyQt6.QtGui import QKeySequence, QShortcut
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
     from aqt.main import MainWindowState
-    from jastudio.configuration.configuration_value import ConfigurationValueBool
     from PyQt6.QtWidgets import QWidget
+
+    from jastudio.configuration.configuration_value import ConfigurationValueBool
 
 def init() -> None:
     def try_get_review_note_of_type[T](note_type: type[T]) -> T | None:

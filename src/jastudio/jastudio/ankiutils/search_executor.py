@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import aqt
+
 from jastudio.ankiutils import app
 from jastudio.sysutils.typed import non_optional
 

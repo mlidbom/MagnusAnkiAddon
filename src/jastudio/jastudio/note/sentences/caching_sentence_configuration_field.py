@@ -3,18 +3,20 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from typed_linq_collections.collections.q_set import QSet
+
 from jastudio.ankiutils import app
 from jastudio.note.note_constants import SentenceNoteFields
 from jastudio.note.notefields.mutable_string_field import MutableStringField
 from jastudio.note.sentences.sentence_configuration import SentenceConfiguration
 from jastudio.sysutils.weak_ref import WeakRef, WeakRefable
-from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
+    from typed_linq_collections.collections.q_unique_list import QUniqueList
+
     from jastudio.note.sentences.sentencenote import SentenceNote
     from jastudio.note.sentences.word_exclusion_set import WordExclusionSet
     from jastudio.note.vocabulary.vocabnote import VocabNote
-    from typed_linq_collections.collections.q_unique_list import QUniqueList
 
 class CachingSentenceConfigurationField(WeakRefable, Slots):
     def __init__(self, sentence: WeakRef[SentenceNote]) -> None:

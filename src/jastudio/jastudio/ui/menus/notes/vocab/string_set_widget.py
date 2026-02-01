@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jastudio.sysutils.typed import checked_cast, non_optional
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QInputDialog, QLabel, QPushButton, QSizePolicy, QVBoxLayout, QWidget
+
+from jastudio.sysutils.typed import checked_cast, non_optional
 
 if TYPE_CHECKING:
     from collections.abc import Callable

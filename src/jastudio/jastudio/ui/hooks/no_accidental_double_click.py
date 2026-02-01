@@ -5,6 +5,7 @@ from typing import Literal
 from aqt import mw
 from aqt.reviewer import Reviewer
 from aqt.utils import tooltip
+
 from jastudio.ankiutils import app
 from jastudio.sysutils.timeutil import StopWatch
 from jastudio.sysutils.typed import non_optional

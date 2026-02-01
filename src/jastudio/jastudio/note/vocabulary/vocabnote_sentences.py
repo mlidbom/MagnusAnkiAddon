@@ -4,6 +4,7 @@ import time
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+
 from jastudio.note.note_constants import NoteFields
 from jastudio.sysutils.lazy import Lazy
 from jastudio.sysutils.weak_ref import WeakRef, WeakRefable

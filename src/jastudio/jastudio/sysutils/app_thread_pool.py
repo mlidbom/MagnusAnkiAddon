@@ -3,10 +3,11 @@ from __future__ import annotations
 from concurrent.futures.thread import ThreadPoolExecutor
 from typing import TYPE_CHECKING
 
+from PyQt6.QtCore import QCoreApplication, QThread
+
 from jastudio.ankiutils import app
 from jastudio.sysutils import ex_thread
 from jastudio.sysutils.typed import non_optional
-from PyQt6.QtCore import QCoreApplication, QThread
 
 if TYPE_CHECKING:
 

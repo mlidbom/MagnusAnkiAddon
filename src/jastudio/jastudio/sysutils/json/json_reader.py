@@ -3,9 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, cast
 
 from autoslot import Slots  # pyright: ignore [reportMissingTypeStubs]
+from typed_linq_collections.collections.q_set import QSet
+
 from jastudio.sysutils import typed
 from jastudio.sysutils.json.ex_json import json_library_shim
-from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from collections.abc import Callable

@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 import mylog
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+
 from jastudio.configuration.settings import Settings
 from jastudio.sysutils import ex_assert
 

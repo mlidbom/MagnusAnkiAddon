@@ -4,21 +4,24 @@ from typing import TYPE_CHECKING
 
 from anki import consts
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from typed_linq_collections.collections.q_list import QList
+
 from jastudio.anki_extentions.deck_ex import DeckEx
 from jastudio.sysutils.timeutil import StopWatch
 from jastudio.sysutils.typed import non_optional
-from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:
     from anki.dbproxy import Row
     from anki.decks import DeckManager
     from anki.scheduler.v3 import Scheduler  # pyright: ignore[reportMissingTypeStubs]
+
     from jastudio.anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
     from jastudio.note.jpnote import JPNote
 
 import anki.cards
 import anki.cards_pb2
 from aqt.reviewer import AnswerAction
+
 from jastudio.ankiutils import app
 from jastudio.sysutils import timeutil, typed
 

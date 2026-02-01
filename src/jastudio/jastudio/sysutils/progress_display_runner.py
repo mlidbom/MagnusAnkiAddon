@@ -3,9 +3,10 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 
-from jastudio.sysutils import ex_gc, timeutil
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QProgressDialog
+
+from jastudio.sysutils import ex_gc, timeutil
 
 if TYPE_CHECKING:
     from jastudio.sysutils.standard_type_aliases import Action1

@@ -3,19 +3,21 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
+from typed_linq_collections.collections.q_set import QSet
+from typed_linq_collections.q_iterable import query
+
 from jastudio.note.collection.backend_facade import BackEndFacade
 from jastudio.note.collection.note_cache import CachedNote, NoteCache
 from jastudio.note.note_constants import NoteTypes
 from jastudio.note.vocabulary.vocabnote import VocabNote
 from jastudio.note.vocabulary.vocabnote_question import VocabNoteQuestion
-from typed_linq_collections.collections.q_set import QSet
-from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from anki.collection import Collection
     from anki.notes import Note, NoteId
+
     from jastudio.note.collection.cache_runner import CacheRunner
     from jastudio.note.kanjinote import KanjiNote
 

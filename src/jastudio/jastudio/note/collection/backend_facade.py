@@ -3,10 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from typed_linq_collections.collections.q_list import QList
+
 from jastudio.anki_extentions.note_ex import NoteBulkLoader
 from jastudio.note.jpnote import JPNote
 from jastudio.qt_utils.task_progress_runner import TaskRunner
-from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence

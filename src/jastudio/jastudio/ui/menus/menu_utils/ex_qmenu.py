@@ -3,13 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import pyqtBoundSignal
+from PyQt6.QtGui import QAction
+from PyQt6.QtWidgets import QMenu, QMessageBox
+
 from jastudio.ankiutils import app, query_builder, search_executor
 from jastudio.ankiutils.app import get_ui_utils
 from jastudio.ankiutils.search_executor import lookup_promise
 from jastudio.sysutils.typed import checked_cast, non_optional
 from jastudio.ui.menus.menu_utils import shortcutfinger
-from PyQt6.QtGui import QAction
-from PyQt6.QtWidgets import QMenu, QMessageBox
 
 if TYPE_CHECKING:
     from collections.abc import Callable

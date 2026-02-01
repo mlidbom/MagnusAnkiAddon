@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
+
 from jastudio.language_services.janome_ex.tokenizing.godan_dictionary_form_stem import (
     GodanDictionaryFormInflection,
     GodanDictionaryFormStem,

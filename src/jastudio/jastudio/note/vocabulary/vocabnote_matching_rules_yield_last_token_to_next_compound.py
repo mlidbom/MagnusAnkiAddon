@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+
 from jastudio.configuration.settings import Settings
 from jastudio.note.notefields.require_forbid_flag_field import RequireForbidFlagField
 from jastudio.note.tags import Tags

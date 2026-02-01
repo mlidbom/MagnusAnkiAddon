@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+
 from jastudio.language_services import conjugator
 from jastudio.note.note_constants import Mine, NoteFields
 

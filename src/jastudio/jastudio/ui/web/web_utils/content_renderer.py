@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+
 from jastudio.ankiutils import app, ui_utils
 from jastudio.note.jpnote import JPNote
 from jastudio.note.note_constants import Mine

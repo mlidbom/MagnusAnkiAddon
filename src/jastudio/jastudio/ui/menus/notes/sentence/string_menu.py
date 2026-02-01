@@ -10,10 +10,11 @@ from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.menu_utils.ex_qmenu import add_ui_action
 
 if TYPE_CHECKING:
+    from PyQt6.QtWidgets import QMenu
+
     from jastudio.language_services.janome_ex.word_extraction.matches.match import Match
     from jastudio.note.sentences.sentencenote import SentenceNote
     from jastudio.note.sentences.word_exclusion_set import WordExclusionSet
-    from PyQt6.QtWidgets import QMenu
 
 def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: str) -> None:
     def add_add_word_exclusion_action(add_menu: QMenu, exclusion_type_title: str, exclusion_set: WordExclusionSet) -> None:

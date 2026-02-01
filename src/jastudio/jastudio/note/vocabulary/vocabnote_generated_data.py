@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from typed_linq_collections.collections.q_frozen_set import QFrozenSet
+
 from jastudio.note.tags import Tags
 from jastudio.note.vocabulary.pos import POS
 from jastudio.sysutils import kana_utils
-from typed_linq_collections.collections.q_frozen_set import QFrozenSet
 
 if TYPE_CHECKING:
     from jastudio.note.vocabulary.vocabnote import VocabNote

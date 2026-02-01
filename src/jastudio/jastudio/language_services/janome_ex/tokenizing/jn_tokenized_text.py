@@ -4,11 +4,13 @@ from typing import TYPE_CHECKING
 
 import mylog
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+
 from jastudio.ankiutils import app
 from jastudio.language_services.janome_ex.tokenizing.pre_processing_stage.pre_processing_stage import PreProcessingStage
 
 if TYPE_CHECKING:
     from janome.tokenizer import Token  # pyright: ignore[reportMissingTypeStubs]
+
     from jastudio.language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
     from jastudio.language_services.janome_ex.tokenizing.jn_token import JNToken
 

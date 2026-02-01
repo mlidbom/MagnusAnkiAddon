@@ -3,12 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from typed_linq_collections.collections.q_set import QSet
+
 from jastudio.ankiutils import app
 from jastudio.configuration.settings import Settings
-from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from anki.notes import NoteId
+
     from jastudio.note.sentences.sentence_configuration import SentenceConfiguration
     from jastudio.note.vocabulary.vocabnote import VocabNote
     from jastudio.ui.web.sentence.match_viewmodel import MatchViewModel

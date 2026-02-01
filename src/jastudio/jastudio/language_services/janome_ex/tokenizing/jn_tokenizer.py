@@ -4,6 +4,7 @@ from typing import final
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from janome.tokenizer import Token, Tokenizer  # pyright: ignore[reportMissingTypeStubs]
+
 from jastudio.language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPartsOfSpeech
 from jastudio.language_services.janome_ex.tokenizing.jn_token import JNToken
 from jastudio.language_services.janome_ex.tokenizing.jn_tokenized_text import JNTokenizedText

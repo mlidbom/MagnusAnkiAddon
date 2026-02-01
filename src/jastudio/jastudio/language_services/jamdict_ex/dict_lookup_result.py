@@ -3,14 +3,16 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from jastudio.language_services.jamdict_ex.priority_spec import PrioritySpec
-from jastudio.sysutils import ex_str, kana_utils
 from typed_linq_collections.collections.q_list import QList
 
+from jastudio.language_services.jamdict_ex.priority_spec import PrioritySpec
+from jastudio.sysutils import ex_str, kana_utils
+
 if TYPE_CHECKING:
-    from jastudio.language_services.jamdict_ex.dict_entry import DictEntry
     from typed_linq_collections.collections.q_frozen_set import QFrozenSet
     from typed_linq_collections.collections.q_set import QSet
+
+    from jastudio.language_services.jamdict_ex.dict_entry import DictEntry
 
 class DictLookupResult(Slots):
     def __init__(self, entries: QList[DictEntry], lookup_word: str, lookup_reading: QList[str]) -> None:

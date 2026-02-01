@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots
+
 from jastudio.language_services.janome_ex.word_extraction.analysis_constants import noise_characters
 from jastudio.language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
 from jastudio.sysutils.typed import non_optional

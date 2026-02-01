@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from aqt import dialogs, mw
 from aqt.browser import Browser  # pyright: ignore[reportPrivateImportUsage]
+
 from jastudio.ankiutils import app
 from jastudio.note.cardutils import CardUtils
 from jastudio.sysutils import typed

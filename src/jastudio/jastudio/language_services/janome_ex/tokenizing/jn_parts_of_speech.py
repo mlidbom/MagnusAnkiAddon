@@ -4,8 +4,9 @@ from __future__ import annotations
 from typing import override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from jastudio.sysutils import kana_utils
 from typed_linq_collections.collections.q_set import QSet
+
+from jastudio.sysutils import kana_utils
 
 
 class JNPartsOfSpeech(Slots):
