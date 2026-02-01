@@ -12,7 +12,7 @@ class ITaskRunner:
     # noinspection DuplicatedCode,Annotator
     def set_label_text(self, text: str) -> None: raise NotImplementedError()  # pyright: ignore
     def close(self) -> None: raise NotImplementedError()
-    # noinspection DuplicatedCode
+    # noinspection DuplicatedCode,Annotator
     def run_on_background_thread_with_spinning_progress_dialog[TResult](self, message: str, action: Callable[[], TResult]) -> TResult: raise NotImplementedError()  # pyright: ignore
     def run_gc(self) -> None: pass
     # noinspection PyUnusedFunction
