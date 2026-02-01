@@ -3,14 +3,14 @@
     "src"
   ],
   "extraPaths": [
-    "src/jastudio",
+    "src/jastudio_src",
     "src/jaslib"
   ],
   "exclude": [
     "**/node_modules",
     "**/__pycache__",
     "**/.*",
-    "src/jastudio/_lib/",
+    "src/jastudio_src/_lib/",
     "**/_lib_patched/*",
     "**venv/*",
     "**/manually_copied_in_libraries/*",

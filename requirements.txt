@@ -1,12 +1,12 @@
-#aqt
-#anki
-#
-##Latest versions seem to crash in interesting ways. If Anki does not run, make sure to use exactly these versions
-#PyQt6==6.9.1
-#PyQt6-Qt6==6.9.1
-#PyQt6_sip==13.10.2
-#PyQt6-WebEngine==6.9.0
-#PyQt6-WebEngine-Qt6==6.9.1
+aqt
+anki
+
+#Match the versions that anki uses
+PyQt6==6.9.1
+PyQt6-Qt6==6.9.1
+PyQt6_sip==13.10.2
+PyQt6-WebEngine==6.9.0
+PyQt6-WebEngine-Qt6==6.9.1
 #PyQt6-sip
 
 jamdict==0.1a11.post2
