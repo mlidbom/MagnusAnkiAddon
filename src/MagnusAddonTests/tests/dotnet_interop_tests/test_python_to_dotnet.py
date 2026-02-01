@@ -6,7 +6,7 @@ These tests verify that Python can successfully load and call the C# JAStudio li
 from __future__ import annotations
 
 from autoslot import Slots
-from dotnet import dotnet_runtime_loader
+from jaslib.dotnet import dotnet_runtime_loader
 
 #from typing import override
 from jaslib.sysutils.timeutil import StopWatch

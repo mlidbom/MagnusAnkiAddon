@@ -11,7 +11,7 @@ config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "runtimec
 loaded: bool = False
 
 def _get_workspace_root() -> Path:
-    return Path(__file__).parent.parent.parent.parent
+    return Path(__file__).parent.parent.parent.parent.parent
 
 def ensure_clr_loaded() -> None:
     global loaded

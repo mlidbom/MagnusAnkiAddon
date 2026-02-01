@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING
 
-from dotnet import dotnet_runtime_loader
+from jaslib.dotnet import dotnet_runtime_loader
 from jaslib.testutils import ex_pytest
 from typed_linq_collections.collections.q_set import QSet
 
