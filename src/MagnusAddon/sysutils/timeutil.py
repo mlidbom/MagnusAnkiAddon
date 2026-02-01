@@ -15,7 +15,9 @@ if TYPE_CHECKING:
 
     from sysutils.standard_type_aliases import Action
 
+# noinspection PyUnusedName
 SECONDS_PER_DAY = 24 * 60 * 60
+# noinspection PyUnusedName
 MILLISECONDS_PER_SECOND = 1000
 
 # noinspection PyUnusedFunction

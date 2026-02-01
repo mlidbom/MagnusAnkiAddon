@@ -18,6 +18,7 @@ if TYPE_CHECKING:
     from typed_linq_collections.collections.q_list import QList
 
 # todo performance: memory: this class seems to be using a ton of memory. Do we need all of this cached?
+# noinspection PyUnusedFunction
 class VocabNoteForms(WeakRefable, Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
