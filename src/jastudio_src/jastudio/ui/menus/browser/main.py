@@ -3,12 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
+from jaslib.sysutils import ex_lambda
 from jaslib.sysutils.typed import non_optional
 from jastudio.ankiutils import app
 from jastudio.note import queue_manager
 from jastudio.note.jpnote import JPNote
 from jastudio.note.sentences.sentencenote import SentenceNote
-from jastudio.sysutils import ex_lambda
 from jastudio.ui import menus
 from jastudio.ui.menus.menu_utils import shortcutfinger
 
