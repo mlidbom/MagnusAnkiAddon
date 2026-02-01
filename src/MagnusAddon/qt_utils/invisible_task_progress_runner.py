@@ -16,6 +16,7 @@ class InvisibleTaskRunner(ITaskRunner, Slots):
     def __init__(self, window_title: str, label_text: str) -> None:  # pyright: ignore
         pass
 
+    # noinspection PyUnusedFunction
     @override
     def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str, run_gc: bool = False, minimum_items_to_gc: int = 0) -> list[TOutput]:
         result = [process_item(item) for item in items]
@@ -27,6 +28,8 @@ class InvisibleTaskRunner(ITaskRunner, Slots):
     def set_label_text(self, text: str) -> None: pass  # pyright: ignore
     @override
     def close(self) -> None: pass
+
+    # noinspection PyUnusedFunction
     @override
     def run_on_background_thread_with_spinning_progress_dialog[TResult](self, message: str, action: Callable[[], TResult]) -> TResult:  # pyright: ignore
         watch = StopWatch()

@@ -7,9 +7,11 @@ if TYPE_CHECKING:
 
 
 class ITaskRunner:
+    # noinspection PyUnusedFunction
     def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str, run_gc: bool = False, minimum_items_to_gc: int = 0) -> list[TOutput]: raise NotImplementedError()  # pyright: ignore
     def set_label_text(self, text: str) -> None: raise NotImplementedError()  # pyright: ignore
     def close(self) -> None: raise NotImplementedError()
+    # noinspection PyUnusedFunction
     def run_on_background_thread_with_spinning_progress_dialog[TResult](self, message: str, action: Callable[[], TResult]) -> TResult: raise NotImplementedError()  # pyright: ignore
     def run_gc(self) -> None: pass
     # noinspection PyUnusedFunction

@@ -39,10 +39,12 @@ class CachingSentenceConfigurationField(WeakRefable, Slots):
         return QSet(vocab for vocab in (app.col().vocab.with_any_form_in(list(self.highlighted_words())))
                     if vocab.get_id() in self._sentence().parsing_result.get().matched_vocab_ids)
 
+    # noinspection PyUnusedFunction
     def remove_highlighted_word(self, word: str) -> None:
         self.highlighted_words().discard(word)
         self._save()
 
+    # noinspection PyUnusedFunction
     def reset_highlighted_words(self) -> None:
         self._value.highlighted_words.clear()
         self._save()

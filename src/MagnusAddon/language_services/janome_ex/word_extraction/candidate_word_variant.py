@@ -99,6 +99,7 @@ class CandidateWordVariant(WeakRefable, Slots):
         if not self._completed_validity_analysis: raise Exception("Analysis not completed yet")
         return self
 
+    # noinspection PyUnusedFunction
     def to_exclusion(self) -> WordExclusion:
         return WordExclusion.at_index(self.form, self.start_index)
 

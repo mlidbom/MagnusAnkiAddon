@@ -19,6 +19,7 @@ class Antonyms(Slots):
         self._data: MutableSerializedObjectField[RelatedVocabData] = data
 
     def strings(self) -> QSet[str]: return self._data.get().antonyms
+    # noinspection PyUnusedFunction
     def notes(self) -> list[VocabNote]:
         return col().vocab.with_any_form_in_prefer_disambiguation_name_or_exact_match(list(self.strings()))
 

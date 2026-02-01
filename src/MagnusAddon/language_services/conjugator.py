@@ -102,6 +102,7 @@ def _get_stem(word: str, stem_index: int, is_ichidan_verb: bool = False, is_goda
         mylog.warning(f"_get_stem failed to handle {word}, returning empty list ")
     return word
 
+# noinspection PyUnusedFunction
 def get_vocab_stems(vocab: VocabNote) -> list[str]:
     return get_word_stems(vocab.get_question(), vocab.parts_of_speech.is_ichidan(), vocab.parts_of_speech.is_godan())
 

@@ -171,12 +171,14 @@ class JapaneseConfig(Slots):
 
         self.readings_mappings_dict: dict[str, str] = self._read_reading_mappings_from_file()
 
+    # noinspection PyUnusedFunction
     def toggle_all_sentence_display_auto_yield_flags(self, value: bool | None = None) -> None:
         value = value if value is not None else not self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound.get_value()
         self.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound.set_value(value)
         self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound.set_value(value)
         self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound.set_value(value)
 
+    # noinspection PyUnusedFunction
     def save_mappings(self, mappings: str) -> None:
         mappings_file_path = self._mappings_file_path()
         with open(mappings_file_path, "w", encoding="utf-8") as f:

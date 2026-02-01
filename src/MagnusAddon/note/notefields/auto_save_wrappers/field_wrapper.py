@@ -14,6 +14,7 @@ class FieldWrapper[TValue, TWrapper](Slots):
         self._field: MutableSerializedObjectField[TWrapper] = field
         self._value: ValueWrapper[TValue] = value
 
+    # noinspection PyUnusedFunction
     def set(self, value: TValue) -> None:
         self._value.set(value)
         self._field.save()

@@ -159,6 +159,7 @@ class DictLookup(Slots):
         from ankiutils import app
         return app.col().vocab.is_word(word) or cls.is_word(word)
 
+    # noinspection PyUnusedFunction
     @classmethod
     def ensure_loaded_into_memory(cls) -> None:
         cls._lookup_name_raw("桜")

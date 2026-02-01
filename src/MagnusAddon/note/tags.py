@@ -22,7 +22,7 @@ class Tags(Slots):
             incorrect_matches: Tag = Tag.from_name(f"{f_sentence_uses}incorrect-matches")
             hidden_matches: Tag = Tag.from_name(f"{f_sentence_uses}hidden-matches")
 
-    # noinspection DuplicatedCode
+    # noinspection DuplicatedCode,PyUnusedClass,PyUnusedName
     class Kanji(Slots):
         is_radical: Tag = Tag.from_name(f"{f_kanji}is-radical")
         is_radical_purely: Tag = Tag.from_name(f"{f_kanji}is-radical-purely")
@@ -47,6 +47,7 @@ class Tags(Slots):
 
     class Vocab(Slots):
         root: str = f_vocab  # Keep as string for startswith() checks
+        # noinspection PyUnusedName
         has_no_studying_sentences: Tag = Tag.from_name(f"{f_vocab}has-no-studying-sentences")
         question_overrides_form: Tag = Tag.from_name(f"{f_vocab}question-overrides-form")
         is_compositionally_transparent_compound: Tag = Tag.from_name(f"{f_vocab}is-compositionally-transparent-compound")

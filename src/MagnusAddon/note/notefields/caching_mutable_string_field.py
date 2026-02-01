@@ -34,7 +34,9 @@ class CachingMutableStringField(Slots):
             if self._reset_callbacks is not None:
                 for callback in self._reset_callbacks: callback()
 
+    # noinspection PyUnusedFunction
     def has_value(self) -> bool: return self.value != ""
+    # noinspection PyUnusedFunction
     def empty(self) -> None: self.set("")
 
     def lazy_reader[TValue](self, reader: Callable[[], TValue]) -> Lazy[TValue]: # todo performance: Check out whether we can do without this callback mechanism in such a commonly used place

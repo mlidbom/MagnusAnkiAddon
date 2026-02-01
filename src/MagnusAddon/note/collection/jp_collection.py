@@ -53,6 +53,7 @@ class JPCollection(WeakRefable, Slots):
         self._is_initialized = True
         JPCollection._is_inital_load = False
 
+    # noinspection PyUnusedFunction
     @property
     def is_initialized(self) -> bool: return self._is_initialized
     @property
