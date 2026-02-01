@@ -3,9 +3,9 @@ from __future__ import annotations
 import threading
 from typing import TYPE_CHECKING
 
-import mylog
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
+from jastudio import mylog
 from jastudio.ankiutils import app
 from jastudio.note import noteutils
 from jastudio.note.collection.cache_runner import CacheRunner

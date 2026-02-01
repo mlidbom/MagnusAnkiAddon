@@ -4,7 +4,6 @@ import gc
 import time
 from typing import TYPE_CHECKING, override
 
-import mylog
 from autoslot import Slots
 from jastudio.ankiutils import app
 from jastudio.qt_utils.i_task_progress_runner import ITaskRunner
@@ -14,6 +13,8 @@ from jastudio.sysutils.timeutil import StopWatch
 from jastudio.sysutils.typed import non_optional
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QLabel, QProgressDialog
+
+from jastudio import mylog
 
 if TYPE_CHECKING:
     from collections.abc import Callable

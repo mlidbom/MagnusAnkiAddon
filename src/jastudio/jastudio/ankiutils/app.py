@@ -3,9 +3,9 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING
 
-import mylog
 from typed_linq_collections.collections.q_set import QSet
 
+from jastudio import mylog
 from jastudio.sysutils.typed import checked_cast, non_optional
 from jastudio.testutils import ex_pytest
 

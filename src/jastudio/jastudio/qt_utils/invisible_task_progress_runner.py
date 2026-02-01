@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-import mylog
 from autoslot import Slots
 from jastudio.qt_utils.i_task_progress_runner import ITaskRunner
 from jastudio.sysutils.timeutil import StopWatch
+
+from jastudio import mylog
 
 if TYPE_CHECKING:
     from collections.abc import Callable

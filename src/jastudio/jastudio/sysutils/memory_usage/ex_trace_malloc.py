@@ -3,9 +3,9 @@ from __future__ import annotations
 import os
 import tracemalloc
 
-import mylog
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
+from jastudio import mylog
 from jastudio.ankiutils import app
 from jastudio.sysutils import ex_gc
 

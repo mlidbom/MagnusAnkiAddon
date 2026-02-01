@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import mylog
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
+from jastudio import mylog
 from jastudio.ankiutils import app
 from jastudio.language_services.janome_ex.tokenizing.pre_processing_stage.pre_processing_stage import PreProcessingStage
 
