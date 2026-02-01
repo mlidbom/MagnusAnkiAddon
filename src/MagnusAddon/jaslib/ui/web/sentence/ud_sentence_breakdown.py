@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ankiutils import app
-from configuration.settings import Settings
+from jaslib.configuration.settings import Settings
 from jaslib.language_services.janome_ex.tokenizing.jn_token import JNToken
 from jaslib.note.sentences.sentencenote import SentenceNote
 from jaslib.ui.web.sentence.sentence_viewmodel import SentenceViewModel
@@ -16,7 +16,7 @@ from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from configuration.configuration_value import ConfigurationValueBool
+    from jaslib.configuration.configuration_value import ConfigurationValueBool
     from jaslib.language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
     from jaslib.ui.web.sentence.match_viewmodel import MatchViewModel
 

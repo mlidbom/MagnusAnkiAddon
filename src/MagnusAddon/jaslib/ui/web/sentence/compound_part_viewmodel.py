@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from configuration.settings import Settings
+from jaslib.configuration.settings import Settings
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:

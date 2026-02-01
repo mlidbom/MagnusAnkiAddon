@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from configuration.settings import Settings
+from jaslib.configuration.settings import Settings
 from jaslib.language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from jaslib.ui.web.sentence.compound_part_viewmodel import CompoundPartViewModel
 from sysutils import kana_utils, typed
