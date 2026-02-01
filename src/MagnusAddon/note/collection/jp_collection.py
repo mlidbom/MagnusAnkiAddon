@@ -15,8 +15,6 @@ class JPCollection(WeakRefable, Slots):
     _is_inital_load: bool = True  # running the GC on initial load slows startup a lot but does not decrease memory usage in any significant way.
 
     def __init__(self, delay_seconds: float | None = None) -> None:
-        from sysutils.object_instance_tracker import ObjectInstanceTracker
-        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.tracker_for(self)
         self._is_initialized: bool = False
         self._initialization_started: bool = False
 
