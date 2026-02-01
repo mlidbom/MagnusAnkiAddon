@@ -13,7 +13,7 @@ from sysutils.timeutil import StopWatch
 
 dotnet_runtime_loader.ensure_clr_loaded()
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING  # noqa: E402
 
 from JAStudio.Core.InteropExperiments import CustomTypeReceiver  # noqa: E402
 from JAStudio.PythonInterop import JanomeTokenizer  # noqa: E402
@@ -84,8 +84,9 @@ def test_can_tokenize_japanese_text_via_dotnet() -> None:
             left -= 1
 
 class CustomClass:
+    # noinspection PyPep8Naming
     @property
-    def AValue(self) -> str: return "Ao"
+    def AValue(self) -> str: return "Ao" #used from .NET that's why the name
 
 
 def test_passing_custom_class_instance() -> None:

@@ -5,6 +5,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from typed_linq_collections.collections.q_set import QSet
 
 
+# noinspection PyUnusedClass,PyUnusedName
 class Builtin(Slots):
     # noinspection PyUnusedName
     Tag: str = "tag"
@@ -16,6 +17,7 @@ class MyNoteFields(Slots):
     question: str = "Q"
     answer: str = "A"
 
+# noinspection PyUnusedClass,PyUnusedName
 class ImmersionKitSentenceNoteFields(Slots):
     audio: str = "Audio Sentence"
     id: str = "ID"
@@ -44,6 +46,7 @@ class CardTypes(Slots):
     reading: str = "Reading"
     listening: str = "Listening"
 
+# noinspection PyUnusedClass,PyUnusedName
 class NoteTypes(Slots):
     immersion_kit: str = "Immersion Kit Sentence"
     Kanji: str = "_Kanji"
@@ -52,6 +55,7 @@ class NoteTypes(Slots):
 
     ALL: QSet[str] = QSet((Kanji, Vocab, Sentence))
 
+# noinspection PyUnusedClass,PyUnusedName
 class NoteFields(Slots):
     note_id: str = "nid"
 
@@ -60,11 +64,14 @@ class NoteFields(Slots):
             Reading: str = CardTypes.reading
             Listening: str = CardTypes.listening
 
+    # noinspection PyUnusedClass,PyUnusedName
     class SentencesNoteType(Slots):
+        # noinspection PyUnusedClass,PyUnusedName
         class Card(Slots):
             Reading: str = CardTypes.reading
             Listening: str = CardTypes.listening
 
+    # noinspection PyUnusedClass,PyUnusedName
     class Kanji(Slots):
         question: str = MyNoteFields.question
         active_answer: str = MyNoteFields.answer
@@ -85,6 +92,7 @@ class NoteFields(Slots):
         user_similar_meaning: str = "__similar_meaning"
         related_confused_with: str = "__confused_with"
 
+    # noinspection PyUnusedClass,PyUnusedName
     class Vocab(Slots):
         matching_rules: str = "__matching_rules"
         related_vocab: str = "__related_vocab"
@@ -109,6 +117,7 @@ class NoteFields(Slots):
         Homophones: str = "Homophones"
         ParsedTypeOfSpeech: str = "ParsedTypeOfSpeech"
 
+# noinspection PyUnusedClass,PyUnusedName
 class Mine(Slots):
     app_name: str = "JA-Studio"
     app_still_loading_message: str = f"{app_name} still loading, the view will refresh when done..."

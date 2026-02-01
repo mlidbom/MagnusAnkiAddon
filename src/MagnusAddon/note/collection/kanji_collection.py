@@ -60,6 +60,7 @@ class KanjiCollection(Slots):
 
     def all(self) -> QList[KanjiNote]: return self._cache.all()
 
+    # noinspection PyUnusedFunction
     def with_id_or_none(self, note_id:NoteId) -> KanjiNote | None:
         return self._cache.with_id_or_none(note_id)
 
@@ -69,7 +70,9 @@ class KanjiCollection(Slots):
     def with_kanji(self, kanji: str) -> KanjiNote | None:
         return self._cache.with_question(kanji).single_or_none()
 
+    # noinspection PyUnusedFunction
     def with_radical(self, radical:str) -> QList[KanjiNote]: return self._cache.with_radical(radical)
+    # noinspection PyUnusedFunction
     def with_reading(self, reading:str) -> QSet[KanjiNote]:
         return self._cache.by_reading.get_value_or_default(kana_utils.anything_to_hiragana(reading)).to_set()
 

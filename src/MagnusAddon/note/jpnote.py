@@ -30,6 +30,7 @@ class JPNote(WeakRefable, Slots):
 
         self._id_cache: NoteId = 0
 
+    # noinspection PyUnusedFunction
     @property
     def is_flushing(self) -> bool: return self.recursive_flush_guard.is_flushing
 
@@ -78,6 +79,7 @@ class JPNote(WeakRefable, Slots):
             dependency._get_dependencies_recursive(found)
         return found
 
+    # noinspection PyUnusedFunction
     def get_dependencies_recursive(self) -> QSet[JPNote]:
         return self._get_dependencies_recursive(QSet())
 
@@ -110,6 +112,7 @@ class JPNote(WeakRefable, Slots):
             self._fields[field_name] = value
             self._flush()
 
+    # noinspection PyUnusedFunction
     def priority_tag_value(self) -> int:
         for tag in self.tags:
             if tag.name.startswith(Tags.priority_folder):
@@ -127,6 +130,7 @@ class JPNote(WeakRefable, Slots):
 
         return tags
 
+    # noinspection PyUnusedFunction
     def get_source_tag(self) -> str:
         source_tags = [t for t in self.tags if t.name.startswith(Tags.Source.folder)]
         if source_tags:

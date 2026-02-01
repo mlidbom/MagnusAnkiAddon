@@ -20,6 +20,7 @@ class MutableStringField(Slots):
 
     def set(self, value: str) -> None: self._note().set_field(self._field_name, value)
 
+    # noinspection PyUnusedFunction
     def empty(self) -> None: self.set("")
 
     def has_value(self) -> bool: return self.value != ""

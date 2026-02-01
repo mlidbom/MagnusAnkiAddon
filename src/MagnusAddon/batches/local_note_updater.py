@@ -77,6 +77,7 @@ def reparse_all_sentences() -> None:
     with TaskRunner.current("Reparse all sentences"):
         reparse_sentences(app.col().sentences.all())
 
+# noinspection PyUnusedFunction
 def reading_in_vocab_reading(kanji: KanjiNote, kanji_reading: str, vocab_reading: str, vocab_form: str) -> bool:
     vocab_form = ex_str.strip_html_and_bracket_markup_and_noise_characters(vocab_form)
     if vocab_form.startswith(kanji.get_question()):
@@ -96,6 +97,7 @@ def reparse_sentences(sentences: list[SentenceNote], run_gc_during_batch: bool =
         runner.process_with_progress(sentences, reparse_sentence, "Reparsing sentences.", run_gc=run_gc_during_batch, minimum_items_to_gc=500)
 
 
+# noinspection PyUnusedFunction
 def regenerate_jamdict_vocab_answers() -> None:
     with TaskRunner.current("Regenerating vocab source answers from jamdict") as runner:
         vocab_notes: list[VocabNote] = list(app.col().vocab.all())

@@ -31,6 +31,7 @@ class KanjiNote(JPNote, Slots):
     @override
     def _update_in_cache(self) -> None: self.collection.kanji._cache.refresh_in_cache(self)  # pyright: ignore [reportPrivateUsage]
 
+    # noinspection PyUnusedFunction
     def tag_vocab_readings(self, vocab: VocabNote) -> list[str]:
         def primary_reading(read: str) -> str:
             return f'<span class="kanjiReadingPrimary">{read}</span>'
@@ -97,6 +98,7 @@ class KanjiNote(JPNote, Slots):
         self.set_field(NoteFields.Kanji.active_answer, self.get_answer())
         update_primary_audios()
 
+    # noinspection PyUnusedFunction
     def get_vocab_notes_sorted(self) -> list[VocabNote]:
         return vocabnote_sorting.sort_vocab_list_by_studying_status(self.get_vocab_notes(), self.get_primary_vocabs_or_defaults(), preferred_kanji=self.get_question())
 
@@ -109,12 +111,14 @@ class KanjiNote(JPNote, Slots):
     def set_user_mnemonic(self, value: str) -> None:
         self.set_field(NoteFields.Kanji.user_mnemonic, value)
 
+    # noinspection PyUnusedFunction
     def get_readings_on(self) -> list[str]:
         return ex_str.extract_comma_separated_values(ex_str.strip_html_markup(self.get_reading_on_html()))
 
     def get_reading_on_list_html(self) -> list[str]:
         return ex_str.extract_comma_separated_values(self.get_reading_on_html())
 
+    # noinspection PyUnusedFunction
     def get_readings_kun(self) -> list[str]:
         return ex_str.extract_comma_separated_values(ex_str.strip_html_markup(self.get_reading_kun_html()))
 
@@ -156,15 +160,19 @@ class KanjiNote(JPNote, Slots):
     def get_reading_nan_html(self) -> str:
         return self.get_field(NoteFields.Kanji.Reading_Nan)
 
+    # noinspection PyUnusedFunction
     def add_primary_on_reading(self, reading: str) -> None:
         self.set_reading_on(ex_str.replace_word(reading, f"<primary>{reading}</primary>", self.get_reading_on_html()))
 
+    # noinspection PyUnusedFunction
     def remove_primary_on_reading(self, reading: str) -> None:
         self.set_reading_on(self.get_reading_on_html().replace(f"<primary>{reading}</primary>", reading))
 
+    # noinspection PyUnusedFunction
     def add_primary_kun_reading(self, reading: str) -> None:
         self.set_reading_kun(ex_str.replace_word(reading, f"<primary>{reading}</primary>", self.get_reading_kun_html()))
 
+    # noinspection PyUnusedFunction
     def remove_primary_kun_reading(self, reading: str) -> None:
         self.set_reading_kun(self.get_reading_kun_html().replace(f"<primary>{reading}</primary>", reading))
 
@@ -202,6 +210,7 @@ class KanjiNote(JPNote, Slots):
     def get_related_confused_with(self) -> QSet[str]:
         return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.related_confused_with)).to_set()
 
+    # noinspection PyUnusedFunction
     def add_related_confused_with(self, new_confused_with: str) -> None:
         confused_with = self.get_related_confused_with()
         confused_with.add(new_confused_with)
@@ -250,6 +259,7 @@ class KanjiNote(JPNote, Slots):
     def generate_default_primary_vocab(self) -> list[str]:
         raise NotImplementedError()
 
+    # noinspection PyUnusedFunction
     def position_primary_vocab(self, vocab: str, new_index: int = -1) -> None:
         vocab = vocab.strip()
         primary_vocab_list = self.get_primary_vocab()
@@ -263,6 +273,7 @@ class KanjiNote(JPNote, Slots):
 
         self.set_primary_vocab(primary_vocab_list)
 
+    # noinspection PyUnusedFunction
     def remove_primary_vocab(self, vocab: str) -> None:
         self.set_primary_vocab([v for v in self.get_primary_vocab() if v != vocab])
 
@@ -305,5 +316,6 @@ class KanjiNote(JPNote, Slots):
         app.col().kanji.add(note)
         return note
 
+    # noinspection PyUnusedFunction
     def get_romaji_readings(self) -> str:
         return kana_utils.romanize(", ".join(self.get_readings_clean()))

@@ -55,6 +55,7 @@ class NoteTags(QIterable[Tag]):
         yield from self._flags.select(Tag.from_id)
 
     _interned_string_lists: QDict[BitFlagsSet, list[str]] = QDict()
+    # noinspection PyUnusedFunction
     def to_interned_string_list(self) -> list[str]:
         if self._flags not in self._interned_string_lists:
             sorted_name_list = query(self).select(lambda it: it.name).order_by(lambda it: it).to_list()

@@ -47,6 +47,7 @@ class MatchViewModel(Slots):
                 self.display_vocab_form = True
                 self.display_readings = self.display_readings and self.vocab_form != self.readings
 
+    # noinspection PyUnusedFunction
     @property
     def meta_tags_string(self) -> str: return " ".join(self.meta_tags_list)
 
@@ -58,6 +59,7 @@ class MatchViewModel(Slots):
                 .concat(self.hiding_reasons)
                 .value)
 
+    # noinspection PyUnusedFunction
     @property
     def incorrect_reasons(self) -> list[str]: return list(self.match.failure_reasons)
 
@@ -71,12 +73,15 @@ class MatchViewModel(Slots):
         return (self.is_display_word
                 and self.match.is_displayed)
 
+    # noinspection PyUnusedFunction
     @property
     def show_kanji(self) -> bool: return any(self.kanji) and not Settings.show_breakdown_in_edit_mode() and Settings.show_kanji_in_sentence_breakdown()
 
+    # noinspection PyUnusedFunction
     @property
     def show_kanji_mnemonics(self) -> bool: return Settings.show_kanji_mnemonics_in_sentence_breakdown()
 
+    # noinspection PyUnusedFunction
     @property
     def show_compound_parts(self) -> bool: return any(self.compound_parts) and not Settings.show_breakdown_in_edit_mode()
 

@@ -169,6 +169,7 @@ class Match(WeakRefable, Slots):
     def hiding_reasons(self) -> list[str]: return ([requirement.failure_reason for requirement in self._dynamic_display_requirements if not requirement.is_fulfilled] +
                                                    [requirement.failure_reason for requirement in self._create_static_display_requinement_failures()])
 
+    # noinspection PyUnusedFunction
     def to_exclusion(self) -> WordExclusion: return WordExclusion.at_index(self.exclusion_form, self.start_index)
 
     @override

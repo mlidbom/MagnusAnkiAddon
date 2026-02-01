@@ -33,6 +33,7 @@ class DictLookupResult(Slots):
     def parts_of_speech(self) -> QFrozenSet[str]:
         return self.entries.select_many(lambda entry: entry.parts_of_speech()).to_frozenset()
 
+    # noinspection PyUnusedFunction
     def priority_spec(self) -> PrioritySpec:
         kana_tags = self.entries.select_many(lambda entry: entry.kana_forms).where(lambda it: it.text == self.word).select_many(lambda it: it.priority_tags).to_set()
         kanji_tags = self.entries.select_many(lambda entry: entry.kanji_forms).where(lambda it: it.text == self.word).select_many(lambda it: it.priority_tags).to_set()

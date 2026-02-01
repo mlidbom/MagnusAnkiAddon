@@ -56,9 +56,11 @@ def character_is_kanji(ch: str) -> bool:
 def is_only_kana(text: str) -> bool:
     return not any(not character_is_kana(char) for char in text)
 
+# noinspection PyUnusedFunction
 def is_only_hiragana(text: str) -> bool:
     return not any(not character_is_hiragana(char) for char in text)
 
+# noinspection PyUnusedFunction
 def is_only_katakana(text: str) -> bool:
     return not any(not character_is_katakana(char) for char in text)
 
