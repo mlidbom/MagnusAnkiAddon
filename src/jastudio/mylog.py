@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING
 
-from testutils import ex_pytest
+from jastudio.testutils import ex_pytest
 
 from jastudio.sysutils.lazy import Lazy
 

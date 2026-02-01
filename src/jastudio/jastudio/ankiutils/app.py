@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import mylog
 from jastudio.sysutils.typed import checked_cast, non_optional
-from testutils import ex_pytest
+from jastudio.testutils import ex_pytest
 from typed_linq_collections.collections.q_set import QSet
 
 is_testing = ex_pytest.is_testing
