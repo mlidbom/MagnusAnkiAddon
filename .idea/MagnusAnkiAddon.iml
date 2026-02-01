@@ -29,6 +29,7 @@
       <excludeFolder url="file://$MODULE_DIR$/src/jastudio/user_files" />
       <excludeFolder url="file://$MODULE_DIR$/src/tests/.pytest_cache" />
       <excludeFolder url="file://$MODULE_DIR$/src/tests/jastudio_tests/tests/language_services_tests/.pytest_cache" />
+      <excludeFolder url="file://$MODULE_DIR$/src/jastudio/jastudio/user_files" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.13 (MagnusAnkiAddon)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

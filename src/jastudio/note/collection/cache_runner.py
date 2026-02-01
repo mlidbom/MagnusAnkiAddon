@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from anki import hooks
 from anki.models import ModelManager
-from ankiutils import app
+from jastudio.ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.note_constants import NoteTypes
 from sysutils import app_thread_pool, ex_assert, ex_thread

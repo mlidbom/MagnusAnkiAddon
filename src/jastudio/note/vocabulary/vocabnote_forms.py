@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ankiutils import app
-from ankiutils.app import col
+from jastudio.ankiutils import app
+from jastudio.ankiutils.app import col
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.note_constants import Mine, NoteFields
 from note.notefields.comma_separated_strings_list_field_de_duplicated import MutableCommaSeparatedStringsListFieldDeDuplicated

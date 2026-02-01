@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast, override
 
 from anki.models import NotetypeDict
-from ankiutils import app
+from jastudio.ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note import noteutils
 from note.note_constants import CardTypes, MyNoteFields, NoteTypes

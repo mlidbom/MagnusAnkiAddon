@@ -7,7 +7,7 @@ from os import path
 from typing import TYPE_CHECKING
 
 from anki.collection import Collection
-from ankiutils import app
+from jastudio.ankiutils import app
 from jastudio_tests.fixtures.base_data import note_type_factory
 from jastudio_tests.fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_lists
 from jastudio_tests.fixtures.stub_factory import stub_ui_dependencies
@@ -31,7 +31,7 @@ def inject_empty_collection() -> Iterator[JPCollection]:
         try:
             populate_collection(anki_collection)
             jp_collection = JPCollection(anki_collection)
-            with unittest.mock.patch("ankiutils.app.col", new=get_jp_collection):
+            with unittest.mock.patch("jastudio.ankiutils.app.col", new=get_jp_collection):
                 yield jp_collection
                 jp_collection.destruct_sync()
         finally:

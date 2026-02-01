@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ankiutils import app
+from jastudio.ankiutils import app
 from aqt import gui_hooks
 from note import noteutils
 

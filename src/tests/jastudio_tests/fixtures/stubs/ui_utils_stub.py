@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ankiutils.ui_utils_interface import IUIUtils
+from jastudio.ankiutils.ui_utils_interface import IUIUtils
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:

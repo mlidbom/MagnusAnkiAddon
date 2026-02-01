@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from os.path import dirname
 
-from ankiutils import app
+from jastudio.ankiutils import app
 from aqt.reviewer import Reviewer
 from aqt.sound import av_player
 from aqt.utils import askUserDialog

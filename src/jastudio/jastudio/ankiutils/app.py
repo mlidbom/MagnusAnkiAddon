@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.dbproxy import DBProxy
     from anki.scheduler.v3 import Scheduler  # pyright: ignore[reportMissingTypeStubs]
-    from ankiutils.ui_utils_interface import IUIUtils
+    from jastudio.ankiutils.ui_utils_interface import IUIUtils
     from aqt import AnkiQt  # type: ignore[attr-defined]  # pyright: ignore[reportPrivateImportUsage]
     from configuration.configuration_value import JapaneseConfig
     from note.collection.jp_collection import JPCollection
@@ -121,7 +121,7 @@ def main_window() -> AnkiQt:
     return non_optional(mw)
 
 def get_ui_utils() -> IUIUtils:
-    from ankiutils.ui_utils import UIUtils
+    from jastudio.ankiutils.ui_utils import UIUtils
     return UIUtils(main_window())
 
 # noinspection Annotator

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ankiutils import app
+from jastudio.ankiutils import app
 from aqt import dialogs, mw
 from aqt.browser import Browser  # pyright: ignore[reportPrivateImportUsage]
 from note.cardutils import CardUtils

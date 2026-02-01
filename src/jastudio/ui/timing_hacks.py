@@ -3,7 +3,7 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 
-from ankiutils.audio_suppressor import audio_suppressor
+from jastudio.ankiutils.audio_suppressor import audio_suppressor
 from aqt import gui_hooks
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 

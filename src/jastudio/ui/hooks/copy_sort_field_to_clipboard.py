@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING, cast
 
 import pyperclip
 from anki.models import NotetypeDict
-from ankiutils import app
-from ankiutils.app import get_ui_utils
+from jastudio.ankiutils import app
+from jastudio.ankiutils.app import get_ui_utils
 from aqt import gui_hooks
 from sysutils import app_thread_pool, ex_str, typed
 from sysutils.collections.recent_items import RecentItems

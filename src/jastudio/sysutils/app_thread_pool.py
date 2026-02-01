@@ -3,7 +3,7 @@ from __future__ import annotations
 from concurrent.futures.thread import ThreadPoolExecutor
 from typing import TYPE_CHECKING
 
-from ankiutils import app
+from jastudio.ankiutils import app
 from PyQt6.QtCore import QCoreApplication, QThread
 from sysutils import ex_thread
 from sysutils.typed import non_optional

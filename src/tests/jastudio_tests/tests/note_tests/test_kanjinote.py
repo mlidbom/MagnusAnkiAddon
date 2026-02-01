@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from ankiutils import app
+from jastudio.ankiutils import app
 from jastudio_tests.fixtures import collection_factory
 from jastudio_tests.fixtures.stub_factory import stub_ui_dependencies
 from sysutils.typed import non_optional

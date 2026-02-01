@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ankiutils import app
+from jastudio.ankiutils import app
 from viewmodels.kanji_list.kanji_list_viewmodel import KanjiListViewModel
 from viewmodels.kanji_list.sentence_kanji_viewmodel import KanjiViewModel
 

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ankiutils import app, ui_utils
-from ankiutils.app import get_ui_utils, main_window
+from jastudio.ankiutils import app, ui_utils
+from jastudio.ankiutils.app import get_ui_utils, main_window
 from batches import local_note_updater
 from configuration.configuration import show_japanese_options
 from configuration.readings_mapping_dialog import show_readings_mappings

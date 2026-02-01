@@ -5,7 +5,7 @@ import random
 import re
 from typing import TYPE_CHECKING
 
-from ankiutils import app, query_builder
+from jastudio.ankiutils import app, query_builder
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.tokenizing.pre_processing_stage.ichidan_godan_potential_or_imperative_hybrid_splitter import IchidanGodanPotentialOrImperativeHybridSplitter
 from note.note_constants import CardTypes

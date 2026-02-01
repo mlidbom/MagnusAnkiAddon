@@ -5,7 +5,7 @@ import threading
 from concurrent.futures import Future
 from typing import TYPE_CHECKING, Any
 
-from ankiutils import app
+from jastudio.ankiutils import app
 from autoslot import Slots
 from jamdict import Jamdict  # pyright: ignore [reportMissingTypeStubs]
 from sysutils.lazy import Lazy

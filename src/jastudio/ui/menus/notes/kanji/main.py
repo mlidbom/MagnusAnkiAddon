@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ankiutils import app, query_builder
+from jastudio.ankiutils import app, query_builder
 from sysutils import ex_str
 from sysutils.typed import non_optional
 from ui.menus.menu_utils import shortcutfinger

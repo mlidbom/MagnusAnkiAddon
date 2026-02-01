@@ -4,7 +4,7 @@ import gc
 import re
 from typing import TYPE_CHECKING
 
-from ankiutils import app, query_builder
+from jastudio.ankiutils import app, query_builder
 from note.note_constants import CardTypes, Tags
 from note.sentences.sentencenote import SentenceNote
 from sysutils import ex_str

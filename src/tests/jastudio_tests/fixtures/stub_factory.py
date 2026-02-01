@@ -4,7 +4,7 @@ import threading
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
-from ankiutils import app
+from jastudio.ankiutils import app
 from jastudio_tests.fixtures.stubs.ui_utils_stub import UIUtilsStub
 from sysutils import progress_display_runner
 from sysutils.typed import checked_cast
@@ -12,7 +12,7 @@ from sysutils.typed import checked_cast
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator
 
-    from ankiutils.ui_utils_interface import IUIUtils
+    from jastudio.ankiutils.ui_utils_interface import IUIUtils
 
 _thread_local = threading.local()
 

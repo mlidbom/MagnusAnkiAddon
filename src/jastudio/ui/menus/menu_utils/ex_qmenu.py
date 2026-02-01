@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ankiutils import app, query_builder, search_executor
-from ankiutils.app import get_ui_utils
-from ankiutils.search_executor import lookup_promise
+from jastudio.ankiutils import app, query_builder, search_executor
+from jastudio.ankiutils.app import get_ui_utils
+from jastudio.ankiutils.search_executor import lookup_promise
 from aqt import pyqtBoundSignal
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QMenu, QMessageBox

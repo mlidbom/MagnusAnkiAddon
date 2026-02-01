@@ -3,7 +3,7 @@ from __future__ import annotations
 import gc
 
 import mylog
-from ankiutils import app
+from jastudio.ankiutils import app
 from sysutils import app_thread_pool
 
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ankiutils import app
+from jastudio.ankiutils import app
 from autoslot import Slots
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.tokenizing.pre_processing_stage.word_info_entry import DictWordInfoEntry, VocabWordInfoEntry, WordInfoEntry

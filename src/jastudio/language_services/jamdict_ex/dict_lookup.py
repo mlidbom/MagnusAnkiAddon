@@ -3,7 +3,7 @@ from __future__ import annotations
 from functools import cache
 from typing import TYPE_CHECKING
 
-from ankiutils import app
+from jastudio.ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.jamdict_ex.dict_lookup_result import DictLookupResult
 from language_services.jamdict_ex.jamdict_threading_wrapper import JamdictThreadingWrapper
@@ -156,7 +156,7 @@ class DictLookup(Slots):
 
     @classmethod
     def is_dictionary_or_collection_word(cls, word: str) -> bool:
-        from ankiutils import app
+        from jastudio.ankiutils import app
         return app.col().vocab.is_word(word) or cls.is_word(word)
 
     @classmethod

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import cast
 
 from anki.decks import DeckDict, DeckId
-from ankiutils import app
+from jastudio.ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jastudio.anki_extentions.deck_configdict_ex import DeckConfigDictEx
 from sysutils.typed import str_

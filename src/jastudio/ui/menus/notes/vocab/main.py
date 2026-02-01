@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pyperclip
-from ankiutils import app, query_builder
+from jastudio.ankiutils import app, query_builder
 from note.note_constants import NoteFields, NoteTypes
 from sysutils import ex_str
 from sysutils.ex_str import newline

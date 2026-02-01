@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING, cast
 
-from ankiutils import app
+from jastudio.ankiutils import app
 from aqt import mw
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils.lazy import Lazy

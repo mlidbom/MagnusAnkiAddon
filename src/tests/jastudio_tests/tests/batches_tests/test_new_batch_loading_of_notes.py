@@ -3,7 +3,7 @@
 # from typing import TYPE_CHECKING
 #
 # import pytest
-# from ankiutils import app
+# from jastudio.ankiutils import app
 # from jastudio_tests.fixtures.collection_factory import inject_collection_with_all_sample_data
 # from jastudio_tests.fixtures.stub_factory import stub_ui_dependencies
 # from note.collection.jp_collection import JPCollection

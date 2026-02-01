@@ -4,7 +4,7 @@ import json
 import os
 
 from anki.cards import Card, CardId
-from ankiutils import app, query_builder, search_executor, ui_utils
+from jastudio.ankiutils import app, query_builder, search_executor, ui_utils
 from aqt import gui_hooks, mw
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils import typed

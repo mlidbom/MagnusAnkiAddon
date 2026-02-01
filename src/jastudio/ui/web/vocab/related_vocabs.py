@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import note.vocabulary.vocabnote_sorting
-from ankiutils import app
+from jastudio.ankiutils import app
 from aqt import gui_hooks
 from language_services import conjugator
 from note.vocabulary.vocabnote import VocabNote

@@ -4,7 +4,7 @@ import threading
 from typing import TYPE_CHECKING, cast, final
 
 from anki.notes import NoteId
-from ankiutils.app import col
+from jastudio.ankiutils.app import col
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.sentences.sentencenote import SentenceNote
@@ -310,7 +310,7 @@ class NoteSearchDialog(QDialog): # Cannot inherit Slots for some QT internal rea
                 note_ids.append(note_id)  # pyright: ignore[reportUnknownMemberType]
 
         if note_ids:
-            from ankiutils import query_builder, search_executor
+            from jastudio.ankiutils import query_builder, search_executor
             search_executor.do_lookup_and_show_previewer(query_builder.notes_by_id(note_ids))  # pyright: ignore[reportUnknownArgumentType]
             self.instance().activateWindow()  # the search will lose our focus, reactivate it
 

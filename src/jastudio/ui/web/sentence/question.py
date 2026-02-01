@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ankiutils import app
+from jastudio.ankiutils import app
 from aqt import gui_hooks
 from note.notefields.sentence_question_field import SentenceQuestionField
 from note.sentences.sentencenote import SentenceNote

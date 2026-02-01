@@ -4,7 +4,7 @@ import threading
 from typing import TYPE_CHECKING
 
 import mylog
-from ankiutils import app
+from jastudio.ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note import noteutils
 from note.collection.cache_runner import CacheRunner

@@ -3,7 +3,7 @@ from __future__ import annotations
 import typing
 
 import pyperclip
-from ankiutils import app, query_builder, search_executor, ui_utils
+from jastudio.ankiutils import app, query_builder, search_executor, ui_utils
 from aqt import gui_hooks
 from batches import local_note_updater
 from note.kanjinote import KanjiNote

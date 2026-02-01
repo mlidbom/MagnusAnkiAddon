@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from ankiutils import app
+from jastudio.ankiutils import app
 from jastudio_tests.fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_lists
 from jastudio_tests.fixtures.base_data.sample_data.kanji_spec import KanjiSpec
 from jastudio_tests.fixtures.base_data.sample_data.sentence_spec import SentenceSpec

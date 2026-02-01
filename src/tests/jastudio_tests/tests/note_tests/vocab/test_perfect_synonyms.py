@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from ankiutils import app
+from jastudio.ankiutils import app
 from jastudio_tests.fixtures.collection_factory import inject_empty_collection
 from note.vocabulary.vocabnote import VocabNote
 from typed_linq_collections.collections.q_set import QSet

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import aqt.utils
-from ankiutils import app
+from jastudio.ankiutils import app
 from aqt import gui_hooks
 from aqt.overview import Overview
 from note.note_constants import CardTypes, NoteTypes

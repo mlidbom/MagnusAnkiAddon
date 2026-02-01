@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from ankiutils import app
+from jastudio.ankiutils import app
 from aqt import mw
 from aqt.reviewer import Reviewer
 from aqt.utils import tooltip
