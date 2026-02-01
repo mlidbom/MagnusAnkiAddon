@@ -57,7 +57,7 @@ ignore = [
 
 [tool.pyright]
 include=["src"]
-extraPaths=["src/MagnusAddon", "src/jaslib"]
+extraPaths=["src/jastudio", "src/jaslib"]
 exclude=["**/node_modules", "**/__pycache__", "**/.*", "src/MagnusAddon/_lib/", "**/_lib_patched/*", "**venv/*", "**/manually_copied_in_libraries/*", "**/included_libraries/*"]
 typeCheckingMode="strict" # "off", "basic", "standard", "strict" # basedpyright only:  "recommended", "all"
 

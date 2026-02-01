@@ -3,7 +3,7 @@
     "src"
   ],
   "extraPaths": [
-    "src/MagnusAddon",
+    "src/jastudio",
     "src/jaslib"
   ],
   "exclude": [
