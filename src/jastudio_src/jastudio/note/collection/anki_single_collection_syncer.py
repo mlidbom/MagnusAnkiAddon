@@ -15,12 +15,7 @@ if TYPE_CHECKING:
     from jaslib.note.jpnote_data import JPNoteData
     from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner
 
-class AnkiCachedNote(Slots):
-    def __init__(self, note: JPNote) -> None:
-        self.id: NoteId = note.get_id()
-        self.question: str = note.get_question()
-
-class AnkiSingleCollectionSyncer[TNote: JPNote, TSnapshot: AnkiCachedNote](Slots):
+class AnkiSingleCollectionSyncer[TNote: JPNote](Slots):
     def __init__(self, all_notes: list[JPNoteData], cached_note_type: type[TNote], note_cache: NoteCacheBase[TNote], cache_runner: AnkiCollectionSyncRunner) -> None:
         self._note_type: type[TNote] = cached_note_type
         self._cache: NoteCacheBase[TNote] = note_cache

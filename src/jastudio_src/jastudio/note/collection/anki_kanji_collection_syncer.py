@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, final
+from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from jastudio.anki_extentions.note_ex import NoteBulkLoader
@@ -12,17 +12,12 @@ if TYPE_CHECKING:
 
 from jaslib.note.kanjinote import KanjiNote
 from jaslib.note.note_constants import NoteTypes
-from jastudio.note.collection.anki_single_collection_syncer import AnkiCachedNote, AnkiSingleCollectionSyncer
+from jastudio.note.collection.anki_single_collection_syncer import AnkiSingleCollectionSyncer
 
 from jaslib import app
 
 
-@final
-class _AnkiKanjiSnapshot(AnkiCachedNote, Slots):
-    def __init__(self, note: KanjiNote) -> None:
-        super().__init__(note)
-
-class _AnkiKanjiCache(AnkiSingleCollectionSyncer[KanjiNote, _AnkiKanjiSnapshot], Slots):
+class _AnkiKanjiCache(AnkiSingleCollectionSyncer[KanjiNote], Slots):
     def __init__(self, all_kanji: list[JPNoteData], cache_runner: AnkiCollectionSyncRunner) -> None:
         super().__init__(all_kanji, KanjiNote, app.col().kanji.cache, cache_runner)
 
