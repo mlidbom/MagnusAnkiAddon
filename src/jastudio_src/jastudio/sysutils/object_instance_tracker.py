@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import sys
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.sysutils.ex_str import newline
 from jastudio.ankiutils import app
 from typed_linq_collections.collections.q_dict import QDict

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, final
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.note.jpnote import JPNote
 from jastudio.anki_extentions.note_ex import NoteBulkLoader
 from jastudio.note.jpnotedata_shim import JPNoteDataShim

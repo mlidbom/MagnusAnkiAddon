@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import override
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from deepdiff import DeepDiff
 from jaslib.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from jaslib.note.sentences.sentence_configuration import SentenceConfiguration

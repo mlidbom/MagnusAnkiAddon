@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.note.note_constants import NoteFields
 from jaslib.note.notefields.integer_field import IntegerField
 from jaslib.note.vocabulary import vocabnote_meta_tag

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.sysutils.lazy import Lazy
 
 

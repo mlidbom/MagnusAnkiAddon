@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 
 
 # noinspection PyUnusedFunction

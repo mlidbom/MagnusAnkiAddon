@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.note.jpnote import JPNote, NoteId
 from jaslib.sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 from jaslib.sysutils.typed import checked_cast

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import jaslib.app
 import jaslib.note.jpnote
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.note.note_constants import Mine
 from jaslib.sysutils.memory_usage import string_auto_interner
 from jaslib.sysutils.timeutil import StopWatch

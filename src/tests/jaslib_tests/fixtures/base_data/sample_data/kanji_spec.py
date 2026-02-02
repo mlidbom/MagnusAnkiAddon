@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import override
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 
 
 class KanjiSpec(Slots):

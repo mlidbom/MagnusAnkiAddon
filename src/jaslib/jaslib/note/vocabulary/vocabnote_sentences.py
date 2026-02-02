@@ -3,7 +3,7 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.note.note_constants import NoteFields
 from jaslib.sysutils.lazy import Lazy
 from jaslib.sysutils.weak_ref import WeakRef, WeakRefable

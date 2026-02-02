@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, final, override
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.note.vocabulary.vocabnote_question import VocabNoteQuestion
 from typed_linq_collections.collections.q_dict import QDict
 

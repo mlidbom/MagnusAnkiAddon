@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.note.vocabulary.vocabnote import VocabNote
 from jaslib.sysutils.ex_str import newline
 from jastudio.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer

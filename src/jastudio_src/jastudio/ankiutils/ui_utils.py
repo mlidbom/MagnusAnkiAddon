@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jastudio.ankiutils import app
 from PyQt6.QtWidgets import QApplication
 from typed_linq_collections.q_iterable import query

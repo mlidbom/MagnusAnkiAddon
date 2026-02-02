@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.language_services.janome_ex.tokenizing import inflection_forms, inflection_types
 from jaslib.language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
 from jaslib.language_services.janome_ex.tokenizing.inflection_forms import InflectionForms

@@ -3,7 +3,7 @@ from __future__ import annotations
 from functools import cache
 from typing import TYPE_CHECKING
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.language_services.jamdict_ex.dict_lookup_result import DictLookupResult
 from jaslib.language_services.jamdict_ex.jamdict_threading_wrapper import JamdictThreadingWrapper
 from jaslib.sysutils.lazy import Lazy

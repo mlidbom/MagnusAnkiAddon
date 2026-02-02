@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections import deque
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 
 
 class RecentItems[T](Slots):

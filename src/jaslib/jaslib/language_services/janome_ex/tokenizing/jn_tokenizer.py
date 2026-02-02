@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import final
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from janome.tokenizer import Token, Tokenizer  # pyright: ignore[reportMissingTypeStubs]
 from jaslib.language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPartsOfSpeech
 from jaslib.language_services.janome_ex.tokenizing.jn_token import JNToken

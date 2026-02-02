@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.configuration.settings import Settings
 from jaslib.note.notefields.require_forbid_flag_field import RequireForbidFlagField
 from jaslib.note.tags import Tags

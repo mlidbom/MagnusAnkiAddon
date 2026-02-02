@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from anki import consts
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.sysutils.timeutil import StopWatch
 from jaslib.sysutils.typed import non_optional
 from jastudio.anki_extentions.deck_ex import DeckEx

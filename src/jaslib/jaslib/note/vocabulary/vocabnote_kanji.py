@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.sysutils import ex_str, kana_utils
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query

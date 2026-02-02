@@ -5,7 +5,7 @@ import os
 
 from anki.cards import Card, CardId
 from aqt import gui_hooks, mw
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.sysutils import typed
 from jaslib.sysutils.typed import non_optional
 from jaslib.sysutils.weak_ref import WeakRefable

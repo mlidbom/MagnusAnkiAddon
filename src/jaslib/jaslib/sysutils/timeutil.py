@@ -5,7 +5,7 @@ import time
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.sysutils import typed
 from jaslib.sysutils.time_span import TimeSpan
 

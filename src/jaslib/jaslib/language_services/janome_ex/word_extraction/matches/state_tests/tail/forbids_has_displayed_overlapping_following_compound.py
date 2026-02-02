@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.language_services.janome_ex.word_extraction.matches.requirements.custom_forbids_no_cache import CustomForbidsNoCache
 from jaslib.sysutils.typed import non_optional
 

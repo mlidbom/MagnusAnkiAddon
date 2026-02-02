@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, cast
 
 import jaslib.note.jpnote
 from anki.models import NotetypeDict
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.note.note_constants import NoteTypes
 from jaslib.sysutils.typed import str_
 from jaslib.sysutils.weak_ref import WeakRefable

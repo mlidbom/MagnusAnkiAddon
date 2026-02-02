@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast, override
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.note.jpnote import JPNote
 from jaslib.note.note_constants import NoteFields
 from jaslib.note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField

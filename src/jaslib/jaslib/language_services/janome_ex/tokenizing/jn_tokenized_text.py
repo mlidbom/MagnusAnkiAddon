@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.language_services.janome_ex.tokenizing.pre_processing_stage.pre_processing_stage import PreProcessingStage
 
 from jaslib import app, mylog

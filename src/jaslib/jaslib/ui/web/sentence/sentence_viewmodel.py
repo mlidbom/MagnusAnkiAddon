@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.ui.web.sentence.text_analysis_viewmodel import TextAnalysisViewModel
 
 if TYPE_CHECKING:

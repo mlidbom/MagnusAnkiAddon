@@ -4,7 +4,7 @@ import os
 from typing import TYPE_CHECKING, cast
 
 from aqt import mw
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from jaslib.sysutils.lazy import Lazy
 from jaslib.sysutils.typed import non_optional
 from jaslib.sysutils.weak_ref import WeakRefable
