@@ -27,7 +27,10 @@ def config() -> JapaneseConfig:
     return configuration_value.config()
 
 def col() -> JPCollection:
-    if _collection is None: raise AssertionError("Collection not initialized")
+    global _collection
+    if _collection is None:
+        from jaslib.note.collection.jp_collection import JPCollection
+        _collection = JPCollection()
     return _collection
 
 user_files_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "user_files")
