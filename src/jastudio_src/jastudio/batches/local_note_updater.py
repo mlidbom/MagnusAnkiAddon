@@ -61,9 +61,9 @@ if TYPE_CHECKING:
 def convert_immersion_kit_sentences() -> None:
     def convert_note(note_id: NoteId) -> None:
         immersion_kit_note = app.anki_collection().get_note(note_id)
-        import jastudio.note.sentences.sentencenote
+        import jastudio.note.sentences.ankisentencenote
 
-        jastudio.note.sentences.sentencenote.SentenceNote.import_immersion_kit_sentence(immersion_kit_note)
+        jastudio.note.sentences.ankisentencenote.AnkiSentenceNote.import_immersion_kit_sentence(immersion_kit_note)
         app.anki_collection().remove_notes([note_id])
 
     with TaskRunner.current("Converting immersion kit sentences", inhibit_gc=True) as runner:

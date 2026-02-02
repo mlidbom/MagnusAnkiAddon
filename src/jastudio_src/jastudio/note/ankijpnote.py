@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from anki.cards import Card
     from anki.notes import Note
 
-class JPNote(WeakRefable, Slots):
+class AnkiJPNote(WeakRefable, Slots):
     # def __init__(self, note: Note) -> None:
     #     self.weakref: WeakRef[JPNote] = WeakRef(self)
     #     self.recursive_flush_guard: NoteRecursiveFlushGuard = NoteRecursiveFlushGuard(self.weakref)

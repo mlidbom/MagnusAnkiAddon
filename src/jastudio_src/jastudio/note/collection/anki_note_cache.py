@@ -66,8 +66,8 @@ class AnkiNoteCache[TNote: JPNote, TSnapshot: AnkiCachedNote](Slots):
                 self.add_note_to_cache(note)
 
     def _on_added(self, backend_note: Note) -> None:
-        import jastudio.note.jpnote
-        note = jastudio.note.jpnote.JPNote.note_from_note(backend_note)
+        import jastudio.note.ankijpnote
+        note = jastudio.note.ankijpnote.AnkiJPNote.note_from_note(backend_note)
         if isinstance(note, self._note_type):
             self.add_note_to_cache(note)
 
@@ -79,8 +79,8 @@ class AnkiNoteCache[TNote: JPNote, TSnapshot: AnkiCachedNote](Slots):
             self._remove_from_cache(cached)
 
     def _create_note(self, backend_note: Note) -> TNote:
-        import jastudio.note.jpnote
-        return checked_cast(self._note_type, jastudio.note.jpnote.JPNote.note_from_note(backend_note))
+        import jastudio.note.ankijpnote
+        return checked_cast(self._note_type, jastudio.note.ankijpnote.AnkiJPNote.note_from_note(backend_note))
 
     def _refresh_in_cache(self, note: TNote) -> None:
         self._remove_from_cache(note)

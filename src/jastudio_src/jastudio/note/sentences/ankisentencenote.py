@@ -3,12 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from jastudio.note.jpnote import JPNote
+from jastudio.note.ankijpnote import AnkiJPNote
 
 if TYPE_CHECKING:
     from anki.notes import Note
 
-class SentenceNote(JPNote, Slots):
+class AnkiSentenceNote(AnkiJPNote, Slots):
     # def __init__(self, note: Note) -> None:
     #     super().__init__(note)
     #     self.weakref_sentence: WeakRef[SentenceNote] = cast(WeakRef[SentenceNote], self.weakref)
@@ -133,7 +133,7 @@ class SentenceNote(JPNote, Slots):
     #     return note
     #
     @classmethod
-    def import_immersion_kit_sentence(cls, immersion_kit_note: Note) -> SentenceNote:  # pyright: ignore
+    def import_immersion_kit_sentence(cls, immersion_kit_note: Note) -> AnkiSentenceNote:  # pyright: ignore
         raise NotImplementedError()
     # @classmethod
     # def import_immersion_kit_sentence(cls, immersion_kit_note: Note) -> SentenceNote:

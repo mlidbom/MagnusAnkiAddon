@@ -67,8 +67,8 @@ def get_note_from_web_view(view: AnkiWebView) -> JPNote | None:
     else:
         return None
 
-    from jastudio.note.jpnote import JPNote
-    return JPNote.note_from_note(inner_note)
+    from jastudio.note.ankijpnote import AnkiJPNote
+    return AnkiJPNote.note_from_note(inner_note)
 
 class UIUtils(IUIUtils, Slots):
     def __init__(self, mw: AnkiQt) -> None:
@@ -142,5 +142,5 @@ class UIUtils(IUIUtils, Slots):
         app_thread_pool.run_on_ui_thread_fire_and_forget(show_tooltip)
 
 def try_get_review_note() -> JPNote | None:
-    from jastudio.note.jpnote import JPNote
-    return JPNote.note_from_card(non_optional(main_window().reviewer.card)) if main_window().reviewer.card else None
+    from jastudio.note.ankijpnote import AnkiJPNote
+    return AnkiJPNote.note_from_card(non_optional(main_window().reviewer.card)) if main_window().reviewer.card else None

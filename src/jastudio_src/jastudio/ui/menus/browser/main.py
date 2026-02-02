@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import jastudio.note.jpnote
+import jastudio.note.ankijpnote
 from aqt import gui_hooks
 from jaslib.note.sentences.sentencenote import SentenceNote
 from jaslib.sysutils import ex_lambda
@@ -38,7 +38,7 @@ def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
         magnus_menu.addAction("Prioritize selected cards", lambda: queue_manager.prioritize_selected_cards(selected_cards))  # pyright: ignore[reportUnknownMemberType]
 
         card = app.anki_collection().get_card(selected_cards[0])
-        note = jastudio.note.jpnote.JPNote.note_from_card(card)
+        note = jastudio.note.ankijpnote.AnkiJPNote.note_from_card(card)
         menus.common.build_browser_right_click_menu(non_optional(magnus_menu.addMenu(shortcutfinger.home3("Note"))), note)
 
     if len(selected_cards) > 0:

@@ -60,8 +60,8 @@ class CardEx(Slots):
         return answers.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN).qcount() # len(list(ex_iterable.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN, answers)))
 
     def note(self) -> jaslib.note.jpnote.JPNote:
-        from jastudio.note.jpnote import JPNote
-        return JPNote.note_from_card(self.card)
+        from jastudio.note.ankijpnote import AnkiJPNote
+        return AnkiJPNote.note_from_card(self.card)
 
     @classmethod
     def _deck_manager(cls) -> DeckManager:

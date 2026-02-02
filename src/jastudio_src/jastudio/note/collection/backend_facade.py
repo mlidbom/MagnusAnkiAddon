@@ -4,9 +4,8 @@ from typing import TYPE_CHECKING, final
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from jaslib.note.jpnote import JPNote
-from jaslib.note.jpnote_data import JPNoteData
-from jaslib.sysutils.typed import non_optional
 from jastudio.anki_extentions.note_ex import NoteBulkLoader
+from jastudio.note.jpnotedata_shim import JPNoteDataShim
 from jastudio.qt_utils.task_progress_runner import TaskRunner
 from typed_linq_collections.collections.q_list import QList
 
@@ -14,7 +13,8 @@ if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
 
     from anki.collection import Collection
-    from anki.notes import Note, NoteId
+    from anki.notes import NoteId
+    from jaslib.note.jpnote_data import JPNoteData
 
 @final
 class BackEndFacade[TNote: JPNote](Slots):
@@ -33,15 +33,8 @@ class BackEndFacade[TNote: JPNote](Slots):
         return self.by_id(self.anki_collection.find_notes(query))
 
     def by_id(self, note_ids: Sequence[NoteId]) -> QList[TNote]:
-        def data_from_note(note: Note) -> JPNoteData:
-            fields: dict[str, str] = {}
-            for name in non_optional(note.note_type()):
-                fields[name] = note[name]
-
-            return JPNoteData(note.id, fields, note.tags)
-
         def note_from_id(note_id: NoteId) -> TNote:
             note = self.anki_collection.get_note(note_id)
-            return self.jp_note_constructor(data_from_note(note))
+            return self.jp_note_constructor(JPNoteDataShim.from_note(note))
 
         return QList(note_from_id(note_id) for note_id in note_ids)
