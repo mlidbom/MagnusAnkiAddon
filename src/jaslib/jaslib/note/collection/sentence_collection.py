@@ -8,6 +8,7 @@ from jaslib.note.sentences.sentencenote import SentenceNote
 from typed_linq_collections.collections.q_default_dict import QDefaultDict
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.collections.q_set import QSet
+from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
     from jaslib.note.jpnote import JPNoteId
@@ -68,10 +69,21 @@ class SentenceCollection(Slots):
         self.cache: _SentenceCache = _SentenceCache()
 
     def potentially_matching_vocab(self, vocab: VocabNote) -> list[SentenceNote]:  # pyright: ignore
-        raise NotImplementedError()
+        if vocab.matching_configuration.requires_forbids.surface.is_required:  # noqa: SIM108
+            search_strings = vocab.forms.all_list()
+        else:
+            search_strings = vocab.conjugator.get_stems_for_all_forms() + vocab.forms.all_list()
+
+        questions = [it.get_question() for it in self.all()]
+        matching = [it for it in questions if any(search_string in it for search_string in search_strings)]
+        return (query(matching)
+                .distinct()
+                .select_many(self.cache.with_question)
+                .distinct()
+                .to_list())
 
     def sentences_with_substring(self, substring: str) -> list[SentenceNote]:  # pyright: ignore
-        raise NotImplementedError()
+        return [it for it in self.cache.all() if substring in it.get_question()]
 
     def all(self) -> QList[SentenceNote]: return self.cache.all()
 
