@@ -17,23 +17,28 @@ from jastudio_tests.fixtures.stub_factory import stub_ui_dependencies
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from jastudio.note.collection.jp_collection import JPCollection
+    from jastudio.note.collection.jp_collection import JPCollection as JPLegacyCollection
 
 @contextmanager
-def inject_empty_collection() -> Iterator[JPCollection]:
-    from jastudio.note.collection.jp_collection import JPCollection
+def inject_empty_collection() -> Iterator[JPLegacyCollection]:
+    from jastudio.note.collection.jp_collection import JPCollection as JPLegacyCollection
+    jp_legacy_collection: JPLegacyCollection
+    def get_legacy_jp_collection() -> JPLegacyCollection: return jp_legacy_collection
+
+    from jaslib.note.collection.jp_collection import JPCollection
     jp_collection: JPCollection
     def get_jp_collection() -> JPCollection: return jp_collection
+    jp_collection = JPCollection()
 
     with (tempfile.TemporaryDirectory() as tmp_dirname, stub_ui_dependencies()):
         collection_file = path.join(tmp_dirname, "collection.anki2")
         anki_collection = Collection(collection_file)
         try:
             populate_collection(anki_collection)
-            jp_collection = JPCollection(anki_collection)
-            with unittest.mock.patch("jastudio.ankiutils.app.col", new=get_jp_collection):
-                yield jp_collection
-                jp_collection.destruct_sync()
+            jp_legacy_collection = JPLegacyCollection(anki_collection)
+            with unittest.mock.patch("jaslib.app.col", new=get_jp_collection), unittest.mock.patch("jastudio.ankiutils.app.col", new=get_legacy_jp_collection):
+                yield jp_legacy_collection
+                jp_legacy_collection.destruct_sync()
         finally:
             anki_collection.close()
 
@@ -41,7 +46,7 @@ def populate_collection(collection: Collection) -> None:
     note_type_factory.add_note_types(collection)
 
 @contextmanager
-def inject_collection_with_select_data(kanji: bool = False, special_vocab: bool = False, sentences: bool = False) -> Iterator[JPCollection]:
+def inject_collection_with_select_data(kanji: bool = False, special_vocab: bool = False, sentences: bool = False) -> Iterator[JPLegacyCollection]:
     with inject_empty_collection() as collection:
         if kanji:
             for _kanji in kanji_spec.test_kanji_list:
@@ -60,6 +65,6 @@ def inject_collection_with_select_data(kanji: bool = False, special_vocab: bool 
         yield collection
 
 @contextmanager
-def inject_collection_with_all_sample_data() -> Iterator[JPCollection]:
+def inject_collection_with_all_sample_data() -> Iterator[JPLegacyCollection]:
     with inject_collection_with_select_data(kanji=True, special_vocab=True, sentences=True) as collection:
         yield collection
