@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from jaslib import mylog
 from jaslib.sysutils.typed import checked_cast, non_optional
-# noinspection PyUnusedImports
+# noinspection PyUnusedImports, Annotator
 import jastudio.mylog  # pyright: ignore [reportUnusedImport]  # noqa: F401
 from jastudio.testutils import ex_pytest
 from typed_linq_collections.collections.q_set import QSet

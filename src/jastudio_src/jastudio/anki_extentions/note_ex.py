@@ -44,13 +44,5 @@ class NoteEx:
         return NoteEx(app.anki_collection().get_note(AnkiNoteId(note_id)))
 
     @classmethod
-    def from_anki_id(cls, note_id: AnkiNoteId) -> NoteEx:
-        return NoteEx(app.anki_collection().get_note(note_id))
-
-    @classmethod
-    def from_anki_note(cls, note: Note) -> NoteEx:
-        return NoteEx(note)
-
-    @classmethod
     def from_note(cls, note: JPNote) -> NoteEx:
         return cls.from_id(note.get_id())

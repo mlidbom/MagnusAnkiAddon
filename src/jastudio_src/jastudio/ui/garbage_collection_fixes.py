@@ -12,14 +12,17 @@ if TYPE_CHECKING:
     from aqt.main import AnkiQt
     from PyQt6.QtWidgets import QDialog
 
-def noop_gc_on_dialog_finish(_self: AnkiQt, dialog: QDialog) -> None:
+# noinspection Annotator
+def noop_gc_on_dialog_finish(_self: AnkiQt, dialog: QDialog) -> None:  # pyright: ignore
     # Fix anki hanging for several seconds every time a window closes
     checked_cast(pyqtBoundSignal, dialog.finished).connect(dialog.deleteLater)  # pyright: ignore[reportUnknownMemberType]
     app.get_ui_utils().tool_tip("prevented window close garbage collection", 6000)
 
+# noinspection Annotator
 def noop_gc_now(_self: AnkiQt) -> None:
     app.get_ui_utils().tool_tip("prevented periodic garbage collection", 6000)
 
+# noinspection Annotator
 def visible_garbage_collection(_self: AnkiQt) -> None:
     if (not app.config().enable_automatic_garbage_collection.get_value()
             and app.is_initialized()):

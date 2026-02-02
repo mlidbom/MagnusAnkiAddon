@@ -28,7 +28,7 @@ def generate_marked_invalid_in_list_html(_vocab_note: VocabNote) -> str:
                         """ for _sentence in shown_sentences])}
                     </div>
                 </div>
-            </div>
+            </div>q
             ''' if shown_sentences else ""
 
 def generate_valid_in_list_html(_vocab_note: VocabNote) -> str:

@@ -3,8 +3,8 @@ from __future__ import annotations
 from aqt import gui_hooks
 from jaslib.note.vocabulary.vocabnote import VocabNote
 from jaslib.sysutils import ex_str
+from jaslib.viewmodels.kanji_list import sentence_kanji_list_viewmodel
 from jastudio.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
-from jastudio.viewmodels.kanji_list import sentence_kanji_list_viewmodel
 
 
 def render_kanji_list_from_kanji(kanjis: list[str]) -> str:

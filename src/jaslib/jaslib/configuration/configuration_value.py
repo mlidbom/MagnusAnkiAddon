@@ -34,7 +34,7 @@ def _get_config_dict() -> dict[str, object]:
 _config_dict: Lazy[dict[str, object]] = Lazy(_get_config_dict)
 
 def _write_config_dict() -> None:
-    pass # todo implement
+    pass  # todo implement
 
 class ConfigurationValue[T](WeakRefable, Slots):
     def __init__(self, name: str, title: str, default: T, feature_toggler: Callable[[T], None] | None = None) -> None:
@@ -154,7 +154,8 @@ class JapaneseConfig(Slots):
         # performance toggles
         self.load_jamdict_db_into_memory: ConfigurationValueBool = add_bool(ConfigurationValueBool("load_jamdict_db_into_memory", "Load Jamdict DB into memory [Requires restart]", False))
         self.pre_cache_card_studying_status: ConfigurationValueBool = add_bool(ConfigurationValueBool("pre_cache_card_studying_status", "Cache card studying status on startup. Only disable for dev/testing purposes. [Requires restart]", False))
-        self.prevent_anki_from_garbage_collecting_every_time_a_window_closes: ConfigurationValueBool = add_bool(ConfigurationValueBool("prevent_anki_from_garbage_collecting_every_time_a_window_closes", "Prevent Anki from garbage collecting every time a window closes, causing a short hang every time. [Requires restart]", True))
+        self.prevent_anki_from_garbage_collecting_every_time_a_window_closes: ConfigurationValueBool = add_bool(ConfigurationValueBool("prevent_anki_from_garbage_collecting_every_time_a_window_closes",
+                                                                                                                                       "Prevent Anki from garbage collecting every time a window closes, causing a short hang every time. [Requires restart]", True))
         self.disable_all_automatic_garbage_collection: ConfigurationValueBool = add_bool(ConfigurationValueBool("disable_periodic_garbage_collection", "Prevent all automatic garbage collection. Will stop the mini-hangs but memory usage will grow gradually. [Requires restart]", False))
         self.load_studio_in_foreground: ConfigurationValueBool = add_bool(ConfigurationValueBool("load_studio_in_foreground", "Load Studio in foreground. Makes it clear when done. Anki will be responsive when done. But you can't use anki while loading.", True))
 

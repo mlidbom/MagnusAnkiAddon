@@ -72,6 +72,7 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
         self.run_on_background_thread_with_spinning_progress_dialog("Running garbage collection", lambda: app_thread_pool.run_on_ui_thread_synchronously(lambda: gc.collect()))
         self.set_label_text(old_label)
 
+    # noinspection PyUnusedFunction
     @override
     def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str, run_gc: bool = False, minimum_items_to_gc: int = 0) -> list[TOutput]:
         self.set_label_text(f"{message} 0 of ?? Remaining: ??")  # len may take a while so make sure we set the label first

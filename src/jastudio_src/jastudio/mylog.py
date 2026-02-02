@@ -49,6 +49,7 @@ def get_logger(module: str) -> logging.Logger:
 
     # Prevent errors when deleting/updating the add-on on Windows
     # noinspection PyUnusedLocal
+    # noinspection Annotator
     def close_log_file(manager: AddonManager, m: str, *args: object, **kwargs: object) -> None:  # pyright: ignore[reportUnusedParameter]
         if m == addon and file_handler:
             file_handler.close()
@@ -72,6 +73,7 @@ def get_logger(module: str) -> logging.Logger:
 
 _addon_name = os.path.basename(os.path.dirname(os.path.dirname(__file__)))
 
-import jaslib.mylog
+# noinspection PyPep8
+import jaslib.mylog  # noqa: E402
 
 jaslib.mylog.set_logger_factory(Lazy(lambda: get_logger(_addon_name)))

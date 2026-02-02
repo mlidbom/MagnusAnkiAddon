@@ -40,8 +40,8 @@ class NoteBulkLoader:
             while len(field_values_list) < field_count: field_values_list.append("")  # pyright: ignore
 
             fields_dict: dict[str, str] = {}
-            for name, tuple in field_map.items():
-                field_index, _ = tuple
+            for name, tuple_value in field_map.items():
+                field_index, _ = tuple_value
                 fields_dict[name] = field_values_list[field_index]
 
             return JPNoteData(id, fields_dict, tags)

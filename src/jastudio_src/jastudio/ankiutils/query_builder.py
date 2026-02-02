@@ -72,9 +72,6 @@ def potentially_matching_sentences_for_vocab(word: VocabNote) -> str:
         # search_strings += [form[:-1] for form in word.forms.all_list() if (len(form) > 2 or kana_utils.contains_kanji(form)) and kana_utils.character_is_kana(form[-1])]
     return f"""{note_sentence} {field_contains_string(f_question, *search_strings)}"""
 
-def sentences_with_question_substring(substring: str) -> str:
-    return f"""{note_sentence} {field_contains_string(SentenceNoteFields.active_question, substring)}"""
-
 def notes_lookup(notes: Iterable[JPNote]) -> str:
     return notes_by_id([NoteId(note.get_id()) for note in notes])
 
