@@ -43,7 +43,8 @@ class JPNote(WeakRefable, Slots):
             if status.is_suspended:
                 self._studying_cards.remove(status.card_type)
         else:
-            self._studying_cards.add(status.card_type)
+            if not status.is_suspended:
+                self._studying_cards.add(status.card_type)
 
     def get_data(self) -> JPNoteData: return JPNoteData(self.get_id(), self._fields, self.tags.to_interned_string_list())
 
