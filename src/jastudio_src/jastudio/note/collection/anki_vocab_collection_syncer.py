@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 from jaslib.note.note_constants import NoteTypes
 from jaslib.note.vocabulary.vocabnote import VocabNote
-from jastudio.anki_extentions.note_ex import NoteBulkLoader
+from jastudio.anki_extentions.note_bulk_loader import NoteBulkLoader
 from jastudio.note.collection.anki_single_collection_syncer import AnkiSingleCollectionSyncer
 
 from jaslib import app

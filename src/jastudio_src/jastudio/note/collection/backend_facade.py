@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, final
 
 from autoslot import Slots
 from jaslib.note.jpnote import JPNote
-from jastudio.anki_extentions.note_ex import NoteBulkLoader
+from jastudio.anki_extentions.note_bulk_loader import NoteBulkLoader
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
 from jastudio.qt_utils.task_progress_runner import TaskRunner
 from typed_linq_collections.collections.q_list import QList

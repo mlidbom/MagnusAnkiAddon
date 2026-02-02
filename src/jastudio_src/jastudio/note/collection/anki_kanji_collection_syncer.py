@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from jastudio.anki_extentions.note_ex import NoteBulkLoader
+from jastudio.anki_extentions.note_bulk_loader import NoteBulkLoader
 
 if TYPE_CHECKING:
     from anki.collection import Collection
