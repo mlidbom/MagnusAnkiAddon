@@ -29,8 +29,7 @@ class JPNote(WeakRefable, Slots):
         self.tags: NoteTags = NoteTags(self.weakref, data)
 
         self._fields: dict[str, str] = data.fields if data else defaultdict(str)
-
-        self._id_cache: NoteId = 0
+        self._id_cache: NoteId = data.id if data else 0
 
     # noinspection PyUnusedFunction
     @property
