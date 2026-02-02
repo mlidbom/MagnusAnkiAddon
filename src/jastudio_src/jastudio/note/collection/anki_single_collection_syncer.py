@@ -44,8 +44,6 @@ class AnkiSingleCollectionSyncer[TNote: JPNote, TSnapshot: AnkiCachedNote](Slots
 
 
     def _create_snapshot(self, note: TNote) -> TSnapshot: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
-    def _inheritor_remove_from_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
-    def _inheritor_add_to_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
 
     def _on_will_flush(self, backend_note: Note) -> None:
         if backend_note.id and backend_note.id in self._by_id:
@@ -91,7 +89,6 @@ class AnkiSingleCollectionSyncer[TNote: JPNote, TSnapshot: AnkiCachedNote](Slots
         cached = self._snapshot_by_id.pop(note.get_id())
         self._by_id.pop(note.get_id())
         self._by_question[cached.question].remove(note)
-        self._inheritor_remove_from_cache(note, cached)
 
     def add_note_to_cache(self, note: TNote) -> None:
         if note.get_id() in self._by_id: return
@@ -100,4 +97,3 @@ class AnkiSingleCollectionSyncer[TNote: JPNote, TSnapshot: AnkiCachedNote](Slots
         snapshot = self._create_snapshot(note)
         self._snapshot_by_id[note.get_id()] = snapshot
         self._by_question[note.get_question()].append(note)
-        self._inheritor_add_to_cache(note, snapshot)
