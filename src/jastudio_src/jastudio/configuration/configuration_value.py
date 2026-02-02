@@ -13,7 +13,7 @@ from jastudio.ankiutils import app
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-_addon_dir = os.path.dirname(os.path.dirname(__file__))
+_addon_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 _addon_name = os.path.basename(_addon_dir)
 
 def _get_config_dict() -> dict[str, object]:
