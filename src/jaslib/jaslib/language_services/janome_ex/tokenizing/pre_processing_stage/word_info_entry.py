@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from jaslib.note.vocabulary.pos import POS
+from jaslib.sysutils.abstract_method_called_error import AbstractMethodCalledError
 
 if TYPE_CHECKING:
     from jaslib.language_services.jamdict_ex.dict_lookup_result import DictLookupResult
@@ -25,7 +26,7 @@ class WordInfoEntry(Slots):
     def is_intransitive(self) -> bool: return POS.INTRANSITIVE in self.parts_of_speech
 
     @property
-    def answer(self) -> str: raise NotImplementedError()
+    def answer(self) -> str: raise AbstractMethodCalledError()
 
 
 class VocabWordInfoEntry(WordInfoEntry, Slots):

@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
+from jaslib.sysutils.abstract_method_called_error import AbstractMethodCalledError
 
 if TYPE_CHECKING:
     from jaslib.language_services.janome_ex.tokenizing.jn_token import JNToken
@@ -11,9 +12,9 @@ if TYPE_CHECKING:
 # and inheritors get to override whatever properties they can.
 class IAnalysisToken(Slots):
     @property
-    def surface(self) -> str: raise NotImplementedError()
+    def surface(self) -> str: raise AbstractMethodCalledError()
     @property
-    def base_form(self) -> str: raise NotImplementedError()
+    def base_form(self) -> str: raise AbstractMethodCalledError()
 
     @property
     def is_ichidan_verb(self) -> bool: return self.source_token.is_ichidan_verb
@@ -59,4 +60,4 @@ class IAnalysisToken(Slots):
     # </Only true for split tokens>
 
     @property
-    def source_token(self) -> JNToken: raise NotImplementedError()
+    def source_token(self) -> JNToken: raise AbstractMethodCalledError()

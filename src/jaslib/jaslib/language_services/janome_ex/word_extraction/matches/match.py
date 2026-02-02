@@ -15,6 +15,7 @@ from jaslib.language_services.janome_ex.word_extraction.matches.state_tests.is_g
 from jaslib.language_services.janome_ex.word_extraction.matches.state_tests.is_inflected_surface_with_valid_base import ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb
 from jaslib.language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import ForbidsIsShadowed
 from jaslib.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
+from jaslib.sysutils.abstract_method_called_error import AbstractMethodCalledError
 from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
@@ -93,9 +94,9 @@ class Match(WeakRefable, Slots):
     def _create_dynamic_display_requirements(self) -> tuple[MatchRequirement | None, ...]: return ()
 
     @property
-    def answer(self) -> str: raise NotImplementedError()
+    def answer(self) -> str: raise AbstractMethodCalledError()
     @property
-    def readings(self) -> list[str]: raise NotImplementedError()
+    def readings(self) -> list[str]: raise AbstractMethodCalledError()
     @property
     def tokenized_form(self) -> str: return self.variant.form
     @property

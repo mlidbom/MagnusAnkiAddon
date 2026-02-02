@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from jaslib.language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
+from jaslib.sysutils.abstract_method_called_error import AbstractMethodCalledError
 
 if TYPE_CHECKING:
     from jaslib.language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
@@ -28,7 +29,7 @@ class CustomForbidsNoCache(MatchRequirement, Slots):
     @property
     def description(self) -> str:
         """Description of this state for error messages."""
-        raise NotImplementedError()
+        raise AbstractMethodCalledError()
 
     @property
     @override
@@ -42,4 +43,4 @@ class CustomForbidsNoCache(MatchRequirement, Slots):
 
     def _internal_is_in_state(self) -> bool:
         """Internal implementation of state checking. Override this in subclasses."""
-        raise NotImplementedError()
+        raise AbstractMethodCalledError()

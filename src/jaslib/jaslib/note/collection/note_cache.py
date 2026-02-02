@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from jaslib.note.jpnote import JPNote, JPNoteId
+from jaslib.sysutils.abstract_method_called_error import AbstractMethodCalledError
 from jaslib.sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 from jastudio.qt_utils.task_progress_runner import TaskRunner
 from typed_linq_collections.collections.q_list import QList
@@ -36,9 +37,9 @@ class NoteCacheBase[TNote: JPNote](Slots):
     def _add_to_cache_from_data(self, note_data: JPNoteData) -> None:
         self.add_to_cache(self._note_constructor(note_data))
 
-    def refresh_in_cache(self, note: TNote) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
-    def remove_from_cache(self, note: TNote) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
-    def add_to_cache(self, note: TNote) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
+    def refresh_in_cache(self, note: TNote) -> None: raise AbstractMethodCalledError()  # pyright: ignore[reportUnusedParameter]
+    def remove_from_cache(self, note: TNote) -> None: raise AbstractMethodCalledError()  # pyright: ignore[reportUnusedParameter]
+    def add_to_cache(self, note: TNote) -> None: raise AbstractMethodCalledError()  # pyright: ignore[reportUnusedParameter]
 
 class NoteCache[TNote: JPNote, TSnapshot: CachedNote](NoteCacheBase[TNote], Slots):
     def __init__(self, cached_note_type: type[TNote], note_constructor: Callable[[JPNoteData], TNote]) -> None:
@@ -57,9 +58,9 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](NoteCacheBase[TNote], Slot
     def with_question(self, question: str) -> QList[TNote]:
         return self._by_question.get_value_or_default(question).to_list()
 
-    def _create_snapshot(self, note: TNote) -> TSnapshot: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
-    def _inheritor_remove_from_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
-    def _inheritor_add_to_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
+    def _create_snapshot(self, note: TNote) -> TSnapshot: raise AbstractMethodCalledError()  # pyright: ignore[reportUnusedParameter]
+    def _inheritor_remove_from_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise AbstractMethodCalledError()  # pyright: ignore[reportUnusedParameter]
+    def _inheritor_add_to_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise AbstractMethodCalledError()  # pyright: ignore[reportUnusedParameter]
 
     @override
     def refresh_in_cache(self, note: TNote) -> None:

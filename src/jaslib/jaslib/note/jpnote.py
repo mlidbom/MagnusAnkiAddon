@@ -10,6 +10,7 @@ from jaslib.note.note_flush_guard import NoteRecursiveFlushGuard
 from jaslib.note.note_tags import NoteTags
 from jaslib.note.tags import Tags
 from jaslib.sysutils import ex_assert, ex_str
+from jaslib.sysutils.abstract_method_called_error import AbstractMethodCalledError
 from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_set import QSet
 
@@ -42,7 +43,7 @@ class JPNote(WeakRefable, Slots):
         ex_assert.not_none(self.get_id(), "You cannot compare or hash a note that has not been saved yet since it has no id")
         return isinstance(other, JPNote) and other.get_id() == self.get_id()
 
-    def _update_in_cache(self) -> None: raise NotImplementedError()
+    def _update_in_cache(self) -> None: raise AbstractMethodCalledError()
 
     def is_studying(self, card_type: str | None = None) -> bool: raise NotImplementedError()  # pyright: ignore
     def is_studying_read(self) -> bool: raise NotImplementedError()
@@ -107,8 +108,6 @@ class JPNote(WeakRefable, Slots):
 
     def _is_persisted(self) -> bool:
         return self._id_cache != 0
-        #raise NotImplementedError()
-        #return int(self.backend_note.id) != 0
 
     def _flush(self) -> None:
         if self._is_persisted():

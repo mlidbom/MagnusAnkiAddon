@@ -4,14 +4,15 @@ from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from jaslib.note.notefields.mutable_string_field import MutableStringField
+from jaslib.sysutils.abstract_method_called_error import AbstractMethodCalledError
 
 if TYPE_CHECKING:
     from jaslib.note.jpnote import JPNote
     from jaslib.sysutils.weak_ref import WeakRef
 
 class ObjectSerializer[T](Slots):
-    def serialize(self, instance: T) -> str: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
-    def deserialize(self, serialized: str) -> T: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
+    def serialize(self, instance: T) -> str: raise AbstractMethodCalledError()  # pyright: ignore[reportUnusedParameter]
+    def deserialize(self, serialized: str) -> T: raise AbstractMethodCalledError()  # pyright: ignore[reportUnusedParameter]
 
 class MutableSerializedObjectField[T](Slots):
     def __init__(self, note: WeakRef[JPNote], field: str, serializer: ObjectSerializer[T]) -> None:
