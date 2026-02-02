@@ -18,10 +18,10 @@ class DifficultyCalculator(Slots):
 
     def allowed_seconds(self, string: str) -> float:
         qstring = query(string)
-        hiragana_seconds = qstring.qcount(kana_utils.character_is_hiragana) * self.hiragana_seconds  # ex_sequence.count(string, kana_utils.character_is_hiragana) * self.hiragana_seconds
-        katakana_seconds = qstring.qcount(kana_utils.character_is_katakana) * self.katakata_seconds  # ex_sequence.count(string, kana_utils.character_is_katakana) * self.katakata_seconds
-        kanji_seconds = qstring.qcount(kana_utils.character_is_kanji) * self.kanji_seconds  # ex_sequence.count(string, kana_utils.character_is_kanji) * self.kanji_seconds
+        hiragana_seconds = qstring.qcount(kana_utils.character_is_hiragana) * self.hiragana_seconds
+        katakana_seconds = qstring.qcount(kana_utils.character_is_katakana) * self.katakata_seconds
+        kanji_seconds = qstring.qcount(kana_utils.character_is_kanji) * self.kanji_seconds
 
-        other_character_seconds = qstring.qcount(self.is_other_character) * self.hiragana_seconds #ex_sequence.count(string, self.is_other_character) * self.hiragana_seconds
+        other_character_seconds = qstring.qcount(self.is_other_character) * self.hiragana_seconds
 
         return self.starting_seconds + hiragana_seconds + katakana_seconds + kanji_seconds + other_character_seconds
