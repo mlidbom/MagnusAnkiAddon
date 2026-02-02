@@ -3,54 +3,30 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from anki.consts import QUEUE_TYPE_SUSPENDED
-from anki.notes import Note, NoteId
+from anki.notes import NoteId
 from jaslib.note.collection.card_studying_status import CardStudyingStatus
 from jaslib.note.note_constants import NoteTypes
 from jaslib.sysutils import typed
 from jaslib.sysutils.memory_usage import string_auto_interner
-from jaslib.sysutils.typed import non_optional, str_
+from jaslib.sysutils.typed import non_optional
 from jaslib.task_runners.task_progress_runner import TaskRunner
-from jastudio.ankiutils import app
 from typed_linq_collections.q_iterable import query
 
+from jaslib import app
+
 if TYPE_CHECKING:
-    from anki.cards import Card
     from anki.collection import Collection
     from anki.dbproxy import Row
     from jastudio.anki_extentions.card_ex import CardEx
 
-_studying_status_cache: dict[NoteId, dict[str, bool]] = {}
-
-def _is_being_studied(card: Card) -> bool:
-    return card.queue != QUEUE_TYPE_SUSPENDED  # and card.queue != QUEUE_TYPE_NEW
-
-def _card_type(card: Card) -> str:
-    return str_(card.template()["name"])
-
 def update_in_studying_cache(card_ex: CardEx) -> None:
-    if card_ex.note_ex().id in _studying_status_cache:
-        cached = _studying_status_cache.pop(card_ex.note_ex().id)
-        cached[card_ex.card_type] = not card_ex.is_suspended()
-
-def clear_studying_cache() -> None:
-    _studying_status_cache.clear()
-
-def has_card_being_studied_cached(note_id: int, card_type: str = "") -> bool:
-    typed_note_id = NoteId(note_id)
-    cached = _studying_status_cache.get(typed_note_id)
-    if cached is None:
-        note = app.anki_collection().get_note(typed_note_id)
-        _ensure_card_status_is_cached(note)
-        cached = _studying_status_cache[typed_note_id]
-
-    if card_type:
-        return cached.get(card_type, False)
-
-    return any(cached.values())
-
-def _ensure_card_status_is_cached(note: Note) -> None:
-    if note.id not in _studying_status_cache:
-        _studying_status_cache[note.id] = {_card_type(card): _is_being_studied(card) for card in note.cards()}
+    status = CardStudyingStatus(card_ex.note_ex().id, card_ex.card_type, not card_ex.is_suspended(), card_ex.note_ex().note_type.name)
+    if status.note_type_name == NoteTypes.Kanji:
+        app.col().kanji.cache.set_studying_statuses([status])
+    if status.note_type_name == NoteTypes.Vocab:
+        app.col().vocab.cache.set_studying_statuses([status])
+    if status.note_type_name == NoteTypes.Sentence:
+        app.col().sentences.cache.set_studying_statuses([status])
 
 class CardStudyingStatusFactory:
     @classmethod
