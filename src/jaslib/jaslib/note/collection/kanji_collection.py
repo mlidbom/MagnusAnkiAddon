@@ -56,25 +56,24 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
 
 class KanjiCollection(Slots):
     def __init__(self) -> None:
-        self._cache: _KanjiCache = _KanjiCache()
+        self.cache: _KanjiCache = _KanjiCache()
 
-    def all(self) -> QList[KanjiNote]: return self._cache.all()
+    def all(self) -> QList[KanjiNote]: return self.cache.all()
 
-    # noinspection PyUnusedFunction
     def with_id_or_none(self, note_id:NoteId) -> KanjiNote | None:
-        return self._cache.with_id_or_none(note_id)
+        return self.cache.with_id_or_none(note_id)
 
     def with_any_kanji_in(self, kanji_list: list[str]) -> QList[KanjiNote]:
-        return query(kanji_list).select_many(self._cache.with_question).to_list()  # ex_sequence.flatten([self._cache.with_question(kanji) for kanji in kanji_list])
+        return query(kanji_list).select_many(self.cache.with_question).to_list()
 
     def with_kanji(self, kanji: str) -> KanjiNote | None:
-        return self._cache.with_question(kanji).single_or_none()
+        return self.cache.with_question(kanji).single_or_none()
 
     # noinspection PyUnusedFunction
-    def with_radical(self, radical:str) -> QList[KanjiNote]: return self._cache.with_radical(radical)
+    def with_radical(self, radical:str) -> QList[KanjiNote]: return self.cache.with_radical(radical)
     # noinspection PyUnusedFunction
     def with_reading(self, reading:str) -> QSet[KanjiNote]:
-        return self._cache.by_reading.get_value_or_default(kana_utils.anything_to_hiragana(reading)).to_set()
+        return self.cache.by_reading.get_value_or_default(kana_utils.anything_to_hiragana(reading)).to_set()
 
     def add(self, note: KanjiNote) -> None:
-        self._cache.add_note_to_cache(note)
+        self.cache.add_to_cache(note)

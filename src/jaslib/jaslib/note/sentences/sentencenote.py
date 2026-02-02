@@ -40,7 +40,7 @@ class SentenceNote(JPNote, Slots):
 
 
     @override
-    def _update_in_cache(self) -> None: self.collection.sentences._cache.refresh_in_cache(self)  # pyright: ignore [reportPrivateUsage]
+    def _update_in_cache(self) -> None: self.collection.sentences.cache.refresh_in_cache(self)  # pyright: ignore [reportPrivateUsage]
 
     @property
     def id(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.id)

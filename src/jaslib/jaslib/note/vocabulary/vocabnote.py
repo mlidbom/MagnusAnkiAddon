@@ -49,7 +49,7 @@ class VocabNote(JPNote, Slots):
         self.matching_configuration: VocabNoteMatchingConfiguration = VocabNoteMatchingConfiguration(self.weakref_vocab)
 
     @override
-    def _update_in_cache(self) -> None: self.collection.vocab._cache.refresh_in_cache(self)  # pyright: ignore [reportPrivateUsage]
+    def _update_in_cache(self) -> None: self.collection.vocab.cache.refresh_in_cache(self)  # pyright: ignore [reportPrivateUsage]
 
     @override
     def get_question(self) -> str: return self.question.raw

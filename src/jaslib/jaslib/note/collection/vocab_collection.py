@@ -101,23 +101,23 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
 # noinspection PyUnusedFunction
 class VocabCollection(Slots):
     def __init__(self) -> None:
-        self._cache: _VocabCache = _VocabCache()
+        self.cache: _VocabCache = _VocabCache()
 
-    def is_word(self, form: str) -> bool: return any(self._cache.with_form(form))
-    def all(self) -> list[VocabNote]: return self._cache.all()
-    def with_id_or_none(self, note_id: NoteId) -> VocabNote | None: return self._cache.with_id_or_none(note_id)
-    def with_disambiguation_name(self, name: str) -> Iterable[VocabNote]: return self._cache.with_disambiguation_name(name)
-    def with_form(self, form: str) -> Iterable[VocabNote]: return self._cache.with_form(form)
-    def with_compound_part(self, disambiguation_name: str) -> list[VocabNote]: return self._cache.with_compound_part(disambiguation_name)
-    def derived_from(self, derived_from: str) -> list[VocabNote]: return self._cache.derived_from(derived_from)
-    def with_kanji_in_main_form(self, kanji: KanjiNote) -> list[VocabNote]: return self._cache.with_kanji_in_main_form(kanji.get_question())
-    def with_kanji_in_any_form(self, kanji: KanjiNote) -> list[VocabNote]: return self._cache.with_kanji_in_any_form(kanji.get_question())
-    def with_question(self, question: str) -> list[VocabNote]: return self._cache.with_question(question)
+    def is_word(self, form: str) -> bool: return any(self.cache.with_form(form))
+    def all(self) -> list[VocabNote]: return self.cache.all()
+    def with_id_or_none(self, note_id: NoteId) -> VocabNote | None: return self.cache.with_id_or_none(note_id)
+    def with_disambiguation_name(self, name: str) -> Iterable[VocabNote]: return self.cache.with_disambiguation_name(name)
+    def with_form(self, form: str) -> Iterable[VocabNote]: return self.cache.with_form(form)
+    def with_compound_part(self, disambiguation_name: str) -> list[VocabNote]: return self.cache.with_compound_part(disambiguation_name)
+    def derived_from(self, derived_from: str) -> list[VocabNote]: return self.cache.derived_from(derived_from)
+    def with_kanji_in_main_form(self, kanji: KanjiNote) -> list[VocabNote]: return self.cache.with_kanji_in_main_form(kanji.get_question())
+    def with_kanji_in_any_form(self, kanji: KanjiNote) -> list[VocabNote]: return self.cache.with_kanji_in_any_form(kanji.get_question())
+    def with_question(self, question: str) -> list[VocabNote]: return self.cache.with_question(question)
     def with_question_prefer_disambiguation_name(self, question: str) -> Iterable[VocabNote]:
-        return (self._cache.with_disambiguation_name(question) if VocabNoteQuestion.DISAMBIGUATION_MARKER in question
-                else self._cache.with_question(question))
-    def with_reading(self, question: str) -> list[VocabNote]: return self._cache.with_reading(question)
-    def with_stem(self, question: str) -> list[VocabNote]: return self._cache.with_stem(question)
+        return (self.cache.with_disambiguation_name(question) if VocabNoteQuestion.DISAMBIGUATION_MARKER in question
+                else self.cache.with_question(question))
+    def with_reading(self, question: str) -> list[VocabNote]: return self.cache.with_reading(question)
+    def with_stem(self, question: str) -> list[VocabNote]: return self.cache.with_stem(question)
 
     def with_form_prefer_disambiguation_name_or_exact_match(self, form: str) -> list[VocabNote]:
         with_disambiguation_name = self.with_disambiguation_name(form)
@@ -138,4 +138,4 @@ class VocabCollection(Slots):
         return query(questions).select(self.with_disambiguation_name).select_many(lambda x: x).to_list()
 
     def add(self, note: VocabNote) -> None:
-        self._cache.add_note_to_cache(note)
+        self.cache.add_to_cache(note)

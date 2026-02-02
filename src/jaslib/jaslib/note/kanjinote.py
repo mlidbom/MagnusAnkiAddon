@@ -31,7 +31,7 @@ class KanjiNote(JPNote, Slots):
         return self.get_radicals_notes().cast.to(JPNote).to_set()
 
     @override
-    def _update_in_cache(self) -> None: self.collection.kanji._cache.refresh_in_cache(self)  # pyright: ignore [reportPrivateUsage]
+    def _update_in_cache(self) -> None: self.collection.kanji.cache.refresh_in_cache(self)
 
     # noinspection PyUnusedFunction
     def tag_vocab_readings(self, vocab: VocabNote) -> list[str]:

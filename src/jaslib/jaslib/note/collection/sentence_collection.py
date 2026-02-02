@@ -65,7 +65,7 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
 # noinspection PyUnusedFunction
 class SentenceCollection(Slots):
     def __init__(self) -> None:
-        self._cache: _SentenceCache = _SentenceCache()
+        self.cache: _SentenceCache = _SentenceCache()
 
     def potentially_matching_vocab(self, vocab: VocabNote) -> list[SentenceNote]:  # pyright: ignore
         raise NotImplementedError()
@@ -73,16 +73,16 @@ class SentenceCollection(Slots):
     def sentences_with_substring(self, substring: str) -> list[SentenceNote]:  # pyright: ignore
         raise NotImplementedError()
 
-    def all(self) -> QList[SentenceNote]: return self._cache.all()
+    def all(self) -> QList[SentenceNote]: return self.cache.all()
 
     def with_id_or_none(self, note_id: NoteId) -> SentenceNote | None:
-        return self._cache.with_id_or_none(note_id)
+        return self.cache.with_id_or_none(note_id)
 
     def with_question(self, question: str) -> QList[SentenceNote]:
-        return self._cache.with_question(question)
+        return self.cache.with_question(question)
 
     def with_vocab(self, vocab_note: VocabNote) -> QList[SentenceNote]:
-        matches = self._cache.with_vocab(vocab_note)
+        matches = self.cache.with_vocab(vocab_note)
         question = vocab_note.get_question()
         # todo: isn't this check redundant, won't the match have been removed during indexing?
         return QList(match for match in matches if question not in match.configuration.incorrect_matches.words())
@@ -90,7 +90,7 @@ class SentenceCollection(Slots):
     def with_vocab_owned_form(self, vocab_note: VocabNote) -> QList[SentenceNote]:
         question = vocab_note.get_question()
         return (vocab_note.forms.not_owned_by_other_vocab()
-                .select_many(self._cache.with_vocab_form)
+                .select_many(self.cache.with_vocab_form)
                 .distinct()
                 .where(lambda match: question not in match.configuration.incorrect_matches.words())  # Indexing is infrequent, so this check is necessary
                 .to_list())
@@ -102,14 +102,14 @@ class SentenceCollection(Slots):
         # return [match for match in matches if question not in match.configuration.incorrect_matches.words()]
 
     def with_vocab_marked_invalid(self, vocab_note: VocabNote) -> QList[SentenceNote]:
-        return self._cache.with_user_marked_invalid_vocab(vocab_note.question.disambiguation_name)
+        return self.cache.with_user_marked_invalid_vocab(vocab_note.question.disambiguation_name)
 
-    def with_form(self, form: str) -> QList[SentenceNote]: return self._cache.with_vocab_form(form)
+    def with_form(self, form: str) -> QList[SentenceNote]: return self.cache.with_vocab_form(form)
 
     def with_highlighted_vocab(self, vocab_note: VocabNote) -> QList[SentenceNote]:
         if vocab_note.question.is_disambiguated:
-            return self._cache.with_user_highlighted_vocab(vocab_note.question.disambiguation_name).to_list()
-        return vocab_note.forms.all_set().select_many(self._cache.with_user_highlighted_vocab).to_list()
+            return self.cache.with_user_highlighted_vocab(vocab_note.question.disambiguation_name).to_list()
+        return vocab_note.forms.all_set().select_many(self.cache.with_user_highlighted_vocab).to_list()
 
     def add(self, note: SentenceNote) -> None:
-        self._cache.add_note_to_cache(note)
+        self.cache.add_to_cache(note)
