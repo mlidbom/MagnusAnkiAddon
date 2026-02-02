@@ -3,12 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
+from jaslib.language_services.janome_ex.tokenizing.jn_token import JNToken
+from jaslib.note.sentences.sentencenote import SentenceNote
 from jaslib.sysutils import ex_str
 from jaslib.sysutils.ex_str import newline
 from jastudio.ankiutils import app
 from jastudio.configuration.settings import Settings
-from jastudio.language_services.janome_ex.tokenizing.jn_token import JNToken
-from jastudio.note.sentences.sentencenote import SentenceNote
 from jastudio.ui.web.sentence.sentence_viewmodel import SentenceViewModel
 from jastudio.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 from jastudio.viewmodels.kanji_list import sentence_kanji_list_viewmodel
@@ -17,8 +17,8 @@ from typed_linq_collections.collections.q_list import QList
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from jaslib.language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
     from jastudio.configuration.configuration_value import ConfigurationValueBool
-    from jastudio.language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
     from jastudio.ui.web.sentence.match_viewmodel import MatchViewModel
 
 def format_reason(reason: str) -> str:

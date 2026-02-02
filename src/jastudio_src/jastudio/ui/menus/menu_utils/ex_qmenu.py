@@ -14,9 +14,9 @@ from PyQt6.QtWidgets import QMenu, QMessageBox
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from jaslib.note.jpnote import JPNote
+    from jaslib.note.vocabulary.vocabnote import VocabNote
     from jastudio.configuration.configuration_value import ConfigurationValueBool
-    from jastudio.note.jpnote import JPNote
-    from jastudio.note.vocabulary.vocabnote import VocabNote
 
 def add_checkbox_config(menu: QMenu, config_value: ConfigurationValueBool, _title: str) -> None:
     checkbox_action = QAction(_title, app.main_window())
@@ -75,7 +75,7 @@ def create_note_action(menu: QMenu, name: str, callback: Callable[[], JPNote]) -
 def create_vocab_note_action(menu: QMenu, name: str, callback: Callable[[], VocabNote]) -> None:
     def do_it() -> VocabNote:
         new_note = callback()
-        from jastudio.batches import local_note_updater
+        from jaslib.batches import local_note_updater
         local_note_updater.reparse_sentences_for_vocab(new_note)
         return new_note
 

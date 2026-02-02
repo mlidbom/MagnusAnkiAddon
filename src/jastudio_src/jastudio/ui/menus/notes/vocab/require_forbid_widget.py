@@ -9,7 +9,7 @@ from PyQt6.QtWidgets import QButtonGroup, QHBoxLayout, QRadioButton, QWidget
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from jastudio.note.notefields.require_forbid_flag_field import RequireForbidFlagField
+    from jaslib.note.notefields.require_forbid_flag_field import RequireForbidFlagField
 
 class RequireForbidWidget(QWidget):
     """Widget for editing a require/forbid flag field with three radio buttons."""

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from jastudio.note.tags import Tags
-from jastudio.note.vocabulary.pos import POS
+from jaslib.note.tags import Tags
+from jaslib.note.vocabulary.pos import POS
 from jastudio_tests.fixtures.base_data.sample_data.vocab_spec import VocabSpec
 
 v = Tags.Vocab

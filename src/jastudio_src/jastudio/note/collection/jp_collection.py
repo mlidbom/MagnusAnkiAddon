@@ -3,7 +3,10 @@ from __future__ import annotations
 import threading
 from typing import TYPE_CHECKING
 
+import jaslib.app
+import jaslib.note.jpnote
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.note.note_constants import Mine
 from jaslib.sysutils.memory_usage import string_auto_interner
 from jaslib.sysutils.timeutil import StopWatch
 from jaslib.sysutils.typed import non_optional
@@ -12,11 +15,6 @@ from jastudio import mylog
 from jastudio.ankiutils import app
 from jastudio.note import noteutils
 from jastudio.note.collection.cache_runner import CacheRunner
-from jastudio.note.collection.kanji_collection import KanjiCollection
-from jastudio.note.collection.sentence_collection import SentenceCollection
-from jastudio.note.collection.vocab_collection import VocabCollection
-from jastudio.note.jpnote import JPNote
-from jastudio.note.note_constants import Mine
 from jastudio.qt_utils.task_progress_runner import TaskRunner
 from jastudio.sysutils import app_thread_pool
 from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
@@ -24,6 +22,9 @@ from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_insta
 if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import NoteId
+    from jaslib.note.collection.kanji_collection import KanjiCollection
+    from jaslib.note.collection.sentence_collection import SentenceCollection
+    from jaslib.note.collection.vocab_collection import VocabCollection
 
 class JPCollection(WeakRefable, Slots):
     _is_inital_load: bool = True  # running the GC on initial load slows startup a lot but does not decrease memory usage in any significant way.
@@ -84,14 +85,14 @@ class JPCollection(WeakRefable, Slots):
                 with StopWatch.log_warning_if_slower_than(5, "Core collection setup - no gc"):
                     self._cache_runner = CacheRunner(self.anki_collection)
 
-                    self._vocab = VocabCollection(self.anki_collection, self._cache_runner)
-                    self._sentences = SentenceCollection(self.anki_collection, self._cache_runner)
-                    self._kanji = KanjiCollection(self.anki_collection, self._cache_runner)
+                    # self._vocab = VocabCollection(self.anki_collection, self._cache_runner)
+                    # self._sentences = SentenceCollection(self.anki_collection, self._cache_runner)
+                    # self._kanji = KanjiCollection(self.anki_collection, self._cache_runner)
 
                 self._cache_runner.start()
 
                 if app.config().load_jamdict_db_into_memory.get_value():
-                    from jastudio.language_services.jamdict_ex.dict_lookup import DictLookup
+                    from jaslib.language_services.jamdict_ex.dict_lookup import DictLookup
                     task_runner.run_on_background_thread_with_spinning_progress_dialog("Loading Jamdict db into memory", DictLookup.ensure_loaded_into_memory)
 
                 if app.config().pre_cache_card_studying_status.get_value():
@@ -117,12 +118,15 @@ class JPCollection(WeakRefable, Slots):
     def sentences(self) -> SentenceCollection: return non_optional(self._initialized_self()._sentences)
 
     @classmethod
-    def note_from_note_id(cls, note_id: NoteId) -> JPNote:
-        col = app.col()
-        return (col.kanji.with_id_or_none(note_id)
-                or col.vocab.with_id_or_none(note_id)
-                or col.sentences.with_id_or_none(note_id)
-                or JPNote(app.anki_collection().get_note(note_id)))
+    def note_from_note_id(cls, note_id: NoteId) -> jaslib.note.jpnote.JPNote:
+        col = jaslib.app.col()
+        found = (col.kanji.with_id_or_none(note_id)
+                 or col.vocab.with_id_or_none(note_id)
+                 or col.sentences.with_id_or_none(note_id)
+                 or None)  # JPNote(app.anki_collection().get_note(note_id))
+
+        if found is None: raise ValueError(f"Note with id {note_id} not found")
+        return found
 
     def destruct_sync(self) -> None:
         if self._pending_init_timer is not None: self._pending_init_timer.cancel()

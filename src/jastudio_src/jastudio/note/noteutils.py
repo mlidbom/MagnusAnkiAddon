@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING
 
 from anki.consts import QUEUE_TYPE_SUSPENDED
 from anki.notes import NoteId
+from jaslib.note.note_constants import NoteTypes
 from jaslib.sysutils import typed
 from jaslib.sysutils.memory_usage import string_auto_interner
 from jaslib.sysutils.typed import non_optional, str_
-from jastudio.note.note_constants import NoteTypes
 from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.dbproxy import Row
     from anki.notes import Note
+    from jaslib.note.jpnote import JPNote
     from jastudio.qt_utils.i_task_progress_runner import ITaskRunner
 
 _studying_status_cache: dict[NoteId, dict[str, bool]] = {}
@@ -31,6 +32,18 @@ def remove_from_studying_cache(note_id: NoteId) -> None:
 
 def clear_studying_cache() -> None:
     _studying_status_cache.clear()
+
+def has_suspended_cards(note: JPNote) -> bool:  # pyright: ignore
+    raise NotImplementedError()
+
+def has_active_cards(note: JPNote) -> bool:  # pyright: ignore
+    raise NotImplementedError()
+
+def suspend_all_cards(note: JPNote) -> None:  # pyright: ignore
+    raise NotImplementedError()
+
+def unsuspend_all_cards(note: JPNote) -> None:  # pyright: ignore
+    raise NotImplementedError()
 
 def has_card_being_studied_cached(note: Note, card_type: str = "") -> bool:
     _ensure_card_status_is_cached(note)

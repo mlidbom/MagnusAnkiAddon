@@ -26,13 +26,14 @@ from jaslib.note.vocabulary.vocabnote_userfields import VocabNoteUserfields
 from jaslib.sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
+    from jaslib.note.jpnote_data import JPNoteData
     from typed_linq_collections.collections.q_set import QSet
 
 # noinspection PyUnusedFunction
 class VocabNote(JPNote, Slots):
     factory: VocabNoteFactory = VocabNoteFactory()
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, data: JPNoteData | None = None) -> None:
+        super().__init__(data)
         self.weakref_vocab: WeakRef[VocabNote] = cast(WeakRef[VocabNote], self.weakref)
         self.question: VocabNoteQuestion = VocabNoteQuestion(self.weakref_vocab)
 

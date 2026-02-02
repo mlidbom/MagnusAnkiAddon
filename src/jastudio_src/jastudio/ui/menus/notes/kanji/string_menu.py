@@ -10,7 +10,7 @@ from jastudio.ui.menus.menu_utils.ex_qmenu import add_ui_action
 if TYPE_CHECKING:
     import collections.abc
 
-    from jastudio.note.kanjinote import KanjiNote
+    from jaslib.note.kanjinote import KanjiNote
     from PyQt6.QtWidgets import QMenu
 
 

@@ -12,6 +12,7 @@ from typed_linq_collections.collections.q_list import QList
 from jaslib import app
 
 if TYPE_CHECKING:
+    from jaslib.note.jpnote_data import JPNoteData
     from jaslib.note.vocabulary.vocabnote import VocabNote
     from typed_linq_collections.collections.q_set import QSet
 
@@ -21,8 +22,8 @@ from jaslib.sysutils import ex_str, kana_utils, typed
 
 
 class KanjiNote(JPNote, Slots):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, data: JPNoteData | None = None) -> None:
+        super().__init__(data)
         self.weakref_kanji: WeakRef[KanjiNote] = cast(WeakRef[KanjiNote], self.weakref)
 
     @override

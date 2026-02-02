@@ -4,14 +4,15 @@ import typing
 
 import pyperclip
 from aqt import gui_hooks
+from jaslib.batches import local_note_updater
+from jaslib.note.kanjinote import KanjiNote
+from jaslib.note.note_constants import Mine
+from jaslib.note.sentences.sentencenote import SentenceNote
+from jaslib.note.vocabulary.vocabnote import VocabNote
 from jaslib.sysutils import ex_lambda, typed
 from jaslib.sysutils.typed import non_optional
 from jastudio.ankiutils import app, query_builder, search_executor, ui_utils
-from jastudio.batches import local_note_updater
-from jastudio.note.kanjinote import KanjiNote
-from jastudio.note.note_constants import Mine
-from jastudio.note.sentences.sentencenote import SentenceNote
-from jastudio.note.vocabulary.vocabnote import VocabNote
+from jastudio.note import noteutils
 from jastudio.qt_utils.ex_qmenu import ExQmenu
 from jastudio.ui import menus
 from jastudio.ui.menus.menu_utils import shortcutfinger
@@ -22,7 +23,7 @@ from typed_linq_collections.collections.q_list import QList
 
 if typing.TYPE_CHECKING:
     from aqt.webview import AnkiWebView
-    from jastudio.note.jpnote import JPNote
+    from jaslib.note.jpnote import JPNote
     from PyQt6.QtWidgets import QMenu
 
 def build_browser_right_click_menu(root_menu: QMenu, note: JPNote) -> None:
@@ -99,9 +100,9 @@ def build_universal_note_actions_menu(universal_actions_menu: QMenu, note: JPNot
     universal_actions_menu.addAction(shortcutfinger.home1("Open in previewer"), search_executor.lookup_and_show_previewer_promise(lambda: query_builder.notes_lookup([note])))  # pyright: ignore[reportUnknownMemberType]
     note_actions_menu = non_optional(universal_actions_menu.addMenu(shortcutfinger.home2("Note actions")))
 
-    add_ui_action(universal_actions_menu, shortcutfinger.home3("Unsuspend all cards"), note.unsuspend_all_cards, note.has_suspended_cards())
-    add_ui_action(universal_actions_menu, shortcutfinger.home4("Suspend all cards"), note.suspend_all_cards, note.has_active_cards())
-    add_ui_action(universal_actions_menu, shortcutfinger.up1("Unsuspend all cards and dependencies' cards"), note.unsuspend_all_cards_and_dependencies, confirm=True, enabled=note.has_suspended_cards_or_depencies_suspended_cards())
+    add_ui_action(universal_actions_menu, shortcutfinger.home3("Unsuspend all cards"), lambda: noteutils.unsuspend_all_cards(note), noteutils.has_suspended_cards(note))
+    add_ui_action(universal_actions_menu, shortcutfinger.home4("Suspend all cards"), lambda: noteutils.suspend_all_cards(note), noteutils.has_active_cards(note))
+    # add_ui_action(universal_actions_menu, shortcutfinger.up1("Unsuspend all cards and dependencies' cards"), note.unsuspend_all_cards_and_dependencies, confirm=True, enabled=note.has_suspended_cards_or_depencies_suspended_cards())
 
     if note:
         if isinstance(note, KanjiNote):

@@ -2,14 +2,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from anki.notes import NoteId
+from jaslib.note.note_constants import NoteFields, NoteTypes
 from jaslib.sysutils.typed import non_optional
 from jastudio.ankiutils import app, query_builder
-from jastudio.note.note_constants import NoteFields, NoteTypes
 from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.menu_utils.ex_qmenu import add_checkbox_config, add_lookup_action, add_ui_action
 
 if TYPE_CHECKING:
-    from jastudio.note.sentences.sentencenote import SentenceNote
+    from jaslib.note.sentences.sentencenote import SentenceNote
     from PyQt6.QtWidgets import QMenu
 
 def build_note_menu(note_menu: QMenu, sentence: SentenceNote) -> None:
@@ -17,7 +18,7 @@ def build_note_menu(note_menu: QMenu, sentence: SentenceNote) -> None:
         add_lookup_action(note_lookup_menu, shortcutfinger.home1("Highlighted Vocab"), query_builder.vocabs_lookup_strings(list(sentence.configuration.highlighted_words())))
         add_lookup_action(note_lookup_menu, shortcutfinger.home2("Highlighted Vocab Read Card"), query_builder.vocabs_lookup_strings_read_card(list(sentence.configuration.highlighted_words())))
         add_lookup_action(note_lookup_menu, shortcutfinger.home3("Kanji"), f"""note:{NoteTypes.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in sentence.extract_kanji()])})""")
-        add_lookup_action(note_lookup_menu, shortcutfinger.home4("Parsed words"), query_builder.notes_by_id([voc.get_id() for voc in sentence.get_parsed_words_notes()]))
+        add_lookup_action(note_lookup_menu, shortcutfinger.home4("Parsed words"), query_builder.notes_by_id([NoteId(voc.get_id()) for voc in sentence.get_parsed_words_notes()]))
 
     def build_remove_menu(remove_menu: QMenu) -> None:
         add_ui_action(remove_menu, shortcutfinger.home1("All highlighted"), lambda: sentence.configuration.reset_highlighted_words()).setEnabled(any(sentence.configuration.highlighted_words()))

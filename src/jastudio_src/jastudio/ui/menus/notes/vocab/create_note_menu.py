@@ -9,7 +9,7 @@ from jastudio.ui.menus.menu_utils.ex_qmenu import create_vocab_note_action
 from jastudio.ui.menus.notes.vocab.common import build_create_prefix_postfix_note_menu
 
 if TYPE_CHECKING:
-    from jastudio.note.vocabulary.vocabnote import VocabNote
+    from jaslib.note.vocabulary.vocabnote import VocabNote
     from PyQt6.QtWidgets import QMenu
 
 def build_create_note_menu(note_create_menu: QMenu, vocab: VocabNote, selection: str, clipboard: str) -> None:

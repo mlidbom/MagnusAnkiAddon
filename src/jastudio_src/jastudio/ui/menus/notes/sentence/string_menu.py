@@ -2,17 +2,17 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from jaslib.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from jaslib.sysutils import ex_lambda
 from jaslib.sysutils.lazy import Lazy
 from jaslib.sysutils.typed import non_optional
-from jastudio.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.menu_utils.ex_qmenu import add_ui_action
 
 if TYPE_CHECKING:
-    from jastudio.language_services.janome_ex.word_extraction.matches.match import Match
-    from jastudio.note.sentences.sentencenote import SentenceNote
-    from jastudio.note.sentences.word_exclusion_set import WordExclusionSet
+    from jaslib.language_services.janome_ex.word_extraction.matches.match import Match
+    from jaslib.note.sentences.sentencenote import SentenceNote
+    from jaslib.note.sentences.word_exclusion_set import WordExclusionSet
     from PyQt6.QtWidgets import QMenu
 
 def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: str) -> None:

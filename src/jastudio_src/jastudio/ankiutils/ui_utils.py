@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from anki.notes import Note
-    from jastudio.note.jpnote import JPNote
+    from jaslib.note.jpnote import JPNote
 
 import aqt
 from aqt import AnkiQt  # type: ignore[attr-defined]  # pyright: ignore[reportPrivateImportUsage]

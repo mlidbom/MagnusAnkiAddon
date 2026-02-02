@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import jastudio.note.jpnote
 from aqt import gui_hooks
+from jaslib.note.sentences.sentencenote import SentenceNote
 from jaslib.sysutils import ex_lambda
 from jaslib.sysutils.typed import non_optional
 from jastudio.ankiutils import app
 from jastudio.note import queue_manager
-from jastudio.note.jpnote import JPNote
-from jastudio.note.sentences.sentencenote import SentenceNote
 from jastudio.ui import menus
 from jastudio.ui.menus.menu_utils import shortcutfinger
 
@@ -38,7 +38,7 @@ def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
         magnus_menu.addAction("Prioritize selected cards", lambda: queue_manager.prioritize_selected_cards(selected_cards))  # pyright: ignore[reportUnknownMemberType]
 
         card = app.anki_collection().get_card(selected_cards[0])
-        note = JPNote.note_from_card(card)
+        note = jastudio.note.jpnote.JPNote.note_from_card(card)
         menus.common.build_browser_right_click_menu(non_optional(magnus_menu.addMenu(shortcutfinger.home3("Note"))), note)
 
     if len(selected_cards) > 0:
@@ -52,7 +52,7 @@ def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
 
     selected_sentences:list[SentenceNote] = [note for note in selected_notes if isinstance(note, SentenceNote)]
     if selected_sentences:
-        from jastudio.batches import local_note_updater
+        from jaslib.batches import local_note_updater
 
         magnus_menu.addAction("Reparse sentence words", lambda: local_note_updater.reparse_sentences(selected_sentences, run_gc_during_batch=True))  # pyright: ignore[reportUnknownMemberType]
 

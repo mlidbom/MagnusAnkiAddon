@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from jaslib.batches import local_note_updater
 from jaslib.sysutils.typed import checked_cast, non_optional
 from jastudio.ankiutils import app, ui_utils
 from jastudio.ankiutils.app import get_ui_utils, main_window
-from jastudio.batches import local_note_updater
 from jastudio.configuration.configuration import show_japanese_options
 from jastudio.configuration.readings_mapping_dialog import show_readings_mappings
 from jastudio.sysutils import object_instance_tracker
@@ -61,7 +61,9 @@ def build_debug_menu(debug_menu: QMenu) -> None:
     debug_menu.addAction(shortcutfinger.home3("Show current snapshot diff"), lambda: app.get_ui_utils().tool_tip(object_instance_tracker.current_snapshot().single_line_diff_report(), 10000))  # pyright: ignore[reportUnknownMemberType]
     debug_menu.addAction(shortcutfinger.home4("Show diff against first snapshot"), lambda: app.get_ui_utils().tool_tip(object_instance_tracker.create_transient_snapshot_against_first_snapshot().single_line_diff_report(), 10000))  # pyright: ignore[reportUnknownMemberType]
     debug_menu.addAction(shortcutfinger.home5("Show diff against current snapshot"), lambda: app.get_ui_utils().tool_tip(object_instance_tracker.create_transient_snapshot_against_last_snapshot().single_line_diff_report(), 10000))  # pyright: ignore[reportUnknownMemberType]  # pyright: ignore[reportUnknownMemberType]
-    debug_menu.addAction(shortcutfinger.up1("Run GC and report"), local_note_updater.print_gc_status_and_collect)  # pyright: ignore[reportUnknownMemberType]
+
+    import jastudio.batches.local_note_updater
+    debug_menu.addAction(shortcutfinger.up1("Run GC and report"), jastudio.batches.local_note_updater.print_gc_status_and_collect)  # pyright: ignore[reportUnknownMemberType]
     debug_menu.addAction(shortcutfinger.up2("Reset"), app.reset)  # pyright: ignore[reportUnknownMemberType]
     add_menu_ui_action(debug_menu, shortcutfinger.down1("Refresh UI ('F5')"), refresh)
 
@@ -81,7 +83,8 @@ def build_local_menu(local_menu: QMenu) -> None:
 
     build_update_menu(non_optional(local_menu.addMenu(shortcutfinger.home1("Update"))))
 
-    add_menu_ui_action(local_menu, shortcutfinger.home2("Convert &Immersion Kit sentences"), local_note_updater.convert_immersion_kit_sentences)
+    import jastudio.batches.local_note_updater
+    add_menu_ui_action(local_menu, shortcutfinger.home2("Convert &Immersion Kit sentences"), jastudio.batches.local_note_updater.convert_immersion_kit_sentences)
     add_menu_ui_action(local_menu, shortcutfinger.home3("Update everyting except reparsing sentences"), local_note_updater.update_all)
     add_menu_ui_action(local_menu, shortcutfinger.home4("Create vocab notes for parsed words with no vocab notes"), local_note_updater.create_missing_vocab_with_dictionary_entries)
     add_menu_ui_action(local_menu, shortcutfinger.home5("Regenerate vocab source answers from jamdict"), local_note_updater.regenerate_jamdict_vocab_answers)

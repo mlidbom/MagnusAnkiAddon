@@ -3,18 +3,18 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pyperclip
+from jaslib.note.note_constants import NoteFields, NoteTypes
 from jaslib.sysutils import ex_str
 from jaslib.sysutils.ex_str import newline
 from jaslib.sysutils.typed import non_optional
 from jastudio.ankiutils import app, query_builder
-from jastudio.note.note_constants import NoteFields, NoteTypes
 from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.menu_utils.ex_qmenu import add_lookup_action, add_single_vocab_lookup_action, add_ui_action, add_vocab_dependencies_lookup
 from jastudio.ui.menus.notes.vocab.create_note_menu import build_create_note_menu
 from jastudio.ui.menus.notes.vocab.vocab_flags_dialog import show_vocab_flags_dialog
 
 if TYPE_CHECKING:
-    from jastudio.note.vocabulary.vocabnote import VocabNote
+    from jaslib.note.vocabulary.vocabnote import VocabNote
     from PyQt6.QtWidgets import QMenu
 
 def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboard: str) -> None:
@@ -58,7 +58,7 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
         add_ui_action(misc_menu, shortcutfinger.home1("Accept meaning"), lambda: vocab.user.answer.set(format_vocab_meaning(vocab.get_answer())), not vocab.user.answer.value)
         add_ui_action(misc_menu, shortcutfinger.home2("Generate answer"), lambda: vocab.generate_and_set_answer())
 
-        from jastudio.batches import local_note_updater
+        from jaslib.batches import local_note_updater
         add_ui_action(misc_menu, shortcutfinger.home3("Reparse potentially matching sentences: (Only reparse all sentences is sure to catch everything)"), lambda: local_note_updater.reparse_sentences_for_vocab(vocab))
         add_ui_action(misc_menu, shortcutfinger.home4("Repopulate TOS"), lambda: vocab.parts_of_speech.set_automatically_from_dictionary())
 

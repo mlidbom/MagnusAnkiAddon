@@ -16,18 +16,19 @@ from jaslib import app
 
 if TYPE_CHECKING:
     from jaslib.note.collection.jp_collection import JPCollection
+    from jaslib.note.jpnote_data import JPNoteData
 
 type NoteId = int
 
 class JPNote(WeakRefable, Slots):
-    def __init__(self) -> None:
+    def __init__(self, data: JPNoteData | None = None) -> None:
         self.weakref: WeakRef[JPNote] = WeakRef(self)
         self.recursive_flush_guard: NoteRecursiveFlushGuard = NoteRecursiveFlushGuard(self.weakref)
         self.__hash_value: int = 0
 
         self.tags: NoteTags = NoteTags(self.weakref)
 
-        self._fields: dict[str, str] = defaultdict(str)
+        self._fields: dict[str, str] = data.fields if data else defaultdict(str)
 
         self._id_cache: NoteId = 0
 
@@ -42,7 +43,7 @@ class JPNote(WeakRefable, Slots):
 
     def _update_in_cache(self) -> None: raise NotImplementedError()
 
-    def is_studying(self) -> bool: raise NotImplementedError()
+    def is_studying(self, card_type: str | None = None) -> bool: raise NotImplementedError()  # pyright: ignore
     def is_studying_read(self) -> bool: raise NotImplementedError()
     def is_studying_listening(self) -> bool: raise NotImplementedError()
 

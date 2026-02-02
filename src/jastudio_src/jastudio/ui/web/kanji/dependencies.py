@@ -3,8 +3,8 @@ from __future__ import annotations
 import re
 
 from aqt import gui_hooks
+from jaslib.note.kanjinote import KanjiNote
 from jaslib.sysutils import ex_str, kana_utils
-from jastudio.note.kanjinote import KanjiNote
 from jastudio.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
 

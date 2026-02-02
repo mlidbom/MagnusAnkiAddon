@@ -23,6 +23,7 @@ from jaslib import app
 if TYPE_CHECKING:
     from jaslib.language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from jaslib.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
+    from jaslib.note.jpnote_data import JPNoteData
     from jaslib.note.tag import Tag
     from jaslib.note.vocabulary.vocabnote import VocabNote
     from typed_linq_collections.collections.q_list import QList
@@ -30,8 +31,8 @@ if TYPE_CHECKING:
 
 # noinspection PyUnusedFunction
 class SentenceNote(JPNote, Slots):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, data: JPNoteData | None = None) -> None:
+        super().__init__(data)
         self.weakref_sentence: WeakRef[SentenceNote] = cast(WeakRef[SentenceNote], self.weakref)
 
         self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self.weakref_sentence)

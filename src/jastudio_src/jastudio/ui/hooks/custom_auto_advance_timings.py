@@ -4,15 +4,14 @@ from typing import TYPE_CHECKING
 
 from aqt import gui_hooks, mw
 from aqt.reviewer import Reviewer
+from jaslib.note.kanjinote import KanjiNote
+from jaslib.note.note_constants import CardTypes
+from jaslib.note.sentences.sentencenote import SentenceNote
+from jaslib.note.vocabulary.vocabnote import VocabNote
 from jaslib.sysutils.typed import non_optional
 from jastudio.anki_extentions.card_ex import CardEx
 from jastudio.ankiutils import app, ui_utils
 from jastudio.note.difficulty_calculator import DifficultyCalculator
-from jastudio.note.jpnote import JPNote
-from jastudio.note.kanjinote import KanjiNote
-from jastudio.note.note_constants import CardTypes
-from jastudio.note.sentences.sentencenote import SentenceNote
-from jastudio.note.vocabulary.vocabnote import VocabNote
 
 if TYPE_CHECKING:
     from anki.cards import Card
@@ -23,7 +22,8 @@ def is_handled_card(card: CardEx) -> bool:
     if card.type().name != CardTypes.reading:
         return False
 
-    note = JPNote.note_from_card(non_optional(mw.reviewer.card))
+    import jastudio.note.jpnote
+    note = jastudio.note.jpnote.JPNote.note_from_card(non_optional(mw.reviewer.card))
     return isinstance(note, SentenceNote | VocabNote | KanjiNote)
 
 def seconds_to_show_question(card: CardEx) -> float:

@@ -8,9 +8,9 @@ from jastudio.configuration.settings import Settings
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
-    from anki.notes import NoteId
-    from jastudio.note.sentences.sentence_configuration import SentenceConfiguration
-    from jastudio.note.vocabulary.vocabnote import VocabNote
+    from jaslib.note.jpnote import NoteId
+    from jaslib.note.sentences.sentence_configuration import SentenceConfiguration
+    from jaslib.note.vocabulary.vocabnote import VocabNote
     from jastudio.ui.web.sentence.match_viewmodel import MatchViewModel
 
 class CompoundPartViewModel(Slots):

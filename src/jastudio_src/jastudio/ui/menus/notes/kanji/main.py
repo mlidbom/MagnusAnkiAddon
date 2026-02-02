@@ -9,7 +9,7 @@ from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.menu_utils.ex_qmenu import add_lookup_action, add_ui_action
 
 if TYPE_CHECKING:
-    from jastudio.note.kanjinote import KanjiNote
+    from jaslib.note.kanjinote import KanjiNote
     from PyQt6.QtWidgets import QMenu
 
 def build_note_menu(note_menu: QMenu, kanji: KanjiNote) -> None:

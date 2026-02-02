@@ -3,15 +3,15 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
+from jaslib.language_services.jamdict_ex.dict_lookup import DictLookup
+from jaslib.note.vocabulary.vocabnote import VocabNote
 from jastudio.ankiutils import app  # noqa  # pyright: ignore[reportUnusedImport]
-from jastudio.language_services.jamdict_ex.dict_lookup import DictLookup
-from jastudio.note.vocabulary.vocabnote import VocabNote
 from jastudio_tests.fixtures.collection_factory import inject_empty_collection
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from jastudio.language_services.jamdict_ex.dict_lookup_result import DictLookupResult
+    from jaslib.language_services.jamdict_ex.dict_lookup_result import DictLookupResult
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="module", autouse=True)

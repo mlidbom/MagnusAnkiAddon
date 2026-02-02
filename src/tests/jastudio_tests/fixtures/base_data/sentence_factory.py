@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+from jaslib.note.note_constants import NoteTypes, SentenceNoteFields
 from jastudio.anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from jastudio.anki_extentions.notetype_ex.note_type_field import NoteFieldEx
 from jastudio.anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
-from jastudio.note.note_constants import NoteTypes, SentenceNoteFields
 
 
 def create_sentence() -> NoteTypeEx:

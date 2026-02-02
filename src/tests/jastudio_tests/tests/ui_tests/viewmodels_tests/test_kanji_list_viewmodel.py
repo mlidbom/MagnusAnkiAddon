@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
     from collections.abc import Iterator
 
-    from jastudio.note.sentences.sentencenote import SentenceNote
+    from jaslib.note.sentences.sentencenote import SentenceNote
 
 
 # noinspection PyUnusedFunction

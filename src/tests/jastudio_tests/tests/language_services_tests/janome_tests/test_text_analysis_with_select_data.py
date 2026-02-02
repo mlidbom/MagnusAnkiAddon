@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from jastudio.note.sentences.sentencenote import SentenceNote
+from jaslib.note.sentences.sentencenote import SentenceNote
 from jastudio_tests.fixtures.collection_factory import inject_collection_with_select_data
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
@@ -11,7 +11,7 @@ from typed_linq_collections.q_iterable import query
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator
 
-    from jastudio.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
+    from jaslib.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 
 
 

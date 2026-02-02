@@ -5,11 +5,11 @@ from typing import TYPE_CHECKING
 import aqt.utils
 from aqt import gui_hooks
 from aqt.overview import Overview
+from jaslib.note.note_constants import CardTypes, NoteTypes
 from jaslib.sysutils import typed
 from jastudio.anki_extentions.card_ex import CardEx
 from jastudio.anki_extentions.deck_ex import DeckEx
 from jastudio.ankiutils import app
-from jastudio.note.note_constants import CardTypes, NoteTypes
 
 if TYPE_CHECKING:
     from anki.cards import CardId
@@ -24,8 +24,7 @@ def adjust_timebox(_web_content: WebContent, context: object) -> None:
             first_card_id: CardId = deck_card_ids[0]
 
             card = CardEx(app.anki_collection().get_card(first_card_id))
-            note = card.note()
-            notetype = note.get_type()
+            notetype = card.type()
 
             card_notetype_timebox_minutes: dict[tuple[str, str], int] = {
                 (NoteTypes.Sentence, CardTypes.reading): app.config().timebox_sentence_read.get_value(),

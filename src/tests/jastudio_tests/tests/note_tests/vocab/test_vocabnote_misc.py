@@ -4,7 +4,7 @@ import re
 from typing import TYPE_CHECKING
 
 import pytest
-from jastudio.note.vocabulary.vocabnote import VocabNote
+from jaslib.note.vocabulary.vocabnote import VocabNote
 from jastudio_tests.fixtures.collection_factory import inject_empty_collection
 
 if TYPE_CHECKING:

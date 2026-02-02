@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from anki.notes import NoteId
+from jaslib.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
+from jaslib.note.note_constants import Builtin, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
 from jaslib.sysutils import kana_utils
 from jastudio.ankiutils import app
-from jastudio.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-from jastudio.note.note_constants import Builtin, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
 
@@ -13,10 +14,9 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from anki.cards import CardId
-    from anki.notes import NoteId
-    from jastudio.note.jpnote import JPNote
-    from jastudio.note.kanjinote import KanjiNote
-    from jastudio.note.vocabulary.vocabnote import VocabNote
+    from jaslib.note.jpnote import JPNote
+    from jaslib.note.kanjinote import KanjiNote
+    from jaslib.note.vocabulary.vocabnote import VocabNote
 
 f_question = MyNoteFields.question
 f_reading = NoteFields.Vocab.Reading
@@ -75,7 +75,7 @@ def sentences_with_question_substring(substring: str) -> str:
     return f"""{note_sentence} {field_contains_string(SentenceNoteFields.active_question, substring)}"""
 
 def notes_lookup(notes: Iterable[JPNote]) -> str:
-    return notes_by_id([note.get_id() for note in notes])
+    return notes_by_id([NoteId(note.get_id()) for note in notes])
 
 def notes_by_id(note_ids: list[NoteId]) -> str:
     return f"""{NoteFields.note_id}:{",".join([str(note_id) for note_id in note_ids])}""" if note_ids else ""

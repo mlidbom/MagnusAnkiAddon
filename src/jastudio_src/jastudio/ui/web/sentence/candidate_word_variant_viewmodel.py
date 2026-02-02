@@ -8,7 +8,7 @@ from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 from jastudio.ui.web.sentence.match_viewmodel import MatchViewModel
 
 if TYPE_CHECKING:
-    from jastudio.language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
+    from jaslib.language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
 
 class CandidateWordVariantViewModel(WeakRefable, Slots):
     def __init__(self, variant: CandidateWordVariant) -> None:

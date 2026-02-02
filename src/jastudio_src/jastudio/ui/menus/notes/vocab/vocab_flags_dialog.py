@@ -11,9 +11,9 @@ from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtWidgets import QCheckBox, QDialog, QDialogButtonBox, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QMessageBox, QScrollArea, QVBoxLayout, QWidget
 
 if TYPE_CHECKING:
-    from jastudio.note.notefields.require_forbid_flag_field import RequireForbidFlagField
-    from jastudio.note.notefields.tag_flag_field import TagFlagField
-    from jastudio.note.vocabulary.vocabnote import VocabNote
+    from jaslib.note.notefields.require_forbid_flag_field import RequireForbidFlagField
+    from jaslib.note.notefields.tag_flag_field import TagFlagField
+    from jaslib.note.vocabulary.vocabnote import VocabNote
 
 class VocabFlagsDialog(QDialog):
     def __init__(self, vocab: VocabNote, parent: QWidget | None = None) -> None:
@@ -276,7 +276,7 @@ class VocabFlagsDialog(QDialog):
             )
 
             if reply == QMessageBox.StandardButton.Yes:
-                from jastudio.batches import local_note_updater
+                from jaslib.batches import local_note_updater
                 local_note_updater.reparse_sentences_for_vocab(self.vocab)
 
         app.get_ui_utils().refresh()
