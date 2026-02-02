@@ -21,12 +21,14 @@ def _monkey_patch(html:str, _card:object, _something_else_again:object) -> str:
             studing_status_helper.update_in_studying_cache(card)
 
     def _monkey_patched_suspend_cards(ids: Sequence[CardId]) -> OpChangesWithCount:
+        return_val = _real_suspend_cards(ids)
         update_cards_in_cache(ids)
-        return _real_suspend_cards(ids)
+        return return_val
 
     def _monkey_patched_unsuspend_cards(ids: Sequence[CardId]) -> OpChanges:
+        return_val = _real_unsuspend_cards(ids)
         update_cards_in_cache(ids)
-        return _real_unsuspend_cards(ids)
+        return return_val
 
     scheduler = app.anki_scheduler()
 

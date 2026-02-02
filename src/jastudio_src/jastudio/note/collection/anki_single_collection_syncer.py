@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from anki.notes import NoteId
 from autoslot import Slots
 from jaslib.note.jpnote import JPNote, JPNoteId
 from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
+from jastudio.ankiutils import app
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
 from typed_linq_collections.collections.q_set import QSet
 
@@ -31,14 +33,21 @@ class AnkiSingleCollectionSyncer[TNote: JPNote](WeakRefable, Slots):
 
         weakref_self = WeakRef(self)
 
-        self._cache.on_note_updated(lambda note: self._update_anki_note(note))
+        self._cache.on_note_updated(lambda note: weakref_self()._update_anki_note(note))
 
         cache_runner.connect_will_remove(lambda note_ids: weakref_self()._on_will_be_removed(note_ids))
         cache_runner.connect_note_addded(lambda note: weakref_self()._on_added(note))
         cache_runner.connect_will_flush(lambda note: weakref_self()._on_will_flush(note))
 
-    def _update_anki_note(self, note: TNote) -> None:
-        self._cache.jp_note_updated(note)
+    @staticmethod
+    def _update_anki_note(note: TNote) -> None:
+        if note.get_id():
+            data = note.get_data()
+            anki_note = app.anki_collection().get_note(NoteId(data.id))
+            anki_note.tags = data.tags
+            for field_name, field_value in data.fields.items():
+                anki_note[field_name] = field_value
+            app.anki_collection().update_note(anki_note)
 
     def set_studying_statuses(self, card_statuses: list[CardStudyingStatus]) -> None:
         self._cache.set_studying_statuses(card_statuses)
