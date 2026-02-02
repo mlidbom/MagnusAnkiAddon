@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class JPNoteDataShim:
     @classmethod
-    def from_note(cls, note: Note) -> JPNoteData:  # pyright: ignore
+    def from_note(cls, note: Note) -> JPNoteData:
         fields: dict[str, str] = {}
         for name in non_optional(note.note_type()):
             fields[name] = note[name]
