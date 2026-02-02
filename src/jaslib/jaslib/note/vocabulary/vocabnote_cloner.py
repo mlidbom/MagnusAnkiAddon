@@ -3,15 +3,16 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from jaslib import app
 from jaslib.language_services import conjugator
 from jaslib.note.tags import Tags
 from jaslib.note.vocabulary.pos import POS
+from jaslib.note.vocabulary.vocabnote import VocabNote
+
+from jaslib import app
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from jaslib.note.vocabulary.vocabnote import VocabNote
     from jaslib.sysutils.weak_ref import WeakRef
 
 # noinspection PyUnusedFunction

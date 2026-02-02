@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from jaslib.note.collection.card_studying_status import CardStudyingStatus
 from jaslib.note.jpnote import JPNote, JPNoteId
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
 from typed_linq_collections.collections.q_set import QSet
@@ -12,6 +11,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
 
     from anki.notes import Note
+    from jaslib.note.collection.card_studying_status import CardStudyingStatus
     from jaslib.note.collection.note_cache import NoteCacheBase
     from jaslib.note.jpnote_data import JPNoteData
     from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner

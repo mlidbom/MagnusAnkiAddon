@@ -91,13 +91,13 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
                     self._cache_runner = AnkiCollectionSyncRunner(self.anki_collection)
 
                     all_vocab = NoteBulkLoader.load_all_notes_of_type(self.anki_collection, NoteTypes.Vocab)
-                    self._vocab: AnkiSingleCollectionSyncer[VocabNote] = AnkiSingleCollectionSyncer[VocabNote](all_vocab, VocabNote, VocabNote, jaslibapp.col().vocab.cache, self._cache_runner)
+                    self._vocab = AnkiSingleCollectionSyncer[VocabNote](all_vocab, VocabNote, VocabNote, jaslibapp.col().vocab.cache, self._cache_runner)
 
                     all_kanji = NoteBulkLoader.load_all_notes_of_type(self.anki_collection, NoteTypes.Sentence)
-                    self._sentences: AnkiSingleCollectionSyncer[SentenceNote] = AnkiSingleCollectionSyncer[SentenceNote](all_kanji, SentenceNote, SentenceNote, jaslibapp.col().sentences.cache, self._cache_runner)
+                    self._sentences = AnkiSingleCollectionSyncer[SentenceNote](all_kanji, SentenceNote, SentenceNote, jaslibapp.col().sentences.cache, self._cache_runner)
 
                     all_sentences = NoteBulkLoader.load_all_notes_of_type(self.anki_collection, NoteTypes.Sentence)
-                    self._kanji: AnkiSingleCollectionSyncer[KanjiNote] = AnkiSingleCollectionSyncer[KanjiNote](all_sentences, KanjiNote, KanjiNote, jaslibapp.col().kanji.cache, self._cache_runner)
+                    self._kanji = AnkiSingleCollectionSyncer[KanjiNote](all_sentences, KanjiNote, KanjiNote, jaslibapp.col().kanji.cache, self._cache_runner)
 
                 self._cache_runner.start()
 

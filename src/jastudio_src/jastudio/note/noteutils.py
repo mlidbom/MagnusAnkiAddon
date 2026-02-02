@@ -18,7 +18,6 @@ if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.dbproxy import Row
     from jastudio.anki_extentions.card_ex import CardEx
-    from jastudio.qt_utils.i_task_progress_runner import ITaskRunner
 
 _studying_status_cache: dict[NoteId, dict[str, bool]] = {}
 

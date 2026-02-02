@@ -4,7 +4,6 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
-from jaslib.note.collection.card_studying_status import CardStudyingStatus
 from jaslib.note.jpnote_data import JPNoteData
 from jaslib.note.note_constants import CardTypes, MyNoteFields
 from jaslib.note.note_flush_guard import NoteRecursiveFlushGuard
@@ -18,6 +17,7 @@ from typed_linq_collections.collections.q_set import QSet
 from jaslib import app
 
 if TYPE_CHECKING:
+    from jaslib.note.collection.card_studying_status import CardStudyingStatus
     from jaslib.note.collection.jp_collection import JPCollection
 
 type JPNoteId = int

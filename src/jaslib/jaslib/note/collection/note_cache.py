@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
-from jaslib.note.collection.card_studying_status import CardStudyingStatus
 from jaslib.note.jpnote import JPNote, JPNoteId
 from jaslib.sysutils.abstract_method_called_error import AbstractMethodCalledError
 from jaslib.sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
@@ -14,6 +13,7 @@ from typed_linq_collections.collections.q_set import QSet
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from jaslib.note.collection.card_studying_status import CardStudyingStatus
     from jaslib.note.jpnote_data import JPNoteData
 
 class CachedNote(Slots):
