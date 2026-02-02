@@ -36,7 +36,8 @@ def inject_empty_collection() -> Iterator[JPLegacyCollection]:
         try:
             populate_collection(anki_collection)
             jp_legacy_collection = JPLegacyCollection(anki_collection)
-            with unittest.mock.patch("jaslib.app.col", new=get_jp_collection), unittest.mock.patch("jastudio.ankiutils.app.col", new=get_legacy_jp_collection):
+            with (unittest.mock.patch("jaslib.app.col", new=get_jp_collection),
+                  unittest.mock.patch("jastudio.ankiutils.app.col", new=get_legacy_jp_collection)):
                 yield jp_legacy_collection
                 jp_legacy_collection.destruct_sync()
         finally:
