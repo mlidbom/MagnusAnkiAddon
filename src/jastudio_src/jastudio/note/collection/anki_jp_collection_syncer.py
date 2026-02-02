@@ -4,8 +4,8 @@ import threading
 from typing import TYPE_CHECKING
 
 import jaslib.app
-import jaslib.note.jpnote
 from autoslot import Slots
+from jaslib.note.jpnote import JPNote
 from jaslib.note.note_constants import Mine
 from jaslib.sysutils.memory_usage import string_auto_interner
 from jaslib.sysutils.timeutil import StopWatch
@@ -114,12 +114,12 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
     def is_initialized(self) -> bool: return self._is_initialized
 
     @classmethod
-    def note_from_note_id(cls, note_id: NoteId) -> jaslib.note.jpnote.JPNote:
+    def note_from_note_id(cls, note_id: NoteId) -> JPNote:
         col = jaslib.app.col()
         return (col.kanji.with_id_or_none(note_id)
                 or col.vocab.with_id_or_none(note_id)
                 or col.sentences.with_id_or_none(note_id)
-                or jaslib.note.jpnote.JPNote(JPNoteDataShim.from_note(app.anki_collection().get_note(note_id))))
+                or JPNote(JPNoteDataShim.from_note(app.anki_collection().get_note(note_id))))
 
     def destruct_sync(self) -> None:
         if self._pending_init_timer is not None: self._pending_init_timer.cancel()

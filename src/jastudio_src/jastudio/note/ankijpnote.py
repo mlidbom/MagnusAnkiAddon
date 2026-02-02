@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast
 
-import jaslib.note.jpnote
 from anki.models import NotetypeDict
 from autoslot import Slots
+from jaslib.note.jpnote import JPNote
 from jaslib.note.note_constants import NoteTypes
 from jaslib.sysutils.typed import str_
 from jaslib.sysutils.weak_ref import WeakRefable
@@ -60,12 +60,12 @@ class AnkiJPNote(WeakRefable, Slots):
     #     return noteutils.has_card_being_studied_cached(self.backend_note, card)
     #
     @classmethod
-    def note_from_card(cls, card: Card) -> jaslib.note.jpnote.JPNote:
+    def note_from_card(cls, card: Card) -> JPNote:
         note = card.note()
         return cls.note_from_note(note)
 
     @classmethod
-    def note_from_note(cls, note: Note) -> jaslib.note.jpnote.JPNote:
+    def note_from_note(cls, note: Note) -> JPNote:
         from jaslib.note.kanjinote import KanjiNote
         from jaslib.note.sentences.sentencenote import SentenceNote
         from jaslib.note.vocabulary.vocabnote import VocabNote
@@ -75,7 +75,7 @@ class AnkiJPNote(WeakRefable, Slots):
         if cls.get_note_type(note) == NoteTypes.Kanji: return KanjiNote(data)
         if cls.get_note_type(note) == NoteTypes.Vocab: return VocabNote(data)
         if cls.get_note_type(note) == NoteTypes.Sentence: return SentenceNote(data)
-        return jaslib.note.jpnote.JPNote(data)
+        return JPNote(data)
 
     @classmethod
     def get_note_type(cls, note: Note) -> str:

@@ -10,10 +10,10 @@ from jastudio.anki_extentions.deck_ex import DeckEx
 from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:
-    import jaslib.note.jpnote
     from anki.dbproxy import Row
     from anki.decks import DeckManager
     from anki.scheduler.v3 import Scheduler  # pyright: ignore[reportMissingTypeStubs]
+    from jaslib.note.jpnote import JPNote
     from jastudio.anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
 
 import anki.cards
@@ -59,7 +59,7 @@ class CardEx(Slots):
         answers = _get_answers_since_last_day_cutoff_for_card(self.card.id)
         return answers.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN).qcount() # len(list(ex_iterable.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN, answers)))
 
-    def note(self) -> jaslib.note.jpnote.JPNote:
+    def note(self) -> JPNote:
         from jastudio.note.ankijpnote import AnkiJPNote
         return AnkiJPNote.note_from_card(self.card)
 
