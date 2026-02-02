@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from aqt import gui_hooks
 from jastudio.anki_extentions.card_ex import CardEx
 from jastudio.ankiutils import app
+from jastudio.note import studing_status_helper
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -17,7 +18,7 @@ def _monkey_patch(html:str, _card:object, _something_else_again:object) -> str:
     def update_cards_in_cache(ids: Sequence[CardId]) -> None:
         cards = [CardEx.from_id(card_id) for card_id in ids]
         for card in cards:
-            noteutils.update_in_studying_cache(card)
+            studing_status_helper.update_in_studying_cache(card)
 
     def _monkey_patched_suspend_cards(ids: Sequence[CardId]) -> OpChangesWithCount:
         update_cards_in_cache(ids)

@@ -16,6 +16,7 @@ from jaslib.sysutils.typed import non_optional
 from jaslib.sysutils.weak_ref import WeakRefable
 from jastudio.anki_extentions.note_bulk_loader import NoteBulkLoader
 from jastudio.ankiutils import app
+from jastudio.note import studing_status_helper
 from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner
 from jastudio.note.collection.anki_single_collection_syncer import AnkiSingleCollectionSyncer
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
@@ -104,7 +105,7 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
                     from jaslib.language_services.jamdict_ex.dict_lookup import DictLookup
                     task_runner.run_on_background_thread_with_spinning_progress_dialog("Loading Jamdict db into memory", DictLookup.ensure_loaded_into_memory)
 
-                studying_statuses = noteutils.fetch_card_studying_statuses(self.anki_collection)
+                studying_statuses = studing_status_helper.fetch_card_studying_statuses(self.anki_collection)
                 self._vocab.set_studying_statuses([it for it in studying_statuses if it.note_type_name == NoteTypes.Vocab])
                 self._sentences.set_studying_statuses([it for it in studying_statuses if it.note_type_name == NoteTypes.Sentence])
                 self._kanji.set_studying_statuses([it for it in studying_statuses if it.note_type_name == NoteTypes.Kanji])

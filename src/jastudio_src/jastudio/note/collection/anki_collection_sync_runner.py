@@ -65,8 +65,6 @@ class AnkiCollectionSyncRunner(Slots):
 
             for destructor in self._destructors: destructor()
 
-            noteutils.clear_studying_cache()
-
     def _internal_flush_updates(self) -> None:
         completely_added_list = self._pending_add.where(lambda it: it.id != 0).to_list()
         self._pending_add = self._pending_add.where(lambda it: it.id == 0).to_list()
