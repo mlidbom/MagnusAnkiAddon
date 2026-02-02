@@ -7,7 +7,7 @@ from anki.notes import NoteId
 from jaslib.note.jpnote_data import JPNoteData
 from jaslib.sysutils import typed
 from jaslib.sysutils.typed import non_optional
-from jastudio.qt_utils.task_progress_runner import TaskRunner
+from jaslib.task_runners.task_progress_runner import TaskRunner
 
 if TYPE_CHECKING:
     from anki.collection import Collection

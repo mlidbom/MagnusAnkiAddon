@@ -6,7 +6,7 @@ from autoslot import Slots
 from jaslib.note.jpnote import JPNote, JPNoteId
 from jaslib.sysutils.abstract_method_called_error import AbstractMethodCalledError
 from jaslib.sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
-from jastudio.qt_utils.task_progress_runner import TaskRunner
+from jaslib.task_runners.task_progress_runner import TaskRunner
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.collections.q_set import QSet
 

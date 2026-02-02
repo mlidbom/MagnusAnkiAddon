@@ -14,13 +14,13 @@ from jaslib.sysutils.memory_usage import string_auto_interner
 from jaslib.sysutils.timeutil import StopWatch
 from jaslib.sysutils.typed import non_optional
 from jaslib.sysutils.weak_ref import WeakRefable
+from jaslib.task_runners.task_progress_runner import TaskRunner
 from jastudio.anki_extentions.note_bulk_loader import NoteBulkLoader
 from jastudio.ankiutils import app
 from jastudio.note import studing_status_helper
 from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner
 from jastudio.note.collection.anki_single_collection_syncer import AnkiSingleCollectionSyncer
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
-from jastudio.qt_utils.task_progress_runner import TaskRunner
 from jastudio.sysutils import app_thread_pool
 from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
 

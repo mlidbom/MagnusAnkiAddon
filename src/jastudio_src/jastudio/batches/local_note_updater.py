@@ -14,8 +14,8 @@ from typing import TYPE_CHECKING
 # from jaslib.note.tags import Tags
 # from jaslib.note.vocabulary.vocabnote import VocabNote
 # from jaslib.sysutils import ex_str
+from jaslib.task_runners.task_progress_runner import TaskRunner
 from jastudio.ankiutils import app, query_builder
-from jastudio.qt_utils.task_progress_runner import TaskRunner
 
 if TYPE_CHECKING:
     from anki.notes import NoteId
