@@ -11,11 +11,11 @@ from typed_linq_collections.collections.q_set import QSet
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from jastudio.note.collection.anki_jp_collection import AnkiJPCollection
+    from jastudio.note.collection.anki_jp_collection_syncer import AnkiJPCollectionSyncer
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
-def empty_collection() -> Iterator[AnkiJPCollection]:
+def empty_collection() -> Iterator[AnkiJPCollectionSyncer]:
     with inject_empty_collection() as collection:
         yield collection
 

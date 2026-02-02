@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from anki.decks import DeckId
     from anki.notes import Note, NoteId
 
-class CacheRunner(Slots):
+class AnkiCollectionSyncRunner(Slots):
     def __init__(self, anki_collection: Collection) -> None:
         self._merge_pending_subscribers: list[Callable[[], None]] = []
         self._added_subscribers: list[Callable[[Note], None]] = []
