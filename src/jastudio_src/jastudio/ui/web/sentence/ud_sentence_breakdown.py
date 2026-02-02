@@ -7,9 +7,9 @@ from jaslib.language_services.janome_ex.tokenizing.jn_token import JNToken
 from jaslib.note.sentences.sentencenote import SentenceNote
 from jaslib.sysutils import ex_str
 from jaslib.sysutils.ex_str import newline
+from jaslib.ui.web.sentence.sentence_viewmodel import SentenceViewModel
 from jastudio.ankiutils import app
 from jastudio.configuration.settings import Settings
-from jastudio.ui.web.sentence.sentence_viewmodel import SentenceViewModel
 from jastudio.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 from jastudio.viewmodels.kanji_list import sentence_kanji_list_viewmodel
 from typed_linq_collections.collections.q_list import QList
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
     from jaslib.configuration.configuration_value import ConfigurationValueBool
     from jaslib.language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
-    from jastudio.ui.web.sentence.match_viewmodel import MatchViewModel
+    from jaslib.ui.web.sentence.match_viewmodel import MatchViewModel
 
 def format_reason(reason: str) -> str:
     return f"""<span class="configured">{reason}</span>""" if "configured" in reason else reason

@@ -4,11 +4,11 @@ from typing import TYPE_CHECKING
 
 from jaslib.note.sentences.sentence_configuration import SentenceConfiguration
 from jaslib.note.sentences.sentencenote import SentenceNote
-from jastudio.ui.web.sentence.sentence_viewmodel import SentenceViewModel
+from jaslib.ui.web.sentence.sentence_viewmodel import SentenceViewModel
 
 if TYPE_CHECKING:
     from jaslib.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-    from jastudio.ui.web.sentence.match_viewmodel import MatchViewModel
+    from jaslib.ui.web.sentence.match_viewmodel import MatchViewModel
 
 def surface_and_match_form(match_vm: MatchViewModel) -> str:
     form_to_display = match_vm.parsed_form
