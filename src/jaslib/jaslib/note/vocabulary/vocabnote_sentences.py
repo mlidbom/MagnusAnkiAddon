@@ -37,7 +37,7 @@ class SentenceCounts(Slots):
 
         # noinspection PyUnusedLocal, Annotator
         def get_studying_sentence_count(card: str = "") -> int:  # pyright: ignore
-            return len(sentences) #todo migration bug
+            return len(sentences)  # todo migration bug
 
         if time.time() - self._last_update_time > self._cache_seconds:
             self._last_update_time = time.time()
@@ -58,12 +58,10 @@ class VocabNoteSentences(WeakRefable, Slots):
     @property
     def _vocab(self) -> VocabNote: return self.__vocab()
 
-
-
     @property
     def _collection(self) -> JPCollection: return self._vocab.collection
 
-    def studying(self) -> list[SentenceNote]: raise NotImplementedError()
+    def studying(self) -> list[SentenceNote]: return [it for it in self.all() if it.is_studying()]
 
     def all(self) -> list[SentenceNote]:
         return self._collection.sentences.with_vocab(self._vocab)

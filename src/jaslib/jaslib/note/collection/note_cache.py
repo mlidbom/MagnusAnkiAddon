@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
+from jaslib.note.collection.card_studying_status import CardStudyingStatus
 from jaslib.note.jpnote import JPNote, JPNoteId
 from jaslib.sysutils.abstract_method_called_error import AbstractMethodCalledError
 from jaslib.sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
@@ -40,6 +41,12 @@ class NoteCacheBase[TNote: JPNote](Slots):
     def refresh_in_cache(self, note: TNote) -> None: raise AbstractMethodCalledError()  # pyright: ignore[reportUnusedParameter]
     def remove_from_cache(self, note: TNote) -> None: raise AbstractMethodCalledError()  # pyright: ignore[reportUnusedParameter]
     def add_to_cache(self, note: TNote) -> None: raise AbstractMethodCalledError()  # pyright: ignore[reportUnusedParameter]
+
+    def set_studying_statuses(self, card_statuses: list[CardStudyingStatus]) -> None:
+        for status in card_statuses:
+            note = self.with_id_or_none(status.note_id)
+            if note is not None:
+                note.set_studying_status(status)
 
 class NoteCache[TNote: JPNote, TSnapshot: CachedNote](NoteCacheBase[TNote], Slots):
     def __init__(self, cached_note_type: type[TNote], note_constructor: Callable[[JPNoteData], TNote]) -> None:

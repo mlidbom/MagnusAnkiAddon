@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
+from jaslib.note.collection.card_studying_status import CardStudyingStatus
 from jaslib.note.jpnote import JPNote, JPNoteId
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
 from typed_linq_collections.collections.q_set import QSet
@@ -30,6 +31,9 @@ class AnkiSingleCollectionSyncer[TNote: JPNote](Slots):
         cache_runner.connect_will_remove(self._on_will_be_removed)
         cache_runner.connect_note_addded(self._on_added)
         cache_runner.connect_will_flush(self._on_will_flush)
+
+    def set_studying_statuses(self, card_statuses: list[CardStudyingStatus]) -> None:
+        self._cache.set_studying_statuses(card_statuses)
 
     def _on_will_flush(self, backend_note: Note) -> None:
         if backend_note.id:

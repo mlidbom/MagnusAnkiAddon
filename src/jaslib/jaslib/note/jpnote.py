@@ -4,8 +4,9 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
+from jaslib.note.collection.card_studying_status import CardStudyingStatus
 from jaslib.note.jpnote_data import JPNoteData
-from jaslib.note.note_constants import MyNoteFields
+from jaslib.note.note_constants import CardTypes, MyNoteFields
 from jaslib.note.note_flush_guard import NoteRecursiveFlushGuard
 from jaslib.note.note_tags import NoteTags
 from jaslib.note.tags import Tags
@@ -27,6 +28,7 @@ class JPNote(WeakRefable, Slots):
         self.recursive_flush_guard: NoteRecursiveFlushGuard = NoteRecursiveFlushGuard(self.weakref)
         self.__hash_value: int = 0
 
+        self._studying_cards: set[str] = set()
         self.tags: NoteTags = NoteTags(self.weakref, data)
 
         self._fields: dict[str, str] = data.fields if data else defaultdict(str)
@@ -35,6 +37,13 @@ class JPNote(WeakRefable, Slots):
     # noinspection PyUnusedFunction
     @property
     def is_flushing(self) -> bool: return self.recursive_flush_guard.is_flushing
+
+    def set_studying_status(self, status: CardStudyingStatus) -> None:
+        if status.card_type in self._studying_cards:
+            if status.is_suspended:
+                self._studying_cards.remove(status.card_type)
+        else:
+            self._studying_cards.add(status.card_type)
 
     def get_data(self) -> JPNoteData: return JPNoteData(self.get_id(), self._fields, self.tags.to_interned_string_list())
 
@@ -45,10 +54,12 @@ class JPNote(WeakRefable, Slots):
 
     def _update_in_cache(self) -> None: raise AbstractMethodCalledError()
 
-    def is_studying(self, card_type: str | None = None) -> bool: raise NotImplementedError()  # pyright: ignore
-    def is_studying_read(self) -> bool: raise NotImplementedError()
-    def is_studying_listening(self) -> bool: raise NotImplementedError()
+    def is_studying(self, card_type: str | None = None) -> bool:
+        if card_type is None: return len(self._studying_cards) > 0
+        return card_type in self._studying_cards
 
+    def is_studying_read(self) -> bool: return self.is_studying(CardTypes.reading)
+    def is_studying_listening(self) -> bool: return self.is_studying(CardTypes.listening)
 
     @override
     def __hash__(self) -> int:
@@ -71,7 +82,6 @@ class JPNote(WeakRefable, Slots):
 
     def get_answer(self) -> str:
         return self.get_field(MyNoteFields.answer)
-
 
     def get_direct_dependencies(self) -> QSet[JPNote]:
         return QSet()
@@ -98,7 +108,6 @@ class JPNote(WeakRefable, Slots):
     def set_id(self, id: JPNoteId) -> None:
         if self._id_cache != 0: raise RuntimeError("Cannot change id of a note that has already been saved")
         self._id_cache = id
-
 
     def update_generated_data(self) -> None:
         pass

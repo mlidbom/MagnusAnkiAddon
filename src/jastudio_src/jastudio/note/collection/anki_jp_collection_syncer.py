@@ -6,22 +6,25 @@ from typing import TYPE_CHECKING
 import jaslib.app
 from autoslot import Slots
 from jaslib.note.jpnote import JPNote
-from jaslib.note.note_constants import Mine
+from jaslib.note.kanjinote import KanjiNote
+from jaslib.note.note_constants import Mine, NoteTypes
+from jaslib.note.sentences.sentencenote import SentenceNote
+from jaslib.note.vocabulary.vocabnote import VocabNote
 from jaslib.sysutils.memory_usage import string_auto_interner
 from jaslib.sysutils.timeutil import StopWatch
 from jaslib.sysutils.typed import non_optional
 from jaslib.sysutils.weak_ref import WeakRefable
+from jastudio.anki_extentions.note_bulk_loader import NoteBulkLoader
 from jastudio.ankiutils import app
 from jastudio.note import noteutils
 from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner
-from jastudio.note.collection.anki_kanji_collection_syncer import AnkiKanjiCollectionSyncer
-from jastudio.note.collection.anki_sentence_collection_syncer import AnkiSentenceCollectionSyncer
-from jastudio.note.collection.anki_vocab_collection_syncer import AnkiVocabCollectionSyncer
+from jastudio.note.collection.anki_single_collection_syncer import AnkiSingleCollectionSyncer
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
 from jastudio.qt_utils.task_progress_runner import TaskRunner
 from jastudio.sysutils import app_thread_pool
 from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
 
+from jaslib import app as jaslibapp
 from jaslib import mylog
 
 if TYPE_CHECKING:
@@ -39,9 +42,9 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
         self._initialization_started: bool = False
         self._cache_runner: AnkiCollectionSyncRunner | None = None
 
-        self._vocab: AnkiVocabCollectionSyncer | None = None
-        self._kanji: AnkiKanjiCollectionSyncer | None = None
-        self._sentences: AnkiSentenceCollectionSyncer | None = None
+        self._vocab: AnkiSingleCollectionSyncer[VocabNote] | None = None
+        self._kanji: AnkiSingleCollectionSyncer[KanjiNote] | None = None
+        self._sentences: AnkiSingleCollectionSyncer[SentenceNote] | None = None
         self._pending_init_timer: threading.Timer | None = None
         if delay_seconds is not None:
             self._pending_init_timer = threading.Timer(delay_seconds or 0, self._initialize_wrapper)
@@ -87,9 +90,14 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
                 with StopWatch.log_warning_if_slower_than(5, "Core collection setup - no gc"):
                     self._cache_runner = AnkiCollectionSyncRunner(self.anki_collection)
 
-                    self._vocab = AnkiVocabCollectionSyncer(self.anki_collection, self._cache_runner)
-                    self._sentences = AnkiSentenceCollectionSyncer(self.anki_collection, self._cache_runner)
-                    self._kanji = AnkiKanjiCollectionSyncer(self.anki_collection, self._cache_runner)
+                    all_vocab = NoteBulkLoader.load_all_notes_of_type(self.anki_collection, NoteTypes.Vocab)
+                    self._vocab: AnkiSingleCollectionSyncer[VocabNote] = AnkiSingleCollectionSyncer[VocabNote](all_vocab, VocabNote, VocabNote, jaslibapp.col().vocab.cache, self._cache_runner)
+
+                    all_kanji = NoteBulkLoader.load_all_notes_of_type(self.anki_collection, NoteTypes.Sentence)
+                    self._sentences: AnkiSingleCollectionSyncer[SentenceNote] = AnkiSingleCollectionSyncer[SentenceNote](all_kanji, SentenceNote, SentenceNote, jaslibapp.col().sentences.cache, self._cache_runner)
+
+                    all_sentences = NoteBulkLoader.load_all_notes_of_type(self.anki_collection, NoteTypes.Sentence)
+                    self._kanji: AnkiSingleCollectionSyncer[KanjiNote] = AnkiSingleCollectionSyncer[KanjiNote](all_sentences, KanjiNote, KanjiNote, jaslibapp.col().kanji.cache, self._cache_runner)
 
                 self._cache_runner.start()
 
@@ -97,8 +105,10 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
                     from jaslib.language_services.jamdict_ex.dict_lookup import DictLookup
                     task_runner.run_on_background_thread_with_spinning_progress_dialog("Loading Jamdict db into memory", DictLookup.ensure_loaded_into_memory)
 
-                if app.config().pre_cache_card_studying_status.get_value():
-                    noteutils.initialize_studying_cache(self.anki_collection, task_runner)
+                studying_statuses = noteutils.fetch_card_studying_statuses(self.anki_collection)
+                self._vocab.set_studying_statuses([it for it in studying_statuses if it.note_type_name == NoteTypes.Vocab])
+                self._sentences.set_studying_statuses([it for it in studying_statuses if it.note_type_name == NoteTypes.Sentence])
+                self._kanji.set_studying_statuses([it for it in studying_statuses if it.note_type_name == NoteTypes.Kanji])
 
                 ex_trace_malloc_instance.log_memory_delta("Done loading add-on")
                 ex_trace_malloc_instance.stop()
