@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
+from jaslib import app
 from jaslib.language_services import conjugator
 from jaslib.note.tags import Tags
 from jaslib.note.vocabulary.pos import POS
@@ -101,25 +102,19 @@ class VocabCloner(Slots):
     def create_shimasu_verb(self) -> VocabNote: return self.create_suru_verb(shimasu=True)
 
     def clone(self) -> VocabNote:
-        #from jaslib.note.vocabulary.vocabnote import VocabNote
+        data = self.note.get_data()
+        data.id = 0
+        data.tags = []
+        clone = VocabNote(data)
 
+        self._copy_vocab_tags_to(clone)
 
-        raise NotImplementedError()
-        # # clone_backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
-        # #
-        # # for i in range(len(self.note.backend_note.fields)):
-        # #     clone_backend_note.fields[i] = self.note.backend_note.fields[i]
-        # #
-        # clone = VocabNote()
-        #
-        # self._copy_vocab_tags_to(clone)
-        #
-        # for related in clone.related_notes.synonyms.strings():
-        #     clone.related_notes.synonyms.add(related)
-        #
-        # app.col().vocab.add(clone)
-        #
-        # return clone
+        for related in clone.related_notes.synonyms.strings():
+            clone.related_notes.synonyms.add(related)
+
+        app.col().vocab.add(clone)
+
+        return clone
 
     def _copy_vocab_tags_to(self, target: VocabNote) -> None:
         for tag in self.note.tags.where(lambda it: it.name.startswith(Tags.Vocab.root)):
