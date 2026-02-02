@@ -12,7 +12,7 @@ from typed_linq_collections.q_iterable import query
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from jaslib.note.jpnote import NoteId
+    from jaslib.note.jpnote import JPNoteId
     from jaslib.note.kanjinote import KanjiNote
 
 class _VocabSnapshot(CachedNote, Slots):
@@ -67,7 +67,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
     def _create_snapshot(self, note: VocabNote) -> _VocabSnapshot: return _VocabSnapshot(note)
 
     @classmethod
-    def remove_first_note_with_id(cls, note_list: list[VocabNote], id: NoteId) -> None:
+    def remove_first_note_with_id(cls, note_list: list[VocabNote], id: JPNoteId) -> None:
         for index, note in enumerate(note_list):
             if note.get_id() == id:
                 del note_list[index]
@@ -105,7 +105,7 @@ class VocabCollection(Slots):
 
     def is_word(self, form: str) -> bool: return any(self.cache.with_form(form))
     def all(self) -> list[VocabNote]: return self.cache.all()
-    def with_id_or_none(self, note_id: NoteId) -> VocabNote | None: return self.cache.with_id_or_none(note_id)
+    def with_id_or_none(self, note_id: JPNoteId) -> VocabNote | None: return self.cache.with_id_or_none(note_id)
     def with_disambiguation_name(self, name: str) -> Iterable[VocabNote]: return self.cache.with_disambiguation_name(name)
     def with_form(self, form: str) -> Iterable[VocabNote]: return self.cache.with_form(form)
     def with_compound_part(self, disambiguation_name: str) -> list[VocabNote]: return self.cache.with_compound_part(disambiguation_name)

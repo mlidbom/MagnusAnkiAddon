@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from anki.cards import Card
     from anki.collection import Collection
     from anki.dbproxy import Row
+    from jastudio.anki_extentions.card_ex import CardEx
     from jastudio.qt_utils.i_task_progress_runner import ITaskRunner
 
 _studying_status_cache: dict[NoteId, dict[str, bool]] = {}
@@ -25,9 +26,10 @@ def _is_being_studied(card: Card) -> bool:
 def _card_type(card: Card) -> str:
     return str_(card.template()["name"])
 
-def remove_from_studying_cache(note_id: NoteId) -> None:
-    if note_id in _studying_status_cache:
-        _studying_status_cache.pop(note_id)
+def update_in_studying_cache(card_ex: CardEx) -> None:
+    if card_ex.note_ex().id in _studying_status_cache:
+        cached = _studying_status_cache.pop(card_ex.note_ex().id)
+        cached[card_ex.card_type] = not card_ex.is_suspended()
 
 def clear_studying_cache() -> None:
     _studying_status_cache.clear()

@@ -9,7 +9,7 @@ from jaslib.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRe
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
-    from jaslib.note.jpnote import NoteId
+    from jaslib.note.jpnote import JPNoteId
 
 
 class CompoundPart(Slots):
@@ -48,7 +48,7 @@ def render_vocab_list(vocab_list: list[CompoundPart], title: str, css_class: str
             </div>
             '''
 
-def get_compound_parts_recursive(vocab_note: VocabNote, depth: int = 0, visited: QSet[NoteId] | None = None) -> list[CompoundPart]:
+def get_compound_parts_recursive(vocab_note: VocabNote, depth: int = 0, visited: QSet[JPNoteId] | None = None) -> list[CompoundPart]:
     if visited is None: visited = QSet()
     if vocab_note.get_id() in visited: return []
 

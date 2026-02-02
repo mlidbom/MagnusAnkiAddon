@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
+from jastudio.anki_extentions.card_ex import CardEx
 from jastudio.ankiutils import app
 from jastudio.note import noteutils
 
@@ -14,17 +15,17 @@ if TYPE_CHECKING:
 
 
 def _monkey_patch(html:str, _card:object, _something_else_again:object) -> str:
-    def remove_cards_from_cache(ids: Sequence[CardId]) -> None:
-        cards = [app.anki_collection().get_card(card_id) for card_id in ids]
+    def update_cards_in_cache(ids: Sequence[CardId]) -> None:
+        cards = [CardEx.from_id(card_id) for card_id in ids]
         for card in cards:
-            noteutils.remove_from_studying_cache(card.note().id)
+            noteutils.update_in_studying_cache(card)
 
     def _monkey_patched_suspend_cards(ids: Sequence[CardId]) -> OpChangesWithCount:
-        remove_cards_from_cache(ids)
+        update_cards_in_cache(ids)
         return _real_suspend_cards(ids)
 
     def _monkey_patched_unsuspend_cards(ids: Sequence[CardId]) -> OpChanges:
-        remove_cards_from_cache(ids)
+        update_cards_in_cache(ids)
         return _real_unsuspend_cards(ids)
 
     scheduler = app.anki_scheduler()

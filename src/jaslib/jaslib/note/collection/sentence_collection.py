@@ -10,7 +10,7 @@ from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
-    from jaslib.note.jpnote import NoteId
+    from jaslib.note.jpnote import JPNoteId
     from jaslib.note.vocabulary.vocabnote import VocabNote
 
 class _SentenceSnapshot(CachedNote, Slots):
@@ -39,7 +39,7 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
     def with_user_marked_invalid_vocab(self, form: str) -> QList[SentenceNote]: return self._by_user_marked_invalid_vocab.get_value_or_default(form).to_list()
 
     @classmethod
-    def remove_first_note_with_id(cls, note_list: list[SentenceNote], id: NoteId) -> None:
+    def remove_first_note_with_id(cls, note_list: list[SentenceNote], id: JPNoteId) -> None:
         for index, note in enumerate(note_list):
             if note.get_id() == id:
                 del note_list[index]
@@ -75,7 +75,7 @@ class SentenceCollection(Slots):
 
     def all(self) -> QList[SentenceNote]: return self.cache.all()
 
-    def with_id_or_none(self, note_id: NoteId) -> SentenceNote | None:
+    def with_id_or_none(self, note_id: JPNoteId) -> SentenceNote | None:
         return self.cache.with_id_or_none(note_id)
 
     def with_question(self, question: str) -> QList[SentenceNote]:

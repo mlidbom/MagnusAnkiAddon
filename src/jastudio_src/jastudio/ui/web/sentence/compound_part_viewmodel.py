@@ -9,7 +9,7 @@ from typed_linq_collections.collections.q_set import QSet
 from jaslib import app
 
 if TYPE_CHECKING:
-    from jaslib.note.jpnote import NoteId
+    from jaslib.note.jpnote import JPNoteId
     from jaslib.note.sentences.sentence_configuration import SentenceConfiguration
     from jaslib.note.vocabulary.vocabnote import VocabNote
     from jastudio.ui.web.sentence.match_viewmodel import MatchViewModel
@@ -31,7 +31,7 @@ class CompoundPartViewModel(Slots):
         self.meta_tags_string += " highlighted" if self.is_highlighted else ""
 
     @classmethod
-    def get_compound_parts_recursive(cls, match_viewmodel: MatchViewModel, vocab_note: VocabNote, config: SentenceConfiguration, depth: int = 0, visited: QSet[NoteId] | None = None) -> list[CompoundPartViewModel]:
+    def get_compound_parts_recursive(cls, match_viewmodel: MatchViewModel, vocab_note: VocabNote, config: SentenceConfiguration, depth: int = 0, visited: QSet[JPNoteId] | None = None) -> list[CompoundPartViewModel]:
         if not Settings.hide_all_compounds():
             if not Settings.show_compound_parts_in_sentence_breakdown(): return []
             if visited is None: visited = QSet()

@@ -7,6 +7,7 @@ from autoslot import Slots
 from jaslib.sysutils.timeutil import StopWatch
 from jaslib.sysutils.typed import non_optional
 from jastudio.anki_extentions.deck_ex import DeckEx
+from jastudio.anki_extentions.note_ex import NoteEx
 from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:
@@ -33,12 +34,16 @@ def _get_answers_since_last_day_cutoff_for_card(card_id: int) -> QList[int]:
         return QList(typed.int_(review[0]) for review in reviews)  # pyright: ignore[reportAny]
 
 class CardEx(Slots):
-    def __init__(self, card:anki.cards.Card) -> None:
-        self.card:anki.cards.Card = card
+    def __init__(self, card: anki.cards.Card) -> None:
+        self.card: anki.cards.Card = card
 
     @classmethod
     def _scheduler(cls) -> Scheduler:
         return app.anki_scheduler()
+
+    @property
+    def card_type(self) -> str:
+        return self.type().name
 
     def is_suspended(self) -> bool:
         return self.card.queue == consts.QUEUE_TYPE_SUSPENDED
@@ -57,11 +62,14 @@ class CardEx(Slots):
 
     def sequential_again_answers_today(self) -> int:
         answers = _get_answers_since_last_day_cutoff_for_card(self.card.id)
-        return answers.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN).qcount() # len(list(ex_iterable.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN, answers)))
+        return answers.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN).qcount()  # len(list(ex_iterable.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN, answers)))
 
     def note(self) -> JPNote:
         from jastudio.note.ankijpnote import AnkiJPNote
         return AnkiJPNote.note_from_card(self.card)
+
+    def note_ex(self) -> NoteEx:
+        return NoteEx.from_note(self.note())
 
     @classmethod
     def _deck_manager(cls) -> DeckManager:
@@ -70,14 +78,17 @@ class CardEx(Slots):
     def get_deck(self) -> DeckEx:
         return DeckEx(non_optional(self._deck_manager().get(self.card.current_deck_id())))
 
+    @classmethod
+    def from_id(cls, card_id: anki.cards.CardId) -> CardEx:
+        return CardEx(app.anki_collection().get_card(card_id))
 
 class Card2Ex(Slots):
-    def __init__(self, card:anki.cards_pb2.Card) -> None:
-        self.card:anki.cards_pb2.Card = card
+    def __init__(self, card: anki.cards_pb2.Card) -> None:
+        self.card: anki.cards_pb2.Card = card
 
     def sequential_again_answers_today(self) -> int:
         answers = _get_answers_since_last_day_cutoff_for_card(self.card.id)
-        return answers.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN).qcount()  #len(list(ex_iterable.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN, answers)))
+        return answers.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN).qcount()  # len(list(ex_iterable.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN, answers)))
 
     def last_answer_today_was_fail_db_call(self) -> bool:
         return self.sequential_again_answers_today() > 0

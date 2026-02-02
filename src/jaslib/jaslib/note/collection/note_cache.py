@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
-from jaslib.note.jpnote import JPNote, NoteId
+from jaslib.note.jpnote import JPNote, JPNoteId
 from jaslib.sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 from jastudio.qt_utils.task_progress_runner import TaskRunner
 from typed_linq_collections.collections.q_list import QList
@@ -16,16 +16,16 @@ if TYPE_CHECKING:
 
 class CachedNote(Slots):
     def __init__(self, note: JPNote) -> None:
-        self.id: NoteId = note.get_id()
+        self.id: JPNoteId = note.get_id()
         self.question: str = note.get_question()
 
 class NoteCacheBase[TNote: JPNote](Slots):
     def __init__(self, cached_note_type: type[TNote], note_constructor: Callable[[JPNoteData], TNote]) -> None:
         self._note_constructor: Callable[[JPNoteData], TNote] = note_constructor
         self._note_type: type[TNote] = cached_note_type
-        self._by_id: dict[NoteId, TNote] = {}
+        self._by_id: dict[JPNoteId, TNote] = {}
 
-    def with_id_or_none(self, note_id: NoteId) -> TNote | None:
+    def with_id_or_none(self, note_id: JPNoteId) -> TNote | None:
         return self._by_id.get(note_id, None)
 
     def init_from_list(self, all_notes: list[JPNoteData]) -> None:
@@ -45,9 +45,9 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](NoteCacheBase[TNote], Slot
         super().__init__(cached_note_type, note_constructor)
         # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
         self._by_question: DefaultDictCaseInsensitive[QList[TNote]] = DefaultDictCaseInsensitive(QList[TNote])
-        self._snapshot_by_id: dict[NoteId, TSnapshot] = {}
+        self._snapshot_by_id: dict[JPNoteId, TSnapshot] = {}
 
-        self._deleted: QSet[NoteId] = QSet()
+        self._deleted: QSet[JPNoteId] = QSet()
 
         self._flushing: bool = False
 
@@ -74,7 +74,7 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](NoteCacheBase[TNote], Slot
         self._by_question[cached.question].remove(note)
         self._inheritor_remove_from_cache(note, cached)
 
-    _next_note_id: NoteId = 1
+    _next_note_id: JPNoteId = 1
     @override
     def add_to_cache(self, note: TNote) -> None:
         if note.get_id() in self._by_id: return

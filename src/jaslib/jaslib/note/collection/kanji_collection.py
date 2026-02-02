@@ -7,7 +7,7 @@ from typed_linq_collections.collections.q_default_dict import QDefaultDict
 from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
-    from jaslib.note.jpnote import NoteId
+    from jaslib.note.jpnote import JPNoteId
     from typed_linq_collections.collections.q_set import QSet
 
 from jaslib.note.collection.note_cache import CachedNote, NoteCache
@@ -34,7 +34,7 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
     def _create_snapshot(self, note: KanjiNote) -> _KanjiSnapshot: return _KanjiSnapshot(note)
 
     @classmethod
-    def remove_first_note_with_id(cls, note_list: list[KanjiNote], id: NoteId) -> None:
+    def remove_first_note_with_id(cls, note_list: list[KanjiNote], id: JPNoteId) -> None:
         for index, note in enumerate(note_list):
             if note.get_id() == id:
                 del note_list[index]
@@ -60,7 +60,7 @@ class KanjiCollection(Slots):
 
     def all(self) -> QList[KanjiNote]: return self.cache.all()
 
-    def with_id_or_none(self, note_id:NoteId) -> KanjiNote | None:
+    def with_id_or_none(self, note_id:JPNoteId) -> KanjiNote | None:
         return self.cache.with_id_or_none(note_id)
 
     def with_any_kanji_in(self, kanji_list: list[str]) -> QList[KanjiNote]:

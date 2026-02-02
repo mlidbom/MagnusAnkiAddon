@@ -18,7 +18,7 @@ from jaslib import app
 if TYPE_CHECKING:
     from jaslib.note.collection.jp_collection import JPCollection
 
-type NoteId = int
+type JPNoteId = int
 
 class JPNote(WeakRefable, Slots):
     def __init__(self, data: JPNoteData | None = None) -> None:
@@ -29,7 +29,7 @@ class JPNote(WeakRefable, Slots):
         self.tags: NoteTags = NoteTags(self.weakref, data)
 
         self._fields: dict[str, str] = data.fields if data else defaultdict(str)
-        self._id_cache: NoteId = data.id if data else 0
+        self._id_cache: JPNoteId = data.id if data else 0
 
     # noinspection PyUnusedFunction
     @property
@@ -91,10 +91,10 @@ class JPNote(WeakRefable, Slots):
     def get_dependencies_recursive(self) -> QSet[JPNote]:
         return self._get_dependencies_recursive(QSet())
 
-    def get_id(self) -> NoteId:
+    def get_id(self) -> JPNoteId:
         return self._id_cache
 
-    def set_id(self, id: NoteId) -> None:
+    def set_id(self, id: JPNoteId) -> None:
         if self._id_cache != 0: raise RuntimeError("Cannot change id of a note that has already been saved")
         self._id_cache = id
 

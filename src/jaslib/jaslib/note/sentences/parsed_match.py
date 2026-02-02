@@ -9,17 +9,17 @@ from jaslib.sysutils.memory_usage import string_auto_interner
 
 if TYPE_CHECKING:
     from jaslib.language_services.janome_ex.word_extraction.matches.match import Match
-    from jaslib.note.jpnote import NoteId
+    from jaslib.note.jpnote import JPNoteId
 
 class ParsedMatch(Slots):
-    missing_note_id:NoteId = -1
+    missing_note_id:JPNoteId = -1
     serializer: ParsedWordSerializer = ParsedWordSerializer()
-    def __init__(self, variant: str, start_index: int, is_displayed: bool, word: str, vocab_id: NoteId) -> None:
+    def __init__(self, variant: str, start_index: int, is_displayed: bool, word: str, vocab_id: JPNoteId) -> None:
         self.start_index: int = start_index
         self.is_displayed: bool = is_displayed
         self.variant: str = string_auto_interner.auto_intern(variant)
         self.parsed_form: str = string_auto_interner.auto_intern(word)
-        self.vocab_id: NoteId = vocab_id
+        self.vocab_id: JPNoteId = vocab_id
 
     @property
     def end_index(self) -> int: return self.start_index + len(self.parsed_form)

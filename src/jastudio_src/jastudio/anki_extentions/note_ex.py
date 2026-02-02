@@ -8,11 +8,14 @@ from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
     from anki.notes import Note
-    from jaslib.note.jpnote import JPNote, NoteId
+    from jaslib.note.jpnote import JPNote, JPNoteId
 
 class NoteEx:
     def __init__(self, note: Note) -> None:
         self.note: Note = note
+
+    @property
+    def id(self) -> AnkiNoteId: return self.note.id
 
     def cards(self) -> list[CardEx]:
         return [CardEx(card) for card in self.note.cards()]
@@ -21,7 +24,7 @@ class NoteEx:
         for card in self.cards(): card.suspend()
 
     def un_suspend_all_cards(self) -> None:
-        for card in self.cards(): card.suspend()
+        for card in self.cards(): card.un_suspend()
 
     def has_suspended_cards(self) -> bool:
         return any(_card for _card in self.cards() if _card.is_suspended())
@@ -30,7 +33,7 @@ class NoteEx:
         return any(_card for _card in self.cards() if not _card.is_suspended())
 
     @classmethod
-    def from_id(cls, note_id: NoteId) -> NoteEx:
+    def from_id(cls, note_id: JPNoteId) -> NoteEx:
         return NoteEx(app.anki_collection().get_note(AnkiNoteId(note_id)))
 
     @classmethod

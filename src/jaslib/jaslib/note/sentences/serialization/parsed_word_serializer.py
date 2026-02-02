@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast
 
 from autoslot import Slots
-from jaslib.note.jpnote import NoteId
+from jaslib.note.jpnote import JPNoteId
 from jaslib.sysutils.ex_str import invisible_space
 
 if TYPE_CHECKING:
@@ -30,4 +30,4 @@ class ParsedWordSerializer(Slots):
                            int(values[1]),
                            values[2] != "0",
                            values[3],
-                           cast(NoteId, int(values[4])))  # pyright: ignore [reportUnnecessaryCast]
+                           cast(JPNoteId, int(values[4])))  # pyright: ignore [reportUnnecessaryCast]
