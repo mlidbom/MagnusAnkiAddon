@@ -22,9 +22,9 @@ from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_insta
 if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import NoteId
-    from jaslib.note.collection.kanji_collection import KanjiCollection
-    from jaslib.note.collection.sentence_collection import SentenceCollection
-    from jaslib.note.collection.vocab_collection import VocabCollection
+    from jastudio.note.collection.kanji_collection import KanjiCollection
+    from jastudio.note.collection.sentence_collection import SentenceCollection
+    from jastudio.note.collection.vocab_collection import VocabCollection
 
 class JPCollection(WeakRefable, Slots):
     _is_inital_load: bool = True  # running the GC on initial load slows startup a lot but does not decrease memory usage in any significant way.
