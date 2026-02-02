@@ -1,13 +1,18 @@
 from __future__ import annotations
 
-from typing import override
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from jaslib.note.jpnote import JPNote, NoteId
 from jaslib.sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
+from jastudio.qt_utils.task_progress_runner import TaskRunner
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.collections.q_set import QSet
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from jaslib.note.jpnote_data import JPNoteData
 
 class CachedNote(Slots):
     def __init__(self, note: JPNote) -> None:
@@ -15,20 +20,29 @@ class CachedNote(Slots):
         self.question: str = note.get_question()
 
 class NoteCacheBase[TNote: JPNote](Slots):
-    def __init__(self, cached_note_type: type[TNote]) -> None:
+    def __init__(self, cached_note_type: type[TNote], note_constructor: Callable[[JPNoteData], TNote]) -> None:
+        self._note_constructor: Callable[[JPNoteData], TNote] = note_constructor
         self._note_type: type[TNote] = cached_note_type
         self._by_id: dict[NoteId, TNote] = {}
 
     def with_id_or_none(self, note_id: NoteId) -> TNote | None:
         return self._by_id.get(note_id, None)
 
+    def init_from_list(self, all_notes: list[JPNoteData]) -> None:
+        if len(all_notes) > 0:
+            with TaskRunner.current(f"Pushing {all_notes[0].__class__.__name__} notes into cache") as task_runner:
+                task_runner.process_with_progress(all_notes, self._add_to_cache_from_data, f"Pushing {all_notes[0].__class__.__name__} notes into cache")
+
+    def _add_to_cache_from_data(self, note_data: JPNoteData) -> None:
+        self.add_to_cache(self._note_constructor(note_data))
+
     def refresh_in_cache(self, note: TNote) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
-    def remove_from_cache(self, note: TNote) -> None: raise NotImplementedError() # pyright: ignore[reportUnusedParameter]
-    def add_to_cache(self, note: TNote) -> None: raise NotImplementedError() # pyright: ignore[reportUnusedParameter]
+    def remove_from_cache(self, note: TNote) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
+    def add_to_cache(self, note: TNote) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
 
 class NoteCache[TNote: JPNote, TSnapshot: CachedNote](NoteCacheBase[TNote], Slots):
-    def __init__(self, cached_note_type: type[TNote]) -> None:
-        super().__init__(cached_note_type)
+    def __init__(self, cached_note_type: type[TNote], note_constructor: Callable[[JPNoteData], TNote]) -> None:
+        super().__init__(cached_note_type, note_constructor)
         # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
         self._by_question: DefaultDictCaseInsensitive[QList[TNote]] = DefaultDictCaseInsensitive(QList[TNote])
         self._snapshot_by_id: dict[NoteId, TSnapshot] = {}

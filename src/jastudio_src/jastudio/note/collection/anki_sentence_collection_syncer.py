@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from jaslib.note.note_constants import NoteTypes
 from jaslib.note.sentences.sentencenote import SentenceNote
+from jastudio.anki_extentions.note_ex import NoteBulkLoader
 from jastudio.note.collection.anki_single_collection_syncer import AnkiCachedNote, AnkiSingleCollectionSyncer
-from jastudio.note.collection.backend_facade import BackEndFacade
 
 from jaslib import app
 
@@ -20,15 +20,11 @@ class _AnkiSentenceSnapshot(AnkiCachedNote, Slots):
         super().__init__(note)
 
 class _AnkiSentenceCache(AnkiSingleCollectionSyncer[SentenceNote, _AnkiSentenceSnapshot], Slots):
-    def __init__(self, all_kanji: list[SentenceNote], cache_runner: AnkiCollectionSyncRunner) -> None:
+    def __init__(self, all_kanji: list[JPNoteData], cache_runner: AnkiCollectionSyncRunner) -> None:
         super().__init__(all_kanji, SentenceNote, app.col().sentences.cache, cache_runner)
 
-    @override
-    def _create_snapshot(self, note: SentenceNote) -> _AnkiSentenceSnapshot: return _AnkiSentenceSnapshot(note)
 
 class AnkiSentenceCollectionSyncer(Slots):
     def __init__(self, collection: Collection, cache_manager: AnkiCollectionSyncRunner) -> None:
-        def sentence_constructor_call_while_populating_sentence_collection(data: JPNoteData) -> SentenceNote: return SentenceNote(data)
-        self._backend_facade: BackEndFacade[SentenceNote] = BackEndFacade[SentenceNote](collection, sentence_constructor_call_while_populating_sentence_collection, NoteTypes.Sentence)
-        all_sentences = list(self._backend_facade.all())
-        self._cache: _AnkiSentenceCache = _AnkiSentenceCache(all_sentences, cache_manager)
+        all_notes = NoteBulkLoader.load_all_notes_of_type(collection, NoteTypes.Sentence)
+        self._cache: _AnkiSentenceCache = _AnkiSentenceCache(all_notes, cache_manager)

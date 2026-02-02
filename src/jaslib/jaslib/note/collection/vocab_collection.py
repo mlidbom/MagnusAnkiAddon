@@ -38,7 +38,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
         self._by_derived_from: dict[str, list[VocabNote]] = dict[str, list[VocabNote]]()
         self._by_reading: dict[str, list[VocabNote]] = dict[str, list[VocabNote]]()
         self._by_stem: dict[str, list[VocabNote]] = dict[str, list[VocabNote]]()
-        super().__init__(VocabNote)
+        super().__init__(VocabNote, VocabNote)
 
     def with_form(self, form: str) -> Iterable[VocabNote]: return self._by_form.get(form, [])
     def with_disambiguation_name(self, form: str) -> Iterable[VocabNote]: return self._by_disambiguation_name.get(form, [])

@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from jaslib.note.note_constants import NoteTypes
 from jaslib.note.vocabulary.vocabnote import VocabNote
+from jastudio.anki_extentions.note_ex import NoteBulkLoader
 from jastudio.note.collection.anki_single_collection_syncer import AnkiCachedNote, AnkiSingleCollectionSyncer
-from jastudio.note.collection.backend_facade import BackEndFacade
 
 from jaslib import app
 
@@ -21,18 +21,12 @@ class _AnkiVocabSnapshot(AnkiCachedNote, Slots):
         super().__init__(note)
 
 class _AnkiVocabCache(AnkiSingleCollectionSyncer[VocabNote, _AnkiVocabSnapshot], Slots):
-    def __init__(self, all_vocab: list[VocabNote], cache_runner: AnkiCollectionSyncRunner) -> None:
+    def __init__(self, all_vocab: list[JPNoteData], cache_runner: AnkiCollectionSyncRunner) -> None:
         super().__init__(all_vocab, VocabNote, app.col().vocab.cache, cache_runner)
-
-
-    @override
-    def _create_snapshot(self, note: VocabNote) -> _AnkiVocabSnapshot: return _AnkiVocabSnapshot(note)
 
 
 class AnkiVocabCollectionSyncer(Slots):
     def __init__(self, collection: Collection, cache_manager: AnkiCollectionSyncRunner) -> None:
-        def vocab_constructor_call_while_populating_vocab_collection(data: JPNoteData) -> VocabNote: return VocabNote(data)
-        self._backend_facade: BackEndFacade[VocabNote] = BackEndFacade[VocabNote](collection, vocab_constructor_call_while_populating_vocab_collection, NoteTypes.Vocab)
-        all_vocab = self._backend_facade.all()
+        all_vocab = NoteBulkLoader.load_all_notes_of_type(collection, NoteTypes.Vocab)
         self._cache: _AnkiVocabCache = _AnkiVocabCache(all_vocab, cache_manager)
 

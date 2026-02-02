@@ -28,7 +28,7 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
         # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
         self._by_radical: QDefaultDict[str, QList[KanjiNote]] = QDefaultDict(QList[KanjiNote])
         self.by_reading: QDefaultDict[str, QList[KanjiNote]] = QDefaultDict(QList[KanjiNote])
-        super().__init__(KanjiNote)
+        super().__init__(KanjiNote, KanjiNote)
 
     @override
     def _create_snapshot(self, note: KanjiNote) -> _KanjiSnapshot: return _KanjiSnapshot(note)

@@ -28,7 +28,7 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
         self._by_user_highlighted_vocab: QDefaultDict[str, QList[SentenceNote]] = QDefaultDict[str, QList[SentenceNote]](QList[SentenceNote])
         self._by_user_marked_invalid_vocab: QDefaultDict[str, QList[SentenceNote]] = QDefaultDict[str, QList[SentenceNote]](QList[SentenceNote])
         self._by_vocab_id: QDefaultDict[int, QSet[SentenceNote]] = QDefaultDict[int, QSet[SentenceNote]](QSet[SentenceNote])
-        super().__init__(SentenceNote)
+        super().__init__(SentenceNote, SentenceNote)
 
     @override
     def _create_snapshot(self, note: SentenceNote) -> _SentenceSnapshot: return _SentenceSnapshot(note)

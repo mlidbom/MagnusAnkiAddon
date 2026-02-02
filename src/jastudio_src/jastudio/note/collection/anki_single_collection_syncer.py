@@ -4,10 +4,7 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from jaslib.note.jpnote import JPNote, NoteId
-from jaslib.sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 from jaslib.sysutils.typed import checked_cast
-from jastudio.qt_utils.task_progress_runner import TaskRunner
-from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
@@ -15,6 +12,7 @@ if TYPE_CHECKING:
 
     from anki.notes import Note
     from jaslib.note.collection.note_cache import NoteCacheBase
+    from jaslib.note.jpnote_data import JPNoteData
     from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner
 
 class AnkiCachedNote(Slots):
@@ -23,35 +21,27 @@ class AnkiCachedNote(Slots):
         self.question: str = note.get_question()
 
 class AnkiSingleCollectionSyncer[TNote: JPNote, TSnapshot: AnkiCachedNote](Slots):
-    def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], note_cache: NoteCacheBase[TNote], cache_runner: AnkiCollectionSyncRunner) -> None:
+    def __init__(self, all_notes: list[JPNoteData], cached_note_type: type[TNote], note_cache: NoteCacheBase[TNote], cache_runner: AnkiCollectionSyncRunner) -> None:
         self._note_type: type[TNote] = cached_note_type
         self._cache: NoteCacheBase[TNote] = note_cache
         # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
-        self._by_question: DefaultDictCaseInsensitive[QList[TNote]] = DefaultDictCaseInsensitive(QList[TNote])
+
         self._by_id: dict[NoteId, TNote] = {}
-        self._snapshot_by_id: dict[NoteId, TSnapshot] = {}
-
         self._deleted: QSet[NoteId] = QSet()
-
-        self._flushing: bool = False
         self._pending_add: list[Note] = []
 
-        if len(all_notes) > 0:
-            with TaskRunner.current(f"Pushing {all_notes[0].__class__.__name__} notes into cache") as task_runner:
-                task_runner.process_with_progress(all_notes, self.add_note_to_cache, f"Pushing {all_notes[0].__class__.__name__} notes into cache")
+        self._cache.init_from_list(all_notes)
 
         cache_runner.connect_will_remove(self._on_will_be_removed)
         cache_runner.connect_note_addded(self._on_added)
         cache_runner.connect_will_flush(self._on_will_flush)
 
-    def _create_snapshot(self, note: TNote) -> TSnapshot: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
-
     def _on_will_flush(self, backend_note: Note) -> None:
         if backend_note.id and backend_note.id in self._by_id:
             cached_note = self._by_id[backend_note.id]
 
-            if cached_note.is_flushing:  # our code called flush, we should just make sure the cached data is up to date
-                self._refresh_in_cache(cached_note)
+            if cached_note.is_flushing:  # our code called flush, nothing to do here
+                pass
             else:  # a note has been edited outside of our control, we need to switch to that up-to-date note and refresh generated data
                 note = self._create_note(backend_note)
                 with note.recursive_flush_guard.pause_flushing():
@@ -87,14 +77,9 @@ class AnkiSingleCollectionSyncer[TNote: JPNote, TSnapshot: AnkiCachedNote](Slots
 
     def _remove_from_cache(self, note: TNote) -> None:
         assert note.get_id()
-        cached = self._snapshot_by_id.pop(note.get_id())
         self._by_id.pop(note.get_id())
-        self._by_question[cached.question].remove(note)
 
     def add_note_to_cache(self, note: TNote) -> None:
         if note.get_id() in self._by_id: return
         assert note.get_id()
         self._by_id[note.get_id()] = note
-        snapshot = self._create_snapshot(note)
-        self._snapshot_by_id[note.get_id()] = snapshot
-        self._by_question[note.get_question()].append(note)
