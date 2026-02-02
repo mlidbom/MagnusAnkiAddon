@@ -71,8 +71,8 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
 class SentenceCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
         def sentence_constructor_call_while_populating_sentence_collection(data: JPNoteData) -> SentenceNote: return SentenceNote(data)
-        self.collection: BackEndFacade[SentenceNote] = BackEndFacade[SentenceNote](collection, sentence_constructor_call_while_populating_sentence_collection, NoteTypes.Sentence)
-        all_sentences = list(self.collection.all())
+        self._backend_facade: BackEndFacade[SentenceNote] = BackEndFacade[SentenceNote](collection, sentence_constructor_call_while_populating_sentence_collection, NoteTypes.Sentence)
+        all_sentences = list(self._backend_facade.all())
         self._cache: _SentenceCache = _SentenceCache(all_sentences, cache_manager)
 
     def all(self) -> QList[SentenceNote]: return self._cache.all()
@@ -113,9 +113,9 @@ class SentenceCollection(Slots):
             return self._cache.with_user_highlighted_vocab(vocab_note.question.disambiguation_name).to_list()
         return vocab_note.forms.all_set().select_many(self._cache.with_user_highlighted_vocab).to_list()
 
-    def search(self, query: str) -> QList[SentenceNote]: return self.collection.search(query)
+    def search(self, query: str) -> QList[SentenceNote]: return self._backend_facade.search(query)
 
     def add(self, note: SentenceNote) -> None:
         backend_note = noteutils.from_data_and_type(note.get_data(), NoteTypes.Sentence)
-        self.collection.anki_collection.addNote(backend_note)
+        self._backend_facade.anki_collection.addNote(backend_note)
         self._cache.add_note_to_cache(note)

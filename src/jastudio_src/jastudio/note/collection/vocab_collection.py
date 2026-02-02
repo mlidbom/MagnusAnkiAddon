@@ -107,8 +107,8 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
 class VocabCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
         def vocab_constructor_call_while_populating_vocab_collection(data: JPNoteData) -> VocabNote: return VocabNote(data)
-        self.collection: BackEndFacade[VocabNote] = BackEndFacade[VocabNote](collection, vocab_constructor_call_while_populating_vocab_collection, NoteTypes.Vocab)
-        all_vocab = self.collection.all()
+        self._backend_facade: BackEndFacade[VocabNote] = BackEndFacade[VocabNote](collection, vocab_constructor_call_while_populating_vocab_collection, NoteTypes.Vocab)
+        all_vocab = self._backend_facade.all()
         self._cache: _VocabCache = _VocabCache(all_vocab, cache_manager)
 
     def is_word(self, form: str) -> bool: return any(self._cache.with_form(form))
@@ -147,5 +147,5 @@ class VocabCollection(Slots):
 
     def add(self, note: VocabNote) -> None:
         backend_note = noteutils.from_data_and_type(note.get_data(), NoteTypes.Vocab)
-        self.collection.anki_collection.addNote(backend_note)
+        self._backend_facade.anki_collection.addNote(backend_note)
         self._cache.add_note_to_cache(note)
