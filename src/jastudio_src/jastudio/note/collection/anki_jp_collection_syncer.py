@@ -17,6 +17,7 @@ from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionS
 from jastudio.note.collection.anki_kanji_collection_syncer import AnkiKanjiCollectionSyncer
 from jastudio.note.collection.anki_sentence_collection_syncer import AnkiSentenceCollectionSyncer
 from jastudio.note.collection.anki_vocab_collection_syncer import AnkiVocabCollectionSyncer
+from jastudio.note.jpnotedata_shim import JPNoteDataShim
 from jastudio.qt_utils.task_progress_runner import TaskRunner
 from jastudio.sysutils import app_thread_pool
 from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
@@ -115,13 +116,10 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
     @classmethod
     def note_from_note_id(cls, note_id: NoteId) -> jaslib.note.jpnote.JPNote:
         col = jaslib.app.col()
-        found = (col.kanji.with_id_or_none(note_id)
-                 or col.vocab.with_id_or_none(note_id)
-                 or col.sentences.with_id_or_none(note_id)
-                 or None)  # JPNote(app.anki_collection().get_note(note_id))
-
-        if found is None: raise ValueError(f"Note with id {note_id} not found")
-        return found
+        return (col.kanji.with_id_or_none(note_id)
+                or col.vocab.with_id_or_none(note_id)
+                or col.sentences.with_id_or_none(note_id)
+                or jaslib.note.jpnote.JPNote(JPNoteDataShim.from_note(app.anki_collection().get_note(note_id))))
 
     def destruct_sync(self) -> None:
         if self._pending_init_timer is not None: self._pending_init_timer.cancel()
