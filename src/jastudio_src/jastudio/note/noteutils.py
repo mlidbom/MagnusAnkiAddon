@@ -15,8 +15,6 @@ if TYPE_CHECKING:
     from anki.cards import Card
     from anki.collection import Collection
     from anki.dbproxy import Row
-    from jaslib.note.jpnote import JPNote
-    from jaslib.note.jpnote_data import JPNoteData
     from jastudio.qt_utils.i_task_progress_runner import ITaskRunner
 
 _studying_status_cache: dict[NoteId, dict[str, bool]] = {}
@@ -34,26 +32,18 @@ def remove_from_studying_cache(note_id: NoteId) -> None:
 def clear_studying_cache() -> None:
     _studying_status_cache.clear()
 
-def has_suspended_cards(note: JPNote) -> bool:  # pyright: ignore
-    raise NotImplementedError()
-
-def has_active_cards(note: JPNote) -> bool:  # pyright: ignore
-    raise NotImplementedError()
-
-def suspend_all_cards(note: JPNote) -> None:  # pyright: ignore
-    raise NotImplementedError()
-
-def unsuspend_all_cards(note: JPNote) -> None:  # pyright: ignore
-    raise NotImplementedError()
-
-def has_card_being_studied_cached(note: Note, card_type: str = "") -> bool:
-    _ensure_card_status_is_cached(note)
+def has_card_being_studied_cached(note_id: int, card_type: str = "") -> bool:
+    typed_note_id = NoteId(note_id)
+    cached = _studying_status_cache.get(typed_note_id)
+    if cached is None:
+        note = app.anki_collection().get_note(typed_note_id)
+        _ensure_card_status_is_cached(note)
+        cached = _studying_status_cache[typed_note_id]
 
     if card_type:
-        cached = _studying_status_cache[note.id]
         return cached.get(card_type, False)
 
-    return any(_studying_status_cache[note.id].values())
+    return any(cached.values())
 
 def _ensure_card_status_is_cached(note: Note) -> None:
     if note.id not in _studying_status_cache:
@@ -86,12 +76,3 @@ def initialize_studying_cache(col: Collection, task_runner: ITaskRunner) -> None
         _studying_status_cache[row.note_id][row.card_type] = row.queue != QUEUE_TYPE_SUSPENDED
 
     task_runner.process_with_progress(fetch_card_studying_statuses(), cache_card, "Populating studying status cache")
-
-def from_data_and_type(data: JPNoteData, note_type: str) -> Note:
-    note: Note = Note(app.anki_collection(), app.anki_collection().models.by_name(note_type))
-    note.tags = data.tags
-
-    for name, value in data.fields.items():
-        note[name] = value
-
-    return note
