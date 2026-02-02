@@ -8,6 +8,8 @@ from jaslib.note.vocabulary.vocabnote import VocabNote
 from jastudio.note.collection.anki_single_collection_syncer import AnkiCachedNote, AnkiSingleCollectionSyncer
 from jastudio.note.collection.backend_facade import BackEndFacade
 
+from jaslib import app
+
 if TYPE_CHECKING:
 
     from anki.collection import Collection
@@ -20,7 +22,7 @@ class _AnkiVocabSnapshot(AnkiCachedNote, Slots):
 
 class _AnkiVocabCache(AnkiSingleCollectionSyncer[VocabNote, _AnkiVocabSnapshot], Slots):
     def __init__(self, all_vocab: list[VocabNote], cache_runner: AnkiCollectionSyncRunner) -> None:
-        super().__init__(all_vocab, VocabNote, cache_runner)
+        super().__init__(all_vocab, VocabNote, app.col().vocab.cache, cache_runner)
 
 
     @override

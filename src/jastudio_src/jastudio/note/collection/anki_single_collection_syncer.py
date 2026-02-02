@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from anki.notes import Note
+    from jaslib.note.collection.note_cache import NoteCacheBase
     from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner
 
 class AnkiCachedNote(Slots):
@@ -22,8 +23,9 @@ class AnkiCachedNote(Slots):
         self.question: str = note.get_question()
 
 class AnkiSingleCollectionSyncer[TNote: JPNote, TSnapshot: AnkiCachedNote](Slots):
-    def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], cache_runner: AnkiCollectionSyncRunner) -> None:
+    def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], note_cache: NoteCacheBase[TNote], cache_runner: AnkiCollectionSyncRunner) -> None:
         self._note_type: type[TNote] = cached_note_type
+        self._cache: NoteCacheBase[TNote] = note_cache
         # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
         self._by_question: DefaultDictCaseInsensitive[QList[TNote]] = DefaultDictCaseInsensitive(QList[TNote])
         self._by_id: dict[NoteId, TNote] = {}
@@ -41,7 +43,6 @@ class AnkiSingleCollectionSyncer[TNote: JPNote, TSnapshot: AnkiCachedNote](Slots
         cache_runner.connect_will_remove(self._on_will_be_removed)
         cache_runner.connect_note_addded(self._on_added)
         cache_runner.connect_will_flush(self._on_will_flush)
-
 
     def _create_snapshot(self, note: TNote) -> TSnapshot: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
 

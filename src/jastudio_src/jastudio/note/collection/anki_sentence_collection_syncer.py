@@ -8,6 +8,8 @@ from jaslib.note.sentences.sentencenote import SentenceNote
 from jastudio.note.collection.anki_single_collection_syncer import AnkiCachedNote, AnkiSingleCollectionSyncer
 from jastudio.note.collection.backend_facade import BackEndFacade
 
+from jaslib import app
+
 if TYPE_CHECKING:
     from anki.collection import Collection
     from jaslib.note.jpnote_data import JPNoteData
@@ -19,7 +21,7 @@ class _AnkiSentenceSnapshot(AnkiCachedNote, Slots):
 
 class _AnkiSentenceCache(AnkiSingleCollectionSyncer[SentenceNote, _AnkiSentenceSnapshot], Slots):
     def __init__(self, all_kanji: list[SentenceNote], cache_runner: AnkiCollectionSyncRunner) -> None:
-        super().__init__(all_kanji, SentenceNote, cache_runner)
+        super().__init__(all_kanji, SentenceNote, app.col().sentences.cache, cache_runner)
 
     @override
     def _create_snapshot(self, note: SentenceNote) -> _AnkiSentenceSnapshot: return _AnkiSentenceSnapshot(note)

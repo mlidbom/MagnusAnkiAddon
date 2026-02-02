@@ -16,6 +16,8 @@ from jastudio.note.collection.anki_single_collection_syncer import AnkiCachedNot
 from jastudio.note.collection.backend_facade import BackEndFacade
 from typed_linq_collections.collections.q_list import QList
 
+from jaslib import app
+
 
 @final
 class _AnkiKanjiSnapshot(AnkiCachedNote, Slots):
@@ -27,7 +29,7 @@ class _AnkiKanjiCache(AnkiSingleCollectionSyncer[KanjiNote, _AnkiKanjiSnapshot],
         # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
         self._by_radical: QDefaultDict[str, QList[KanjiNote]] = QDefaultDict(QList[KanjiNote])
         self.by_reading: QDefaultDict[str, QList[KanjiNote]] = QDefaultDict(QList[KanjiNote])
-        super().__init__(all_kanji, KanjiNote, cache_runner)
+        super().__init__(all_kanji, KanjiNote, app.col().kanji.cache, cache_runner)
 
     @override
     def _create_snapshot(self, note: KanjiNote) -> _AnkiKanjiSnapshot: return _AnkiKanjiSnapshot(note)
