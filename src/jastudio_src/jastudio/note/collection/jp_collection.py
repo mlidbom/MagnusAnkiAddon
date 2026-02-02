@@ -11,7 +11,6 @@ from jaslib.sysutils.memory_usage import string_auto_interner
 from jaslib.sysutils.timeutil import StopWatch
 from jaslib.sysutils.typed import non_optional
 from jaslib.sysutils.weak_ref import WeakRefable
-from jastudio import mylog
 from jastudio.ankiutils import app
 from jastudio.note import noteutils
 from jastudio.note.collection.cache_runner import CacheRunner
@@ -21,6 +20,8 @@ from jastudio.note.collection.vocab_collection import VocabCollection
 from jastudio.qt_utils.task_progress_runner import TaskRunner
 from jastudio.sysutils import app_thread_pool
 from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
+
+from jaslib import mylog
 
 if TYPE_CHECKING:
     from anki.collection import Collection
@@ -110,12 +111,6 @@ class JPCollection(WeakRefable, Slots):
     def cache_runner(self) -> CacheRunner: return non_optional(self._initialized_self()._cache_runner)
     @property
     def is_initialized(self) -> bool: return self._is_initialized
-    @property
-    def vocab(self) -> VocabCollection: return non_optional(self._initialized_self()._vocab)
-    @property
-    def kanji(self) -> KanjiCollection: return non_optional(self._initialized_self()._kanji)
-    @property
-    def sentences(self) -> SentenceCollection: return non_optional(self._initialized_self()._sentences)
 
     @classmethod
     def note_from_note_id(cls, note_id: NoteId) -> jaslib.note.jpnote.JPNote:

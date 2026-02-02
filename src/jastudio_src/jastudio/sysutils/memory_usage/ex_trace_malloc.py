@@ -4,9 +4,10 @@ import os
 import tracemalloc
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from jastudio import mylog
 from jastudio.ankiutils import app
 from jastudio.sysutils import ex_gc
+
+from jaslib import mylog
 
 
 class ExMalloc(Slots):

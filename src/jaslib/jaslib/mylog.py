@@ -40,3 +40,7 @@ def info(msg: str) -> None:
     if not ex_pytest.is_testing: _logger().info(msg)
 def warning(msg: str) -> None: _logger().warning(msg)
 def error(msg: str) -> None: _logger().error(msg)
+
+def set_logger_factory(logger: Lazy[logging.Logger]) -> None:
+    global _logger
+    _logger = logger

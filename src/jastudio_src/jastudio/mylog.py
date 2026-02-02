@@ -4,7 +4,6 @@ import os
 from typing import TYPE_CHECKING
 
 from jaslib.sysutils.lazy import Lazy
-from jastudio.testutils import ex_pytest
 
 if TYPE_CHECKING:
     import logging
@@ -63,20 +62,16 @@ def get_logger(module: str) -> logging.Logger:
         logger.addHandler(file_handler)
 
         AddonManager.deleteAddon = wrap(  # type: ignore
-            AddonManager.deleteAddon, close_log_file, "before"
+                AddonManager.deleteAddon, close_log_file, "before"
         )
-        AddonManager.backupUserFiles = wrap( # type: ignore
-            AddonManager.backupUserFiles, close_log_file, "before"
+        AddonManager.backupUserFiles = wrap(  # type: ignore
+                AddonManager.backupUserFiles, close_log_file, "before"
         )
 
     return logger
 
 _addon_name = os.path.basename(os.path.dirname(os.path.dirname(__file__)))
-_logger: Lazy[logging.Logger] = Lazy(lambda: get_logger(_addon_name))
 
-def debug(msg: str) -> None:
-    if not ex_pytest.is_testing: _logger().debug(msg)
-def info(msg: str) -> None:
-    if not ex_pytest.is_testing: _logger().info(msg)
-def warning(msg: str) -> None: _logger().warning(msg)
-def error(msg: str) -> None: _logger().error(msg)
+import jaslib.mylog
+
+jaslib.mylog.set_logger_factory(Lazy(lambda: get_logger(_addon_name)))
