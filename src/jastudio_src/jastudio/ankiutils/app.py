@@ -22,9 +22,9 @@ if TYPE_CHECKING:
     from jastudio.anki_extentions.config_manager_ex import ConfigManagerEx
     from jastudio.ankiutils.ui_utils_interface import IUIUtils
     from jastudio.configuration.configuration_value import JapaneseConfig
-    from jastudio.note.collection.jp_collection import JPCollection
+    from jastudio.note.collection.anki_jp_collection import AnkiJPCollection
 
-_collection: JPCollection | None = None
+_collection: AnkiJPCollection | None = None
 
 _init_hooks: QSet[Callable[[], None]] = QSet()
 _collection_closed_hooks: QSet[Callable[[], None]] = QSet()
@@ -44,12 +44,12 @@ def _init(delay_seconds: float = 1.0) -> None:
     mylog.info(f"_init delay= {delay_seconds}")
 
     from aqt import mw
-    from jastudio.note.collection.jp_collection import JPCollection
+    from jastudio.note.collection.anki_jp_collection import AnkiJPCollection
     global _collection
     if _collection is not None:
         _collection.reshchedule_init_for(delay_seconds)
 
-    _collection = JPCollection(non_optional(mw.col), delay_seconds)
+    _collection = AnkiJPCollection(non_optional(mw.col), delay_seconds)
     _call_init_hooks()
 
 def is_initialized() -> bool:
@@ -104,7 +104,7 @@ def anki_config() -> ConfigManagerEx:
     from jastudio.anki_extentions.config_manager_ex import ConfigManagerEx
     return ConfigManagerEx(non_optional(mw.col).conf)
 
-def col() -> JPCollection:
+def col() -> AnkiJPCollection:
     if _collection is None: raise AssertionError("Collection not initialized")
     return _collection
 

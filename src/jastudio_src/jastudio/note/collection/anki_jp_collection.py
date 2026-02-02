@@ -13,10 +13,10 @@ from jaslib.sysutils.typed import non_optional
 from jaslib.sysutils.weak_ref import WeakRefable
 from jastudio.ankiutils import app
 from jastudio.note import noteutils
+from jastudio.note.collection.anki_kanji_collection import AnkiKanjiCollection
+from jastudio.note.collection.anki_sentence_collection import AnkiSentenceCollection
+from jastudio.note.collection.anki_vocab_collection import AnkiVocabCollection
 from jastudio.note.collection.cache_runner import CacheRunner
-from jastudio.note.collection.kanji_collection import KanjiCollection
-from jastudio.note.collection.sentence_collection import SentenceCollection
-from jastudio.note.collection.vocab_collection import VocabCollection
 from jastudio.qt_utils.task_progress_runner import TaskRunner
 from jastudio.sysutils import app_thread_pool
 from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
@@ -27,7 +27,7 @@ if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import NoteId
 
-class JPCollection(WeakRefable, Slots):
+class AnkiJPCollection(WeakRefable, Slots):
     _is_inital_load: bool = True  # running the GC on initial load slows startup a lot but does not decrease memory usage in any significant way.
 
     def __init__(self, anki_collection: Collection, delay_seconds: float | None = None) -> None:
@@ -38,9 +38,9 @@ class JPCollection(WeakRefable, Slots):
         self._initialization_started: bool = False
         self._cache_runner: CacheRunner | None = None
 
-        self._vocab: VocabCollection | None = None
-        self._kanji: KanjiCollection | None = None
-        self._sentences: SentenceCollection | None = None
+        self._vocab: AnkiVocabCollection | None = None
+        self._kanji: AnkiKanjiCollection | None = None
+        self._sentences: AnkiSentenceCollection | None = None
         self._pending_init_timer: threading.Timer | None = None
         if delay_seconds is not None:
             self._pending_init_timer = threading.Timer(delay_seconds or 0, self._initialize_wrapper)
@@ -54,7 +54,7 @@ class JPCollection(WeakRefable, Slots):
         self._pending_init_timer.cancel()
         self._pending_init_timer = threading.Timer(delay_seconds, self._initialize_wrapper)
 
-    def _initialized_self(self) -> JPCollection:
+    def _initialized_self(self) -> AnkiJPCollection:
         if not self._is_initialized:
             self._initialize()
         return self
@@ -78,7 +78,7 @@ class JPCollection(WeakRefable, Slots):
         with StopWatch.log_warning_if_slower_than(5, "Full collection setup"):  # noqa: SIM117
             with TaskRunner.current(f"Loading {Mine.app_name}", "reading notes from anki",
                                     force_hide=not app.config().load_studio_in_foreground.get_value(),
-                                    force_gc=not JPCollection._is_inital_load,
+                                    force_gc=not AnkiJPCollection._is_inital_load,
                                     allow_cancel=False) as task_runner:
                 if task_runner.is_hidden():
                     app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
@@ -86,9 +86,9 @@ class JPCollection(WeakRefable, Slots):
                 with StopWatch.log_warning_if_slower_than(5, "Core collection setup - no gc"):
                     self._cache_runner = CacheRunner(self.anki_collection)
 
-                    self._vocab = VocabCollection(self.anki_collection, self._cache_runner)
-                    self._sentences = SentenceCollection(self.anki_collection, self._cache_runner)
-                    self._kanji = KanjiCollection(self.anki_collection, self._cache_runner)
+                    self._vocab = AnkiVocabCollection(self.anki_collection, self._cache_runner)
+                    self._sentences = AnkiSentenceCollection(self.anki_collection, self._cache_runner)
+                    self._kanji = AnkiKanjiCollection(self.anki_collection, self._cache_runner)
 
                 self._cache_runner.start()
 
@@ -103,7 +103,7 @@ class JPCollection(WeakRefable, Slots):
                 ex_trace_malloc_instance.stop()
 
                 self._is_initialized = True
-                JPCollection._is_inital_load = False
+                AnkiJPCollection._is_inital_load = False
 
             app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading in {str(stopwatch.elapsed_seconds())[0:4]} seconds.", milliseconds=6000)
 

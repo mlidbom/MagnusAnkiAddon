@@ -10,11 +10,11 @@ from jastudio_tests.fixtures.collection_factory import inject_empty_collection
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from jastudio.note.collection.jp_collection import JPCollection
+    from jastudio.note.collection.anki_jp_collection import AnkiJPCollection
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="module", autouse=True)
-def empty_collection() -> Iterator[JPCollection]:
+def empty_collection() -> Iterator[AnkiJPCollection]:
     with inject_empty_collection() as collection:
         yield collection
 

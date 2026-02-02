@@ -17,11 +17,11 @@ from jastudio_tests.fixtures.stub_factory import stub_ui_dependencies
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from jastudio.note.collection.jp_collection import JPCollection as JPLegacyCollection
+    from jastudio.note.collection.anki_jp_collection import AnkiJPCollection as JPLegacyCollection
 
 @contextmanager
 def inject_empty_collection() -> Iterator[JPLegacyCollection]:
-    from jastudio.note.collection.jp_collection import JPCollection as JPLegacyCollection
+    from jastudio.note.collection.anki_jp_collection import AnkiJPCollection as JPLegacyCollection
     jp_legacy_collection: JPLegacyCollection
     def get_legacy_jp_collection() -> JPLegacyCollection: return jp_legacy_collection
 

@@ -16,12 +16,12 @@ if TYPE_CHECKING:
     from anki.notes import Note
     from jastudio.note.collection.cache_runner import CacheRunner
 
-class CachedNote(Slots):
+class AnkiCachedNote(Slots):
     def __init__(self, note: JPNote) -> None:
         self.id: NoteId = note.get_id()
         self.question: str = note.get_question()
 
-class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
+class AnkiNoteCache[TNote: JPNote, TSnapshot: AnkiCachedNote](Slots):
     def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], cache_runner: CacheRunner) -> None:
         self._note_type: type[TNote] = cached_note_type
         # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets

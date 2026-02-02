@@ -16,14 +16,14 @@ if TYPE_CHECKING:
 
 @contextmanager
 def inject_full_anki_collection_for_testing() -> Iterator[None]:
-    from jastudio.note.collection.jp_collection import JPCollection
-    jp_collection: JPCollection
-    def get_jp_collection() -> JPCollection: return jp_collection
+    from jastudio.note.collection.anki_jp_collection import AnkiJPCollection
+    jp_collection: AnkiJPCollection
+    def get_jp_collection() -> AnkiJPCollection: return jp_collection
 
     with tempfile.TemporaryDirectory() as tmp_dirname:
         collection_file = path.join(tmp_dirname, "collection.anki2")
         anki_collection = create_collection(collection_file)
-        jp_collection = JPCollection(anki_collection)
+        jp_collection = AnkiJPCollection(anki_collection)
         try:
             with unittest.mock.patch("ankiutils.app.col", new=get_jp_collection):
                 yield
