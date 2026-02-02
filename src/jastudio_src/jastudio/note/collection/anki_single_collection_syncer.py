@@ -26,7 +26,6 @@ class AnkiSingleCollectionSyncer[TNote: JPNote, TSnapshot: AnkiCachedNote](Slots
         self._cache: NoteCacheBase[TNote] = note_cache
         # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
 
-        self._by_id: dict[NoteId, TNote] = {}
         self._deleted: QSet[NoteId] = QSet()
         self._pending_add: list[Note] = []
 
@@ -37,49 +36,35 @@ class AnkiSingleCollectionSyncer[TNote: JPNote, TSnapshot: AnkiCachedNote](Slots
         cache_runner.connect_will_flush(self._on_will_flush)
 
     def _on_will_flush(self, backend_note: Note) -> None:
-        if backend_note.id and backend_note.id in self._by_id:
-            cached_note = self._by_id[backend_note.id]
-
-            if cached_note.is_flushing:  # our code called flush, nothing to do here
-                pass
-            else:  # a note has been edited outside of our control, we need to switch to that up-to-date note and refresh generated data
-                note = self._create_note(backend_note)
-                with note.recursive_flush_guard.pause_flushing():
-                    note.update_generated_data()
-                    self._refresh_in_cache(note)
+        if backend_note.id:
+            cached_note = self._cache.with_id_or_none(backend_note.id)
+            if cached_note is not None:
+                if cached_note.is_flushing:  # our code called flush, nothing to do here
+                    pass
+                else:  # a note has been edited outside of our control, we need to switch to that up-to-date note and refresh generated data
+                    note = self._create_note(backend_note)
+                    with note.recursive_flush_guard.pause_flushing():
+                        note.update_generated_data()
+                        self._cache.refresh_in_cache(note)
         elif backend_note.id in self._deleted:  # undeleted note
             self._deleted.remove(backend_note.id)
             note = self._create_note(backend_note)
             with note.recursive_flush_guard.pause_flushing():
                 note.update_generated_data()
-                self.add_note_to_cache(note)
+                self._cache.add_to_cache(note)
 
     def _on_added(self, backend_note: Note) -> None:
         import jastudio.note.ankijpnote
         note = jastudio.note.ankijpnote.AnkiJPNote.note_from_note(backend_note)
         if isinstance(note, self._note_type):
-            self.add_note_to_cache(note)
+            self._cache.add_to_cache(note)
 
     def _on_will_be_removed(self, note_ids: Sequence[NoteId]) -> None:
-        my_notes_ids = [note_id for note_id in note_ids if note_id in self._by_id]
-        cached_notes = [self._by_id[note_id] for note_id in my_notes_ids]
-        self._deleted.update(my_notes_ids)
+        cached_notes = [it for it in (self._cache.with_id_or_none(note_id) for note_id in note_ids) if it is not None]
+        self._deleted.update(it.get_id() for it in cached_notes)
         for cached in cached_notes:
-            self._remove_from_cache(cached)
+            self._cache.remove_from_cache(cached)
 
     def _create_note(self, backend_note: Note) -> TNote:
         import jastudio.note.ankijpnote
         return checked_cast(self._note_type, jastudio.note.ankijpnote.AnkiJPNote.note_from_note(backend_note))
-
-    def _refresh_in_cache(self, note: TNote) -> None:
-        self._remove_from_cache(note)
-        self.add_note_to_cache(note)
-
-    def _remove_from_cache(self, note: TNote) -> None:
-        assert note.get_id()
-        self._by_id.pop(note.get_id())
-
-    def add_note_to_cache(self, note: TNote) -> None:
-        if note.get_id() in self._by_id: return
-        assert note.get_id()
-        self._by_id[note.get_id()] = note
