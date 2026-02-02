@@ -16,5 +16,5 @@ if TYPE_CHECKING:
 
 class AnkiSentenceCollectionSyncer(Slots):
     def __init__(self, collection: Collection, cache_manager: AnkiCollectionSyncRunner) -> None:
-        all_vocab = NoteBulkLoader.load_all_notes_of_type(collection, NoteTypes.Vocab)
+        all_vocab = NoteBulkLoader.load_all_notes_of_type(collection, NoteTypes.Sentence)
         self._cache: AnkiSingleCollectionSyncer[SentenceNote] = AnkiSingleCollectionSyncer[SentenceNote](all_vocab, SentenceNote, SentenceNote, app.col().sentences.cache, cache_manager)

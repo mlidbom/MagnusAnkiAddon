@@ -18,5 +18,5 @@ from jaslib import app
 
 class AnkiKanjiCollectionSyncer(Slots):
     def __init__(self, collection: Collection, cache_manager: AnkiCollectionSyncRunner) -> None:
-        all_vocab = NoteBulkLoader.load_all_notes_of_type(collection, NoteTypes.Vocab)
+        all_vocab = NoteBulkLoader.load_all_notes_of_type(collection, NoteTypes.Kanji)
         self._cache: AnkiSingleCollectionSyncer[KanjiNote] = AnkiSingleCollectionSyncer[KanjiNote](all_vocab, KanjiNote, KanjiNote, app.col().kanji.cache, cache_manager)

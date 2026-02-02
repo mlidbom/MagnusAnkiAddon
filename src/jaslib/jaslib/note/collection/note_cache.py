@@ -30,8 +30,8 @@ class NoteCacheBase[TNote: JPNote](Slots):
 
     def init_from_list(self, all_notes: list[JPNoteData]) -> None:
         if len(all_notes) > 0:
-            with TaskRunner.current(f"Pushing {all_notes[0].__class__.__name__} notes into cache") as task_runner:
-                task_runner.process_with_progress(all_notes, self._add_to_cache_from_data, f"Pushing {all_notes[0].__class__.__name__} notes into cache")
+            with TaskRunner.current(f"Pushing {self._note_type.__name__} notes into cache") as task_runner:
+                task_runner.process_with_progress(all_notes, self._add_to_cache_from_data, f"Pushing {self._note_type.__name__} notes into cache")
 
     def _add_to_cache_from_data(self, note_data: JPNoteData) -> None:
         self.add_to_cache(self._note_constructor(note_data))
