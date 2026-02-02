@@ -142,6 +142,9 @@ class JPNote(WeakRefable, Slots):
                 if "high" in tag.name: tags.add("high_priority")
                 if "low" in tag.name: tags.add("low_priority")
 
+        if self.is_studying(CardTypes.reading) or self.is_studying(CardTypes.listening): tags.add("is_studying")
+        if self.is_studying(CardTypes.reading): tags.add("is_studying_reading")
+        if self.is_studying(CardTypes.listening): tags.add("is_studying_listening")
         if self.tags.contains(Tags.TTSAudio): tags.add("tts_audio")
 
         return tags

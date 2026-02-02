@@ -1,0 +1,96 @@
+<!--###everything below here should be identical for reading and listening cards###-->
+<div id="container1">
+    <div id="container2" class="
+        {{Tags}}
+        card{{Card}}
+        {{#__explanation}}has__explanation{{/__explanation}}
+        {{#__explanation_long}}has__explanation_long{{/__explanation_long}}
+        ">
+        <!--######-->
+
+        <div class="front-and-answer">
+            <div>
+                <div class="question">
+                    <div>
+                        <span class="clipboard">{{Q}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="middleSection">
+            {{#__references}}<div class="referenceLink">{{__references}}</div>{{/__references}}
+
+
+            {{^Audio_b}}{{^Audio_g}}{{^Audio_TTS}} <span class="reading clipboard noaudio">{{Reading}}</span>{{/Audio_TTS}}{{/Audio_g}}{{/Audio_b}}
+
+            {{#__answer}}<div class="meaning user">{{__answer}}</div>{{/__answer}}
+            {{^__answer}}<div class="meaning"> {{source_answer}}</div>{{/__answer}}
+
+            <div id="metaData" class="##VOCAB_CLASSES##">
+                ##VOCAB_META_TAGS_HTML##
+                <span class="_derog">derog</span>
+                <span class="_masustem">masu stem</span>
+                <span class="reading clipboard">{{Reading}}</span>
+            </div>
+
+            {{#__mnemonic}}
+                <div>
+                    <div class="mnemonic override">{{__mnemonic}}</div>
+                </div>
+            {{/__mnemonic}}
+
+
+            {{#__technical_notes}}
+                    <div id="technical_notes" class="user">
+                    <span class="heading">Technical notes:</span> {{__technical_notes}}
+                    </div>
+            {{/__technical_notes}}
+            {{#__explanation}}<div id="__explanation" class="user">{{__explanation}}</div>{{/__explanation}}
+
+            ##VOCAB_COMPOUNDS##
+
+            ##KANJI_LIST##
+
+            ##CONFUSED_WITH_LIST##
+
+            ##IS_STEM_OF##
+
+            ##DERIVED_FROM##
+
+            ##ERGATIVE_TWIN##
+
+            ##FORMS_LIST##
+
+            ##STEM_VOCABULARY##
+
+            ##PERFECT_SYNONYMS_LIST##
+
+            ##SYNONYMS_LIST##
+
+            ##SEE_ALSO_LIST##
+
+            ##ANTONYMS_LIST##
+
+            ##HOMOPHONES_LIST##
+
+            ##DERIVED_VOCABULARY##
+
+            ##IN_COMPOUNDS##
+
+            ##STEM_IN_COMPOUNDS##
+
+            ##IN_SENTENCES##
+
+            ##MARKED_INVALID_IN_SENTENCES##
+
+        </div>
+
+        {{#__explanation_long}}<div id="__explanation_long" class="user">{{__explanation_long}}</div>{{/__explanation_long}}
+
+        <!--<div class="tags">{{Tags}}</div>-->
+        <!--######-->
+    </div>
+</div>
+
+<script src="__magnus_js.js"></script>
