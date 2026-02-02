@@ -39,5 +39,3 @@ class NoteRecursiveFlushGuard(Slots):
                 if Settings.log_when_flushing_notes():
                     mylog.info(f"Flushing {self._note().__class__.__name__}: {self._note().get_question()}")
                 self._note()._update_in_cache()  # pyright: ignore [reportPrivateUsage]
-                # todo migration
-                #self._note().backend_note.col.update_note(self._note().backend_note)

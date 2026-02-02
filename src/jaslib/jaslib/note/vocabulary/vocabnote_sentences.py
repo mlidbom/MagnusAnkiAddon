@@ -37,7 +37,7 @@ class SentenceCounts(Slots):
 
         # noinspection PyUnusedLocal, Annotator
         def get_studying_sentence_count(card: str = "") -> int:  # pyright: ignore
-            return len(sentences)  # todo migration bug
+            return len([it for it in self._parent().all() if it.is_studying(card)])
 
         if time.time() - self._last_update_time > self._cache_seconds:
             self._last_update_time = time.time()

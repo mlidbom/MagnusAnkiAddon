@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 from jaslib.language_services.jamdict_ex.dict_lookup import DictLookup
 from jaslib.language_services.janome_ex.tokenizing.pre_processing_stage.ichidan_godan_potential_or_imperative_hybrid_splitter import IchidanGodanPotentialOrImperativeHybridSplitter
+from jaslib.note.note_constants import CardTypes
 from jaslib.note.sentences.parsed_match import ParsedMatch
 from jaslib.note.tags import Tags
 from jaslib.note.vocabulary.vocabnote import VocabNote
@@ -93,7 +94,7 @@ def tag_vocab_metadata() -> None:
 def tag_kanji_metadata() -> None:
     primary_reading = re.compile(r"<primary>(.*?)</primary>")
 
-    known_kanji:set[str] = set() # {kanji.get_question() for kanji in app.col().kanji.all() if kanji.is_studying()} # todo migration
+    known_kanji:set[str] = {kanji.get_question() for kanji in app.col().kanji.all() if kanji.is_studying()}
 
     def tag_kanji(kanji: KanjiNote) -> None:
         vocab_with_kanji_in_main_form = app.col().vocab.with_kanji_in_main_form(kanji)
@@ -103,7 +104,7 @@ def tag_kanji_metadata() -> None:
         kanji.tags.toggle(Tags.Kanji.in_vocab_main_form, any(vocab_with_kanji_in_main_form))
         kanji.tags.toggle(Tags.Kanji.in_any_vocab_form, any(vocab_with_kanji_in_any_form))
 
-        studying_reading_vocab:list[VocabNote] = [] # todo migration [voc for voc in vocab_with_kanji_in_main_form if voc.is_studying(CardTypes.reading)]
+        studying_reading_vocab:list[VocabNote] = [voc for voc in vocab_with_kanji_in_main_form if voc.is_studying(CardTypes.reading)]
         kanji.tags.toggle(Tags.Kanji.with_studying_vocab, any(studying_reading_vocab))
 
         primary_readings: list[str] = primary_reading.findall(f"{kanji.get_reading_on_html()} {kanji.get_reading_kun_html()} {kanji.get_reading_nan_html()}")
