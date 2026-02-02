@@ -22,7 +22,6 @@ def inject_empty_collection() -> Iterator[JPCollection]:
 
     with unittest.mock.patch("jaslib.app.col", new=get_jp_collection):
         yield jp_collection
-        jp_collection.destruct_sync()
 
 
 @contextmanager

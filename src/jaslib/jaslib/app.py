@@ -33,4 +33,9 @@ def col() -> JPCollection:
         _collection = JPCollection()
     return _collection
 
+def reset() -> None:
+    global _collection
+    if _collection is not None:
+        _collection = None
+
 user_files_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "user_files")

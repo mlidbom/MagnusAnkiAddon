@@ -70,7 +70,7 @@ class AnkiJPCollection(WeakRefable, Slots):
             return
         self._initialization_started = True
         string_auto_interner.try_enable()
-        mylog.info("JPCollection.__init__")
+        mylog.info("AnkiJPCollection.__init__")
         if self._pending_init_timer is not None:
             self._pending_init_timer.cancel()
         ex_trace_malloc_instance.ensure_initialized()
