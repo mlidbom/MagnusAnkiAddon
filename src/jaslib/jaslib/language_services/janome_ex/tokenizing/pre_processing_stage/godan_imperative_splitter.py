@@ -31,6 +31,7 @@ class GodanImperativeSplitter(Slots):
 
         return False
 
+    # noinspection DuplicatedCode
     @classmethod
     def _split_godan_imperative(cls, token: JNToken, godan_base: str) -> list[IAnalysisToken]:
         if token.inflected_form == InflectionForms.ImperativeMeireikei.yo:  # handles cases like 放せよ which janome turns into a single token and believes is an ichidan よ imperative

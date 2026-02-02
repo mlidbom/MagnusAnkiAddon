@@ -103,6 +103,7 @@ class EnglishWordSearchDialog(QDialog): # Cannot inherit Slots for some QT inter
                 else:
                     openLink(f"https://www.oed.com/search/dictionary/?scope=Entries&q={selected_word}")
 
+    # noinspection DuplicatedCode
     @classmethod
     def toggle_dialog_visibility(cls) -> None:
         if cls.instance().isVisible():

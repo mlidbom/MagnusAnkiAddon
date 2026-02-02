@@ -22,6 +22,7 @@ def log_file_path(addon: str) -> Path:
     logs_dir.mkdir(parents=True, exist_ok=True)
     return logs_dir / f"{addon}.log"
 
+# noinspection DuplicatedCode
 def get_logger(module: str) -> logging.Logger:
     import logging
     import sys

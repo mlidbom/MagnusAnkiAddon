@@ -92,6 +92,7 @@ def init() -> None:
         app.config().toggle_all_sentence_display_auto_yield_flags()
         refresh_shallow()
 
+    # noinspection DuplicatedCode
     def set_shortcut(widget: QWidget, shortcut: str, callback: Callable[[], None]) -> None:
         typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence(shortcut), widget).activated).connect(callback)  # pyright: ignore[reportUnknownMemberType]
 

@@ -314,6 +314,7 @@ class NoteSearchDialog(QDialog): # Cannot inherit Slots for some QT internal rea
             search_executor.do_lookup_and_show_previewer(query_builder.notes_by_id(note_ids))  # pyright: ignore[reportUnknownArgumentType]
             self.instance().activateWindow()  # the search will lose our focus, reactivate it
 
+    # noinspection DuplicatedCode
     @classmethod
     def toggle_dialog_visibility(cls) -> None:
         if cls.instance().isVisible():

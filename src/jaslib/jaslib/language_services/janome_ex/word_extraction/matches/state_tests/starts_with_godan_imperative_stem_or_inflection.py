@@ -12,6 +12,7 @@ class RequiresOrForbidsStartsWithGodanImperativeStemOrInflection(Slots):
     _required_failure: FailedMatchRequirement = FailedMatchRequirement.required("godan_imperative")
     _forbidden_failure: FailedMatchRequirement = FailedMatchRequirement.forbids("godan_imperative")
 
+    # noinspection DuplicatedCode
     @classmethod
     def apply_to(cls, inspector: VocabMatchInspector) -> FailedMatchRequirement | None:
         requirement = inspector.match.requires_forbids.godan_imperative

@@ -26,6 +26,7 @@ def init() -> None:
         "F5": lambda: app.get_ui_utils().refresh()
     }
 
+    # noinspection DuplicatedCode
     def set_shortcut(widget: QWidget, shortcut: str, callback: Callable[[], None]) -> None:
         typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence(shortcut), widget).activated).connect(callback)  # pyright: ignore[reportUnknownMemberType]
 

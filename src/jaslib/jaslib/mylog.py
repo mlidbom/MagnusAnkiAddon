@@ -13,7 +13,7 @@ def is_testing() -> bool:
     import sys
     return "pytest" in sys.modules
 
-
+# noinspection DuplicatedCode
 def get_logger() -> logging.Logger:
     import logging
     import sys
