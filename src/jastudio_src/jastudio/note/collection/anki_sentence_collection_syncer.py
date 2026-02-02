@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 class _AnkiSentenceCache(AnkiSingleCollectionSyncer[SentenceNote], Slots):
     def __init__(self, all_kanji: list[JPNoteData], cache_runner: AnkiCollectionSyncRunner) -> None:
-        super().__init__(all_kanji, SentenceNote, app.col().sentences.cache, cache_runner)
+        super().__init__(all_kanji, SentenceNote, SentenceNote, app.col().sentences.cache, cache_runner)
 
 
 class AnkiSentenceCollectionSyncer(Slots):

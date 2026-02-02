@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 class _AnkiVocabCache(AnkiSingleCollectionSyncer[VocabNote], Slots):
     def __init__(self, all_vocab: list[JPNoteData], cache_runner: AnkiCollectionSyncRunner) -> None:
-        super().__init__(all_vocab, VocabNote, app.col().vocab.cache, cache_runner)
+        super().__init__(all_vocab, VocabNote, VocabNote, app.col().vocab.cache, cache_runner)
 
 
 class AnkiVocabCollectionSyncer(Slots):

@@ -19,7 +19,7 @@ from jaslib import app
 
 class _AnkiKanjiCache(AnkiSingleCollectionSyncer[KanjiNote], Slots):
     def __init__(self, all_kanji: list[JPNoteData], cache_runner: AnkiCollectionSyncRunner) -> None:
-        super().__init__(all_kanji, KanjiNote, app.col().kanji.cache, cache_runner)
+        super().__init__(all_kanji, KanjiNote, KanjiNote, app.col().kanji.cache, cache_runner)
 
 class AnkiKanjiCollectionSyncer(Slots):
     def __init__(self, collection: Collection, cache_manager: AnkiCollectionSyncRunner) -> None:

@@ -4,11 +4,11 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from jaslib.note.jpnote import JPNote, NoteId
-from jaslib.sysutils.typed import checked_cast
+from jastudio.note.jpnotedata_shim import JPNoteDataShim
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Callable, Sequence
 
     from anki.notes import Note
     from jaslib.note.collection.note_cache import NoteCacheBase
@@ -16,9 +16,10 @@ if TYPE_CHECKING:
     from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner
 
 class AnkiSingleCollectionSyncer[TNote: JPNote](Slots):
-    def __init__(self, all_notes: list[JPNoteData], cached_note_type: type[TNote], note_cache: NoteCacheBase[TNote], cache_runner: AnkiCollectionSyncRunner) -> None:
+    def __init__(self, all_notes: list[JPNoteData], cached_note_type: type[TNote], note_constructor: Callable[[JPNoteData], TNote], note_cache: NoteCacheBase[TNote], cache_runner: AnkiCollectionSyncRunner) -> None:
         self._note_type: type[TNote] = cached_note_type
         self._cache: NoteCacheBase[TNote] = note_cache
+        self._note_constructor: Callable[[JPNoteData], TNote] = note_constructor
         # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
 
         self._deleted: QSet[NoteId] = QSet()
@@ -61,5 +62,4 @@ class AnkiSingleCollectionSyncer[TNote: JPNote](Slots):
             self._cache.remove_from_cache(cached)
 
     def _create_note(self, backend_note: Note) -> TNote:
-        import jastudio.note.ankijpnote
-        return checked_cast(self._note_type, jastudio.note.ankijpnote.AnkiJPNote.note_from_note(backend_note))
+        return self._note_constructor(JPNoteDataShim.from_note(backend_note))
