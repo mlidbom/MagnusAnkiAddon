@@ -73,6 +73,7 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
         if self._initialization_started:
             return
         self._initialization_started = True
+        jaslibapp.reset()
         string_auto_interner.try_enable()
         mylog.info("AnkiJPCollection.__init__")
         if self._pending_init_timer is not None:
