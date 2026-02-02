@@ -3,19 +3,20 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from anki.consts import QUEUE_TYPE_SUSPENDED
-from anki.notes import NoteId
+from anki.notes import Note, NoteId
 from jaslib.note.note_constants import NoteTypes
 from jaslib.sysutils import typed
 from jaslib.sysutils.memory_usage import string_auto_interner
 from jaslib.sysutils.typed import non_optional, str_
+from jastudio.ankiutils import app
 from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
     from anki.cards import Card
     from anki.collection import Collection
     from anki.dbproxy import Row
-    from anki.notes import Note
     from jaslib.note.jpnote import JPNote
+    from jaslib.note.jpnote_data import JPNoteData
     from jastudio.qt_utils.i_task_progress_runner import ITaskRunner
 
 _studying_status_cache: dict[NoteId, dict[str, bool]] = {}
@@ -60,9 +61,9 @@ def _ensure_card_status_is_cached(note: Note) -> None:
 
 class CardStudyingStatus:
     def __init__(self, row: Row) -> None:
-        self.note_id: NoteId = NoteId(typed.int_(row[0])) # pyright: ignore[reportAny]
-        self.card_type: str = string_auto_interner.auto_intern(typed.str_(row[1])) # pyright: ignore[reportAny]
-        self.queue: int = typed.int_(row[2]) # pyright: ignore[reportAny]
+        self.note_id: NoteId = NoteId(typed.int_(row[0]))  # pyright: ignore[reportAny]
+        self.card_type: str = string_auto_interner.auto_intern(typed.str_(row[1]))  # pyright: ignore[reportAny]
+        self.queue: int = typed.int_(row[2])  # pyright: ignore[reportAny]
 
 def initialize_studying_cache(col: Collection, task_runner: ITaskRunner) -> None:
     clear_studying_cache()
@@ -76,7 +77,7 @@ def initialize_studying_cache(col: Collection, task_runner: ITaskRunner) -> None
     WHERE notetypes.name COLLATE NOCASE IN ('{NoteTypes.Sentence}', '{NoteTypes.Vocab}', '{NoteTypes.Kanji}')
 """
 
-    #don't use temporary variables, it will break our memory profiling using tracemalloc
+    # don't use temporary variables, it will break our memory profiling using tracemalloc
     def fetch_card_studying_statuses() -> list[CardStudyingStatus]:
         return task_runner.run_on_background_thread_with_spinning_progress_dialog("Fetching card studying status from Anki db", lambda: query(non_optional(col.db).all(sql_query)).select(CardStudyingStatus).to_list())
 
@@ -85,3 +86,12 @@ def initialize_studying_cache(col: Collection, task_runner: ITaskRunner) -> None
         _studying_status_cache[row.note_id][row.card_type] = row.queue != QUEUE_TYPE_SUSPENDED
 
     task_runner.process_with_progress(fetch_card_studying_statuses(), cache_card, "Populating studying status cache")
+
+def from_data_and_type(data: JPNoteData, note_type: str) -> Note:
+    note: Note = Note(app.anki_collection(), app.anki_collection().models.by_name(note_type))
+    note.tags = data.tags
+
+    for name, value in data.fields.items():
+        note[name] = value
+
+    return note

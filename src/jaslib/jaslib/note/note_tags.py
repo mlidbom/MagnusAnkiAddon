@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from jaslib.note.jpnote import JPNote
+    from jaslib.note.jpnote_data import JPNoteData
     from jaslib.sysutils.weak_ref import WeakRef
 
 class NoteTags(QIterable[Tag]):
@@ -19,9 +20,13 @@ class NoteTags(QIterable[Tag]):
     """Manages tags for a note using a compact bitfield representation."""
     _flags: BitFlagsSet
 
-    def __init__(self, note: WeakRef[JPNote]) -> None:
+    def __init__(self, note: WeakRef[JPNote], data: JPNoteData | None = None) -> None:
         self._note: WeakRef[JPNote] = note
         self._flags = BitFlagsSet()
+
+        if data is not None:
+            for tag in data.tags:
+                self._flags.set_flag(Tag.from_name(tag).id)
 
     def _persist(self) -> None:
         self._note()._flush()  # pyright: ignore [reportPrivateUsage]

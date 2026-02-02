@@ -4,6 +4,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from jaslib.note.jpnote_data import JPNoteData
 from jaslib.note.note_constants import MyNoteFields
 from jaslib.note.note_flush_guard import NoteRecursiveFlushGuard
 from jaslib.note.note_tags import NoteTags
@@ -16,7 +17,6 @@ from jaslib import app
 
 if TYPE_CHECKING:
     from jaslib.note.collection.jp_collection import JPCollection
-    from jaslib.note.jpnote_data import JPNoteData
 
 type NoteId = int
 
@@ -26,7 +26,7 @@ class JPNote(WeakRefable, Slots):
         self.recursive_flush_guard: NoteRecursiveFlushGuard = NoteRecursiveFlushGuard(self.weakref)
         self.__hash_value: int = 0
 
-        self.tags: NoteTags = NoteTags(self.weakref)
+        self.tags: NoteTags = NoteTags(self.weakref, data)
 
         self._fields: dict[str, str] = data.fields if data else defaultdict(str)
 
@@ -35,6 +35,8 @@ class JPNote(WeakRefable, Slots):
     # noinspection PyUnusedFunction
     @property
     def is_flushing(self) -> bool: return self.recursive_flush_guard.is_flushing
+
+    def get_data(self) -> JPNoteData: return JPNoteData(self.get_id(), self._fields, self.tags.to_interned_string_list())
 
     @override
     def __eq__(self, other: object) -> bool:
