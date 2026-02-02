@@ -71,8 +71,8 @@ def get_logger(module: str) -> logging.Logger:
 
     return logger
 
-_addon_name = os.path.basename(os.path.dirname(__file__))
-_logger: Lazy[logging.Logger] = Lazy(lambda: get_logger(_addon_name))
+_addon_folder_name = os.path.basename(os.path.dirname(__file__))
+_logger: Lazy[logging.Logger] = Lazy(lambda: get_logger(_addon_folder_name))
 
 def debug(msg: str) -> None:
     if not ex_pytest.is_testing: _logger().debug(msg)

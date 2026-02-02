@@ -23,3 +23,5 @@ collection.anki2
 bin
 obj
 /src/jastudio_src/user_files/logs/*
+/src/jastudio_src/jastudio/user_files/logs/*
+/src/jastudio_src/jastudio/user_files/card_history.json
