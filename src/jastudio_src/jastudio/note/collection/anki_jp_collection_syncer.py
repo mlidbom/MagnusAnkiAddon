@@ -96,7 +96,7 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
                     all_kanji = NoteBulkLoader.load_all_notes_of_type(self.anki_collection, NoteTypes.Sentence)
                     self._sentences = AnkiSingleCollectionSyncer[SentenceNote](all_kanji, SentenceNote, SentenceNote, jaslibapp.col().sentences.cache, self._cache_runner)
 
-                    all_sentences = NoteBulkLoader.load_all_notes_of_type(self.anki_collection, NoteTypes.Sentence)
+                    all_sentences = NoteBulkLoader.load_all_notes_of_type(self.anki_collection, NoteTypes.Kanji)
                     self._kanji = AnkiSingleCollectionSyncer[KanjiNote](all_sentences, KanjiNote, KanjiNote, jaslibapp.col().kanji.cache, self._cache_runner)
 
                 self._cache_runner.start()
