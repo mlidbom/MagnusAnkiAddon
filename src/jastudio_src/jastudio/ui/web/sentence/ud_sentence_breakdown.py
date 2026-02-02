@@ -17,8 +17,8 @@ from typed_linq_collections.collections.q_list import QList
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from jaslib.configuration.configuration_value import ConfigurationValueBool
     from jaslib.language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
-    from jastudio.configuration.configuration_value import ConfigurationValueBool
     from jastudio.ui.web.sentence.match_viewmodel import MatchViewModel
 
 def format_reason(reason: str) -> str:

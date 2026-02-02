@@ -8,7 +8,7 @@ from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtWidgets import QCheckBox, QDialog, QDialogButtonBox, QDoubleSpinBox, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QSpinBox, QVBoxLayout, QWidget
 
 if TYPE_CHECKING:
-    from jastudio.configuration.configuration_value import ConfigurationValueBool, ConfigurationValueFloat, ConfigurationValueInt, JapaneseConfig
+    from jaslib.configuration.configuration_value import ConfigurationValueBool, ConfigurationValueFloat, ConfigurationValueInt, JapaneseConfig
 
 class JapaneseOptionsDialog(QDialog): # Cannot inherit Slots for some QT internal reason
     def __init__(self, parent: QWidget | None = None) -> None:

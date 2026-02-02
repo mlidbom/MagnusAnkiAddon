@@ -12,8 +12,24 @@ from jaslib import app
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+_config_dict_real: dict[str, object] | None = None
+_update_callback: Callable[[dict[str, object]], None] | None = None
+
+def init(config_dict: dict[str, object], update_callback: Callable[[dict[str, object]], None]) -> None:
+    global _config_dict_real
+    global _update_callback
+    if _config_dict_real is not None:
+        raise RuntimeError("Configuration dict already initialized")
+
+    _config_dict_real = config_dict
+    _update_callback = update_callback
+
 def _get_config_dict() -> dict[str, object]:
-    return {}
+    if app.is_testing:
+        return {}
+    if not _config_dict_real:
+        raise RuntimeError("Configuration dict not initialized")
+    return _config_dict_real
 
 _config_dict: Lazy[dict[str, object]] = Lazy(_get_config_dict)
 

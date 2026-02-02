@@ -14,9 +14,9 @@ from PyQt6.QtWidgets import QMenu, QMessageBox
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from jaslib.configuration.configuration_value import ConfigurationValueBool
     from jaslib.note.jpnote import JPNote
     from jaslib.note.vocabulary.vocabnote import VocabNote
-    from jastudio.configuration.configuration_value import ConfigurationValueBool
 
 def add_checkbox_config(menu: QMenu, config_value: ConfigurationValueBool, _title: str) -> None:
     checkbox_action = QAction(_title, app.main_window())

@@ -19,9 +19,9 @@ if TYPE_CHECKING:
     from anki.dbproxy import DBProxy
     from anki.scheduler.v3 import Scheduler  # pyright: ignore[reportMissingTypeStubs]
     from aqt import AnkiQt  # type: ignore[attr-defined]  # pyright: ignore[reportPrivateImportUsage]
+    from jaslib.configuration.configuration_value import JapaneseConfig
     from jastudio.anki_extentions.config_manager_ex import ConfigManagerEx
     from jastudio.ankiutils.ui_utils_interface import IUIUtils
-    from jastudio.configuration.configuration_value import JapaneseConfig
     from jastudio.note.collection.anki_jp_collection_syncer import AnkiJPCollectionSyncer
 
 _collection: AnkiJPCollectionSyncer | None = None

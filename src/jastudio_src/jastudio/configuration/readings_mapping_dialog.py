@@ -10,7 +10,7 @@ from PyQt6.QtGui import QColor, QKeySequence, QShortcut, QTextBlock, QTextCharFo
 from PyQt6.QtWidgets import QDialog, QDialogButtonBox, QHBoxLayout, QLabel, QLineEdit, QTextEdit, QVBoxLayout, QWidget
 
 if TYPE_CHECKING:
-    from jastudio.configuration.configuration_value import JapaneseConfig
+    from jaslib.configuration.configuration_value import JapaneseConfig
 
 class ReadingsOptionsDialog(QDialog): # Cannot inherit Slots for some QT internal reason
     def __init__(self, parent: QWidget | None = None) -> None:
