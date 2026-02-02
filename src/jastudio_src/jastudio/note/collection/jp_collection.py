@@ -15,6 +15,9 @@ from jastudio import mylog
 from jastudio.ankiutils import app
 from jastudio.note import noteutils
 from jastudio.note.collection.cache_runner import CacheRunner
+from jastudio.note.collection.kanji_collection import KanjiCollection
+from jastudio.note.collection.sentence_collection import SentenceCollection
+from jastudio.note.collection.vocab_collection import VocabCollection
 from jastudio.qt_utils.task_progress_runner import TaskRunner
 from jastudio.sysutils import app_thread_pool
 from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
@@ -22,9 +25,6 @@ from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_insta
 if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import NoteId
-    from jastudio.note.collection.kanji_collection import KanjiCollection
-    from jastudio.note.collection.sentence_collection import SentenceCollection
-    from jastudio.note.collection.vocab_collection import VocabCollection
 
 class JPCollection(WeakRefable, Slots):
     _is_inital_load: bool = True  # running the GC on initial load slows startup a lot but does not decrease memory usage in any significant way.

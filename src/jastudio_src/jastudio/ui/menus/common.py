@@ -11,7 +11,7 @@ from jaslib.note.sentences.sentencenote import SentenceNote
 from jaslib.note.vocabulary.vocabnote import VocabNote
 from jaslib.sysutils import ex_lambda, typed
 from jaslib.sysutils.typed import non_optional
-from jastudio.ankiutils import app, query_builder, search_executor, ui_utils
+from jastudio.ankiutils import query_builder, search_executor, ui_utils
 from jastudio.note import noteutils
 from jastudio.qt_utils.ex_qmenu import ExQmenu
 from jastudio.ui import menus
@@ -20,6 +20,8 @@ from jastudio.ui.menus.menu_utils.ex_qmenu import add_ui_action, create_note_act
 from jastudio.ui.menus.open_in_anki import build_open_in_anki_menu
 from jastudio.ui.menus.web_search import build_web_search_menu
 from typed_linq_collections.collections.q_list import QList
+
+from jaslib import app
 
 if typing.TYPE_CHECKING:
     from aqt.webview import AnkiWebView
@@ -37,7 +39,8 @@ def build_right_click_menu_webview_hook(view: AnkiWebView, root_menu: QMenu) -> 
 
 # noinspection PyPep8
 def build_right_click_menu(right_click_menu: QMenu, note: JPNote | None, selection: str, clipboard: str) -> None:
-    if not app.is_initialized():
+    import jastudio.ankiutils.app
+    if not jastudio.ankiutils.app.is_initialized():
         right_click_menu.addAction(Mine.app_still_loading_message)  # pyright: ignore[reportUnknownMemberType]
         return
 

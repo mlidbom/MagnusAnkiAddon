@@ -6,9 +6,10 @@ from typing import TYPE_CHECKING
 from aqt import gui_hooks
 from jaslib.note.kanjinote import KanjiNote
 from jaslib.sysutils import ex_str, kana_utils
-from jastudio.ankiutils import app
 from jastudio.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 from jastudio.viewmodels.kanji_list.sentence_kanji_viewmodel import KanjiViewModel
+
+from jaslib import app
 
 if TYPE_CHECKING:
     from jaslib.note.jpnote import JPNote

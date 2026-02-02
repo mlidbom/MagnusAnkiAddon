@@ -4,9 +4,11 @@ from typing import TYPE_CHECKING
 
 from jaslib.sysutils import ex_str
 from jaslib.sysutils.typed import non_optional
-from jastudio.ankiutils import app, query_builder
+from jastudio.ankiutils import query_builder
 from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.menu_utils.ex_qmenu import add_lookup_action, add_ui_action
+
+from jaslib import app
 
 if TYPE_CHECKING:
     from jaslib.note.kanjinote import KanjiNote

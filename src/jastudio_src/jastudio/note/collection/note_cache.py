@@ -42,14 +42,6 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
         cache_runner.connect_note_addded(self._on_added)
         cache_runner.connect_will_flush(self._on_will_flush)
 
-    def all(self) -> QList[TNote]:
-        return QList(self._by_id.values())
-
-    def with_id_or_none(self, note_id: NoteId) -> TNote | None:
-        return self._by_id.get(note_id, None)
-
-    def with_question(self, question: str) -> QList[TNote]:
-        return self._by_question.get_value_or_default(question).to_list()
 
     def _create_snapshot(self, note: TNote) -> TSnapshot: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
     def _inheritor_remove_from_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
