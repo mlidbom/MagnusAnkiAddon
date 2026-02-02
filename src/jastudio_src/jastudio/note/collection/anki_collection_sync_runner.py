@@ -65,7 +65,6 @@ class AnkiCollectionSyncRunner(Slots):
 
             for destructor in self._destructors: destructor()
 
-            from jastudio.note import noteutils
             noteutils.clear_studying_cache()
 
     def _internal_flush_updates(self) -> None:

@@ -16,7 +16,6 @@ from jaslib.sysutils.typed import non_optional
 from jaslib.sysutils.weak_ref import WeakRefable
 from jastudio.anki_extentions.note_bulk_loader import NoteBulkLoader
 from jastudio.ankiutils import app
-from jastudio.note import noteutils
 from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner
 from jastudio.note.collection.anki_single_collection_syncer import AnkiSingleCollectionSyncer
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
