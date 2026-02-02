@@ -30,6 +30,7 @@ class AnkiSingleCollectionSyncer[TNote: JPNote](WeakRefable, Slots):
         self._pending_add: list[Note] = []
 
         self._cache.init_from_list(all_notes)
+        self._is_updating_anki_note: bool = False
 
         weakref_self = WeakRef(self)
 
@@ -39,20 +40,24 @@ class AnkiSingleCollectionSyncer[TNote: JPNote](WeakRefable, Slots):
         cache_runner.connect_note_addded(lambda note: weakref_self()._on_added(note))
         cache_runner.connect_will_flush(lambda note: weakref_self()._on_will_flush(note))
 
-    @staticmethod
-    def _update_anki_note(note: TNote) -> None:
-        if note.get_id():
-            data = note.get_data()
-            anki_note = app.anki_collection().get_note(NoteId(data.id))
-            anki_note.tags = data.tags
-            for field_name, field_value in data.fields.items():
-                anki_note[field_name] = field_value
-            app.anki_collection().update_note(anki_note)
+    def _update_anki_note(self, note: TNote) -> None:
+        self._is_updating_anki_note = True
+        try:
+            if note.get_id():
+                data = note.get_data()
+                anki_note = app.anki_collection().get_note(NoteId(data.id))
+                anki_note.tags = data.tags
+                for field_name, field_value in data.fields.items():
+                    anki_note[field_name] = field_value
+                app.anki_collection().update_note(anki_note)
+        finally:
+            self._is_updating_anki_note = False
 
     def set_studying_statuses(self, card_statuses: list[CardStudyingStatus]) -> None:
         self._cache.set_studying_statuses(card_statuses)
 
     def _on_will_flush(self, backend_note: Note) -> None:
+        if self._is_updating_anki_note: return
         if backend_note.id:
             cached_note = self._cache.with_id_or_none(backend_note.id)
             if cached_note is not None:
@@ -60,8 +65,10 @@ class AnkiSingleCollectionSyncer[TNote: JPNote](WeakRefable, Slots):
                     pass
                 else:  # a note has been edited outside of our control, we need to switch to that up-to-date note and refresh generated data
                     note = self._create_note(backend_note)
+                    note._studying_cards = cached_note._studying_cards  # pyright: ignore [reportPrivateUsage]
                     with note.recursive_flush_guard.pause_flushing():
                         note.update_generated_data()
+                        self._update_anki_note(note)
                         self._cache.anki_note_updated(note)
         elif backend_note.id in self._deleted:  # undeleted note
             self._deleted.remove(backend_note.id)
