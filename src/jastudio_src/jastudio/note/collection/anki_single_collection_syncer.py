@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from jaslib.note.jpnote import JPNote, JPNoteId
+from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
 from typed_linq_collections.collections.q_set import QSet
 
@@ -16,7 +17,7 @@ if TYPE_CHECKING:
     from jaslib.note.jpnote_data import JPNoteData
     from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner
 
-class AnkiSingleCollectionSyncer[TNote: JPNote](Slots):
+class AnkiSingleCollectionSyncer[TNote: JPNote](WeakRefable, Slots):
     def __init__(self, all_notes: list[JPNoteData], cached_note_type: type[TNote], note_constructor: Callable[[JPNoteData], TNote], note_cache: NoteCacheBase[TNote], cache_runner: AnkiCollectionSyncRunner) -> None:
         self._note_type: type[TNote] = cached_note_type
         self._cache: NoteCacheBase[TNote] = note_cache
@@ -28,9 +29,16 @@ class AnkiSingleCollectionSyncer[TNote: JPNote](Slots):
 
         self._cache.init_from_list(all_notes)
 
-        cache_runner.connect_will_remove(self._on_will_be_removed)
-        cache_runner.connect_note_addded(self._on_added)
-        cache_runner.connect_will_flush(self._on_will_flush)
+        weakref_self = WeakRef(self)
+
+        self._cache.on_note_updated(lambda note: self._update_anki_note(note))
+
+        cache_runner.connect_will_remove(lambda note_ids: weakref_self()._on_will_be_removed(note_ids))
+        cache_runner.connect_note_addded(lambda note: weakref_self()._on_added(note))
+        cache_runner.connect_will_flush(lambda note: weakref_self()._on_will_flush(note))
+
+    def _update_anki_note(self, note: TNote) -> None:
+        self._cache.jp_note_updated(note)
 
     def set_studying_statuses(self, card_statuses: list[CardStudyingStatus]) -> None:
         self._cache.set_studying_statuses(card_statuses)
@@ -45,7 +53,7 @@ class AnkiSingleCollectionSyncer[TNote: JPNote](Slots):
                     note = self._create_note(backend_note)
                     with note.recursive_flush_guard.pause_flushing():
                         note.update_generated_data()
-                        self._cache.refresh_in_cache(note)
+                        self._cache.anki_note_updated(note)
         elif backend_note.id in self._deleted:  # undeleted note
             self._deleted.remove(backend_note.id)
             note = self._create_note(backend_note)

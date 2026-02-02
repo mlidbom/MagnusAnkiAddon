@@ -27,8 +27,27 @@ class NoteCacheBase[TNote: JPNote](Slots):
         self._note_type: type[TNote] = cached_note_type
         self._by_id: dict[JPNoteId, TNote] = {}
 
+        self._update_listeners: list[Callable[[TNote], None]] = []
+
+    def on_note_updated(self, listener: Callable[[TNote], None]) -> None:
+        self._update_listeners.append(listener)
+
     def with_id_or_none(self, note_id: JPNoteId) -> TNote | None:
         return self._by_id.get(note_id, None)
+
+    def anki_note_updated(self, note: TNote) -> None:
+        self._refresh_in_cache(note)
+
+    def jp_note_updated(self, note: TNote) -> None:
+        self._refresh_in_cache(note)
+        self._notify_update_listeners(note)
+
+    def _notify_update_listeners(self, note: TNote) -> None:
+        for listener in self._update_listeners: listener(note)
+
+    def _refresh_in_cache(self, note: TNote) -> None:
+        self.remove_from_cache(note)
+        self.add_to_cache(note)
 
     def init_from_list(self, all_notes: list[JPNoteData]) -> None:
         if len(all_notes) > 0:
@@ -38,7 +57,6 @@ class NoteCacheBase[TNote: JPNote](Slots):
     def _add_to_cache_from_data(self, note_data: JPNoteData) -> None:
         self.add_to_cache(self._note_constructor(note_data))
 
-    def refresh_in_cache(self, note: TNote) -> None: raise AbstractMethodCalledError()  # pyright: ignore[reportUnusedParameter]
     def remove_from_cache(self, note: TNote) -> None: raise AbstractMethodCalledError()  # pyright: ignore[reportUnusedParameter]
     def add_to_cache(self, note: TNote) -> None: raise AbstractMethodCalledError()  # pyright: ignore[reportUnusedParameter]
 
@@ -68,11 +86,6 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](NoteCacheBase[TNote], Slot
     def _create_snapshot(self, note: TNote) -> TSnapshot: raise AbstractMethodCalledError()  # pyright: ignore[reportUnusedParameter]
     def _inheritor_remove_from_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise AbstractMethodCalledError()  # pyright: ignore[reportUnusedParameter]
     def _inheritor_add_to_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise AbstractMethodCalledError()  # pyright: ignore[reportUnusedParameter]
-
-    @override
-    def refresh_in_cache(self, note: TNote) -> None:
-        self.remove_from_cache(note)
-        self.add_to_cache(note)
 
     @override
     def remove_from_cache(self, note: TNote) -> None:
