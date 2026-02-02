@@ -12,6 +12,7 @@ class RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection(Slots):
     _required_failure: FailedMatchRequirement = FailedMatchRequirement.required("ichidan_imperative")
     _forbidden_failure: FailedMatchRequirement = FailedMatchRequirement.forbids("ichidan_imperative")
 
+    # noinspection DuplicatedCode
     @classmethod
     def apply_to(cls, inspector: VocabMatchInspector) -> FailedMatchRequirement | None:
         requirement = inspector.match.requires_forbids.ichidan_imperative

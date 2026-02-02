@@ -91,6 +91,7 @@ class EnglishWordSearchDialog(QDialog): # Cannot inherit Slots for some QT inter
             definition_item = QTableWidgetItem(word.senses[0].definition)
             self.results_table.setItem(row, 1, definition_item)
 
+    # noinspection Annotator
     def on_cell_double_clicked(self, row: int, _column: int) -> None:
         word_item = self.results_table.item(row, 0)
         if word_item:
