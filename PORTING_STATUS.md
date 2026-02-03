@@ -182,7 +182,8 @@ Staying this close to the Python is what makes the porting workable at all. If w
             - Missing factory methods: FromIncorrectMatches(), FromHiddenMatches(), FromValues()
         - 50% sentencenote.py
             - File in wrong location (Note\SentenceNote.cs instead of Note\Sentences\SentenceNote.cs); needs comparison of public API
-        - CREATED WIP user_fields.py
+        - 50% user_fields.py
+            - Wrong file name: SentenceUserFields.cs instead of UserFields.cs
         - CREATED WIP word_exclusion_set.py
         - serialization
             - CREATED WIP parsed_word_serializer.py
