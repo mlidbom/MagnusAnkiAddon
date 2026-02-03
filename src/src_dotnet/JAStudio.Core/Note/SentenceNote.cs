@@ -1,9 +1,12 @@
 namespace JAStudio.Core.Note;
 
-// Placeholder - will be implemented
-public class SentenceNote
+public class SentenceNote : JPNote
 {
-    public void SetId(int id)
+    public SentenceNote(JPNoteData? data = null) : base(data)
+    {
+    }
+
+    public override void UpdateInCache()
     {
         // TODO: Implement
     }

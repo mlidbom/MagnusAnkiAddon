@@ -1,9 +1,12 @@
 namespace JAStudio.Core.Note;
 
-// Placeholder - will be implemented
-public class KanjiNote
+public class KanjiNote : JPNote
 {
-    public void SetId(int id)
+    public KanjiNote(JPNoteData? data = null) : base(data)
+    {
+    }
+
+    public override void UpdateInCache()
     {
         // TODO: Implement
     }
