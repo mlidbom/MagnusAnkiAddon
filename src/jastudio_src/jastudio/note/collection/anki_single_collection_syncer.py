@@ -62,7 +62,7 @@ class AnkiSingleCollectionSyncer[TNote: JPNote](WeakRefable, Slots):
                     pass
                 else:  # a note has been edited outside of our control, we need to switch to that up-to-date note and refresh generated data
                     note = self._create_note(backend_note)
-                    note._studying_cards = cached_note._studying_cards  # pyright: ignore [reportPrivateUsage]
+                    note._unsuspended_cards = cached_note._unsuspended_cards  # pyright: ignore [reportPrivateUsage]
                     with note.recursive_flush_guard.pause_flushing():
                         note.update_generated_data()
                         self._update_anki_note(note)

@@ -28,7 +28,7 @@ class JPNote(WeakRefable, Slots):
         self.recursive_flush_guard: NoteRecursiveFlushGuard = NoteRecursiveFlushGuard(self.weakref)
         self.__hash_value: int = 0
 
-        self._studying_cards: set[str] = set()
+        self._unsuspended_cards: set[str] = set()
         self.tags: NoteTags = NoteTags(self.weakref, data)
 
         self._fields: dict[str, str] = data.fields if data else defaultdict(str)
@@ -39,12 +39,12 @@ class JPNote(WeakRefable, Slots):
     def is_flushing(self) -> bool: return self.recursive_flush_guard.is_flushing
 
     def set_studying_status(self, status: CardStudyingStatus) -> None:
-        if status.card_type in self._studying_cards:
+        if status.card_type in self._unsuspended_cards:
             if status.is_suspended:
-                self._studying_cards.remove(status.card_type)
+                self._unsuspended_cards.remove(status.card_type)
         else:
             if not status.is_suspended:
-                self._studying_cards.add(status.card_type)
+                self._unsuspended_cards.add(status.card_type)
 
     def get_data(self) -> JPNoteData: return JPNoteData(self.get_id(), self._fields, self.tags.to_interned_string_list())
 
@@ -56,8 +56,8 @@ class JPNote(WeakRefable, Slots):
     def _update_in_cache(self) -> None: raise AbstractMethodCalledError()
 
     def is_studying(self, card_type: str | None = None) -> bool:
-        if card_type is None: return len(self._studying_cards) > 0
-        return card_type in self._studying_cards
+        if card_type is None: return len(self._unsuspended_cards) > 0
+        return card_type in self._unsuspended_cards
 
     def is_studying_read(self) -> bool: return self.is_studying(CardTypes.reading)
     def is_studying_listening(self) -> bool: return self.is_studying(CardTypes.listening)

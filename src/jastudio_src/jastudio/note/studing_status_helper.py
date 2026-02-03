@@ -3,23 +3,27 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from anki.consts import QUEUE_TYPE_SUSPENDED
-from anki.notes import NoteId
+from anki.notes import Note, NoteId
+from jaslib import app
 from jaslib.note.collection.card_studying_status import CardStudyingStatus
 from jaslib.note.note_constants import NoteTypes
 from jaslib.sysutils import typed
 from jaslib.sysutils.memory_usage import string_auto_interner
 from jaslib.sysutils.typed import non_optional
 from jaslib.task_runners.task_progress_runner import TaskRunner
+from jastudio.anki_extentions.note_ex import NoteEx
 from typed_linq_collections.q_iterable import query
-
-from jaslib import app
 
 if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.dbproxy import Row
     from jastudio.anki_extentions.card_ex import CardEx
 
-def update_in_studying_cache(card_ex: CardEx) -> None:
+def update_note_in_studying_cache(note: Note) -> None:
+    for card_ex in NoteEx(note).cards():
+        update_card_in_studying_cache(card_ex)
+
+def update_card_in_studying_cache(card_ex: CardEx) -> None:
     status = CardStudyingStatus(card_ex.note_ex().id, card_ex.card_type, card_ex.is_suspended(), card_ex.note_ex().note_type.name)
     if status.note_type_name == NoteTypes.Kanji:
         app.col().kanji.cache.set_studying_statuses([status])

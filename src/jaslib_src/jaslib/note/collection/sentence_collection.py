@@ -127,5 +127,4 @@ class SentenceCollection(Slots):
         return vocab_note.forms.all_set().select_many(self.cache.with_user_highlighted_vocab).to_list()
 
     def add(self, note: SentenceNote) -> None:
-        note.set_id(self._backend_note_creator.create_sentence(note))
-        self.cache.add_to_cache(note)
+        self._backend_note_creator.create_sentence(note, lambda: self.cache.add_to_cache(note))

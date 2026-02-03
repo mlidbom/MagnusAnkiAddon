@@ -141,5 +141,4 @@ class VocabCollection(Slots):
         return query(questions).select(self.with_disambiguation_name).select_many(lambda x: x).to_list()
 
     def add(self, note: VocabNote) -> None:
-        note.set_id(self._backend_note_creator.create_vocab(note))
-        self.cache.add_to_cache(note)
+        self._backend_note_creator.create_vocab(note, lambda: self.cache.add_to_cache(note))

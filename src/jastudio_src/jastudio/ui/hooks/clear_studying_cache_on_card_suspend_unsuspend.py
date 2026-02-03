@@ -19,7 +19,7 @@ def _monkey_patch(html:str, _card:object, _something_else_again:object) -> str:
     def update_cards_in_cache(ids: Sequence[CardId]) -> None:
         cards = [CardEx.from_id(card_id) for card_id in ids]
         for card in cards:
-            studing_status_helper.update_in_studying_cache(card)
+            studing_status_helper.update_card_in_studying_cache(card)
 
     def _monkey_patched_suspend_cards(ids: Sequence[CardId]) -> OpChangesWithCount:
         return_val = _real_suspend_cards(ids)

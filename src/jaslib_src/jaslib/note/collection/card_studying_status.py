@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from anki.notes import NoteId
 
-
 class CardStudyingStatus:
     def __init__(self, note_id: NoteId, card_type: str, is_suspended: bool, note_type_name: str) -> None:
         self.note_id: NoteId = note_id

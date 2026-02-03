@@ -80,5 +80,4 @@ class KanjiCollection(Slots):
         return self.cache.by_reading.get_value_or_default(kana_utils.anything_to_hiragana(reading)).to_set()
 
     def add(self, note: KanjiNote) -> None:
-        note.set_id(self._backend_note_creator.create_kanji(note))
-        self.cache.add_to_cache(note)
+        self._backend_note_creator.create_kanji(note, lambda: self.cache.add_to_cache(note))
