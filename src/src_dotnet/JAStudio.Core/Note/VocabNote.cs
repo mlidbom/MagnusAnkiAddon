@@ -24,6 +24,10 @@ public class VocabNote : JPNote
     public VocabNoteMatchingConfiguration MatchingConfiguration { get; }
     public VocabCloner Cloner { get; }
 
+    // Property accessors for fields
+    public MutableStringField SourceAnswer => new(this, NoteFieldsConstants.Vocab.SourceAnswer);
+    public MutableStringField ActiveAnswer => new(this, NoteFieldsConstants.Vocab.ActiveAnswer);
+
     public VocabNote(JPNoteData? data = null) : base(data)
     {
         Question = new VocabNoteQuestion(this);
@@ -80,6 +84,18 @@ public class VocabNote : JPNote
     public void SetReadings(List<string> readings)
     {
         Readings.Set(readings);
+    }
+
+    public void GenerateAndSetAnswer()
+    {
+        // TODO: Implement when DictLookup is ported
+        // var dictLookup = DictLookup.LookupVocabWordOrName(this);
+        // if (dictLookup.FoundWords())
+        // {
+        //     var generated = dictLookup.FormatAnswer();
+        //     SourceAnswer.Set(generated);
+        // }
+        UpdateGeneratedData();
     }
 
     public static VocabNote Create(string question, string answer, List<string> readings, List<string> forms)
