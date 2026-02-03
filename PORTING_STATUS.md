@@ -149,7 +149,8 @@
         - 100% audio_field.py
         - 70% caching_mutable_string_field.py
             - LazyReader implementation was broken (empty callback instead of calling lazy.Reset); needs fix now that LazyCE.Reset exists
-        - CREATED WIP comma_separated_strings_list_field.py
+        - 40% comma_separated_strings_list_field.py
+            - Uses MutableStringField instead of CachingMutableStringField; no caching (re-parses on every Get() call); missing LazyReader method
         - CREATED WIP comma_separated_strings_list_field_de_duplicated.py
         - CREATED WIP fallback_string_field.py
         - CREATED WIP integer_field.py
