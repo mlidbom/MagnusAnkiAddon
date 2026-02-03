@@ -10,8 +10,10 @@
 ## File Structure
 
 - Root
-    - CREATED WIP app.py
-    - CREATED WIP mylog.py
+    - 90% app.py
+        - All core functionality present; uses List vs QSet, path computation slightly different
+    - 80% mylog.py
+        - Core API complete but uses simplified ConsoleLogger vs Python's detailed logging config (handlers, formatters, environment-based levels)
 - batches
     - MISSING local_note_updater.py
 - configuration
@@ -20,9 +22,9 @@
 - dotnet
     - MISSING load_dotnet_runtime.py
 - language_services
-    - CREATED WIP conjugator.py
-    - CREATED WIP hiragana_chart.py
-    - CREATED WIP katakana_chart.py
+    - 100% conjugator.py
+    - 100% hiragana_chart.py
+    - 100% katakana_chart.py
     - jamdict_ex
         - MISSING dict_entry.py
         - MISSING dict_lookup.py
@@ -54,12 +56,15 @@
             - MISSING candidate_word_variant.py
             - MISSING text_analysis.py
             - MISSING text_location.py
-            - CREATED WIP word_exclusion.py
+            - 30% word_exclusion.py
+                - C# merged WordExclusion + WordExclusionSet into one file (should be separate); missing _match_part field, excludes_all_words_excluded_by method, equality/hash
             - matches
                 - MISSING dictionary_match.py
-                - CREATED WIP match.py
+                - 10% match.py
+                    - Stub with basic properties only; missing validation system, MatchInspector, caching, requirements, abstract methods
                 - MISSING missing_match.py
-                - CREATED WIP vocab_match.py
+                - 10% vocab_match.py
+                    - Stub only; VocabMatch defined in Match.cs instead of separate file
                 - requirements
                     - MISSING custom_forbids_no_cache.py
                     - MISSING match_inspector.py
