@@ -6,4 +6,18 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Batches\" />
+    <Folder Include="Configuration\" />
+    <Folder Include="LanguageServices\JamdictEx\" />
+    <Folder Include="LanguageServices\JanomeEx\Tokenizing\PreProcessingStage\" />
+    <Folder Include="LanguageServices\JanomeEx\WordExtraction\Matches\Requirements\" />
+    <Folder Include="LanguageServices\JanomeEx\WordExtraction\Matches\StateTests\" />
+    <Folder Include="Note\" />
+    <Folder Include="TaskRunners\" />
+    <Folder Include="TestUtils\" />
+    <Folder Include="UI\Web\Sentence\" />
+    <Folder Include="UI\Web\Vocab\" />
+  </ItemGroup>
+
 </Project>
