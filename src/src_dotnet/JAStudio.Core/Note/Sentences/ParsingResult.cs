@@ -44,9 +44,4 @@ public class ParsingResult
             analysis.Version
         );
     }
-
-    public static ParsingResult Empty()
-    {
-        return new ParsingResult(new List<ParsedMatch>(), string.Empty, "0");
-    }
 }
