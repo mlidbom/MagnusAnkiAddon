@@ -13,6 +13,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
 - **File structure:** Classes should be in the equivalent file in C# as in Python. Do not put them in other files willy-nilly.
 - **Naming - files:** Python filename `my_class_name.py` becomes `MyClassName.cs`. Underscores convert to PascalCase, but don't rename the file to something completely different.
 - **Naming - classes/members:** Use .NET naming standards (PascalCase for public members, etc.) but keep the same names. `my_function_name` becomes `MyFunctionName`, not something completely different.
+- **Public API must match:** New public methods, properties, or fields on a class count as NOT matching unless there is a documented good reason. If Python has methods A, B, C then C# should have methods A, B, C - not A, B, C, D. Extra public members mean other code has changed, breaking the faithful port.
 - **Mirror inconsistencies:** Even if the Python has inconsistencies (class names not matching file names, weird organization, etc.), mirror them in C#. Do NOT "fix" inconsistencies as part of porting.
 - **WeakRef:** Replace with standard references in .NET (C# has better garbage collection).
 - **Class organization:** If a class is in a separate file in Python, it should be in the equivalent .cs file. If classes are together in the same file in Python, same for C#.
