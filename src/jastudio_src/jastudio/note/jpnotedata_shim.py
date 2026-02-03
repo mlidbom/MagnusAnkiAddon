@@ -7,7 +7,6 @@ from jaslib.note.jpnote_data import JPNoteData
 if TYPE_CHECKING:
     from anki.notes import Note
 
-
 class JPNoteDataShim:
     @classmethod
     def from_note(cls, note: Note) -> JPNoteData:
@@ -16,3 +15,9 @@ class JPNoteDataShim:
             fields[name] = note[name]
 
         return JPNoteData(note.id, fields, note.tags)
+
+    @classmethod
+    def set_note_data(cls, note: Note, data: JPNoteData) -> None:
+        note.tags = data.tags
+        for field_name, field_value in data.fields.items():
+            note[field_name] = field_value
