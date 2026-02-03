@@ -4,9 +4,17 @@
 
 **Stay faithful to the Python - refactoring comes later.** We want almost completely equivalent code, only in C#.
 
+### Why Stay So Close?
+
+Staying this close to the Python is what makes the porting workable at all. If we start changing things while porting, it's like letting go with both hands while climbing - we have nothing to rely on, nothing keeping us from falling. **Mirroring the Python is our handgrip.** Until we have all the tests ported and working, NO significant redesigns or "fixes" will be done, even if we spot inconsistencies or improvements.
+
+### Rules
+
 - **File structure:** Classes should be in the equivalent file in C# as in Python. Do not put them in other files willy-nilly.
+- **Naming - files:** Python filename `my_class_name.py` becomes `MyClassName.cs`. Underscores convert to PascalCase, but don't rename the file to something completely different.
+- **Naming - classes/members:** Use .NET naming standards (PascalCase for public members, etc.) but keep the same names. `my_function_name` becomes `MyFunctionName`, not something completely different.
+- **Mirror inconsistencies:** Even if the Python has inconsistencies (class names not matching file names, weird organization, etc.), mirror them in C#. Do NOT "fix" inconsistencies as part of porting.
 - **WeakRef:** Replace with standard references in .NET (C# has better garbage collection).
-- **Naming:** Use .NET naming standards (PascalCase for public members, etc.).
 - **Class organization:** If a class is in a separate file in Python, it should be in the equivalent .cs file. If classes are together in the same file in Python, same for C#.
 - **Missing dependencies:** When ported code doesn't compile due to missing classes, create them. If too complex to implement immediately, create members throwing `NotImplementedException`.
 - **Implementation completeness:** Either fully implement a member or throw `NotImplementedException`. Do NOT return nonsense values.
@@ -151,10 +159,11 @@
             - LazyReader implementation was broken (empty callback instead of calling lazy.Reset); needs fix now that LazyCE.Reset exists
         - 40% comma_separated_strings_list_field.py
             - Uses MutableStringField instead of CachingMutableStringField; no caching (re-parses on every Get() call); missing LazyReader method
-        - CREATED WIP comma_separated_strings_list_field_de_duplicated.py
-        - CREATED WIP fallback_string_field.py
-        - CREATED WIP integer_field.py
-        - CREATED WIP json_object_field.py
+        - 100% comma_separated_strings_list_field_de_duplicated.py
+        - 100% fallback_string_field.py
+        - 100% integer_field.py
+        - 50% json_object_field.py
+            - File renamed to SerializedObjectField.cs instead of JsonObjectField.cs; class renamed to SerializedObjectField instead of MutableSerializedObjectField
         - CREATED WIP mutable_string_field.py
         - CREATED WIP require_forbid_flag_field.py
         - CREATED WIP sentence_question_field.py
