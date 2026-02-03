@@ -187,7 +187,8 @@ Staying this close to the Python is what makes the porting workable at all. If w
         - 40% word_exclusion_set.py
             - File contains 3 classes (WordExclusion, JsonReader, WordExclusionSet) instead of just WordExclusionSet; extra public methods: Empty(), Empty(Action), IsEmpty()
         - serialization
-            - CREATED WIP parsed_word_serializer.py
+            - 70% parsed_word_serializer.py
+                - ToRow() and FromRow() are instance methods instead of static methods
             - CREATED WIP parsing_result_serializer.py
             - CREATED WIP sentence_configuration_serializer.py
     - vocabulary
