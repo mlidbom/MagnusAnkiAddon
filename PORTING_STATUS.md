@@ -184,7 +184,8 @@ Staying this close to the Python is what makes the porting workable at all. If w
             - File in wrong location (Note\SentenceNote.cs instead of Note\Sentences\SentenceNote.cs); needs comparison of public API
         - 50% user_fields.py
             - Wrong file name: SentenceUserFields.cs instead of UserFields.cs
-        - CREATED WIP word_exclusion_set.py
+        - 40% word_exclusion_set.py
+            - File contains 3 classes (WordExclusion, JsonReader, WordExclusionSet) instead of just WordExclusionSet; extra public methods: Empty(), Empty(Action), IsEmpty()
         - serialization
             - CREATED WIP parsed_word_serializer.py
             - CREATED WIP parsing_result_serializer.py
