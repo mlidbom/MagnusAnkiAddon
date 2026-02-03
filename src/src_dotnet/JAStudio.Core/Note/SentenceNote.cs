@@ -3,6 +3,7 @@ using JAStudio.Core.Note.Sentences;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.Note.Sentences.Serialization;
 
 namespace JAStudio.Core.Note;
 
@@ -195,25 +196,5 @@ public class SentenceNote : JPNote
         note.UpdateGeneratedData();
         App.Col().Sentences.Add(note);
         return note;
-    }
-}
-
-// Placeholder serializer
-public class ParsingResultSerializer : IObjectSerializer<ParsingResult>
-{
-    public string Serialize(ParsingResult instance)
-    {
-        // TODO: Implement JSON serialization
-        return string.Empty;
-    }
-
-    public ParsingResult Deserialize(string serialized)
-    {
-        if (string.IsNullOrEmpty(serialized))
-        {
-            return ParsingResult.Empty();
-        }
-        // TODO: Implement JSON deserialization
-        return ParsingResult.Empty();
     }
 }

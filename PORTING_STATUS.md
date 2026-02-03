@@ -164,19 +164,19 @@ Staying this close to the Python is what makes the porting workable at all. If w
         - 100% integer_field.py
         - 50% json_object_field.py
             - File renamed to SerializedObjectField.cs instead of JsonObjectField.cs; class renamed to SerializedObjectField instead of MutableSerializedObjectField
-        - CREATED WIP mutable_string_field.py
-        - CREATED WIP require_forbid_flag_field.py
-        - CREATED WIP sentence_question_field.py
-        - CREATED WIP strip_html_on_read_fallback_string_field.py
-        - CREATED WIP tag_flag_field.py
+        - 100% mutable_string_field.py
+        - 100% require_forbid_flag_field.py
+        - 100% sentence_question_field.py
+        - 100% strip_html_on_read_fallback_string_field.py
+        - 100% tag_flag_field.py
         - auto_save_wrappers
             - MISSING field_wrapper.py
             - MISSING set_wrapper.py
             - MISSING value_wrapper.py
     - sentences
-        - CREATED WIP caching_sentence_configuration_field.py
-        - CREATED WIP parsed_match.py
-        - CREATED WIP parsing_result.py
+        - 100% caching_sentence_configuration_field.py
+        - 100% parsed_match.py
+        - 100% parsing_result.py
         - CREATED WIP sentence_configuration.py
         - CREATED WIP sentencenote.py
         - CREATED WIP user_fields.py
