@@ -190,7 +190,8 @@ Staying this close to the Python is what makes the porting workable at all. If w
             - 70% parsed_word_serializer.py
                 - ToRow() and FromRow() are instance methods instead of static methods
             - 100% parsing_result_serializer.py
-            - CREATED WIP sentence_configuration_serializer.py
+            - 50% sentence_configuration_serializer.py
+                - Extra public member: Instance property (singleton pattern not in Python); contains extra JsonHelper class; JsonHelper has incomplete TODO implementations
     - vocabulary
         - MISSING pos.py
         - MISSING pos_set_interner.py
