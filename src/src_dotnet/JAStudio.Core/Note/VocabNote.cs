@@ -11,6 +11,8 @@ public class VocabNote : JPNote
     public CommaSeparatedStringsListField Readings { get; }
     public VocabNoteUserFields User { get; }
     public VocabNoteForms Forms { get; }
+    public VocabNoteKanji Kanji { get; }
+    public VocabNotePartsOfSpeech PartsOfSpeech { get; }
 
     public VocabNote(JPNoteData? data = null) : base(data)
     {
@@ -18,6 +20,8 @@ public class VocabNote : JPNote
         Readings = new CommaSeparatedStringsListField(this, NoteFieldsConstants.Vocab.ReadingKana);
         User = new VocabNoteUserFields(this);
         Forms = new VocabNoteForms(this);
+        Kanji = new VocabNoteKanji(() => this);
+        PartsOfSpeech = new VocabNotePartsOfSpeech(() => this);
     }
 
     public override void UpdateInCache()

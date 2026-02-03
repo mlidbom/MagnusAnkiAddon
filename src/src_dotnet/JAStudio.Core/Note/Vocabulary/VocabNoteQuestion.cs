@@ -55,6 +55,15 @@ public class VocabNoteQuestion
     public bool IsValid => Raw != InvalidQuestionMessage;
     public bool IsDisambiguated => DisambiguationName.Contains(DisambiguationMarker);
 
+    public string WithoutNoiseCharacters
+    {
+        get
+        {
+            const string vocabPrefixSuffixMarker = "";
+            return Raw.Replace(vocabPrefixSuffixMarker, string.Empty);
+        }
+    }
+
     public void Set(string value)
     {
         _vocab.SetField(NoteFieldsConstants.Vocab.Question, value);
@@ -69,3 +78,4 @@ public class VocabNoteQuestion
 
     public override string ToString() => Raw;
 }
+
