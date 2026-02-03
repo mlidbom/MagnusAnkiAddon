@@ -222,7 +222,8 @@ Staying this close to the Python is what makes the porting workable at all. If w
             - MISSING Antonyms.py
             - MISSING ergative_twin.py
             - MISSING perfect_synonyms.py
-            - MISSING related_vocab.py
+            - 40% related_vocab.py
+                - Wrong class name (VocabRelatedNotes instead of RelatedVocab); missing all related vocab fields (ergative_twin, synonyms, perfect_synonyms, antonyms, see_also, derived_from, confused_with) - just TODO comments
             - MISSING related_vocab_data.py
             - MISSING related_vocab_data_serializer.py
             - MISSING SeeAlso.py
