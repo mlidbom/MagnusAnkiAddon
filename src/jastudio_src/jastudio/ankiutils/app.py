@@ -10,6 +10,9 @@ import jastudio.mylog  # pyright: ignore [reportUnusedImport]  # noqa: F401
 from jastudio.testutils import ex_pytest
 from typed_linq_collections.collections.q_set import QSet
 
+# noinspection Annotator
+from jaslib.dotnet import load_dotnet_runtime  # pyright: ignore [reportUnusedImport]  # noqa: F401
+
 is_testing = ex_pytest.is_testing
 
 if TYPE_CHECKING:
@@ -35,9 +38,6 @@ addon_name: str = "should_be_replaced_by_init"
 def _call_init_hooks() -> None:
     global _init_hooks
     for hook in _init_hooks: hook()
-
-def add_init_hook(hook: Callable[[], None]) -> None:
-    _init_hooks.add(hook)
 
 def config() -> JapaneseConfig:
     from jastudio.configuration import configuration_value

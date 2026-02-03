@@ -5,8 +5,6 @@ from typing import TYPE_CHECKING
 
 from typed_linq_collections.collections.q_set import QSet
 
-# noinspection Annotator
-from jaslib.dotnet import load_dotnet_runtime  # pyright: ignore [reportUnusedImport]  # noqa: F401
 from jaslib.testutils import ex_pytest
 
 is_testing = ex_pytest.is_testing
