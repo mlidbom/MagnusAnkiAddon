@@ -189,7 +189,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
         - serialization
             - 70% parsed_word_serializer.py
                 - ToRow() and FromRow() are instance methods instead of static methods
-            - CREATED WIP parsing_result_serializer.py
+            - 100% parsing_result_serializer.py
             - CREATED WIP sentence_configuration_serializer.py
     - vocabulary
         - MISSING pos.py
