@@ -33,7 +33,7 @@ public class VocabNoteForms
     public List<VocabNote> AllListNotes()
     {
         return AllList()
-            .SelectMany(form => App.Col().Vocab.Cache.WithQuestion(form))
+            .SelectMany(form => App.Col().Vocab.Cache.WithForm(form))
             .ToList();
     }
 
@@ -76,9 +76,10 @@ public class VocabNoteForms
     {
         _field.Remove(remove);
 
-        // Also remove from notes that have this vocab's question as a form
-        var removeNotes = App.Col().Vocab.Cache.WithQuestion(remove)
-            .Where(voc => voc.Forms.AllSet().Contains(_vocab.GetQuestion()));
+        // Also remove from notes that have this vocab's question as a form (use ToList to avoid modification during iteration)
+        var removeNotes = App.Col().Vocab.Cache.WithForm(remove)
+            .Where(voc => voc.Forms.AllSet().Contains(_vocab.GetQuestion()))
+            .ToList();
         
         foreach (var removeNote in removeNotes)
         {
@@ -90,9 +91,10 @@ public class VocabNoteForms
     {
         _field.Add(add);
 
-        // Also add to notes that reference this form
-        var addNotes = App.Col().Vocab.Cache.WithQuestion(add)
-            .Where(voc => !voc.Forms.AllSet().Contains(_vocab.GetQuestion()));
+        // Also add to notes that reference this form (use ToList to avoid modification during iteration)
+        var addNotes = App.Col().Vocab.Cache.WithForm(add)
+            .Where(voc => !voc.Forms.AllSet().Contains(_vocab.GetQuestion()))
+            .ToList();
         
         foreach (var addNote in addNotes)
         {

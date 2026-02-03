@@ -41,15 +41,14 @@ public class VocabSnapshot : CachedNote
 
     public VocabSnapshot(VocabNote note) : base(note)
     {
-        // TODO: Implement when VocabNote properties are available
-        DisambiguationName = string.Empty;
-        Forms = Array.Empty<string>();
-        CompoundParts = Array.Empty<string>();
-        MainFormKanji = Array.Empty<string>();
-        AllKanji = Array.Empty<string>();
-        Readings = Array.Empty<string>();
-        DerivedFrom = string.Empty;
-        Stems = Array.Empty<string>();
+        DisambiguationName = note.Question.DisambiguationName;
+        Forms = note.Forms.AllList().ToArray();
+        CompoundParts = Array.Empty<string>(); // TODO: Implement when compound parts are ported
+        MainFormKanji = Array.Empty<string>(); // TODO: Implement kanji extraction
+        AllKanji = Array.Empty<string>(); // TODO: Implement kanji extraction
+        Readings = note.GetReadings().ToArray();
+        DerivedFrom = string.Empty; // TODO: Implement when derived vocab is ported
+        Stems = Array.Empty<string>(); // TODO: Implement when stems are ported
     }
 }
 

@@ -4,7 +4,7 @@ using Xunit;
 
 namespace JAStudio.Core.Tests.Note;
 
-public class KanjiNoteTests
+public class KanjiNoteTests : IAIGeneratedTestClass
 {
     public KanjiNoteTests()
     {

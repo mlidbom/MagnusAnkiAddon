@@ -6,7 +6,7 @@ using Xunit;
 
 namespace JAStudio.Core.Tests.Note;
 
-public class VocabNoteTests
+public class VocabNoteTests : IAIGeneratedTestClass
 {
     public VocabNoteTests()
     {

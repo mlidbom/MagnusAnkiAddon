@@ -68,12 +68,16 @@ public class SentenceNote : JPNote
         }
 
         // Add displayed parsed words
-        foreach (var match in ParsingResult.Get().ParsedWords.Where(p => p.IsDisplayed && p.VocabId != -1))
+        var parsingResult = ParsingResult.Get();
+        if (parsingResult != null)
         {
-            var vocab = App.Col().Vocab.WithIdOrNone(match.VocabId);
-            if (vocab != null)
+            foreach (var match in parsingResult.ParsedWords.Where(p => p.IsDisplayed && p.VocabId != -1))
             {
-                dependencies.Add(vocab);
+                var vocab = App.Col().Vocab.WithIdOrNone(match.VocabId);
+                if (vocab != null)
+                {
+                    dependencies.Add(vocab);
+                }
             }
         }
 

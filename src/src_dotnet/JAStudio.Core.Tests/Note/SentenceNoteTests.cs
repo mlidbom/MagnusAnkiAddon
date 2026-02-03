@@ -5,7 +5,7 @@ using Xunit;
 
 namespace JAStudio.Core.Tests.Note;
 
-public class SentenceNoteTests
+public class SentenceNoteTests : IAIGeneratedTestClass
 {
     public SentenceNoteTests()
     {
