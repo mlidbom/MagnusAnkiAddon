@@ -9,7 +9,7 @@ namespace JAStudio.Core.Note;
 public class VocabNote : JPNote
 {
     public VocabNoteQuestion Question { get; private set; }
-    public CommaSeparatedStringsListField Readings { get; }
+    public MutableCommaSeparatedStringsListField Readings { get; }
     public VocabNoteUserFields User { get; }
     public VocabNoteForms Forms { get; }
     public VocabNoteKanji Kanji { get; }
@@ -31,7 +31,7 @@ public class VocabNote : JPNote
     public VocabNote(JPNoteData? data = null) : base(data)
     {
         Question = new VocabNoteQuestion(this);
-        Readings = new CommaSeparatedStringsListField(this, NoteFieldsConstants.Vocab.ReadingKana);
+        Readings = new MutableCommaSeparatedStringsListField(this, NoteFieldsConstants.Vocab.ReadingKana);
         User = new VocabNoteUserFields(this);
         Forms = new VocabNoteForms(this);
         Kanji = new VocabNoteKanji(this);

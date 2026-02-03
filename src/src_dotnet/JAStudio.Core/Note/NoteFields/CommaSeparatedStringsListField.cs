@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace JAStudio.Core.Note.NoteFields;
 
-public class CommaSeparatedStringsListField
+public class MutableCommaSeparatedStringsListField
 {
     private readonly MutableStringField _field;
 
-    public CommaSeparatedStringsListField(JPNote note, string fieldName)
+    public MutableCommaSeparatedStringsListField(JPNote note, string fieldName)
     {
         _field = new MutableStringField(note, fieldName);
     }
@@ -32,7 +32,7 @@ public class CommaSeparatedStringsListField
         Set(Get().Where(item => item != remove).ToList());
     }
 
-    public void Set(List<string> value)
+    public virtual void Set(List<string> value)
     {
         _field.Set(string.Join(", ", value));
     }

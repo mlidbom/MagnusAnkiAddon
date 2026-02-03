@@ -7,12 +7,12 @@ namespace JAStudio.Core.Note.Vocabulary;
 public class VocabNoteForms
 {
     private readonly VocabNote _vocab;
-    private readonly CommaSeparatedStringsListField _field;
+    private readonly MutableCommaSeparatedStringsListField _field;
 
     public VocabNoteForms(VocabNote vocab)
     {
         _vocab = vocab;
-        _field = new CommaSeparatedStringsListField(vocab, NoteFieldsConstants.Vocab.UserForms);
+        _field = new MutableCommaSeparatedStringsListField(vocab, NoteFieldsConstants.Vocab.UserForms);
     }
 
     public List<string> AllList()

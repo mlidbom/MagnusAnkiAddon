@@ -6,14 +6,13 @@ namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteUserCompoundParts
 {
-    private const string FieldName = "user_compounds"; // NoteFields.Vocab.user_compounds
     private readonly VocabNote _vocab;
-    private readonly CommaSeparatedStringsListField _field;
+    private readonly MutableCommaSeparatedStringsListField _field;
 
     public VocabNoteUserCompoundParts(VocabNote vocab)
     {
         _vocab = vocab;
-        _field = new CommaSeparatedStringsListField(vocab, FieldName);
+        _field = new MutableCommaSeparatedStringsListField(vocab, NoteFieldsConstants.Vocab.UserCompoundParts);
     }
 
     private VocabNote Vocab => _vocab;
