@@ -7,16 +7,16 @@ namespace JAStudio.Core.Note.Vocabulary;
 public class VocabNotePartsOfSpeech
 {
     private const string FieldName = "parts_of_speech"; // NoteFields.Vocab.parts_of_speech
-    private readonly Func<VocabNote> _vocab;
+    private readonly VocabNote _vocab;
 
-    public VocabNotePartsOfSpeech(Func<VocabNote> vocab)
+    public VocabNotePartsOfSpeech(VocabNote vocab)
     {
         _vocab = vocab;
         // Initialize with current value
         SetRawStringValue(RawStringValue());
     }
 
-    private VocabNote Vocab => _vocab();
+    private VocabNote Vocab => _vocab;
 
     public string RawStringValue()
     {

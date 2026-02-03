@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,10 +5,10 @@ namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 
 public class VocabRelatedNotes
 {
-    private readonly Func<VocabNote> _vocab;
+    private readonly VocabNote _vocab;
     private HashSet<int>? _inCompoundIds;
 
-    public VocabRelatedNotes(Func<VocabNote> vocab)
+    public VocabRelatedNotes(VocabNote vocab)
     {
         _vocab = vocab;
         // TODO: Initialize related vocab components when ported:
@@ -22,7 +21,7 @@ public class VocabRelatedNotes
         // - ConfusedWith
     }
 
-    private VocabNote Vocab => _vocab();
+    private VocabNote Vocab => _vocab;
 
     public HashSet<int> InCompoundIds
     {

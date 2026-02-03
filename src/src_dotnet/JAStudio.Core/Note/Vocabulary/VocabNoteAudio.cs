@@ -1,12 +1,10 @@
-using System;
-
 namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteAudio
 {
-    private readonly Func<VocabNote> _vocab;
+    private readonly VocabNote _vocab;
 
-    public VocabNoteAudio(Func<VocabNote> vocab)
+    public VocabNoteAudio(VocabNote vocab)
     {
         _vocab = vocab;
         // TODO: Implement WritableAudioField when audio_field.py is ported
@@ -15,7 +13,7 @@ public class VocabNoteAudio
         // Tts = new WritableAudioField(vocab, NoteFields.Vocab.Audio_TTS);
     }
 
-    private VocabNote Vocab => _vocab();
+    private VocabNote Vocab => _vocab;
 
     // TODO: Implement audio fields when WritableAudioField is ported
     // public WritableAudioField First { get; }

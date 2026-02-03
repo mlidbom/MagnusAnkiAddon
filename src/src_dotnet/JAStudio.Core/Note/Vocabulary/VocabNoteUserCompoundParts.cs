@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.Note.NoteFields;
@@ -8,16 +7,16 @@ namespace JAStudio.Core.Note.Vocabulary;
 public class VocabNoteUserCompoundParts
 {
     private const string FieldName = "user_compounds"; // NoteFields.Vocab.user_compounds
-    private readonly Func<VocabNote> _vocab;
+    private readonly VocabNote _vocab;
     private readonly CommaSeparatedStringsListField _field;
 
-    public VocabNoteUserCompoundParts(Func<VocabNote> vocab)
+    public VocabNoteUserCompoundParts(VocabNote vocab)
     {
         _vocab = vocab;
-        _field = new CommaSeparatedStringsListField(vocab(), FieldName);
+        _field = new CommaSeparatedStringsListField(vocab, FieldName);
     }
 
-    private VocabNote Vocab => _vocab();
+    private VocabNote Vocab => _vocab;
 
     public List<string> Primary()
     {

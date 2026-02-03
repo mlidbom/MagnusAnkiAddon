@@ -1,13 +1,12 @@
-using System;
 using System.Collections.Generic;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteMatchingConfiguration
 {
-    private readonly Func<VocabNote> _vocab;
+    private readonly VocabNote _vocab;
 
-    public VocabNoteMatchingConfiguration(Func<VocabNote> vocab)
+    public VocabNoteMatchingConfiguration(VocabNote vocab)
     {
         _vocab = vocab;
         // TODO: Implement matching rules when serialization and field wrappers are ported
@@ -16,7 +15,7 @@ public class VocabNoteMatchingConfiguration
         // - BoolFlags (is_inflecting_word)
     }
 
-    private VocabNote Vocab => _vocab();
+    private VocabNote Vocab => _vocab;
 
     // TODO: Implement when matching rules are ported
     // public VocabNoteMatchingRules Rules { get; }

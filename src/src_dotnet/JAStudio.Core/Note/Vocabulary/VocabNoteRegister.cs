@@ -1,18 +1,17 @@
-using System;
 using JAStudio.Core.Note.NoteFields;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteRegister
 {
-    private readonly Func<VocabNote> _vocab;
+    private readonly VocabNote _vocab;
 
-    public VocabNoteRegister(Func<VocabNote> vocab)
+    public VocabNoteRegister(VocabNote vocab)
     {
         _vocab = vocab;
     }
 
-    private VocabNote Vocab => _vocab();
+    private VocabNote Vocab => _vocab;
 
     public TagFlagField Polite => new TagFlagField(Vocab, Tags.Vocab.Register.Polite);
     public TagFlagField Formal => new TagFlagField(Vocab, Tags.Vocab.Register.Formal);

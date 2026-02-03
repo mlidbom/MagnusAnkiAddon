@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,14 +5,14 @@ namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabCloner
 {
-    private readonly Func<VocabNote> _noteRef;
+    private readonly VocabNote _note;
 
-    public VocabCloner(Func<VocabNote> noteRef)
+    public VocabCloner(VocabNote note)
     {
-        _noteRef = noteRef;
+        _note = note;
     }
 
-    private VocabNote Note => _noteRef();
+    private VocabNote Note => _note;
 
     public VocabNote PrefixToDictionaryForm(string prefix, string speechType = POS.Expression)
     {

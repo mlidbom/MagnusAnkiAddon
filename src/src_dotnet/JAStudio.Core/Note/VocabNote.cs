@@ -30,17 +30,17 @@ public class VocabNote : JPNote
         Readings = new CommaSeparatedStringsListField(this, NoteFieldsConstants.Vocab.ReadingKana);
         User = new VocabNoteUserFields(this);
         Forms = new VocabNoteForms(this);
-        Kanji = new VocabNoteKanji(() => this);
-        PartsOfSpeech = new VocabNotePartsOfSpeech(() => this);
-        Conjugator = new VocabNoteConjugator(() => this);
-        Sentences = new VocabNoteSentences(() => this);
-        CompoundParts = new VocabNoteUserCompoundParts(() => this);
-        RelatedNotes = new VocabRelatedNotes(() => this);
-        MetaData = new VocabNoteMetaData(() => this);
-        Register = new VocabNoteRegister(() => this);
-        Audio = new VocabNoteAudio(() => this);
-        MatchingConfiguration = new VocabNoteMatchingConfiguration(() => this);
-        Cloner = new VocabCloner(() => this);
+        Kanji = new VocabNoteKanji(this);
+        PartsOfSpeech = new VocabNotePartsOfSpeech(this);
+        Conjugator = new VocabNoteConjugator(this);
+        Sentences = new VocabNoteSentences(this);
+        CompoundParts = new VocabNoteUserCompoundParts(this);
+        RelatedNotes = new VocabRelatedNotes(this);
+        MetaData = new VocabNoteMetaData(this);
+        Register = new VocabNoteRegister(this);
+        Audio = new VocabNoteAudio(this);
+        MatchingConfiguration = new VocabNoteMatchingConfiguration(this);
+        Cloner = new VocabCloner(this);
     }
 
     public override void UpdateInCache()

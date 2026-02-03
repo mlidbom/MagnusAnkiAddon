@@ -57,15 +57,15 @@ public class SentenceCounts
 
 public class VocabNoteSentences
 {
-    private readonly Func<VocabNote> _vocab;
+    private readonly VocabNote _vocab;
     private SentenceCounts? _counts;
 
-    public VocabNoteSentences(Func<VocabNote> vocab)
+    public VocabNoteSentences(VocabNote vocab)
     {
         _vocab = vocab;
     }
 
-    private VocabNote Vocab => _vocab();
+    private VocabNote Vocab => _vocab;
 
     public SentenceCounts Counts()
     {

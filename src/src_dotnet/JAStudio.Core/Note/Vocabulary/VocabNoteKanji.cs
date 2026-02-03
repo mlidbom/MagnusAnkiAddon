@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -7,14 +6,14 @@ namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteKanji
 {
-    private readonly Func<VocabNote> _vocab;
+    private readonly VocabNote _vocab;
 
-    public VocabNoteKanji(Func<VocabNote> vocab)
+    public VocabNoteKanji(VocabNote vocab)
     {
         _vocab = vocab;
     }
 
-    private VocabNote Vocab => _vocab();
+    private VocabNote Vocab => _vocab;
 
     public List<string> ExtractMainFormKanji()
     {
