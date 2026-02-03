@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import cast
 
+from anki.decks import DeckId
 from anki.models import NotetypeDict, NotetypeId
 from autoslot import Slots
 from jaslib.sysutils import ex_assert, typed
@@ -20,7 +21,7 @@ class NoteTypeEx(Slots):
         self.mod:int = 0
         self.usn:int = 0
         self.sortf:int = 0
-        self.did:int = 0
+        self.deck_id:DeckId = DeckId(0)
         self.css:str = ""
         self.latexPre:str = ""
         self.latexPost:str = ""
@@ -43,7 +44,7 @@ class NoteTypeEx(Slots):
             "mod": self.mod,
             "usn": self.usn,
             "sortf": self.sortf,
-            "did": self.did,
+            "did": self.deck_id,
             "tmpls": [t.to_dict() for t in self.tmpls],
             "flds": [f.to_dict() for f in self.flds],
             "css": self.css,
@@ -72,7 +73,7 @@ class NoteTypeEx(Slots):
         created.mod = typed.int_(note_type_dict["mod"])  # pyright: ignore[reportAny]
         created.usn = typed.int_(note_type_dict["usn"])  # pyright: ignore[reportAny]
         created.sortf = typed.int_(note_type_dict["sortf"])  # pyright: ignore[reportAny]
-        # None for some reason# created.did = typed.int_(note_type_dict['did'])
+        created.deck_id = note_type_dict["did"]
         created.css = typed.str_(note_type_dict["css"])  # pyright: ignore[reportAny]
         created.latexPre = typed.str_(note_type_dict["latexPre"])  # pyright: ignore[reportAny]
         created.latexPost = typed.str_(note_type_dict["latexPost"])  # pyright: ignore[reportAny]
