@@ -195,12 +195,14 @@ Staying this close to the Python is what makes the porting workable at all. If w
     - vocabulary
         - MISSING pos.py
         - MISSING pos_set_interner.py
-        - CREATED WIP vocabnote.py
+        - 50% vocabnote.py
+            - File in wrong location (Note\VocabNote.cs instead of Note\Vocabulary\VocabNote.cs); needs comparison of public API
         - MISSING vocabnote_audio.py
         - MISSING vocabnote_cloner.py
-        - CREATED WIP vocabnote_conjugator.py
+        - 100% vocabnote_conjugator.py
         - MISSING vocabnote_factory.py
-        - CREATED WIP vocabnote_forms.py
+        - 40% vocabnote_forms.py
+            - Wrong field type (MutableCommaSeparatedStringsListField instead of DeDuplicated); no lazy caching; missing methods: all_list_notes_by_sentence_count(), not_owned_by_other_vocab(), without_noise_characters(); extra public method: OwnedForms()
         - MISSING vocabnote_generated_data.py
         - MISSING vocabnote_kanji.py
         - MISSING vocabnote_matching_rules.py
@@ -213,7 +215,8 @@ Staying this close to the Python is what makes the porting workable at all. If w
         - MISSING vocabnote_register.py
         - MISSING vocabnote_sentences.py
         - MISSING vocabnote_sorting.py
-        - CREATED WIP vocabnote_usercompoundparts.py
+        - 60% vocabnote_usercompoundparts.py
+            - AutoGenerate() not implemented (just TODO comment); missing _collection property
         - MISSING vocabnote_userfields.py
         - related_vocab
             - MISSING Antonyms.py
