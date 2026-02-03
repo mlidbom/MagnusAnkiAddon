@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING
 
 import jaslib.app
 from autoslot import Slots
+from jaslib import app as jaslibapp
+from jaslib import mylog
 from jaslib.note.jpnote import JPNote
 from jaslib.note.kanjinote import KanjiNote
 from jaslib.note.note_constants import Mine, NoteTypes
@@ -23,9 +25,6 @@ from jastudio.note.collection.anki_single_collection_syncer import AnkiSingleCol
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
 from jastudio.sysutils import app_thread_pool
 from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
-
-from jaslib import app as jaslibapp
-from jaslib import mylog
 
 if TYPE_CHECKING:
     from anki.collection import Collection

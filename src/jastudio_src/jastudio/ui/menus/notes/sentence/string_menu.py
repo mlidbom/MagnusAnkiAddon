@@ -6,6 +6,7 @@ from jaslib.language_services.janome_ex.word_extraction.word_exclusion import Wo
 from jaslib.sysutils import ex_lambda
 from jaslib.sysutils.lazy import Lazy
 from jaslib.sysutils.typed import non_optional
+
 from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.menu_utils.ex_qmenu import add_ui_action
 

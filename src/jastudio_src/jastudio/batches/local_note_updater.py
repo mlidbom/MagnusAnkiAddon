@@ -4,6 +4,7 @@ import gc
 from typing import TYPE_CHECKING
 
 from jaslib.task_runners.task_progress_runner import TaskRunner
+
 from jastudio.ankiutils import app, query_builder
 
 if TYPE_CHECKING:

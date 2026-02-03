@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from jaslib.task_runners.task_progress_runner import TaskRunner
+
 from jastudio.qt_utils.qt_task_progress_runner import QtTaskProgressRunner
 
 

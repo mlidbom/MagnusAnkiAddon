@@ -5,6 +5,7 @@ from typing import cast
 from anki.models import NotetypeDict, NotetypeId
 from autoslot import Slots
 from jaslib.sysutils import ex_assert, typed
+
 from jastudio.anki_extentions.notetype_ex.note_type_field import NoteFieldEx
 from jastudio.anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
 

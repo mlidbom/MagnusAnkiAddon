@@ -6,8 +6,9 @@ from aqt.reviewer import Reviewer
 from aqt.sound import av_player
 from aqt.utils import askUserDialog
 from jaslib.sysutils import timeutil, typed
-from jastudio.ankiutils import app
 from PyQt6.QtWidgets import QMessageBox
+
+from jastudio.ankiutils import app
 
 addon_path: str = dirname(__file__)
 sound_file: str = addon_path + "/timebox_complete.mp3"

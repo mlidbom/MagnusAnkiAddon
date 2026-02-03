@@ -9,6 +9,7 @@ from autoslot import Slots
 from jaslib.sysutils import typed
 from jaslib.sysutils.typed import non_optional
 from jaslib.sysutils.weak_ref import WeakRefable
+
 from jastudio.ankiutils import app, query_builder, search_executor, ui_utils
 
 

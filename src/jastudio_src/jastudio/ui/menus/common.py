@@ -4,6 +4,7 @@ import typing
 
 import pyperclip
 from aqt import gui_hooks
+from jaslib import app
 from jaslib.batches import local_note_updater
 from jaslib.note.kanjinote import KanjiNote
 from jaslib.note.note_constants import Mine
@@ -11,6 +12,8 @@ from jaslib.note.sentences.sentencenote import SentenceNote
 from jaslib.note.vocabulary.vocabnote import VocabNote
 from jaslib.sysutils import ex_lambda, typed
 from jaslib.sysutils.typed import non_optional
+from typed_linq_collections.collections.q_list import QList
+
 from jastudio.anki_extentions.note_ex import NoteEx
 from jastudio.ankiutils import query_builder, search_executor, ui_utils
 from jastudio.qt_utils.ex_qmenu import ExQmenu
@@ -19,9 +22,6 @@ from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.menu_utils.ex_qmenu import add_ui_action, create_note_action, create_vocab_note_action
 from jastudio.ui.menus.open_in_anki import build_open_in_anki_menu
 from jastudio.ui.menus.web_search import build_web_search_menu
-from typed_linq_collections.collections.q_list import QList
-
-from jaslib import app
 
 if typing.TYPE_CHECKING:
     from aqt.webview import AnkiWebView

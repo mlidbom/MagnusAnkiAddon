@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
+
 from jastudio.anki_extentions.card_ex import CardEx
 from jastudio.ankiutils import app
 from jastudio.note import studing_status_helper

@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import jastudio.note.ankijpnote
 from aqt import gui_hooks
 from jaslib.note.sentences.sentencenote import SentenceNote
 from jaslib.sysutils import ex_lambda
 from jaslib.sysutils.typed import non_optional
+
+import jastudio.note.ankijpnote
 from jastudio.ankiutils import app
 from jastudio.note import queue_manager
 from jastudio.ui import menus

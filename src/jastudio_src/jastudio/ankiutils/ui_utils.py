@@ -3,9 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
-from jastudio.ankiutils import app
 from PyQt6.QtWidgets import QApplication
 from typed_linq_collections.q_iterable import query
+
+from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -25,6 +26,7 @@ from aqt.utils import tooltip
 from aqt.webview import AnkiWebView, AnkiWebViewKind
 from jaslib.sysutils import timeutil
 from jaslib.sysutils.typed import checked_cast, non_optional
+
 from jastudio.ankiutils.audio_suppressor import audio_suppressor
 from jastudio.ankiutils.ui_utils_interface import IUIUtils
 from jastudio.sysutils import app_thread_pool

@@ -3,6 +3,7 @@ from __future__ import annotations
 from aqt import gui_hooks
 from jaslib.note.notefields.sentence_question_field import SentenceQuestionField
 from jaslib.note.sentences.sentencenote import SentenceNote
+
 from jastudio.ankiutils import app
 from jastudio.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 

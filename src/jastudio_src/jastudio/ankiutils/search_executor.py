@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 import aqt
 from jaslib.sysutils.typed import non_optional
+
 from jastudio.ankiutils import app
 
 if TYPE_CHECKING:

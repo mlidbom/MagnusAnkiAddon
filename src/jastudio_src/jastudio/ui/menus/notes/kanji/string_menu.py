@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from jaslib.sysutils import ex_lambda, kana_utils
 from jaslib.sysutils.typed import non_optional
+
 from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.menu_utils.ex_qmenu import add_ui_action
 

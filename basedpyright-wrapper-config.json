@@ -4,7 +4,7 @@
   ],
   "extraPaths": [
     "src/jastudio_src",
-    "src/jaslib"
+    "src/jaslib_src"
   ],
   "exclude": [
     "**/node_modules",

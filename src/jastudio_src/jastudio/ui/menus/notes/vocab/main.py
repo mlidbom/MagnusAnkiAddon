@@ -3,17 +3,17 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pyperclip
+from jaslib import app
 from jaslib.note.note_constants import NoteFields, NoteTypes
 from jaslib.sysutils import ex_str
 from jaslib.sysutils.ex_str import newline
 from jaslib.sysutils.typed import non_optional
+
 from jastudio.ankiutils import query_builder
 from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.menu_utils.ex_qmenu import add_lookup_action, add_single_vocab_lookup_action, add_ui_action, add_vocab_dependencies_lookup
 from jastudio.ui.menus.notes.vocab.create_note_menu import build_create_note_menu
 from jastudio.ui.menus.notes.vocab.vocab_flags_dialog import show_vocab_flags_dialog
-
-from jaslib import app
 
 if TYPE_CHECKING:
     from jaslib.note.vocabulary.vocabnote import VocabNote

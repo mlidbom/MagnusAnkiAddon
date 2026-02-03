@@ -7,6 +7,7 @@ from aqt.reviewer import Reviewer
 from aqt.utils import tooltip
 from jaslib.sysutils.timeutil import StopWatch
 from jaslib.sysutils.typed import non_optional
+
 from jastudio.ankiutils import app
 
 # noinspection PyProtectedMember

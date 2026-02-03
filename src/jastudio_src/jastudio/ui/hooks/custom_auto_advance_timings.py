@@ -10,6 +10,7 @@ from jaslib.note.note_constants import CardTypes
 from jaslib.note.sentences.sentencenote import SentenceNote
 from jaslib.note.vocabulary.vocabnote import VocabNote
 from jaslib.sysutils.typed import non_optional
+
 from jastudio.anki_extentions.card_ex import CardEx
 from jastudio.ankiutils import app, ui_utils
 

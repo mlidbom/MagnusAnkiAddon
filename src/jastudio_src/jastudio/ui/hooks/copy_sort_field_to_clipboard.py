@@ -7,6 +7,7 @@ from anki.models import NotetypeDict
 from aqt import gui_hooks
 from jaslib.sysutils import ex_str, typed
 from jaslib.sysutils.timeutil import StopWatch
+
 from jastudio.ankiutils import app
 from jastudio.ankiutils.app import get_ui_utils
 from jastudio.sysutils import app_thread_pool

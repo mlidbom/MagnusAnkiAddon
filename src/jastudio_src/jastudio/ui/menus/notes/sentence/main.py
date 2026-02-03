@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from anki.notes import NoteId
 from jaslib.note.note_constants import NoteFields, NoteTypes
 from jaslib.sysutils.typed import non_optional
+
 from jastudio.ankiutils import app, query_builder
 from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.menu_utils.ex_qmenu import add_checkbox_config, add_lookup_action, add_ui_action

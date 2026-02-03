@@ -7,6 +7,7 @@ from jaslib.note.jpnote import JPNote
 from jaslib.note.note_constants import Mine
 from jaslib.sysutils.timeutil import StopWatch
 from jaslib.sysutils.typed import non_optional
+
 from jastudio.ankiutils import app, ui_utils
 from jastudio.sysutils import app_thread_pool
 

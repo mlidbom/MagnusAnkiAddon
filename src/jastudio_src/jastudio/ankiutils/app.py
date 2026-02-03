@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     from anki.scheduler.v3 import Scheduler  # pyright: ignore[reportMissingTypeStubs]
     from aqt import AnkiQt  # type: ignore[attr-defined]  # pyright: ignore[reportPrivateImportUsage]
     from jaslib.configuration.configuration_value import JapaneseConfig
+
     from jastudio.anki_extentions.config_manager_ex import ConfigManagerEx
     from jastudio.ankiutils.ui_utils_interface import IUIUtils
     from jastudio.note.collection.anki_jp_collection_syncer import AnkiJPCollectionSyncer
@@ -28,6 +29,8 @@ _collection: AnkiJPCollectionSyncer | None = None
 
 _init_hooks: QSet[Callable[[], None]] = QSet()
 _collection_closed_hooks: QSet[Callable[[], None]] = QSet()
+
+addon_name: str = "should_be_replaced_by_init"
 
 def _call_init_hooks() -> None:
     global _init_hooks
@@ -44,6 +47,7 @@ def _init(delay_seconds: float = 1.0) -> None:
     mylog.info(f"_init delay= {delay_seconds}")
 
     from aqt import mw
+
     from jastudio.note.collection.anki_jp_collection_syncer import AnkiJPCollectionSyncer
     global _collection
     if _collection is not None:
@@ -101,6 +105,7 @@ def _profile_opened() -> None:
 
 def anki_config() -> ConfigManagerEx:
     from aqt import mw
+
     from jastudio.anki_extentions.config_manager_ex import ConfigManagerEx
     return ConfigManagerEx(non_optional(mw.col).conf)
 

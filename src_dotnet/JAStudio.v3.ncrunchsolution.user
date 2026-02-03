@@ -6,7 +6,7 @@
       <Value>localhost:41141</Value>
       <Value>manges-laptop:41141</Value>
     </DisabledNodes>
-    <StatusIndicatorSplitterDistance>15%</StatusIndicatorSplitterDistance>
+    <StatusIndicatorSplitterDistance>13.1578950881958%</StatusIndicatorSplitterDistance>
     <TestsWindowMenuOptions>
       <VerticalSplitMenuOption>false</VerticalSplitMenuOption>
       <ShowPassingTestsMenuOption>true</ShowPassingTestsMenuOption>
@@ -14,6 +14,6 @@
       <ShowUnexecutedTestsMenuOption>true</ShowUnexecutedTestsMenuOption>
       <ShowIgnoredTestsMenuOption>false</ShowIgnoredTestsMenuOption>
     </TestsWindowMenuOptions>
-    <TestsWindowSplitterDistance>41.210655212402344%</TestsWindowSplitterDistance>
+    <TestsWindowSplitterDistance>48.61111068725586%</TestsWindowSplitterDistance>
   </Settings>
 </SolutionConfiguration>
