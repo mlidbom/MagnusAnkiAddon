@@ -2,10 +2,9 @@ from __future__ import annotations
 
 import gc
 
+from jaslib import mylog
 from jastudio.ankiutils import app
 from jastudio.sysutils import app_thread_pool
-
-from jaslib import mylog
 
 
 def collect_on_ui_thread_and_display_message(message: str = "Garbage collecting") -> None:
