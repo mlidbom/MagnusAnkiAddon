@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using JAStudio.Core.Tokenization;
 using Python.Runtime;
 
-namespace JAStudio.PythonInterop;
+namespace JAStudio.PythonInterop.Janome;
 
 public class JanomeTokenizer : ITokenizer
 {

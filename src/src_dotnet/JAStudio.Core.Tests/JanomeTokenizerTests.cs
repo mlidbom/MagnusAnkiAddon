@@ -1,5 +1,6 @@
 using System;
 using JAStudio.PythonInterop;
+using JAStudio.PythonInterop.Janome;
 using Xunit;
 
 namespace JAStudio.Core.Tests;
