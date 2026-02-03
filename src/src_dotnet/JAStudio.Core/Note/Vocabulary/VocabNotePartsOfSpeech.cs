@@ -91,4 +91,16 @@ public class VocabNotePartsOfSpeech
         // TODO: Implement when compound_parts is ported
         return false;
     }
+
+    public bool IsCausativeVerbCompound()
+    {
+        // TODO: Implement when compound_parts is ported
+        return false;
+    }
+
+    public bool IsCompleteNaAdjective()
+    {
+        // TODO: Implement when needed - checks if it's a complete na-adjective pattern
+        return Get().Contains(POS.NaAdjective);
+    }
 }
