@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourcePerFileMappings">
-    <file url="file://$PROJECT_DIR$/src/MagnusAddon/language_services/jamdict_ex/dict_lookup.py" value="dd7f0393-5dbe-49a8-a6e1-5659278de7fd" />
+    <file url="file://$PROJECT_DIR$/src/jastudio_src/jastudio/anki_extentions/note_bulk_loader.py" value="dd7f0393-5dbe-49a8-a6e1-5659278de7fd" />
   </component>
 </project>

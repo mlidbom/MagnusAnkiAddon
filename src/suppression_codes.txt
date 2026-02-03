@@ -1,4 +1,5 @@
-    # noinspection PyProtectedMember
+# noinspection Annotator
+# noinspection PyProtectedMember
 # noinspection PyUnusedLocal
 # noinspection DuplicatedCode
 # noinspection PyAbstractClass

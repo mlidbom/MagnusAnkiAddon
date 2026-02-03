@@ -8,20 +8,20 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Define the source directory (venv) and target directory (project) relative to the script location
 source_dir = os.path.join(script_dir, "venv/lib/site-packages")
-target_dir = os.path.join(script_dir, "src/MagnusAddon/_lib")
+target_dir = os.path.join(script_dir, "src/jastudio_src/_lib")
 
 # One line per library and its dependencies
 pip_libraries_to_copy = [
-    "typed_linq_collections",
-    "janome",
-    "pyperclip",
-    "beartype",
-    "jamdict", "jamdict_data", "puchikarui", "chirptext",
-    "pykakasi", "jaconv", "deprecated",
-    "romkan",
-    "autoslot.py",
-    "line_profiler_pycharm", "line_profiler", "wrapt"
-    ]
+        "pythonnet", "clr_loader", "cffi", "_cffi_backend.cp313-win_amd64.pyd", "pycparser",
+        "typed_linq_collections",
+        "janome",
+        "pyperclip",
+        "beartype",
+        "jamdict", "jamdict_data", "puchikarui", "chirptext",
+        "pykakasi", "jaconv", "deprecated", "wrapt",
+        "romkan",
+        "autoslot.py",
+]
 
 # Create the target directory if it doesn't exist
 os.makedirs(target_dir, exist_ok=True)

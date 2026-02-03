@@ -1,0 +1,45 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+import pytest
+from jaslib import app
+from jaslib_tests.fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_lists
+from jaslib_tests.fixtures.base_data.sample_data.kanji_spec import KanjiSpec
+from jaslib_tests.fixtures.base_data.sample_data.sentence_spec import SentenceSpec
+from jaslib_tests.fixtures.base_data.sample_data.vocab_spec import VocabSpec
+from jaslib_tests.fixtures.collection_factory import inject_collection_with_all_sample_data
+
+if TYPE_CHECKING:
+
+    from collections.abc import Iterator
+
+    from jaslib.note.kanjinote import KanjiNote
+    from jaslib.note.sentences.sentencenote import SentenceNote
+    from jaslib.note.vocabulary.vocabnote import VocabNote
+
+# noinspection PyUnusedFunction
+@pytest.fixture(scope="module", autouse=True)
+def setup_object() -> Iterator[None]:
+    with inject_collection_with_all_sample_data():
+        yield
+
+
+def test_kanji_added_correctly() -> None:
+    kanji_all:list[KanjiNote] = app.col().kanji.all()
+    saved_kanji = [KanjiSpec(kanji.get_question(), kanji.get_answer(), kanji.get_reading_kun_html(), kanji.get_reading_on_html()) for kanji in kanji_all]
+    assert set(kanji_spec.test_kanji_list) == set(saved_kanji)
+
+def test_vocab_added_correctly() -> None:
+    expected_vocab:list[VocabSpec] = sorted(vocab_lists.test_special_vocab, key=lambda x: x.question)
+    vocab_all:list[VocabNote] = app.col().vocab.all()
+    saved_vocab = [VocabSpec(vocab.get_question(), vocab.get_answer(), vocab.readings.get()) for vocab in vocab_all]
+    saved_vocab = sorted(saved_vocab, key=lambda x: x.question)
+
+    assert expected_vocab == saved_vocab
+
+def test_sentences_added_correctly() -> None:
+    expected_sentences = sorted(sentence_spec.test_sentence_list, key=lambda x: x.question)
+    sentences_all:list[SentenceNote] = sorted(app.col().sentences.all(), key=lambda x: x.question.without_invisible_space())
+    saved_sentences = [SentenceSpec(sentence.question.without_invisible_space(), sentence.get_answer()) for sentence in sentences_all]
+    assert expected_sentences == saved_sentences

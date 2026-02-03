@@ -1,35 +1,34 @@
 aqt
 anki
 
-#Latest versions seem to crash in interesting ways. If Anki does not run, make sure to use exactly these versions
+#Match the versions that anki uses
 PyQt6==6.9.1
 PyQt6-Qt6==6.9.1
 PyQt6_sip==13.10.2
 PyQt6-WebEngine==6.9.0
 PyQt6-WebEngine-Qt6==6.9.1
-#PyQt6-WebEngineSubwheel-Qt6==6.7.3
+#PyQt6-sip
 
 jamdict==0.1a11.post2
 #jamdict-data==1.
 jamdict-data-fix==1.5.1a2
 Janome==0.5.0
-pipdeptree
-puchikarui==0.2a2.post5
-requests==2.32.5
-types-requests
+#pipdeptree
+#puchikarui==0.2a2.post5
+#requests==2.32.5
+#types-requests
 pytest
-beartype~=0.21.0
-pyperclip~=1.9.0
+beartype==0.22.9
+pyperclip==1.11.0
 typing_extensions
-PyQt6-sip
-pykakasi~=2.3.0
-python-romkan-ng
-ruff
-deepdiff~=8.6.1
+pykakasi==2.3.0
+python-romkan-ng==0.3.0
+ruff==0.14.14
+deepdiff==8.6.1
+typed_linq_collections==0.9.19
 typing_extensions~=4.15.0
-#autoslot~=2024.12.1 # we manually copied this into the project because pyright did not understand the types when imported as a library and since we inherit these everywhere analysis broke down completely
+autoslot~=2025.11.1
 basedpyright # used via the basedpyright-wrapper.bat since it messes up source navigation in the IDE and because the IDE only reports some errors on code insection. To get all errors the command line is needed&
 pyright # used in the IDE since basedpyright messes up source navigation
 pyinstrument # run pyinstrument.exe runanki.py, then run pyinstrument.exe  --load-prev [the-name-output-by-previous-call] -r html
-line-profiler # with the line-profiler plugin for pycharm you get line by line information about the time taken within pycharm
-line-profiler-pycharm # this is needed for the line-profiler pycharm plugin to wo
+pythonnet==3.0.5

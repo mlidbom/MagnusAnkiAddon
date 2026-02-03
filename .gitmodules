@@ -1,0 +1,3 @@
+[submodule "src_dotnet/pythonnet-stub-generator"]
+	path = src_dotnet/pythonnet-stub-generator
+	url = https://github.com/mlidbom/pythonnet-stub-generator.git
