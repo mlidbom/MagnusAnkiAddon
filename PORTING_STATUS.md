@@ -11,7 +11,11 @@
 - **Missing dependencies:** When ported code doesn't compile due to missing classes, create them. If too complex to implement immediately, create members throwing `NotImplementedException`.
 - **Implementation completeness:** Either fully implement a member or throw `NotImplementedException`. Do NOT return nonsense values.
 - **Constants/literals:** Do NOT create new constants or magic literals duplicating existing ones. Access constants from the .NET equivalent of the classes they're in in Python.
+- **No code duplication:** If the Python file uses constants and/or methods defined in another class/module, the C# should too unless there is a really good reason. Don't duplicate - reference the original.
 - **String interning:** Python-specific optimization for memory management. Not needed in C# - skip it.
+- **Different implementation vs different functionality:**
+  - **Different implementation = OK** (e.g., List vs QSet, WeakRef vs direct reference, different but equivalent algorithms)
+  - **Different functionality = BROKEN** If the code doesn't behave the same way, it's incomplete/buggy and must be marked with a lower percentage explaining what's broken.
 
 ## Legend
 - **CREATED WIP** - C# equivalent exists but needs verification for equivalence
@@ -131,18 +135,20 @@
         - Core constants present but C# has reorganized structure with additional fields; missing Mine class
     - MISSING note_flush_guard.py
     - 100% note_tags.py
-    - CREATED WIP tag.py
-    - CREATED WIP tags.py
+    - 100% tag.py
+    - 100% tags.py
     - collection
         - MISSING card_studying_status.py
-        - CREATED WIP jp_collection.py
+        - 100% jp_collection.py
         - MISSING kanji_collection.py
-        - CREATED WIP note_cache.py
+        - 90% note_cache.py
+            - Complete except TaskRunner integration in InitFromList has TODO comment
         - MISSING sentence_collection.py
         - MISSING vocab_collection.py
     - notefields
-        - CREATED WIP audio_field.py
-        - CREATED WIP caching_mutable_string_field.py
+        - 100% audio_field.py
+        - 70% caching_mutable_string_field.py
+            - LazyReader implementation was broken (empty callback instead of calling lazy.Reset); needs fix now that LazyCE.Reset exists
         - CREATED WIP comma_separated_strings_list_field.py
         - CREATED WIP comma_separated_strings_list_field_de_duplicated.py
         - CREATED WIP fallback_string_field.py
