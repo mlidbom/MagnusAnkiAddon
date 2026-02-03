@@ -55,9 +55,11 @@ public static class ConfigurationValue
 
 public class JapaneseConfig
 {
-    // Placeholder - configuration values will be added as needed
+    public bool EnableGarbageCollectionDuringBatches { get; set; }
+
     public JapaneseConfig()
     {
-        // TODO: Initialize configuration values
+        // TODO: Initialize configuration values properly
+        EnableGarbageCollectionDuringBatches = false;
     }
 }

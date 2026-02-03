@@ -6,13 +6,19 @@ public class JPCollection
     private bool _isInitialized;
     private bool _initializationStarted;
 
+    public VocabCollection Vocab { get; }
+    public KanjiCollection Kanji { get; }
+    public SentenceCollection Sentences { get; }
+
     public JPCollection(IBackendNoteCreator backendNoteCreator)
     {
         _backendNoteCreator = backendNoteCreator;
         
         MyLog.Info("JPCollection.__init__");
         
-        // Collections will be initialized here
+        Vocab = new VocabCollection(backendNoteCreator);
+        Kanji = new KanjiCollection(backendNoteCreator);
+        Sentences = new SentenceCollection(backendNoteCreator);
     }
 
     public bool IsInitialized => _isInitialized;
