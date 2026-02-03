@@ -5,24 +5,34 @@ namespace JAStudio.Core.Note.Sentences;
 
 public class ParsedMatch
 {
+    public const int MissingNoteId = -1;
+    
+    public string Variant { get; set; }
+    public int StartIndex { get; set; }
+    public bool IsDisplayed { get; set; }
     public string ParsedForm { get; set; }
     public int VocabId { get; set; }
-    public bool IsDisplayed { get; set; }
-    public int StartPosition { get; set; }
-    public int EndPosition { get; set; }
 
-    public ParsedMatch(string parsedForm, int vocabId, bool isDisplayed, int startPosition, int endPosition)
+    public int EndIndex => StartIndex + ParsedForm.Length;
+
+    public ParsedMatch(string variant, int startIndex, bool isDisplayed, string parsedForm, int vocabId)
     {
+        Variant = variant;
+        StartIndex = startIndex;
+        IsDisplayed = isDisplayed;
         ParsedForm = parsedForm;
         VocabId = vocabId;
-        IsDisplayed = isDisplayed;
-        StartPosition = startPosition;
-        EndPosition = endPosition;
+    }
+
+    // Legacy constructor for compatibility
+    public ParsedMatch(string parsedForm, int vocabId, bool isDisplayed, int startPosition, int endPosition)
+        : this("S", startPosition, isDisplayed, parsedForm, vocabId)
+    {
     }
 
     public override string ToString()
     {
-        return $"{ParsedForm}@{StartPosition}-{EndPosition} (vocab_id={VocabId}, displayed={IsDisplayed})";
+        return $"{ParsedForm}@{StartIndex}-{EndIndex} (vocab_id={VocabId}, displayed={IsDisplayed}, variant={Variant})";
     }
 }
 

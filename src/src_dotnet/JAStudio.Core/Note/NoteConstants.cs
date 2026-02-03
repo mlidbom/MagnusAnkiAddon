@@ -89,6 +89,7 @@ public static class NoteFieldsConstants
         public const string Reading = "reading_sentence";
         public const string ParsingResult = "parsing_result";
         public const string Configuration = "sentence_configuration";
+        public const string UserComments = "__comments";
     }
 
     public static class Kanji
