@@ -1,5 +1,18 @@
 # JAStudio Python to C# Porting Status
 
+## Porting Rules
+
+**Stay faithful to the Python - refactoring comes later.** We want almost completely equivalent code, only in C#.
+
+- **File structure:** Classes should be in the equivalent file in C# as in Python. Do not put them in other files willy-nilly.
+- **WeakRef:** Replace with standard references in .NET (C# has better garbage collection).
+- **Naming:** Use .NET naming standards (PascalCase for public members, etc.).
+- **Class organization:** If a class is in a separate file in Python, it should be in the equivalent .cs file. If classes are together in the same file in Python, same for C#.
+- **Missing dependencies:** When ported code doesn't compile due to missing classes, create them. If too complex to implement immediately, create members throwing `NotImplementedException`.
+- **Implementation completeness:** Either fully implement a member or throw `NotImplementedException`. Do NOT return nonsense values.
+- **Constants/literals:** Do NOT create new constants or magic literals duplicating existing ones. Access constants from the .NET equivalent of the classes they're in in Python.
+- **String interning:** Python-specific optimization for memory management. Not needed in C# - skip it.
+
 ## Legend
 - **CREATED WIP** - C# equivalent exists but needs verification for equivalence
 - **MISSING** - No C# equivalent exists yet
@@ -110,13 +123,14 @@
 - note
     - MISSING backend_note_creator.py
     - MISSING difficulty_calculator.py
-    - CREATED WIP jpnote.py
-    - CREATED WIP jpnote_data.py
+    - 100% jpnote.py
+    - 100% jpnote_data.py
     - MISSING kanjinote.py
     - MISSING kanjinote_mnemonic_maker.py
-    - CREATED WIP note_constants.py
+    - 80% note_constants.py
+        - Core constants present but C# has reorganized structure with additional fields; missing Mine class
     - MISSING note_flush_guard.py
-    - CREATED WIP note_tags.py
+    - 100% note_tags.py
     - CREATED WIP tag.py
     - CREATED WIP tags.py
     - collection
