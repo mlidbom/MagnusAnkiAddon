@@ -30,6 +30,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
 - **CREATED WIP** - C# equivalent exists but needs verification for equivalence
 - **MISSING** - No C# equivalent exists yet
 - **COMPLETE** - C# equivalent verified as functionally equivalent to Python
+  **EXCLUDED** - Should not be ported.
 
 ---
 
@@ -43,10 +44,10 @@ Staying this close to the Python is what makes the porting workable at all. If w
 - batches
     - MISSING local_note_updater.py
 - configuration
-    - CREATED WIP configuration_value.py
-    - CREATED WIP settings.py
+    - 100% configuration_value.py
+    - 100% settings.py
 - dotnet
-    - MISSING load_dotnet_runtime.py
+    - EXCLUDE load_dotnet_runtime.py
 - language_services
     - 100% conjugator.py
     - 100% hiragana_chart.py
@@ -134,7 +135,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
                         - MISSING is_sentence_end.py
                         - MISSING suffix_is_in.py
 - note
-    - CREATED WIP backend_note_creator.py
+    - 100% backend_note_creator.py
     - CREATED WIP difficulty_calculator.py
     - 100% jpnote.py
     - 100% jpnote_data.py
