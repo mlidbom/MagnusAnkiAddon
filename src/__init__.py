@@ -2,20 +2,23 @@ from __future__ import annotations
 
 import os
 import sys
-from pathlib import Path
 
-top_dir = Path(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(str(top_dir / "jastudio_src"))
-sys.path.append(str(top_dir / "jastudio_src" / "_lib"))
-sys.path.append(str(top_dir / "jaslib_src"))
+is_testing = "pytest" in sys.modules
+if not is_testing:
+    from pathlib import Path
 
-from jastudio.ankiutils import app  # noqa
+    top_dir = Path(os.path.dirname(os.path.abspath(__file__)))
+    sys.path.append(str(top_dir / "jastudio_src"))
+    sys.path.append(str(top_dir / "jastudio_src" / "_lib"))
+    sys.path.append(str(top_dir / "jaslib_src"))
 
-app.addon_name = os.path.basename(str(top_dir))
-from jastudio import ui  # noqa
+    from jastudio.ankiutils import app  # noqa
 
-if app.config().enable_automatic_garbage_collection.get_value():
-    import gc
+    app.addon_name = os.path.basename(str(top_dir))
+    from jastudio import ui  # noqa
 
-    gc.enable()
-ui.init()
+    if app.config().enable_automatic_garbage_collection.get_value():
+        import gc
+
+        gc.enable()
+    ui.init()
