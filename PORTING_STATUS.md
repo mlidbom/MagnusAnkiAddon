@@ -178,7 +178,8 @@ Staying this close to the Python is what makes the porting workable at all. If w
         - 100% caching_sentence_configuration_field.py
         - 100% parsed_match.py
         - 100% parsing_result.py
-        - CREATED WIP sentence_configuration.py
+        - 60% sentence_configuration.py
+            - Missing factory methods: FromIncorrectMatches(), FromHiddenMatches(), FromValues()
         - CREATED WIP sentencenote.py
         - CREATED WIP user_fields.py
         - CREATED WIP word_exclusion_set.py
