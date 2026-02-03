@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+from collections import defaultdict
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from jaspythonutils.sysutils.abstract_method_called_error import AbstractMethodCalledError
-from jaspythonutils.sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.collections.q_set import QSet
 
@@ -71,7 +71,7 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](NoteCacheBase[TNote], Slot
     def __init__(self, cached_note_type: type[TNote], note_constructor: Callable[[JPNoteData], TNote]) -> None:
         super().__init__(cached_note_type, note_constructor)
         # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
-        self._by_question: DefaultDictCaseInsensitive[QList[TNote]] = DefaultDictCaseInsensitive(QList[TNote])
+        self._by_question: defaultdict[str, QList[TNote]] = defaultdict[str, QList[TNote]](QList[TNote])
         self._snapshot_by_id: dict[JPNoteId, TSnapshot] = {}
 
         self._deleted: QSet[JPNoteId] = QSet()
@@ -82,7 +82,8 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](NoteCacheBase[TNote], Slot
         return QList(self._by_id.values())
 
     def with_question(self, question: str) -> QList[TNote]:
-        return self._by_question.get_value_or_default(question).to_list()
+        if question in self._by_question: return self._by_question[question]
+        return QList[TNote]()
 
     def _create_snapshot(self, note: TNote) -> TSnapshot: raise AbstractMethodCalledError()  # pyright: ignore[reportUnusedParameter]
     def _inheritor_remove_from_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise AbstractMethodCalledError()  # pyright: ignore[reportUnusedParameter]
