@@ -4,13 +4,12 @@ from typing import TYPE_CHECKING, override
 
 from anki.notes import Note
 from jaslib.note.backend_note_creator import IBackendNoteCreator
-from jaslib.note.jpnote import JPNote
 from jaslib.note.note_constants import NoteTypes
 from jastudio.ankiutils import app
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
 
 if TYPE_CHECKING:
-    from jaslib.note.jpnote import JPNoteId
+    from jaslib.note.jpnote import JPNote, JPNoteId
     from jaslib.note.kanjinote import KanjiNote
     from jaslib.note.sentences.sentencenote import SentenceNote
     from jaslib.note.vocabulary.vocabnote import VocabNote
