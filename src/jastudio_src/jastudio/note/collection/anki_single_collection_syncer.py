@@ -44,11 +44,8 @@ class AnkiSingleCollectionSyncer[TNote: JPNote](WeakRefable, Slots):
         self._is_updating_anki_note = True
         try:
             if note.get_id():
-                data = note.get_data()
-                anki_note = app.anki_collection().get_note(NoteId(data.id))
-                anki_note.tags = data.tags
-                for field_name, field_value in data.fields.items():
-                    anki_note[field_name] = field_value
+                anki_note = app.anki_collection().get_note(NoteId(note.get_id()))
+                JPNoteDataShim.sync_note_to_anki_note(note, anki_note)
                 app.anki_collection().update_note(anki_note)
         finally:
             self._is_updating_anki_note = False

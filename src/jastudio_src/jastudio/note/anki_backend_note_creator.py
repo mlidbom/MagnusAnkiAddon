@@ -18,7 +18,7 @@ class AnkiBackendNoteCreator(IBackendNoteCreator):
     @classmethod
     def _create_note(cls, note: JPNote, note_type: str) -> JPNoteId:
         backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(note_type))
-        JPNoteDataShim.set_note_data(backend_note, note.get_data())
+        JPNoteDataShim.sync_note_to_anki_note(note, backend_note)
         app.anki_collection().addNote(backend_note)
         return backend_note.id
 
