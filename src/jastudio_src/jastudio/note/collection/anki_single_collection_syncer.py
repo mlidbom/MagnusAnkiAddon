@@ -78,8 +78,8 @@ class AnkiSingleCollectionSyncer[TNote: JPNote](WeakRefable, Slots):
                 self._cache.add_to_cache(note)
 
     def _on_added(self, backend_note: Note) -> None:
-        import jastudio.note.ankijpnote
-        note = jastudio.note.ankijpnote.AnkiJPNote.note_from_note(backend_note)
+        from jastudio.note.ankijpnote import AnkiJPNote
+        note = AnkiJPNote.note_from_note(backend_note)
         if isinstance(note, self._note_type):
             self._cache.add_to_cache(note)
 
