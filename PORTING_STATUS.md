@@ -47,7 +47,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
     - 100% configuration_value.py
     - 100% settings.py
 - dotnet
-    - EXCLUDE load_dotnet_runtime.py
+    - EXCLUDED load_dotnet_runtime.py
 - language_services
     - 100% conjugator.py
     - 100% hiragana_chart.py
