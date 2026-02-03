@@ -1,19 +1,30 @@
 using System;
 using System.IO;
 using System.Linq;
+using Compze.Utilities.SystemCE.ActionFuncHarmonization;
+using Compze.Utilities.SystemCE.ThreadingCE.ResourceAccess;
 using Python.Runtime;
 
-namespace JAStudio.PythonInterop;
+namespace JAStudio.PythonInterop.Utilities;
 
 public static class PythonEnvironment
 {
-    private static readonly object _lock = new();
+    public static TResult Use<TResult>(Func<TResult> func)
+    {
+        EnsureInitialized();
+        using (Py.GIL())
+            return func();
+    }
+
+    public static void Use(Action action) => Use(action.AsFunc());
+
+    private static readonly IMonitorCE Monitor = IMonitorCE.WithDefaultTimeout();
 
     /// <param name="venvPath">Optional path to venv. If not provided, uses JASTUDIO_VENV_PATH environment variable or auto-detects.</param>
     public static void EnsureInitialized(string? venvPath = null)
     {
         if (PythonEngine.IsInitialized) return;
-        lock (_lock)
+        Monitor.Update(() =>
         {
             if (PythonEngine.IsInitialized) return;
 
@@ -64,7 +75,7 @@ public static class PythonEnvironment
 
             PythonEngine.Initialize();
             PythonEngine.BeginAllowThreads();
-        }
+        });
     }
 
     private static string GetVenvPath()
