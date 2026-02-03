@@ -20,6 +20,7 @@ from jaslib.task_runners.task_progress_runner import TaskRunner
 from jastudio.anki_extentions.note_bulk_loader import NoteBulkLoader
 from jastudio.ankiutils import app
 from jastudio.note import studing_status_helper
+from jastudio.note.anki_backend_note_creator import AnkiBackendNoteCreator
 from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner
 from jastudio.note.collection.anki_single_collection_syncer import AnkiSingleCollectionSyncer
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
@@ -72,7 +73,7 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
         if self._initialization_started:
             return
         self._initialization_started = True
-        jaslibapp.reset()
+        jaslibapp.reset(AnkiBackendNoteCreator())
         string_auto_interner.try_enable()
         mylog.info("AnkiJPCollection.__init__")
         if self._pending_init_timer is not None:

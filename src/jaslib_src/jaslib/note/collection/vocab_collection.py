@@ -13,6 +13,7 @@ from jaslib.note.vocabulary.vocabnote_question import VocabNoteQuestion
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
+    from jaslib.note.backend_note_creator import IBackendNoteCreator
     from jaslib.note.jpnote import JPNoteId
     from jaslib.note.kanjinote import KanjiNote
 
@@ -101,7 +102,8 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
 
 # noinspection PyUnusedFunction
 class VocabCollection(Slots):
-    def __init__(self) -> None:
+    def __init__(self, backend_note_creator: IBackendNoteCreator) -> None:
+        self._backend_note_creator: IBackendNoteCreator = backend_note_creator
         self.cache: _VocabCache = _VocabCache()
 
     def is_word(self, form: str) -> bool: return any(self.cache.with_form(form))
@@ -139,4 +141,5 @@ class VocabCollection(Slots):
         return query(questions).select(self.with_disambiguation_name).select_many(lambda x: x).to_list()
 
     def add(self, note: VocabNote) -> None:
+        note.set_id(self._backend_note_creator.create_vocab(note))
         self.cache.add_to_cache(note)

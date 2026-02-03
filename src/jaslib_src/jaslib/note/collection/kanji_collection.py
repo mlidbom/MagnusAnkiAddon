@@ -9,6 +9,7 @@ from typed_linq_collections.q_iterable import query
 if TYPE_CHECKING:
     from typed_linq_collections.collections.q_set import QSet
 
+    from jaslib.note.backend_note_creator import IBackendNoteCreator
     from jaslib.note.jpnote import JPNoteId
 
 from typed_linq_collections.collections.q_list import QList
@@ -57,7 +58,8 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
     def with_radical(self, radical: str) -> QList[KanjiNote]: return self._by_radical.get_value_or_default(radical).to_list()
 
 class KanjiCollection(Slots):
-    def __init__(self) -> None:
+    def __init__(self, backend_note_creator: IBackendNoteCreator) -> None:
+        self._backend_note_creator: IBackendNoteCreator = backend_note_creator
         self.cache: _KanjiCache = _KanjiCache()
 
     def all(self) -> QList[KanjiNote]: return self.cache.all()
@@ -78,4 +80,5 @@ class KanjiCollection(Slots):
         return self.cache.by_reading.get_value_or_default(kana_utils.anything_to_hiragana(reading)).to_set()
 
     def add(self, note: KanjiNote) -> None:
+        note.set_id(self._backend_note_creator.create_kanji(note))
         self.cache.add_to_cache(note)

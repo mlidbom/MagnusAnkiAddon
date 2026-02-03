@@ -15,9 +15,11 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from jaslib.configuration.configuration_value import JapaneseConfig
+    from jaslib.note.backend_note_creator import IBackendNoteCreator
     from jaslib.note.collection.jp_collection import JPCollection
 
 _collection: JPCollection | None = None
+_backend_note_creator: IBackendNoteCreator | None = None
 
 _init_hooks: QSet[Callable[[], None]] = QSet()
 
@@ -31,13 +33,16 @@ def config() -> JapaneseConfig:
 def col() -> JPCollection:
     global _collection
     if _collection is None:
+        if _backend_note_creator is None: raise Exception("Backend note creator not initialized")
         from jaslib.note.collection.jp_collection import JPCollection
-        _collection = JPCollection()
+        _collection = JPCollection(_backend_note_creator)
     return _collection
 
-def reset() -> None:
+def reset(backend_note_creator: IBackendNoteCreator) -> None:
     global _collection
+    global _backend_note_creator
     if _collection is not None:
         _collection = None
+    _backend_note_creator = backend_note_creator
 
 user_files_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "user_files")

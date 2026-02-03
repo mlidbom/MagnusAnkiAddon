@@ -12,6 +12,7 @@ from jaslib.note.collection.note_cache import CachedNote, NoteCache
 from jaslib.note.sentences.sentencenote import SentenceNote
 
 if TYPE_CHECKING:
+    from jaslib.note.backend_note_creator import IBackendNoteCreator
     from jaslib.note.jpnote import JPNoteId
     from jaslib.note.vocabulary.vocabnote import VocabNote
 
@@ -66,7 +67,8 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
 
 # noinspection PyUnusedFunction
 class SentenceCollection(Slots):
-    def __init__(self) -> None:
+    def __init__(self, backend_note_creator: IBackendNoteCreator) -> None:
+        self._backend_note_creator: IBackendNoteCreator = backend_note_creator
         self.cache: _SentenceCache = _SentenceCache()
 
     def potentially_matching_vocab(self, vocab: VocabNote) -> list[SentenceNote]:  # pyright: ignore
@@ -125,4 +127,5 @@ class SentenceCollection(Slots):
         return vocab_note.forms.all_set().select_many(self.cache.with_user_highlighted_vocab).to_list()
 
     def add(self, note: SentenceNote) -> None:
+        note.set_id(self._backend_note_creator.create_sentence(note))
         self.cache.add_to_cache(note)

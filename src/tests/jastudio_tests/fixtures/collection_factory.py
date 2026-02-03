@@ -10,6 +10,7 @@ from anki.collection import Collection
 from jaslib.note.kanjinote import KanjiNote
 from jaslib.note.sentences.sentencenote import SentenceNote
 from jastudio.ankiutils import app
+from jastudio.note.anki_backend_note_creator import AnkiBackendNoteCreator
 from jastudio_tests.fixtures.base_data import note_type_factory
 from jastudio_tests.fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_lists
 from jastudio_tests.fixtures.stub_factory import stub_ui_dependencies
@@ -28,7 +29,7 @@ def inject_empty_collection() -> Iterator[JPLegacyCollection]:
     from jaslib.note.collection.jp_collection import JPCollection
     jp_collection: JPCollection
     def get_jp_collection() -> JPCollection: return jp_collection
-    jp_collection = JPCollection()
+    jp_collection = JPCollection(AnkiBackendNoteCreator())
 
     with (tempfile.TemporaryDirectory() as tmp_dirname, stub_ui_dependencies()):
         collection_file = path.join(tmp_dirname, "collection.anki2")

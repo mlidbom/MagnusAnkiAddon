@@ -4,6 +4,7 @@ import unittest.mock
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
+from jaslib.note.backend_note_creator import TestingBackendNoteCreator
 from jaslib.note.kanjinote import KanjiNote
 from jaslib.note.sentences.sentencenote import SentenceNote
 from jaslib_tests.fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_lists
@@ -18,7 +19,7 @@ def inject_empty_collection() -> Iterator[JPCollection]:
     from jaslib.note.collection.jp_collection import JPCollection
     jp_collection: JPCollection
     def get_jp_collection() -> JPCollection: return jp_collection
-    jp_collection = JPCollection()
+    jp_collection = JPCollection(TestingBackendNoteCreator())
 
     with unittest.mock.patch("jaslib.app.col", new=get_jp_collection):
         yield jp_collection

@@ -96,13 +96,11 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](NoteCacheBase[TNote], Slot
         self._by_question[cached.question].remove(note)
         self._inheritor_remove_from_cache(note, cached)
 
-    _next_note_id: JPNoteId = 1
     @override
     def add_to_cache(self, note: TNote) -> None:
         if note.get_id() in self._by_id: return
         if note.get_id() == 0:
-            note.set_id(self._next_note_id)
-            NoteCache._next_note_id += 1
+            raise Exception("Cannot add note with id 0 to cache")
 
         self._by_id[note.get_id()] = note
         snapshot = self._create_snapshot(note)
