@@ -23,11 +23,11 @@ public class CacheInvalidationTests : IAIGeneratedTestClass
         vocab.UpdateGeneratedData(); // Trigger cache update
 
         // Assert - Old question should not find it
-        var oldResults = App.Col().Vocab.Cache.WithQuestion("食べる");
+        var oldResults = App.Col().Vocab.WithQuestion("食べる");
         Assert.Empty(oldResults);
 
         // New question should find it
-        var newResults = App.Col().Vocab.Cache.WithQuestion("飲む");
+        var newResults = App.Col().Vocab.WithQuestion("飲む");
         Assert.Single(newResults);
         Assert.Equal(vocab, newResults[0]);
     }
@@ -42,11 +42,11 @@ public class CacheInvalidationTests : IAIGeneratedTestClass
         vocab.Forms.Add("taberu-form");
 
         // Assert - Forms are not questions, so WithQuestion should NOT find it
-        var results = App.Col().Vocab.Cache.WithQuestion("taberu-form");
+        var results = App.Col().Vocab.WithQuestion("taberu-form");
         Assert.Empty(results);
         
         // But it should still be findable by its actual question
-        var byQuestion = App.Col().Vocab.Cache.WithQuestion("食べる");
+        var byQuestion = App.Col().Vocab.WithQuestion("\u98df\u3079\u308b");
         Assert.Single(byQuestion);
     }
 
@@ -67,7 +67,7 @@ public class CacheInvalidationTests : IAIGeneratedTestClass
         Assert.DoesNotContain("食う", vocab.Forms.AllSet());
         
         // But still findable by its question
-        var results = App.Col().Vocab.Cache.WithQuestion("食べる");
+        var results = App.Col().Vocab.WithQuestion("食べる");
         Assert.Single(results);
     }
 
@@ -101,11 +101,11 @@ public class CacheInvalidationTests : IAIGeneratedTestClass
         vocab.Forms.Remove("駆ける");
 
         // Assert - Cache should reflect final state
-        var byNewQuestion = App.Col().Vocab.Cache.WithQuestion("疾走する");
+        var byNewQuestion = App.Col().Vocab.WithQuestion("疾走する");
         Assert.Single(byNewQuestion);
 
         // Old question should not find it
-        var byOldQuestion = App.Col().Vocab.Cache.WithQuestion("走る");
+        var byOldQuestion = App.Col().Vocab.WithQuestion("走る");
         Assert.Empty(byOldQuestion);
 
         // Forms should be stored correctly

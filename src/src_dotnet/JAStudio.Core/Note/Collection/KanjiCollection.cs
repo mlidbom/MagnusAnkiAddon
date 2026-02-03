@@ -7,7 +7,7 @@ namespace JAStudio.Core.Note.Collection;
 public class KanjiCollection
 {
     private readonly IBackendNoteCreator _backendNoteCreator;
-    public readonly KanjiCache Cache;
+    internal readonly KanjiCache Cache;
 
     public KanjiCollection(IBackendNoteCreator backendNoteCreator)
     {
@@ -17,10 +17,7 @@ public class KanjiCollection
 
     public List<KanjiNote> All() => Cache.All();
 
-    public KanjiNote? WithIdOrNone(int noteId)
-    {
-        return Cache.WithIdOrNone(noteId);
-    }
+    public KanjiNote? WithIdOrNone(int noteId) => Cache.WithIdOrNone(noteId);
 
     public List<KanjiNote> WithAnyKanjiIn(List<string> kanjiList)
     {
@@ -33,10 +30,7 @@ public class KanjiCollection
         return results.Count == 1 ? results[0] : null;
     }
 
-    public List<KanjiNote> WithRadical(string radical)
-    {
-        return Cache.WithRadical(radical);
-    }
+    public List<KanjiNote> WithRadical(string radical) => Cache.WithRadical(radical);
 
     public HashSet<KanjiNote> WithReading(string reading)
     {

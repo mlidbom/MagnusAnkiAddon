@@ -7,7 +7,7 @@ namespace JAStudio.Core.Note.Collection;
 public class SentenceCollection
 {
     private readonly IBackendNoteCreator _backendNoteCreator;
-    public readonly SentenceCache Cache;
+    internal readonly SentenceCache Cache;
 
     public SentenceCollection(IBackendNoteCreator backendNoteCreator)
     {
@@ -28,20 +28,17 @@ public class SentenceCollection
 
     public List<SentenceNote> All() => Cache.All();
 
-    public SentenceNote? WithIdOrNone(int noteId)
-    {
-        return Cache.WithIdOrNone(noteId);
-    }
+    public SentenceNote? WithIdOrNone(int noteId) => Cache.WithIdOrNone(noteId);
 
-    public List<SentenceNote> WithQuestion(string question)
-    {
-        return Cache.WithQuestion(question);
-    }
+    public List<SentenceNote> WithQuestion(string question) => Cache.WithQuestion(question);
 
-    public List<SentenceNote> WithVocab(VocabNote vocabNote)
-    {
-        return Cache.WithVocab(vocabNote);
-    }
+    public List<SentenceNote> WithVocab(VocabNote vocabNote) => Cache.WithVocab(vocabNote);
+    
+    public List<SentenceNote> WithForm(string form) => Cache.WithVocabForm(form);
+    
+    public List<SentenceNote> WithUserHighlightedVocab(string form) => Cache.WithUserHighlightedVocab(form);
+    
+    public List<SentenceNote> WithUserMarkedInvalidVocab(string form) => Cache.WithUserMarkedInvalidVocab(form);
 
     public void Add(SentenceNote note)
     {

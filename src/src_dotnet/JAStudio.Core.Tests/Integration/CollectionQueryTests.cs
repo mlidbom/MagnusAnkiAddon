@@ -21,7 +21,7 @@ public class CollectionQueryTests : IAIGeneratedTestClass
         var vocab3 = VocabNote.Create("走る", "to run", "はしる");
 
         // Act
-        var results = App.Col().Vocab.Cache.WithQuestion("本");
+        var results = App.Col().Vocab.WithQuestion("\u672c");
 
         // Assert
         Assert.Single(results);
@@ -36,7 +36,7 @@ public class CollectionQueryTests : IAIGeneratedTestClass
         vocab.Forms.Add("食う");
 
         // Act - Forms are not questions, so this should not find the vocab
-        var results = App.Col().Vocab.Cache.WithQuestion("食う");
+        var results = App.Col().Vocab.WithQuestion("食う");
 
         // Assert - Should be empty because "食う" is a form, not the question
         Assert.Empty(results);
@@ -49,7 +49,7 @@ public class CollectionQueryTests : IAIGeneratedTestClass
         var vocab = VocabNote.Create("食べる", "to eat", "たべる");
 
         // Act
-        var results = App.Col().Vocab.Cache.WithQuestion("存在しない");
+        var results = App.Col().Vocab.WithQuestion("存在しない");
 
         // Assert
         Assert.Empty(results);
@@ -90,7 +90,7 @@ public class CollectionQueryTests : IAIGeneratedTestClass
         var sentence = SentenceNote.CreateTestNote("これは本です。", "This is a book.");
 
         // Act - Note is automatically added in CreateTestNote
-        var allSentences = App.Col().Sentences.Cache.All();
+        var allSentences = App.Col().Sentences.All();
 
         // Assert
         Assert.Contains(sentence, allSentences);
@@ -105,9 +105,9 @@ public class CollectionQueryTests : IAIGeneratedTestClass
         var sentence = SentenceNote.CreateTestNote("食べる", "to eat");
 
         // Act
-        var kanjiCount = App.Col().Kanji.Cache.All().Count();
-        var vocabCount = App.Col().Vocab.Cache.All().Count();
-        var sentenceCount = App.Col().Sentences.Cache.All().Count();
+        var kanjiCount = App.Col().Kanji.All().Count;
+        var vocabCount = App.Col().Vocab.All().Count;
+        var sentenceCount = App.Col().Sentences.All().Count;
 
         // Assert
         Assert.Equal(1, kanjiCount);
