@@ -93,7 +93,7 @@ public static class PythonEnvironment
 
         var projectRoot = Path.GetFullPath(Path.Combine(
             Directory.GetCurrentDirectory(),
-            "..", "..", "..", "..", ".."
+            "..", "..", "..", "..", "..", ".."
         ));
         return Path.Combine(projectRoot, "venv");
     }
