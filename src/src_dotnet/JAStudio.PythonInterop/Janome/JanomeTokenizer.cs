@@ -7,24 +7,13 @@ using Python.Runtime;
 
 namespace JAStudio.PythonInterop.Janome;
 
-public static class Dyn
-{
-    public static IEnumerable<dynamic> Enumerate(dynamic obj)
-    {
-        foreach (var item in obj)
-        {
-            yield return item;
-        }
-    }
-}
-
 public class JanomeTokenizer : ITokenizer
 {
     private readonly dynamic _janomeTokenizer;
 
     public JanomeTokenizer()
     {
-        using (Py.GIL())
+        using (PythonEnvironment.LockGil())
         {
             dynamic janome = Py.Import("janome.tokenizer");
             _janomeTokenizer = janome.Tokenizer();
@@ -33,9 +22,8 @@ public class JanomeTokenizer : ITokenizer
 
 
     public List<Token> Tokenize(string text) => PythonEnvironment.Use(() =>
-    {
-        IEnumerable<dynamic> tokens = Dyn.Enumerate(_janomeTokenizer.tokenize(text));
-        return tokens.Select(t => new Token(
+        ((IEnumerable<dynamic>)Dyn.Enumerate(_janomeTokenizer.tokenize(text)))
+        .Select(t => new Token(
             Surface: (string)t.surface,
             BaseForm: (string)t.base_form,
             PartOfSpeech: (string)t.part_of_speech,
@@ -43,6 +31,5 @@ public class JanomeTokenizer : ITokenizer
             Phonetic: (string)t.phonetic,
             InflectionType: (string)t.infl_type,
             InflectionForm: (string)t.infl_form
-        )).ToList();
-    });
+        )).ToList());
 }

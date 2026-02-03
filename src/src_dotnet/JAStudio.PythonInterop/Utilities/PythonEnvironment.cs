@@ -11,12 +11,17 @@ public static class PythonEnvironment
 {
     public static TResult Use<TResult>(Func<TResult> func)
     {
-        EnsureInitialized();
-        using (Py.GIL())
+        using (LockGil())
             return func();
     }
 
     public static void Use(Action action) => Use(action.AsFunc());
+
+    public static IDisposable LockGil()
+    {
+        EnsureInitialized();
+        return Py.GIL();
+    }
 
     private static readonly IMonitorCE Monitor = IMonitorCE.WithDefaultTimeout();
 
