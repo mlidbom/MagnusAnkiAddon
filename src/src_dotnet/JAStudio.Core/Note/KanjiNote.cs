@@ -74,32 +74,29 @@ public class KanjiNote : JPNote
 
     public List<string> GetReadingsOn()
     {
-        // TODO: Implement StripHtmlMarkup and ExtractCommaSeparatedValues
-        return new List<string>();
+        return StringExtensions.ExtractCommaSeparatedValues(
+            StringExtensions.StripHtmlMarkup(GetReadingOnHtml()));
     }
 
     public List<string> GetReadingOnListHtml()
     {
-        // TODO: Implement ExtractCommaSeparatedValues
-        return new List<string>();
+        return StringExtensions.ExtractCommaSeparatedValues(GetReadingOnHtml());
     }
 
     public List<string> GetReadingsKun()
     {
-        // TODO: Implement StripHtmlMarkup and ExtractCommaSeparatedValues
-        return new List<string>();
+        return StringExtensions.ExtractCommaSeparatedValues(
+            StringExtensions.StripHtmlMarkup(GetReadingKunHtml()));
     }
 
     public List<string> GetReadingKunListHtml()
     {
-        // TODO: Implement ExtractCommaSeparatedValues
-        return new List<string>();
+        return StringExtensions.ExtractCommaSeparatedValues(GetReadingKunHtml());
     }
 
     public List<string> GetReadingNanListHtml()
     {
-        // TODO: Implement ExtractCommaSeparatedValues
-        return new List<string>();
+        return StringExtensions.ExtractCommaSeparatedValues(GetReadingNanHtml());
     }
 
     public List<string> GetReadingsClean()
@@ -108,8 +105,7 @@ public class KanjiNote : JPNote
         allReadings.AddRange(GetReadingOnListHtml());
         allReadings.AddRange(GetReadingKunListHtml());
         allReadings.AddRange(GetReadingNanListHtml());
-        // TODO: Implement StripHtmlMarkup on each reading
-        return allReadings;
+        return allReadings.Select(StringExtensions.StripHtmlMarkup).ToList();
     }
 
     public string GetReadingOnHtml()

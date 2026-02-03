@@ -74,6 +74,23 @@ public static class NoteFieldsConstants
         }
     }
 
+    public static class Sentence
+    {
+        public const string Id = "id_sentence";
+        public const string SourceQuestion = "question_sentence_source";
+        public const string UserQuestion = "question_sentence_user";
+        public const string ActiveQuestion = "question_sentence_active";
+        public const string SourceAnswer = "answer_sentence_source";
+        public const string UserAnswer = "answer_sentence_user";
+        public const string ActiveAnswer = "answer_sentence_active";
+        public const string SourceComments = "comments_sentence_source";
+        public const string Screenshot = "screenshot_sentence";
+        public const string Audio = "audio_sentence";
+        public const string Reading = "reading_sentence";
+        public const string ParsingResult = "parsing_result";
+        public const string Configuration = "sentence_configuration";
+    }
+
     public static class Kanji
     {
         public const string Question = MyNoteFields.Question;
@@ -115,6 +132,9 @@ public static class NoteFieldsConstants
         public const string Metadata = "__metadata";
         public const string MetaTags = "__meta_tags";
         public const string GeneratedData = "__generated_data";
+        public const string UserMnemonic = "__mnemonic";
+        public const string UserExplanation = "__explanation";
+        public const string UserExplanationLong = "__explanation_long";
     }
 }
 

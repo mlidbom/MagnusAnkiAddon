@@ -26,7 +26,9 @@ public static class StringExtensions
             return new List<string>();
         }
 
-        return input.Split(',')
+        // Support both comma and Japanese comma
+        var separators = new[] { ',', '、' };
+        return input.Split(separators, StringSplitOptions.RemoveEmptyEntries)
             .Select(s => s.Trim())
             .Where(s => !string.IsNullOrEmpty(s))
             .ToList();
