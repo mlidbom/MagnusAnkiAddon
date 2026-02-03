@@ -7,6 +7,7 @@ from autoslot import Slots
 
 from jaslib import app
 from jaslib.sysutils.lazy import Lazy
+from jaslib.sysutils.typed import non_optional
 from jaslib.sysutils.weak_ref import WeakRefable
 
 if TYPE_CHECKING:
@@ -34,7 +35,8 @@ def _get_config_dict() -> dict[str, object]:
 _config_dict: Lazy[dict[str, object]] = Lazy(_get_config_dict)
 
 def _write_config_dict() -> None:
-    pass  # todo implement
+    if not app.is_testing:
+        non_optional(_update_callback)(non_optional(_config_dict_real))
 
 class ConfigurationValue[T](WeakRefable, Slots):
     def __init__(self, name: str, title: str, default: T, feature_toggler: Callable[[T], None] | None = None) -> None:
