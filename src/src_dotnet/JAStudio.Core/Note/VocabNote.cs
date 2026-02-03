@@ -18,6 +18,10 @@ public class VocabNote : JPNote
     public VocabNoteSentences Sentences { get; }
     public VocabNoteUserCompoundParts CompoundParts { get; }
     public VocabRelatedNotes RelatedNotes { get; }
+    public VocabNoteMetaData MetaData { get; }
+    public VocabNoteRegister Register { get; }
+    public VocabNoteAudio Audio { get; }
+    public VocabNoteMatchingConfiguration MatchingConfiguration { get; }
 
     public VocabNote(JPNoteData? data = null) : base(data)
     {
@@ -31,6 +35,10 @@ public class VocabNote : JPNote
         Sentences = new VocabNoteSentences(() => this);
         CompoundParts = new VocabNoteUserCompoundParts(() => this);
         RelatedNotes = new VocabRelatedNotes(() => this);
+        MetaData = new VocabNoteMetaData(() => this);
+        Register = new VocabNoteRegister(() => this);
+        Audio = new VocabNoteAudio(() => this);
+        MatchingConfiguration = new VocabNoteMatchingConfiguration(() => this);
     }
 
     public override void UpdateInCache()
