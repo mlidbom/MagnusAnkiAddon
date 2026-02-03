@@ -113,7 +113,7 @@ public abstract class JPNote
         return new HashSet<JPNote>();
     }
 
-    protected virtual void OnTagsUpdated()
+    public virtual void OnTagsUpdated()
     {
         // Called when tags are modified. Subclasses can override to invalidate cached state.
     }

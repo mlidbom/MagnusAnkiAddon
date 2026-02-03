@@ -99,10 +99,29 @@ public class SentenceNote : JPNote
     {
         base.UpdateGeneratedData();
         
-        // TODO: UpdateParsedWords when text analysis is available
+        UpdateParsedWords();
         
         SetField(NoteFieldsConstants.Sentence.ActiveAnswer, GetAnswer());
         SetField(NoteFieldsConstants.Sentence.ActiveQuestion, GetQuestion());
+    }
+
+    public void UpdateParsedWords(bool force = false)
+    {
+        var parsingResult = ParsingResult.Get();
+        var questionText = GetQuestion();
+        
+        // TODO: Implement TextAnalysis.Version when ported
+        if (!force && parsingResult != null && 
+            parsingResult.Sentence == questionText &&
+            parsingResult.ParserVersion == "1.0")  // Placeholder version
+        {
+            return;
+        }
+
+        // TODO: Implement CreateAnalysis when TextAnalysis is ported
+        // var analysis = CreateAnalysis();
+        // ParsingResult.Set(ParsingResult.FromAnalysis(analysis));
+        throw new System.NotImplementedException("UpdateParsedWords requires TextAnalysis to be ported");
     }
 
     public List<string> ExtractKanji()

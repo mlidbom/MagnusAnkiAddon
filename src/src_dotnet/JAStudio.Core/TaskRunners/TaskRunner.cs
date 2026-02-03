@@ -110,8 +110,6 @@ public class TaskRunnerScope : IDisposable
     }
     
     public ITaskRunner Runner => _runner;
-    
-    public static implicit operator ITaskRunner(TaskRunnerScope scope) => scope._runner;
 
     public void Dispose()
     {

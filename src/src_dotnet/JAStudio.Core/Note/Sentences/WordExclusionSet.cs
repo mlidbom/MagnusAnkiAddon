@@ -7,17 +7,22 @@ namespace JAStudio.Core.Note.Sentences;
 public class WordExclusion
 {
     public string Word { get; set; }
-    public int? Position { get; set; }
+    public int Index { get; set; }
 
-    public WordExclusion(string word, int? position = null)
+    private WordExclusion(string word, int index)
     {
         Word = word;
-        Position = position;
+        Index = index;
     }
 
     public static WordExclusion Global(string word)
     {
-        return new WordExclusion(word, null);
+        return new WordExclusion(word, -1);
+    }
+
+    public static WordExclusion AtIndex(string word, int index)
+    {
+        return new WordExclusion(word, index);
     }
 
     public bool ExcludesFormAtIndex(string word, int index)
@@ -25,15 +30,72 @@ public class WordExclusion
         if (Word != word)
             return false;
 
-        if (Position == null)
+        if (Index == -1)
             return true;
 
-        return Position == index;
+        return Index == index;
+    }
+
+    public Dictionary<string, object> ToDict()
+    {
+        return new Dictionary<string, object>
+        {
+            { "word", Word },
+            { "index", Index }
+        };
+    }
+
+    public static WordExclusion FromReader(JsonReader reader)
+    {
+        return new WordExclusion(reader.GetString("word"), reader.GetInt("index"));
     }
 
     public override string ToString()
     {
-        return Position == null ? $"Global({Word})" : $"{Word}@{Position}";
+        return Index == -1 ? $"Global({Word})" : $"{Word}@{Index}";
+    }
+}
+
+public class JsonReader
+{
+    private readonly Dictionary<string, object> _data;
+
+    public JsonReader(Dictionary<string, object> data)
+    {
+        _data = data;
+    }
+
+    public string GetString(string key)
+    {
+        return _data.TryGetValue(key, out var value) ? value?.ToString() ?? "" : "";
+    }
+
+    public int GetInt(string key)
+    {
+        if (_data.TryGetValue(key, out var value))
+        {
+            if (value is int intValue) return intValue;
+            if (int.TryParse(value?.ToString(), out var parsed)) return parsed;
+        }
+        return 0;
+    }
+
+    public List<string> GetStringList(string key, List<string> defaultValue)
+    {
+        if (_data.TryGetValue(key, out var value) && value is List<object> list)
+        {
+            return list.Select(o => o.ToString() ?? "").ToList();
+        }
+        return defaultValue;
+    }
+
+    public List<T> GetObjectList<T>(string key, Func<JsonReader, T> factory, List<T> defaultValue)
+    {
+        if (_data.TryGetValue(key, out var value) && value is List<object> list)
+        {
+            return list.Select(o => factory(new JsonReader(o as Dictionary<string, object> ?? new Dictionary<string, object>()))).ToList();
+        }
+        return defaultValue;
     }
 }
 
@@ -53,6 +115,11 @@ public class WordExclusionSet
     public static WordExclusionSet Empty()
     {
         return new WordExclusionSet(() => { }, new List<WordExclusion>());
+    }
+
+    public static WordExclusionSet Empty(Action saveCallback)
+    {
+        return new WordExclusionSet(saveCallback, new List<WordExclusion>());
     }
 
     public bool IsEmpty() => !_exclusions.Any();
