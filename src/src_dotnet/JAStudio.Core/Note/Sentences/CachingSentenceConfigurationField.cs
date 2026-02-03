@@ -25,11 +25,11 @@ public class CachingSentenceConfigurationField
 
     public WordExclusionSet HiddenMatches => _value.HiddenMatches;
 
-    public List<string> HighlightedWords() => _value.HighlightedWords;
+    public List<string> HighlightedWords => _value.HighlightedWords;
 
     public HashSet<VocabNote> HighlightedVocab()
     {
-        var highlightedWordsList = HighlightedWords().ToList();
+        var highlightedWordsList = HighlightedWords.ToList();
         var vocabWithForms = App.Col().Vocab.WithAnyFormIn(highlightedWordsList);
         var matchedVocabIds = _sentence.ParsingResult.Get().MatchedVocabIds;
         
@@ -40,7 +40,7 @@ public class CachingSentenceConfigurationField
 
     public void RemoveHighlightedWord(string word)
     {
-        HighlightedWords().Remove(word);
+        HighlightedWords.Remove(word);
         Save();
     }
 
@@ -52,7 +52,7 @@ public class CachingSentenceConfigurationField
 
     public void AddHighlightedWord(string vocab)
     {
-        HighlightedWords().Add(vocab.Trim());
+        HighlightedWords.Add(vocab.Trim());
         Save();
     }
 

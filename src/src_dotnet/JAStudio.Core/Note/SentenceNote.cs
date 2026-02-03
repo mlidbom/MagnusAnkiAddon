@@ -1,5 +1,6 @@
 using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.Sentences;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,12 +8,12 @@ namespace JAStudio.Core.Note;
 
 public class SentenceNote : JPNote
 {
-    public SentenceConfiguration Configuration { get; private set; }
+    public CachingSentenceConfigurationField Configuration { get; private set; }
     public SerializedObjectField<ParsingResult> ParsingResult { get; }
 
     public SentenceNote(JPNoteData? data = null) : base(data)
     {
-        Configuration = SentenceConfiguration.Empty();
+        Configuration = new CachingSentenceConfigurationField(this);
         ParsingResult = new SerializedObjectField<ParsingResult>(
             this,
             NoteFieldsConstants.Sentence.ParsingResult,
@@ -24,20 +25,28 @@ public class SentenceNote : JPNote
         App.Col().Sentences.Cache.JpNoteUpdated(this);
     }
 
+    // Property accessors
+    public MutableStringField Id => new(this, NoteFieldsConstants.Sentence.Id);
+    public MutableStringField Reading => new(this, NoteFieldsConstants.Sentence.Reading);
+    public SentenceUserFields User => new(this);
+    public MutableStringField SourceQuestion => new(this, NoteFieldsConstants.Sentence.SourceQuestion);
+    public MutableStringField ActiveQuestion => new(this, NoteFieldsConstants.Sentence.ActiveQuestion);
+    public SentenceQuestionField Question => new(User.Question, SourceQuestion);
+    public StripHtmlOnReadFallbackStringField Answer => new(User.Answer, SourceAnswer);
+    private MutableStringField SourceAnswer => new(this, NoteFieldsConstants.Sentence.SourceAnswer);
+    public MutableStringField ActiveAnswer => new(this, NoteFieldsConstants.Sentence.ActiveAnswer);
+    public MutableStringField SourceComments => new(this, NoteFieldsConstants.Sentence.SourceComments);
+    private MutableStringField Screenshot => new(this, NoteFieldsConstants.Sentence.Screenshot);
+    public WritableAudioField Audio => new(this, NoteFieldsConstants.Sentence.Audio);
+
     public override string GetQuestion()
     {
-        var userQuestion = GetField(NoteFieldsConstants.Sentence.UserQuestion);
-        var sourceQuestion = GetField(NoteFieldsConstants.Sentence.SourceQuestion);
-        var question = !string.IsNullOrEmpty(userQuestion) ? userQuestion : sourceQuestion;
-        return question.Replace(StringExtensions.InvisibleSpace, string.Empty);
+        return Question.WithoutInvisibleSpace();
     }
 
     public override string GetAnswer()
     {
-        var userAnswer = GetField(NoteFieldsConstants.Sentence.UserAnswer);
-        var sourceAnswer = GetField(NoteFieldsConstants.Sentence.SourceAnswer);
-        var answer = !string.IsNullOrEmpty(userAnswer) ? userAnswer : sourceAnswer;
-        return StringExtensions.StripHtmlMarkup(answer);
+        return Answer.Get();
     }
 
     public List<string> GetWords()
@@ -50,7 +59,7 @@ public class SentenceNote : JPNote
         allWords.UnionWith(highlightedWords);
         allWords.ExceptWith(incorrectWords);
 
-        return allWords.ToList();
+        return allWords.Distinct().ToList();
     }
 
     public override HashSet<JPNote> GetDirectDependencies()
@@ -58,13 +67,10 @@ public class SentenceNote : JPNote
         var dependencies = new HashSet<JPNote>();
 
         // Add highlighted vocab
-        foreach (var word in Configuration.HighlightedWords)
+        var highlightedVocab = Configuration.HighlightedVocab();
+        foreach (var vocab in highlightedVocab)
         {
-            var vocabNotes = App.Col().Vocab.Cache.WithQuestion(word);
-            foreach (var vocab in vocabNotes)
-            {
-                dependencies.Add(vocab);
-            }
+            dependencies.Add(vocab);
         }
 
         // Add displayed parsed words
@@ -82,14 +88,11 @@ public class SentenceNote : JPNote
         }
 
         // Add kanji
-        var kanji = ExtractKanji();
-        foreach (var kanjiChar in kanji)
+        var kanjiList = ExtractKanji();
+        var kanjiNotes = App.Col().Kanji.WithAnyKanjiIn(kanjiList);
+        foreach (var kanjiNote in kanjiNotes)
         {
-            var kanjiNote = App.Col().Kanji.WithKanji(kanjiChar);
-            if (kanjiNote != null)
-            {
-                dependencies.Add(kanjiNote);
-            }
+            dependencies.Add(kanjiNote);
         }
 
         return dependencies;
@@ -126,16 +129,69 @@ public class SentenceNote : JPNote
 
     public List<string> ExtractKanji()
     {
-        var clean = StringExtensions.StripHtmlMarkup(GetQuestion());
-        // TODO: Implement character_is_kanji when KanaUtils is ported
-        return new List<string>();
+        var clean = StringExtensions.StripHtmlMarkup(Question.WithoutInvisibleSpace());
+        return clean.Where(LanguageServices.KanaUtils.CharacterIsKanji)
+            .Select(c => c.ToString())
+            .ToList();
     }
 
     public static SentenceNote CreateTestNote(string question, string answer)
     {
         var note = new SentenceNote();
-        note.SetField(NoteFieldsConstants.Sentence.SourceQuestion, question);
-        note.SetField(NoteFieldsConstants.Sentence.UserAnswer, answer);
+        note.SourceQuestion.Set(question);
+        note.User.Answer.Set(answer);
+        note.UpdateGeneratedData();
+        App.Col().Sentences.Add(note);
+        return note;
+    }
+
+    public static SentenceNote AddSentence(
+        string question,
+        string answer,
+        string audio = "",
+        string screenshot = "",
+        HashSet<string>? highlightedVocab = null,
+        HashSet<Tag>? tags = null)
+    {
+        var note = new SentenceNote();
+        note.SourceQuestion.Set(question);
+        note.SourceAnswer.Set(answer);
+        note.Screenshot.Set(screenshot);
+        note.UpdateGeneratedData();
+
+        if (string.IsNullOrWhiteSpace(audio))
+        {
+            note.Tags.Set(Note.Tags.TTSAudio);
+        }
+        else
+        {
+            note.Audio.SetRawValue(audio.Trim());
+        }
+
+        if (highlightedVocab != null)
+        {
+            foreach (var vocab in highlightedVocab)
+            {
+                note.Configuration.AddHighlightedWord(vocab);
+            }
+        }
+
+        if (tags != null)
+        {
+            foreach (var tag in tags)
+            {
+                note.Tags.Set(tag);
+            }
+        }
+
+        App.Col().Sentences.Add(note);
+        return note;
+    }
+
+    public static SentenceNote Create(string question)
+    {
+        var note = new SentenceNote();
+        note.SourceQuestion.Set(question);
         note.UpdateGeneratedData();
         App.Col().Sentences.Add(note);
         return note;
