@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from autoslot import Slots
-
-from jaslib.sysutils.simple_string_list_builder import SimpleStringListBuilder
+from jaspythonutils.sysutils.simple_string_list_builder import SimpleStringListBuilder
 
 
 # noinspection PyUnusedFunction

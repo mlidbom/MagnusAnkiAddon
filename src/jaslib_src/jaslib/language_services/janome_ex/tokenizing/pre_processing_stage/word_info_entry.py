@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
+from jaspythonutils.sysutils.abstract_method_called_error import AbstractMethodCalledError
 
 from jaslib.note.vocabulary.pos import POS
-from jaslib.sysutils.abstract_method_called_error import AbstractMethodCalledError
 
 if TYPE_CHECKING:
     from jaslib.language_services.jamdict_ex.dict_lookup_result import DictLookupResult

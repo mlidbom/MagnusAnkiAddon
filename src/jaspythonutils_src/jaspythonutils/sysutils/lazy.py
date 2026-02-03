@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 
 if TYPE_CHECKING:
-    from jaslib.sysutils.standard_type_aliases import Func
+    from jaspythonutils.sysutils.standard_type_aliases import Func
 
 class Lazy[T](Slots):
     def __init__(self, factory: Func[T]) -> None:

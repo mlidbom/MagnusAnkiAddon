@@ -5,17 +5,17 @@ from typing import TYPE_CHECKING, override
 from autoslot import Slots
 from jaslib.configuration.settings import Settings
 from jaslib.language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-from jaslib.sysutils import kana_utils, typed
-from jaslib.sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
-from jaslib.sysutils.simple_string_list_builder import SimpleStringListBuilder
 from jaslib.ui.web.sentence.compound_part_viewmodel import CompoundPartViewModel
+from jaspythonutils.sysutils import kana_utils, typed
+from jaspythonutils.sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
+from jaspythonutils.sysutils.simple_string_list_builder import SimpleStringListBuilder
 from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
     from jaslib.language_services.janome_ex.word_extraction.matches.match import Match
     from jaslib.note.sentences.sentence_configuration import SentenceConfiguration
-    from jaslib.sysutils.weak_ref import WeakRef
     from jaslib.ui.web.sentence.candidate_word_variant_viewmodel import CandidateWordVariantViewModel
+    from jaspythonutils.sysutils.weak_ref import WeakRef
 
 class MatchViewModel(Slots):
     def __init__(self, word_variant_vm: WeakRef[CandidateWordVariantViewModel], match: Match) -> None:

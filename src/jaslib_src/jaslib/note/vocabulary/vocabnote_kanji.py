@@ -3,16 +3,15 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
+from jaspythonutils.sysutils import ex_str, kana_utils
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
 
-from jaslib.sysutils import ex_str, kana_utils
-
 if TYPE_CHECKING:
+    from jaspythonutils.sysutils.weak_ref import WeakRef
     from typed_linq_collections.collections.q_list import QList
 
     from jaslib.note.vocabulary.vocabnote import VocabNote
-    from jaslib.sysutils.weak_ref import WeakRef
 
 class VocabNoteKanji(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:

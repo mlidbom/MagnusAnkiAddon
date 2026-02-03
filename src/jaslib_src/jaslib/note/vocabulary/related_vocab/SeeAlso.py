@@ -8,12 +8,12 @@ from jaslib import app
 from jaslib.app import col
 
 if TYPE_CHECKING:
+    from jaspythonutils.sysutils.weak_ref import WeakRef
     from typed_linq_collections.collections.q_set import QSet
 
     from jaslib.note.notefields.json_object_field import MutableSerializedObjectField
     from jaslib.note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
     from jaslib.note.vocabulary.vocabnote import VocabNote
-    from jaslib.sysutils.weak_ref import WeakRef
 
 
 class SeeAlso(Slots):

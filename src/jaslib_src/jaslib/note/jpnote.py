@@ -4,6 +4,9 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
+from jaspythonutils.sysutils import ex_assert, ex_str
+from jaspythonutils.sysutils.abstract_method_called_error import AbstractMethodCalledError
+from jaspythonutils.sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_set import QSet
 
 from jaslib import app
@@ -12,9 +15,6 @@ from jaslib.note.note_constants import CardTypes, MyNoteFields
 from jaslib.note.note_flush_guard import NoteRecursiveFlushGuard
 from jaslib.note.note_tags import NoteTags
 from jaslib.note.tags import Tags
-from jaslib.sysutils import ex_assert, ex_str
-from jaslib.sysutils.abstract_method_called_error import AbstractMethodCalledError
-from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from jaslib.note.collection.card_studying_status import CardStudyingStatus

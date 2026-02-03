@@ -8,7 +8,7 @@ from typed_linq_collections.collections.q_dict import QDict
 from jaslib.note.vocabulary.vocabnote_question import VocabNoteQuestion
 
 if TYPE_CHECKING:
-    from jaslib.sysutils.json.json_reader import JsonReader
+    from jaspythonutils.sysutils.json.json_reader import JsonReader
 
 
 

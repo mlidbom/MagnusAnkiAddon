@@ -12,11 +12,11 @@ from jaslib.note.kanjinote import KanjiNote
 from jaslib.note.note_constants import Mine, NoteTypes
 from jaslib.note.sentences.sentencenote import SentenceNote
 from jaslib.note.vocabulary.vocabnote import VocabNote
-from jaslib.sysutils.memory_usage import string_auto_interner
-from jaslib.sysutils.timeutil import StopWatch
-from jaslib.sysutils.typed import non_optional
-from jaslib.sysutils.weak_ref import WeakRefable
 from jaslib.task_runners.task_progress_runner import TaskRunner
+from jaspythonutils.sysutils.memory_usage import string_auto_interner
+from jaspythonutils.sysutils.timeutil import StopWatch
+from jaspythonutils.sysutils.typed import non_optional
+from jaspythonutils.sysutils.weak_ref import WeakRefable
 from jastudio.anki_extentions.note_bulk_loader import NoteBulkLoader
 from jastudio.ankiutils import app
 from jastudio.note import studing_status_helper

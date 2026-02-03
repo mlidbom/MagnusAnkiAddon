@@ -4,9 +4,8 @@ from __future__ import annotations
 from typing import override
 
 from autoslot import Slots
+from jaspythonutils.sysutils import kana_utils
 from typed_linq_collections.collections.q_set import QSet
-
-from jaslib.sysutils import kana_utils
 
 
 class JNPartsOfSpeech(Slots):

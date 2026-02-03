@@ -4,8 +4,7 @@ import json
 from typing import Any, cast, override
 
 from autoslot import Slots
-
-from jaslib.sysutils.json.json_library_shim import JsonLibraryShim
+from jaspythonutils.sysutils.json.json_library_shim import JsonLibraryShim
 
 
 # noinspection PyUnusedClass,PyUnusedFunction

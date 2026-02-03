@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING, cast
 import pyperclip
 from anki.models import NotetypeDict
 from aqt import gui_hooks
-from jaslib.sysutils import ex_str, typed
-from jaslib.sysutils.timeutil import StopWatch
+from jaspythonutils.sysutils import ex_str, typed
+from jaspythonutils.sysutils.timeutil import StopWatch
 
 from jastudio.ankiutils import app
 from jastudio.ankiutils.app import get_ui_utils

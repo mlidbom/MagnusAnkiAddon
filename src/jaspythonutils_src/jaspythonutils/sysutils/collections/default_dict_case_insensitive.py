@@ -4,11 +4,10 @@ import collections
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
-
-from jaslib.sysutils import typed
+from jaspythonutils.sysutils import typed
 
 if TYPE_CHECKING:
-    from jaslib.sysutils.standard_type_aliases import Func
+    from jaspythonutils.sysutils.standard_type_aliases import Func
     pass
 
 class DefaultDictCaseInsensitive[VT](collections.defaultdict[str, VT], Slots):

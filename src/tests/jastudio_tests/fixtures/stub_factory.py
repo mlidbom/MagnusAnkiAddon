@@ -4,7 +4,7 @@ import threading
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
-from jaslib.sysutils.typed import checked_cast
+from jaspythonutils.sysutils.typed import checked_cast
 from jastudio.ankiutils import app
 from jastudio_tests.fixtures.stubs.ui_utils_stub import UIUtilsStub
 

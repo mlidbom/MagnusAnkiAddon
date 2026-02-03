@@ -13,12 +13,12 @@ from jaslib.note.notefields.comma_separated_strings_list_field import MutableCom
 from jaslib.note.sentences.sentence_configuration import SentenceConfiguration
 
 if TYPE_CHECKING:
+    from jaspythonutils.sysutils.weak_ref import WeakRef
     from typed_linq_collections.collections.q_list import QList
     from typed_linq_collections.collections.q_set import QSet
 
     from jaslib.note.collection.jp_collection import JPCollection
     from jaslib.note.vocabulary.vocabnote import VocabNote
-    from jaslib.sysutils.weak_ref import WeakRef
 
 # noinspection PyUnusedFunction
 class VocabNoteUserCompoundParts(Slots):

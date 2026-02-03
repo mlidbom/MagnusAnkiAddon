@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from jaslib import app
-from jaslib.sysutils.typed import non_optional
 from jaslib.task_runners.invisible_task_progress_runner import InvisibleTaskRunner
+from jaspythonutils.sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator

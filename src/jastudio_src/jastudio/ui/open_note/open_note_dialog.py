@@ -9,8 +9,8 @@ from jaslib.note.jpnote import JPNote
 from jaslib.note.kanjinote import KanjiNote
 from jaslib.note.sentences.sentencenote import SentenceNote
 from jaslib.note.vocabulary.vocabnote import VocabNote
-from jaslib.sysutils import ex_str, kana_utils, typed
-from jaslib.sysutils.typed import non_optional
+from jaspythonutils.sysutils import ex_str, kana_utils, typed
+from jaspythonutils.sysutils.typed import non_optional
 from PyQt6.QtCore import Qt, pyqtBoundSignal
 from PyQt6.QtWidgets import QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QProgressBar, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
 

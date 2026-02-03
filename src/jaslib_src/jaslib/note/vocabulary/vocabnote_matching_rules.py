@@ -3,6 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
+from jaspythonutils.sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
+from jaspythonutils.sysutils.lazy import Lazy
+from jaspythonutils.sysutils.weak_ref import WeakRef, WeakRefable
 
 from jaslib.note.note_constants import NoteFields
 from jaslib.note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
@@ -13,9 +16,6 @@ from jaslib.note.tags import Tags
 from jaslib.note.vocabulary.serialization.matching_rules_serializer import VocabNoteMatchingRulesSerializer
 from jaslib.note.vocabulary.vocabnote_matching_rules_is_inflecting_word import IsInflectingWord
 from jaslib.note.vocabulary.vocabnote_matching_rules_yield_last_token_to_next_compound import YieldLastTokenToOverlappingCompound
-from jaslib.sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
-from jaslib.sysutils.lazy import Lazy
-from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

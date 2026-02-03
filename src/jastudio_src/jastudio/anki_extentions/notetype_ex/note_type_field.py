@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from autoslot import Slots
-from jaslib.sysutils import typed
+from jaspythonutils.sysutils import typed
 
 
 class NoteFieldEx(Slots):

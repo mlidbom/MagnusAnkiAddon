@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
+from jaspythonutils.sysutils.lazy import Lazy
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
 
@@ -17,13 +18,13 @@ from jaslib.note.vocabulary.related_vocab.perfect_synonyms import PerfectSynonym
 from jaslib.note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
 from jaslib.note.vocabulary.related_vocab.SeeAlso import SeeAlso
 from jaslib.note.vocabulary.related_vocab.Synonyms import Synonyms
-from jaslib.sysutils.lazy import Lazy
 
 if TYPE_CHECKING:
+    from jaspythonutils.sysutils.weak_ref import WeakRef
+
     from jaslib.note.jpnote import JPNote
     from jaslib.note.kanjinote import KanjiNote
     from jaslib.note.vocabulary.vocabnote import VocabNote
-    from jaslib.sysutils.weak_ref import WeakRef
 
 class RelatedVocab(Slots): # todo performance: memory: do we need to cache all of this, could it be created on demand by properties instead?
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:

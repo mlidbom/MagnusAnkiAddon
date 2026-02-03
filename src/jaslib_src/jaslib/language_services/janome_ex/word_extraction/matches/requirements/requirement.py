@@ -3,8 +3,7 @@ from __future__ import annotations
 from typing import override
 
 from autoslot import Slots
-
-from jaslib.sysutils.abstract_method_called_error import AbstractMethodCalledError
+from jaspythonutils.sysutils.abstract_method_called_error import AbstractMethodCalledError
 
 
 class MatchRequirement(Slots):

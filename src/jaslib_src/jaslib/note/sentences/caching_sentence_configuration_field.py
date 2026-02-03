@@ -3,13 +3,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
+from jaspythonutils.sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_set import QSet
 
 from jaslib import app
 from jaslib.note.note_constants import SentenceNoteFields
 from jaslib.note.notefields.mutable_string_field import MutableStringField
 from jaslib.note.sentences.sentence_configuration import SentenceConfiguration
-from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from typed_linq_collections.collections.q_unique_list import QUniqueList

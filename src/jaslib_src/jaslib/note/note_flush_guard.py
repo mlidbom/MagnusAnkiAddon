@@ -4,16 +4,17 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
+from jaspythonutils.sysutils import ex_assert
 
 from jaslib import mylog
 from jaslib.configuration.settings import Settings
-from jaslib.sysutils import ex_assert
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
+    from jaspythonutils.sysutils.weak_ref import WeakRef
+
     from jaslib.note.jpnote import JPNote
-    from jaslib.sysutils.weak_ref import WeakRef
 
 class NoteRecursiveFlushGuard(Slots):
     def __init__(self, note: WeakRef[JPNote]) -> None:

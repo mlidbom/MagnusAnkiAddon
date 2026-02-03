@@ -8,8 +8,9 @@ from jaslib.note.note_constants import SentenceNoteFields
 from jaslib.note.notefields.mutable_string_field import MutableStringField
 
 if TYPE_CHECKING:
+    from jaspythonutils.sysutils.weak_ref import WeakRef
+
     from jaslib.note.sentences.sentencenote import SentenceNote
-    from jaslib.sysutils.weak_ref import WeakRef
 
 # noinspection PyUnusedFunction
 class SentenceUserFields(Slots):

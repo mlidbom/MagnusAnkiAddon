@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from anki.notes import NoteId as AnkiNoteId
-from jaslib.sysutils.typed import non_optional
+from jaspythonutils.sysutils.typed import non_optional
 
 from jastudio.anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from jastudio.ankiutils import app

@@ -10,11 +10,12 @@ from jaslib.language_services.janome_ex.word_extraction.matches.state_tests.head
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from jaspythonutils.sysutils.weak_ref import WeakRef
+
     from jaslib.language_services.jamdict_ex.dict_entry import DictEntry
     from jaslib.language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from jaslib.language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
     from jaslib.language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
-    from jaslib.sysutils.weak_ref import WeakRef
 
 class DictionaryMatch(Match, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant], dictionary_entry: DictEntry) -> None:

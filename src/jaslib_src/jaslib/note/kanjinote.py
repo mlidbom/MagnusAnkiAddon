@@ -4,12 +4,12 @@ import re
 from typing import TYPE_CHECKING, cast, override
 
 from autoslot import Slots
+from jaspythonutils.sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_list import QList
 
 from jaslib import app
 from jaslib.note import kanjinote_mnemonic_maker
 from jaslib.note.vocabulary import vocabnote_sorting
-from jaslib.sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from typed_linq_collections.collections.q_set import QSet
@@ -17,9 +17,10 @@ if TYPE_CHECKING:
     from jaslib.note.jpnote_data import JPNoteData
     from jaslib.note.vocabulary.vocabnote import VocabNote
 
+from jaspythonutils.sysutils import ex_str, kana_utils, typed
+
 from jaslib.note.jpnote import JPNote
 from jaslib.note.note_constants import NoteFields
-from jaslib.sysutils import ex_str, kana_utils, typed
 
 
 class KanjiNote(JPNote, Slots):

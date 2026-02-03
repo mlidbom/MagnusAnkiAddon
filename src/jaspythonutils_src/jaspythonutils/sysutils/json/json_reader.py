@@ -3,15 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, cast
 
 from autoslot import Slots  # pyright: ignore [reportMissingTypeStubs]
+from jaspythonutils.sysutils import typed
+from jaspythonutils.sysutils.json.ex_json import json_library_shim
 from typed_linq_collections.collections.q_set import QSet
-
-from jaslib.sysutils import typed
-from jaslib.sysutils.json.ex_json import json_library_shim
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from jaslib.sysutils.standard_type_aliases import Selector
+    from jaspythonutils.sysutils.standard_type_aliases import Selector
 
 class JsonReader(Slots):
     def __init__(self, json_dict: dict[str, Any]) -> None:  # pyright: ignore[reportExplicitAny]

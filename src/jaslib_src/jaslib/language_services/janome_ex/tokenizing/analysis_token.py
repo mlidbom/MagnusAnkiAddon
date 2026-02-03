@@ -3,8 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-
-from jaslib.sysutils.abstract_method_called_error import AbstractMethodCalledError
+from jaspythonutils.sysutils.abstract_method_called_error import AbstractMethodCalledError
 
 if TYPE_CHECKING:
     from jaslib.language_services.janome_ex.tokenizing.jn_token import JNToken

@@ -8,8 +8,9 @@ from typed_linq_collections.q_iterable import query
 from jaslib.note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
 
 if TYPE_CHECKING:
+    from jaspythonutils.sysutils.weak_ref import WeakRef
+
     from jaslib.note.jpnote import JPNote
-    from jaslib.sysutils.weak_ref import WeakRef
 
 class MutableCommaSeparatedStringsListFieldDeDuplicated(MutableCommaSeparatedStringsListField, Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:

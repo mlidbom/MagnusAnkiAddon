@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from jaspythonutils.sysutils import kana_utils
 from typed_linq_collections.collections.q_frozen_set import QFrozenSet
 
 from jaslib.note.tags import Tags
 from jaslib.note.vocabulary.pos import POS
-from jaslib.sysutils import kana_utils
 
 if TYPE_CHECKING:
     from jaslib.note.vocabulary.vocabnote import VocabNote

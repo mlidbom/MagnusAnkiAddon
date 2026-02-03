@@ -6,7 +6,7 @@ import aqt.utils
 from aqt import gui_hooks
 from aqt.overview import Overview
 from jaslib.note.note_constants import CardTypes, NoteTypes
-from jaslib.sysutils import typed
+from jaspythonutils.sysutils import typed
 
 from jastudio.anki_extentions.card_ex import CardEx
 from jastudio.anki_extentions.deck_ex import DeckEx

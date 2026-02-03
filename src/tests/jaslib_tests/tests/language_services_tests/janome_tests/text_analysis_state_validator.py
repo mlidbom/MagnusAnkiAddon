@@ -2,7 +2,7 @@
 #
 # from typing import TYPE_CHECKING
 #
-# from jaslib.sysutils import ex_assert
+# from jaspythonutils.sysutils import ex_assert
 #
 # if TYPE_CHECKING:
 #     from jaslib.language_services.janome_ex.word_extraction.matches.match import Match

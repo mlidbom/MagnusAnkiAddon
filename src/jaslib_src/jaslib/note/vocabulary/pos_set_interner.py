@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from jaspythonutils.sysutils import ex_str
+from jaspythonutils.sysutils.memory_usage import string_auto_interner
+
 from jaslib.note.vocabulary.pos import POS
-from jaslib.sysutils import ex_str
-from jaslib.sysutils.memory_usage import string_auto_interner
 
 
 class POSSetManager:

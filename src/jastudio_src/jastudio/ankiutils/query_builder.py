@@ -6,7 +6,7 @@ from anki.notes import NoteId
 from jaslib import app
 from jaslib.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from jaslib.note.note_constants import Builtin, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
-from jaslib.sysutils import kana_utils
+from jaspythonutils.sysutils import kana_utils
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
 

@@ -3,8 +3,8 @@ from __future__ import annotations
 from aqt import gui_hooks
 from jaslib.note.tags import Tags
 from jaslib.note.vocabulary.vocabnote import VocabNote
-from jaslib.sysutils.ex_str import newline
 from jaslib.ui.web.vocab.vocab_sentences_vocab_sentence_view_model import VocabSentenceViewModel
+from jaspythonutils.sysutils.ex_str import newline
 
 from jastudio.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 

@@ -3,8 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-
-from jaslib.sysutils.weak_ref import WeakRefable
+from jaspythonutils.sysutils.weak_ref import WeakRefable
 
 if TYPE_CHECKING:
     from jaslib.note.notefields.mutable_string_field import MutableStringField

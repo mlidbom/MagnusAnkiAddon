@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING  # noqa: E402
 from autoslot import Slots
 
 #from typing import override
-from jaslib.sysutils.timeutil import StopWatch
+from jaspythonutils.sysutils.timeutil import StopWatch
 from JAStudio.Core.InteropExperiments import CustomTypeReceiver  # noqa: E402
 from JAStudio.PythonInterop import JanomeTokenizer  # noqa: E402
 

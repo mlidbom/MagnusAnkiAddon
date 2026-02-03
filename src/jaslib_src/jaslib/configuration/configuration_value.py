@@ -4,11 +4,11 @@ import os
 from typing import TYPE_CHECKING, cast
 
 from autoslot import Slots
+from jaspythonutils.sysutils.lazy import Lazy
+from jaspythonutils.sysutils.typed import non_optional
+from jaspythonutils.sysutils.weak_ref import WeakRefable
 
 from jaslib import app
-from jaslib.sysutils.lazy import Lazy
-from jaslib.sysutils.typed import non_optional
-from jaslib.sysutils.weak_ref import WeakRefable
 
 if TYPE_CHECKING:
     from collections.abc import Callable

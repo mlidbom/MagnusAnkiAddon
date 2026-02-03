@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from jaslib.sysutils.typed import float_
+from jaspythonutils.sysutils.typed import float_
 
 if TYPE_CHECKING:
     from anki.decks import DeckConfigDict

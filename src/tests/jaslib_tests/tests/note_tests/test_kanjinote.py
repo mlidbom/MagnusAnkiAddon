@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 import pytest
 from jaslib import app
-from jaslib.sysutils.typed import non_optional
 from jaslib_tests.fixtures import collection_factory
+from jaspythonutils.sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

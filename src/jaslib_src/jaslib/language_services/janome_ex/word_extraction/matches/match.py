@@ -3,6 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
+from jaspythonutils.sysutils.abstract_method_called_error import AbstractMethodCalledError
+from jaspythonutils.sysutils.weak_ref import WeakRef, WeakRefable
 
 from jaslib.language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
 from jaslib.language_services.janome_ex.word_extraction.matches.state_tests.forbids_compounds import ForbidsConfiguredToHideAllCompounds
@@ -16,8 +18,6 @@ from jaslib.language_services.janome_ex.word_extraction.matches.state_tests.is_g
 from jaslib.language_services.janome_ex.word_extraction.matches.state_tests.is_inflected_surface_with_valid_base import ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb
 from jaslib.language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import ForbidsIsShadowed
 from jaslib.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from jaslib.sysutils.abstract_method_called_error import AbstractMethodCalledError
-from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from collections.abc import Callable

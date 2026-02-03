@@ -3,9 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots
+from jaspythonutils.sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.q_iterable import query  # pyright: ignore[reportMissingTypeStubs]
-
-from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from typed_linq_collections.collections.q_list import QList

@@ -4,8 +4,8 @@ import threading
 from typing import TYPE_CHECKING, final
 
 from aqt.utils import openLink
-from jaslib.sysutils import typed
-from jaslib.sysutils.typed import non_optional
+from jaspythonutils.sysutils import typed
+from jaspythonutils.sysutils.typed import non_optional
 from jastudio.language_services.english_dictionary import english_dict_search
 from PyQt6.QtCore import Qt, pyqtBoundSignal
 from PyQt6.QtWidgets import QApplication, QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget

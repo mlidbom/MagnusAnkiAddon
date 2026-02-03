@@ -5,9 +5,9 @@ from typing import TYPE_CHECKING
 from anki.models import FieldDict, NotetypeDict, NotetypeId
 from anki.notes import NoteId
 from jaslib.note.jpnote_data import JPNoteData
-from jaslib.sysutils import typed
-from jaslib.sysutils.typed import non_optional
 from jaslib.task_runners.task_progress_runner import TaskRunner
+from jaspythonutils.sysutils import typed
+from jaspythonutils.sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from anki.collection import Collection

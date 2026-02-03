@@ -3,13 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
+from jaspythonutils.sysutils.abstract_method_called_error import AbstractMethodCalledError
 
 from jaslib.note.notefields.mutable_string_field import MutableStringField
-from jaslib.sysutils.abstract_method_called_error import AbstractMethodCalledError
 
 if TYPE_CHECKING:
+    from jaspythonutils.sysutils.weak_ref import WeakRef
+
     from jaslib.note.jpnote import JPNote
-    from jaslib.sysutils.weak_ref import WeakRef
 
 class ObjectSerializer[T](Slots):
     def serialize(self, instance: T) -> str: raise AbstractMethodCalledError()  # pyright: ignore[reportUnusedParameter]

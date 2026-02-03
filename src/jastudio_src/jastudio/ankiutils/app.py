@@ -4,7 +4,7 @@ import os
 from typing import TYPE_CHECKING
 
 from jaslib import mylog
-from jaslib.sysutils.typed import checked_cast, non_optional
+from jaspythonutils.sysutils.typed import checked_cast, non_optional
 # noinspection PyUnusedImports, Annotator
 import jastudio.mylog  # pyright: ignore [reportUnusedImport]  # noqa: F401
 from jastudio.testutils import ex_pytest
@@ -71,7 +71,7 @@ def _reset(_col: object | None = None) -> None:
 
 def _destruct() -> None:
     mylog.info("_destruct_ja_app")
-    from jaslib.sysutils.timeutil import StopWatch
+    from jaspythonutils.sysutils.timeutil import StopWatch
     with StopWatch.log_warning_if_slower_than(0.2):
         global _collection
         if _collection is not None:

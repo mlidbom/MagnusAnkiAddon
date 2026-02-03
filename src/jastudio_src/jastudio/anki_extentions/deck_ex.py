@@ -4,7 +4,7 @@ from typing import cast
 
 from anki.decks import DeckDict, DeckId
 from autoslot import Slots
-from jaslib.sysutils.typed import str_
+from jaspythonutils.sysutils.typed import str_
 
 from jastudio.anki_extentions.deck_configdict_ex import DeckConfigDictEx
 from jastudio.ankiutils import app

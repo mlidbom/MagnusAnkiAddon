@@ -6,15 +6,14 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-
 from jaslib import mylog
-from jaslib.sysutils import typed
-from jaslib.sysutils.time_span import TimeSpan
+from jaspythonutils.sysutils import typed
+from jaspythonutils.sysutils.time_span import TimeSpan
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from jaslib.sysutils.standard_type_aliases import Action
+    from jaspythonutils.sysutils.standard_type_aliases import Action
 
 # noinspection PyUnusedName
 SECONDS_PER_DAY = 24 * 60 * 60

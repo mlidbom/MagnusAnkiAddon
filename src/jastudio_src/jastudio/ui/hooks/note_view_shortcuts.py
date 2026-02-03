@@ -6,8 +6,8 @@ from aqt import gui_hooks
 from jaslib.note.kanjinote import KanjiNote
 from jaslib.note.sentences.sentencenote import SentenceNote
 from jaslib.note.vocabulary.vocabnote import VocabNote
-from jaslib.sysutils import typed
-from jaslib.sysutils.typed import try_cast
+from jaspythonutils.sysutils import typed
+from jaspythonutils.sysutils.typed import try_cast
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtGui import QKeySequence, QShortcut
 

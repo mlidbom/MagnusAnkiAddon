@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
 from jaslib.note.kanjinote import KanjiNote
-from jaslib.sysutils.ex_str import newline
+from jaspythonutils.sysutils.ex_str import newline
 
 from jastudio.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 

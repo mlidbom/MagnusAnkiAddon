@@ -7,10 +7,10 @@ from anki.notes import Note, NoteId
 from jaslib import app
 from jaslib.note.collection.card_studying_status import CardStudyingStatus
 from jaslib.note.note_constants import NoteTypes
-from jaslib.sysutils import typed
-from jaslib.sysutils.memory_usage import string_auto_interner
-from jaslib.sysutils.typed import non_optional
 from jaslib.task_runners.task_progress_runner import TaskRunner
+from jaspythonutils.sysutils import typed
+from jaspythonutils.sysutils.memory_usage import string_auto_interner
+from jaspythonutils.sysutils.typed import non_optional
 from jastudio.anki_extentions.note_ex import NoteEx
 from typed_linq_collections.q_iterable import query
 

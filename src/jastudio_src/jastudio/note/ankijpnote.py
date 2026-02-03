@@ -6,8 +6,8 @@ from anki.models import NotetypeDict
 from autoslot import Slots
 from jaslib.note.jpnote import JPNote
 from jaslib.note.note_constants import NoteTypes
-from jaslib.sysutils.typed import str_
-from jaslib.sysutils.weak_ref import WeakRefable
+from jaspythonutils.sysutils.typed import str_
+from jaspythonutils.sysutils.weak_ref import WeakRefable
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
 
 if TYPE_CHECKING:

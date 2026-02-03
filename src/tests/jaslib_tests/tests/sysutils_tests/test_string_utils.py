@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import pytest
-from jaslib.sysutils import ex_str
+from jaspythonutils.sysutils import ex_str
 
 
 @pytest.mark.parametrize("inp, output", [

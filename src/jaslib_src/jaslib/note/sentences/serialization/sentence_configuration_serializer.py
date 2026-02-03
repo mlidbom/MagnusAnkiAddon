@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING, Any
 from autoslot import Slots
 from jaslib.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from jaslib.note.sentences.word_exclusion_set import WordExclusionSet
-from jaslib.sysutils.json import ex_json
-from jaslib.sysutils.json.json_reader import JsonReader
+from jaspythonutils.sysutils.json import ex_json
+from jaspythonutils.sysutils.json.json_reader import JsonReader
 from typed_linq_collections.collections.q_unique_list import QUniqueList
 
 if TYPE_CHECKING:

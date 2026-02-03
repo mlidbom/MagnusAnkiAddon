@@ -12,8 +12,9 @@ from jaslib.note.vocabulary.pos import POS
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from jaspythonutils.sysutils.weak_ref import WeakRef
+
     from jaslib.note.vocabulary.vocabnote import VocabNote
-    from jaslib.sysutils.weak_ref import WeakRef
 
 # noinspection PyUnusedFunction
 class VocabCloner(Slots):

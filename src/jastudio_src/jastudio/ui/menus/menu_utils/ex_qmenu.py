@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import pyqtBoundSignal
-from jaslib.sysutils.typed import checked_cast, non_optional
+from jaspythonutils.sysutils.typed import checked_cast, non_optional
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QMenu, QMessageBox
 

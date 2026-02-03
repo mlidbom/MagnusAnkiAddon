@@ -9,7 +9,7 @@ from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
     from jaslib.configuration.configuration_value import JapaneseConfig
-    from jaslib.sysutils.lazy import Lazy
+    from jaspythonutils.sysutils.lazy import Lazy
 
 def _get_config_dict() -> dict[str, object]:
     return mw.addonManager.getConfig(app.addon_name) or {} if not app.is_testing else {}

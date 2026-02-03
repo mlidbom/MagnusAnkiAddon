@@ -3,12 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
+from jaspythonutils.sysutils.abstract_method_called_error import AbstractMethodCalledError
+from jaspythonutils.sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.collections.q_set import QSet
 
 from jaslib.note.jpnote import JPNote, JPNoteId
-from jaslib.sysutils.abstract_method_called_error import AbstractMethodCalledError
-from jaslib.sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 from jaslib.task_runners.task_progress_runner import TaskRunner
 
 if TYPE_CHECKING:

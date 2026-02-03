@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
+from jaspythonutils.sysutils import ex_str
 
 from jaslib.note.notefields.fallback_string_field import FallbackStringField
-from jaslib.sysutils import ex_str
 
 if TYPE_CHECKING:
     from jaslib.note.notefields.mutable_string_field import MutableStringField

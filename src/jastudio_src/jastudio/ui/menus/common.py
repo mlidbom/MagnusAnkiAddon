@@ -10,8 +10,8 @@ from jaslib.note.kanjinote import KanjiNote
 from jaslib.note.note_constants import Mine
 from jaslib.note.sentences.sentencenote import SentenceNote
 from jaslib.note.vocabulary.vocabnote import VocabNote
-from jaslib.sysutils import ex_lambda, typed
-from jaslib.sysutils.typed import non_optional
+from jaspythonutils.sysutils import ex_lambda, typed
+from jaspythonutils.sysutils.typed import non_optional
 from typed_linq_collections.collections.q_list import QList
 
 from jastudio.anki_extentions.note_ex import NoteEx

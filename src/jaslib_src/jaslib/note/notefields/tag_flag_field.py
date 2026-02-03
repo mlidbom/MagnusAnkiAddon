@@ -5,9 +5,10 @@ from typing import TYPE_CHECKING, override
 from autoslot import Slots
 
 if TYPE_CHECKING:
+    from jaspythonutils.sysutils.weak_ref import WeakRef
+
     from jaslib.note.jpnote import JPNote
     from jaslib.note.tag import Tag
-    from jaslib.sysutils.weak_ref import WeakRef
 
 # noinspection PyUnusedFunction
 class TagFlagField(Slots):

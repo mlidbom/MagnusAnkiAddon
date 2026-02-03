@@ -4,14 +4,14 @@ from functools import cache
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
+from jaspythonutils.sysutils.lazy import Lazy
+from jaspythonutils.sysutils.memory_usage import string_auto_interner
+from jaspythonutils.sysutils.timeutil import StopWatch
 from typed_linq_collections.collections.q_list import QList
 
 from jaslib import app
 from jaslib.language_services.jamdict_ex.dict_lookup_result import DictLookupResult
 from jaslib.language_services.jamdict_ex.jamdict_threading_wrapper import JamdictThreadingWrapper
-from jaslib.sysutils.lazy import Lazy
-from jaslib.sysutils.memory_usage import string_auto_interner
-from jaslib.sysutils.timeutil import StopWatch
 
 if TYPE_CHECKING:
     from jamdict.jmdict import JMDEntry  # pyright: ignore[reportMissingTypeStubs]
@@ -19,10 +19,10 @@ if TYPE_CHECKING:
 
     from jaslib.note.vocabulary.vocabnote import VocabNote
 
+from jaspythonutils.sysutils import kana_utils
 from typed_linq_collections.collections.q_set import QSet
 
 from jaslib.language_services.jamdict_ex.dict_entry import DictEntry
-from jaslib.sysutils import kana_utils
 
 _jamdict_threading_wrapper: JamdictThreadingWrapper = JamdictThreadingWrapper()
 

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jaslib.sysutils.ex_str import newline
-from jaslib.sysutils.typed import checked_cast, non_optional
+from jaspythonutils.sysutils.ex_str import newline
+from jaspythonutils.sysutils.typed import checked_cast, non_optional
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtGui import QColor, QKeySequence, QShortcut, QTextBlock, QTextCharFormat, QTextCursor
 from PyQt6.QtWidgets import QDialog, QDialogButtonBox, QHBoxLayout, QLabel, QLineEdit, QTextEdit, QVBoxLayout, QWidget

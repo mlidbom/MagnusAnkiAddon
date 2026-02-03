@@ -8,8 +8,9 @@ from jaslib.note.notefields.tag_flag_field import TagFlagField
 from jaslib.note.tags import Tags
 
 if TYPE_CHECKING:
+    from jaspythonutils.sysutils.weak_ref import WeakRef
+
     from jaslib.note.vocabulary.vocabnote import VocabNote
-    from jaslib.sysutils.weak_ref import WeakRef
 
 class IsInflectingWord(TagFlagField, Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:

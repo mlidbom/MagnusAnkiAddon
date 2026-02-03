@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from jaslib.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from jaslib.sysutils import ex_lambda
-from jaslib.sysutils.lazy import Lazy
-from jaslib.sysutils.typed import non_optional
+from jaspythonutils.sysutils import ex_lambda
+from jaspythonutils.sysutils.lazy import Lazy
+from jaspythonutils.sysutils.typed import non_optional
 
 from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.menu_utils.ex_qmenu import add_ui_action

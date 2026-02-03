@@ -3,13 +3,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
+from jaspythonutils.sysutils.typed import non_optional
 
 from jaslib.language_services import conjugator
 from jaslib.language_services.janome_ex.tokenizing.godan_dictionary_form_stem import GodanPotentialDictionaryFormStem, GodanPotentialInflectionDictionaryFormInflection, GodanPotentialInflectionDictionaryFormStem
 from jaslib.language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
 from jaslib.language_services.janome_ex.tokenizing.pre_processing_stage.word_info import WordInfo
 from jaslib.language_services.janome_ex.tokenizing.split_token import SplitToken
-from jaslib.sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from jaslib.language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken

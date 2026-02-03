@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 from jaslib import app
-from jaslib.sysutils.typed import non_optional
+from jaspythonutils.sysutils.typed import non_optional
 from jastudio_tests.fixtures import collection_factory
 from jastudio_tests.fixtures.stub_factory import stub_ui_dependencies
 

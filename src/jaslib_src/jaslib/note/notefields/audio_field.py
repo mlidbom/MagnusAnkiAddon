@@ -7,8 +7,9 @@ from autoslot import Slots
 from jaslib.note.notefields.mutable_string_field import MutableStringField
 
 if TYPE_CHECKING:
+    from jaspythonutils.sysutils.weak_ref import WeakRef
+
     from jaslib.note.jpnote import JPNote
-    from jaslib.sysutils.weak_ref import WeakRef
 
 class AudioField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:

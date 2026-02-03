@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
 from jaslib.note.sentences.sentencenote import SentenceNote
-from jaslib.sysutils import ex_lambda
-from jaslib.sysutils.typed import non_optional
+from jaspythonutils.sysutils import ex_lambda
+from jaspythonutils.sysutils.typed import non_optional
 
 import jastudio.note.ankijpnote
 from jastudio.ankiutils import app

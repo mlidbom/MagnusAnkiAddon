@@ -4,11 +4,11 @@ from typing import final
 
 from autoslot import Slots
 from janome.tokenizer import Token, Tokenizer  # pyright: ignore[reportMissingTypeStubs]
+from jaspythonutils.sysutils import ex_str, typed
 
 from jaslib.language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPartsOfSpeech
 from jaslib.language_services.janome_ex.tokenizing.jn_token import JNToken
 from jaslib.language_services.janome_ex.tokenizing.jn_tokenized_text import JNTokenizedText
-from jaslib.sysutils import ex_str, typed
 
 
 @final

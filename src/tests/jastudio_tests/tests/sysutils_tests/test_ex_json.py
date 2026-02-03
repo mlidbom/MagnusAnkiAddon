@@ -8,8 +8,8 @@ from deepdiff import DeepDiff
 from jaslib.language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from jaslib.note.sentences.sentence_configuration import SentenceConfiguration
 from jaslib.note.sentences.word_exclusion_set import WordExclusionSet
-from jaslib.sysutils.json import ex_json
-from jaslib.sysutils.json.json_reader import JsonReader
+from jaspythonutils.sysutils.json import ex_json
+from jaspythonutils.sysutils.json.json_reader import JsonReader
 from jastudio.ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa  # pyright: ignore[reportUnusedImport]
 from typed_linq_collections.collections.q_unique_list import QUniqueList
 

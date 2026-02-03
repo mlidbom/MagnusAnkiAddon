@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks, mw
-from jaslib.sysutils import ex_assert, typed
-from jaslib.sysutils.typed import checked_cast
+from jaspythonutils.sysutils import ex_assert, typed
+from jaspythonutils.sysutils.typed import checked_cast
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtGui import QKeySequence, QShortcut
 from PyQt6.QtWidgets import QWidget

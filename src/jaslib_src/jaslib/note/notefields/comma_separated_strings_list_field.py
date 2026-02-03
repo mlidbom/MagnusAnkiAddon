@@ -3,19 +3,19 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
+from jaspythonutils.sysutils import ex_str
 
 from jaslib.note.notefields.caching_mutable_string_field import CachingMutableStringField
-from jaslib.sysutils import ex_str
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from jaspythonutils.sysutils.lazy import Lazy
+    from jaspythonutils.sysutils.weak_ref import WeakRef
     from typed_linq_collections.collections.q_list import QList
     from typed_linq_collections.collections.string_interning import QInterningList
 
     from jaslib.note.jpnote import JPNote
-    from jaslib.sysutils.lazy import Lazy
-    from jaslib.sysutils.weak_ref import WeakRef
 
 class MutableCommaSeparatedStringsListField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:

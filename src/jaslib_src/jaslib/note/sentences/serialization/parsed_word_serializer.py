@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, cast
 
 from autoslot import Slots
 from jaslib.note.jpnote import JPNoteId
-from jaslib.sysutils.ex_str import invisible_space
+from jaspythonutils.sysutils.ex_str import invisible_space
 
 if TYPE_CHECKING:
     from jaslib.note.sentences.parsed_match import ParsedMatch

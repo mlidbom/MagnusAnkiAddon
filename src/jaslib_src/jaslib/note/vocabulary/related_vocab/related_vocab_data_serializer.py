@@ -3,12 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, override
 
 from autoslot import Slots
+from jaspythonutils.sysutils.json import ex_json
+from jaspythonutils.sysutils.json.json_reader import JsonReader
 from typed_linq_collections.collections.q_set import QSet
 
 from jaslib.note.notefields.auto_save_wrappers.value_wrapper import ValueWrapper
 from jaslib.note.notefields.json_object_field import ObjectSerializer
-from jaslib.sysutils.json import ex_json
-from jaslib.sysutils.json.json_reader import JsonReader
 
 if TYPE_CHECKING:
     from jaslib.note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData

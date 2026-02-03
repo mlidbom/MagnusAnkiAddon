@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
+from jaspythonutils.sysutils.lazy import Lazy
 
 from jaslib.note.vocabulary.related_vocab.related_vocab_data_serializer import RelatedVocabDataSerializer
-from jaslib.sysutils.lazy import Lazy
 
 if TYPE_CHECKING:
     from typed_linq_collections.collections.q_set import QSet

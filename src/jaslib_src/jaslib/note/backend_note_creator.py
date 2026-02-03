@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABCMeta, abstractmethod
 from typing import TYPE_CHECKING, override
 
-from jaslib.sysutils.abstract_method_called_error import AbstractMethodCalledError
+from jaspythonutils.sysutils.abstract_method_called_error import AbstractMethodCalledError
 
 if TYPE_CHECKING:
     from collections.abc import Callable

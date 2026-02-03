@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 
 from jaslib import mylog
-from jaslib.sysutils.timeutil import StopWatch
+from jaspythonutils.sysutils.timeutil import StopWatch
 from pythonnet import load
 
 config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "runtimeconfig.json")

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from aqt import gui_hooks
 from autoslot import Slots
 from jaslib.note.vocabulary.vocabnote import VocabNote
-from jaslib.sysutils.ex_str import newline
+from jaspythonutils.sysutils.ex_str import newline
 from typed_linq_collections.collections.q_set import QSet
 
 from jastudio.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer

@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots
+from jaspythonutils.sysutils.weak_ref import WeakRef
 
 from jaslib.language_services.janome_ex.word_extraction.matches.match import Match
 from jaslib.language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
@@ -29,7 +30,6 @@ from jaslib.language_services.janome_ex.word_extraction.matches.state_tests.surf
 from jaslib.language_services.janome_ex.word_extraction.matches.state_tests.tail.forbids_has_displayed_overlapping_following_compound import ForbidsHasDisplayedOverlappingFollowingCompound
 from jaslib.language_services.janome_ex.word_extraction.matches.state_tests.tail.is_sentence_end import RequiresOrForbidsIsSentenceEnd
 from jaslib.language_services.janome_ex.word_extraction.matches.state_tests.tail.suffix_is_in import ForbidsSuffixIsIn
-from jaslib.sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from collections.abc import Callable

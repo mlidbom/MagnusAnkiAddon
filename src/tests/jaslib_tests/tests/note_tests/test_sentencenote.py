@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 import pytest
 from jaslib.note.sentences.sentencenote import SentenceNote
-from jaslib.sysutils import ex_str
 from jaslib_tests.fixtures.collection_factory import inject_empty_collection
+from jaspythonutils.sysutils import ex_str
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

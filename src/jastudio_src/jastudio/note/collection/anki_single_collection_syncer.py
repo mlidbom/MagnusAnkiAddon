@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from anki.notes import NoteId
 from autoslot import Slots
 from jaslib.note.jpnote import JPNote, JPNoteId
-from jaslib.sysutils.weak_ref import WeakRef, WeakRefable
+from jaspythonutils.sysutils.weak_ref import WeakRef, WeakRefable
 from jastudio.ankiutils import app
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
 from typed_linq_collections.collections.q_set import QSet

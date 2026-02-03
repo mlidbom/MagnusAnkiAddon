@@ -9,8 +9,9 @@ from jaslib.note.notefields.integer_field import IntegerField
 from jaslib.note.vocabulary import vocabnote_meta_tag
 
 if TYPE_CHECKING:
+    from jaspythonutils.sysutils.weak_ref import WeakRef
+
     from jaslib.note.vocabulary.vocabnote import VocabNote
-    from jaslib.sysutils.weak_ref import WeakRef
 
 
 class VocabNoteMetaData(Slots):

@@ -3,6 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast, override
 
 from autoslot import Slots
+from jaspythonutils.sysutils import ex_str, kana_utils
+from jaspythonutils.sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_set import QSet
 
 from jaslib import app
@@ -17,8 +19,6 @@ from jaslib.note.sentences.caching_sentence_configuration_field import CachingSe
 from jaslib.note.sentences.parsing_result import ParsingResult
 from jaslib.note.sentences.user_fields import SentenceUserFields
 from jaslib.note.tags import Tags
-from jaslib.sysutils import ex_str, kana_utils
-from jaslib.sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from typed_linq_collections.collections.q_list import QList

@@ -4,6 +4,8 @@ import random
 import re
 from typing import TYPE_CHECKING
 
+from jaspythonutils.sysutils import ex_str
+
 from jaslib import app
 from jaslib.language_services.jamdict_ex.dict_lookup import DictLookup
 from jaslib.language_services.janome_ex.tokenizing.pre_processing_stage.ichidan_godan_potential_or_imperative_hybrid_splitter import IchidanGodanPotentialOrImperativeHybridSplitter
@@ -11,7 +13,6 @@ from jaslib.note.note_constants import CardTypes
 from jaslib.note.sentences.parsed_match import ParsedMatch
 from jaslib.note.tags import Tags
 from jaslib.note.vocabulary.vocabnote import VocabNote
-from jaslib.sysutils import ex_str
 from jaslib.task_runners.task_progress_runner import TaskRunner
 
 if TYPE_CHECKING:

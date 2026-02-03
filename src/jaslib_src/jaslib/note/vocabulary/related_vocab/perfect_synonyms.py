@@ -8,9 +8,10 @@ from typed_linq_collections.collections.q_set import QSet
 from jaslib import app
 
 if TYPE_CHECKING:
+    from jaspythonutils.sysutils.weak_ref import WeakRef
+
     from jaslib.note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
     from jaslib.note.vocabulary.vocabnote import VocabNote
-    from jaslib.sysutils.weak_ref import WeakRef
 
 class PerfectSynonyms(Slots):
     def __init__(self, vocab: WeakRef[VocabNote], data: FieldSetWrapper[str]) -> None:

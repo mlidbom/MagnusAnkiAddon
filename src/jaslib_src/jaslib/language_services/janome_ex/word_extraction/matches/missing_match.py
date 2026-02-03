@@ -7,8 +7,9 @@ from autoslot import Slots
 from jaslib.language_services.janome_ex.word_extraction.matches.match import Match
 
 if TYPE_CHECKING:
+    from jaspythonutils.sysutils.weak_ref import WeakRef
+
     from jaslib.language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
-    from jaslib.sysutils.weak_ref import WeakRef
 
 class MissingMatch(Match, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant]) -> None:

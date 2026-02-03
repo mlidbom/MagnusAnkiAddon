@@ -24,8 +24,8 @@ from aqt.editor import Editor
 from aqt.reviewer import RefreshNeeded
 from aqt.utils import tooltip
 from aqt.webview import AnkiWebView, AnkiWebViewKind
-from jaslib.sysutils import timeutil
-from jaslib.sysutils.typed import checked_cast, non_optional
+from jaspythonutils.sysutils import timeutil
+from jaspythonutils.sysutils.typed import checked_cast, non_optional
 
 from jastudio.ankiutils.audio_suppressor import audio_suppressor
 from jastudio.ankiutils.ui_utils_interface import IUIUtils
