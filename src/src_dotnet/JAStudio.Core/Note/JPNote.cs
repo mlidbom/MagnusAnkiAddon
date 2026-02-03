@@ -113,7 +113,7 @@ public abstract class JPNote
         return new HashSet<JPNote>();
     }
 
-    public void OnTagsUpdated()
+    protected virtual void OnTagsUpdated()
     {
         // Called when tags are modified. Subclasses can override to invalidate cached state.
     }
@@ -193,9 +193,8 @@ public abstract class JPNote
         {
             if (tag.Name.StartsWith(Note.Tags.PriorityFolder))
             {
-                // TODO: Implement FirstNumber utility
-                var numbers = new string(tag.Name.Where(char.IsDigit).ToArray());
-                if (int.TryParse(numbers, out var num))
+                var numberStr = StringExtensions.FirstNumber(tag.Name);
+                if (int.TryParse(numberStr, out var num))
                 {
                     return num;
                 }

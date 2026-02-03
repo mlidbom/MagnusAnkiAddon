@@ -76,6 +76,7 @@ public class TaskRunnerScope : IDisposable
 {
     private readonly ITaskRunner _runner;
     private readonly bool _forceGc;
+    private readonly bool _inhibitGc;
 
     public TaskRunnerScope(
         string windowTitle,
@@ -86,6 +87,9 @@ public class TaskRunnerScope : IDisposable
         bool allowCancel,
         bool modal)
     {
+        _inhibitGc = inhibitGc;
+        _forceGc = forceGc;
+        
         var visible = !App.IsTesting && !forceHide;
         
         if (TaskRunner.GetCurrent() == null)
@@ -93,7 +97,7 @@ public class TaskRunnerScope : IDisposable
             _runner = TaskRunner.Create(windowTitle, labelText ?? windowTitle, visible, allowCancel, modal);
             TaskRunner.EnterScope(_runner);
             
-            if (!inhibitGc && (App.Config().EnableGarbageCollectionDuringBatches || forceGc))
+            if (!inhibitGc && (App.Config().EnableGarbageCollectionDuringBatches.GetValue() || forceGc))
             {
                 _runner.RunGc();
             }
@@ -103,12 +107,21 @@ public class TaskRunnerScope : IDisposable
             _runner = TaskRunner.GetCurrent()!;
             _runner.SetLabelText(labelText ?? windowTitle);
         }
-        
-        _forceGc = forceGc;
     }
+    
+    public ITaskRunner Runner => _runner;
+    
+    public static implicit operator ITaskRunner(TaskRunnerScope scope) => scope._runner;
 
     public void Dispose()
     {
+        if (TaskRunner.GetCurrent() == _runner)
+        {
+            if (!_inhibitGc && (App.Config().EnableGarbageCollectionDuringBatches.GetValue() || _forceGc))
+            {
+                _runner.RunGc();
+            }
+        }
         TaskRunner.ExitScope(_runner, _forceGc);
     }
 }
