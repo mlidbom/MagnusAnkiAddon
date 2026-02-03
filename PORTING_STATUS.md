@@ -136,10 +136,12 @@ Staying this close to the Python is what makes the porting workable at all. If w
                         - MISSING suffix_is_in.py
 - note
     - 100% backend_note_creator.py
-    - CREATED WIP difficulty_calculator.py
+    - 40% difficulty_calculator.py
+        - AllowedSeconds() has incomplete implementation with TODO comments; character counting not implemented (all counts hardcoded to 0); IsOtherCharacter() has placeholder logic
     - 100% jpnote.py
     - 100% jpnote_data.py
-    - CREATED WIP kanjinote.py
+    - 90% kanjinote.py
+        - Missing public method: tag_vocab_readings()
     - CREATED WIP kanjinote_mnemonic_maker.py
     - 80% note_constants.py
         - Core constants present but C# has reorganized structure with additional fields; missing Mine class
