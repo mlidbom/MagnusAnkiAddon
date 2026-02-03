@@ -42,8 +42,7 @@ public class KanjiNote : JPNote
 
     public string GetAnswerText()
     {
-        // TODO: Implement StripHtmlMarkup when needed
-        return GetAnswer();
+        return StringExtensions.StripHtmlMarkup(GetAnswer());
     }
 
     public string GetUserAnswer()
