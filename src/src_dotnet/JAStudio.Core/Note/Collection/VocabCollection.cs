@@ -93,12 +93,12 @@ public class VocabSnapshot : CachedNote
     {
         DisambiguationName = note.Question.DisambiguationName;
         Forms = note.Forms.AllList().ToArray();
-        CompoundParts = Array.Empty<string>(); // TODO: Implement when compound parts are ported
+        CompoundParts = note.CompoundParts.All().ToArray();
         MainFormKanji = note.Kanji.ExtractMainFormKanji().ToArray();
         AllKanji = note.Kanji.ExtractAllKanji().ToArray();
         Readings = note.GetReadings().ToArray();
         DerivedFrom = string.Empty; // TODO: Implement when derived vocab is ported
-        Stems = Array.Empty<string>(); // TODO: Implement when stems are ported
+        Stems = note.Conjugator.GetStemsForPrimaryForm().ToArray();
     }
 }
 

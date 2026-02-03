@@ -1,5 +1,6 @@
 using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.Vocabulary;
+using JAStudio.Core.Note.Vocabulary.RelatedVocab;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,6 +14,10 @@ public class VocabNote : JPNote
     public VocabNoteForms Forms { get; }
     public VocabNoteKanji Kanji { get; }
     public VocabNotePartsOfSpeech PartsOfSpeech { get; }
+    public VocabNoteConjugator Conjugator { get; }
+    public VocabNoteSentences Sentences { get; }
+    public VocabNoteUserCompoundParts CompoundParts { get; }
+    public VocabRelatedNotes RelatedNotes { get; }
 
     public VocabNote(JPNoteData? data = null) : base(data)
     {
@@ -22,6 +27,10 @@ public class VocabNote : JPNote
         Forms = new VocabNoteForms(this);
         Kanji = new VocabNoteKanji(() => this);
         PartsOfSpeech = new VocabNotePartsOfSpeech(() => this);
+        Conjugator = new VocabNoteConjugator(() => this);
+        Sentences = new VocabNoteSentences(() => this);
+        CompoundParts = new VocabNoteUserCompoundParts(() => this);
+        RelatedNotes = new VocabRelatedNotes(() => this);
     }
 
     public override void UpdateInCache()
@@ -43,8 +52,7 @@ public class VocabNote : JPNote
 
     public override HashSet<JPNote> GetDirectDependencies()
     {
-        // TODO: Implement related vocab dependencies when RelatedVocab is ported
-        return new HashSet<JPNote>();
+        return RelatedNotes.GetDirectDependencies();
     }
 
     public override void UpdateGeneratedData()
