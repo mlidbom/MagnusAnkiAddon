@@ -1,4 +1,5 @@
 using System.Linq;
+using JAStudio.Core.LanguageServices;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
@@ -15,12 +16,11 @@ public static class VocabNoteGeneratedData
         var question = vocab.Question.WithoutNoiseCharacters.Trim();
         var readings = string.Join(",", vocab.GetReadings());
 
-        // TODO: Implement when kana_utils is ported
-        // if (string.IsNullOrEmpty(readings) && KanaUtils.IsOnlyKana(question))
-        // {
-        //     vocab.SetReadings(new List<string> { question });
-        //     vocab.Tags.Set(Tags.UsuallyKanaOnly);
-        // }
+        if (string.IsNullOrEmpty(readings) && KanaUtils.IsOnlyKana(question))
+        {
+            vocab.SetReadings(new System.Collections.Generic.List<string> { question });
+            vocab.Tags.Set(Tags.Vocab.UsuallyKanaOnly);
+        }
 
         if (vocab.CompoundParts.All().Count == 0 && vocab.PartsOfSpeech.IsSuruVerbIncluded())
         {

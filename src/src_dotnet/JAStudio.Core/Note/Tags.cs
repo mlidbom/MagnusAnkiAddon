@@ -56,6 +56,7 @@ public static class Tags
         public static readonly Tag QuestionOverridesForm = Tag.FromName(FVocab + "question-overrides-form");
         public static readonly Tag IsCompositionallyTransparentCompound = Tag.FromName(FVocab + "is-compositionally-transparent-compound");
         public static readonly Tag IsIchidanHidingGodanPotential = Tag.FromName(FVocab + "is-ichidan-hiding-godan-potential");
+        public static readonly Tag UsuallyKanaOnly = Tag.FromName(FVocab + "usually-kana-only");
 
         public static class Register
         {
