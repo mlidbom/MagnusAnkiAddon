@@ -180,7 +180,8 @@ Staying this close to the Python is what makes the porting workable at all. If w
         - 100% parsing_result.py
         - 60% sentence_configuration.py
             - Missing factory methods: FromIncorrectMatches(), FromHiddenMatches(), FromValues()
-        - CREATED WIP sentencenote.py
+        - 50% sentencenote.py
+            - File in wrong location (Note\SentenceNote.cs instead of Note\Sentences\SentenceNote.cs); needs comparison of public API
         - CREATED WIP user_fields.py
         - CREATED WIP word_exclusion_set.py
         - serialization
