@@ -43,8 +43,8 @@ Staying this close to the Python is what makes the porting workable at all. If w
 - batches
     - MISSING local_note_updater.py
 - configuration
-    - MISSING configuration_value.py
-    - MISSING settings.py
+    - CREATED WIP configuration_value.py
+    - CREATED WIP settings.py
 - dotnet
     - MISSING load_dotnet_runtime.py
 - language_services
@@ -134,26 +134,27 @@ Staying this close to the Python is what makes the porting workable at all. If w
                         - MISSING is_sentence_end.py
                         - MISSING suffix_is_in.py
 - note
-    - MISSING backend_note_creator.py
-    - MISSING difficulty_calculator.py
+    - CREATED WIP backend_note_creator.py
+    - CREATED WIP difficulty_calculator.py
     - 100% jpnote.py
     - 100% jpnote_data.py
-    - MISSING kanjinote.py
-    - MISSING kanjinote_mnemonic_maker.py
+    - CREATED WIP kanjinote.py
+    - CREATED WIP kanjinote_mnemonic_maker.py
     - 80% note_constants.py
         - Core constants present but C# has reorganized structure with additional fields; missing Mine class
-    - MISSING note_flush_guard.py
+    - CREATED WIP note_flush_guard.py
+        - Wrong name: NoteRecursiveFlushGuard instead of NoteFlushGuard
     - 100% note_tags.py
     - 100% tag.py
     - 100% tags.py
     - collection
-        - MISSING card_studying_status.py
+        - CREATED WIP card_studying_status.py
         - 100% jp_collection.py
-        - MISSING kanji_collection.py
+        - CREATED WIP kanji_collection.py
         - 90% note_cache.py
             - Complete except TaskRunner integration in InitFromList has TODO comment
-        - MISSING sentence_collection.py
-        - MISSING vocab_collection.py
+        - CREATED WIP sentence_collection.py
+        - CREATED WIP vocab_collection.py
     - notefields
         - 100% audio_field.py
         - 70% caching_mutable_string_field.py
@@ -197,27 +198,27 @@ Staying this close to the Python is what makes the porting workable at all. If w
         - MISSING pos_set_interner.py
         - 50% vocabnote.py
             - File in wrong location (Note\VocabNote.cs instead of Note\Vocabulary\VocabNote.cs); needs comparison of public API
-        - MISSING vocabnote_audio.py
+        - CREATED WIP vocabnote_audio.py
         - MISSING vocabnote_cloner.py
         - 100% vocabnote_conjugator.py
-        - MISSING vocabnote_factory.py
+        - CREATED WIP vocabnote_factory.py
         - 40% vocabnote_forms.py
             - Wrong field type (MutableCommaSeparatedStringsListField instead of DeDuplicated); no lazy caching; missing methods: all_list_notes_by_sentence_count(), not_owned_by_other_vocab(), without_noise_characters(); extra public method: OwnedForms()
-        - MISSING vocabnote_generated_data.py
-        - MISSING vocabnote_kanji.py
-        - MISSING vocabnote_matching_rules.py
+        - CREATED WIP vocabnote_generated_data.py
+        - CREATED WIP vocabnote_kanji.py
+        - CREATED WIP vocabnote_matching_rules.py
         - MISSING vocabnote_matching_rules_is_inflecting_word.py
         - MISSING vocabnote_matching_rules_yield_last_token_to_next_compound.py
         - MISSING vocabnote_meta_tag.py
-        - MISSING vocabnote_metadata.py
-        - MISSING vocabnote_parts_of_speech.py
-        - MISSING vocabnote_question.py
-        - MISSING vocabnote_register.py
-        - MISSING vocabnote_sentences.py
-        - MISSING vocabnote_sorting.py
+        - CREATED WIP vocabnote_metadata.py
+        - CREATED WIP vocabnote_parts_of_speech.py
+        - CREATED WIP vocabnote_question.py
+        - CREATED WIP vocabnote_register.py
+        - CREATED WIP vocabnote_sentences.py
+        - CREATED WIP vocabnote_sorting.py
         - 60% vocabnote_usercompoundparts.py
             - AutoGenerate() not implemented (just TODO comment); missing _collection property
-        - MISSING vocabnote_userfields.py
+        - CREATED WIP vocabnote_userfields.py
         - related_vocab
             - MISSING Antonyms.py
             - MISSING ergative_twin.py
@@ -231,9 +232,10 @@ Staying this close to the Python is what makes the porting workable at all. If w
         - serialization
             - MISSING matching_rules_serializer.py
 - task_runners
-    - MISSING i_task_progress_runner.py
+    - CREATED WIP i_task_progress_runner.py
+        - Wrong name: ITaskRunner instead of ITaskProgressRunner
     - MISSING invisible_task_progress_runner.py
-    - MISSING task_progress_runner.py
+    - CREATED WIP task_progress_runner.py
 - testutils
     - MISSING ex_pytest.py
 - ui
