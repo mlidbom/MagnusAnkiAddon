@@ -97,13 +97,13 @@ public abstract class JPNote
 
     public JPCollection Collection => App.Col();
 
-    public string GetQuestion()
+    public virtual string GetQuestion()
     {
         var value = GetField(MyNoteFields.Question);
         return !string.IsNullOrEmpty(value) ? value : "[EMPTY]";
     }
 
-    public string GetAnswer()
+    public virtual string GetAnswer()
     {
         return GetField(MyNoteFields.Answer);
     }

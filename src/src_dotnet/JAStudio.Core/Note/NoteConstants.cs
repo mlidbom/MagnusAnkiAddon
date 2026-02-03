@@ -52,7 +52,7 @@ public static class NoteTypes
     public static readonly HashSet<string> All = new() { Kanji, Vocab, Sentence };
 }
 
-public static class NoteFields
+public static class NoteFieldsConstants
 {
     public const string NoteId = "nid";
 
