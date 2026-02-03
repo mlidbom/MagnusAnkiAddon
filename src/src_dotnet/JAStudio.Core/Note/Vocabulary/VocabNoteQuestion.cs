@@ -55,14 +55,7 @@ public class VocabNoteQuestion
     public bool IsValid => Raw != InvalidQuestionMessage;
     public bool IsDisambiguated => DisambiguationName.Contains(DisambiguationMarker);
 
-    public string WithoutNoiseCharacters
-    {
-        get
-        {
-            const string vocabPrefixSuffixMarker = "";
-            return Raw.Replace(vocabPrefixSuffixMarker, string.Empty);
-        }
-    }
+    public string WithoutNoiseCharacters => Raw; // TODO: Use Mine.VocabPrefixSuffixMarker when ported (currently empty string)
 
     public void Set(string value)
     {

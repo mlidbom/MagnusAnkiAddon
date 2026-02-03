@@ -22,6 +22,7 @@ public class VocabNote : JPNote
     public VocabNoteRegister Register { get; }
     public VocabNoteAudio Audio { get; }
     public VocabNoteMatchingConfiguration MatchingConfiguration { get; }
+    public VocabCloner Cloner { get; }
 
     public VocabNote(JPNoteData? data = null) : base(data)
     {
@@ -39,6 +40,7 @@ public class VocabNote : JPNote
         Register = new VocabNoteRegister(() => this);
         Audio = new VocabNoteAudio(() => this);
         MatchingConfiguration = new VocabNoteMatchingConfiguration(() => this);
+        Cloner = new VocabCloner(() => this);
     }
 
     public override void UpdateInCache()
@@ -67,10 +69,7 @@ public class VocabNote : JPNote
     {
         base.UpdateGeneratedData();
         
-        // Set active answer
-        SetField(NoteFieldsConstants.Vocab.ActiveAnswer, GetAnswer());
-        
-        // TODO: Additional generated data updates when other components are ported
+        VocabNoteGeneratedData.UpdateGeneratedData(this);
     }
 
     public List<string> GetReadings()
