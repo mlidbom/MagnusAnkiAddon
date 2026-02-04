@@ -53,30 +53,30 @@ Staying this close to the Python is what makes the porting workable at all. If w
     - 100% hiragana_chart.py
     - 100% katakana_chart.py
     - jamdict_ex
-        - 100% dict_entry.py
-        - 100% dict_lookup.py
-        - 100% dict_lookup_result.py
-        - 100% jamdict_threading_wrapper.py
-        - 100% priority_spec.py
+        - CREATED WIP dict_entry.py
+        - CREATED WIP dict_lookup.py
+        - CREATED WIP dict_lookup_result.py
+        - CREATED WIP jamdict_threading_wrapper.py
+        - CREATED WIP priority_spec.py
     - janome_ex
         - tokenizing
-            - 100% analysis_token.py
-            - 100% godan_dictionary_form_stem.py
-            - 100% inflection_forms.py
-            - 100% inflection_types.py
-            - 100% jn_parts_of_speech.py
-            - 100% jn_token.py
-            - 100% jn_tokenized_text.py
-            - 100% jn_tokenizer.py
-            - 100% split_token.py
+            - CREATED WIP analysis_token.py
+            - CREATED WIP godan_dictionary_form_stem.py
+            - CREATED WIP inflection_forms.py
+            - CREATED WIP inflection_types.py
+            - CREATED WIP jn_parts_of_speech.py
+            - CREATED WIP jn_token.py
+            - CREATED WIP jn_tokenized_text.py
+            - CREATED WIP jn_tokenizer.py
+            - CREATED WIP split_token.py
             - pre_processing_stage
-                - 100% dictionary_form_verb_splitter.py
-                - 100% godan_imperative_splitter.py
-                - 100% ichidan_godan_potential_or_imperative_hybrid_splitter.py
-                - 100% ichidan_imperative_splitter.py
-                - 100% pre_processing_stage.py
-                - 100% word_info.py
-                - 100% word_info_entry.py
+                - CREATED WIP dictionary_form_verb_splitter.py
+                - CREATED WIP godan_imperative_splitter.py
+                - CREATED WIP ichidan_godan_potential_or_imperative_hybrid_splitter.py
+                - CREATED WIP ichidan_imperative_splitter.py
+                - CREATED WIP pre_processing_stage.py
+                - CREATED WIP word_info.py
+                - CREATED WIP word_info_entry.py
         - word_extraction
             - 100% analysis_constants.py
             - MISSING candidate_word.py
