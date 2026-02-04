@@ -1,100 +1,92 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.Note.NoteFields;
+using JAStudio.Core.Note.NoteFields.AutoSaveWrappers;
 
 namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 
-// Temporary stub for FieldWrapper - to be replaced when auto_save_wrappers are ported
-public class FieldWrapper
-{
-    private string _value = string.Empty;
-    public string Get() => _value;
-    public void Set(string value) => _value = value;
-}
-
-public class VocabRelatedNotes
+public class RelatedVocab
 {
     private readonly VocabNote _vocab;
-    private HashSet<int>? _inCompoundIds;
+    private readonly SerializedObjectField<RelatedVocabData> _data;
+    private readonly Lazy<HashSet<int>> _inCompoundIds;
 
-    public VocabRelatedNotes(VocabNote vocab)
+    public RelatedVocab(VocabNote vocab)
     {
         _vocab = vocab;
-        DerivedFrom = new FieldWrapper();
-        // TODO: Initialize related vocab components when ported:
-        // - ErgativeTwin
-        // - Synonyms
-        // - PerfectSynonyms
-        // - Antonyms
-        // - SeeAlso
-        // - ConfusedWith
+
+        _data = new SerializedObjectField<RelatedVocabData>(
+            vocab,
+            NoteFieldsConstants.Vocab.RelatedVocab,
+            RelatedVocabData.Serializer());
+
+        ErgativeTwin = new ErgativeTwin(vocab, _data);
+        Synonyms = new Synonyms(vocab, _data);
+        PerfectSynonyms = new PerfectSynonyms(
+            vocab,
+            FieldSetWrapper<string>.ForJsonObjectField(_data, _data.Get().PerfectSynonyms));
+        Antonyms = new Antonyms(vocab, _data);
+        SeeAlso = new SeeAlso(vocab, _data);
+        DerivedFrom = new FieldWrapper<string, RelatedVocabData>(_data, _data.Get().DerivedFrom);
+        ConfusedWith = FieldSetWrapper<string>.ForJsonObjectField(_data, _data.Get().ConfusedWith);
+
+        _inCompoundIds = new Lazy<HashSet<int>>(() =>
+            InCompounds().Select(voc => voc.GetId()).ToHashSet());
     }
 
-    private VocabNote Vocab => _vocab;
+    public ErgativeTwin ErgativeTwin { get; }
+    public Synonyms Synonyms { get; }
+    public PerfectSynonyms PerfectSynonyms { get; }
+    public Antonyms Antonyms { get; }
+    public SeeAlso SeeAlso { get; }
+    public FieldWrapper<string, RelatedVocabData> DerivedFrom { get; }
+    public FieldSetWrapper<string> ConfusedWith { get; }
 
-    public FieldWrapper DerivedFrom { get; }
-
-    public HashSet<int> InCompoundIds
-    {
-        get
-        {
-            if (_inCompoundIds == null)
-            {
-                _inCompoundIds = InCompounds()
-                    .Select(voc => voc.GetId())
-                    .ToHashSet();
-            }
-            return _inCompoundIds;
-        }
-    }
+    public HashSet<int> InCompoundIds => _inCompoundIds.Value;
 
     public List<VocabNote> InCompounds()
     {
-        return App.Col().Vocab.WithCompoundPart(Vocab.Question.DisambiguationName);
+        return App.Col().Vocab.WithCompoundPart(_vocab.Question.DisambiguationName);
     }
 
     public HashSet<VocabNote> HomophonesNotes()
     {
-        return Vocab.GetReadings()
+        return _vocab.GetReadings()
             .SelectMany(reading => App.Col().Vocab.WithReading(reading))
-            .Where(homophone => homophone != Vocab)
+            .Where(homophone => homophone != _vocab)
             .ToHashSet();
     }
 
     public HashSet<VocabNote> StemsNotes()
     {
-        return Vocab.Conjugator.GetStemsForPrimaryForm()
+        return _vocab.Conjugator.GetStemsForPrimaryForm()
             .SelectMany(stem => App.Col().Vocab.WithQuestion(stem))
             .ToHashSet();
     }
 
-    private HashSet<KanjiNote> MainFormKanjiNotes()
+    private HashSet<KanjiNote> MainFormKanjiNotes
     {
-        return App.Col().Kanji.WithAnyKanjiIn(Vocab.Kanji.ExtractMainFormKanji()).ToHashSet();
+        get
+        {
+            return App.Col().Kanji.WithAnyKanjiIn(_vocab.Kanji.ExtractMainFormKanji()).ToHashSet();
+        }
     }
 
     public HashSet<JPNote> GetDirectDependencies()
     {
         var dependencies = new HashSet<JPNote>();
         
-        foreach (var kanji in MainFormKanjiNotes())
+        foreach (var kanji in MainFormKanjiNotes)
         {
             dependencies.Add(kanji);
         }
         
-        foreach (var compoundPart in Vocab.CompoundParts.AllNotes())
+        foreach (var compoundPart in _vocab.CompoundParts.AllNotes())
         {
             dependencies.Add(compoundPart);
         }
         
         return dependencies;
     }
-
-    // TODO: Port these when their implementations are ready:
-    // public string DerivedFrom { get; set; }
-    // public HashSet<string> ConfusedWith { get; set; }
-    // public ErgativeTwin ErgativeTwin { get; }
-    // public Synonyms Synonyms { get; }
-    // public PerfectSynonyms PerfectSynonyms { get; }
-    // public Antonyms Antonyms { get; }
-    // public SeeAlso SeeAlso { get; }
 }

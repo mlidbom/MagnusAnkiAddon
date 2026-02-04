@@ -186,9 +186,9 @@ Staying this close to the Python is what makes the porting workable at all. If w
         - 100% strip_html_on_read_fallback_string_field.py
         - 100% tag_flag_field.py
         - auto_save_wrappers
-            - MISSING field_wrapper.py
-            - MISSING set_wrapper.py
-            - MISSING value_wrapper.py
+            - CREATED WIP field_wrapper.py
+            - CREATED WIP set_wrapper.py
+            - CREATED WIP value_wrapper.py
     - sentences
         - 100% caching_sentence_configuration_field.py
         - 100% parsed_match.py
@@ -240,15 +240,14 @@ Staying this close to the Python is what makes the porting workable at all. If w
             - AutoGenerate() not implemented (just TODO comment); missing _collection property
         - 100% vocabnote_userfields.py
         - related_vocab
-            - MISSING Antonyms.py
-            - MISSING ergative_twin.py
-            - MISSING perfect_synonyms.py
-            - 40% related_vocab.py
-                - Wrong class name (VocabRelatedNotes instead of RelatedVocab); missing all related vocab fields (ergative_twin, synonyms, perfect_synonyms, antonyms, see_also, derived_from, confused_with) - just TODO comments
-            - MISSING related_vocab_data.py
-            - MISSING related_vocab_data_serializer.py
-            - MISSING SeeAlso.py
-            - MISSING Synonyms.py
+            - CREATED WIP Antonyms.py
+            - CREATED WIP ergative_twin.py
+            - CREATED WIP perfect_synonyms.py
+            - CREATED WIP related_vocab.py
+            - CREATED WIP related_vocab_data.py
+            - CREATED WIP related_vocab_data_serializer.py
+            - CREATED WIP SeeAlso.py
+            - CREATED WIP Synonyms.py
         - serialization
             - MISSING matching_rules_serializer.py
 - task_runners
@@ -278,8 +277,8 @@ Staying this close to the Python is what makes the porting workable at all. If w
 
 ## Summary Statistics
 - **CREATED WIP**: 30 files
-- **MISSING**: 135 files
-- **COMPLETE**: 0 files
+- **MISSING**: 124 files
+- **COMPLETE**: 11 files
 - **Total Python files**: 165 files
-- **Completion**: ~18%
+- **Completion**: ~25%
 
