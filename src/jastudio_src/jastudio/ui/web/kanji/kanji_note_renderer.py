@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
 from jaslib.note.kanjinote import KanjiNote
+from jaslib.ui.web.kanji import dependencies_renderer, kanji_list_renderer, mnemonic_renderer, readings_renderer
 from jaspythonutils.sysutils.ex_str import newline
 
 from jastudio.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
     from jaslib.note.vocabulary.vocabnote import VocabNote
 
 
-def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
+def _generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
     def _create_classes(_kanji: KanjiNote, _vocab: VocabNote) -> str:
         # noinspection DuplicatedCode
         classes = " ".join(_vocab.get_meta_tags())
@@ -50,5 +51,12 @@ def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
                 '''
     return ""
 
+
 def init() -> None:
-    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(KanjiNote, {"##VOCAB_LIST##": generate_vocab_html_list}).render)
+    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(KanjiNote, {
+        "##DEPENDENCIES_LIST##": dependencies_renderer.render_dependencies_list,
+        "##MNEMONIC##": mnemonic_renderer.render_mnemonic,
+        "##KANJI_READINGS##": readings_renderer.render_katakana_onyomi,
+        "##VOCAB_LIST##": _generate_vocab_html_list,
+        "##KANJI_LIST##": kanji_list_renderer.kanji_kanji_list,
+    }).render)

@@ -17,8 +17,6 @@ if TYPE_CHECKING:
 
 
 class PrerenderingAnswerContentRenderer[TNote: JPNote](Slots):
-    """Anki-specific adapter. Stays in Python."""
-
     def __init__(self, cls: type[TNote], render_methods: dict[str, Callable[[TNote], str]]) -> None:
         self._cls: type[TNote] = cls
         self._renderer: ContentRenderer[TNote] = ContentRenderer[TNote](render_methods, app_thread_pool.pool.submit)

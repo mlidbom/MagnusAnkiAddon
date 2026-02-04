@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-from jastudio.ui.web.sentence import question
-
 
 def init() -> None:
-    from . import ud_sentence_breakdown
-    ud_sentence_breakdown.init()
-    question.init()
+    from . import sentence_note_renderer
+    sentence_note_renderer.init()
