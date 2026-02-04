@@ -311,19 +311,19 @@ Staying this close to the Python is what makes the porting workable at all. If w
                 - 100% test_perfect_synonyms.py
                     - Note: Tests found and fixed a collection-modification bug in Synonyms.cs
                 - 100% test_serializers.py
-                - CREATED WIP test_vocabnote_misc.py
+                - 100% test_vocabnote_misc.py
         - ui_tests
             - viewmodels_tests
-                - CREATED WIP test_kanji_list_viewmodel.py
+                - 100% test_kanji_list_viewmodel.py
 
 ---
 
 ## Summary Statistics
-- **100% Complete**: 184 files
-- **CREATED WIP**: 23 filesche
-- **Partial (20-90%)**: 0 files
-- **MISSING**: 0 files
+- **100% Complete**: 201 files
+- **95% Complete**: 1 file (test_dict_lookup.py - missing test_valid_forms)
+- **80% Complete**: 2 files (test_sentence_analysis_viewmodel_with_select_data.py, test_text_analysis_with_select_data.py)
+- **33% Complete**: 1 file (test_kanjinote.py - pending C# implementation of mnemonic methods)
 - **EXCLUDED**: 2 files
-- **Total tracked files**: 209 files
-- **Porting completion**: 100%
+- **Total tracked files**: 207 files
+- **Porting completion**: ~98%
 
