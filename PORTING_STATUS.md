@@ -92,33 +92,33 @@ Staying this close to the Python is what makes the porting workable at all. If w
                         - DictWordInfoEntry has incomplete implementation with TODO comments; uses hardcoded strings instead of POS constants; Answer property returns placeholder text
             - word_extraction
                 - 100% analysis_constants.py
-                - CREATED WIP candidate_word.py
-                - CREATED WIP candidate_word_variant.py
-                - CREATED WIP text_analysis.py
-                - CREATED WIP text_location.py
-                - CREATED WIP word_exclusion.py
+                - 100% candidate_word.py
+                - 100% candidate_word_variant.py
+                - 100% text_analysis.py
+                - 100% text_location.py
+                - 100% word_exclusion.py
                 - matches
-                    - CREATED WIP dictionary_match.py
-                    - CREATED WIP match.py
-                    - CREATED WIP missing_match.py
-                    - CREATED WIP vocab_match.py
+                    - 100% dictionary_match.py
+                    - 100% match.py
+                    - 100% missing_match.py
+                    - 100% vocab_match.py
                     - requirements
-                        - CREATED WIP custom_forbids_no_cache.py
-                        - CREATED WIP match_inspector.py
-                        - CREATED WIP requirement.py
-                        - CREATED WIP vocab_match_inspector.py
+                        - 100% custom_forbids_no_cache.py
+                        - 100% match_inspector.py
+                        - 100% requirement.py
+                        - 100% vocab_match_inspector.py
                     - state_tests
-                        - CREATED WIP another_match_owns_the_form.py
-                        - CREATED WIP forbids_compositionally_transparent_compound.py
-                        - CREATED WIP forbids_compounds.py
-                        - CREATED WIP forbids_dictionary_form_verb_inflection.py
-                        - CREATED WIP forbids_dictionary_form_verb_stem_surface_as_compound_end.py
-                        - CREATED WIP forbids_yields_to_surface.py
-                        - CREATED WIP is_configured_hidden.py
-                        - CREATED WIP is_configured_incorrect.py
-                        - CREATED WIP is_exact_match.py
-                        - CREATED WIP is_godan_imperative_surface_with_base.py
-                        - CREATED WIP is_godan_potential_surface_with_base.py
+                        - 100% another_match_owns_the_form.py
+                        - 100% forbids_compositionally_transparent_compound.py
+                        - 100% forbids_compounds.py
+                        - 100% forbids_dictionary_form_verb_inflection.py
+                        - 100% forbids_dictionary_form_verb_stem_surface_as_compound_end.py
+                        - 100% forbids_yields_to_surface.py
+                        - 100% is_configured_hidden.py
+                        - 100% is_configured_incorrect.py
+                        - 100% is_exact_match.py
+                        - 100% is_godan_imperative_surface_with_base.py
+                        - 100% is_godan_potential_surface_with_base.py
                         - CREATED WIP is_ichidan_imperative.py
                         - CREATED WIP is_inflected_surface_with_valid_base.py
                         - CREATED WIP is_poison_word.py
