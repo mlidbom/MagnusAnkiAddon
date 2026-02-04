@@ -272,9 +272,10 @@ Staying this close to the Python is what makes the porting workable at all. If w
 ---
 
 ## Summary Statistics
-- **CREATED WIP**: 30 files
-- **MISSING**: 124 files
-- **COMPLETE**: 11 files
-- **Total Python files**: 165 files
-- **Completion**: ~25%
+- **100% Complete**: 118 files
+- **Partial (20-90%)**: 30 files
+- **MISSING**: 17 files
+- **EXCLUDED**: 1 file
+- **Total tracked files**: 166 files
+- **Porting completion**: ~83%
 
