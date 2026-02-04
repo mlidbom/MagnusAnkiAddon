@@ -119,7 +119,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
                         - 100% is_exact_match.py
                         - 100% is_godan_imperative_surface_with_base.py
                         - 100% is_godan_potential_surface_with_base.py
-                        - CREATED WIP is_ichidan_imperative.py
+                        - 100% is_ichidan_imperative.py
                         - CREATED WIP is_inflected_surface_with_valid_base.py
                         - CREATED WIP is_poison_word.py
                         - CREATED WIP is_shadowed.py
