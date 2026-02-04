@@ -23,6 +23,7 @@ public class InflectionType
         {
             return Name == other.Name;
         }
+
         return false;
     }
 
@@ -31,6 +32,15 @@ public class InflectionType
 
 public static class InflectionTypes
 {
+    static InflectionTypes()
+    {
+        List<InflectionType> unused =
+        [
+            Godan.Su, Ichidan.Regular, Adjective.IEnding, Sahen.Suru, Kahen.KuruKana, Bungo.Beshi, Yodan.BaEnding,
+            Ruhen.RaHen, Nidan.LowerDa, Other.Indeclinable, Special.Masu
+        ];
+    }
+
     private static readonly Dictionary<string, InflectionType> AllDict = new();
 
     private static InflectionType AddForm(string name, string description)
@@ -56,15 +66,25 @@ public static class InflectionTypes
         public static readonly InflectionType Tsu = AddForm("五段・タ行", "Godan verb with 'tsu' ending");
         public static readonly InflectionType Nu = AddForm("五段・ナ行", "Godan verb with 'nu' ending");
         public static readonly InflectionType Ru = AddForm("五段・ラ行", "Godan verb with 'ru' ending");
-        public static readonly InflectionType RuSpecial = AddForm("五段・ラ行特殊", "Godan verb with 'ru' ending - Irregular conjugation");
+
+        public static readonly InflectionType RuSpecial =
+            AddForm("五段・ラ行特殊", "Godan verb with 'ru' ending - Irregular conjugation");
+
         public static readonly InflectionType RuEndingAru = AddForm("五段・ラ行アル", "Godan verb 'aru'");
 
-        public static readonly InflectionType UGemination = AddForm("五段・ワ行促音便", "Godan verb with 'u' ending and 'っ' consonant assimilation");
-        public static readonly InflectionType UUSound = AddForm("五段・ワ行ウ音便", "Godan verb with 'u' ending and 'u' sound change");
+        public static readonly InflectionType UGemination =
+            AddForm("五段・ワ行促音便", "Godan verb with 'u' ending and 'っ' consonant assimilation");
+
+        public static readonly InflectionType UUSound = AddForm("五段・ワ行ウ音便",
+            "Godan verb with 'u' ending and 'u' sound change");
 
         public static readonly InflectionType KuGeminationYuku = AddForm("五段・カ行促音便ユク", "Godan verb 'yuku'");
-        public static readonly InflectionType KuGemination = AddForm("五段・カ行促音便", "Godan verb with 'ku' ending and consonant assimilation");
-        public static readonly InflectionType KuISound = AddForm("五段・カ行イ音便", "Godan verb with 'ku' ending and 'i' sound change");
+
+        public static readonly InflectionType KuGemination =
+            AddForm("五段・カ行促音便", "Godan verb with 'ku' ending and consonant assimilation");
+
+        public static readonly InflectionType KuISound = AddForm("五段・カ行イ音便",
+            "Godan verb with 'ku' ending and 'i' sound change");
     }
 
     public static class Ichidan
@@ -103,11 +123,20 @@ public static class InflectionTypes
         public const string Base = "文語";
         public static readonly InflectionType Nari = AddForm("文語・ナリ", "Classical 'nari' - Classical Japanese copula");
         public static readonly InflectionType Ru = AddForm("文語・ル", "Classical 'ru' ending - Classical verb ending");
-        public static readonly InflectionType Ki = AddForm("文語・キ", "Classical 'ki' ending - Classical past tense marker");
-        public static readonly InflectionType Gotoshi = AddForm("文語・ゴトシ", "Classical 'gotoshi' - Classical expression meaning 'like/as if'");
-        public static readonly InflectionType Keri = AddForm("文語・ケリ", "Classical 'keri' - Classical perfect aspect marker");
+
+        public static readonly InflectionType Ki = AddForm("文語・キ",
+            "Classical 'ki' ending - Classical past tense marker");
+
+        public static readonly InflectionType Gotoshi = AddForm("文語・ゴトシ",
+            "Classical 'gotoshi' - Classical expression meaning 'like/as if'");
+
+        public static readonly InflectionType Keri = AddForm("文語・ケリ",
+            "Classical 'keri' - Classical perfect aspect marker");
+
         public static readonly InflectionType Ri = AddForm("文語・リ", "Classical 'ri' - Classical verb ending");
-        public static readonly InflectionType Beshi = AddForm("文語・ベシ", "Classical 'beshi' - Classical expression of obligation/probability");
+
+        public static readonly InflectionType Beshi = AddForm("文語・ベシ",
+            "Classical 'beshi' - Classical expression of obligation/probability");
     }
 
     public static class Special
@@ -146,6 +175,7 @@ public static class InflectionTypes
 
     public static class Other
     {
-        public static readonly InflectionType Indeclinable = AddForm("不変化型", "Indeclinable type - Words that don't conjugate");
+        public static readonly InflectionType Indeclinable =
+            AddForm("不変化型", "Indeclinable type - Words that don't conjugate");
     }
 }
