@@ -11,4 +11,10 @@
     <ProjectReference Include="..\JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="UserFiles\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
