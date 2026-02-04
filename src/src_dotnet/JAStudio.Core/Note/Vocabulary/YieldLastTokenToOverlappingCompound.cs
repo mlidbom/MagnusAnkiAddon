@@ -1,3 +1,4 @@
+using JAStudio.Core.Configuration;
 using JAStudio.Core.Note.NoteFields;
 
 namespace JAStudio.Core.Note.Vocabulary;
@@ -43,12 +44,4 @@ public class YieldLastTokenToOverlappingCompound : RequireForbidFlagField
         if (IsForbidden) parts.Add("forbidden");
         return string.Join(" ", parts);
     }
-}
-
-// Placeholder for Settings class
-internal static class Settings
-{
-    public static bool AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound() => true;
-    public static bool AutomaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound() => true;
-    public static bool AutomaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound() => true;
 }

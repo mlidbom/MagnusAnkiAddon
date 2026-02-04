@@ -59,33 +59,33 @@ This document lists code comments that appear to be related to porting or might 
 
 ## Implementation Stubs/Placeholders
 
-### 8. VocabNoteMatchingRules - Stub Implementation
+### 8. VocabNoteMatchingRules - Stub Implementation ✅ RESOLVED
 **File**: [VocabNoteMatchingRules.cs](src/src_dotnet/JAStudio.Core/Note/Vocabulary/VocabNoteMatchingRules.cs#L100)
 ```csharp
 // Stub: Create empty data for now
 ```
-**Status**: **NEEDS REVIEW** - This appears to be a stub. Check if Python implementation has actual logic here.
+**Status**: **RESOLVED** - Implemented full serialization/deserialization using `MutableSerializedObjectField<VocabNoteMatchingRulesData>` matching Python's implementation with `MutableSerializedObjectField[VocabNoteMatchingRulesData]`. The stub has been replaced with proper field loading and saving.
 
-### 9. YieldLastTokenToOverlappingCompound - Settings Placeholder
+### 9. YieldLastTokenToOverlappingCompound - Settings Placeholder ✅ RESOLVED
 **File**: [YieldLastTokenToOverlappingCompound.cs](src/src_dotnet/JAStudio.Core/Note/Vocabulary/YieldLastTokenToOverlappingCompound.cs#L48)
 ```csharp
 // Placeholder for Settings class
 ```
-**Status**: **NEEDS REVIEW** - Check if Settings class needs to be ported or if this is handled differently in C#.
+**Status**: **RESOLVED** - Removed placeholder Settings class and integrated with the real `Configuration.Settings` singleton class that was already ported. Added using directive for `JAStudio.Core.Configuration`.
 
-### 10. KanjiNote - Placeholder Comment
+### 10. KanjiNote - Placeholder Comment ✅ RESOLVED
 **File**: [KanjiNote.cs](src/src_dotnet/JAStudio.Core/Note/KanjiNote.cs#L373)
 ```csharp
 // Placeholder methods for vocab-related functionality
 ```
-**Status**: **RESOLVED** - This section has been fully implemented. The comment should be removed.
+**Status**: **RESOLVED** - Comment removed. The methods are fully implemented and no longer placeholders.
 
-### 11. VocabNoteAudio - Field Consolidation Question
+### 11. VocabNoteAudio - Field Consolidation Question ✅ RESOLVED
 **File**: [VocabNoteAudio.cs](src/src_dotnet/JAStudio.Core/Note/Vocabulary/VocabNoteAudio.cs#L16)
 ```csharp
 Second = new WritableAudioField(vocab, NoteFieldsConstants.Vocab.Audio);  // Using same field - Python has Audio_b/Audio_g but C# might consolidate
 ```
-**Status**: **NEEDS REVIEW** - Check if Python really has separate Audio_b/Audio_g fields and if they should be different in C#.
+**Status**: **RESOLVED** - Python DOES have separate Audio_b, Audio_g, and Audio_TTS fields. Added these constants to NoteFieldsConstants.Vocab and updated VocabNoteAudio to use the correct separate fields instead of consolidating to one field.
 
 ## Documentation Comments (Not Issues)
 
@@ -101,12 +101,14 @@ These are correct and document intentional differences between Python and C#.
 
 ## Summary
 
-**Action Items**:
-1. Review VocabNoteMatchingRules stub implementation (#8)
-2. Investigate Settings class placeholder (#9)
-3. Remove outdated placeholder comment from KanjiNote (#10)
-4. Check VocabNoteAudio field consolidation (#11)
+**Action Items - All Resolved**:
+1. ✅ Review VocabNoteMatchingRules stub implementation (#8) - Fixed to use MutableSerializedObjectField
+2. ✅ Investigate Settings class placeholder (#9) - Integrated with Configuration.Settings
+3. ✅ Remove outdated placeholder comment from KanjiNote (#10) - Comment removed
+4. ✅ Check VocabNoteAudio field consolidation (#11) - Separated into three distinct fields
 
-**Total Potential Issues**: 4
+**Total Potential Issues**: 4 (All Resolved)
 **Design Concerns (Not Blockers)**: 7
 **Documentation Only**: 6
+
+All porting-related comment issues have been addressed!

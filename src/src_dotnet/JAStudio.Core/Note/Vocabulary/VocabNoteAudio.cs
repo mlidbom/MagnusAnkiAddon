@@ -12,9 +12,9 @@ public class VocabNoteAudio
     public VocabNoteAudio(VocabNote vocab)
     {
         _vocab = vocab;
-        First = new WritableAudioField(vocab, NoteFieldsConstants.Vocab.Audio);
-        Second = new WritableAudioField(vocab, NoteFieldsConstants.Vocab.Audio);  // Using same field - Python has Audio_b/Audio_g but C# might consolidate
-        Tts = new WritableAudioField(vocab, NoteFieldsConstants.Vocab.Audio);
+        First = new WritableAudioField(vocab, NoteFieldsConstants.Vocab.AudioB);
+        Second = new WritableAudioField(vocab, NoteFieldsConstants.Vocab.AudioG);
+        Tts = new WritableAudioField(vocab, NoteFieldsConstants.Vocab.AudioTTS);
     }
 
     private VocabNote Vocab => _vocab;

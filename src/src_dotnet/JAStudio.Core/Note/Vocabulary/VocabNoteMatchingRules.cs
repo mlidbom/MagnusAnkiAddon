@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.SysUtils.Json;
 
 namespace JAStudio.Core.Note.Vocabulary;
@@ -28,7 +29,7 @@ public class VocabNoteMatchingRulesData
     }
 }
 
-public class VocabNoteMatchingRulesSerializer
+public class VocabNoteMatchingRulesSerializer : IObjectSerializer<VocabNoteMatchingRulesData>
 {
     private static string _emptyObjectJson = string.Empty;
 
@@ -86,25 +87,26 @@ public class VocabNoteMatchingRulesSerializer
 public class VocabNoteMatchingRules
 {
     private readonly VocabNote _vocab;
-    private readonly VocabNoteMatchingRulesData _data;
+    private readonly MutableSerializedObjectField<VocabNoteMatchingRulesData> _field;
 
-    public HashSet<string> SurfaceIsNot { get; }
-    public HashSet<string> YieldToSurface { get; }
-    public HashSet<string> PrefixIsNot { get; }
-    public HashSet<string> SuffixIsNot { get; }
-    public HashSet<string> RequiredPrefix { get; }
+    public HashSet<string> SurfaceIsNot => _field.Get().SurfaceIsNot;
+    public HashSet<string> YieldToSurface => _field.Get().YieldToSurface;
+    public HashSet<string> PrefixIsNot => _field.Get().PrefixIsNot;
+    public HashSet<string> SuffixIsNot => _field.Get().SuffixIsNot;
+    public HashSet<string> RequiredPrefix => _field.Get().RequiredPrefix;
 
     public VocabNoteMatchingRules(VocabNote vocab)
     {
         _vocab = vocab;
-        // Stub: Create empty data for now
-        _data = new VocabNoteMatchingRulesData();
-        
-        SurfaceIsNot = _data.SurfaceIsNot;
-        YieldToSurface = _data.YieldToSurface;
-        PrefixIsNot = _data.PrefixIsNot;
-        SuffixIsNot = _data.SuffixIsNot;
-        RequiredPrefix = _data.RequiredPrefix;
+        _field = new MutableSerializedObjectField<VocabNoteMatchingRulesData>(
+            vocab, 
+            NoteFieldsConstants.Vocab.MatchingRules, 
+            new VocabNoteMatchingRulesSerializer());
+    }
+
+    public void Save()
+    {
+        _field.Save();
     }
 
     public int MatchWeight
@@ -119,7 +121,6 @@ public class VocabNoteMatchingRules
             if (YieldToSurface.Any()) weight += 2;
             if (PrefixIsNot.Any()) weight += 2;
             if (SuffixIsNot.Any()) weight += 2;
-            if (RequiredPrefix.Any()) weight += 2;
             
             return weight;
         }
@@ -141,5 +142,7 @@ public class VocabNoteMatchingRules
         
         RequiredPrefix.Clear();
         foreach (var item in other.RequiredPrefix) RequiredPrefix.Add(item);
+        
+        Save();
     }
 }

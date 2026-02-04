@@ -126,6 +126,9 @@ public static class NoteFieldsConstants
         public const string ReadingRomaji = "Reading_Romaji";
         public const string PartsOfSpeech = "__parts_of_speech";
         public const string Audio = "__audio";
+        public const string AudioB = "Audio_b";
+        public const string AudioG = "Audio_g";
+        public const string AudioTTS = "Audio_TTS";
         public const string Kanji = "__kanji";
         public const string UserCompoundParts = "__userCompoundParts";
         public const string UserForms = "__user_forms";

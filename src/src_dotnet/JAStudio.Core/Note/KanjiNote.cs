@@ -370,7 +370,6 @@ public class KanjiNote : JPNote
         SetField(NoteFieldsConstants.Kanji.Audio, value);
     }
 
-    // Placeholder methods for vocab-related functionality
     public List<VocabNote> GetVocabNotes()
     {
         return App.Col().Vocab.WithKanjiInAnyForm(this);
