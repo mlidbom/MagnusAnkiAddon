@@ -64,7 +64,6 @@ Staying this close to the Python is what makes the porting workable at all. If w
     - janome_ex
         - tokenizing
             - 100% analysis_token.py
-                - Wrong file name: IAnalysisToken.cs instead of AnalysisToken.cs
             - 100% godan_dictionary_form_stem.py
             - 90% inflection_forms.py
                 - Extra public method: GetByName() not in Python - intentional enhancement for C# usability
@@ -156,7 +155,6 @@ Staying this close to the Python is what makes the porting workable at all. If w
     - 80% note_constants.py
         - Core constants present but C# has reorganized structure with additional fields; missing Mine class
     - 100% note_flush_guard.py
-        - Wrong name: NoteRecursiveFlushGuard instead of NoteFlushGuard
     - 100% note_tags.py
     - 100% tag.py
     - 100% tags.py
@@ -178,8 +176,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
         - 100% comma_separated_strings_list_field_de_duplicated.py
         - 100% fallback_string_field.py
         - 100% integer_field.py
-        - 50% json_object_field.py
-            - File renamed to SerializedObjectField.cs instead of JsonObjectField.cs; class renamed to SerializedObjectField instead of MutableSerializedObjectField
+        - 100% json_object_field.py
         - 100% mutable_string_field.py
         - 100% require_forbid_flag_field.py
         - 100% sentence_question_field.py
@@ -187,8 +184,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
         - 100% tag_flag_field.py
         - auto_save_wrappers
             - 100% field_wrapper.py
-            - 90% set_wrapper.py
-                - Wrong file name: FieldSetWrapper.cs instead of SetWrapper.cs
+            - 100% set_wrapper.py
             - 100% value_wrapper.py
     - sentences
         - 100% caching_sentence_configuration_field.py
@@ -196,10 +192,8 @@ Staying this close to the Python is what makes the porting workable at all. If w
         - 100% parsing_result.py
         - 60% sentence_configuration.py
             - Missing factory methods: FromIncorrectMatches(), FromHiddenMatches(), FromValues()
-        - 50% sentencenote.py
-            - File in wrong location (Note\SentenceNote.cs instead of Note\Sentences\SentenceNote.cs); needs comparison of public API
-        - 50% user_fields.py
-            - Wrong file name: SentenceUserFields.cs instead of UserFields.cs
+        - 100% sentencenote.py
+        - 100% user_fields.py
         - 40% word_exclusion_set.py
             - File contains 3 classes (WordExclusion, JsonReader, WordExclusionSet) instead of just WordExclusionSet; extra public methods: Empty(), Empty(Action), IsEmpty()
         - serialization
@@ -211,8 +205,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
     - vocabulary
         - 100% pos.py
         - 100% pos_set_interner.py
-        - 50% vocabnote.py
-            - File in wrong location (Note\VocabNote.cs instead of Note\Vocabulary\VocabNote.cs); needs comparison of public API
+        - 100% vocabnote.py
         - 20% vocabnote_audio.py
             - All audio fields commented out with TODO; GetPrimaryAudioPath() and GetPrimaryAudio() return empty strings; ToString() returns empty string
         - MISSING vocabnote_cloner.py
@@ -253,7 +246,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
             - MISSING matching_rules_serializer.py
 - task_runners
     - 90% i_task_progress_runner.py
-        - Wrong name: ITaskRunner instead of ITaskProgressRunner; C# file also contains InvisibleTaskRunner class which should be in separate file
+        - C# file also contains InvisibleTaskRunner class which should be in separate file
     - MISSING invisible_task_progress_runner.py
     - 100% task_progress_runner.py
 - testutils

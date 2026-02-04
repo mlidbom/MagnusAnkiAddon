@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace JAStudio.Core.TaskRunners;
 
-public interface ITaskRunner : IDisposable
+public interface ITaskProgressRunner : IDisposable
 {
     List<TOutput> ProcessWithProgress<TInput, TOutput>(
         List<TInput> items,
@@ -19,7 +19,7 @@ public interface ITaskRunner : IDisposable
     bool IsHidden();
 }
 
-public class InvisibleTaskRunner : ITaskRunner
+public class InvisibleTaskRunner : ITaskProgressRunner
 {
     public InvisibleTaskRunner(string windowTitle, string labelText)
     {

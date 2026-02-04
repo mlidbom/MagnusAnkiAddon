@@ -4,11 +4,11 @@ namespace JAStudio.Core.TaskRunners;
 
 public static class TaskRunner
 {
-    private static Func<string, string, bool, bool, ITaskRunner>? _uiTaskRunnerFactory;
+    private static Func<string, string, bool, bool, ITaskProgressRunner>? _uiTaskRunnerFactory;
     private static int _depth;
-    private static ITaskRunner? _current;
+    private static ITaskProgressRunner? _current;
 
-    public static void SetUiTaskRunnerFactory(Func<string, string, bool, bool, ITaskRunner> factory)
+    public static void SetUiTaskRunnerFactory(Func<string, string, bool, bool, ITaskProgressRunner> factory)
     {
         if (_uiTaskRunnerFactory != null)
         {
@@ -17,7 +17,7 @@ public static class TaskRunner
         _uiTaskRunnerFactory = factory;
     }
 
-    public static ITaskRunner Create(string windowTitle, string labelText, bool? visible = null, bool allowCancel = true, bool modal = false)
+    public static ITaskProgressRunner Create(string windowTitle, string labelText, bool? visible = null, bool allowCancel = true, bool modal = false)
     {
         visible ??= !App.IsTesting;
         
@@ -46,7 +46,7 @@ public static class TaskRunner
         return new TaskRunnerScope(windowTitle, labelText, forceHide, inhibitGc, forceGc, allowCancel, modal);
     }
 
-    internal static void EnterScope(ITaskRunner runner)
+    internal static void EnterScope(ITaskProgressRunner runner)
     {
         _depth++;
         if (_depth == 1)
@@ -55,7 +55,7 @@ public static class TaskRunner
         }
     }
 
-    internal static void ExitScope(ITaskRunner runner, bool forceGc)
+    internal static void ExitScope(ITaskProgressRunner runner, bool forceGc)
     {
         _depth--;
         if (_depth == 0)
@@ -69,12 +69,12 @@ public static class TaskRunner
         }
     }
 
-    internal static ITaskRunner? GetCurrent() => _current;
+    internal static ITaskProgressRunner? GetCurrent() => _current;
 }
 
 public class TaskRunnerScope : IDisposable
 {
-    private readonly ITaskRunner _runner;
+    private readonly ITaskProgressRunner _runner;
     private readonly bool _forceGc;
     private readonly bool _inhibitGc;
 
@@ -109,7 +109,7 @@ public class TaskRunnerScope : IDisposable
         }
     }
     
-    public ITaskRunner Runner => _runner;
+    public ITaskProgressRunner Runner => _runner;
 
     public void Dispose()
     {

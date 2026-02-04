@@ -9,14 +9,14 @@ namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 public class RelatedVocab
 {
     private readonly VocabNote _vocab;
-    private readonly SerializedObjectField<RelatedVocabData> _data;
+    private readonly MutableSerializedObjectField<RelatedVocabData> _data;
     private readonly Lazy<HashSet<int>> _inCompoundIds;
 
     public RelatedVocab(VocabNote vocab)
     {
         _vocab = vocab;
 
-        _data = new SerializedObjectField<RelatedVocabData>(
+        _data = new MutableSerializedObjectField<RelatedVocabData>(
             vocab,
             NoteFieldsConstants.Vocab.RelatedVocab,
             RelatedVocabData.Serializer());

@@ -8,14 +8,14 @@ public interface IObjectSerializer<T>
     T Deserialize(string serialized);
 }
 
-public class SerializedObjectField<T>
+public class MutableSerializedObjectField<T>
 {
     private readonly JPNote _note;
     private readonly IObjectSerializer<T> _serializer;
     private readonly MutableStringField _field;
     private T _value;
 
-    public SerializedObjectField(JPNote note, string fieldName, IObjectSerializer<T> serializer)
+    public MutableSerializedObjectField(JPNote note, string fieldName, IObjectSerializer<T> serializer)
     {
         _note = note;
         _serializer = serializer;

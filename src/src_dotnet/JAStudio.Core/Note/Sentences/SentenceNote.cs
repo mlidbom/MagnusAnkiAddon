@@ -10,12 +10,12 @@ namespace JAStudio.Core.Note;
 public class SentenceNote : JPNote
 {
     public CachingSentenceConfigurationField Configuration { get; private set; }
-    public SerializedObjectField<ParsingResult> ParsingResult { get; }
+    public MutableSerializedObjectField<ParsingResult> ParsingResult { get; }
 
     public SentenceNote(JPNoteData? data = null) : base(data)
     {
         Configuration = new CachingSentenceConfigurationField(this);
-        ParsingResult = new SerializedObjectField<ParsingResult>(
+        ParsingResult = new MutableSerializedObjectField<ParsingResult>(
             this,
             NoteFieldsConstants.Sentence.ParsingResult,
             new ParsingResultSerializer());

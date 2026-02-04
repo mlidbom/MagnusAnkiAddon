@@ -3,12 +3,12 @@ using System;
 
 namespace JAStudio.Core.Note;
 
-public class NoteRecursiveFlushGuard
+public class NoteFlushGuard
 {
     private readonly JPNote _note;
     private int _depth;
 
-    public NoteRecursiveFlushGuard(JPNote note)
+    public NoteFlushGuard(JPNote note)
     {
         _note = note;
         _depth = 0;
@@ -46,9 +46,9 @@ public class NoteRecursiveFlushGuard
 
     private class FlushPauseScope : IDisposable
     {
-        private readonly NoteRecursiveFlushGuard _guard;
+        private readonly NoteFlushGuard _guard;
 
-        public FlushPauseScope(NoteRecursiveFlushGuard guard)
+        public FlushPauseScope(NoteFlushGuard guard)
         {
             _guard = guard;
         }

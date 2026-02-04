@@ -53,7 +53,7 @@ public class FieldSetWrapper<TValue>
     public bool None() => !Any();
     public bool Any() => _value().Any();
 
-    public static FieldSetWrapper<TValue> ForJsonObjectField<TWrapper>(SerializedObjectField<TWrapper> field, HashSet<TValue> value)
+    public static FieldSetWrapper<TValue> ForJsonObjectField<TWrapper>(MutableSerializedObjectField<TWrapper> field, HashSet<TValue> value)
     {
         return new FieldSetWrapper<TValue>(() => field.Save(), () => value, Secret);
     }

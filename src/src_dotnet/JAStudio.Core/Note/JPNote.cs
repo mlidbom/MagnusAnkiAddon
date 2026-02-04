@@ -7,7 +7,7 @@ namespace JAStudio.Core.Note;
 
 public abstract class JPNote
 {
-    public NoteRecursiveFlushGuard RecursiveFlushGuard { get; }
+    public NoteFlushGuard RecursiveFlushGuard { get; }
     private int _hashValue;
 
     private readonly HashSet<string> _unsuspendedCards = new();
@@ -18,7 +18,7 @@ public abstract class JPNote
 
     protected JPNote(JPNoteData? data = null)
     {
-        RecursiveFlushGuard = new NoteRecursiveFlushGuard(this);
+        RecursiveFlushGuard = new NoteFlushGuard(this);
         _hashValue = 0;
 
         Tags = new NoteTags(this, data);

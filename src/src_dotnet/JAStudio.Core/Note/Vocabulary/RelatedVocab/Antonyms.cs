@@ -7,9 +7,9 @@ namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 public class Antonyms
 {
     private readonly VocabNote _vocab;
-    private readonly SerializedObjectField<RelatedVocabData> _data;
+    private readonly MutableSerializedObjectField<RelatedVocabData> _data;
 
-    public Antonyms(VocabNote vocab, SerializedObjectField<RelatedVocabData> data)
+    public Antonyms(VocabNote vocab, MutableSerializedObjectField<RelatedVocabData> data)
     {
         _vocab = vocab;
         _data = data;
