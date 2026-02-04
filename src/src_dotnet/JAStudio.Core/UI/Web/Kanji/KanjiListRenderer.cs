@@ -57,4 +57,12 @@ public static class KanjiListRenderer
             </div>
             """;
     }
+
+    public static string KanjiKanjiList(KanjiNote kanji)
+    {
+        var kanjis = App.Col().Kanji.WithRadical(kanji.GetQuestion());
+        var kanjiReadings = kanji.GetReadingsClean();
+
+        return RenderList(kanji, kanjis, kanjiReadings);
+    }
 }

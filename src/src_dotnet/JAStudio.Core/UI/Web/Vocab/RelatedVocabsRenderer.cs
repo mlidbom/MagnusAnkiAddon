@@ -8,7 +8,7 @@ namespace JAStudio.Core.UI.Web.Vocab;
 
 public static class RelatedVocabsRenderer
 {
-    private static string CreateClasses(VocabNote vocab)
+    public static string CreateClasses(VocabNote vocab)
     {
         return string.Join(" ", vocab.GetMetaTags());
     }
