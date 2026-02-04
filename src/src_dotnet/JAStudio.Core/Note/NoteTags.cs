@@ -78,7 +78,8 @@ public class NoteTags : IEnumerable<Tag>
         if (!_internedStringLists.TryGetValue(_flags, out var internedList))
         {
             var sortedNameList = this.Select(t => t.Name).OrderBy(n => n).ToList();
-            // TODO: Implement string auto-interning when needed
+            // Note: Python uses string_auto_interner.auto_intern_qlist() here, but string interning
+            // is a Python-specific optimization not needed in C# (per porting rules)
             internedList = sortedNameList;
             _internedStringLists[_flags] = internedList;
         }

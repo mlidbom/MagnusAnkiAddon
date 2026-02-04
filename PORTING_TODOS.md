@@ -12,13 +12,9 @@ This document catalogs TODO items that were added during the Python-to-C# portin
 
 ## Porting-Related TODOs (Need Implementation)
 
-### 1. String Auto-Interning
+### 1. String Auto-Interning ✅ COMPLETED
 **File**: [NoteTags.cs](src/src_dotnet/JAStudio.Core/Note/NoteTags.cs#L81)
-```csharp
-// TODO: Implement string auto-interning when needed
-```
-**Status**: Python version doesn't use string interning (per porting rules, C# doesn't need it)
-**Action**: This TODO can be removed - string interning is a Python-specific optimization not needed in C#
+**Status**: RESOLVED - Python uses `string_auto_interner.auto_intern_qlist()` but per porting rules, string interning is a Python-specific optimization not needed in C#. Comment updated to explain why C# doesn't use it.
 
 ---
 
@@ -48,13 +44,9 @@ public string WithoutNoiseCharacters => Raw; // TODO: Use Mine.VocabPrefixSuffix
 
 ---
 
-### 4. VocabNoteMetaTag - Ichidan/Godan Potential Check
+### 4. VocabNoteMetaTag - Ichidan/Godan Potential Check ✅ COMPLETED
 **File**: [VocabNoteMetaTag.cs](src/src_dotnet/JAStudio.Core/Note/Vocabulary/VocabNoteMetaTag.cs#L132)
-```csharp
-// TODO: Add ichidan hiding godan potential check when IchidanGodanPotentialOrImperativeHybridSplitter is ported
-```
-**Status**: According to PORTING_STATUS.md, IchidanGodanPotentialOrImperativeHybridSplitter is 100% ported
-**Action**: Implement the check - the required class is already available
+**Status**: RESOLVED - Implemented the ichidan hiding godan potential check using `IchidanGodanPotentialOrImperativeHybridSplitter.TryGetGodanHiddenByIchidan()`, matching Python's implementation. The class was already ported and available.
 
 ---
 
@@ -74,14 +66,9 @@ return All(); // All().Where(it => it.IsStudying()).ToList();
 
 ---
 
-### 6. VocabNoteSentences - NoteFields Constants
+### 6. VocabNoteSentences - NoteFields Constants ✅ COMPLETED
 **File**: [VocabNoteSentences.cs](src/src_dotnet/JAStudio.Core/Note/Vocabulary/VocabNoteSentences.cs#L49-L50)
-```csharp
-_studyingReading = GetStudyingSentenceCount("Reading"); // TODO: Use NoteFields constant
-_studyingListening = GetStudyingSentenceCount("Listening"); // TODO: Use NoteFields constant
-```
-**Status**: Hard-coded strings instead of constants
-**Action**: Replace with NoteFields constants (likely in NoteFieldsConstants class)
+**Status**: RESOLVED - Replaced hard-coded strings "Reading" and "Listening" with `NoteFieldsConstants.VocabNoteType.Card.Reading` and `NoteFieldsConstants.VocabNoteType.Card.Listening`, matching Python's `NoteFields.VocabNoteType.Card.Reading` and `NoteFields.VocabNoteType.Card.Listening`.
 
 ---
 
@@ -107,13 +94,9 @@ return new List<SentenceNote>();
 
 ---
 
-### 9. KanjiNote - Katakana to Hiragana Conversion
+### 9. KanjiNote - Katakana to Hiragana Conversion ✅ COMPLETED
 **File**: [KanjiNote.cs](src/src_dotnet/JAStudio.Core/Note/KanjiNote.cs#L64)
-```csharp
-// TODO: Implement katakana_to_hiragana when needed
-```
-**Status**: KanaUtils.KatakanaToHiragana should already exist (kana_utils.py is 100% ported)
-**Action**: Use existing KanaUtils.KatakanaToHiragana method
+**Status**: RESOLVED - Used existing `KanaUtils.KatakanaToHiragana()` method to convert katakana to hiragana in `UpdateGeneratedData()`, matching Python implementation.
 
 ---
 
@@ -128,16 +111,11 @@ SetPrimaryVocabAudio(string.Empty);
 
 ---
 
-### 11. KanjiNote - StripHtmlMarkup
+### 11. KanjiNote - StripHtmlMarkup ✅ COMPLETED
 **File**: [KanjiNote.cs](src/src_dotnet/JAStudio.Core/Note/KanjiNote.cs#L135)
 **File**: [KanjiNote.cs](src/src_dotnet/JAStudio.Core/Note/KanjiNote.cs#L142)
 **File**: [KanjiNote.cs](src/src_dotnet/JAStudio.Core/Note/KanjiNote.cs#L149)
-```csharp
-// TODO: Implement StripHtmlMarkup
-return matches.Select(m => m.Groups[1].Value).ToList();
-```
-**Status**: StringExtensions.StripHtmlMarkup exists but commented TODO suggests it's not being used
-**Action**: Apply StripHtmlMarkup to the regex match results
+**Status**: RESOLVED - Applied `StringExtensions.StripHtmlMarkup()` to all three primary reading methods (`GetPrimaryReadingsOn`, `GetPrimaryReadingsKun`, `GetPrimaryReadingsNan`), matching Python's use of `ex_str.strip_html_markup()`.
 
 ---
 
@@ -153,14 +131,9 @@ SetReadingOn(GetReadingOnHtml().Replace(reading, $"<primary>{reading}</primary>"
 
 ---
 
-### 13. KanjiNote - ExtractCommaSeparatedValues
+### 13. KanjiNote - ExtractCommaSeparatedValues ✅ COMPLETED
 **File**: [KanjiNote.cs](src/src_dotnet/JAStudio.Core/Note/KanjiNote.cs#L192)
-```csharp
-// TODO: Implement ExtractCommaSeparatedValues
-var radicalsField = GetField(NoteFieldsConstants.Kanji.Radicals);
-```
-**Status**: Method exists as StringExtensions.ExtractCommaSeparatedValues
-**Action**: This is already implemented - TODO can be removed
+**Status**: RESOLVED - Method `StringExtensions.ExtractCommaSeparatedValues` already exists and is used elsewhere in the same file. Updated `GetRadicals()` to use it, matching Python's `ex_str.extract_comma_separated_values()`.
 
 ---
 

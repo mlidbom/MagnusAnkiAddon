@@ -61,8 +61,8 @@ public class KanjiNote : JPNote
     {
         base.UpdateGeneratedData();
 
-        // TODO: Implement katakana_to_hiragana when needed
-        SetReadingOn(GetReadingOnHtml());
+        // Katakana sneaks in via yomitan etc
+        SetReadingOn(KanaUtils.KatakanaToHiragana(GetReadingOnHtml()));
 
         void UpdatePrimaryAudios()
         {
@@ -132,22 +132,19 @@ public class KanjiNote : JPNote
     public List<string> GetPrimaryReadingsOn()
     {
         var matches = PrimaryReadingPattern.Matches(GetReadingOnHtml());
-        // TODO: Implement StripHtmlMarkup
-        return matches.Select(m => m.Groups[1].Value).ToList();
+        return matches.Select(m => StringExtensions.StripHtmlMarkup(m.Groups[1].Value)).ToList();
     }
 
     public List<string> GetPrimaryReadingsKun()
     {
         var matches = PrimaryReadingPattern.Matches(GetReadingKunHtml());
-        // TODO: Implement StripHtmlMarkup
-        return matches.Select(m => m.Groups[1].Value).ToList();
+        return matches.Select(m => StringExtensions.StripHtmlMarkup(m.Groups[1].Value)).ToList();
     }
 
     public List<string> GetPrimaryReadingsNan()
     {
         var matches = PrimaryReadingPattern.Matches(GetReadingNanHtml());
-        // TODO: Implement StripHtmlMarkup
-        return matches.Select(m => m.Groups[1].Value).ToList();
+        return matches.Select(m => StringExtensions.StripHtmlMarkup(m.Groups[1].Value)).ToList();
     }
 
     public string GetReadingKunHtml()
@@ -189,12 +186,10 @@ public class KanjiNote : JPNote
 
     public List<string> GetRadicals()
     {
-        // TODO: Implement ExtractCommaSeparatedValues
         var radicalsField = GetField(NoteFieldsConstants.Kanji.Radicals);
         var question = GetQuestion();
-        return radicalsField.Split(',')
-            .Select(r => r.Trim())
-            .Where(r => !string.IsNullOrEmpty(r) && r != question)
+        return StringExtensions.ExtractCommaSeparatedValues(radicalsField)
+            .Where(r => r != question)
             .ToList();
     }
 

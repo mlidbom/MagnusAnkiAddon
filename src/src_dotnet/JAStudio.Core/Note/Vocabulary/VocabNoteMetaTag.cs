@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using JAStudio.Core.LanguageServices.JanomeEx.Tokenizing.PreProcessingStage;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
@@ -129,7 +130,15 @@ public static class VocabNoteMetaTagFormatter
         if (tags.Contains(Tags.Vocab.Register.Derogatory)) meta.Add(new VocabMetaTag("register-derogatory", "D", "Derogatory form, usually offensive"));
         if (tags.Contains(Tags.Vocab.Register.Literary)) meta.Add(new VocabMetaTag("register-literary", "L", "literary, apt to stand out in speech"));
 
-        // TODO: Add ichidan hiding godan potential check when IchidanGodanPotentialOrImperativeHybridSplitter is ported
+        // other
+        if (tags.Contains(Tags.Vocab.IsIchidanHidingGodanPotential))
+        {
+            var hiddenGodan = IchidanGodanPotentialOrImperativeHybridSplitter.TryGetGodanHiddenByIchidan(vocab);
+            var word = hiddenGodan?.Word ?? "unknown";
+            var answer = hiddenGodan?.Answer ?? "unknown";
+            meta.Add(new VocabMetaTag("is-ichidan-hiding-godan-potential", "HG",
+                $"Ichidan verb hiding godan potential form of the verb:\n{word}:\n{answer}\nMark the ichidan as an incorrect match to see the godan potential in the breakdown. The parser cannot tell which it is on its own."));
+        }
 
         var sb = new StringBuilder("<ol class=\"vocab_tag_list\">");
         foreach (var tag in meta)
