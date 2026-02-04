@@ -14,7 +14,6 @@ public static class TestApp
             return;
         }
 
-        ExPytest.IsTesting = true;
         App.Reset(new TestingBackendNoteCreator());
         
         _isInitialized = true;
