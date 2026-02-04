@@ -164,11 +164,14 @@ Staying this close to the Python is what makes the porting workable at all. If w
     - collection
         - 100% card_studying_status.py
         - 100% jp_collection.py
-        - CREATED WIP kanji_collection.py
+        - 60% kanji_collection.py
+            - KanjiSnapshot has incomplete implementation with TODO comments; GetRadicals() and GetReadingsClean() not called (returns empty arrays); WithReading() has TODO for kana_utils.anything_to_hiragana
         - 90% note_cache.py
             - Complete except TaskRunner integration in InitFromList has TODO comment
-        - CREATED WIP sentence_collection.py
-        - CREATED WIP vocab_collection.py
+        - 50% sentence_collection.py
+            - Missing public methods: with_vocab_owned_form(), with_vocab_marked_invalid(), with_highlighted_vocab(); SentenceSnapshot has TODO - all properties return empty arrays; PotentiallyMatchingVocab() has TODO - returns empty list
+        - 90% vocab_collection.py
+            - VocabSnapshot has TODO comments: DerivedFrom not implemented (returns empty string); WithCompoundPart has TODO for accessing disambiguation_name
     - notefields
         - 100% audio_field.py
         - 70% caching_mutable_string_field.py
@@ -212,20 +215,26 @@ Staying this close to the Python is what makes the porting workable at all. If w
         - 100% pos_set_interner.py
         - 50% vocabnote.py
             - File in wrong location (Note\VocabNote.cs instead of Note\Vocabulary\VocabNote.cs); needs comparison of public API
-        - CREATED WIP vocabnote_audio.py
+        - 20% vocabnote_audio.py
+            - All audio fields commented out with TODO; GetPrimaryAudioPath() and GetPrimaryAudio() return empty strings; ToString() returns empty string
         - MISSING vocabnote_cloner.py
         - 100% vocabnote_conjugator.py
-        - CREATED WIP vocabnote_factory.py
+        - 80% vocabnote_factory.py
+            - CreateWithDictionary() has incomplete implementation with TODO comments for dictionary lookup (falls back to creating empty note)
         - 40% vocabnote_forms.py
             - Wrong field type (MutableCommaSeparatedStringsListField instead of DeDuplicated); no lazy caching; missing methods: all_list_notes_by_sentence_count(), not_owned_by_other_vocab(), without_noise_characters(); extra public method: OwnedForms()
-        - CREATED WIP vocabnote_generated_data.py
-        - CREATED WIP vocabnote_kanji.py
-        - CREATED WIP vocabnote_matching_rules.py
+        - 50% vocabnote_generated_data.py
+            - Large section of UpdateGeneratedData() commented out with TODO for dictionary lookup and form generation; PushAnswerToOtherSynonyms() has TODO
+        - 100% vocabnote_kanji.py
+        - 80% vocabnote_matching_rules.py
+            - VocabNoteMatchingRulesSerializer has stub implementations - Deserialize() returns empty data; Serialize() has incomplete TODO implementation
         - MISSING vocabnote_matching_rules_is_inflecting_word.py
         - MISSING vocabnote_matching_rules_yield_last_token_to_next_compound.py
         - MISSING vocabnote_meta_tag.py
-        - CREATED WIP vocabnote_metadata.py
-        - CREATED WIP vocabnote_parts_of_speech.py
+        - 70% vocabnote_metadata.py
+            - MetaTagsHtml() has TODO - returns empty string instead of generating meta tags
+        - 60% vocabnote_parts_of_speech.py
+            - Multiple methods with TODO - IsUk() returns false; SetAutomaticallyFromDictionary() stubbed out; IsPassiveVerbCompound() returns false; IsCausativeVerbCompound() returns false; IsCompleteNaAdjective() simplified; POSSetManager not implemented
         - CREATED WIP vocabnote_question.py
         - CREATED WIP vocabnote_register.py
         - CREATED WIP vocabnote_sentences.py
