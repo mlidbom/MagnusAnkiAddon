@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using JAStudio.Core.SysUtils.Json;
 
 namespace JAStudio.Core.Note.Sentences.Serialization;
@@ -31,8 +32,8 @@ public class SentenceConfigurationSerializer
             );
         }
 
-        var dictData = JsonHelper.JsonToDict(json);
-        var reader = new JsonReader(dictData);
+        using var doc = JsonDocument.Parse(json);
+        var reader = new JsonReader(doc.RootElement);
         return new SentenceConfiguration(
             reader.GetStringList("highlighted_words", new List<string>()),
             new WordExclusionSet(saveCallback, reader.GetObjectList("incorrect_matches", r => WordExclusion.FromReader(r), new List<WordExclusion>())),
