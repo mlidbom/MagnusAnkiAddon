@@ -143,9 +143,22 @@ public sealed class DictEntry
         return !KanjiForms.Any() || Senses.Any(sense => sense.IsKanaOnly);
     }
 
-    public static List<DictEntry> Create(IEnumerable<dynamic> entries)
+    public static List<DictEntry> Create(IEnumerable<DictEntry> entries)
     {
-        return entries.Select(entry => new DictEntry(entry)).ToList();
+        return entries.ToList();
+    }
+
+    /// <summary>
+    /// Creates DictEntry list from Python entries. Must be called while holding the GIL.
+    /// </summary>
+    internal static List<DictEntry> CreateFromPythonEntries(dynamic pythonEntries)
+    {
+        var result = new List<DictEntry>();
+        foreach (var entry in pythonEntries)
+        {
+            result.Add(new DictEntry(entry));
+        }
+        return result;
     }
 
     public bool HasMatchingKanaForm(string search)

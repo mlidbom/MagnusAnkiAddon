@@ -1,8 +1,7 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Data;
 using System.Threading;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using JAStudio.PythonInterop.Utilities;
 using Python.Runtime;
@@ -21,16 +20,28 @@ internal class Request<T>
     }
 }
 
+public class JamdictLookupResult
+{
+    public List<DictEntry> Entries { get; }
+    public List<DictEntry> Names { get; }
+
+    public JamdictLookupResult(List<DictEntry> entries, List<DictEntry> names)
+    {
+        Entries = entries;
+        Names = names;
+    }
+}
+
 public class JamdictThreadingWrapper
 {
-    private readonly Channel<object> _queue;
+    private readonly BlockingCollection<object> _queue;
     private readonly Thread _thread;
     private bool _running;
     private dynamic? _jamdict;
 
     public JamdictThreadingWrapper()
     {
-        _queue = Channel.CreateUnbounded<object>();
+        _queue = new BlockingCollection<object>();
         _running = true;
         _thread = new Thread(Worker) { IsBackground = true };
         _thread.Start();
@@ -38,25 +49,24 @@ public class JamdictThreadingWrapper
 
     private static dynamic CreateJamdict()
     {
-        return PythonEnvironment.Use(() =>
+        // NOTE: Caller must already hold the GIL
+        dynamic jamdict_module = Py.Import("jamdict");
+        
+        bool memoryMode = App.Config().LoadJamdictDbIntoMemory.GetValue() && !App.IsTesting;
+        
+        if (memoryMode)
         {
-            dynamic jamdict_module = Py.Import("jamdict");
-            
-            bool memoryMode = App.Config().LoadJamdictDbIntoMemory.GetValue() && !App.IsTesting;
-            
-            if (memoryMode)
-            {
-                return jamdict_module.Jamdict(memory_mode: true);
-            }
-            else
-            {
-                return jamdict_module.Jamdict(reuse_ctx: true);
-            }
-        });
+            return jamdict_module.Jamdict(memory_mode: true);
+        }
+        else
+        {
+            return jamdict_module.Jamdict(reuse_ctx: true);
+        }
     }
 
     private dynamic GetJamdict()
     {
+        // NOTE: Caller must already hold the GIL
         if (_jamdict == null)
         {
             _jamdict = CreateJamdict();
@@ -70,16 +80,18 @@ public class JamdictThreadingWrapper
         {
             try
             {
-                var request = _queue.Reader.ReadAsync().AsTask().Result;
+                // Wait for request WITHOUT holding GIL
+                var request = _queue.Take();
                 
-                PythonEnvironment.Use(() =>
+                // Acquire GIL only for processing this request
+                using (PythonEnvironment.LockGil())
                 {
                     try
                     {
-                        if (request is Request<dynamic> dynamicRequest)
+                        if (request is Request<JamdictLookupResult> lookupRequest)
                         {
-                            var result = dynamicRequest.Func(GetJamdict());
-                            dynamicRequest.TaskCompletionSource.SetResult(result);
+                            var result = lookupRequest.Func(GetJamdict());
+                            lookupRequest.TaskCompletionSource.SetResult(result);
                         }
                         else if (request is Request<List<string>> stringListRequest)
                         {
@@ -89,36 +101,42 @@ public class JamdictThreadingWrapper
                     }
                     catch (Exception e)
                     {
-                        if (request is Request<dynamic> dynamicRequest)
+                        if (request is Request<JamdictLookupResult> lookupRequest)
                         {
-                            dynamicRequest.TaskCompletionSource.SetException(e);
+                            lookupRequest.TaskCompletionSource.SetException(e);
                         }
                         else if (request is Request<List<string>> stringListRequest)
                         {
                             stringListRequest.TaskCompletionSource.SetException(e);
                         }
                     }
-                });
+                }
             }
             catch (Exception)
             {
-                // Channel closed or other error
+                // Queue closed or other error
                 if (!_running) break;
             }
         }
     }
 
-    public dynamic Lookup(string word, bool includeNames)
+    public JamdictLookupResult Lookup(string word, bool includeNames)
     {
-        var tcs = new TaskCompletionSource<dynamic>();
+        var tcs = new TaskCompletionSource<JamdictLookupResult>();
 
-        dynamic DoActualLookup(dynamic jamdict)
+        JamdictLookupResult DoActualLookup(dynamic jamdict)
         {
-            return jamdict.lookup(word, lookup_chars: false, lookup_ne: includeNames);
+            var lookupResult = jamdict.lookup(word, lookup_chars: false, lookup_ne: includeNames);
+            
+            // Convert to .NET types while holding GIL
+            var entries = DictEntry.CreateFromPythonEntries(lookupResult.entries);
+            var names = DictEntry.CreateFromPythonEntries(lookupResult.names);
+            
+            return new JamdictLookupResult(entries, names);
         }
 
-        var request = new Request<dynamic>(DoActualLookup, tcs);
-        _queue.Writer.TryWrite(request);
+        var request = new Request<JamdictLookupResult>(DoActualLookup, tcs);
+        _queue.Add(request);
         
         return tcs.Task.Result;
     }
@@ -143,7 +161,7 @@ public class JamdictThreadingWrapper
 
         var tcs = new TaskCompletionSource<List<string>>();
         var request = new Request<List<string>>(PerformQuery, tcs);
-        _queue.Writer.TryWrite(request);
+        _queue.Add(request);
         
         return tcs.Task.Result;
     }

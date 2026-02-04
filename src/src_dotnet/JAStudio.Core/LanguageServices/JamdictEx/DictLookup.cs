@@ -3,9 +3,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using JAStudio.Core.SysUtils;
 using JAStudio.Core.Note;
-using JAStudio.PythonInterop.Utilities;
+using JAStudio.Core.SysUtils;
 
 namespace JAStudio.Core.LanguageServices.JamdictEx;
 
@@ -200,28 +199,15 @@ public static class DictLookup
 
     private static List<DictEntry> LookupWordRawInner(string word)
     {
-        return PythonEnvironment.Use(() =>
+        var lookupResult = JamdictThreadingWrapper.Lookup(word, includeNames: false);
+        var entries = lookupResult.Entries;
+
+        if (!KanaUtils.IsOnlyKana(word))
         {
-            var lookupResult = JamdictThreadingWrapper.Lookup(word, includeNames: false);
-            var entries = new List<dynamic>();
-            
-            foreach (var entry in Dyn.Enumerate(lookupResult.entries))
-            {
-                entries.Add(entry);
-            }
-
-            List<dynamic> transformed;
-            if (!KanaUtils.IsOnlyKana(word))
-            {
-                transformed = entries;
-            }
-            else
-            {
-                transformed = entries.Where(ent => IsKanaOnly(ent)).ToList();
-            }
-
-            return DictEntry.Create(transformed);
-        });
+            return entries;
+        }
+        
+        return entries.Where(ent => ent.IsKanaOnly()).ToList();
     }
 
     private static List<DictEntry> LookupNameRaw(string word)
@@ -236,48 +222,8 @@ public static class DictLookup
 
     private static List<DictEntry> LookupNameRawInner(string word)
     {
-        return PythonEnvironment.Use(() =>
-        {
-            var lookupResult = JamdictThreadingWrapper.Lookup(word, includeNames: true);
-            var result = new List<dynamic>();
-            
-            foreach (var name in Dyn.Enumerate(lookupResult.names))
-            {
-                result.Add(name);
-            }
-
-            return DictEntry.Create(result);
-        });
-    }
-
-    private static bool IsKanaOnly(dynamic entry)
-    {
-        // Check if no kanji forms
-        var hasKanjiForms = false;
-        foreach (var _ in Dyn.Enumerate(entry.kanji_forms))
-        {
-            hasKanjiForms = true;
-            break;
-        }
-
-        if (!hasKanjiForms)
-        {
-            return true;
-        }
-
-        // Check if any sense has "word usually written using kana alone"
-        foreach (var sense in Dyn.Enumerate(entry.senses))
-        {
-            foreach (var misc in Dyn.Enumerate(sense.misc))
-            {
-                if ((string)misc == "word usually written using kana alone")
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        var lookupResult = JamdictThreadingWrapper.Lookup(word, includeNames: true);
+        return lookupResult.Names;
     }
 
     public static bool MightBeWord(string word)
