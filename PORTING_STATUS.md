@@ -74,16 +74,19 @@ Staying this close to the Python is what makes the porting workable at all. If w
             - 100% jn_token.py
             - 80% jn_tokenized_text.py
                 - Missing public field: raw_tokens
-            - CREATED WIP jn_tokenizer.py
-            - CREATED WIP split_token.py
+            - 100% jn_tokenizer.py
+            - 100% split_token.py
             - pre_processing_stage
-                - CREATED WIP dictionary_form_verb_splitter.py
-                - CREATED WIP godan_imperative_splitter.py
-                - CREATED WIP ichidan_godan_potential_or_imperative_hybrid_splitter.py
-                - CREATED WIP ichidan_imperative_splitter.py
-                - CREATED WIP pre_processing_stage.py
-                - CREATED WIP word_info.py
-                - CREATED WIP word_info_entry.py
+                - 100% dictionary_form_verb_splitter.py
+                - 100% godan_imperative_splitter.py
+                - 90% ichidan_godan_potential_or_imperative_hybrid_splitter.py
+                    - Extra public methods: BaseFormHasGodanPotentialEnding(), IsIchidanHidingGodan(), TryGetGodanHiddenByIchidan() - these are private in Python
+                - 100% ichidan_imperative_splitter.py
+                - 100% pre_processing_stage.py
+                - 70% word_info.py
+                    - Lookup() method has incomplete implementation - DictLookup.LookupWord() not implemented (TODO comment)
+                - 60% word_info_entry.py
+                    - DictWordInfoEntry has incomplete implementation with TODO comments; uses hardcoded strings instead of POS constants; Answer property returns placeholder text
         - word_extraction
             - 100% analysis_constants.py
             - MISSING candidate_word.py
@@ -159,7 +162,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
     - 100% tag.py
     - 100% tags.py
     - collection
-        - CREATED WIP card_studying_status.py
+        - 100% card_studying_status.py
         - 100% jp_collection.py
         - CREATED WIP kanji_collection.py
         - 90% note_cache.py
