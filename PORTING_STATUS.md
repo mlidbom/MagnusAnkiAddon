@@ -275,18 +275,18 @@ Staying this close to the Python is what makes the porting workable at all. If w
                 - 100% vocab_sentences_vocab_sentence_view_model.py
     - viewmodels
         - kanji_list
-            - CREATED WIP kanji_list_viewmodel.py
-            - CREATED WIP sentence_kanji_list_viewmodel.py
-            - CREATED WIP sentence_kanji_viewmodel.py
+            - 100% kanji_list_viewmodel.py
+            - 100% sentence_kanji_list_viewmodel.py
+            - 100% sentence_kanji_viewmodel.py
 
 ---
 
 ## Summary Statistics
-- **100% Complete**: 124 files
-- **CREATED WIP**: 10 files
-- **Partial (20-90%)**: 31 files
+- **100% Complete**: 133 files
+- **CREATED WIP**: 0 files
+- **Partial (20-90%)**: 32 files
 - **MISSING**: 0 files
 - **EXCLUDED**: 1 file
 - **Total tracked files**: 166 files
-- **Porting completion**: ~93%
+- **Porting completion**: ~95%
 
