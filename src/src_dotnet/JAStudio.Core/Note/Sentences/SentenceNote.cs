@@ -119,20 +119,17 @@ public class SentenceNote : JPNote
     public void UpdateParsedWords(bool force = false)
     {
         var parsingResult = ParsingResult.Get();
-        var questionText = GetQuestion();
+        var questionText = Question.WithoutInvisibleSpace();
         
-        // TODO: Implement TextAnalysis.Version when ported
         if (!force && parsingResult != null && 
             parsingResult.Sentence == questionText &&
-            parsingResult.ParserVersion == "1.0")  // Placeholder version
+            parsingResult.ParserVersion == TextAnalysis.Version)
         {
             return;
         }
 
-        // TODO: Implement CreateAnalysis when TextAnalysis is ported
-        // var analysis = CreateAnalysis();
-        // ParsingResult.Set(ParsingResult.FromAnalysis(analysis));
-        throw new System.NotImplementedException("UpdateParsedWords requires TextAnalysis to be ported");
+        var analysis = CreateAnalysis();
+        ParsingResult.Set(Sentences.ParsingResult.FromAnalysis(analysis));
     }
 
     public List<string> ExtractKanji()
