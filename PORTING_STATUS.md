@@ -53,8 +53,9 @@ Staying this close to the Python is what makes the porting workable at all. If w
     - 100% hiragana_chart.py
     - 100% katakana_chart.py
     - jamdict_ex
-        - CREATED WIP dict_entry.py
-        - CREATED WIP dict_lookup.py
+        - 80% dict_entry.py
+            - FormatAnswer() is simplified - missing complex logic for transitive/intransitive/to-be verb formatting
+        - 100% dict_lookup.py
         - CREATED WIP dict_lookup_result.py
         - CREATED WIP jamdict_threading_wrapper.py
         - CREATED WIP priority_spec.py
@@ -146,7 +147,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
         - CreateDefaultMnemonic() is a stub implementation; missing entire complex algorithm with readings mappings, fragmentary matching, dead-end path removal, shortest path finding
     - 80% note_constants.py
         - Core constants present but C# has reorganized structure with additional fields; missing Mine class
-    - CREATED WIP note_flush_guard.py
+    - 100% note_flush_guard.py
         - Wrong name: NoteRecursiveFlushGuard instead of NoteFlushGuard
     - 100% note_tags.py
     - 100% tag.py
