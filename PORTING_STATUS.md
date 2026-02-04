@@ -297,7 +297,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
                 - CREATED WIP test_sentence_analysis_viewmodel_common.py
                 - CREATED WIP test_sentence_analysis_viewmodel_with_select_data.py
                     - Note: 38 passing, 96 failing - behavior differences need investigation
-                - MISSING test_text_analysis_with_per_test_data.py
+                - CREATED WIP test_text_analysis_with_per_test_data.py
                 - CREATED WIP test_text_analysis_with_select_data.py
                     - Note: 16 passing, 17 failing - behavior differences need investigation
                 - EXCLUDED text_analysis_state_validator.py
@@ -319,10 +319,10 @@ Staying this close to the Python is what makes the porting workable at all. If w
 
 ## Summary Statistics
 - **100% Complete**: 184 files
-- **CREATED WIP**: 22 files
+- **CREATED WIP**: 23 filesche
 - **Partial (20-90%)**: 0 files
-- **MISSING**: 1 files
+- **MISSING**: 0 files
 - **EXCLUDED**: 2 files
 - **Total tracked files**: 209 files
-- **Porting completion**: 99%
+- **Porting completion**: 100%
 
