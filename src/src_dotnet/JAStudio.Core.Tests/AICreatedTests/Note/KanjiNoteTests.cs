@@ -2,7 +2,7 @@ using JAStudio.Core.Note;
 using JAStudio.Core.TestUtils;
 using Xunit;
 
-namespace JAStudio.Core.Tests.Note;
+namespace JAStudio.Core.Tests.AICreatedTests.Note;
 
 public class KanjiNoteTests : IAIGeneratedTestClass
 {

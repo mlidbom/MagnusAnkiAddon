@@ -1,10 +1,8 @@
-using System.Collections.Generic;
-using JAStudio.Core.Configuration;
 using JAStudio.Core.Note;
 using JAStudio.Core.TestUtils;
 using Xunit;
 
-namespace JAStudio.Core.Tests.Integration;
+namespace JAStudio.Core.Tests.AICreatedTests.Integration;
 
 public class CacheInvalidationTests : IAIGeneratedTestClass
 {

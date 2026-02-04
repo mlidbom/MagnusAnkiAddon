@@ -1,10 +1,9 @@
+using System.Collections.Generic;
 using JAStudio.Core.Note;
 using JAStudio.Core.TestUtils;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 
-namespace JAStudio.Core.Tests.Note;
+namespace JAStudio.Core.Tests.AICreatedTests.Note;
 
 public class VocabNoteTests : IAIGeneratedTestClass
 {

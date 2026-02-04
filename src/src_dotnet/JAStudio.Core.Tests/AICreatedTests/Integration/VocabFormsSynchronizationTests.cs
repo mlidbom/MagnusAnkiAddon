@@ -1,10 +1,9 @@
+using System.Collections.Generic;
 using JAStudio.Core.Note;
 using JAStudio.Core.TestUtils;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 
-namespace JAStudio.Core.Tests.Integration;
+namespace JAStudio.Core.Tests.AICreatedTests.Integration;
 
 public class VocabFormsSynchronizationTests : IAIGeneratedTestClass
 {
