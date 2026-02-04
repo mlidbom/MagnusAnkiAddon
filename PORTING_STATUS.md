@@ -287,7 +287,8 @@ Staying this close to the Python is what makes the porting workable at all. If w
             - MISSING test_local_note_updater_smoke_tests_only.py
         - language_services_tests
             - CREATED WIP test_conjugation_base.py
-            - MISSING test_kana_utils.py
+            - CREATED WIP test_kana_utils.py
+                - Note: Tests added to existing KanaUtilsTests.cs
             - jamdict_tests
                 - MISSING test_dict_lookup.py
             - janome_tests
@@ -301,12 +302,13 @@ Staying this close to the Python is what makes the porting workable at all. If w
                 - EXCLUDED text_analysis_state_validator.py
                     - Note: Entirely commented out, not functional
         - note_tests
-            - MISSING test_kanjinote.py
-            - MISSING test_sentencenote.py
+            - CREATED WIP test_kanjinote.py
+                - Note: Some tests commented out pending C# implementation of BootstrapMnemonicFromRadicals, etc.
+            - CREATED WIP test_sentencenote.py
             - vocab
-                - MISSING test_perfect_synonyms.py
+                - CREATED WIP test_perfect_synonyms.py
                 - CREATED WIP test_serializers.py
-                - MISSING test_vocabnote_misc.py
+                - CREATED WIP test_vocabnote_misc.py
         - ui_tests
             - viewmodels_tests
                 - MISSING test_kanji_list_viewmodel.py
@@ -315,10 +317,10 @@ Staying this close to the Python is what makes the porting workable at all. If w
 
 ## Summary Statistics
 - **100% Complete**: 184 files
-- **CREATED WIP**: 7 files
+- **CREATED WIP**: 13 files
 - **Partial (20-90%)**: 0 files
-- **MISSING**: 14 files
+- **MISSING**: 8 files
 - **EXCLUDED**: 3 files
 - **Total tracked files**: 208 files
-- **Porting completion**: 92%
+- **Porting completion**: 95%
 

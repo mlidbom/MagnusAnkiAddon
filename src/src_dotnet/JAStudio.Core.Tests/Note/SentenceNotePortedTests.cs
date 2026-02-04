@@ -1,0 +1,36 @@
+using System;
+using JAStudio.Core;
+using JAStudio.Core.Note;
+using JAStudio.Core.Tests.Fixtures;
+using Xunit;
+
+namespace JAStudio.Core.Tests.Note;
+
+/// <summary>
+/// Tests ported from test_sentencenote.py
+/// </summary>
+public class SentenceNotePortedTests : IDisposable
+{
+    private readonly IDisposable _collectionScope;
+
+    public SentenceNotePortedTests()
+    {
+        _collectionScope = CollectionFactory.InjectEmptyCollection();
+    }
+
+    public void Dispose()
+    {
+        _collectionScope.Dispose();
+    }
+
+    [Fact]
+    public void SplitToken()
+    {
+        var sentence = "だったら普通に金貸せって言えよ";
+
+        var sentenceNote = SentenceNote.Create(sentence);
+        sentenceNote.Question.SplitTokenWithWordBreakTag("金貸");
+
+        Assert.Equal($"だったら普通に金{StringExtensions.InvisibleSpace}貸せって言えよ", sentenceNote.Question.WithInvisibleSpace());
+    }
+}

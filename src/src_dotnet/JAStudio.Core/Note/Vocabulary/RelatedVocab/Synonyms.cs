@@ -33,7 +33,7 @@ public class Synonyms
         if (synonym == _vocab.GetQuestion()) return;
         Strings().Add(synonym);
 
-        foreach (var similar in App.Col().Vocab.WithQuestion(synonym))
+        foreach (var similar in App.Col().Vocab.WithQuestion(synonym).ToList())
         {
             if (!similar.RelatedNotes.Synonyms.Strings().Contains(_vocab.GetQuestion()))
             {

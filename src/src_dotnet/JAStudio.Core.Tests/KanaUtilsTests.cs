@@ -11,6 +11,25 @@ public class KanaUtilsTests
         PythonEnvironment.EnsureInitialized();
     }
 
+    // Ported from test_kana_utils.py
+    [Theory]
+    [InlineData("かな", "kana", "かな", "カナ")]
+    [InlineData("かく", "kaku", "かく", "カク")]
+    [InlineData("かく はく", "kaku haku", "かく はく", "カク ハク")]
+    [InlineData("ジャッツ", "jattsu", "じゃっつ", "ジャッツ")]
+    [InlineData("じゃっつ", "jattsu", "じゃっつ", "ジャッツ")]
+    [InlineData("ジャッ", "ja", "じゃ", "ジャ")]
+    [InlineData("じゃっ", "ja", "じゃ", "ジャ")]
+    [InlineData("キャク", "kyaku", "きゃく", "キャク")]
+    [InlineData("チャ", "cha", "ちゃ", "チャ")]
+    public void RomajiKanaRoundtripping(string kana, string expectedRomaji, string expectedHiragana, string expectedKatakana)
+    {
+        var romaji = KanaUtils.Romanize(kana);
+        Assert.Equal(expectedRomaji, romaji);
+        Assert.Equal(expectedHiragana, KanaUtils.RomajiToHiragana(romaji));
+        Assert.Equal(expectedKatakana, KanaUtils.RomajiToKatakana(romaji));
+    }
+
     [Fact]
     public void Should_Convert_Hiragana_To_Katakana()
     {
