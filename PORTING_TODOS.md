@@ -34,13 +34,9 @@ This document catalogs TODO items that were added during the Python-to-C# portin
 
 ---
 
-### 3. VocabNoteQuestion - Mine.VocabPrefixSuffixMarker
+### 3. VocabNoteQuestion - Mine.VocabPrefixSuffixMarker ✅ COMPLETED
 **File**: [VocabNoteQuestion.cs](src/src_dotnet/JAStudio.Core/Note/Vocabulary/VocabNoteQuestion.cs#L76)
-```csharp
-public string WithoutNoiseCharacters => Raw; // TODO: Use Mine.VocabPrefixSuffixMarker when Mine class is ported (currently empty string anyway)
-```
-**Status**: Mine class not yet ported
-**Action**: Port Mine class or determine if this is still needed
+**Status**: RESOLVED - Implemented `WithoutNoiseCharacters` property to use `Raw.Replace(Mine.VocabPrefixSuffixMarker, "")`. The Mine class with VocabPrefixSuffixMarker constant already exists and was ready to use.
 
 ---
 
@@ -50,19 +46,10 @@ public string WithoutNoiseCharacters => Raw; // TODO: Use Mine.VocabPrefixSuffix
 
 ---
 
-### 5. VocabNoteSentences - SentenceNote.IsStudying
+### 5. VocabNoteSentences - SentenceNote.IsStudying ✅ COMPLETED
 **File**: [VocabNoteSentences.cs](src/src_dotnet/JAStudio.Core/Note/Vocabulary/VocabNoteSentences.cs#L41)
-```csharp
-// TODO: Implement when SentenceNote.IsStudying is ported
-return 0; // _parent().All().Count(it => it.IsStudying(card));
-```
 **File**: [VocabNoteSentences.cs](src/src_dotnet/JAStudio.Core/Note/Vocabulary/VocabNoteSentences.cs#L78)
-```csharp
-// TODO: Implement when SentenceNote.IsStudying is ported
-return All(); // All().Where(it => it.IsStudying()).ToList();
-```
-**Status**: SentenceNote.IsStudying not yet implemented
-**Action**: Port IsStudying functionality from SentenceNote
+**Status**: RESOLVED - Implemented calls to `IsStudying()` in both `GetStudyingSentenceCount()` and `Studying()` methods. The `IsStudying()` method already exists in the base `JPNote` class and was ready to use.
 
 ---
 
@@ -72,25 +59,15 @@ return All(); // All().Where(it => it.IsStudying()).ToList();
 
 ---
 
-### 7. VocabNoteSentences - WithVocabMarkedInvalid
+### 7. VocabNoteSentences - WithVocabMarkedInvalid ✅ COMPLETED
 **File**: [VocabNoteSentences.cs](src/src_dotnet/JAStudio.Core/Note/Vocabulary/VocabNoteSentences.cs#L89)
-```csharp
-// TODO: Implement when WithVocabMarkedInvalid is ported
-return new List<SentenceNote>();
-```
-**Status**: SentenceCollection.WithVocabMarkedInvalid not yet ported
-**Action**: Port this functionality from SentenceCollection
+**Status**: RESOLVED - Implemented `InvalidIn()` to call `App.Col().Sentences.WithVocabMarkedInvalid(Vocab)`. The `WithVocabMarkedInvalid()` method already exists in SentenceCollection and was ready to use.
 
 ---
 
-### 8. VocabNoteSentences - WithVocabOwnedForm
+### 8. VocabNoteSentences - WithVocabOwnedForm ✅ COMPLETED
 **File**: [VocabNoteSentences.cs](src/src_dotnet/JAStudio.Core/Note/Vocabulary/VocabNoteSentences.cs#L95)
-```csharp
-// TODO: Implement when WithVocabOwnedForm is ported
-return new List<SentenceNote>();
-```
-**Status**: SentenceCollection.WithVocabOwnedForm not yet ported  
-**Action**: Port this functionality from SentenceCollection
+**Status**: RESOLVED - Implemented `WithOwnedForm()` to call `App.Col().Sentences.WithVocabOwnedForm(Vocab)`. The `WithVocabOwnedForm()` method already exists in SentenceCollection and was ready to use.
 
 ---
 

@@ -73,7 +73,7 @@ public class VocabNoteQuestion
     public bool IsValid => Raw != InvalidQuestionMessage;
     public bool IsDisambiguated => DisambiguationName.Contains(DisambiguationMarker);
 
-    public string WithoutNoiseCharacters => Raw; // TODO: Use Mine.VocabPrefixSuffixMarker when Mine class is ported (currently empty string anyway)
+    public string WithoutNoiseCharacters => Raw.Replace(Mine.VocabPrefixSuffixMarker, "");
 
     public VocabStems Stems() => new VocabStems(_vocab);
 

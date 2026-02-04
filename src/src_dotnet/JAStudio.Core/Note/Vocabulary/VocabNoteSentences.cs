@@ -38,8 +38,7 @@ public class SentenceCounts
 
         int GetStudyingSentenceCount(string card = "")
         {
-            // TODO: Implement when SentenceNote.IsStudying is ported
-            return 0; // _parent().All().Count(it => it.IsStudying(card));
+            return _parent().All().Count(it => it.IsStudying(card));
         }
 
         if ((DateTime.Now - _lastUpdateTime).TotalSeconds > _cacheSeconds)
@@ -75,8 +74,7 @@ public class VocabNoteSentences
 
     public List<SentenceNote> Studying()
     {
-        // TODO: Implement when SentenceNote.IsStudying is ported
-        return All(); // All().Where(it => it.IsStudying()).ToList();
+        return All().Where(it => it.IsStudying()).ToList();
     }
 
     public List<SentenceNote> All()
@@ -86,14 +84,12 @@ public class VocabNoteSentences
 
     public List<SentenceNote> InvalidIn()
     {
-        // TODO: Implement when WithVocabMarkedInvalid is ported
-        return new List<SentenceNote>();
+        return App.Col().Sentences.WithVocabMarkedInvalid(Vocab);
     }
 
     public List<SentenceNote> WithOwnedForm()
     {
-        // TODO: Implement when WithVocabOwnedForm is ported
-        return new List<SentenceNote>();
+        return App.Col().Sentences.WithVocabOwnedForm(Vocab);
     }
 
     public List<SentenceNote> WithPrimaryForm()
