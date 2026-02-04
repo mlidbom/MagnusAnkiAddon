@@ -35,7 +35,7 @@ public static class SentenceAnalysisViewModelCommon
         var sentenceNote = SentenceNote.Create(sentence);
         if (excluded.Count != 0)
         {
-            sentenceNote.Configuration.SetValueDirectly(SentenceConfiguration.FromHiddenMatches(excluded));
+            sentenceNote.Configuration.SetValueDirectlyTestsOnly(SentenceConfiguration.FromHiddenMatches(excluded));
         }
 
         var sentenceViewModel = new SentenceViewModel(sentenceNote);
@@ -56,7 +56,7 @@ public static class SentenceAnalysisViewModelCommon
         {
             RunNoteAssertions("running assertions with exclusions hidden");
 
-            sentenceNote.Configuration.SetValueDirectly(SentenceConfiguration.FromIncorrectMatches(excluded));
+            sentenceNote.Configuration.SetValueDirectlyTestsOnly(SentenceConfiguration.FromIncorrectMatches(excluded));
             sentenceViewModel = new SentenceViewModel(sentenceNote);
             RunNoteAssertions("running assertions with exclusions marked as incorrect matches");
         }

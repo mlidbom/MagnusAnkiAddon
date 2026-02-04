@@ -1,3 +1,4 @@
+using System;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.Sentences.Serialization;
@@ -62,8 +63,8 @@ public class CachingSentenceConfigurationField
         _sentence.UpdateParsedWords(force: true);
     }
 
-    // For testing only - mirrors Python's direct _value assignment
-    internal void SetValueDirectly(SentenceConfiguration configuration)
+    [Obsolete("For testing only")]
+    public void SetValueDirectlyTestsOnly(SentenceConfiguration configuration)//TODO: Review
     {
         _value = configuration;
     }
