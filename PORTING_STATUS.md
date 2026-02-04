@@ -270,12 +270,54 @@ Staying this close to the Python is what makes the porting workable at all. If w
 
 ---
 
+## Test Files
+
+- jaslib_tests
+    - fixtures
+        - MISSING collection_factory.py
+        - MISSING full_test_collection_factory.py
+        - MISSING test_collection_factory.py
+        - base_data
+            - sample_data
+                - MISSING kanji_spec.py
+                - MISSING sentence_spec.py
+                - MISSING vocab_lists.py
+                - MISSING vocab_spec.py
+    - tests
+        - batches_tests
+            - MISSING test_local_note_updater_smoke_tests_only.py
+        - language_services_tests
+            - MISSING test_conjugation_base.py
+            - MISSING test_kana_utils.py
+            - jamdict_tests
+                - MISSING test_dict_lookup.py
+            - janome_tests
+                - MISSING test_explore_token_part_of_speech_information.py
+            - text_analysis_tests
+                - MISSING test_sentence_analysis_viewmodel_common.py
+                - MISSING test_sentence_analysis_viewmodel_with_select_data.py
+                - MISSING test_text_analysis_with_per_test_data.py
+                - MISSING test_text_analysis_with_select_data.py
+                - MISSING text_analysis_state_validator.py
+        - note_tests
+            - MISSING test_kanjinote.py
+            - MISSING test_sentencenote.py
+            - vocab
+                - MISSING test_perfect_synonyms.py
+                - MISSING test_serializers.py
+                - MISSING test_vocabnote_misc.py
+        - ui_tests
+            - viewmodels_tests
+                - MISSING test_kanji_list_viewmodel.py
+
+---
+
 ## Summary Statistics
 - **100% Complete**: 184 files
 - **CREATED WIP**: 0 files
 - **Partial (20-90%)**: 0 files
-- **MISSING**: 0 files
+- **MISSING**: 23 files
 - **EXCLUDED**: 1 file
-- **Total tracked files**: 185 files
-- **Porting completion**: 100%
+- **Total tracked files**: 208 files
+- **Porting completion**: 88%
 
