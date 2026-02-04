@@ -198,7 +198,7 @@ public class KanjiNote : JPNote
             .ToList();
     }
 
-    private void SetRadicals(string value)
+    public void SetRadicals(string value)
     {
         SetField(NoteFieldsConstants.Kanji.Radicals, value);
     }
@@ -384,6 +384,48 @@ public class KanjiNote : JPNote
             GetVocabNotes(), 
             GetPrimaryVocabsOrDefaults(), 
             preferredKanji: GetQuestion());
+    }
+
+    public void BootstrapMnemonicFromRadicals()
+    {
+        SetUserMnemonic(KanjiNoteMnemonicMaker.CreateDefaultMnemonic(this));
+    }
+
+    public void PopulateRadicalsFromMnemonicTags()
+    {
+        List<string> DetectRadicalsFromMnemonic()
+        {
+            var radicalNames = System.Text.RegularExpressions.Regex.Matches(GetUserMnemonic(), @"<rad>(.*?)</rad>")
+                .Cast<System.Text.RegularExpressions.Match>()
+                .Select(m => m.Groups[1].Value)
+                .ToList();
+
+            bool KanjiAnswerContainsRadicalNameAsASeparateWord(string radicalName, KanjiNote kanji)
+            {
+                return System.Text.RegularExpressions.Regex.IsMatch(kanji.GetAnswer(), @"\b" + System.Text.RegularExpressions.Regex.Escape(radicalName) + @"\b");
+            }
+
+            bool KanjiAnswerContainsAnyRadicalNameAsASeparateWord(KanjiNote kanji)
+            {
+                return radicalNames.Any(name => KanjiAnswerContainsRadicalNameAsASeparateWord(name, kanji));
+            }
+
+            return App.Col().Kanji.All()
+                .Where(KanjiAnswerContainsAnyRadicalNameAsASeparateWord)
+                .Select(kanji => kanji.GetQuestion())
+                .ToList();
+        }
+
+        var radicals = GetRadicals();
+        foreach (var radical in DetectRadicalsFromMnemonic())
+        {
+            if (!radicals.Contains(radical))
+            {
+                radicals.Add(radical);
+            }
+        }
+
+        SetRadicals(string.Join(", ", radicals));
     }
 
     public static KanjiNote Create(string question, string answer, string onReadings, string kunReading)

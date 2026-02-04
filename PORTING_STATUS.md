@@ -304,8 +304,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
                 - EXCLUDED text_analysis_state_validator.py
                     - Note: Entirely commented out, not functional
         - note_tests
-            - 33% test_kanjinote.py
-                - Note: test_inside_radical_population and test_bootstrap_mnemonic commented out pending C# implementation of PopulateRadicalsFromMnemonicTags, SetRadicals, and BootstrapMnemonicFromRadicals
+            - 100% test_kanjinote.py
             - 100% test_sentencenote.py
             - vocab
                 - 100% test_perfect_synonyms.py
@@ -319,11 +318,10 @@ Staying this close to the Python is what makes the porting workable at all. If w
 ---
 
 ## Summary Statistics
-- **100% Complete**: 201 files
+- **100% Complete**: 202 files
 - **95% Complete**: 1 file (test_dict_lookup.py - missing test_valid_forms)
 - **80% Complete**: 2 files (test_sentence_analysis_viewmodel_with_select_data.py, test_text_analysis_with_select_data.py)
-- **33% Complete**: 1 file (test_kanjinote.py - pending C# implementation of mnemonic methods)
 - **EXCLUDED**: 2 files
-- **Total tracked files**: 207 files
-- **Porting completion**: ~98%
+- **Total tracked files**: 205 files
+- **Porting completion**: ~99%
 

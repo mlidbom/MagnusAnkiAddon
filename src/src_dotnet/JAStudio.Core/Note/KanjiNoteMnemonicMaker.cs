@@ -17,7 +17,8 @@ public static class KanjiNoteMnemonicMaker
 
             if (readingsMappings.TryGetValue(reading, out var mappedRead))
             {
-                return mappedRead.Count(c => c == '<' && mappedRead.IndexOf("<read>", mappedRead.IndexOf(c.ToString())) >= 0) <= 1
+                var readTagCount = System.Text.RegularExpressions.Regex.Matches(mappedRead, "<read>").Count;
+                return readTagCount <= 1
                     ? mappedRead
                     : $"<compound-reading>{mappedRead}</compound-reading>";
             }
