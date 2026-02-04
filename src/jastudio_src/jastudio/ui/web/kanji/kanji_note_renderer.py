@@ -1,62 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from aqt import gui_hooks
 from jaslib.note.kanjinote import KanjiNote
-from jaslib.ui.web.kanji import dependencies_renderer, kanji_list_renderer, mnemonic_renderer, readings_renderer
-from jaspythonutils.sysutils.ex_str import newline
+from jaslib.ui.web.kanji import kanji_note_renderer
 
+from jastudio.sysutils import app_thread_pool
 from jastudio.ui.web.web_utils.pre_rendering_content_renderer_anki_shim import PrerenderingContentRendererAnkiShim
-
-if TYPE_CHECKING:
-    from jaslib.note.vocabulary.vocabnote import VocabNote
-
-
-def _generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
-    def _create_classes(_kanji: KanjiNote, _vocab: VocabNote) -> str:
-        # noinspection DuplicatedCode
-        classes = " ".join(_vocab.get_meta_tags())
-
-        if _vocab.get_question() in primary_vocab or (_vocab.readings.get() and _vocab.readings.get()[0] in _kanji.get_primary_vocab()):
-            classes += " primary_vocab" if has_real_primary_vocabs else " default_primary_vocab"
-
-        if _kanji_note.get_question() not in _vocab.get_question():
-            classes += " not_matching_kanji"
-
-        return classes
-
-    vocabs = _kanji_note.get_vocab_notes_sorted()
-    primary_vocab = _kanji_note.get_primary_vocabs_or_defaults()
-    has_real_primary_vocabs = any(_kanji_note.get_primary_vocab())
-
-    if vocabs:
-        return f'''
-                <div class="kanjiVocabList page_section">
-                    <div class="page_section_title">vocabulary</div>
-                    <div>
-
-                    {newline.join([f"""
-                    <div class="kanjiVocabEntry {_create_classes(_kanji_note, _vocab_note)}">
-                        <audio src="{_vocab_note.audio.get_primary_audio_path()}"></audio><a class="play-button"></a>
-                        <span class="kanji clipboard">{_vocab_note.get_question()}</span>
-                        (<span class="clipboard vocabReading">{", ".join(_kanji_note.tag_vocab_readings(_vocab_note))}</span>)
-                        {_vocab_note.meta_data.meta_tags_html(True)}
-                        <span class="meaning"> {_vocab_note.get_answer()}</span>
-                    </div>
-                    """ for _vocab_note in vocabs])}
-
-                    </div>
-                </div>
-                '''
-    return ""
 
 
 def init() -> None:
-    gui_hooks.card_will_show.append(PrerenderingContentRendererAnkiShim(KanjiNote, {
-        "##DEPENDENCIES_LIST##": dependencies_renderer.render_dependencies_list,
-        "##MNEMONIC##": mnemonic_renderer.render_mnemonic,
-        "##KANJI_READINGS##": readings_renderer.render_katakana_onyomi,
-        "##VOCAB_LIST##": _generate_vocab_html_list,
-        "##KANJI_LIST##": kanji_list_renderer.kanji_kanji_list,
-    }).render)
+    renderer = kanji_note_renderer.create_renderer(app_thread_pool.pool.submit)
+    gui_hooks.card_will_show.append(PrerenderingContentRendererAnkiShim(KanjiNote, renderer).render)

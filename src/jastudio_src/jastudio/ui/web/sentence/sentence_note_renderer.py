@@ -2,14 +2,12 @@ from __future__ import annotations
 
 from aqt import gui_hooks
 from jaslib.note.sentences.sentencenote import SentenceNote
-from jaslib.ui.web.sentence import sentence_renderer, ud_sentence_breakdown_renderer
+from jaslib.ui.web.sentence import sentence_note_renderer
 
+from jastudio.sysutils import app_thread_pool
 from jastudio.ui.web.web_utils.pre_rendering_content_renderer_anki_shim import PrerenderingContentRendererAnkiShim
 
 
 def init() -> None:
-    gui_hooks.card_will_show.append(PrerenderingContentRendererAnkiShim(SentenceNote, {
-        "##USER_QUESTION##": sentence_renderer.render_user_question,
-        "##SOURCE_QUESTION##": sentence_renderer.render_source_question,
-        "##SENTENCE_ANALYSIS##": ud_sentence_breakdown_renderer.render_sentence_analysis,
-    }).render)
+    renderer = sentence_note_renderer.create_renderer(app_thread_pool.pool.submit)
+    gui_hooks.card_will_show.append(PrerenderingContentRendererAnkiShim(SentenceNote, renderer).render)
