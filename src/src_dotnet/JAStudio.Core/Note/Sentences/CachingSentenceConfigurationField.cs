@@ -61,4 +61,10 @@ public class CachingSentenceConfigurationField
         Field.Set(SentenceConfigurationSerializer.Instance.Serialize(_value));
         _sentence.UpdateParsedWords(force: true);
     }
+
+    // For testing only - mirrors Python's direct _value assignment
+    internal void SetValueDirectly(SentenceConfiguration configuration)
+    {
+        _value = configuration;
+    }
 }

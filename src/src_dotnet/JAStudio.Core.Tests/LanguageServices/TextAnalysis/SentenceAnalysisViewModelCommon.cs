@@ -4,6 +4,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Sentences;
 using JAStudio.Core.UI.Web.Sentence;
+using Xunit;
 
 namespace JAStudio.Core.Tests.LanguageServices.TextAnalysis;
 
@@ -26,16 +27,51 @@ public static class SentenceAnalysisViewModelCommon
             : $"{formToDisplay}{emergency}";
     }
 
-    public static void AssertDisplayWordsEqual(string sentence, List<string> expectedOutput)
+    public static void AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(
+        string sentence, 
+        List<WordExclusion> excluded, 
+        List<string> expectedOutput)
     {
         var sentenceNote = SentenceNote.Create(sentence);
+        if (excluded.Count != 0)
+        {
+            sentenceNote.Configuration.SetValueDirectly(SentenceConfiguration.FromHiddenMatches(excluded));
+        }
+
         var sentenceViewModel = new SentenceViewModel(sentenceNote);
 
-        var rootWords = sentenceViewModel.DisplayedMatches.Select(SurfaceAndMatchForm).ToList();
-        if (!rootWords.SequenceEqual(expectedOutput))
+        void RunNoteAssertions(string message)
         {
-            throw new Xunit.Sdk.XunitException(
-                $"Expected: [{string.Join(", ", expectedOutput)}]\nActual: [{string.Join(", ", rootWords)}]");
+            var rootWords = sentenceViewModel.DisplayedMatches.Select(SurfaceAndMatchForm).ToList();
+            Assert.True(
+                rootWords.SequenceEqual(expectedOutput),
+                $"{message}\nExpected: [{string.Join(", ", expectedOutput)}]\nActual: [{string.Join(", ", rootWords)}]");
         }
+
+        if (excluded.Count == 0)
+        {
+            RunNoteAssertions("running assertions with no exclusions");
+        }
+        else
+        {
+            RunNoteAssertions("running assertions with exclusions hidden");
+
+            sentenceNote.Configuration.SetValueDirectly(SentenceConfiguration.FromIncorrectMatches(excluded));
+            sentenceViewModel = new SentenceViewModel(sentenceNote);
+            RunNoteAssertions("running assertions with exclusions marked as incorrect matches");
+        }
+    }
+
+    public static void AssertAllWordsEqual(string sentence, List<string> expectedOutput)
+    {
+        var sentenceNote = SentenceNote.Create(sentence);
+        var analysis = new SentenceViewModel(sentenceNote);
+        var candidateWords = analysis.Analysis.CandidateWords;
+        var matches = candidateWords
+            .SelectMany(cand => cand.Matches)
+            .Select(SurfaceAndMatchForm)
+            .ToList();
+
+        Assert.Equal(expectedOutput, matches);
     }
 }
