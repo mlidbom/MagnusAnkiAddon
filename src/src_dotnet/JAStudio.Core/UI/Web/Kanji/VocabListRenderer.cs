@@ -9,10 +9,19 @@ public static class VocabListRenderer
 {
     public static string GenerateVocabHtmlList(KanjiNote kanjiNote)
     {
+        var primaryVocab = kanjiNote.GetPrimaryVocabsOrDefaults();
+        var hasRealPrimaryVocabs = kanjiNote.GetPrimaryVocab().Count > 0;
+
         string CreateClasses(KanjiNote kanji, VocabNote vocab)
         {
             var classes = string.Join(" ", vocab.GetMetaTags());
-            // TODO: Add primary vocab detection when KanjiNote.GetPrimaryVocab() and GetPrimaryVocabsOrDefaults() are implemented
+
+            var vocabReadings = vocab.Readings.Get();
+            if (primaryVocab.Contains(vocab.GetQuestion()) || 
+                (vocabReadings.Count > 0 && kanji.GetPrimaryVocab().Contains(vocabReadings[0])))
+            {
+                classes += hasRealPrimaryVocabs ? " primary_vocab" : " default_primary_vocab";
+            }
 
             if (!vocab.GetQuestion().Contains(kanjiNote.GetQuestion()))
             {
@@ -22,9 +31,7 @@ public static class VocabListRenderer
             return classes;
         }
 
-        var vocabs = kanjiNote.GetVocabNotes()
-            .OrderByDescending(v => v.Sentences.Counts().Total)
-            .ToList();
+        var vocabs = kanjiNote.GetVocabNotesSorted();
 
         if (vocabs.Count > 0)
         {

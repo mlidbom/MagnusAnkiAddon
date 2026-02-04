@@ -203,6 +203,27 @@ public class KanjiNote : JPNote
         SetField(NoteFieldsConstants.Kanji.Radicals, value);
     }
 
+    public List<string> GetPrimaryVocabsOrDefaults()
+    {
+        var primaryVocab = GetPrimaryVocab();
+        return primaryVocab.Count > 0 ? primaryVocab : GenerateDefaultPrimaryVocab();
+    }
+
+    public List<string> GetPrimaryVocab()
+    {
+        return StringExtensions.ExtractCommaSeparatedValues(GetField(NoteFieldsConstants.Kanji.PrimaryVocab));
+    }
+
+    public void SetPrimaryVocab(List<string> value)
+    {
+        SetField(NoteFieldsConstants.Kanji.PrimaryVocab, string.Join(", ", value));
+    }
+
+    public List<string> GenerateDefaultPrimaryVocab()
+    {
+        throw new NotImplementedException();
+    }
+
     private static readonly Regex AnyWordPattern = new(@"\b[-\w]+\b", RegexOptions.Compiled);
     private static readonly Regex ParenthesizedWordPattern = new(@"\([-\w]+\)", RegexOptions.Compiled);
 
@@ -355,6 +376,14 @@ public class KanjiNote : JPNote
     {
         // TODO: Implement when VocabCollection is complete
         return new List<VocabNote>();
+    }
+
+    public List<VocabNote> GetVocabNotesSorted()
+    {
+        return VocabNoteSorting.SortVocabListByStudyingStatus(
+            GetVocabNotes(), 
+            GetPrimaryVocabsOrDefaults(), 
+            preferredKanji: GetQuestion());
     }
 
     public static KanjiNote Create(string question, string answer, string onReadings, string kunReading)

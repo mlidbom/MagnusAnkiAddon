@@ -244,8 +244,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
                 - 100% kanji_note_renderer.py
                 - 100% mnemonic_renderer.py
                 - 100% readings_renderer.py
-                - 60% vocab_list_renderer.py
-                    - Note: Primary vocab detection temporarily stubbed out pending KanjiNote.GetPrimaryVocab() implementation
+                - 100% vocab_list_renderer.py
             - sentence
                 - 100% candidate_word_variant_viewmodel.py
                 - 100% compound_part_viewmodel.py
@@ -272,11 +271,11 @@ Staying this close to the Python is what makes the porting workable at all. If w
 ---
 
 ## Summary Statistics
-- **100% Complete**: 183 files
+- **100% Complete**: 184 files
 - **CREATED WIP**: 0 files
 - **Partial (20-90%)**: 0 files
 - **MISSING**: 0 files
 - **EXCLUDED**: 1 file
-- **Total tracked files**: 184 files
-- **Porting completion**: 99.5%
+- **Total tracked files**: 185 files
+- **Porting completion**: 100%
 
