@@ -274,42 +274,43 @@ Staying this close to the Python is what makes the porting workable at all. If w
 
 - jaslib_tests
     - fixtures
-        - CREATED WIP collection_factory.py
-        - CREATED WIP test_collection_factory.py
+        - 100% collection_factory.py
+        - 100% test_collection_factory.py
         - base_data
             - sample_data
-                - CREATED WIP kanji_spec.py
-                - CREATED WIP sentence_spec.py
-                - CREATED WIP vocab_lists.py
-                - CREATED WIP vocab_spec.py
+                - 100% kanji_spec.py
+                - 100% sentence_spec.py
+                - 100% vocab_lists.py
+                - 100% vocab_spec.py
     - tests
         - batches_testsch
-            - CREATED WIP test_local_note_updater_smoke_tests_only.py
+            - 100% test_local_note_updater_smoke_tests_only.py
         - language_services_tests
-            - CREATED WIP test_conjugation_base.py
-            - CREATED WIP test_kana_utils.py
+            - 100% test_conjugation_base.py
+            - 100% test_kana_utils.py
                 - Note: Tests added to existing KanaUtilsTests.cs
             - jamdict_tests
-                - CREATED WIP test_dict_lookup.py
+                - 95% test_dict_lookup.py
+                    - Note: Missing test_valid_forms (2 test cases)
             - janome_tests
-                - CREATED WIP test_explore_token_part_of_speech_information.py
+                - 100% test_explore_token_part_of_speech_information.py
             - text_analysis_tests
-                - CREATED WIP test_sentence_analysis_viewmodel_common.py
+                - 100% test_sentence_analysis_viewmodel_common.py
                 - 80% test_sentence_analysis_viewmodel_with_select_data.py
                     - Note: 38 passing, 96 failing - this is almost certainly production code porting errors. The tests are correct
-                - CREATED WIP test_text_analysis_with_per_test_data.py
+                - 100% test_text_analysis_with_per_test_data.py
                 - 80% test_text_analysis_with_select_data.py
                     - Note: 16 passing, 17 failing - this is almost certainly production code porting errors. The tests are correct
                 - EXCLUDED text_analysis_state_validator.py
                     - Note: Entirely commented out, not functional
         - note_tests
-            - CREATED WIP test_kanjinote.py
-                - Note: Some tests commented out pending C# implementation of BootstrapMnemonicFromRadicals, etc.
-            - CREATED WIP test_sentencenote.py
+            - 33% test_kanjinote.py
+                - Note: test_inside_radical_population and test_bootstrap_mnemonic commented out pending C# implementation of PopulateRadicalsFromMnemonicTags, SetRadicals, and BootstrapMnemonicFromRadicals
+            - 100% test_sentencenote.py
             - vocab
-                - CREATED WIP test_perfect_synonyms.py
+                - 100% test_perfect_synonyms.py
                     - Note: Tests found and fixed a collection-modification bug in Synonyms.cs
-                - CREATED WIP test_serializers.py
+                - 100% test_serializers.py
                 - CREATED WIP test_vocabnote_misc.py
         - ui_tests
             - viewmodels_tests
