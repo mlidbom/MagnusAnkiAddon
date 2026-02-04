@@ -36,236 +36,241 @@ Staying this close to the Python is what makes the porting workable at all. If w
 
 ## File Structure
 
-- Root
+- jaspythonutils_src/jaspythonutils/sysutils
+    - json
+        - json_reader.py
+    - kana_utils.py
+
+- jaslib_src/jaslib
     - 90% app.py
         - All core functionality present; uses List vs QSet, path computation slightly different
     - 80% mylog.py
         - Core API complete but uses simplified ConsoleLogger vs Python's detailed logging config (handlers, formatters, environment-based levels)
-- batches
-    - MISSING local_note_updater.py
-- configuration
-    - 100% configuration_value.py
-    - 100% settings.py
-- dotnet
-    - EXCLUDED load_dotnet_runtime.py
-- language_services
-    - 100% conjugator.py
-    - 100% hiragana_chart.py
-    - 100% katakana_chart.py
-    - jamdict_ex
-        - 80% dict_entry.py
-            - FormatAnswer() is simplified - missing complex logic for transitive/intransitive/to-be verb formatting
-        - 100% dict_lookup.py
-        - 100% dict_lookup_result.py
-        - 90% jamdict_threading_wrapper.py
-            - Extra public method: Stop() not in Python
-        - 100% priority_spec.py
-            - Note: C# fixes bugs in Python where wrong frequency set was used for medium/low priorities
-    - janome_ex
-        - tokenizing
-            - 100% analysis_token.py
-            - 100% godan_dictionary_form_stem.py
-            - 90% inflection_forms.py
-                - Extra public method: GetByName() not in Python - intentional enhancement for C# usability
-            - 90% inflection_types.py
-                - Extra public method: GetByName() not in Python - intentional enhancement for C# usability
-            - 100% jn_parts_of_speech.py
-            - 100% jn_token.py
-            - 100% jn_tokenized_text.py
-            - 100% jn_tokenizer.py
-            - 100% split_token.py
-            - pre_processing_stage
-                - 100% dictionary_form_verb_splitter.py
-                - 100% godan_imperative_splitter.py
-                - 90% ichidan_godan_potential_or_imperative_hybrid_splitter.py
-                    - Extra public methods: BaseFormHasGodanPotentialEnding(), IsIchidanHidingGodan(), TryGetGodanHiddenByIchidan() - these are private in Python
-                - 100% ichidan_imperative_splitter.py
-                - 100% pre_processing_stage.py
-                - 70% word_info.py
-                    - Lookup() method has incomplete implementation - DictLookup.LookupWord() not implemented (TODO comment)
-                - 60% word_info_entry.py
-                    - DictWordInfoEntry has incomplete implementation with TODO comments; uses hardcoded strings instead of POS constants; Answer property returns placeholder text
-        - word_extraction
-            - 100% analysis_constants.py
-            - MISSING candidate_word.py
-            - MISSING candidate_word_variant.py
-            - MISSING text_analysis.py
-            - MISSING text_location.py
-            - 30% word_exclusion.py
-                - C# merged WordExclusion + WordExclusionSet into one file (should be separate); missing _match_part field, excludes_all_words_excluded_by method, equality/hash
-            - matches
-                - MISSING dictionary_match.py
-                - 10% match.py
-                    - Stub with basic properties only; missing validation system, MatchInspector, caching, requirements, abstract methods
-                - MISSING missing_match.py
-                - 10% vocab_match.py
-                    - Stub only; VocabMatch defined in Match.cs instead of separate file
-                - requirements
-                    - MISSING custom_forbids_no_cache.py
-                    - MISSING match_inspector.py
-                    - MISSING requirement.py
-                    - MISSING vocab_match_inspector.py
-                - state_tests
-                    - MISSING another_match_owns_the_form.py
-                    - MISSING forbids_compositionally_transparent_compound.py
-                    - MISSING forbids_compounds.py
-                    - MISSING forbids_dictionary_form_verb_inflection.py
-                    - MISSING forbids_dictionary_form_verb_stem_surface_as_compound_end.py
-                    - MISSING forbids_yields_to_surface.py
-                    - MISSING is_configured_hidden.py
-                    - MISSING is_configured_incorrect.py
-                    - MISSING is_exact_match.py
-                    - MISSING is_godan_imperative_surface_with_base.py
-                    - MISSING is_godan_potential_surface_with_base.py
-                    - MISSING is_ichidan_imperative.py
-                    - MISSING is_inflected_surface_with_valid_base.py
-                    - MISSING is_poison_word.py
-                    - MISSING is_shadowed.py
-                    - MISSING is_single_token.py
-                    - MISSING starts_with_godan_imperative_stem_or_inflection.py
-                    - MISSING starts_with_godan_potential_stem_or_inflection.py
-                    - MISSING surface_is_in.py
-                    - head
-                        - MISSING failed_match_requirement.py
-                        - MISSING generic_forbids.py
-                        - MISSING has_godan_imperative_prefix.py
-                        - MISSING has_past_tense_stem.py
-                        - MISSING has_te_form_stem.py
-                        - MISSING is_sentence_start.py
-                        - MISSING prefix_is_in.py
-                        - MISSING requires_forbids_adverb_stem.py
-                        - MISSING requires_forbids_masu_stem.py
-                        - MISSING requires_or_forbids_dictionary_form_prefix.py
-                        - MISSING requires_or_forbids_dictionary_form_stem.py
-                        - MISSING requires_or_forbids_generic.py
-                    - tail
-                        - MISSING forbids_has_displayed_overlapping_following_compound.py
-                        - MISSING is_sentence_end.py
-                        - MISSING suffix_is_in.py
-- note
-    - 100% backend_note_creator.py
-    - 40% difficulty_calculator.py
-        - AllowedSeconds() has incomplete implementation with TODO comments; character counting not implemented (all counts hardcoded to 0); IsOtherCharacter() has placeholder logic
-    - 100% jpnote.py
-    - 100% jpnote_data.py
-    - 90% kanjinote.py
-        - Missing public method: tag_vocab_readings()
-    - 20% kanjinote_mnemonic_maker.py
-        - CreateDefaultMnemonic() is a stub implementation; missing entire complex algorithm with readings mappings, fragmentary matching, dead-end path removal, shortest path finding
-    - 80% note_constants.py
-        - Core constants present but C# has reorganized structure with additional fields; missing Mine class
-    - 100% note_flush_guard.py
-    - 100% note_tags.py
-    - 100% tag.py
-    - 100% tags.py
-    - collection
-        - 100% card_studying_status.py
-        - 100% jp_collection.py
-        - 100% kanji_collection.py
-        - 90% note_cache.py
-            - Complete except TaskRunner integration in InitFromList has TODO comment
-        - 50% sentence_collection.py
-            - Missing public methods: with_vocab_owned_form(), with_vocab_marked_invalid(), with_highlighted_vocab(); SentenceSnapshot has TODO - all properties return empty arrays; PotentiallyMatchingVocab() has TODO - returns empty list
-        - 100% vocab_collection.py
-    - notefields
-        - 100% audio_field.py
-        - 70% caching_mutable_string_field.py
-            - LazyReader implementation was broken (empty callback instead of calling lazy.Reset); needs fix now that LazyCE.Reset exists
-        - 40% comma_separated_strings_list_field.py
-            - Uses MutableStringField instead of CachingMutableStringField; no caching (re-parses on every Get() call); missing LazyReader method
-        - 100% comma_separated_strings_list_field_de_duplicated.py
-        - 100% fallback_string_field.py
-        - 100% integer_field.py
-        - 100% json_object_field.py
-        - 100% mutable_string_field.py
-        - 100% require_forbid_flag_field.py
-        - 100% sentence_question_field.py
-        - 100% strip_html_on_read_fallback_string_field.py
-        - 100% tag_flag_field.py
-        - auto_save_wrappers
-            - 100% field_wrapper.py
-            - 100% set_wrapper.py
-            - 100% value_wrapper.py
-    - sentences
-        - 100% caching_sentence_configuration_field.py
-        - 100% parsed_match.py
-        - 100% parsing_result.py
-        - 60% sentence_configuration.py
-            - Missing factory methods: FromIncorrectMatches(), FromHiddenMatches(), FromValues()
-        - 100% sentencenote.py
-        - 100% user_fields.py
-        - 40% word_exclusion_set.py
-            - File contains 3 classes (WordExclusion, JsonReader, WordExclusionSet) instead of just WordExclusionSet; extra public methods: Empty(), Empty(Action), IsEmpty()
-        - serialization
-            - 70% parsed_word_serializer.py
-                - ToRow() and FromRow() are instance methods instead of static methods
-            - 100% parsing_result_serializer.py
-            - 50% sentence_configuration_serializer.py
-                - Extra public member: Instance property (singleton pattern not in Python); contains extra JsonHelper class; JsonHelper has incomplete TODO implementations
-    - vocabulary
-        - 100% pos.py
-        - 100% pos_set_interner.py
-        - 100% vocabnote.py
-        - 20% vocabnote_audio.py
-            - All audio fields commented out with TODO; GetPrimaryAudioPath() and GetPrimaryAudio() return empty strings; ToString() returns empty string
-        - MISSING vocabnote_cloner.py
-        - 100% vocabnote_conjugator.py
-        - 80% vocabnote_factory.py
-            - CreateWithDictionary() has incomplete implementation with TODO comments for dictionary lookup (falls back to creating empty note)
-        - 40% vocabnote_forms.py
-            - Wrong field type (MutableCommaSeparatedStringsListField instead of DeDuplicated); no lazy caching; missing methods: all_list_notes_by_sentence_count(), not_owned_by_other_vocab(), without_noise_characters(); extra public method: OwnedForms()
-        - 50% vocabnote_generated_data.py
-            - Large section of UpdateGeneratedData() commented out with TODO for dictionary lookup and form generation; PushAnswerToOtherSynonyms() has TODO
-        - 100% vocabnote_kanji.py
-        - 80% vocabnote_matching_rules.py
-            - VocabNoteMatchingRulesSerializer has stub implementations - Deserialize() returns empty data; Serialize() has incomplete TODO implementation
-        - MISSING vocabnote_matching_rules_is_inflecting_word.py
-        - MISSING vocabnote_matching_rules_yield_last_token_to_next_compound.py
-        - MISSING vocabnote_meta_tag.py
-        - 70% vocabnote_metadata.py
-            - MetaTagsHtml() has TODO - returns empty string instead of generating meta tags
-        - 60% vocabnote_parts_of_speech.py
-            - Multiple methods with TODO - IsUk() returns false; SetAutomaticallyFromDictionary() stubbed out; IsPassiveVerbCompound() returns false; IsCausativeVerbCompound() returns false; IsCompleteNaAdjective() simplified; POSSetManager not implemented
-        - 100% vocabnote_question.py
-        - 100% vocabnote_register.py
-        - 100% vocabnote_sentences.py
-        - 100% vocabnote_sorting.py
-        - 60% vocabnote_usercompoundparts.py
-            - AutoGenerate() not implemented (just TODO comment); missing _collection property
-        - 100% vocabnote_userfields.py
-        - related_vocab
-            - 100% Antonyms.py
-            - 100% ergative_twin.py
-            - 100% perfect_synonyms.py
-            - 100% related_vocab.py
-            - 100% related_vocab_data.py
-            - 100% related_vocab_data_serializer.py
-            - 100% SeeAlso.py
-            - 100% Synonyms.py
-        - serialization
-            - MISSING matching_rules_serializer.py
-- task_runners
-    - 90% i_task_progress_runner.py
-        - C# file also contains InvisibleTaskRunner class which should be in separate file
-    - MISSING invisible_task_progress_runner.py
-    - 100% task_progress_runner.py
-- testutils
-    - MISSING ex_pytest.py
-- ui
-    - web
-        - sentence
-            - MISSING candidate_word_variant_viewmodel.py
-            - MISSING compound_part_viewmodel.py
-            - MISSING match_viewmodel.py
-            - MISSING sentence_viewmodel.py
-            - MISSING text_analysis_viewmodel.py
-        - vocab
-            - MISSING vocab_sentences_vocab_sentence_view_model.py
-- viewmodels
-    - kanji_list
-        - MISSING kanji_list_viewmodel.py
-        - MISSING sentence_kanji_list_viewmodel.py
-        - MISSING sentence_kanji_viewmodel.py
+    - batches
+        - MISSING local_note_updater.py
+    - configuration
+        - 100% configuration_value.py
+        - 100% settings.py
+    - dotnet
+        - EXCLUDED load_dotnet_runtime.py
+    - language_services
+        - 100% conjugator.py
+        - 100% hiragana_chart.py
+        - 100% katakana_chart.py
+        - jamdict_ex
+            - 80% dict_entry.py
+                - FormatAnswer() is simplified - missing complex logic for transitive/intransitive/to-be verb formatting
+            - 100% dict_lookup.py
+            - 100% dict_lookup_result.py
+            - 90% jamdict_threading_wrapper.py
+                - Extra public method: Stop() not in Python
+            - 100% priority_spec.py
+                - Note: C# fixes bugs in Python where wrong frequency set was used for medium/low priorities
+        - janome_ex
+            - tokenizing
+                - 100% analysis_token.py
+                - 100% godan_dictionary_form_stem.py
+                - 90% inflection_forms.py
+                    - Extra public method: GetByName() not in Python - intentional enhancement for C# usability
+                - 90% inflection_types.py
+                    - Extra public method: GetByName() not in Python - intentional enhancement for C# usability
+                - 100% jn_parts_of_speech.py
+                - 100% jn_token.py
+                - 100% jn_tokenized_text.py
+                - 100% jn_tokenizer.py
+                - 100% split_token.py
+                - pre_processing_stage
+                    - 100% dictionary_form_verb_splitter.py
+                    - 100% godan_imperative_splitter.py
+                    - 90% ichidan_godan_potential_or_imperative_hybrid_splitter.py
+                        - Extra public methods: BaseFormHasGodanPotentialEnding(), IsIchidanHidingGodan(), TryGetGodanHiddenByIchidan() - these are private in Python
+                    - 100% ichidan_imperative_splitter.py
+                    - 100% pre_processing_stage.py
+                    - 70% word_info.py
+                        - Lookup() method has incomplete implementation - DictLookup.LookupWord() not implemented (TODO comment)
+                    - 60% word_info_entry.py
+                        - DictWordInfoEntry has incomplete implementation with TODO comments; uses hardcoded strings instead of POS constants; Answer property returns placeholder text
+            - word_extraction
+                - 100% analysis_constants.py
+                - MISSING candidate_word.py
+                - MISSING candidate_word_variant.py
+                - MISSING text_analysis.py
+                - MISSING text_location.py
+                - 30% word_exclusion.py
+                    - C# merged WordExclusion + WordExclusionSet into one file (should be separate); missing _match_part field, excludes_all_words_excluded_by method, equality/hash
+                - matches
+                    - MISSING dictionary_match.py
+                    - 10% match.py
+                        - Stub with basic properties only; missing validation system, MatchInspector, caching, requirements, abstract methods
+                    - MISSING missing_match.py
+                    - 10% vocab_match.py
+                        - Stub only; VocabMatch defined in Match.cs instead of separate file
+                    - requirements
+                        - MISSING custom_forbids_no_cache.py
+                        - MISSING match_inspector.py
+                        - MISSING requirement.py
+                        - MISSING vocab_match_inspector.py
+                    - state_tests
+                        - MISSING another_match_owns_the_form.py
+                        - MISSING forbids_compositionally_transparent_compound.py
+                        - MISSING forbids_compounds.py
+                        - MISSING forbids_dictionary_form_verb_inflection.py
+                        - MISSING forbids_dictionary_form_verb_stem_surface_as_compound_end.py
+                        - MISSING forbids_yields_to_surface.py
+                        - MISSING is_configured_hidden.py
+                        - MISSING is_configured_incorrect.py
+                        - MISSING is_exact_match.py
+                        - MISSING is_godan_imperative_surface_with_base.py
+                        - MISSING is_godan_potential_surface_with_base.py
+                        - MISSING is_ichidan_imperative.py
+                        - MISSING is_inflected_surface_with_valid_base.py
+                        - MISSING is_poison_word.py
+                        - MISSING is_shadowed.py
+                        - MISSING is_single_token.py
+                        - MISSING starts_with_godan_imperative_stem_or_inflection.py
+                        - MISSING starts_with_godan_potential_stem_or_inflection.py
+                        - MISSING surface_is_in.py
+                        - head
+                            - MISSING failed_match_requirement.py
+                            - MISSING generic_forbids.py
+                            - MISSING has_godan_imperative_prefix.py
+                            - MISSING has_past_tense_stem.py
+                            - MISSING has_te_form_stem.py
+                            - MISSING is_sentence_start.py
+                            - MISSING prefix_is_in.py
+                            - MISSING requires_forbids_adverb_stem.py
+                            - MISSING requires_forbids_masu_stem.py
+                            - MISSING requires_or_forbids_dictionary_form_prefix.py
+                            - MISSING requires_or_forbids_dictionary_form_stem.py
+                            - MISSING requires_or_forbids_generic.py
+                        - tail
+                            - MISSING forbids_has_displayed_overlapping_following_compound.py
+                            - MISSING is_sentence_end.py
+                            - MISSING suffix_is_in.py
+    - note
+        - 100% backend_note_creator.py
+        - 40% difficulty_calculator.py
+            - AllowedSeconds() has incomplete implementation with TODO comments; character counting not implemented (all counts hardcoded to 0); IsOtherCharacter() has placeholder logic
+        - 100% jpnote.py
+        - 100% jpnote_data.py
+        - 90% kanjinote.py
+            - Missing public method: tag_vocab_readings()
+        - 20% kanjinote_mnemonic_maker.py
+            - CreateDefaultMnemonic() is a stub implementation; missing entire complex algorithm with readings mappings, fragmentary matching, dead-end path removal, shortest path finding
+        - 80% note_constants.py
+            - Core constants present but C# has reorganized structure with additional fields; missing Mine class
+        - 100% note_flush_guard.py
+        - 100% note_tags.py
+        - 100% tag.py
+        - 100% tags.py
+        - collection
+            - 100% card_studying_status.py
+            - 100% jp_collection.py
+            - 100% kanji_collection.py
+            - 90% note_cache.py
+                - Complete except TaskRunner integration in InitFromList has TODO comment
+            - 50% sentence_collection.py
+                - Missing public methods: with_vocab_owned_form(), with_vocab_marked_invalid(), with_highlighted_vocab(); SentenceSnapshot has TODO - all properties return empty arrays; PotentiallyMatchingVocab() has TODO - returns empty list
+            - 100% vocab_collection.py
+        - notefields
+            - 100% audio_field.py
+            - 70% caching_mutable_string_field.py
+                - LazyReader implementation was broken (empty callback instead of calling lazy.Reset); needs fix now that LazyCE.Reset exists
+            - 40% comma_separated_strings_list_field.py
+                - Uses MutableStringField instead of CachingMutableStringField; no caching (re-parses on every Get() call); missing LazyReader method
+            - 100% comma_separated_strings_list_field_de_duplicated.py
+            - 100% fallback_string_field.py
+            - 100% integer_field.py
+            - 100% json_object_field.py
+            - 100% mutable_string_field.py
+            - 100% require_forbid_flag_field.py
+            - 100% sentence_question_field.py
+            - 100% strip_html_on_read_fallback_string_field.py
+            - 100% tag_flag_field.py
+            - auto_save_wrappers
+                - 100% field_wrapper.py
+                - 100% set_wrapper.py
+                - 100% value_wrapper.py
+        - sentences
+            - 100% caching_sentence_configuration_field.py
+            - 100% parsed_match.py
+            - 100% parsing_result.py
+            - 60% sentence_configuration.py
+                - Missing factory methods: FromIncorrectMatches(), FromHiddenMatches(), FromValues()
+            - 100% sentencenote.py
+            - 100% user_fields.py
+            - 40% word_exclusion_set.py
+                - File contains 3 classes (WordExclusion, JsonReader, WordExclusionSet) instead of just WordExclusionSet; extra public methods: Empty(), Empty(Action), IsEmpty()
+            - serialization
+                - 70% parsed_word_serializer.py
+                    - ToRow() and FromRow() are instance methods instead of static methods
+                - 100% parsing_result_serializer.py
+                - 50% sentence_configuration_serializer.py
+                    - Extra public member: Instance property (singleton pattern not in Python); contains extra JsonHelper class; JsonHelper has incomplete TODO implementations
+        - vocabulary
+            - 100% pos.py
+            - 100% pos_set_interner.py
+            - 100% vocabnote.py
+            - 20% vocabnote_audio.py
+                - All audio fields commented out with TODO; GetPrimaryAudioPath() and GetPrimaryAudio() return empty strings; ToString() returns empty string
+            - MISSING vocabnote_cloner.py
+            - 100% vocabnote_conjugator.py
+            - 80% vocabnote_factory.py
+                - CreateWithDictionary() has incomplete implementation with TODO comments for dictionary lookup (falls back to creating empty note)
+            - 40% vocabnote_forms.py
+                - Wrong field type (MutableCommaSeparatedStringsListField instead of DeDuplicated); no lazy caching; missing methods: all_list_notes_by_sentence_count(), not_owned_by_other_vocab(), without_noise_characters(); extra public method: OwnedForms()
+            - 50% vocabnote_generated_data.py
+                - Large section of UpdateGeneratedData() commented out with TODO for dictionary lookup and form generation; PushAnswerToOtherSynonyms() has TODO
+            - 100% vocabnote_kanji.py
+            - 80% vocabnote_matching_rules.py
+                - VocabNoteMatchingRulesSerializer has stub implementations - Deserialize() returns empty data; Serialize() has incomplete TODO implementation
+            - MISSING vocabnote_matching_rules_is_inflecting_word.py
+            - MISSING vocabnote_matching_rules_yield_last_token_to_next_compound.py
+            - MISSING vocabnote_meta_tag.py
+            - 70% vocabnote_metadata.py
+                - MetaTagsHtml() has TODO - returns empty string instead of generating meta tags
+            - 60% vocabnote_parts_of_speech.py
+                - Multiple methods with TODO - IsUk() returns false; SetAutomaticallyFromDictionary() stubbed out; IsPassiveVerbCompound() returns false; IsCausativeVerbCompound() returns false; IsCompleteNaAdjective() simplified; POSSetManager not implemented
+            - 100% vocabnote_question.py
+            - 100% vocabnote_register.py
+            - 100% vocabnote_sentences.py
+            - 100% vocabnote_sorting.py
+            - 60% vocabnote_usercompoundparts.py
+                - AutoGenerate() not implemented (just TODO comment); missing _collection property
+            - 100% vocabnote_userfields.py
+            - related_vocab
+                - 100% Antonyms.py
+                - 100% ergative_twin.py
+                - 100% perfect_synonyms.py
+                - 100% related_vocab.py
+                - 100% related_vocab_data.py
+                - 100% related_vocab_data_serializer.py
+                - 100% SeeAlso.py
+                - 100% Synonyms.py
+            - serialization
+                - MISSING matching_rules_serializer.py
+    - task_runners
+        - 90% i_task_progress_runner.py
+            - C# file also contains InvisibleTaskRunner class which should be in separate file
+        - MISSING invisible_task_progress_runner.py
+        - 100% task_progress_runner.py
+    - testutils
+        - MISSING ex_pytest.py
+    - ui
+        - web
+            - sentence
+                - MISSING candidate_word_variant_viewmodel.py
+                - MISSING compound_part_viewmodel.py
+                - MISSING match_viewmodel.py
+                - MISSING sentence_viewmodel.py
+                - MISSING text_analysis_viewmodel.py
+            - vocab
+                - MISSING vocab_sentences_vocab_sentence_view_model.py
+    - viewmodels
+        - kanji_list
+            - MISSING kanji_list_viewmodel.py
+            - MISSING sentence_kanji_list_viewmodel.py
+            - MISSING sentence_kanji_viewmodel.py
 
 ---
 
