@@ -21,14 +21,18 @@ public class JNToken : IAnalysisToken
         JNPartsOfSpeech partsOfSpeech,
         string baseForm,
         string surface,
-        object inflectionType = null!,
-        object inflectedForm = null!,
+        object? inflectionType = null,
+        object? inflectedForm = null,
         string reading = "",
         string phonetic = "",
         string nodeType = "")
     {
         _baseForm = baseForm ?? string.Empty;
         _surface = surface ?? string.Empty;
+        
+        // Python defaults to "*" when not provided
+        inflectionType ??= "*";
+        inflectedForm ??= "*";
         
         InflectionType = inflectionType is string str1 
             ? InflectionTypes.GetByName(str1) 

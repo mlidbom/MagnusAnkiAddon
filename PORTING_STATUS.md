@@ -292,8 +292,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
             - jamdict_tests
                 - CREATED WIP test_dict_lookup.py
             - janome_tests
-                - EXCLUDED test_explore_token_part_of_speech_information.py
-                    - Note: Exploratory/investigation code, not actual tests
+                - CREATED WIP test_explore_token_part_of_speech_information.py
             - text_analysis_tests
                 - CREATED WIP test_sentence_analysis_viewmodel_common.py
                     - Note: Helper module ported to SentenceAnalysisViewModelCommon.cs
@@ -320,10 +319,10 @@ Staying this close to the Python is what makes the porting workable at all. If w
 
 ## Summary Statistics
 - **100% Complete**: 184 files
-- **CREATED WIP**: 19 files
+- **CREATED WIP**: 20 files
 - **Partial (20-90%)**: 0 files
 - **MISSING**: 2 files
-- **EXCLUDED**: 3 files
+- **EXCLUDED**: 2 files
 - **Total tracked files**: 208 files
-- **Porting completion**: 97%
+- **Porting completion**: 98%
 
