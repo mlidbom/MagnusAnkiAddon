@@ -92,61 +92,58 @@ Staying this close to the Python is what makes the porting workable at all. If w
                         - DictWordInfoEntry has incomplete implementation with TODO comments; uses hardcoded strings instead of POS constants; Answer property returns placeholder text
             - word_extraction
                 - 100% analysis_constants.py
-                - MISSING candidate_word.py
-                - MISSING candidate_word_variant.py
-                - MISSING text_analysis.py
-                - MISSING text_location.py
-                - 30% word_exclusion.py
-                    - C# merged WordExclusion + WordExclusionSet into one file (should be separate); missing _match_part field, excludes_all_words_excluded_by method, equality/hash
+                - CREATED WIP candidate_word.py
+                - CREATED WIP candidate_word_variant.py
+                - CREATED WIP text_analysis.py
+                - CREATED WIP text_location.py
+                - CREATED WIP word_exclusion.py
                 - matches
-                    - MISSING dictionary_match.py
-                    - 10% match.py
-                        - Stub with basic properties only; missing validation system, MatchInspector, caching, requirements, abstract methods
-                    - MISSING missing_match.py
-                    - 10% vocab_match.py
-                        - Stub only; VocabMatch defined in Match.cs instead of separate file
+                    - CREATED WIP dictionary_match.py
+                    - CREATED WIP match.py
+                    - CREATED WIP missing_match.py
+                    - CREATED WIP vocab_match.py
                     - requirements
-                        - MISSING custom_forbids_no_cache.py
-                        - MISSING match_inspector.py
-                        - MISSING requirement.py
-                        - MISSING vocab_match_inspector.py
+                        - CREATED WIP custom_forbids_no_cache.py
+                        - CREATED WIP match_inspector.py
+                        - CREATED WIP requirement.py
+                        - CREATED WIP vocab_match_inspector.py
                     - state_tests
-                        - MISSING another_match_owns_the_form.py
-                        - MISSING forbids_compositionally_transparent_compound.py
-                        - MISSING forbids_compounds.py
-                        - MISSING forbids_dictionary_form_verb_inflection.py
-                        - MISSING forbids_dictionary_form_verb_stem_surface_as_compound_end.py
-                        - MISSING forbids_yields_to_surface.py
-                        - MISSING is_configured_hidden.py
-                        - MISSING is_configured_incorrect.py
-                        - MISSING is_exact_match.py
-                        - MISSING is_godan_imperative_surface_with_base.py
-                        - MISSING is_godan_potential_surface_with_base.py
-                        - MISSING is_ichidan_imperative.py
-                        - MISSING is_inflected_surface_with_valid_base.py
-                        - MISSING is_poison_word.py
-                        - MISSING is_shadowed.py
-                        - MISSING is_single_token.py
-                        - MISSING starts_with_godan_imperative_stem_or_inflection.py
-                        - MISSING starts_with_godan_potential_stem_or_inflection.py
-                        - MISSING surface_is_in.py
+                        - CREATED WIP another_match_owns_the_form.py
+                        - CREATED WIP forbids_compositionally_transparent_compound.py
+                        - CREATED WIP forbids_compounds.py
+                        - CREATED WIP forbids_dictionary_form_verb_inflection.py
+                        - CREATED WIP forbids_dictionary_form_verb_stem_surface_as_compound_end.py
+                        - CREATED WIP forbids_yields_to_surface.py
+                        - CREATED WIP is_configured_hidden.py
+                        - CREATED WIP is_configured_incorrect.py
+                        - CREATED WIP is_exact_match.py
+                        - CREATED WIP is_godan_imperative_surface_with_base.py
+                        - CREATED WIP is_godan_potential_surface_with_base.py
+                        - CREATED WIP is_ichidan_imperative.py
+                        - CREATED WIP is_inflected_surface_with_valid_base.py
+                        - CREATED WIP is_poison_word.py
+                        - CREATED WIP is_shadowed.py
+                        - CREATED WIP is_single_token.py
+                        - CREATED WIP starts_with_godan_imperative_stem_or_inflection.py
+                        - CREATED WIP starts_with_godan_potential_stem_or_inflection.py
+                        - CREATED WIP surface_is_in.py
                         - head
-                            - MISSING failed_match_requirement.py
-                            - MISSING generic_forbids.py
-                            - MISSING has_godan_imperative_prefix.py
-                            - MISSING has_past_tense_stem.py
-                            - MISSING has_te_form_stem.py
-                            - MISSING is_sentence_start.py
-                            - MISSING prefix_is_in.py
-                            - MISSING requires_forbids_adverb_stem.py
-                            - MISSING requires_forbids_masu_stem.py
-                            - MISSING requires_or_forbids_dictionary_form_prefix.py
-                            - MISSING requires_or_forbids_dictionary_form_stem.py
-                            - MISSING requires_or_forbids_generic.py
+                            - CREATED WIP failed_match_requirement.py
+                            - CREATED WIP generic_forbids.py
+                            - CREATED WIP has_godan_imperative_prefix.py
+                            - CREATED WIP has_past_tense_stem.py
+                            - CREATED WIP has_te_form_stem.py
+                            - CREATED WIP is_sentence_start.py
+                            - CREATED WIP prefix_is_in.py
+                            - CREATED WIP requires_forbids_adverb_stem.py
+                            - CREATED WIP requires_forbids_masu_stem.py
+                            - CREATED WIP requires_or_forbids_dictionary_form_prefix.py
+                            - CREATED WIP requires_or_forbids_dictionary_form_stem.py
+                            - CREATED WIP requires_or_forbids_generic.py
                         - tail
-                            - MISSING forbids_has_displayed_overlapping_following_compound.py
-                            - MISSING is_sentence_end.py
-                            - MISSING suffix_is_in.py
+                            - CREATED WIP forbids_has_displayed_overlapping_following_compound.py
+                            - CREATED WIP is_sentence_end.py
+                            - CREATED WIP suffix_is_in.py
     - note
         - 100% backend_note_creator.py
         - 40% difficulty_calculator.py

@@ -1,0 +1,18 @@
+using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Requirements;
+using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.Head;
+
+namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests;
+
+public static class ForbidsIsPoisonWord
+{
+    private static readonly FailedMatchRequirement Failed = FailedMatchRequirement.Forbids("poison_word");
+
+    public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
+    {
+        if (inspector.Match.Vocab.MatchingConfiguration.BoolFlags.IsPoisonWord.IsSet())
+        {
+            return Failed;
+        }
+        return null;
+    }
+}

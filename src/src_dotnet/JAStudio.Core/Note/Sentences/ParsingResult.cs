@@ -1,3 +1,4 @@
+using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches;
 using JAStudio.Core.Note.Sentences.Serialization;
 using System.Collections.Generic;
@@ -41,7 +42,7 @@ public class ParsingResult
         return new ParsingResult(
             analysis.ValidMatches.Select(ParsedMatch.FromMatch).ToList(),
             analysis.Text,
-            analysis.Version
+            TextAnalysis.Version
         );
     }
 }

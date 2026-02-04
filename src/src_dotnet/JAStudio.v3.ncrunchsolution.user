@@ -1,6 +1,6 @@
 ﻿<SolutionConfiguration>
   <Settings>
-    <AutoEnable>True</AutoEnable>
+    <AutoEnable>False</AutoEnable>
     <CurrentEngineMode>All [Global]</CurrentEngineMode>
     <DisabledNodes>
       <Value>localhost:41141</Value>

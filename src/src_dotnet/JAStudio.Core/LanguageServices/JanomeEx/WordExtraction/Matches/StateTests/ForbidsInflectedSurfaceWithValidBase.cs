@@ -1,0 +1,25 @@
+using System.Collections.Generic;
+using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Requirements;
+using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.Head;
+
+namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests;
+
+public static class ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb
+{
+    private static readonly FailedMatchRequirement Failed = FailedMatchRequirement.Forbids("inflected_surface_with_valid_base");
+    private static readonly HashSet<string> PrefixesThatIndicatesVerbIfFollowedByEndOfStatement = new() { "を", "が" };
+
+    public static FailedMatchRequirement? ApplyTo(MatchInspector inspector)
+    {
+        if (inspector.Variant.IsSurface &&
+            inspector.Word.HasBaseVariantWithValidMatch &&
+            (inspector.Word.IsInflectedWord || 
+             (inspector.Prefix != "" && 
+              PrefixesThatIndicatesVerbIfFollowedByEndOfStatement.Contains(inspector.Prefix[^1].ToString()) && 
+              inspector.IsEndOfStatement)))
+        {
+            return Failed;
+        }
+        return null;
+    }
+}
