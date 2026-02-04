@@ -283,7 +283,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
                 - CREATED WIP vocab_lists.py
                 - CREATED WIP vocab_spec.py
     - tests
-        - batches_tests
+        - batches_testsch
             - CREATED WIP test_local_note_updater_smoke_tests_only.py
         - language_services_tests
             - CREATED WIP test_conjugation_base.py
@@ -295,7 +295,6 @@ Staying this close to the Python is what makes the porting workable at all. If w
                 - CREATED WIP test_explore_token_part_of_speech_information.py
             - text_analysis_tests
                 - CREATED WIP test_sentence_analysis_viewmodel_common.py
-                    - Note: Helper module ported to SentenceAnalysisViewModelCommon.cs
                 - MISSING test_sentence_analysis_viewmodel_with_select_data.py
                     - Note: Tests reveal behavior differences - need investigation
                 - MISSING test_text_analysis_with_per_test_data.py
