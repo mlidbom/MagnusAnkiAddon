@@ -15,7 +15,8 @@ public class SentenceQuestionField
 
     private string SentenceQuestionFieldRawValue()
     {
-        return _userField.Value ?? _sourceField.Value;
+        var userValue = _userField.Value;
+        return string.IsNullOrEmpty(userValue) ? _sourceField.Value : userValue;
     }
 
     public string WithInvisibleSpace()
