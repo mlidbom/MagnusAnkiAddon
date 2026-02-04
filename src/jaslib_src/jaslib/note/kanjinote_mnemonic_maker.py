@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jaspythonutils.sysutils import kana_utils
 from jaspythonutils.sysutils.ex_str import newline
 
 from jaslib import app
+from jaslib.language_services import kana_utils
 
 if TYPE_CHECKING:
     from jaslib.note.kanjinote import KanjiNote

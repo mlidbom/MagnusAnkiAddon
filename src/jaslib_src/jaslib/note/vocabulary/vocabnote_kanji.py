@@ -3,9 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
-from jaspythonutils.sysutils import ex_str, kana_utils
+from jaspythonutils.sysutils import ex_str
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
+
+from jaslib.language_services import kana_utils
 
 if TYPE_CHECKING:
     from jaspythonutils.sysutils.weak_ref import WeakRef

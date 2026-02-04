@@ -19,9 +19,9 @@ if TYPE_CHECKING:
 
     from jaslib.note.vocabulary.vocabnote import VocabNote
 
-from jaspythonutils.sysutils import kana_utils
 from typed_linq_collections.collections.q_set import QSet
 
+from jaslib.language_services import kana_utils
 from jaslib.language_services.jamdict_ex.dict_entry import DictEntry
 
 _jamdict_threading_wrapper: JamdictThreadingWrapper = JamdictThreadingWrapper()
