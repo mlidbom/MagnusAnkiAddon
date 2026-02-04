@@ -62,6 +62,28 @@ public static class SentenceAnalysisViewModelCommon
         }
     }
 
+    /// <summary>
+    /// Overload that accepts string arrays for exclusions in format "word:index" or "word".
+    /// </summary>
+    public static void AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(
+        string sentence, 
+        string[] exclusionStrings, 
+        params string[] expectedOutput)
+    {
+        var excluded = exclusionStrings.Select(WordExclusion.FromString).ToList();
+        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, excluded, expectedOutput.ToList());
+    }
+
+    /// <summary>
+    /// Overload for tests with no exclusions.
+    /// </summary>
+    public static void AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(
+        string sentence, 
+        params string[] expectedOutput)
+    {
+        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, new List<WordExclusion>(), expectedOutput.ToList());
+    }
+
     public static void AssertAllWordsEqual(string sentence, List<string> expectedOutput)
     {
         var sentenceNote = SentenceNote.Create(sentence);
@@ -73,5 +95,13 @@ public static class SentenceAnalysisViewModelCommon
             .ToList();
 
         Assert.Equal(expectedOutput, matches);
+    }
+
+    /// <summary>
+    /// Overload that accepts params array for expected output.
+    /// </summary>
+    public static void AssertAllWordsEqual(string sentence, params string[] expectedOutput)
+    {
+        AssertAllWordsEqual(sentence, expectedOutput.ToList());
     }
 }

@@ -40,6 +40,23 @@ public sealed class WordExclusion
         return new WordExclusion(exclusion.Trim(), index, Secret);
     }
 
+    /// <summary>
+    /// Creates a WordExclusion from a string in the format "word:index" or "word" for global exclusions.
+    /// </summary>
+    public static WordExclusion FromString(string value)
+    {
+        var parts = value.Split(':');
+        if (parts.Length == 1)
+        {
+            return Global(parts[0]);
+        }
+        else if (parts.Length == 2)
+        {
+            return AtIndex(parts[0], int.Parse(parts[1]));
+        }
+        throw new ArgumentException($"Invalid exclusion format: {value}");
+    }
+
     public override bool Equals(object? obj)
     {
         if (obj is WordExclusion other)

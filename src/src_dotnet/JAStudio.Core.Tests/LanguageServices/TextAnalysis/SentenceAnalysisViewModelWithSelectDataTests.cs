@@ -247,91 +247,23 @@ public class SentenceAnalysisViewModelWithSelectDataTests : IDisposable
         AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, new List<WordExclusion>(), new List<string>(expectedOutput));
     }
 
-    // Exclusions tests - these need MemberData because they have complex exclusion lists
-    [Fact]
-    public void Exclusions_Case1()
+    [Theory]
+    [InlineData("厳密に言えば　俺一人が友達だけど", new[] { "厳密に言えば", "言え", "だけど" }, new[] { "厳密", "に", "言う", "ば", "俺", "一人", "が", "友達", "だ", "けど" })]
+    [InlineData("厳密に言えばだけど俺一人が友達だけど", new[] { "だけど:6" }, new[] { "厳密に言えば", "俺", "一人", "が", "友達", "だけど" })]
+    [InlineData("私は毎日ジョギングをすることを習慣にしています。", new[] { "にして:17", "にし:17", "して:18", "し:18", "してい:18", "い:12", "にする" }, new[] { "私", "は", "毎日", "ジョギング", "を", "する", "る:う", "こと", "を", "習慣", "に", "する", "ている", "ます" })]
+    [InlineData("私は毎日ジョギングをすることを習慣にしています。", new[] { "にして:17", "にし:17", "して:18", "し:18", "してい:18" }, new[] { "私", "は", "毎日", "ジョギング", "を", "する", "る:う", "こと", "を", "習慣", "にする", "ている", "ます" })]
+    [InlineData("頑張れたというか", new[] { "頑張る", "頑張れ" }, new[] { "える", "た", "というか" })]
+    [InlineData("いらっしゃいません", new[] { "いらっしゃいませ" }, new[] { "いらっしゃいます", "ん" })]
+    [InlineData("風の強さに驚きました", new[] { "風の強い" }, new[] { "風", "の", "強さ", "に", "驚き", "ます", "た" })]
+    public void Exclusions(string sentence, string[] exclusionStrings, string[] expectedOutput)
     {
-        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(
-            "厳密に言えば　俺一人が友達だけど",
-            new List<WordExclusion> { WordExclusion.Global("厳密に言えば"), WordExclusion.Global("言え"), WordExclusion.Global("だけど") },
-            new List<string> { "厳密", "に", "言う", "ば", "俺", "一人", "が", "友達", "だ", "けど" });
+        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, exclusionStrings, expectedOutput);
     }
 
-    [Fact]
-    public void Exclusions_Case2()
+    [Theory]
+    [InlineData("風の強さに驚きました", "風の強い", "風", "の", "強さ", "強", "強い", "さ", "に", "驚き", "驚く", "まし:ませ", "まし", "ます", "た")]
+    public void AllWordsEqual(string sentence, params string[] expectedOutput)
     {
-        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(
-            "厳密に言えばだけど俺一人が友達だけど",
-            new List<WordExclusion> { WordExclusion.AtIndex("だけど", 6) },
-            new List<string> { "厳密に言えば", "俺", "一人", "が", "友達", "だけど" });
-    }
-
-    [Fact]
-    public void Exclusions_Case3()
-    {
-        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(
-            "私は毎日ジョギングをすることを習慣にしています。",
-            new List<WordExclusion>
-            {
-                WordExclusion.AtIndex("にして", 17),
-                WordExclusion.AtIndex("にし", 17),
-                WordExclusion.AtIndex("して", 18),
-                WordExclusion.AtIndex("し", 18),
-                WordExclusion.AtIndex("してい", 18),
-                WordExclusion.AtIndex("い", 12),
-                WordExclusion.Global("にする")
-            },
-            new List<string> { "私", "は", "毎日", "ジョギング", "を", "する", "る:う", "こと", "を", "習慣", "に", "する", "ている", "ます" });
-    }
-
-    [Fact]
-    public void Exclusions_Case4()
-    {
-        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(
-            "私は毎日ジョギングをすることを習慣にしています。",
-            new List<WordExclusion>
-            {
-                WordExclusion.AtIndex("にして", 17),
-                WordExclusion.AtIndex("にし", 17),
-                WordExclusion.AtIndex("して", 18),
-                WordExclusion.AtIndex("し", 18),
-                WordExclusion.AtIndex("してい", 18)
-            },
-            new List<string> { "私", "は", "毎日", "ジョギング", "を", "する", "る:う", "こと", "を", "習慣", "にする", "ている", "ます" });
-    }
-
-    [Fact]
-    public void Exclusions_Case5()
-    {
-        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(
-            "頑張れたというか",
-            new List<WordExclusion> { WordExclusion.Global("頑張る"), WordExclusion.Global("頑張れ") },
-            new List<string> { "える", "た", "というか" });
-    }
-
-    [Fact]
-    public void Exclusions_Case6()
-    {
-        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(
-            "いらっしゃいません",
-            new List<WordExclusion> { WordExclusion.Global("いらっしゃいませ") },
-            new List<string> { "いらっしゃいます", "ん" });
-    }
-
-    [Fact]
-    public void Exclusions_Case7()
-    {
-        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(
-            "風の強さに驚きました",
-            new List<WordExclusion> { WordExclusion.Global("風の強い") },
-            new List<string> { "風", "の", "強さ", "に", "驚き", "ます", "た" });
-    }
-
-    [Fact]
-    public void AllWordsEqual_Case1()
-    {
-        AssertAllWordsEqual(
-            "風の強さに驚きました",
-            new List<string> { "風の強い", "風", "の", "強さ", "強", "強い", "さ", "に", "驚き", "驚く", "まし:ませ", "まし", "ます", "た" });
+        AssertAllWordsEqual(sentence, expectedOutput);
     }
 }
