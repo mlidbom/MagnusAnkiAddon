@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.Utilities;
 
 namespace JAStudio.Core.Note.Sentences.Serialization;
 
@@ -31,7 +32,7 @@ public class SentenceConfigurationSerializer
         }
 
         var dictData = JsonHelper.JsonToDict(json);
-        var reader = new JAStudio.Core.Note.Sentences.JsonReader(dictData);
+        var reader = new JsonReader(dictData);
         return new SentenceConfiguration(
             reader.GetStringList("highlighted_words", new List<string>()),
             new WordExclusionSet(saveCallback, reader.GetObjectList("incorrect_matches", r => WordExclusion.FromReader(r), new List<WordExclusion>())),
@@ -60,20 +61,5 @@ public class SentenceConfigurationSerializer
 
         var json = JsonHelper.DictToJson(jsonDict);
         return json != _emptyObjectJson ? json : "";
-    }
-}
-
-public static class JsonHelper
-{
-    public static Dictionary<string, object> JsonToDict(string json)
-    {
-        // TODO: Implement proper JSON deserialization using System.Text.Json
-        return new Dictionary<string, object>();
-    }
-
-    public static string DictToJson(Dictionary<string, object> dict)
-    {
-        // TODO: Implement proper JSON serialization using System.Text.Json
-        return "{}";
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.Utilities;
 
 namespace JAStudio.Core.Note.Sentences;
 
@@ -53,49 +54,6 @@ public class WordExclusion
     public override string ToString()
     {
         return Index == -1 ? $"Global({Word})" : $"{Word}@{Index}";
-    }
-}
-
-public class JsonReader
-{
-    private readonly Dictionary<string, object> _data;
-
-    public JsonReader(Dictionary<string, object> data)
-    {
-        _data = data;
-    }
-
-    public string GetString(string key)
-    {
-        return _data.TryGetValue(key, out var value) ? value?.ToString() ?? "" : "";
-    }
-
-    public int GetInt(string key)
-    {
-        if (_data.TryGetValue(key, out var value))
-        {
-            if (value is int intValue) return intValue;
-            if (int.TryParse(value?.ToString(), out var parsed)) return parsed;
-        }
-        return 0;
-    }
-
-    public List<string> GetStringList(string key, List<string> defaultValue)
-    {
-        if (_data.TryGetValue(key, out var value) && value is List<object> list)
-        {
-            return list.Select(o => o.ToString() ?? "").ToList();
-        }
-        return defaultValue;
-    }
-
-    public List<T> GetObjectList<T>(string key, Func<JsonReader, T> factory, List<T> defaultValue)
-    {
-        if (_data.TryGetValue(key, out var value) && value is List<object> list)
-        {
-            return list.Select(o => factory(new JsonReader(o as Dictionary<string, object> ?? new Dictionary<string, object>()))).ToList();
-        }
-        return defaultValue;
     }
 }
 

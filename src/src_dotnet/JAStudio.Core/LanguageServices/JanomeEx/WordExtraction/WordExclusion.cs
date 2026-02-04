@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using JAStudio.Core.Utilities;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 
@@ -79,31 +80,5 @@ public sealed class WordExclusion
             reader.GetInt("index"),
             Secret
         );
-    }
-}
-
-// Simple JSON reader stub - will need proper implementation
-public class JsonReader
-{
-    private readonly Dictionary<string, object> _data;
-
-    public JsonReader(Dictionary<string, object> data)
-    {
-        _data = data;
-    }
-
-    public string GetString(string key)
-    {
-        return _data.TryGetValue(key, out var value) ? value?.ToString() ?? "" : "";
-    }
-
-    public int GetInt(string key)
-    {
-        if (_data.TryGetValue(key, out var value))
-        {
-            if (value is int intValue) return intValue;
-            if (int.TryParse(value?.ToString(), out var parsed)) return parsed;
-        }
-        return 0;
     }
 }
