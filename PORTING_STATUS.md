@@ -235,13 +235,14 @@ Staying this close to the Python is what makes the porting workable at all. If w
             - MetaTagsHtml() has TODO - returns empty string instead of generating meta tags
         - 60% vocabnote_parts_of_speech.py
             - Multiple methods with TODO - IsUk() returns false; SetAutomaticallyFromDictionary() stubbed out; IsPassiveVerbCompound() returns false; IsCausativeVerbCompound() returns false; IsCompleteNaAdjective() simplified; POSSetManager not implemented
-        - CREATED WIP vocabnote_question.py
-        - CREATED WIP vocabnote_register.py
-        - CREATED WIP vocabnote_sentences.py
-        - CREATED WIP vocabnote_sorting.py
+        - 70% vocabnote_question.py
+            - Missing VocabStems class and stems() method; WithoutNoiseCharacters has TODO - doesn't use Mine.VocabPrefixSuffixMarker
+        - 100% vocabnote_register.py
+        - 100% vocabnote_sentences.py
+        - 100% vocabnote_sorting.py
         - 60% vocabnote_usercompoundparts.py
             - AutoGenerate() not implemented (just TODO comment); missing _collection property
-        - CREATED WIP vocabnote_userfields.py
+        - 100% vocabnote_userfields.py
         - related_vocab
             - MISSING Antonyms.py
             - MISSING ergative_twin.py
