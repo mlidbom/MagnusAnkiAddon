@@ -1,3 +1,4 @@
+using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.Note.Vocabulary.RelatedVocab;
@@ -88,13 +89,13 @@ public class VocabNote : JPNote
 
     public void GenerateAndSetAnswer()
     {
-        // TODO: Implement when DictLookup is ported
-        // var dictLookup = DictLookup.LookupVocabWordOrName(this);
-        // if (dictLookup.FoundWords())
-        // {
-        //     var generated = dictLookup.FormatAnswer();
-        //     SourceAnswer.Set(generated);
-        // }
+        var dictLookup = DictLookup.LookupVocabWordOrName(this);
+        if (dictLookup.FoundWords())
+        {
+            var generated = dictLookup.FormatAnswer();
+            SourceAnswer.Set(generated);
+        }
+
         UpdateGeneratedData();
     }
 
