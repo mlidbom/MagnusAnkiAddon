@@ -66,8 +66,15 @@ public class KanjiNote : JPNote
 
         void UpdatePrimaryAudios()
         {
-            // TODO: Implement when vocab system is complete
-            SetPrimaryVocabAudio(string.Empty);
+            var vocabWeShouldPlay = GetPrimaryVocab()
+                .SelectMany(question => App.Col().Vocab.WithQuestion(question))
+                .ToList();
+            
+            var audioString = vocabWeShouldPlay.Count > 0
+                ? string.Join("", vocabWeShouldPlay.Select(vo => vo.Audio.GetPrimaryAudio()))
+                : string.Empty;
+            
+            SetPrimaryVocabAudio(audioString);
         }
 
         SetField(NoteFieldsConstants.Kanji.ActiveAnswer, GetAnswer());
@@ -164,8 +171,7 @@ public class KanjiNote : JPNote
 
     public void AddPrimaryOnReading(string reading)
     {
-        // TODO: Implement ReplaceWord when needed
-        SetReadingOn(GetReadingOnHtml().Replace(reading, $"<primary>{reading}</primary>"));
+        SetReadingOn(StringExtensions.ReplaceWord(reading, $"<primary>{reading}</primary>", GetReadingOnHtml()));
     }
 
     public void RemovePrimaryOnReading(string reading)
@@ -175,8 +181,7 @@ public class KanjiNote : JPNote
 
     public void AddPrimaryKunReading(string reading)
     {
-        // TODO: Implement ReplaceWord when needed
-        SetReadingKun(GetReadingKunHtml().Replace(reading, $"<primary>{reading}</primary>"));
+        SetReadingKun(StringExtensions.ReplaceWord(reading, $"<primary>{reading}</primary>", GetReadingKunHtml()));
     }
 
     public void RemovePrimaryKunReading(string reading)
@@ -337,11 +342,10 @@ public class KanjiNote : JPNote
             return userMnemonic;
         }
 
-        // TODO: Implement config and mnemonic maker
-        // if (App.Config().PreferDefaultMnemonicsToSourceMnemonics)
-        // {
-        //     return $"# {KanjiNoteMnemonicMaker.CreateDefaultMnemonic(this)}";
-        // }
+        if (App.Config().PreferDefaultMnemonicsToSourceMnemonics.GetValue())
+        {
+            return $"# {KanjiNoteMnemonicMaker.CreateDefaultMnemonic(this)}";
+        }
 
         return GetSourceMeaningMnemonic();
     }
@@ -369,8 +373,7 @@ public class KanjiNote : JPNote
     // Placeholder methods for vocab-related functionality
     public List<VocabNote> GetVocabNotes()
     {
-        // TODO: Implement when VocabCollection is complete
-        return new List<VocabNote>();
+        return App.Col().Vocab.WithKanjiInAnyForm(this);
     }
 
     public List<VocabNote> GetVocabNotesSorted()

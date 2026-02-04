@@ -140,8 +140,7 @@ public class VocabCache : NoteCache<VocabNote, VocabSnapshot>
                     if (!compoundParts.Contains(vocab))
                     {
                         compoundParts.Add(vocab);
-                        // TODO: Access vocab.question.disambiguation_name when implemented
-                        // FetchParts(vocab.Question.DisambiguationName);
+                        FetchParts(vocab.Question.DisambiguationName);
                     }
                 }
             }

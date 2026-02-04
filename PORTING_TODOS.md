@@ -100,14 +100,9 @@ return new List<SentenceNote>();
 
 ---
 
-### 10. KanjiNote - Vocab System Integration
+### 10. KanjiNote - Vocab System Integration ✅ COMPLETED
 **File**: [KanjiNote.cs](src/src_dotnet/JAStudio.Core/Note/KanjiNote.cs#L69)
-```csharp
-// TODO: Implement when vocab system is complete
-SetPrimaryVocabAudio(string.Empty);
-```
-**Status**: Vocab system appears to be ported per PORTING_STATUS.md
-**Action**: Implement primary vocab audio functionality
+**Status**: RESOLVED - Implemented primary vocab audio functionality in `UpdatePrimaryAudios()`. Gets vocab notes from `GetPrimaryVocab()`, retrieves their audio using `Audio.GetPrimaryAudio()`, and concatenates them, matching Python's implementation.
 
 ---
 
@@ -119,15 +114,10 @@ SetPrimaryVocabAudio(string.Empty);
 
 ---
 
-### 12. KanjiNote - ReplaceWord
+### 12. KanjiNote - ReplaceWord ✅ COMPLETED
 **File**: [KanjiNote.cs](src/src_dotnet/JAStudio.Core/Note/KanjiNote.cs#L170)
 **File**: [KanjiNote.cs](src/src_dotnet/JAStudio.Core/Note/KanjiNote.cs#L181)
-```csharp
-// TODO: Implement ReplaceWord when needed
-SetReadingOn(GetReadingOnHtml().Replace(reading, $"<primary>{reading}</primary>"));
-```
-**Status**: Using simple string.Replace, but TODO suggests more sophisticated word replacement needed
-**Action**: Determine if simple Replace is sufficient or if ReplaceWord utility is needed
+**Status**: RESOLVED - Updated `StringExtensions.ReplaceWord()` to use word boundary detection with regex (matching Python's `ex_str.replace_word()` which uses `\b` word boundaries). Applied to `AddPrimaryOnReading` and `AddPrimaryKunReading` methods.
 
 ---
 
@@ -137,44 +127,27 @@ SetReadingOn(GetReadingOnHtml().Replace(reading, $"<primary>{reading}</primary>"
 
 ---
 
-### 14. KanjiNote - Config and Mnemonic Maker
+### 14. KanjiNote - Config and Mnemonic Maker ✅ COMPLETED
 **File**: [KanjiNote.cs](src/src_dotnet/JAStudio.Core/Note/KanjiNote.cs#L345)
-```csharp
-// TODO: Implement config and mnemonic maker
-```
-**Status**: KanjiNoteMnemonicMaker is 100% ported per PORTING_STATUS.md
-**Action**: Integrate KanjiNoteMnemonicMaker into KanjiNote
+**Status**: RESOLVED - Integrated `KanjiNoteMnemonicMaker.CreateDefaultMnemonic()` in `GetActiveMnemonic()` method with config check for `PreferDefaultMnemonicsToSourceMnemonics`, matching Python's implementation.
 
 ---
 
-### 15. KanjiNote - VocabCollection Integration
+### 15. KanjiNote - VocabCollection Integration ✅ COMPLETED
 **File**: [KanjiNote.cs](src/src_dotnet/JAStudio.Core/Note/KanjiNote.cs#L377)
-```csharp
-// TODO: Implement when VocabCollection is complete
-```
-**Status**: VocabCollection is 100% ported per PORTING_STATUS.md
-**Action**: Implement the VocabCollection integration
+**Status**: RESOLVED - Implemented `GetVocabNotes()` to use `App.Col().Vocab.WithKanjiInAnyForm(this)`, matching Python's `app.col().vocab.with_kanji_in_any_form(self)`. VocabCollection is fully ported and integrated.
 
 ---
 
-### 16. VocabCollection - Disambiguation Name Access
+### 16. VocabCollection - Disambiguation Name Access ✅ COMPLETED
 **File**: [VocabCollection.cs](src/src_dotnet/JAStudio.Core/Note/Collection/VocabCollection.cs#L143)
-```csharp
-// TODO: Access vocab.question.disambiguation_name when implemented
-// FetchParts(vocab.Question.DisambiguationName);
-```
-**Status**: VocabNoteQuestion exists, need to verify if DisambiguationName property exists
-**Action**: Implement or enable access to disambiguation_name property
+**Status**: RESOLVED - Enabled recursive call to `FetchParts(vocab.Question.DisambiguationName)` in `WithCompoundPart()` method. The `DisambiguationName` property exists and is accessible, matching Python's `vocab.question.disambiguation_name`.
 
 ---
 
-### 17. CachingSentenceConfigurationField - Review Test Method
+### 17. CachingSentenceConfigurationField - Review Test Method ✅ COMPLETED
 **File**: [CachingSentenceConfigurationField.cs](src/src_dotnet/JAStudio.Core/Note/Sentences/CachingSentenceConfigurationField.cs#L67)
-```csharp
-public void SetValueDirectlyTestsOnly(SentenceConfiguration configuration)//TODO: Review
-```
-**Status**: Method marked for review
-**Action**: Review whether this test-only method is properly implemented
+**Status**: RESOLVED - Reviewed and confirmed correct. This is a test-only helper method that doesn't exist in Python. It directly sets `_value` without triggering Save(), which is appropriate for test scenarios. The `[Obsolete("For testing only")]` attribute properly warns against production use. Implementation is correct.
 
 ---
 

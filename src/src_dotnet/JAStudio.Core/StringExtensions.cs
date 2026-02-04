@@ -41,8 +41,9 @@ public static class StringExtensions
             return text;
         }
 
-        // Simple word replacement - can be enhanced with word boundary detection
-        return text.Replace(word, replacement);
+        // Use word boundary detection to match whole words only (matching Python's implementation)
+        var pattern = $@"\b{Regex.Escape(word)}\b";
+        return Regex.Replace(text, pattern, replacement);
     }
 
     public static string PadToLength(string value, int targetLength, double spaceScaling = 1.0)
