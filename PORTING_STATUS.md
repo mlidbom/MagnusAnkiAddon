@@ -291,7 +291,6 @@ Staying this close to the Python is what makes the porting workable at all. If w
                 - Note: Tests added to existing KanaUtilsTests.cs
             - jamdict_tests
                 - CREATED WIP test_dict_lookup.py
-                    - Note: GenerateAnswer test for "張り切る" fails - bug in FormatAnswer (missing "to-" prefix)
             - janome_tests
                 - EXCLUDED test_explore_token_part_of_speech_information.py
                     - Note: Exploratory/investigation code, not actual tests

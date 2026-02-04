@@ -63,16 +63,21 @@ public class SenseEX
 
             if (IsToBeVerb())
             {
-                return $"to-be:{startGroup}{string.Join("/", Glosses.Select(it => it.Replace("to-be-", "")))}{endGroup}";
+                return $"to-be:{startGroup}{string.Join("/", Glosses.Select(it => RemovePrefix(it, "to-be-")))}{endGroup}";
             }
 
             if (AllGlossesStartWith("to-"))
             {
-                return $"to{typeMarker}{startGroup}{string.Join("/", Glosses.Select(it => it.Replace("to-", "")))}{endGroup}";
+                return $"to{typeMarker}{startGroup}{string.Join("/", Glosses.Select(it => RemovePrefix(it, "to-")))}{endGroup}";
             }
         }
 
         return string.Join("/", Glosses);
+    }
+
+    private static string RemovePrefix(string text, string prefix)
+    {
+        return text.StartsWith(prefix) ? text.Substring(prefix.Length) : text;
     }
 }
 
