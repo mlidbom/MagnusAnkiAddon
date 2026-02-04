@@ -47,7 +47,10 @@ Staying this close to the Python is what makes the porting workable at all. If w
     - 80% mylog.py
         - Core API complete but uses simplified ConsoleLogger vs Python's detailed logging config (handlers, formatters, environment-based levels)
     - batches
-        - CREATED WIP local_note_updater.py
+        - 90% local_note_updater.py
+            - CreateMissingVocabWithDictionaryEntries() throws NotImplementedException instead of full implementation with DictLookup
+            - ReadingInVocabReading() has extra length check not in Python (minor difference)
+            - Uses local StripHtmlAndBracketMarkupAndNoiseCharacters() instead of ex_str utility (may have subtle differences)
     - configuration
         - 100% configuration_value.py
         - 100% settings.py
@@ -263,13 +266,13 @@ Staying this close to the Python is what makes the porting workable at all. If w
     - ui
         - web
             - sentence
-                - CREATED WIP candidate_word_variant_viewmodel.py
-                - CREATED WIP compound_part_viewmodel.py
-                - CREATED WIP match_viewmodel.py
-                - CREATED WIP sentence_viewmodel.py
-                - CREATED WIP text_analysis_viewmodel.py
+                - 100% candidate_word_variant_viewmodel.py
+                - 100% compound_part_viewmodel.py
+                - 100% match_viewmodel.py
+                - 100% sentence_viewmodel.py
+                - 100% text_analysis_viewmodel.py
             - vocab
-                - CREATED WIP vocab_sentences_vocab_sentence_view_model.py
+                - 100% vocab_sentences_vocab_sentence_view_model.py
     - viewmodels
         - kanji_list
             - CREATED WIP kanji_list_viewmodel.py
