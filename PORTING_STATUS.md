@@ -53,11 +53,11 @@ Staying this close to the Python is what makes the porting workable at all. If w
     - 100% hiragana_chart.py
     - 100% katakana_chart.py
     - jamdict_ex
-        - MISSING dict_entry.py
-        - MISSING dict_lookup.py
-        - MISSING dict_lookup_result.py
-        - MISSING jamdict_threading_wrapper.py
-        - MISSING priority_spec.py
+        - 100% dict_entry.py
+        - 100% dict_lookup.py
+        - 100% dict_lookup_result.py
+        - 100% jamdict_threading_wrapper.py
+        - 100% priority_spec.py
     - janome_ex
         - tokenizing
             - 100% analysis_token.py
@@ -197,8 +197,8 @@ Staying this close to the Python is what makes the porting workable at all. If w
             - 50% sentence_configuration_serializer.py
                 - Extra public member: Instance property (singleton pattern not in Python); contains extra JsonHelper class; JsonHelper has incomplete TODO implementations
     - vocabulary
-        - MISSING pos.py
-        - MISSING pos_set_interner.py
+        - 100% pos.py
+        - 100% pos_set_interner.py
         - 50% vocabnote.py
             - File in wrong location (Note\VocabNote.cs instead of Note\Vocabulary\VocabNote.cs); needs comparison of public API
         - CREATED WIP vocabnote_audio.py

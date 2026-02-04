@@ -22,7 +22,7 @@ public class VocabNoteRegister
     public TagFlagField Humble => new TagFlagField(Vocab, Tags.Vocab.Register.Humble);
     public TagFlagField Literary => new TagFlagField(Vocab, Tags.Vocab.Register.Literary);
     public TagFlagField Honorific => new TagFlagField(Vocab, Tags.Vocab.Register.Honorific);
-    public TagFlagField RoughMasculine => new TagFlagField(Vocab, Tags.Vocab.Register.RoughMasculine);`
+    public TagFlagField RoughMasculine => new TagFlagField(Vocab, Tags.Vocab.Register.RoughMasculine);
     public TagFlagField SoftFeminine => new TagFlagField(Vocab, Tags.Vocab.Register.SoftFeminine);
     public TagFlagField Slang => new TagFlagField(Vocab, Tags.Vocab.Register.Slang);
     public TagFlagField Derogatory => new TagFlagField(Vocab, Tags.Vocab.Register.Derogatory);
