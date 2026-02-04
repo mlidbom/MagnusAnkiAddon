@@ -1,3 +1,4 @@
+using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.Sentences;
 using System;
@@ -49,6 +50,11 @@ public class SentenceNote : JPNote
     public override string GetAnswer()
     {
         return Answer.Get();
+    }
+
+    public TextAnalysis CreateAnalysis(bool forUI = false)
+    {
+        return new TextAnalysis(Question.WithInvisibleSpace(), Configuration.Configuration, forUI);
     }
 
     public List<string> GetWords()

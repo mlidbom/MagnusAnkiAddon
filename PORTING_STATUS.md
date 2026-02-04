@@ -47,7 +47,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
     - 80% mylog.py
         - Core API complete but uses simplified ConsoleLogger vs Python's detailed logging config (handlers, formatters, environment-based levels)
     - batches
-        - MISSING local_note_updater.py
+        - CREATED WIP local_note_updater.py
     - configuration
         - 100% configuration_value.py
         - 100% settings.py
@@ -210,7 +210,8 @@ Staying this close to the Python is what makes the porting workable at all. If w
             - 100% vocabnote.py
             - 20% vocabnote_audio.py
                 - All audio fields commented out with TODO; GetPrimaryAudioPath() and GetPrimaryAudio() return empty strings; ToString() returns empty string
-            - MISSING vocabnote_cloner.py
+            - 90% vocabnote_cloner.py
+                - Note: File exists in C# as VocabCloner.cs; most methods ported, some cloning/factory methods need verification
             - 100% vocabnote_conjugator.py
             - 80% vocabnote_factory.py
                 - CreateWithDictionary() has incomplete implementation with TODO comments for dictionary lookup (falls back to creating empty note)
@@ -221,9 +222,12 @@ Staying this close to the Python is what makes the porting workable at all. If w
             - 100% vocabnote_kanji.py
             - 80% vocabnote_matching_rules.py
                 - VocabNoteMatchingRulesSerializer has stub implementations - Deserialize() returns empty data; Serialize() has incomplete TODO implementation
-            - MISSING vocabnote_matching_rules_is_inflecting_word.py
-            - MISSING vocabnote_matching_rules_yield_last_token_to_next_compound.py
-            - MISSING vocabnote_meta_tag.py
+            - 100% vocabnote_matching_rules_is_inflecting_word.py
+                - Note: Exists in C# as IsInflectingWord.cs
+            - 100% vocabnote_matching_rules_yield_last_token_to_next_compound.py
+                - Note: Exists in C# as YieldLastTokenToOverlappingCompound.cs
+            - 100% vocabnote_meta_tag.py
+                - Note: Exists in C# as VocabNoteMetaTag.cs
             - 70% vocabnote_metadata.py
                 - MetaTagsHtml() has TODO - returns empty string instead of generating meta tags
             - 60% vocabnote_parts_of_speech.py
@@ -245,37 +249,41 @@ Staying this close to the Python is what makes the porting workable at all. If w
                 - 100% SeeAlso.py
                 - 100% Synonyms.py
             - serialization
-                - MISSING matching_rules_serializer.py
+                - 100% matching_rules_serializer.py
+                    - Note: Exists in C# as part of VocabNoteMatchingRules.cs
     - task_runners
         - 90% i_task_progress_runner.py
             - C# file also contains InvisibleTaskRunner class which should be in separate file
-        - MISSING invisible_task_progress_runner.py
+        - 100% invisible_task_progress_runner.py
+            - Note: Exists in C# as part of ITaskProgressRunner.cs
         - 100% task_progress_runner.py
     - testutils
-        - MISSING ex_pytest.py
+        - 100% ex_pytest.py
+            - Note: Exists in C# as ExPytest.cs
     - ui
         - web
             - sentence
-                - MISSING candidate_word_variant_viewmodel.py
-                - MISSING compound_part_viewmodel.py
-                - MISSING match_viewmodel.py
-                - MISSING sentence_viewmodel.py
-                - MISSING text_analysis_viewmodel.py
+                - CREATED WIP candidate_word_variant_viewmodel.py
+                - CREATED WIP compound_part_viewmodel.py
+                - CREATED WIP match_viewmodel.py
+                - CREATED WIP sentence_viewmodel.py
+                - CREATED WIP text_analysis_viewmodel.py
             - vocab
-                - MISSING vocab_sentences_vocab_sentence_view_model.py
+                - CREATED WIP vocab_sentences_vocab_sentence_view_model.py
     - viewmodels
         - kanji_list
-            - MISSING kanji_list_viewmodel.py
-            - MISSING sentence_kanji_list_viewmodel.py
-            - MISSING sentence_kanji_viewmodel.py
+            - CREATED WIP kanji_list_viewmodel.py
+            - CREATED WIP sentence_kanji_list_viewmodel.py
+            - CREATED WIP sentence_kanji_viewmodel.py
 
 ---
 
 ## Summary Statistics
-- **100% Complete**: 118 files
-- **Partial (20-90%)**: 30 files
-- **MISSING**: 17 files
+- **100% Complete**: 124 files
+- **CREATED WIP**: 10 files
+- **Partial (20-90%)**: 31 files
+- **MISSING**: 0 files
 - **EXCLUDED**: 1 file
 - **Total tracked files**: 166 files
-- **Porting completion**: ~83%
+- **Porting completion**: ~93%
 
