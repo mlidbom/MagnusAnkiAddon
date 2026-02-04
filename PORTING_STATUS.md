@@ -120,30 +120,30 @@ Staying this close to the Python is what makes the porting workable at all. If w
                         - 100% is_godan_imperative_surface_with_base.py
                         - 100% is_godan_potential_surface_with_base.py
                         - 100% is_ichidan_imperative.py
-                        - CREATED WIP is_inflected_surface_with_valid_base.py
-                        - CREATED WIP is_poison_word.py
-                        - CREATED WIP is_shadowed.py
-                        - CREATED WIP is_single_token.py
-                        - CREATED WIP starts_with_godan_imperative_stem_or_inflection.py
-                        - CREATED WIP starts_with_godan_potential_stem_or_inflection.py
-                        - CREATED WIP surface_is_in.py
+                        - 100% is_inflected_surface_with_valid_base.py
+                        - 100% is_poison_word.py
+                        - 100% is_shadowed.py
+                        - 100% is_single_token.py
+                        - 100% starts_with_godan_imperative_stem_or_inflection.py
+                        - 100% starts_with_godan_potential_stem_or_inflection.py
+                        - 100% surface_is_in.py
                         - head
-                            - CREATED WIP failed_match_requirement.py
-                            - CREATED WIP generic_forbids.py
-                            - CREATED WIP has_godan_imperative_prefix.py
-                            - CREATED WIP has_past_tense_stem.py
-                            - CREATED WIP has_te_form_stem.py
-                            - CREATED WIP is_sentence_start.py
-                            - CREATED WIP prefix_is_in.py
-                            - CREATED WIP requires_forbids_adverb_stem.py
-                            - CREATED WIP requires_forbids_masu_stem.py
-                            - CREATED WIP requires_or_forbids_dictionary_form_prefix.py
-                            - CREATED WIP requires_or_forbids_dictionary_form_stem.py
-                            - CREATED WIP requires_or_forbids_generic.py
+                            - 100% failed_match_requirement.py
+                            - 100% generic_forbids.py
+                            - 100% has_godan_imperative_prefix.py
+                            - 100% has_past_tense_stem.py
+                            - 100% has_te_form_stem.py
+                            - 100% is_sentence_start.py
+                            - 100% prefix_is_in.py
+                            - 100% requires_forbids_adverb_stem.py
+                            - 100% requires_forbids_masu_stem.py
+                            - 100% requires_or_forbids_dictionary_form_prefix.py
+                            - 100% requires_or_forbids_dictionary_form_stem.py
+                            - 100% requires_or_forbids_generic.py
                         - tail
-                            - CREATED WIP forbids_has_displayed_overlapping_following_compound.py
-                            - CREATED WIP is_sentence_end.py
-                            - CREATED WIP suffix_is_in.py
+                            - 100% forbids_has_displayed_overlapping_following_compound.py
+                            - 100% is_sentence_end.py
+                            - 100% suffix_is_in.py
     - note
         - 100% backend_note_creator.py
         - 40% difficulty_calculator.py
