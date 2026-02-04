@@ -186,9 +186,10 @@ Staying this close to the Python is what makes the porting workable at all. If w
         - 100% strip_html_on_read_fallback_string_field.py
         - 100% tag_flag_field.py
         - auto_save_wrappers
-            - CREATED WIP field_wrapper.py
-            - CREATED WIP set_wrapper.py
-            - CREATED WIP value_wrapper.py
+            - 100% field_wrapper.py
+            - 90% set_wrapper.py
+                - Wrong file name: FieldSetWrapper.cs instead of SetWrapper.cs
+            - 100% value_wrapper.py
     - sentences
         - 100% caching_sentence_configuration_field.py
         - 100% parsed_match.py
@@ -240,21 +241,21 @@ Staying this close to the Python is what makes the porting workable at all. If w
             - AutoGenerate() not implemented (just TODO comment); missing _collection property
         - 100% vocabnote_userfields.py
         - related_vocab
-            - CREATED WIP Antonyms.py
-            - CREATED WIP ergative_twin.py
-            - CREATED WIP perfect_synonyms.py
-            - CREATED WIP related_vocab.py
-            - CREATED WIP related_vocab_data.py
-            - CREATED WIP related_vocab_data_serializer.py
-            - CREATED WIP SeeAlso.py
-            - CREATED WIP Synonyms.py
+            - 100% Antonyms.py
+            - 100% ergative_twin.py
+            - 100% perfect_synonyms.py
+            - 100% related_vocab.py
+            - 100% related_vocab_data.py
+            - 100% related_vocab_data_serializer.py
+            - 100% SeeAlso.py
+            - 100% Synonyms.py
         - serialization
             - MISSING matching_rules_serializer.py
 - task_runners
-    - CREATED WIP i_task_progress_runner.py
-        - Wrong name: ITaskRunner instead of ITaskProgressRunner
+    - 90% i_task_progress_runner.py
+        - Wrong name: ITaskRunner instead of ITaskProgressRunner; C# file also contains InvisibleTaskRunner class which should be in separate file
     - MISSING invisible_task_progress_runner.py
-    - CREATED WIP task_progress_runner.py
+    - 100% task_progress_runner.py
 - testutils
     - MISSING ex_pytest.py
 - ui
