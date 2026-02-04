@@ -69,7 +69,7 @@ public class JNPartsOfSpeech
         JapaneseToPartOfSpeech[desc.Japanese] = desc;
     }
 
-    private static JNPartsOfSpeech AddFullPartOfSpeech(string level1, string level2 = "*", string level3 = "*", string level4 = "*")
+    internal static JNPartsOfSpeech AddFullPartOfSpeech(string level1, string level2 = "*", string level3 = "*", string level4 = "*")
     {
         var combined = $"{level1},{level2},{level3},{level4}";
         var partsOfSpeech = new JNPartsOfSpeech(level1, level2, level3, level4);
@@ -162,11 +162,11 @@ public static class JNPOS
 
     internal static void Initialize()
     {
-        Filler = JNPartsOfSpeech.Fetch("フィラー,*,*,*");
-        BoundAuxiliary = JNPartsOfSpeech.Fetch("助動詞,*,*,*");
-        PreNounAdjectival = JNPartsOfSpeech.Fetch("連体詞,*,*,*");
-        Interjection = JNPartsOfSpeech.Fetch("感動詞,*,*,*");
-        Conjunction = JNPartsOfSpeech.Fetch("接続詞,*,*,*");
+        Filler = JNPartsOfSpeech.AddFullPartOfSpeech("フィラー");
+        BoundAuxiliary = JNPartsOfSpeech.AddFullPartOfSpeech("助動詞");
+        PreNounAdjectival = JNPartsOfSpeech.AddFullPartOfSpeech("連体詞");
+        Interjection = JNPartsOfSpeech.AddFullPartOfSpeech("感動詞");
+        Conjunction = JNPartsOfSpeech.AddFullPartOfSpeech("接続詞");
 
         Other.Initialize();
         Adverb.Initialize();
@@ -184,7 +184,7 @@ public static class JNPOS
 
         internal static void Initialize()
         {
-            Interjection = JNPartsOfSpeech.Fetch("その他,間投,*,*");
+            Interjection = JNPartsOfSpeech.AddFullPartOfSpeech("その他", "間投", "*", "*");
         }
     }
 
@@ -195,8 +195,8 @@ public static class JNPOS
 
         internal static void Initialize()
         {
-            General = JNPartsOfSpeech.Fetch("副詞,一般,*,*");
-            ParticleConnection = JNPartsOfSpeech.Fetch("副詞,助詞類接続,*,*");
+            General = JNPartsOfSpeech.AddFullPartOfSpeech("副詞", "一般", "*", "*");
+            ParticleConnection = JNPartsOfSpeech.AddFullPartOfSpeech("副詞", "助詞類接続", "*", "*");
         }
     }
 
@@ -214,15 +214,15 @@ public static class JNPOS
 
         internal static void Initialize()
         {
-            CoordinatingConjunction = JNPartsOfSpeech.Fetch("助詞,並立助詞,*,*");
-            Binding = JNPartsOfSpeech.Fetch("助詞,係助詞,*,*");
-            Adverbial = JNPartsOfSpeech.Fetch("助詞,副助詞,*,*");
-            AdverbialCoordinatingEnding = JNPartsOfSpeech.Fetch("助詞,副助詞／並立助詞／終助詞,*,*");
-            Adverbialization = JNPartsOfSpeech.Fetch("助詞,副詞化,*,*");
-            Conjunctive = JNPartsOfSpeech.Fetch("助詞,接続助詞,*,*");
-            Special = JNPartsOfSpeech.Fetch("助詞,特殊,*,*");
-            SentenceEnding = JNPartsOfSpeech.Fetch("助詞,終助詞,*,*");
-            Adnominalization = JNPartsOfSpeech.Fetch("助詞,連体化,*,*");
+            CoordinatingConjunction = JNPartsOfSpeech.AddFullPartOfSpeech("助詞", "並立助詞", "*", "*");
+            Binding = JNPartsOfSpeech.AddFullPartOfSpeech("助詞", "係助詞", "*", "*");
+            Adverbial = JNPartsOfSpeech.AddFullPartOfSpeech("助詞", "副助詞", "*", "*");
+            AdverbialCoordinatingEnding = JNPartsOfSpeech.AddFullPartOfSpeech("助詞", "副助詞／並立助詞／終助詞", "*", "*");
+            Adverbialization = JNPartsOfSpeech.AddFullPartOfSpeech("助詞", "副詞化", "*", "*");
+            Conjunctive = JNPartsOfSpeech.AddFullPartOfSpeech("助詞", "接続助詞", "*", "*");
+            Special = JNPartsOfSpeech.AddFullPartOfSpeech("助詞", "特殊", "*", "*");
+            SentenceEnding = JNPartsOfSpeech.AddFullPartOfSpeech("助詞", "終助詞", "*", "*");
+            Adnominalization = JNPartsOfSpeech.AddFullPartOfSpeech("助詞", "連体化", "*", "*");
 
             CaseMarking.Initialize();
         }
@@ -235,9 +235,9 @@ public static class JNPOS
 
             internal static void Initialize()
             {
-                General = JNPartsOfSpeech.Fetch("助詞,格助詞,一般,*");
-                Quotation = JNPartsOfSpeech.Fetch("助詞,格助詞,引用,*");
-                Compound = JNPartsOfSpeech.Fetch("助詞,格助詞,連語,*");
+                General = JNPartsOfSpeech.AddFullPartOfSpeech("助詞", "格助詞", "一般", "*");
+                Quotation = JNPartsOfSpeech.AddFullPartOfSpeech("助詞", "格助詞", "引用", "*");
+                Compound = JNPartsOfSpeech.AddFullPartOfSpeech("助詞", "格助詞", "連語", "*");
             }
         }
     }
@@ -251,9 +251,9 @@ public static class JNPOS
 
         internal static void Initialize()
         {
-            Suffix = JNPartsOfSpeech.Fetch("動詞,接尾,*,*");
-            Independent = JNPartsOfSpeech.Fetch("動詞,自立,*,*");
-            Dependent = JNPartsOfSpeech.Fetch("動詞,非自立,*,*");
+            Suffix = JNPartsOfSpeech.AddFullPartOfSpeech("動詞", "接尾", "*", "*");
+            Independent = JNPartsOfSpeech.AddFullPartOfSpeech("動詞", "自立", "*", "*");
+            Dependent = JNPartsOfSpeech.AddFullPartOfSpeech("動詞", "非自立", "*", "*");
             AllTypes = new HashSet<JNPartsOfSpeech> { Independent, Dependent, Suffix };
         }
     }
@@ -272,15 +272,15 @@ public static class JNPOS
 
         internal static void Initialize()
         {
-            SuruVerb = JNPartsOfSpeech.Fetch("名詞,サ変接続,*,*");
-            NegativeAdjectiveStem = JNPartsOfSpeech.Fetch("名詞,ナイ形容詞語幹,*,*");
-            General = JNPartsOfSpeech.Fetch("名詞,一般,*,*");
-            Adverbial = JNPartsOfSpeech.Fetch("名詞,副詞可能,*,*");
-            AuxiliaryVerb = JNPartsOfSpeech.Fetch("名詞,動詞非自立的,*,*");
-            NaAdjectiveStem = JNPartsOfSpeech.Fetch("名詞,形容動詞語幹,*,*");
-            Numeric = JNPartsOfSpeech.Fetch("名詞,数,*,*");
-            Conjunctive = JNPartsOfSpeech.Fetch("名詞,接続詞的,*,*");
-            QuotedCharacterString = JNPartsOfSpeech.Fetch("名詞,引用文字列,*,*");
+            SuruVerb = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "サ変接続", "*", "*");
+            NegativeAdjectiveStem = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "ナイ形容詞語幹", "*", "*");
+            General = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "一般", "*", "*");
+            Adverbial = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "副詞可能", "*", "*");
+            AuxiliaryVerb = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "動詞非自立的", "*", "*");
+            NaAdjectiveStem = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "形容動詞語幹", "*", "*");
+            Numeric = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "数", "*", "*");
+            Conjunctive = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "接続詞的", "*", "*");
+            QuotedCharacterString = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "引用文字列", "*", "*");
 
             Pronoun.Initialize();
             ProperNoun.Initialize();
@@ -296,8 +296,8 @@ public static class JNPOS
 
             internal static void Initialize()
             {
-                General = JNPartsOfSpeech.Fetch("名詞,代名詞,一般,*");
-                Contracted = JNPartsOfSpeech.Fetch("名詞,代名詞,縮約,*");
+                General = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "代名詞", "一般", "*");
+                Contracted = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "代名詞", "縮約", "*");
             }
         }
 
@@ -308,8 +308,8 @@ public static class JNPOS
 
             internal static void Initialize()
             {
-                General = JNPartsOfSpeech.Fetch("名詞,固有名詞,一般,*");
-                Organization = JNPartsOfSpeech.Fetch("名詞,固有名詞,組織,*");
+                General = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "固有名詞", "一般", "*");
+                Organization = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "固有名詞", "組織", "*");
 
                 Person.Initialize();
                 Location.Initialize();
@@ -323,9 +323,9 @@ public static class JNPOS
 
                 internal static void Initialize()
                 {
-                    General = JNPartsOfSpeech.Fetch("名詞,固有名詞,人名,一般");
-                    Firstname = JNPartsOfSpeech.Fetch("名詞,固有名詞,人名,名");
-                    Surname = JNPartsOfSpeech.Fetch("名詞,固有名詞,人名,姓");
+                    General = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "固有名詞", "人名", "一般");
+                    Firstname = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "固有名詞", "人名", "名");
+                    Surname = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "固有名詞", "人名", "姓");
                 }
             }
 
@@ -336,8 +336,8 @@ public static class JNPOS
 
                 internal static void Initialize()
                 {
-                    General = JNPartsOfSpeech.Fetch("名詞,固有名詞,地域,一般");
-                    Country = JNPartsOfSpeech.Fetch("名詞,固有名詞,地域,国");
+                    General = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "固有名詞", "地域", "一般");
+                    Country = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "固有名詞", "地域", "国");
                 }
             }
         }
@@ -356,15 +356,15 @@ public static class JNPOS
 
             internal static void Initialize()
             {
-                SuruVerbConnection = JNPartsOfSpeech.Fetch("名詞,接尾,サ変接続,*");
-                General = JNPartsOfSpeech.Fetch("名詞,接尾,一般,*");
-                PersonsName = JNPartsOfSpeech.Fetch("名詞,接尾,人名,*");
-                Adverbial = JNPartsOfSpeech.Fetch("名詞,接尾,副詞可能,*");
-                AuxiliaryVerbStem = JNPartsOfSpeech.Fetch("名詞,接尾,助動詞語幹,*");
-                Counter = JNPartsOfSpeech.Fetch("名詞,接尾,助数詞,*");
-                Region = JNPartsOfSpeech.Fetch("名詞,接尾,地域,*");
-                NaAdjectiveStem = JNPartsOfSpeech.Fetch("名詞,接尾,形容動詞語幹,*");
-                Special = JNPartsOfSpeech.Fetch("名詞,接尾,特殊,*");
+                SuruVerbConnection = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "接尾", "サ変接続", "*");
+                General = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "接尾", "一般", "*");
+                PersonsName = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "接尾", "人名", "*");
+                Adverbial = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "接尾", "副詞可能", "*");
+                AuxiliaryVerbStem = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "接尾", "助動詞語幹", "*");
+                Counter = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "接尾", "助数詞", "*");
+                Region = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "接尾", "地域", "*");
+                NaAdjectiveStem = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "接尾", "形容動詞語幹", "*");
+                Special = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "接尾", "特殊", "*");
             }
         }
 
@@ -374,7 +374,7 @@ public static class JNPOS
 
             internal static void Initialize()
             {
-                AuxiliaryVerbStem = JNPartsOfSpeech.Fetch("名詞,特殊,助動詞語幹,*");
+                AuxiliaryVerbStem = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "特殊", "助動詞語幹", "*");
             }
         }
 
@@ -387,10 +387,10 @@ public static class JNPOS
 
             internal static void Initialize()
             {
-                General = JNPartsOfSpeech.Fetch("名詞,非自立,一般,*");
-                Adverbial = JNPartsOfSpeech.Fetch("名詞,非自立,副詞可能,*");
-                AuxiliaryVerbStem = JNPartsOfSpeech.Fetch("名詞,非自立,助動詞語幹,*");
-                NaAdjectiveStem = JNPartsOfSpeech.Fetch("名詞,非自立,形容動詞語幹,*");
+                General = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "非自立", "一般", "*");
+                Adverbial = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "非自立", "副詞可能", "*");
+                AuxiliaryVerbStem = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "非自立", "助動詞語幹", "*");
+                NaAdjectiveStem = JNPartsOfSpeech.AddFullPartOfSpeech("名詞", "非自立", "形容動詞語幹", "*");
             }
         }
     }
@@ -404,9 +404,9 @@ public static class JNPOS
 
         internal static void Initialize()
         {
-            Suffix = JNPartsOfSpeech.Fetch("形容詞,接尾,*,*");
-            Independent = JNPartsOfSpeech.Fetch("形容詞,自立,*,*");
-            Dependent = JNPartsOfSpeech.Fetch("形容詞,非自立,*,*");
+            Suffix = JNPartsOfSpeech.AddFullPartOfSpeech("形容詞", "接尾", "*", "*");
+            Independent = JNPartsOfSpeech.AddFullPartOfSpeech("形容詞", "自立", "*", "*");
+            Dependent = JNPartsOfSpeech.AddFullPartOfSpeech("形容詞", "非自立", "*", "*");
             AllTypes = new HashSet<JNPartsOfSpeech> { Independent, Dependent, Suffix };
         }
     }
@@ -420,10 +420,10 @@ public static class JNPOS
 
         internal static void Initialize()
         {
-            Noun = JNPartsOfSpeech.Fetch("接頭詞,名詞接続,*,*");
-            Adjective = JNPartsOfSpeech.Fetch("接頭詞,形容詞接続,*,*");
-            Number = JNPartsOfSpeech.Fetch("接頭詞,数接続,*,*");
-            VerbConnective = JNPartsOfSpeech.Fetch("接頭詞,動詞接続,*,*");
+            Noun = JNPartsOfSpeech.AddFullPartOfSpeech("接頭詞", "名詞接続", "*", "*");
+            Adjective = JNPartsOfSpeech.AddFullPartOfSpeech("接頭詞", "形容詞接続", "*", "*");
+            Number = JNPartsOfSpeech.AddFullPartOfSpeech("接頭詞", "数接続", "*", "*");
+            VerbConnective = JNPartsOfSpeech.AddFullPartOfSpeech("接頭詞", "動詞接続", "*", "*");
         }
     }
 
@@ -439,13 +439,13 @@ public static class JNPOS
 
         internal static void Initialize()
         {
-            Alphabet = JNPartsOfSpeech.Fetch("記号,アルファベット,*,*");
-            General = JNPartsOfSpeech.Fetch("記号,一般,*,*");
-            Period = JNPartsOfSpeech.Fetch("記号,句点,*,*");
-            ClosingBracket = JNPartsOfSpeech.Fetch("記号,括弧閉,*,*");
-            OpeningBracket = JNPartsOfSpeech.Fetch("記号,括弧開,*,*");
-            Space = JNPartsOfSpeech.Fetch("記号,空白,*,*");
-            Comma = JNPartsOfSpeech.Fetch("記号,読点,*,*");
+            Alphabet = JNPartsOfSpeech.AddFullPartOfSpeech("記号", "アルファベット", "*", "*");
+            General = JNPartsOfSpeech.AddFullPartOfSpeech("記号", "一般", "*", "*");
+            Period = JNPartsOfSpeech.AddFullPartOfSpeech("記号", "句点", "*", "*");
+            ClosingBracket = JNPartsOfSpeech.AddFullPartOfSpeech("記号", "括弧閉", "*", "*");
+            OpeningBracket = JNPartsOfSpeech.AddFullPartOfSpeech("記号", "括弧開", "*", "*");
+            Space = JNPartsOfSpeech.AddFullPartOfSpeech("記号", "空白", "*", "*");
+            Comma = JNPartsOfSpeech.AddFullPartOfSpeech("記号", "読点", "*", "*");
         }
     }
 }
