@@ -73,7 +73,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
             - 100% jn_parts_of_speech.py
             - 100% jn_token.py
             - 80% jn_tokenized_text.py
-                - Missing public field: raw_tokens
+                - [This is OK. I'm pretty sure that raw tokens were only there for debugging purposes]Missing public field: raw_tokens.
             - 100% jn_tokenizer.py
             - 100% split_token.py
             - pre_processing_stage
