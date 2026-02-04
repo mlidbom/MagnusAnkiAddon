@@ -275,7 +275,6 @@ Staying this close to the Python is what makes the porting workable at all. If w
 - jaslib_tests
     - fixtures
         - MISSING collection_factory.py
-        - MISSING full_test_collection_factory.py
         - MISSING test_collection_factory.py
         - base_data
             - sample_data
