@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Compze\src\Compze\Utilities\Compze.Utilities.csproj" />
+    <ProjectReference Include="..\JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
   </ItemGroup>
 
 </Project>

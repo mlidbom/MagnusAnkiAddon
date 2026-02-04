@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace JAStudio.Core.Tokenization;
+namespace JAStudio.PythonInterop.Tokenization;
 
 public interface ITokenizer
 {

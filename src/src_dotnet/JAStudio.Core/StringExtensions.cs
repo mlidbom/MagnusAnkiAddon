@@ -45,6 +45,17 @@ public static class StringExtensions
         return text.Replace(word, replacement);
     }
 
+    public static string PadToLength(string value, int targetLength, double spaceScaling = 1.0)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            value = string.Empty;
+        }
+
+        var padding = Math.Max(0, targetLength - value.Length);
+        return value + new string(' ', (int)(padding * spaceScaling));
+    }
+
     public static string FirstNumber(string input)
     {
         if (string.IsNullOrEmpty(input))

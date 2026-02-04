@@ -1,4 +1,4 @@
-namespace JAStudio.Core.Tokenization;
+namespace JAStudio.PythonInterop.Tokenization;
 
 public record Token(
     string Surface,

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JAStudio.Core.Tokenization;
+using JAStudio.PythonInterop.Tokenization;
 using JAStudio.PythonInterop.Utilities;
 using Python.Runtime;
 

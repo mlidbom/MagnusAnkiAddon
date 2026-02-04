@@ -60,25 +60,25 @@ Staying this close to the Python is what makes the porting workable at all. If w
         - MISSING priority_spec.py
     - janome_ex
         - tokenizing
-            - MISSING analysis_token.py
-            - MISSING godan_dictionary_form_stem.py
-            - MISSING inflection_forms.py
-            - MISSING inflection_types.py
-            - MISSING jn_parts_of_speech.py
-            - MISSING jn_token.py
-            - MISSING jn_tokenized_text.py
-            - MISSING jn_tokenizer.py
-            - MISSING split_token.py
+            - 100% analysis_token.py
+            - 100% godan_dictionary_form_stem.py
+            - 100% inflection_forms.py
+            - 100% inflection_types.py
+            - 100% jn_parts_of_speech.py
+            - 100% jn_token.py
+            - 100% jn_tokenized_text.py
+            - 100% jn_tokenizer.py
+            - 100% split_token.py
             - pre_processing_stage
-                - MISSING dictionary_form_verb_splitter.py
-                - MISSING godan_imperative_splitter.py
-                - MISSING ichidan_godan_potential_or_imperative_hybrid_splitter.py
-                - MISSING ichidan_imperative_splitter.py
-                - MISSING pre_processing_stage.py
-                - MISSING word_info.py
-                - MISSING word_info_entry.py
+                - 100% dictionary_form_verb_splitter.py
+                - 100% godan_imperative_splitter.py
+                - 100% ichidan_godan_potential_or_imperative_hybrid_splitter.py
+                - 100% ichidan_imperative_splitter.py
+                - 100% pre_processing_stage.py
+                - 100% word_info.py
+                - 100% word_info_entry.py
         - word_extraction
-            - MISSING analysis_constants.py
+            - 100% analysis_constants.py
             - MISSING candidate_word.py
             - MISSING candidate_word_variant.py
             - MISSING text_analysis.py

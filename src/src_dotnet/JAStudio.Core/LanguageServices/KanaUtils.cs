@@ -1,9 +1,23 @@
+using System;
 using System.Linq;
 
 namespace JAStudio.Core.LanguageServices;
 
 public static class KanaUtils
 {
+    public const string FullWidthSpace = "　";
+
+    public static string PadToLength(string value, int targetLength)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            value = string.Empty;
+        }
+
+        var padding = Math.Max(0, targetLength - value.Length);
+        return value + new string(FullWidthSpace[0], padding);
+    }
+
     public static bool CharacterIsHiragana(char ch)
     {
         return ch >= 0x3040 && ch <= 0x309F;
