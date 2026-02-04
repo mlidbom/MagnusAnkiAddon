@@ -37,10 +37,13 @@ def col() -> JPCollection:
     return _collection
 
 def reset(backend_note_creator: IBackendNoteCreator) -> None:
+    from jaslib.note.collection.jp_collection import JPCollection
     global _collection
     global _backend_note_creator
     if _collection is not None:
         _collection = None
+    if is_testing:
+        _collection = JPCollection(backend_note_creator)
     _backend_note_creator = backend_note_creator
 
 user_files_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "user_files")
