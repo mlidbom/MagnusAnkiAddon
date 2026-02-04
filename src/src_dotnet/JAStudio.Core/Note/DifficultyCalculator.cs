@@ -1,4 +1,5 @@
 using System.Linq;
+using JAStudio.Core.SysUtils;
 
 namespace JAStudio.Core.Note;
 
@@ -19,8 +20,7 @@ public class DifficultyCalculator
 
     public static bool IsOtherCharacter(char ch)
     {
-        // TODO: Implement character_is_kana and character_is_kanji when KanaUtils is ported
-        return !char.IsLetterOrDigit(ch) && !char.IsWhiteSpace(ch);
+        return !KanaUtils.CharacterIsKana(ch) && !KanaUtils.CharacterIsKanji(ch);
     }
 
     public double AllowedSeconds(string text)
@@ -30,20 +30,10 @@ public class DifficultyCalculator
             return _startingSeconds;
         }
 
-        // TODO: Implement proper character classification when KanaUtils is ported
-        var hiraganaCount = 0;
-        var katakanaCount = 0;
-        var kanjiCount = 0;
-        var otherCount = 0;
-
-        foreach (var ch in text)
-        {
-            if (IsOtherCharacter(ch))
-            {
-                otherCount++;
-            }
-            // Placeholder - will be properly implemented when KanaUtils is available
-        }
+        var hiraganaCount = text.Count(KanaUtils.CharacterIsHiragana);
+        var katakanaCount = text.Count(KanaUtils.CharacterIsKatakana);
+        var kanjiCount = text.Count(KanaUtils.CharacterIsKanji);
+        var otherCount = text.Count(IsOtherCharacter);
 
         var hiraganaSeconds = hiraganaCount * _hiraganaSeconds;
         var katakanaSeconds = katakanaCount * _katakataSeconds;

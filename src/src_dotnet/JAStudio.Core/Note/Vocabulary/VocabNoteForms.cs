@@ -1,3 +1,4 @@
+using Compze.Utilities.SystemCE;
 using JAStudio.Core.Note.NoteFields;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,54 +8,85 @@ namespace JAStudio.Core.Note.Vocabulary;
 public class VocabNoteForms
 {
     private readonly VocabNote _vocab;
-    private readonly MutableCommaSeparatedStringsListField _field;
+    private readonly MutableCommaSeparatedStringsListFieldDeDuplicated _field;
+    private readonly LazyCE<HashSet<string>> _allRawSet;
+    private readonly LazyCE<List<string>> _allList;
+    private readonly LazyCE<HashSet<string>> _allSet;
+    private readonly LazyCE<HashSet<string>> _ownedForms;
+    private readonly LazyCE<HashSet<string>> _notOwnedByOtherVocab;
 
     public VocabNoteForms(VocabNote vocab)
     {
         _vocab = vocab;
-        _field = new MutableCommaSeparatedStringsListField(vocab, NoteFieldsConstants.Vocab.UserForms);
+        _field = new MutableCommaSeparatedStringsListFieldDeDuplicated(vocab, NoteFieldsConstants.Vocab.UserForms);
+        
+        _allRawSet = new LazyCE<HashSet<string>>(() => _field.Get().ToHashSet());
+        _allList = _field.LazyReader(() => _field.Get().Select(StripBrackets).ToList());
+        _allSet = _field.LazyReader(() => _allList.Value.ToHashSet());
+        _ownedForms = _field.LazyReader(ComputeOwnedForms);
+        _notOwnedByOtherVocab = _field.LazyReader(ComputeNotOwnedByOtherVocab);
     }
 
-    public List<string> AllList()
-    {
-        return _field.Get().Select(StripBrackets).ToList();
-    }
-
-    public HashSet<string> AllSet()
-    {
-        return AllList().ToHashSet();
-    }
-
-    public string AllRawString()
-    {
-        return _field.RawStringValue();
-    }
-
-    public List<VocabNote> AllListNotes()
-    {
-        return AllList()
-            .SelectMany(form => App.Col().Vocab.Cache.WithQuestion(form))
-            .ToList();
-    }
-
-    public HashSet<string> OwnedForms()
+    private HashSet<string> ComputeOwnedForms()
     {
         var owned = new HashSet<string> { _vocab.GetQuestion() };
-        
-        foreach (var form in _field.Get())
+        foreach (var form in _allRawSet.Value)
         {
             if (form.StartsWith("["))
             {
                 owned.Add(StripBrackets(form));
             }
         }
-        
         return owned;
     }
 
-    public bool IsOwnedForm(string form)
+    private HashSet<string> ComputeNotOwnedByOtherVocab()
     {
-        return OwnedForms().Contains(form);
+        bool IsNotOwnedByOtherFormNote(string form)
+        {
+            return !App.Col().Vocab.Cache.WithQuestion(form)
+                .Any(formOwningVocab => 
+                    formOwningVocab != _vocab && 
+                    formOwningVocab.Forms.AllSet().Contains(_vocab.GetQuestion()));
+        }
+
+        return _vocab.Forms.AllSet()
+            .Where(IsNotOwnedByOtherFormNote)
+            .ToHashSet();
+    }
+
+    public bool IsOwnedForm(string form) => _ownedForms.Value.Contains(form);
+
+    public HashSet<string> OwnedForms() => _ownedForms.Value;
+
+    public List<string> AllList() => _allList.Value;
+    public HashSet<string> AllSet() => _allSet.Value;
+    public string AllRawString() => _field.RawStringValue();
+
+    public List<VocabNote> AllListNotes()
+    {
+        return _allList.Value
+            .SelectMany(form => App.Col().Vocab.Cache.WithQuestion(form))
+            .ToList();
+    }
+
+    public List<VocabNote> AllListNotesBySentenceCount()
+    {
+        return AllListNotes()
+            .OrderByDescending(vocab => vocab.Sentences.Counts().Total)
+            .ToList();
+    }
+
+    public HashSet<string> NotOwnedByOtherVocab() => _notOwnedByOtherVocab.Value;
+
+    public List<string> WithoutNoiseCharacters()
+    {
+        return AllList().Select(StripNoiseCharacters).ToList();
+    }
+
+    private static string StripNoiseCharacters(string input)
+    {
+        return input.Replace(Mine.VocabPrefixSuffixMarker, "");
     }
 
     private static string StripBrackets(string input)
@@ -76,7 +108,7 @@ public class VocabNoteForms
     {
         _field.Remove(remove);
 
-        // Also remove from notes that have this vocab's question as a form (use ToList to avoid modification during iteration)
+        // Also remove from notes that have this vocab's question as a form
         var removeNotes = App.Col().Vocab.Cache.WithQuestion(remove)
             .Where(voc => voc.Forms.AllSet().Contains(_vocab.GetQuestion()))
             .ToList();
@@ -91,7 +123,7 @@ public class VocabNoteForms
     {
         _field.Add(add);
 
-        // Also add to notes that reference this form (use ToList to avoid modification during iteration)
+        // Also add to notes that reference this form
         var addNotes = App.Col().Vocab.Cache.WithQuestion(add)
             .Where(voc => !voc.Forms.AllSet().Contains(_vocab.GetQuestion()))
             .ToList();

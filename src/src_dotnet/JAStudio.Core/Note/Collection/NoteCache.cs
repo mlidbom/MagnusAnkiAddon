@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.TaskRunners;
 
 namespace JAStudio.Core.Note.Collection;
 
@@ -66,10 +67,14 @@ public abstract class NoteCacheBase<TNote> where TNote : JPNote
 
     public void InitFromList(List<JPNoteData> allNotes)
     {
-        // TODO: Implement TaskRunner progress when needed
-        foreach (var noteData in allNotes)
+        if (allNotes.Count > 0)
         {
-            AddToCacheFromData(noteData);
+            using var scope = TaskRunner.Current($"Pushing {_noteType.Name} notes into cache");
+            var runner = TaskRunner.GetCurrent()!;
+            runner.ProcessWithProgress(
+                allNotes,
+                noteData => { AddToCacheFromData(noteData); return 0; },
+                $"Pushing {_noteType.Name} notes into cache");
         }
     }
 

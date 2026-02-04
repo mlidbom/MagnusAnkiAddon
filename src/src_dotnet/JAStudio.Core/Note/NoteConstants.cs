@@ -146,3 +146,10 @@ public static class Builtin
     public const string Deck = "deck";
     public const string Card = "card";
 }
+
+public static class Mine
+{
+    public const string AppName = "JA-Studio";
+    public static readonly string AppStillLoadingMessage = $"{AppName} still loading, the view will refresh when done...";
+    public const string VocabPrefixSuffixMarker = "〜";
+}

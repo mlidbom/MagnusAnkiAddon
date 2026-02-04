@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using JAStudio.Core.LanguageServices.JamdictEx;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
@@ -7,19 +8,16 @@ public static class VocabNoteFactory
 {
     public static VocabNote CreateWithDictionary(string question)
     {
-        // TODO: Implement dictionary lookup when DictLookup is ported
-        // var lookupResult = DictLookup.LookupWord(question);
-        // if (!lookupResult.FoundWords())
-        // {
-        //     return Create(question, "", new List<string>());
-        // }
-        //
-        // var created = Create(question, lookupResult.FormatAnswer(), lookupResult.Readings());
-        // created.Tags.Set(Tags.Source.Jamdict);
-        // created.UpdateGeneratedData();
-        // return created;
-        
-        return Create(question, "", new List<string>());
+        var lookupResult = DictLookup.LookupWord(question);
+        if (!lookupResult.FoundWords())
+        {
+            return Create(question, "", new List<string>());
+        }
+
+        var created = Create(question, lookupResult.FormatAnswer(), lookupResult.Readings());
+        created.Tags.Set(Tags.Source.Jamdict);
+        created.UpdateGeneratedData();
+        return created;
     }
 
     public static VocabNote Create(string question, string answer, List<string> readings, Action<VocabNote>? initializer = null)

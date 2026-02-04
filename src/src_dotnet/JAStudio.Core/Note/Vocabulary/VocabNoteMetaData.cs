@@ -13,11 +13,10 @@ public class VocabNoteMetaData
 
     private VocabNote Vocab => _vocab;
 
-    public IntegerField SentenceCount => new IntegerField(Vocab, "sentence_count"); // NoteFields.Vocab.sentence_count
+    public IntegerField SentenceCount => new IntegerField(Vocab, NoteFieldsConstants.Vocab.SentenceCount);
 
     public string MetaTagsHtml(bool displayExtendedSentenceStatistics = true, bool noSentenceStatistics = false)
     {
-        // TODO: Implement when vocabnote_meta_tag is ported
-        return string.Empty;
+        return VocabNoteMetaTagFormatter.GetMetaTagsHtml(Vocab, displayExtendedSentenceStatistics, noSentenceStatistics);
     }
 }

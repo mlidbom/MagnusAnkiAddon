@@ -3,9 +3,9 @@ using System.Diagnostics;
 
 namespace JAStudio.Core.SysUtils;
 
-public static class Assert
+//porting comment: renamed to avoid collision with assertion libraries assert class
+public static class JAAssert
 {
-    [Conditional("DEBUG")]
     public static void That(bool condition, string? message = null)
     {
         if (!condition)

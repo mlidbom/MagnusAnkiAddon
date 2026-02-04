@@ -147,10 +147,4 @@ public class JamdictThreadingWrapper
         
         return tcs.Task.Result;
     }
-
-    public void Stop()
-    {
-        _running = false;
-        _queue.Writer.Complete();
-    }
 }

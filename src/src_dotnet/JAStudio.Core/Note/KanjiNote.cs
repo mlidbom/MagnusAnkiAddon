@@ -1,4 +1,6 @@
 using JAStudio.Core.Note.NoteFields;
+using JAStudio.Core.Note.Vocabulary;
+using JAStudio.Core.SysUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -201,6 +203,29 @@ public class KanjiNote : JPNote
         SetField(NoteFieldsConstants.Kanji.Radicals, value);
     }
 
+    private static readonly Regex AnyWordPattern = new(@"\b[-\w]+\b", RegexOptions.Compiled);
+    private static readonly Regex ParenthesizedWordPattern = new(@"\([-\w]+\)", RegexOptions.Compiled);
+
+    public string GetPrimaryMeaning()
+    {
+        var radicalMeaningMatch = AnyWordPattern.Match(GetAnswerText().Replace("{", "").Replace("}", ""));
+        return radicalMeaningMatch.Success ? radicalMeaningMatch.Groups[0].Value : "";
+    }
+
+    public string GetPrimaryRadicalMeaning()
+    {
+        string GetDedicatedRadicalPrimaryMeaning()
+        {
+            var radicalMeaningMatch = ParenthesizedWordPattern.Match(GetAnswerText());
+            return radicalMeaningMatch.Success
+                ? radicalMeaningMatch.Groups[0].Value.Replace("(", "").Replace(")", "")
+                : "";
+        }
+
+        var result = GetDedicatedRadicalPrimaryMeaning();
+        return !string.IsNullOrEmpty(result) ? result : GetPrimaryMeaning();
+    }
+
     public List<KanjiNote> GetRadicalsNotes()
     {
         return GetRadicals()
@@ -208,6 +233,84 @@ public class KanjiNote : JPNote
             .Where(k => k != null)
             .Cast<KanjiNote>()
             .ToList();
+    }
+
+    public List<string> TagVocabReadings(VocabNote vocab)
+    {
+        string PrimaryReading(string read) => $"<span class=\"kanjiReadingPrimary\">{read}</span>";
+        string SecondaryReading(string read) => $"<span class=\"kanjiReadingSecondary\">{read}</span>";
+
+        var primaryReadings = GetPrimaryReadings();
+        var secondaryReadings = GetReadingsClean()
+            .Where(reading => !primaryReadings.Contains(reading) && !string.IsNullOrEmpty(reading))
+            .ToList();
+
+        var result = new List<string>();
+        var vocabForm = vocab.GetQuestion();
+
+        foreach (var vocabReading in vocab.GetReadings())
+        {
+            var found = false;
+
+            foreach (var kanjiReading in primaryReadings)
+            {
+                if (ReadingInVocabReading(kanjiReading, vocabReading, vocabForm))
+                {
+                    result.Add(vocabReading.Replace(kanjiReading, PrimaryReading(kanjiReading)));
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                foreach (var kanjiReading in secondaryReadings)
+                {
+                    if (ReadingInVocabReading(kanjiReading, vocabReading, vocabForm))
+                    {
+                        result.Add(vocabReading.Replace(kanjiReading, SecondaryReading(kanjiReading)));
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                {
+                    result.Add(vocabReading);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public bool ReadingInVocabReading(string kanjiReading, string vocabReading, string vocabForm)
+    {
+        vocabForm = ExStr.StripHtmlAndBracketMarkupAndNoiseCharacters(vocabForm);
+
+        // Check for covering readings (readings that contain this reading as a substring)
+        var coveringReadings = GetReadingsClean()
+            .Where(r => kanjiReading != r && r.Contains(kanjiReading))
+            .ToList();
+
+        // If any covering reading matches, this reading shouldn't match
+        if (coveringReadings.Any(coveringReading => ReadingInVocabReading(coveringReading, vocabReading, vocabForm)))
+        {
+            return false;
+        }
+
+        if (vocabForm.StartsWith(GetQuestion()))
+        {
+            return vocabReading.StartsWith(kanjiReading);
+        }
+        if (vocabForm.EndsWith(GetQuestion()))
+        {
+            return vocabReading.EndsWith(kanjiReading);
+        }
+
+        return vocabReading.Length >= 2 
+            ? vocabReading.Substring(1, vocabReading.Length - 2).Contains(kanjiReading)
+            : kanjiReading == "";
     }
 
     public string GetActiveMnemonic()

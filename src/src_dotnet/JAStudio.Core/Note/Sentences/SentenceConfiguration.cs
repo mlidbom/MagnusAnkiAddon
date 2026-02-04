@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 
 namespace JAStudio.Core.Note.Sentences;
 
@@ -18,6 +19,27 @@ public class SentenceConfiguration
         HighlightedWords = highlightedWords ?? new List<string>();
         IncorrectMatches = incorrectMatches ?? WordExclusionSet.Empty();
         HiddenMatches = hiddenMatches ?? WordExclusionSet.Empty();
+    }
+
+    public static SentenceConfiguration FromIncorrectMatches(List<WordExclusion> incorrectMatches)
+    {
+        return FromValues(new List<string>(), incorrectMatches, new List<WordExclusion>());
+    }
+
+    public static SentenceConfiguration FromHiddenMatches(List<WordExclusion> hiddenMatches)
+    {
+        return FromValues(new List<string>(), new List<WordExclusion>(), hiddenMatches);
+    }
+
+    public static SentenceConfiguration FromValues(
+        List<string> highlighted,
+        List<WordExclusion> incorrectMatches,
+        List<WordExclusion> hiddenMatches)
+    {
+        return new SentenceConfiguration(
+            highlighted,
+            new WordExclusionSet(() => { }, incorrectMatches),
+            new WordExclusionSet(() => { }, hiddenMatches));
     }
 
     public static SentenceConfiguration Empty()

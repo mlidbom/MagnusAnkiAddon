@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.LanguageServices.JanomeEx.Tokenizing.PreProcessingStage;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Sentences;
 using JAStudio.Core.Note.Vocabulary;
+using JAStudio.Core.SysUtils;
 using JAStudio.Core.TaskRunners;
 
 namespace JAStudio.Core.Batches;
@@ -274,7 +276,7 @@ public static class LocalNoteUpdater
 
     public static bool ReadingInVocabReading(KanjiNote kanji, string kanjiReading, string vocabReading, string vocabForm)
     {
-        vocabForm = StripHtmlAndBracketMarkupAndNoiseCharacters(vocabForm);
+        vocabForm = ExStr.StripHtmlAndBracketMarkupAndNoiseCharacters(vocabForm);
         if (vocabForm.StartsWith(kanji.GetQuestion()))
         {
             return vocabReading.StartsWith(kanjiReading);
@@ -283,19 +285,9 @@ public static class LocalNoteUpdater
         {
             return vocabReading.EndsWith(kanjiReading);
         }
-        return vocabReading.Length > 2 && vocabReading.Substring(1, vocabReading.Length - 2).Contains(kanjiReading);
-    }
-
-    private static string StripHtmlAndBracketMarkupAndNoiseCharacters(string input)
-    {
-        // Remove HTML tags
-        var result = Regex.Replace(input, @"<[^>]*>", string.Empty);
-        // Remove bracket markup
-        result = Regex.Replace(result, @"\[[^\]]*\]", string.Empty);
-        result = Regex.Replace(result, @"\([^)]*\)", string.Empty);
-        // Remove noise characters (special characters that don't affect meaning)
-        result = result.Replace("・", "").Replace("～", "").Replace("〜", "");
-        return result;
+        return vocabReading.Length >= 2 
+            ? vocabReading.Substring(1, vocabReading.Length - 2).Contains(kanjiReading) 
+            : kanjiReading == "";
     }
 
     public static void ReparseSentences(List<SentenceNote> sentences, bool runGcDuringBatch = false)
@@ -343,7 +335,34 @@ public static class LocalNoteUpdater
 
     public static void CreateMissingVocabWithDictionaryEntries()
     {
-        throw new NotImplementedException("DictLookup not yet ported");
+        using var scope = TaskRunner.Current("Creating vocab notes for parsed words with no vocab notes");
+        var runner = TaskRunner.GetCurrent()!;
+
+        var dictionaryWordsWithNoVocab = runner.RunOnBackgroundThreadWithSpinningProgressDialog(
+            "Fetching parsed words with no vocab notes from parsing results",
+            () => App.Col().Sentences.All()
+                .SelectMany(sentence => sentence.ParsingResult.Get().ParsedWords
+                    .Where(word => word.VocabId == ParsedMatch.MissingNoteId)
+                    .Select(word => word.ParsedForm))
+                .Distinct()
+                .Select(form => DictLookup.LookupWord(form))
+                .Where(result => result.FoundWords())
+                .OrderBy(result => result.PrioritySpec().Priority)
+                .ToList());
+
+        void CreateVocabIfNotAlreadyCreated(DictLookupResult result)
+        {
+            // We may well have created a vocab that provides this form already...
+            if (!App.Col().Vocab.WithForm(result.Word).Any())
+            {
+                VocabNoteFactory.CreateWithDictionary(result.Word);
+            }
+        }
+
+        runner.ProcessWithProgress(
+            dictionaryWordsWithNoVocab,
+            r => { CreateVocabIfNotAlreadyCreated(r); return 0; },
+            "Creating vocab notes");
     }
 
     public static void RegenerateJamdictVocabAnswers()

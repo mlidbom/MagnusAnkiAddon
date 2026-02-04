@@ -1,4 +1,5 @@
 using System.Linq;
+using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing.PreProcessingStage;
@@ -21,12 +22,11 @@ public static class WordInfo
             return new VocabWordInfoEntry(word, vocabEntries.First());
         }
 
-        // TODO: Implement DictLookup when jamdict_ex is ported
-        // var dictLookupResult = DictLookup.LookupWord(word);
-        // if (dictLookupResult.FoundWords())
-        // {
-        //     return new DictWordInfoEntry(word, dictLookupResult);
-        // }
+        var dictLookupResult = DictLookup.LookupWord(word);
+        if (dictLookupResult.FoundWords())
+        {
+            return new DictWordInfoEntry(word, dictLookupResult);
+        }
 
         return null;
     }

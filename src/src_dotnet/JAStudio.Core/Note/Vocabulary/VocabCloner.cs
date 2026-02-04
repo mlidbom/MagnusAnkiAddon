@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.LanguageServices;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
@@ -67,12 +69,51 @@ public class VocabCloner
         return newVocab;
     }
 
-    private VocabNote CreateNewVocabWithSomeDataCopied(string question, string answer, List<string> readings)
+    private VocabNote CreateNewVocabWithSomeDataCopied(string question, string answer, List<string> readings, bool copyVocabTags = true, bool copyMatchingRules = true)
     {
-        // TODO: Implement proper cloning when VocabNote.Create is fully implemented
-        var newVocab = VocabNote.Create(question, answer, readings, new List<string>());
-        // Copy other fields as needed
-        return newVocab;
+        var clone = VocabNoteFactory.CreateFromUserData(question, answer, readings);
+        if (copyVocabTags)
+        {
+            CopyVocabTagsTo(clone);
+        }
+        if (copyMatchingRules)
+        {
+            clone.MatchingConfiguration.ConfigurableRules.OverwriteWith(Note.MatchingConfiguration.ConfigurableRules);
+        }
+        return clone;
+    }
+
+    private void CopyVocabTagsTo(VocabNote target)
+    {
+        foreach (var tag in Note.Tags.Where(t => t.Name.StartsWith(Tags.Vocab.Root)))
+        {
+            target.Tags.Set(tag);
+        }
+    }
+
+    public VocabNote Clone()
+    {
+        var data = Note.GetData();
+        data.Id = 0;
+        data.Tags = new List<string>();
+        var clone = new VocabNote(data);
+
+        CopyVocabTagsTo(clone);
+
+        foreach (var related in clone.RelatedNotes.Synonyms.Strings())
+        {
+            clone.RelatedNotes.Synonyms.Add(related);
+        }
+
+        App.Col().Vocab.Add(clone);
+        return clone;
+    }
+
+    public VocabNote CloneToForm(string form)
+    {
+        var clone = Clone();
+        clone.Question.Set(form);
+        return clone;
     }
 
     public VocabNote CreateNaAdjective()
@@ -137,5 +178,103 @@ public class VocabCloner
         }
 
         return suruVerb;
+    }
+
+    public VocabNote CreateShimasuVerb() => CreateSuruVerb(shimasu: true);
+
+    public VocabNote CreateKuForm()
+    {
+        return CreatePostfixPrefixVersion("く", "adverb", setCompounds: true, chopOffCharacters: 1);
+    }
+
+    public VocabNote CreateSaForm()
+    {
+        return CreatePostfixPrefixVersion("さ", POS.Noun, setCompounds: true, chopOffCharacters: 1);
+    }
+
+    public VocabNote CloneToDerivedForm(string formSuffix, Func<VocabNote, string, string> createFormRoot)
+    {
+        string CreateFullForm(string form) => createFormRoot(Note, form) + formSuffix;
+
+        var clone = CreateNewVocabWithSomeDataCopied(CreateFullForm(Note.GetQuestion()), Note.GetAnswer(), new List<string>());
+        clone.Forms.SetList(Note.Forms.AllList().Select(CreateFullForm).ToList());
+        var readings = Note.GetReadings().Select(CreateFullForm).ToList();
+        clone.Readings.Set(readings);
+        clone.PartsOfSpeech.SetRawStringValue(POS.Expression);
+        var compounds = new List<string> { Note.Question.DisambiguationName, formSuffix };
+        clone.CompoundParts.Set(compounds);
+        return clone;
+    }
+
+    private string CreatePreviewForm(string formSuffix, Func<VocabNote, string, string> createFormRoot)
+    {
+        return createFormRoot(Note, Note.GetQuestion()) + formSuffix;
+    }
+
+    public VocabNote SuffixToAStem(string formSuffix) => CloneToDerivedForm(formSuffix, Conjugator.GetAStemVocab);
+    public string SuffixToAStemPreview(string formSuffix) => CreatePreviewForm(formSuffix, Conjugator.GetAStemVocab);
+
+    public VocabNote SuffixToChopped(string formSuffix, int chopCharacters)
+    {
+        return CloneToDerivedForm(formSuffix, (it, form) => form.Substring(0, form.Length - chopCharacters));
+    }
+
+    public string SuffixToChoppedPreview(string formSuffix, int chopCharacters)
+    {
+        return Note.GetQuestion().Substring(0, Note.GetQuestion().Length - chopCharacters) + formSuffix;
+    }
+
+    public VocabNote SuffixToIStem(string formSuffix) => CloneToDerivedForm(formSuffix, Conjugator.GetIStemVocab);
+    public string SuffixToIStemPreview(string formSuffix) => CreatePreviewForm(formSuffix, Conjugator.GetIStemVocab);
+
+    public VocabNote SuffixToEStem(string formSuffix) => CloneToDerivedForm(formSuffix, Conjugator.GetEStemVocab);
+    public string SuffixToEStemPreview(string formSuffix) => CreatePreviewForm(formSuffix, Conjugator.GetEStemVocab);
+
+    public VocabNote SuffixToTeStem(string formSuffix) => CloneToDerivedForm(formSuffix, Conjugator.GetTeStemVocab);
+    public string SuffixToTeStemPreview(string formSuffix) => CreatePreviewForm(formSuffix, Conjugator.GetTeStemVocab);
+
+    public VocabNote CreateMasuForm() => SuffixToIStem("ます");
+    public VocabNote CreateTeForm() => SuffixToTeStem("て");
+    public VocabNote CreateTaForm() => SuffixToTeStem("た");
+    public VocabNote CreateBaForm() => SuffixToEStem("ば");
+
+    public VocabNote CreateReceptiveForm()
+    {
+        var result = SuffixToAStem("れる");
+        var compoundParts = result.CompoundParts.All();
+        compoundParts[compoundParts.Count - 1] = "あれる";
+        result.CompoundParts.Set(compoundParts);
+        return result;
+    }
+
+    public VocabNote CreateCausativeForm()
+    {
+        var result = SuffixToAStem("せる");
+        var compoundParts = result.CompoundParts.All();
+        compoundParts[compoundParts.Count - 1] = "あせる";
+        result.CompoundParts.Set(compoundParts);
+        return result;
+    }
+
+    public VocabNote CreateNaiForm() => SuffixToAStem("ない");
+
+    public VocabNote CreateImperative()
+    {
+        string CreateImperativeForm(string form) => 
+            Conjugator.GetImperative(form, Note.PartsOfSpeech.IsIchidan(), Note.PartsOfSpeech.IsGodan());
+
+        var clone = CreateNewVocabWithSomeDataCopied(CreateImperativeForm(Note.GetQuestion()), Note.GetAnswer(), new List<string>());
+        clone.Forms.SetList(Note.Forms.AllList().Select(CreateImperativeForm).ToList());
+        var readings = Note.GetReadings().Select(CreateImperativeForm).ToList();
+        clone.Readings.Set(readings);
+        clone.PartsOfSpeech.SetRawStringValue(POS.Expression);
+        return clone;
+    }
+
+    public VocabNote CreatePotentialGodan()
+    {
+        var clone = SuffixToEStem("る");
+        clone.CompoundParts.Set(new List<string> { Note.Question.DisambiguationName, "える" });
+        return clone;
     }
 }

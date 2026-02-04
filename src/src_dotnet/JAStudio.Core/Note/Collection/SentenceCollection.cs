@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.Note.Collection;
 
@@ -17,8 +18,28 @@ public class SentenceCollection
 
     public List<SentenceNote> PotentiallyMatchingVocab(VocabNote vocab)
     {
-        // TODO: Implement when vocab properties are available
-        return new List<SentenceNote>();
+        List<string> searchStrings;
+        if (vocab.MatchingConfiguration.RequiresForbids.Surface.IsRequired)
+        {
+            searchStrings = vocab.Forms.AllList();
+        }
+        else
+        {
+            searchStrings = vocab.Conjugator.GetStemsForAllForms()
+                .Concat(vocab.Forms.AllList())
+                .ToList();
+        }
+
+        var questions = All().Select(it => it.GetQuestion()).ToList();
+        var matching = questions
+            .Where(q => searchStrings.Any(s => q.Contains(s)))
+            .Distinct()
+            .ToList();
+
+        return matching
+            .SelectMany(q => Cache.WithQuestion(q))
+            .Distinct()
+            .ToList();
     }
 
     public List<SentenceNote> SentencesWithSubstring(string substring)
@@ -32,7 +53,39 @@ public class SentenceCollection
 
     public List<SentenceNote> WithQuestion(string question) => Cache.WithQuestion(question);
 
-    public List<SentenceNote> WithVocab(VocabNote vocabNote) => Cache.WithVocab(vocabNote);
+    public List<SentenceNote> WithVocab(VocabNote vocabNote)
+    {
+        var matches = Cache.WithVocab(vocabNote);
+        var question = vocabNote.GetQuestion();
+        // TODO: isn't this check redundant, won't the match have been removed during indexing?
+        return matches.Where(match => !match.Configuration.IncorrectMatches.Words().Contains(question)).ToList();
+    }
+
+    public List<SentenceNote> WithVocabOwnedForm(VocabNote vocabNote)
+    {
+        var question = vocabNote.GetQuestion();
+        return vocabNote.Forms.NotOwnedByOtherVocab()
+            .SelectMany(form => Cache.WithVocabForm(form))
+            .Distinct()
+            .Where(match => !match.Configuration.IncorrectMatches.Words().Contains(question))
+            .ToList();
+    }
+
+    public List<SentenceNote> WithVocabMarkedInvalid(VocabNote vocabNote)
+    {
+        return Cache.WithUserMarkedInvalidVocab(vocabNote.Question.DisambiguationName);
+    }
+
+    public List<SentenceNote> WithHighlightedVocab(VocabNote vocabNote)
+    {
+        if (vocabNote.Question.IsDisambiguated)
+        {
+            return Cache.WithUserHighlightedVocab(vocabNote.Question.DisambiguationName);
+        }
+        return vocabNote.Forms.AllSet()
+            .SelectMany(form => Cache.WithUserHighlightedVocab(form))
+            .ToList();
+    }
     
     public List<SentenceNote> WithForm(string form) => Cache.WithVocabForm(form);
     
@@ -55,11 +108,10 @@ public class SentenceSnapshot : CachedNote
 
     public SentenceSnapshot(SentenceNote note) : base(note)
     {
-        // TODO: Implement when SentenceNote properties are available
-        Words = Array.Empty<string>();
-        DetectedVocab = Array.Empty<int>();
-        UserHighlightedVocab = Array.Empty<string>();
-        MarkedIncorrectVocab = Array.Empty<string>();
+        Words = note.GetWords().ToArray();
+        DetectedVocab = note.ParsingResult.Get().MatchedVocabIds.ToArray();
+        UserHighlightedVocab = note.Configuration.HighlightedWords.ToArray();
+        MarkedIncorrectVocab = note.Configuration.IncorrectMatches.Words().ToArray();
     }
 }
 

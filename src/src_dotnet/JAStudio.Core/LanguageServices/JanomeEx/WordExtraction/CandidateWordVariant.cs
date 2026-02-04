@@ -45,7 +45,7 @@ public sealed class CandidateWordVariant
 
     public void RunValidityAnalysis()
     {
-        Assert.That(!_completedValidityAnalysis);
+        JAAssert.That(!_completedValidityAnalysis);
 
         if (VocabMatches.Any())
         {

@@ -1,6 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.LanguageServices.JamdictEx;
+using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
+using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Note.NoteFields;
+using JAStudio.Core.Note.Sentences;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
@@ -16,6 +20,7 @@ public class VocabNoteUserCompoundParts
     }
 
     private VocabNote Vocab => _vocab;
+    private JPCollection Collection => Vocab.Collection;
 
     public List<string> Primary()
     {
@@ -52,15 +57,51 @@ public class VocabNoteUserCompoundParts
 
     public void AutoGenerate()
     {
-        // TODO: Implement when TextAnalysis and word extraction are ported
-        // from jaslib.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-        // analysis = TextAnalysis(vocab.get_question(), ...)
-        // compound_parts = [a.form for a in analysis.display_word_variants if a.form not in vocab.forms.all_set()]
-        // ...
-        // segments_missing_vocab = [segment for segment in compound_parts if not collection.vocab.is_word(segment)]
-        // for missing in segments_missing_vocab:
-        //     VocabNote.factory.create_with_dictionary(missing)
-        // self.set(compound_parts)
+        var exclusions = Vocab.Forms.AllSet()
+            .Select(form => WordExclusion.Global(form))
+            .ToList();
+        var config = SentenceConfiguration.FromIncorrectMatches(exclusions);
+        var analysis = new TextAnalysis(Vocab.GetQuestion(), config);
+        var compoundParts = analysis.DisplayWordVariants
+            .Where(a => !Vocab.Forms.AllSet().Contains(a.Form))
+            .Select(a => a.Form)
+            .ToList();
+
+        if (compoundParts.Count <= 1)  // time to brute force it
+        {
+            var word = Vocab.GetQuestion();
+            var allSubstrings = new List<string>();
+            for (int i = 0; i < word.Length; i++)
+            {
+                for (int j = i + 1; j <= word.Length; j++)
+                {
+                    var substring = word.Substring(i, j - i);
+                    if (substring != word)
+                    {
+                        allSubstrings.Add(substring);
+                    }
+                }
+            }
+
+            var allWordSubstrings = allSubstrings
+                .Where(w => DictLookup.IsDictionaryOrCollectionWord(w))
+                .ToList();
+
+            compoundParts = allWordSubstrings
+                .Where(segment => !allWordSubstrings.Any(parent => parent.Contains(segment) && parent != segment))
+                .ToList();
+        }
+
+        var segmentsMissingVocab = compoundParts
+            .Where(segment => !Collection.Vocab.IsWord(segment))
+            .ToList();
+
+        foreach (var missing in segmentsMissingVocab)
+        {
+            VocabNoteFactory.CreateWithDictionary(missing);
+        }
+
+        Set(compoundParts);
     }
 
     private static string StripBrackets(string part)

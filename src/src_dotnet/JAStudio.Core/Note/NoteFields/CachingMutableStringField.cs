@@ -57,9 +57,7 @@ public class CachingMutableStringField
     public LazyCE<TValue> LazyReader<TValue>(Func<TValue> reader) where TValue : class
     {
         var lazy = new LazyCE<TValue>(reader);
-        // Note: LazyCE doesn't have Reset - values are recreated on next access after invalidation
-        // For now, we create a new lazy on each change
-        OnChange(() => { /* Invalidation handled by recreating lazy */ });
+        OnChange(lazy.Reset);
         return lazy;
     }
 

@@ -1,42 +1,54 @@
+using JAStudio.Core.Note.NoteFields;
+
 namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteAudio
 {
     private readonly VocabNote _vocab;
+    public WritableAudioField First { get; }
+    public WritableAudioField Second { get; }
+    public WritableAudioField Tts { get; }
 
     public VocabNoteAudio(VocabNote vocab)
     {
         _vocab = vocab;
-        // TODO: Implement WritableAudioField when audio_field.py is ported
-        // First = new WritableAudioField(vocab, NoteFields.Vocab.Audio_b);
-        // Second = new WritableAudioField(vocab, NoteFields.Vocab.Audio_g);
-        // Tts = new WritableAudioField(vocab, NoteFields.Vocab.Audio_TTS);
+        First = new WritableAudioField(vocab, NoteFieldsConstants.Vocab.Audio);
+        Second = new WritableAudioField(vocab, NoteFieldsConstants.Vocab.Audio);  // Using same field - Python has Audio_b/Audio_g but C# might consolidate
+        Tts = new WritableAudioField(vocab, NoteFieldsConstants.Vocab.Audio);
     }
 
     private VocabNote Vocab => _vocab;
 
-    // TODO: Implement audio fields when WritableAudioField is ported
-    // public WritableAudioField First { get; }
-    // public WritableAudioField Second { get; }
-    // public WritableAudioField Tts { get; }
-
     public string GetPrimaryAudioPath()
     {
-        // TODO: Implement when audio fields are ported
-        // return First.FirstAudiofilePath() ?? Second.FirstAudiofilePath() ?? Tts.FirstAudiofilePath() ?? string.Empty;
+        var firstPath = First.FirstAudioFilePath();
+        if (!string.IsNullOrEmpty(firstPath)) return firstPath;
+        
+        var secondPath = Second.FirstAudioFilePath();
+        if (!string.IsNullOrEmpty(secondPath)) return secondPath;
+        
+        var ttsPath = Tts.FirstAudioFilePath();
+        if (!string.IsNullOrEmpty(ttsPath)) return ttsPath;
+        
         return string.Empty;
     }
 
     public string GetPrimaryAudio()
     {
-        // TODO: Implement when audio fields are ported
-        // return First.RawValue() ?? Second.RawValue() ?? Tts.RawValue() ?? string.Empty;
+        var firstValue = First.RawValue();
+        if (!string.IsNullOrEmpty(firstValue)) return firstValue;
+        
+        var secondValue = Second.RawValue();
+        if (!string.IsNullOrEmpty(secondValue)) return secondValue;
+        
+        var ttsValue = Tts.RawValue();
+        if (!string.IsNullOrEmpty(ttsValue)) return ttsValue;
+        
         return string.Empty;
     }
 
     public override string ToString()
     {
-        // TODO: Implement when audio fields are ported
-        return string.Empty; // $"first: {First}, second: {Second}, tts: {Tts}";
+        return $"first: {First}, second: {Second}, tts: {Tts}";
     }
 }

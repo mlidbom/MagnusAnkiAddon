@@ -191,6 +191,30 @@ public sealed class DictEntry
 
     public string FormatAnswer()
     {
-        return string.Join(" | ", Senses.Select(it => it.FormatGlosses()));
+        var defaultFormat = string.Join(" | ", Senses.Select(it => it.FormatGlosses()));
+
+        if (IsToBeVerb())
+        {
+            return $"to-be: {defaultFormat.Replace("to-be:", "").Replace("{", "").Replace("}", "")}";
+        }
+
+        if (IsTransitiveVerb())
+        {
+            return $"to{{}} {defaultFormat.Replace("to{}", "").Replace("{", "").Replace("}", "")}";
+        }
+
+        if (IsIntransitiveVerb())
+        {
+            if (defaultFormat.Contains("to-be:"))
+            {
+                return $"to: {defaultFormat.Replace("to-be:", "be-").Replace("to:", "")}";
+            }
+            else
+            {
+                return $"to: {defaultFormat.Replace("to:", "").Replace("{", "").Replace("}", "")}";
+            }
+        }
+
+        return defaultFormat;
     }
 }

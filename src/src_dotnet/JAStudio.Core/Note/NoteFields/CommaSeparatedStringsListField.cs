@@ -1,3 +1,4 @@
+using Compze.Utilities.SystemCE;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,14 +7,16 @@ namespace JAStudio.Core.Note.NoteFields;
 
 public class MutableCommaSeparatedStringsListField
 {
-    private readonly MutableStringField _field;
+    private readonly CachingMutableStringField _field;
+    private readonly LazyCE<List<string>> _value;
 
     public MutableCommaSeparatedStringsListField(JPNote note, string fieldName)
     {
-        _field = new MutableStringField(note, fieldName);
+        _field = new CachingMutableStringField(note, fieldName);
+        _value = _field.LazyReader(ParseValue);
     }
 
-    public List<string> Get()
+    private List<string> ParseValue()
     {
         var value = _field.Value;
         if (string.IsNullOrWhiteSpace(value))
@@ -25,6 +28,11 @@ public class MutableCommaSeparatedStringsListField
             .Select(s => s.Trim())
             .Where(s => !string.IsNullOrEmpty(s))
             .ToList();
+    }
+
+    public List<string> Get()
+    {
+        return _value.Value;
     }
 
     public void Remove(string remove)
@@ -47,6 +55,11 @@ public class MutableCommaSeparatedStringsListField
         var current = Get();
         current.Add(add);
         Set(current);
+    }
+
+    public LazyCE<TValue> LazyReader<TValue>(Func<TValue> reader) where TValue : class
+    {
+        return _field.LazyReader(reader);
     }
 
     public override string ToString()

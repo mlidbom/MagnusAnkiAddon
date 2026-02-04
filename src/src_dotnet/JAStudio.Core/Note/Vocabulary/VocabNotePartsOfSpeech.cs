@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.LanguageServices.JamdictEx;
+using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
@@ -25,8 +27,7 @@ public class VocabNotePartsOfSpeech
 
     public void SetRawStringValue(string value)
     {
-        // TODO: Implement POSSetManager.InternAndHarmonize when ported
-        Vocab.SetField(FieldName, value);
+        Vocab.SetField(FieldName, POSSetManager.InternAndHarmonize(value));
     }
 
     public void Set(IEnumerable<string> value)
@@ -36,14 +37,7 @@ public class VocabNotePartsOfSpeech
 
     public HashSet<string> Get()
     {
-        // TODO: Implement POSSetManager.Get when ported
-        var raw = RawStringValue();
-        if (string.IsNullOrWhiteSpace(raw))
-            return new HashSet<string>();
-        
-        return raw.Split(',', StringSplitOptions.RemoveEmptyEntries)
-            .Select(s => s.Trim())
-            .ToHashSet();
+        return POSSetManager.Get(RawStringValue()).ToHashSet();
     }
 
     public bool IsIchidan() => Get().Contains(POS.IchidanVerb);
@@ -72,35 +66,47 @@ public class VocabNotePartsOfSpeech
 
     public bool IsUk()
     {
-        // TODO: Implement when Tags.UsuallyKanaOnly is ported
-        return false;
+        return Vocab.Tags.Contains(Tags.Vocab.UsuallyKanaOnly);
     }
 
     public void SetAutomaticallyFromDictionary()
     {
-        // TODO: Implement when DictLookup is ported
-        // from jaslib.language_services.jamdict_ex.dict_lookup import DictLookup
-        // lookup = DictLookup.lookup_vocab_word_or_name(self._vocab)
-        // if lookup.found_words():
-        //     value = ", ".join(lookup.parts_of_speech())
-        //     self.set_raw_string_value(value)
+        var lookup = DictLookup.LookupVocabWordOrName(Vocab);
+        if (lookup.FoundWords())
+        {
+            var value = string.Join(", ", lookup.PartsOfSpeech());
+            SetRawStringValue(value);
+        }
+        else if (IsSuruVerbIncluded())
+        {
+            var question = Vocab.Question.WithoutNoiseCharacters;
+            question = question.Substring(0, question.Length - 2);
+            var readings = Vocab.GetReadings().Select(r => r.Substring(0, r.Length - 2)).ToList();
+            lookup = DictLookup.LookupWordOrNameWithMatchingReading(question, readings);
+            var pos = lookup.PartsOfSpeech().Intersect(new[] { POS.Transitive, POS.Intransitive }).ToList();
+            var value = POS.SuruVerb + ", " + string.Join(", ", pos);
+            SetRawStringValue(value);
+        }
     }
 
     public bool IsPassiveVerbCompound()
     {
-        // TODO: Implement when compound_parts is ported
-        return false;
+        var compounds = Vocab.CompoundParts.Primary();
+        if (compounds.Count == 0) return false;
+        return AnalysisConstants.PassiveVerbEndings.Contains(compounds[compounds.Count - 1]);
     }
 
     public bool IsCausativeVerbCompound()
     {
-        // TODO: Implement when compound_parts is ported
-        return false;
+        var compounds = Vocab.CompoundParts.Primary();
+        if (compounds.Count == 0) return false;
+        return AnalysisConstants.CausativeVerbEndings.Contains(compounds[compounds.Count - 1]);
     }
 
     public bool IsCompleteNaAdjective()
     {
-        // TODO: Implement when needed - checks if it's a complete na-adjective pattern
-        return Get().Contains(POS.NaAdjective);
+        return Vocab.Question.Raw.EndsWith("な") && Get().Contains(POS.NaAdjective);
     }
+
+    public override string ToString() => RawStringValue();
 }
