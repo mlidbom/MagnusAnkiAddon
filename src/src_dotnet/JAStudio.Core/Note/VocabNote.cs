@@ -17,7 +17,7 @@ public class VocabNote : JPNote
     public VocabNoteConjugator Conjugator { get; }
     public VocabNoteSentences Sentences { get; }
     public VocabNoteUserCompoundParts CompoundParts { get; }
-    public RelatedVocab.RelatedVocab RelatedNotes { get; }
+    public Vocabulary.RelatedVocab.RelatedVocab RelatedNotes { get; }
     public VocabNoteMetaData MetaData { get; }
     public VocabNoteRegister Register { get; }
     public VocabNoteAudio Audio { get; }
@@ -39,7 +39,7 @@ public class VocabNote : JPNote
         Conjugator = new VocabNoteConjugator(this);
         Sentences = new VocabNoteSentences(this);
         CompoundParts = new VocabNoteUserCompoundParts(this);
-        RelatedNotes = new RelatedVocab.RelatedVocab(this);
+        RelatedNotes = new Vocabulary.RelatedVocab.RelatedVocab(this);
         MetaData = new VocabNoteMetaData(this);
         Register = new VocabNoteRegister(this);
         Audio = new VocabNoteAudio(this);
