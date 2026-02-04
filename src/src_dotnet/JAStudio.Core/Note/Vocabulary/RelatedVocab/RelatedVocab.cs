@@ -3,6 +3,14 @@ using System.Linq;
 
 namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 
+// Temporary stub for FieldWrapper - to be replaced when auto_save_wrappers are ported
+public class FieldWrapper
+{
+    private string _value = string.Empty;
+    public string Get() => _value;
+    public void Set(string value) => _value = value;
+}
+
 public class VocabRelatedNotes
 {
     private readonly VocabNote _vocab;
@@ -11,17 +19,19 @@ public class VocabRelatedNotes
     public VocabRelatedNotes(VocabNote vocab)
     {
         _vocab = vocab;
+        DerivedFrom = new FieldWrapper();
         // TODO: Initialize related vocab components when ported:
         // - ErgativeTwin
         // - Synonyms
         // - PerfectSynonyms
         // - Antonyms
         // - SeeAlso
-        // - DerivedFrom
         // - ConfusedWith
     }
 
     private VocabNote Vocab => _vocab;
+
+    public FieldWrapper DerivedFrom { get; }
 
     public HashSet<int> InCompoundIds
     {

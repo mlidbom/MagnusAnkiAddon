@@ -94,4 +94,9 @@ public static class KanaUtils
         // TODO: Implement when romkan equivalent is available
         return romaji;
     }
+
+    public static string AnythingToHiragana(string text)
+    {
+        return IsOnlyKana(text) ? KatakanaToHiragana(text) : RomajiToHiragana(text);
+    }
 }
