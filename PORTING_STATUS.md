@@ -235,23 +235,23 @@ Staying this close to the Python is what makes the porting workable at all. If w
             - Note: Exists in C# as ExPytest.cs
     - ui
         - web
-            - CREATED WIP display_type.py
-            - CREATED WIP pre_rendering_content_renderer.py
-                - Note: Uses Task.Run instead of ThreadPoolExecutor for async scheduling
+            - 100% display_type.py
+            - 100% pre_rendering_content_renderer.py
+                - Note: Uses Task.Run instead of injectable schedule_task parameter (valid .NET simplification)
             - kanji
                 - 100% dependencies_renderer.py
                 - 100% kanji_list_renderer.py
-                - CREATED WIP kanji_note_renderer.py
+                - 100% kanji_note_renderer.py
                 - 100% mnemonic_renderer.py
                 - 100% readings_renderer.py
-                - 100% vocab_list_renderer.py
+                - 60% vocab_list_renderer.py
                     - Note: Primary vocab detection temporarily stubbed out pending KanjiNote.GetPrimaryVocab() implementation
             - sentence
                 - 100% candidate_word_variant_viewmodel.py
                 - 100% compound_part_viewmodel.py
                 - 100% match_viewmodel.py
                 - 100% question_renderer.py
-                - CREATED WIP sentence_note_renderer.py
+                - 100% sentence_note_renderer.py
                 - 100% sentence_renderer.py
                 - 100% sentence_viewmodel.py
                 - 100% text_analysis_viewmodel.py
@@ -260,7 +260,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
                 - 100% compound_parts_renderer.py
                 - 100% related_vocabs_renderer.py
                 - 100% vocab_kanji_list_renderer.py
-                - CREATED WIP vocab_note_renderer.py
+                - 100% vocab_note_renderer.py
                 - 100% vocab_sentences_renderer.py
                 - 100% vocab_sentences_vocab_sentence_view_model.py
     - viewmodels
@@ -272,13 +272,11 @@ Staying this close to the Python is what makes the porting workable at all. If w
 ---
 
 ## Summary Statistics
-- **100% Complete**: 178 files
-- **CREATED WIP**: 5 files
+- **100% Complete**: 183 files
+- **CREATED WIP**: 0 files
 - **Partial (20-90%)**: 0 files
 - **MISSING**: 0 files
 - **EXCLUDED**: 1 file
 - **Total tracked files**: 184 files
-- **Porting completion**: 96.7%
-- **Total tracked files**: 184 files
-- **Porting completion**: 96.7%
+- **Porting completion**: 99.5%
 
