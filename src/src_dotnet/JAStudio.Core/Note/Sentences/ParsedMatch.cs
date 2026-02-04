@@ -38,6 +38,6 @@ public class ParsedMatch
 
     public override string ToString()
     {
-        return Serializer.ToRow(this);
+        return ParsedWordSerializer.ToRow(this);
     }
 }

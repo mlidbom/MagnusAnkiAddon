@@ -7,7 +7,7 @@ public class ParsedWordSerializer
 {
     public static readonly string Separator = $" {StringExtensions.InvisibleSpace} ";
 
-    public string ToRow(ParsedMatch parsedWord)
+    public static string ToRow(ParsedMatch parsedWord)
     {
         return string.Join(Separator, new[]
         {
@@ -19,7 +19,7 @@ public class ParsedWordSerializer
         });
     }
 
-    public ParsedMatch FromRow(string serialized)
+    public static ParsedMatch FromRow(string serialized)
     {
         var values = serialized.Split(new[] { Separator }, System.StringSplitOptions.None);
 

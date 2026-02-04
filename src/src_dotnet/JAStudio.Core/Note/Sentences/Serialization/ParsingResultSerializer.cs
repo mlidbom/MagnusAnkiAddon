@@ -25,7 +25,7 @@ public class ParsingResultSerializer : IObjectSerializer<ParsingResult>
             }
 
             var parsedWords = rows.Skip(2)
-                .Select(row => ParsedMatch.Serializer.FromRow(row))
+                .Select(row => ParsedWordSerializer.FromRow(row))
                 .ToList();
 
             return new ParsingResult(
@@ -59,7 +59,7 @@ public class ParsingResultSerializer : IObjectSerializer<ParsingResult>
             ReplaceNewline(instance.Sentence)
         };
 
-        lines.AddRange(instance.ParsedWords.Select(word => ParsedMatch.Serializer.ToRow(word)));
+        lines.AddRange(instance.ParsedWords.Select(word => ParsedWordSerializer.ToRow(word)));
 
         return string.Join("\n", lines);
     }

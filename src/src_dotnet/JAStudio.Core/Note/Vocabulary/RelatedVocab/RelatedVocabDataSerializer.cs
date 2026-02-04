@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.NoteFields.AutoSaveWrappers;
+using JAStudio.Core.SysUtils.Json;
 
 namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 
@@ -32,16 +33,16 @@ public class RelatedVocabDataSerializer : IObjectSerializer<RelatedVocabData>
         }
 
         using var doc = JsonDocument.Parse(serialized);
-        var root = doc.RootElement;
+        var reader = new JsonReader(doc.RootElement);
 
         return new RelatedVocabData(
-            GetString(root, "ergative_twin", string.Empty),
-            new ValueWrapper<string>(GetString(root, "derived_from", string.Empty)),
-            GetStringSet(root, "perfect_synonyms"),
-            GetStringSet(root, "synonyms"),
-            GetStringSet(root, "antonyms"),
-            GetStringSet(root, "confused_with"),
-            GetStringSet(root, "see_also")
+            reader.GetString("ergative_twin", string.Empty),
+            new ValueWrapper<string>(reader.GetString("derived_from", string.Empty)),
+            reader.GetStringSet("perfect_synonyms", new List<string>()),
+            reader.GetStringSet("synonyms", new List<string>()),
+            reader.GetStringSet("antonyms", new List<string>()),
+            reader.GetStringSet("confused_with", new List<string>()),
+            reader.GetStringSet("see_also", new List<string>())
         );
     }
 
@@ -70,25 +71,7 @@ public class RelatedVocabDataSerializer : IObjectSerializer<RelatedVocabData>
         if (instance.SeeAlso.Any())
             dict["see_also"] = instance.SeeAlso.ToList();
 
-        var json = JsonSerializer.Serialize(dict);
+        var json = JsonHelper.DictToJson(dict);
         return json != _emptyObjectJson ? json : string.Empty;
-    }
-
-    private static string GetString(JsonElement element, string propertyName, string defaultValue)
-    {
-        return element.TryGetProperty(propertyName, out var property) && property.ValueKind == JsonValueKind.String
-            ? property.GetString() ?? defaultValue
-            : defaultValue;
-    }
-
-    private static HashSet<string> GetStringSet(JsonElement element, string propertyName)
-    {
-        if (!element.TryGetProperty(propertyName, out var property) || property.ValueKind != JsonValueKind.Array)
-            return new HashSet<string>();
-
-        return property.EnumerateArray()
-            .Where(item => item.ValueKind == JsonValueKind.String)
-            .Select(item => item.GetString()!)
-            .ToHashSet();
     }
 }

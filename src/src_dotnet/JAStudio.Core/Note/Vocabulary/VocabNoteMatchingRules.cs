@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using JAStudio.Core.SysUtils.Json;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
@@ -28,28 +30,56 @@ public class VocabNoteMatchingRulesData
 
 public class VocabNoteMatchingRulesSerializer
 {
-    // Stub serializer - will implement with JSON later
+    private static string _emptyObjectJson = string.Empty;
+
+    public VocabNoteMatchingRulesSerializer()
+    {
+        if (string.IsNullOrEmpty(_emptyObjectJson))
+        {
+            _emptyObjectJson = Serialize(Deserialize(string.Empty));
+        }
+    }
+
     public VocabNoteMatchingRulesData Deserialize(string serialized)
     {
         if (string.IsNullOrEmpty(serialized))
+        {
             return new VocabNoteMatchingRulesData();
+        }
+
+        using var doc = JsonDocument.Parse(serialized);
+        var reader = new JsonReader(doc.RootElement);
         
-        // Stub: Just return empty data for now
-        return new VocabNoteMatchingRulesData();
+        return new VocabNoteMatchingRulesData(
+            reader.GetStringSet("surface_is_not", new List<string>()),
+            reader.GetStringSet("prefix_is_not", new List<string>()),
+            reader.GetStringSet("suffix_is_not", new List<string>()),
+            reader.GetStringSet("required_prefix", new List<string>()),
+            reader.GetStringSet("yield_to_surface", new List<string>())
+        );
     }
 
     public string Serialize(VocabNoteMatchingRulesData instance)
     {
-        // Stub: Return empty string for now
-        if (instance.SurfaceIsNot.Count == 0 && instance.PrefixIsNot.Count == 0 &&
-            instance.SuffixIsNot.Count == 0 && instance.RequiredPrefix.Count == 0 &&
-            instance.YieldToSurface.Count == 0)
-        {
-            return string.Empty;
-        }
+        var jsonDict = new Dictionary<string, object>();
+
+        if (instance.SurfaceIsNot.Any())
+            jsonDict["surface_is_not"] = instance.SurfaceIsNot.ToList();
         
-        // Stub: Return non-empty marker
-        return "{}";
+        if (instance.PrefixIsNot.Any())
+            jsonDict["prefix_is_not"] = instance.PrefixIsNot.ToList();
+        
+        if (instance.SuffixIsNot.Any())
+            jsonDict["suffix_is_not"] = instance.SuffixIsNot.ToList();
+        
+        if (instance.RequiredPrefix.Any())
+            jsonDict["required_prefix"] = instance.RequiredPrefix.ToList();
+        
+        if (instance.YieldToSurface.Any())
+            jsonDict["yield_to_surface"] = instance.YieldToSurface.ToList();
+
+        var json = JsonHelper.DictToJson(jsonDict);
+        return json != _emptyObjectJson ? json : string.Empty;
     }
 }
 
