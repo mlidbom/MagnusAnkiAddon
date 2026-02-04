@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace JAStudio.Core.Utilities;
+namespace JAStudio.Core.SysUtils.Json;
 
 /// <summary>
 /// Simple JSON reader for deserializing dictionary data.

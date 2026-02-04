@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using JAStudio.Core.Utilities;
+using JAStudio.Core.SysUtils.Json;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 

@@ -36,9 +36,9 @@ Staying this close to the Python is what makes the porting workable at all. If w
 
 ## File Structure
 
-- jaspythonutils_src/jaspythonutils/sysutils
+- jaspythonutils_src/jaspythonutils/sysutils map to JAStudio.Core/SysUtils
     - json
-        - json_reader.py
+        - CREATED WIP json_reader.py
     - kana_utils.py
 
 - jaslib_src/jaslib

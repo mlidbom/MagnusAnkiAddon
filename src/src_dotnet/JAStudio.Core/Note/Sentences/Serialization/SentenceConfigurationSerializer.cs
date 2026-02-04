@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JAStudio.Core.Utilities;
+using JAStudio.Core.SysUtils.Json;
 
 namespace JAStudio.Core.Note.Sentences.Serialization;
 
