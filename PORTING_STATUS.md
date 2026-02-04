@@ -275,7 +275,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
 - jaslib_tests
     - fixtures
         - CREATED WIP collection_factory.py
-        - MISSING test_collection_factory.py
+        - CREATED WIP test_collection_factory.py
         - base_data
             - sample_data
                 - CREATED WIP kanji_spec.py
@@ -284,7 +284,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
                 - CREATED WIP vocab_spec.py
     - tests
         - batches_tests
-            - MISSING test_local_note_updater_smoke_tests_only.py
+            - CREATED WIP test_local_note_updater_smoke_tests_only.py
         - language_services_tests
             - CREATED WIP test_conjugation_base.py
             - CREATED WIP test_kana_utils.py
@@ -320,10 +320,10 @@ Staying this close to the Python is what makes the porting workable at all. If w
 
 ## Summary Statistics
 - **100% Complete**: 184 files
-- **CREATED WIP**: 17 files
+- **CREATED WIP**: 19 files
 - **Partial (20-90%)**: 0 files
-- **MISSING**: 4 files
+- **MISSING**: 2 files
 - **EXCLUDED**: 3 files
 - **Total tracked files**: 208 files
-- **Porting completion**: 96%
+- **Porting completion**: 97%
 
