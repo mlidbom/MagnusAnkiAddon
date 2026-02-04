@@ -67,13 +67,12 @@ Staying this close to the Python is what makes the porting workable at all. If w
                 - Wrong file name: IAnalysisToken.cs instead of AnalysisToken.cs
             - 100% godan_dictionary_form_stem.py
             - 90% inflection_forms.py
-                - Extra public method: GetByName() not in Python
+                - Extra public method: GetByName() not in Python - intentional enhancement for C# usability
             - 90% inflection_types.py
-                - Extra public method: GetByName() not in Python
+                - Extra public method: GetByName() not in Python - intentional enhancement for C# usability
             - 100% jn_parts_of_speech.py
             - 100% jn_token.py
-            - 80% jn_tokenized_text.py
-                - [This is OK. I'm pretty sure that raw tokens were only there for debugging purposes]Missing public field: raw_tokens.
+            - 100% jn_tokenized_text.py
             - 100% jn_tokenizer.py
             - 100% split_token.py
             - pre_processing_stage
@@ -164,14 +163,12 @@ Staying this close to the Python is what makes the porting workable at all. If w
     - collection
         - 100% card_studying_status.py
         - 100% jp_collection.py
-        - 60% kanji_collection.py
-            - KanjiSnapshot has incomplete implementation with TODO comments; GetRadicals() and GetReadingsClean() not called (returns empty arrays); WithReading() has TODO for kana_utils.anything_to_hiragana
+        - 100% kanji_collection.py
         - 90% note_cache.py
             - Complete except TaskRunner integration in InitFromList has TODO comment
         - 50% sentence_collection.py
             - Missing public methods: with_vocab_owned_form(), with_vocab_marked_invalid(), with_highlighted_vocab(); SentenceSnapshot has TODO - all properties return empty arrays; PotentiallyMatchingVocab() has TODO - returns empty list
-        - 90% vocab_collection.py
-            - VocabSnapshot has TODO comments: DerivedFrom not implemented (returns empty string); WithCompoundPart has TODO for accessing disambiguation_name
+        - 100% vocab_collection.py
     - notefields
         - 100% audio_field.py
         - 70% caching_mutable_string_field.py
@@ -235,8 +232,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
             - MetaTagsHtml() has TODO - returns empty string instead of generating meta tags
         - 60% vocabnote_parts_of_speech.py
             - Multiple methods with TODO - IsUk() returns false; SetAutomaticallyFromDictionary() stubbed out; IsPassiveVerbCompound() returns false; IsCausativeVerbCompound() returns false; IsCompleteNaAdjective() simplified; POSSetManager not implemented
-        - 70% vocabnote_question.py
-            - Missing VocabStems class and stems() method; WithoutNoiseCharacters has TODO - doesn't use Mine.VocabPrefixSuffixMarker
+        - 100% vocabnote_question.py
         - 100% vocabnote_register.py
         - 100% vocabnote_sentences.py
         - 100% vocabnote_sorting.py

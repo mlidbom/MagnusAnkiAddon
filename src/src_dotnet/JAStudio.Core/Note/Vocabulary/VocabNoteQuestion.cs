@@ -1,9 +1,26 @@
+using JAStudio.Core.LanguageServices;
 using JAStudio.Core.Note.NoteFields;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace JAStudio.Core.Note.Vocabulary;
+
+public class VocabStems
+{
+    private readonly VocabNote _vocab;
+
+    public VocabStems(VocabNote vocab)
+    {
+        _vocab = vocab;
+    }
+
+    public string? MasuStem()
+    {
+        var masuStem = Conjugator.GetIStemVocab(_vocab);
+        return masuStem != _vocab.Question.Raw ? masuStem : null;
+    }
+}
 
 public class VocabNoteQuestion
 {
@@ -55,7 +72,9 @@ public class VocabNoteQuestion
     public bool IsValid => Raw != InvalidQuestionMessage;
     public bool IsDisambiguated => DisambiguationName.Contains(DisambiguationMarker);
 
-    public string WithoutNoiseCharacters => Raw; // TODO: Use Mine.VocabPrefixSuffixMarker when ported (currently empty string)
+    public string WithoutNoiseCharacters => Raw.Replace(NoteConstants.Mine.VocabPrefixSuffixMarker, "");
+
+    public VocabStems Stems() => new VocabStems(_vocab);
 
     public void Set(string value)
     {

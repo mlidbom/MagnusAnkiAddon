@@ -34,8 +34,7 @@ public class KanjiCollection
 
     public HashSet<KanjiNote> WithReading(string reading)
     {
-        // TODO: Implement kana_utils.anything_to_hiragana when needed
-        var hiraganaReading = reading; // Placeholder
+        var hiraganaReading = KanaUtils.AnythingToHiragana(reading);
         return Cache.ByReading.TryGetValue(hiraganaReading, out var notes) 
             ? notes.ToHashSet() 
             : new HashSet<KanjiNote>();
@@ -54,9 +53,8 @@ public class KanjiSnapshot : CachedNote
 
     public KanjiSnapshot(KanjiNote note) : base(note)
     {
-        // TODO: Implement GetRadicals() and GetReadingsClean() when KanjiNote is fully implemented
-        Radicals = Array.Empty<string>();
-        Readings = Array.Empty<string>();
+        Radicals = note.GetRadicals().Distinct().ToArray();
+        Readings = note.GetReadingsClean().Distinct().ToArray();
     }
 }
 

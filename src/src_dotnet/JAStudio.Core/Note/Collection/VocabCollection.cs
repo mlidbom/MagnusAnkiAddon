@@ -97,7 +97,7 @@ public class VocabSnapshot : CachedNote
         MainFormKanji = note.Kanji.ExtractMainFormKanji().ToArray();
         AllKanji = note.Kanji.ExtractAllKanji().ToArray();
         Readings = note.GetReadings().ToArray();
-        DerivedFrom = string.Empty; // TODO: Implement when derived vocab is ported
+        DerivedFrom = note.RelatedNotes.DerivedFrom.Get();
         Stems = note.Conjugator.GetStemsForPrimaryForm().ToArray();
     }
 }
