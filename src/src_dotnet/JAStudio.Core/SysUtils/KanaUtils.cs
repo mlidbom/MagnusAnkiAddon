@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace JAStudio.Core.LanguageServices;
+namespace JAStudio.Core.SysUtils;
 
 public static class KanaUtils
 {

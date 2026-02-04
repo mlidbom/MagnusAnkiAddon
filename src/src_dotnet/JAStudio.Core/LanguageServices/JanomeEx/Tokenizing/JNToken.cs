@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
+using JAStudio.Core.SysUtils;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;
 

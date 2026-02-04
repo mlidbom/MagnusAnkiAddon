@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using JAStudio.Core.LanguageServices;
+using JAStudio.Core.SysUtils;
 using JAStudio.Core.Note;
 using JAStudio.PythonInterop.Utilities;
 

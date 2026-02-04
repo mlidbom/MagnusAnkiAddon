@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.Note.Sentences.Serialization;
+using JAStudio.Core.SysUtils;
 
 namespace JAStudio.Core.Note;
 
@@ -131,7 +132,7 @@ public class SentenceNote : JPNote
     public List<string> ExtractKanji()
     {
         var clean = StringExtensions.StripHtmlMarkup(Question.WithoutInvisibleSpace());
-        return clean.Where(LanguageServices.KanaUtils.CharacterIsKanji)
+        return clean.Where(KanaUtils.CharacterIsKanji)
             .Select(c => c.ToString())
             .ToList();
     }
