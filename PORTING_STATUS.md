@@ -56,18 +56,24 @@ Staying this close to the Python is what makes the porting workable at all. If w
         - 80% dict_entry.py
             - FormatAnswer() is simplified - missing complex logic for transitive/intransitive/to-be verb formatting
         - 100% dict_lookup.py
-        - CREATED WIP dict_lookup_result.py
-        - CREATED WIP jamdict_threading_wrapper.py
-        - CREATED WIP priority_spec.py
+        - 100% dict_lookup_result.py
+        - 90% jamdict_threading_wrapper.py
+            - Extra public method: Stop() not in Python
+        - 100% priority_spec.py
+            - Note: C# fixes bugs in Python where wrong frequency set was used for medium/low priorities
     - janome_ex
         - tokenizing
-            - CREATED WIP analysis_token.py
-            - CREATED WIP godan_dictionary_form_stem.py
-            - CREATED WIP inflection_forms.py
-            - CREATED WIP inflection_types.py
-            - CREATED WIP jn_parts_of_speech.py
-            - CREATED WIP jn_token.py
-            - CREATED WIP jn_tokenized_text.py
+            - 100% analysis_token.py
+                - Wrong file name: IAnalysisToken.cs instead of AnalysisToken.cs
+            - 100% godan_dictionary_form_stem.py
+            - 90% inflection_forms.py
+                - Extra public method: GetByName() not in Python
+            - 90% inflection_types.py
+                - Extra public method: GetByName() not in Python
+            - 100% jn_parts_of_speech.py
+            - 100% jn_token.py
+            - 80% jn_tokenized_text.py
+                - Missing public field: raw_tokens
             - CREATED WIP jn_tokenizer.py
             - CREATED WIP split_token.py
             - pre_processing_stage
