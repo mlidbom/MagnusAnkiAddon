@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from concurrent.futures import Future
 
 
-class ContentRenderer[TNote: JPNote](Slots):
+class PreRenderingContentRenderer[TNote: JPNote](Slots):
     """Content rendering with prerendering support. Portable to C#."""
 
     def __init__(

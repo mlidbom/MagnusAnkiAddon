@@ -7,7 +7,7 @@ from jaslib.note.kanjinote import KanjiNote
 from jaslib.ui.web.kanji import dependencies_renderer, kanji_list_renderer, mnemonic_renderer, readings_renderer
 from jaspythonutils.sysutils.ex_str import newline
 
-from jastudio.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
+from jastudio.ui.web.web_utils.pre_rendering_content_renderer_anki_shim import PrerenderingContentRendererAnkiShim
 
 if TYPE_CHECKING:
     from jaslib.note.vocabulary.vocabnote import VocabNote
@@ -53,7 +53,7 @@ def _generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
 
 
 def init() -> None:
-    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(KanjiNote, {
+    gui_hooks.card_will_show.append(PrerenderingContentRendererAnkiShim(KanjiNote, {
         "##DEPENDENCIES_LIST##": dependencies_renderer.render_dependencies_list,
         "##MNEMONIC##": mnemonic_renderer.render_mnemonic,
         "##KANJI_READINGS##": readings_renderer.render_katakana_onyomi,

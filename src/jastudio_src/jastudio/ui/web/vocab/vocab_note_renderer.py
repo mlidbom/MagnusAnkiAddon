@@ -4,11 +4,11 @@ from aqt import gui_hooks
 from jaslib.note.vocabulary.vocabnote import VocabNote
 from jaslib.ui.web.vocab import compound_parts_renderer, related_vocabs_renderer, vocab_kanji_list_renderer, vocab_sentences_renderer
 
-from jastudio.ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
+from jastudio.ui.web.web_utils.pre_rendering_content_renderer_anki_shim import PrerenderingContentRendererAnkiShim
 
 
 def init() -> None:
-    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(VocabNote, {
+    gui_hooks.card_will_show.append(PrerenderingContentRendererAnkiShim(VocabNote, {
         # Related vocabs
         "##FORMS_LIST##": related_vocabs_renderer.generate_forms_list,
         "##IN_COMPOUNDS##": related_vocabs_renderer.generate_in_compounds_list,

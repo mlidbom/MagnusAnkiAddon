@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 from jaslib.note.jpnote import JPNote
 from jaslib.note.note_constants import Mine
-from jaslib.ui.web.content_renderer import ContentRenderer
+from jaslib.ui.web.pre_rendering_content_renderer import PreRenderingContentRenderer
 
 from jastudio.ankiutils import app
 from jastudio.sysutils import app_thread_pool
@@ -16,10 +16,10 @@ if TYPE_CHECKING:
     from anki.cards import Card
 
 
-class PrerenderingAnswerContentRenderer[TNote: JPNote](Slots):
+class PrerenderingContentRendererAnkiShim[TNote: JPNote](Slots):
     def __init__(self, cls: type[TNote], render_methods: dict[str, Callable[[TNote], str]]) -> None:
         self._cls: type[TNote] = cls
-        self._renderer: ContentRenderer[TNote] = ContentRenderer[TNote](render_methods, app_thread_pool.pool.submit)
+        self._renderer: PreRenderingContentRenderer[TNote] = PreRenderingContentRenderer[TNote](render_methods, app_thread_pool.pool.submit)
 
     def render(self, html: str, card: Card, type_of_display: str) -> str:
         if not app.is_initialized():
