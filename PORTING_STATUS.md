@@ -290,13 +290,16 @@ Staying this close to the Python is what makes the porting workable at all. If w
             - CREATED WIP test_kana_utils.py
                 - Note: Tests added to existing KanaUtilsTests.cs
             - jamdict_tests
-                - MISSING test_dict_lookup.py
+                - CREATED WIP test_dict_lookup.py
+                    - Note: GenerateAnswer test for "張り切る" fails - bug in FormatAnswer (missing "to-" prefix)
             - janome_tests
                 - EXCLUDED test_explore_token_part_of_speech_information.py
                     - Note: Exploratory/investigation code, not actual tests
             - text_analysis_tests
-                - MISSING test_sentence_analysis_viewmodel_common.py
+                - CREATED WIP test_sentence_analysis_viewmodel_common.py
+                    - Note: Helper module ported to SentenceAnalysisViewModelCommon.cs
                 - MISSING test_sentence_analysis_viewmodel_with_select_data.py
+                    - Note: Tests reveal behavior differences - need investigation
                 - MISSING test_text_analysis_with_per_test_data.py
                 - MISSING test_text_analysis_with_select_data.py
                 - EXCLUDED text_analysis_state_validator.py
@@ -307,20 +310,21 @@ Staying this close to the Python is what makes the porting workable at all. If w
             - CREATED WIP test_sentencenote.py
             - vocab
                 - CREATED WIP test_perfect_synonyms.py
+                    - Note: Tests found and fixed a collection-modification bug in Synonyms.cs
                 - CREATED WIP test_serializers.py
                 - CREATED WIP test_vocabnote_misc.py
         - ui_tests
             - viewmodels_tests
-                - MISSING test_kanji_list_viewmodel.py
+                - CREATED WIP test_kanji_list_viewmodel.py
 
 ---
 
 ## Summary Statistics
 - **100% Complete**: 184 files
-- **CREATED WIP**: 13 files
+- **CREATED WIP**: 17 files
 - **Partial (20-90%)**: 0 files
-- **MISSING**: 8 files
+- **MISSING**: 4 files
 - **EXCLUDED**: 3 files
 - **Total tracked files**: 208 files
-- **Porting completion**: 95%
+- **Porting completion**: 96%
 
