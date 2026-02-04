@@ -235,13 +235,25 @@ Staying this close to the Python is what makes the porting workable at all. If w
             - Note: Exists in C# as ExPytest.cs
     - ui
         - web
+            - kanji
+                - MISSING dependencies_renderer.py
+                - MISSING kanji_list_renderer.py
+                - MISSING mnemonic_renderer.py
+                - MISSING readings_renderer.py
+                - MISSING vocab_list_renderer.py
             - sentence
                 - 100% candidate_word_variant_viewmodel.py
                 - 100% compound_part_viewmodel.py
                 - 100% match_viewmodel.py
+                - MISSING question_renderer.py
                 - 100% sentence_viewmodel.py
                 - 100% text_analysis_viewmodel.py
+                - MISSING ud_sentence_breakdown_renderer.py
             - vocab
+                - MISSING compound_parts_renderer.py
+                - MISSING related_vocabs_renderer.py
+                - MISSING vocab_kanji_list_renderer.py
+                - MISSING vocab_sentences_renderer.py
                 - 100% vocab_sentences_vocab_sentence_view_model.py
     - viewmodels
         - kanji_list
@@ -255,8 +267,8 @@ Staying this close to the Python is what makes the porting workable at all. If w
 - **100% Complete**: 165 files
 - **CREATED WIP**: 0 files
 - **Partial (20-90%)**: 0 files
-- **MISSING**: 0 files
+- **MISSING**: 11 files
 - **EXCLUDED**: 1 file
-- **Total tracked files**: 166 files
-- **Porting completion**: 100%
+- **Total tracked files**: 177 files
+- **Porting completion**: ~93%
 
