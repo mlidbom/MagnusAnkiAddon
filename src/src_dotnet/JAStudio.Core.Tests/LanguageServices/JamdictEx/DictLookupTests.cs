@@ -83,6 +83,18 @@ public class DictLookupTests : IDisposable
     }
 
     [Theory]
+    [InlineData("怪我", new[] { "けが" }, new[] { "怪我", "ケガ", "けが" })]
+    [InlineData("部屋", new[] { "へや" }, new[] { "部屋" })]
+    public void ValidForms(string word, string[] readings, string[] expectedForms)
+    {
+        var dictEntry = GetDictEntry(word, readings);
+        Assert.Equal(1, dictEntry.FoundWordsCount());
+
+        var expectedSet = new HashSet<string>(expectedForms);
+        Assert.Equal(expectedSet, dictEntry.ValidForms());
+    }
+
+    [Theory]
     [InlineData("写る", new string[] { }, "to-be: photographed/projected")]
     [InlineData("張り切る", new[] { "はりきる" }, "to{?}{be-in-high-spirits/be-full-of-vigor-(vigour)/be-enthusiastic/be-eager/stretch-to-breaking-point}")]
     [InlineData("早まる", new[] { "はやまる" }, "to: be-{brought-forward-(e.g.-by-three-hours)/moved-up/advanced} | be-{hasty/rash} | {quicken/speed-up/gather-speed}")]
