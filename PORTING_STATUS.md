@@ -39,7 +39,6 @@ Staying this close to the Python is what makes the porting workable at all. If w
 - jaspythonutils_src/jaspythonutils/sysutils map to JAStudio.Core/SysUtils
     - json
         - 100% json_reader.py
-    - 100% kana_utils.py
 
 - jaslib_src/jaslib
     - 100% app.py
@@ -56,6 +55,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
     - language_services
         - 100% conjugator.py
         - 100% hiragana_chart.py
+        - 100% kana_utils.py
         - 100% katakana_chart.py
         - jamdict_ex
             - 100% dict_entry.py
