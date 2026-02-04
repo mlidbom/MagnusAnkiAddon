@@ -38,8 +38,8 @@ Staying this close to the Python is what makes the porting workable at all. If w
 
 - jaspythonutils_src/jaspythonutils/sysutils map to JAStudio.Core/SysUtils
     - json
-        - CREATED WIP json_reader.py
-    - CREATED WIP kana_utils.py
+        - 100% json_reader.py
+    - 100% kana_utils.py
 
 - jaslib_src/jaslib
     - 90% app.py

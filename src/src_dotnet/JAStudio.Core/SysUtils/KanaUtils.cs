@@ -1,11 +1,15 @@
 using System;
 using System.Linq;
+using JAStudio.PythonInterop.Kana;
 
 namespace JAStudio.Core.SysUtils;
 
 public static class KanaUtils
 {
     public const string FullWidthSpace = "　";
+    
+    private static readonly Lazy<PykakasiWrapper> _pykakasi = new(() => new PykakasiWrapper());
+    private static readonly Lazy<RomkanWrapper> _romkan = new(() => new RomkanWrapper());
 
     public static string PadToLength(string value, int targetLength)
     {
@@ -78,21 +82,17 @@ public static class KanaUtils
 
     public static string Romanize(string text)
     {
-        // TODO: Implement when pykakasi/romkan equivalent is available
-        // For now, return the original text
-        return text;
+        return _pykakasi.Value.Romanize(text);
     }
 
     public static string RomajiToHiragana(string romaji)
     {
-        // TODO: Implement when romkan equivalent is available
-        return romaji;
+        return _romkan.Value.ToHiragana(romaji);
     }
 
     public static string RomajiToKatakana(string romaji)
     {
-        // TODO: Implement when romkan equivalent is available
-        return romaji;
+        return _romkan.Value.ToKatakana(romaji);
     }
 
     public static string AnythingToHiragana(string text)
