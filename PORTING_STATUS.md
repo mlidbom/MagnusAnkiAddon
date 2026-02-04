@@ -142,7 +142,8 @@ Staying this close to the Python is what makes the porting workable at all. If w
     - 100% jpnote_data.py
     - 90% kanjinote.py
         - Missing public method: tag_vocab_readings()
-    - CREATED WIP kanjinote_mnemonic_maker.py
+    - 20% kanjinote_mnemonic_maker.py
+        - CreateDefaultMnemonic() is a stub implementation; missing entire complex algorithm with readings mappings, fragmentary matching, dead-end path removal, shortest path finding
     - 80% note_constants.py
         - Core constants present but C# has reorganized structure with additional fields; missing Mine class
     - CREATED WIP note_flush_guard.py
