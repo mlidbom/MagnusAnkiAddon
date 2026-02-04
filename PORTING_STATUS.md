@@ -237,6 +237,7 @@ Staying this close to the Python is what makes the porting workable at all. If w
         - web
             - MISSING display_type.py
             - MISSING pre_rendering_content_renderer.py
+                - Note: In .NET Task.Run can be used so there is no need to pass a scheduling function in.
 
             - kanji
                 - 100% dependencies_renderer.py
