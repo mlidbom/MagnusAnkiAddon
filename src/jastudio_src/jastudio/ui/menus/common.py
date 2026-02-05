@@ -132,81 +132,32 @@ def null_op_factory(_menu: QMenu, _string: str) -> None:
 
 def _add_avalonia_menu_entry(menu: QMenu, selection: str, clipboard: str) -> None:
     """Add Avalonia menu entry that shows Avalonia popup on hover."""
-    from PyQt6.QtCore import QTimer
+    from jastudio.ui import avalonia_host
+    from jastudio.ui.avalonia_menu_helper import add_hover_avalonia_menu
+    from jastudio.ui.tools_menu import refresh
 
-    # Create a menu action for Avalonia
-    avalonia_action = menu.addAction("🎯 AvaloniaMenu (Hover to show)")  # pyright: ignore[reportUnknownMemberType]
+    def show_context_menu(physical_x: int, physical_y: int) -> None:
+        """Show the appropriate context menu based on current note type."""
+        # Determine note type and show appropriate menu
+        note = ui_utils.try_get_review_note()
+        if note:
+            from jaslib.note.kanjinote import KanjiNote
+            from jaslib.note.sentences.sentencenote import SentenceNote
+            from jaslib.note.vocabulary.vocabnote import VocabNote
 
-    # Track if we've already shown the popup for this hover
-    shown = False
-    reset_timer: QTimer | None = None
-
-    def on_hover() -> None:
-        """Called when the action is hovered."""
-        nonlocal shown, reset_timer
-        
-        if shown:
-            return
-        shown = True
-
-        # Reset the flag after a short delay (allows re-triggering on next menu open)
-        if reset_timer:
-            reset_timer.stop()
-        
-        timer = QTimer()
-        timer.setSingleShot(True)
-        timer.timeout.connect(lambda: on_reset())  # pyright: ignore[reportUnknownMemberType]
-        timer.start(500)  # Reset after 500ms
-        reset_timer = timer
-    
-    def on_reset() -> None:
-        """Reset the shown flag."""
-        nonlocal shown
-        shown = False
-
-        try:
-            from PyQt6.QtWidgets import QApplication
-
-            from jastudio.ui import avalonia_host
-            from jastudio.ui.tools_menu import refresh
-
-            # Get the action's geometry within the menu
-            action_rect = menu.actionGeometry(avalonia_action)
-
-            # Map the action's top-left corner to global screen coordinates
-            action_global_pos = menu.mapToGlobal(action_rect.topLeft())
-
-            # Get DPI scale factor to convert logical pixels to physical pixels
-            screen = QApplication.screenAt(action_global_pos)
-            dpi_scale = screen.devicePixelRatio() if screen else 1.0
-
-            # Convert to physical pixels for Avalonia
-            physical_x = int(action_global_pos.x() * dpi_scale)
-            physical_y = int(action_global_pos.y() * dpi_scale)
-
-            # Determine note type and show appropriate menu
-            note = ui_utils.try_get_review_note()
-            if note:
-                from jaslib.note.kanjinote import KanjiNote
-                from jaslib.note.sentences.sentencenote import SentenceNote
-                from jaslib.note.vocabulary.vocabnote import VocabNote
-                
-                if isinstance(note, VocabNote):
-                    avalonia_host.show_vocab_context_menu(refresh, selection, clipboard, physical_x, physical_y)
-                elif isinstance(note, KanjiNote):
-                    avalonia_host.show_kanji_context_menu(refresh, selection, clipboard, physical_x, physical_y)
-                elif isinstance(note, SentenceNote):
-                    avalonia_host.show_sentence_context_menu(refresh, selection, clipboard, physical_x, physical_y)
-                else:
-                    avalonia_host.show_generic_context_menu(refresh, selection, clipboard, physical_x, physical_y)
+            if isinstance(note, VocabNote):
+                avalonia_host.show_vocab_context_menu(refresh, selection, clipboard, physical_x, physical_y)
+            elif isinstance(note, KanjiNote):
+                avalonia_host.show_kanji_context_menu(refresh, selection, clipboard, physical_x, physical_y)
+            elif isinstance(note, SentenceNote):
+                avalonia_host.show_sentence_context_menu(refresh, selection, clipboard, physical_x, physical_y)
             else:
                 avalonia_host.show_generic_context_menu(refresh, selection, clipboard, physical_x, physical_y)
-        except Exception as e:
-            from jaslib import mylog
-            mylog.error(f"Failed to show Avalonia menu: {e}")
+        else:
+            avalonia_host.show_generic_context_menu(refresh, selection, clipboard, physical_x, physical_y)
 
-    # Use hovered signal to trigger the popup
-    avalonia_action.hovered.connect(on_hover)  # pyright: ignore[reportUnknownMemberType, reportOptionalMemberAccess]
+    add_hover_avalonia_menu(menu, "🎯 AvaloniaMenu (Hover to show)", show_context_menu)
+
 
 def init() -> None:
     gui_hooks.webview_will_show_context_menu.append(build_right_click_menu_webview_hook)  # pyright: ignore[reportUnknownMemberType]

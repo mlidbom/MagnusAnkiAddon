@@ -98,55 +98,15 @@ def build_local_menu(local_menu: QMenu) -> None:
 
 def _add_avalonia_main_menu(menu: QMenu) -> None:
     """Add Japanese Avalonia menu entry that shows Avalonia popup on hover."""
-    from PyQt6.QtCore import QTimer
-    
-    avalonia_action = menu.addAction("🎯 Japanese Avalonia (Hover)")  # pyright: ignore[reportUnknownMemberType]
-    
-    shown = False
-    reset_timer: QTimer | None = None
-    
-    def on_hover() -> None:
-        nonlocal shown, reset_timer
-        
-        if shown:
-            return
-        shown = True
-        
-        # Reset the flag after a short delay (allows re-triggering on next menu open)
-        if reset_timer:
-            reset_timer.stop()
-        
-        timer = QTimer()
-        timer.setSingleShot(True)
-        timer.timeout.connect(lambda: on_reset())  # pyright: ignore[reportUnknownMemberType]
-        timer.start(500)  # Reset after 500ms
-        reset_timer = timer
-    
-    def on_reset() -> None:
-        """Reset the shown flag."""
-        nonlocal shown
-        shown = False
-        
-        try:
-            from PyQt6.QtWidgets import QApplication
-            
-            # Get menu position and convert to physical pixels
-            action_rect = menu.actionGeometry(avalonia_action)
-            action_global_pos = menu.mapToGlobal(action_rect.topLeft())
-            
-            screen = QApplication.screenAt(action_global_pos)
-            dpi_scale = screen.devicePixelRatio() if screen else 1.0
-            
-            physical_x = int(action_global_pos.x() * dpi_scale)
-            physical_y = int(action_global_pos.y() * dpi_scale)
-            
-            # Use the real Japanese main menu with refresh callback
-            avalonia_host.show_japanese_main_menu(refresh, physical_x, physical_y)
-        except Exception as e:
-            from jaslib import mylog
-            mylog.error(f"Failed to show Avalonia main menu: {e}")
-    
-    avalonia_action.hovered.connect(on_hover)  # pyright: ignore[reportUnknownMemberType, reportOptionalMemberAccess]
+    from jastudio.ui import avalonia_host
+    from jastudio.ui.avalonia_menu_helper import add_hover_avalonia_menu
+
+    def show_main_menu(physical_x: int, physical_y: int) -> None:
+        """Show the Japanese main menu."""
+        avalonia_host.show_japanese_main_menu(refresh, physical_x, physical_y)
+
+    add_hover_avalonia_menu(menu, "🎯 Japanese Avalonia (Hover)", show_main_menu)
+
 
 def init() -> None:
     build_main_menu()
