@@ -2,15 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace JAStudio.Core.Configuration;
 
 public static class ConfigurationValue
 {
-   static Dictionary<string, string>? _configDict;
-   static Action<Dictionary<string, string>>? _updateCallback;
+   static Dictionary<string, object>? _configDict;
+   static Action<string>? _updateCallback;
 
    public static void InitJson(string json, Action<string> updateCallback)
    {
@@ -19,15 +18,15 @@ public static class ConfigurationValue
          throw new InvalidOperationException("Configuration dict already initialized");
       }
 
-      _configDict = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+      _configDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
       _updateCallback = updateCallback;
    }
 
-   internal static Dictionary<string, string> GetConfigDict()
+   internal static Dictionary<string, object> GetConfigDict()
    {
       if(App.IsTesting)
       {
-         return new Dictionary<string, string>();
+         return new Dictionary<string, object>();
       }
 
       if(_configDict == null)
@@ -42,7 +41,8 @@ public static class ConfigurationValue
    {
       if(!App.IsTesting && _updateCallback != null && _configDict != null)
       {
-         _updateCallback(_configDict);
+         var json = JsonConvert.SerializeObject(_configDict, Formatting.None);
+         _updateCallback(json);
       }
    }
 
@@ -63,7 +63,7 @@ public class ConfigurationValue<T>
    public Action<T>? FeatureToggler { get; }
    public string Name { get; }
 
-   public ConfigurationValue(string name, string title, T defaultValue, Func<string, T> converter, Action<T>? featureToggler = null)
+   public ConfigurationValue(string name, string title, T defaultValue, Func<object, T> converter, Action<T>? featureToggler = null)
    {
       Title = title;
       FeatureToggler = featureToggler;
@@ -87,7 +87,7 @@ public class ConfigurationValue<T>
    {
       _value = value;
 
-      ConfigurationValue.GetConfigDict()[Name] = value?.ToString() ?? "";
+      ConfigurationValue.GetConfigDict()[Name] = value!;
 
       ToggleFeature();
 
@@ -115,27 +115,27 @@ public class JapaneseConfig
    readonly List<Action> _changeCallbacks = [];
 
    // Configuration value properties
-   public ConfigurationValue<float> BoostFailedCardAllowedTimeByFactor { get; }
+   public ConfigurationValue<double> BoostFailedCardAllowedTimeByFactor { get; }
 
-   public ConfigurationValue<float> AutoadvanceVocabStartingSeconds { get; }
-   public ConfigurationValue<float> AutoadvanceVocabHiraganaSeconds { get; }
-   public ConfigurationValue<float> AutoadvanceVocabKatakanaSeconds { get; }
-   public ConfigurationValue<float> AutoadvanceVocabKanjiSeconds { get; }
+   public ConfigurationValue<double> AutoadvanceVocabStartingSeconds { get; }
+   public ConfigurationValue<double> AutoadvanceVocabHiraganaSeconds { get; }
+   public ConfigurationValue<double> AutoadvanceVocabKatakanaSeconds { get; }
+   public ConfigurationValue<double> AutoadvanceVocabKanjiSeconds { get; }
 
-   public ConfigurationValue<float> AutoadvanceSentenceStartingSeconds { get; }
-   public ConfigurationValue<float> AutoadvanceSentenceHiraganaSeconds { get; }
-   public ConfigurationValue<float> AutoadvanceSentenceKatakanaSeconds { get; }
-   public ConfigurationValue<float> AutoadvanceSentenceKanjiSeconds { get; }
+   public ConfigurationValue<double> AutoadvanceSentenceStartingSeconds { get; }
+   public ConfigurationValue<double> AutoadvanceSentenceHiraganaSeconds { get; }
+   public ConfigurationValue<double> AutoadvanceSentenceKatakanaSeconds { get; }
+   public ConfigurationValue<double> AutoadvanceSentenceKanjiSeconds { get; }
 
-   public ConfigurationValue<float> MinimumTimeViewingQuestion { get; }
-   public ConfigurationValue<float> MinimumTimeViewingAnswer { get; }
+   public ConfigurationValue<double> MinimumTimeViewingQuestion { get; }
+   public ConfigurationValue<double> MinimumTimeViewingAnswer { get; }
 
-   public ConfigurationValue<int> TimeboxVocabRead { get; }
-   public ConfigurationValue<int> TimeboxVocabListen { get; }
-   public ConfigurationValue<int> TimeboxSentenceRead { get; }
-   public ConfigurationValue<int> TimeboxSentenceListen { get; }
-   public ConfigurationValue<int> TimeboxKanjiRead { get; }
-   public ConfigurationValue<int> DecreaseFailedCardIntervalsInterval { get; }
+   public ConfigurationValue<long> TimeboxVocabRead { get; }
+   public ConfigurationValue<long> TimeboxVocabListen { get; }
+   public ConfigurationValue<long> TimeboxSentenceRead { get; }
+   public ConfigurationValue<long> TimeboxSentenceListen { get; }
+   public ConfigurationValue<long> TimeboxKanjiRead { get; }
+   public ConfigurationValue<long> DecreaseFailedCardIntervalsInterval { get; }
 
    // Misc toggles
    public ConfigurationValue<bool> BoostFailedCardAllowedTime { get; }
@@ -187,10 +187,9 @@ public class JapaneseConfig
 
    static class To
    {
-      public static Func<string, int> Int = int.Parse;
-      public static Func<string, long> Long = long.Parse;
-      public static Func<string, float> Float = float.Parse;
-      public static Func<string, bool> Bool = bool.Parse;
+      public static readonly Func<object, long> Long = it => (long)it;
+      public static readonly Func<object, double> Double = it => (double)it;
+      public static readonly Func<object, bool> Bool = it => (bool)it;
    }
 
    public JapaneseConfig()
@@ -201,27 +200,27 @@ public class JapaneseConfig
          return value;
       }
 
-      BoostFailedCardAllowedTimeByFactor = Add(new ConfigurationValue<float>("boost_failed_card_allowed_time_by_factor", "Boost Failed Card Allowed Time Factor", 1.5f, To.Float));
+      BoostFailedCardAllowedTimeByFactor = Add(new ConfigurationValue<double>("boost_failed_card_allowed_time_by_factor", "Boost Failed Card Allowed Time Factor", 1.5f, To.Double));
 
-      AutoadvanceVocabStartingSeconds = Add(new ConfigurationValue<float>("autoadvance_vocab_starting_seconds", "Starting Seconds", 3.0f, To.Float));
-      AutoadvanceVocabHiraganaSeconds = Add(new ConfigurationValue<float>("autoadvance_vocab_hiragana_seconds", "Hiragana Seconds", 0.7f, To.Float));
-      AutoadvanceVocabKatakanaSeconds = Add(new ConfigurationValue<float>("autoadvance_vocab_katakana_seconds", "Katakana Seconds", 0.7f, To.Float));
-      AutoadvanceVocabKanjiSeconds = Add(new ConfigurationValue<float>("autoadvance_vocab_kanji_seconds", "Kanji Seconds", 1.5f, To.Float));
+      AutoadvanceVocabStartingSeconds = Add(new ConfigurationValue<double>("autoadvance_vocab_starting_seconds", "Starting Seconds", 3.0f, To.Double));
+      AutoadvanceVocabHiraganaSeconds = Add(new ConfigurationValue<double>("autoadvance_vocab_hiragana_seconds", "Hiragana Seconds", 0.7f, To.Double));
+      AutoadvanceVocabKatakanaSeconds = Add(new ConfigurationValue<double>("autoadvance_vocab_katakana_seconds", "Katakana Seconds", 0.7f, To.Double));
+      AutoadvanceVocabKanjiSeconds = Add(new ConfigurationValue<double>("autoadvance_vocab_kanji_seconds", "Kanji Seconds", 1.5f, To.Double));
 
-      AutoadvanceSentenceStartingSeconds = Add(new ConfigurationValue<float>("autoadvance_sentence_starting_seconds", "Starting Seconds", 3.0f, To.Float));
-      AutoadvanceSentenceHiraganaSeconds = Add(new ConfigurationValue<float>("autoadvance_sentence_hiragana_seconds", "Hiragana Seconds", 0.7f, To.Float));
-      AutoadvanceSentenceKatakanaSeconds = Add(new ConfigurationValue<float>("autoadvance_sentence_katakana_seconds", "Katakana Seconds", 0.7f, To.Float));
-      AutoadvanceSentenceKanjiSeconds = Add(new ConfigurationValue<float>("autoadvance_sentence_kanji_seconds", "Kanji Seconds", 1.5f, To.Float));
+      AutoadvanceSentenceStartingSeconds = Add(new ConfigurationValue<double>("autoadvance_sentence_starting_seconds", "Starting Seconds", 3.0f, To.Double));
+      AutoadvanceSentenceHiraganaSeconds = Add(new ConfigurationValue<double>("autoadvance_sentence_hiragana_seconds", "Hiragana Seconds", 0.7f, To.Double));
+      AutoadvanceSentenceKatakanaSeconds = Add(new ConfigurationValue<double>("autoadvance_sentence_katakana_seconds", "Katakana Seconds", 0.7f, To.Double));
+      AutoadvanceSentenceKanjiSeconds = Add(new ConfigurationValue<double>("autoadvance_sentence_kanji_seconds", "Kanji Seconds", 1.5f, To.Double));
 
-      MinimumTimeViewingQuestion = Add(new ConfigurationValue<float>("minimum_time_viewing_question", "Minimum time viewing question", 0.5f, To.Float));
-      MinimumTimeViewingAnswer = Add(new ConfigurationValue<float>("minimum_time_viewing_answer", "Minimum time viewing answer", 0.5f, To.Float));
+      MinimumTimeViewingQuestion = Add(new ConfigurationValue<double>("minimum_time_viewing_question", "Minimum time viewing question", 0.5f, To.Double));
+      MinimumTimeViewingAnswer = Add(new ConfigurationValue<double>("minimum_time_viewing_answer", "Minimum time viewing answer", 0.5f, To.Double));
 
-      TimeboxVocabRead = Add(new ConfigurationValue<int>("time_box_length_vocab_read", "Vocab Read", 15, To.Int));
-      TimeboxVocabListen = Add(new ConfigurationValue<int>("time_box_length_vocab_listen", "Vocab Listen", 15, To.Int));
-      TimeboxSentenceRead = Add(new ConfigurationValue<int>("time_box_length_sentence_read", "Sentence Read", 15, To.Int));
-      TimeboxSentenceListen = Add(new ConfigurationValue<int>("time_box_length_sentence_listen", "Sentence Listen", 15, To.Int));
-      TimeboxKanjiRead = Add(new ConfigurationValue<int>("time_box_length_kanji", "Kanji", 15, To.Int));
-      DecreaseFailedCardIntervalsInterval = Add(new ConfigurationValue<int>("decrease_failed_card_intervals_interval", "Failed card again seconds for next again", 60, To.Int));
+      TimeboxVocabRead = Add(new ConfigurationValue<long>("time_box_length_vocab_read", "Vocab Read", 15, To.Long));
+      TimeboxVocabListen = Add(new ConfigurationValue<long>("time_box_length_vocab_listen", "Vocab Listen", 15, To.Long));
+      TimeboxSentenceRead = Add(new ConfigurationValue<long>("time_box_length_sentence_read", "Sentence Read", 15, To.Long));
+      TimeboxSentenceListen = Add(new ConfigurationValue<long>("time_box_length_sentence_listen", "Sentence Listen", 15, To.Long));
+      TimeboxKanjiRead = Add(new ConfigurationValue<long>("time_box_length_kanji", "Kanji", 15, To.Long));
+      DecreaseFailedCardIntervalsInterval = Add(new ConfigurationValue<long>("decrease_failed_card_intervals_interval", "Failed card again seconds for next again", 60, To.Long));
 
       // misc toggles
       BoostFailedCardAllowedTime = new ConfigurationValue<bool>("boost_failed_card_allowed_time", "Boost failed card allowed time", true, To.Bool);

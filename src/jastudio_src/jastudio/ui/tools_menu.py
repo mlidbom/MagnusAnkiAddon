@@ -10,6 +10,7 @@ from PyQt6.QtWidgets import QInputDialog, QLineEdit, QMenu
 
 from jastudio.ankiutils import app, ui_utils
 from jastudio.ankiutils.app import get_ui_utils, main_window
+from jastudio.configuration import configuration
 from jastudio.configuration.readings_mapping_dialog import show_readings_mappings
 from jastudio.sysutils import object_instance_tracker
 from jastudio.ui import avalonia_host
@@ -84,7 +85,8 @@ def build_config_menu(config_menu: QMenu) -> None:
             import traceback
             mylog.error(traceback.format_exc())
 
-    non_optional(config_menu.addAction(shortcutfinger.home1("Options"), show_options_with_logging)).setShortcut("Ctrl+Shift+s")  # pyright: ignore[reportUnknownMemberType]
+    non_optional(config_menu.addAction(shortcutfinger.home1(".NET Options"), show_options_with_logging)).setShortcut("Ctrl+Shift+s")  # pyright: ignore[reportUnknownMemberType]
+    non_optional(config_menu.addAction(shortcutfinger.home1("Python Options"), configuration.show_japanese_options)).setShortcut("Ctrl+Shift+s")  # pyright: ignore[reportUnknownMemberType]
     non_optional(config_menu.addAction(shortcutfinger.home2("Readings mappings"), show_readings_mappings)).setShortcut("Ctrl+Shift+m")  # pyright: ignore[reportUnknownMemberType]
 
 def build_local_menu(local_menu: QMenu) -> None:

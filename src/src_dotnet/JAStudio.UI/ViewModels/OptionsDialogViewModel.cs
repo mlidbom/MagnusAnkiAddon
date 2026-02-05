@@ -73,33 +73,33 @@ public partial class OptionsDialogViewModel : ObservableObject
         _config.BoostFailedCardAllowedTimeByFactor.SetValue((float)value);
 
     [ObservableProperty]
-    private int _decreaseFailedCardIntervalsInterval;
-    partial void OnDecreaseFailedCardIntervalsIntervalChanged(int value) =>
+    private long _decreaseFailedCardIntervalsInterval;
+    partial void OnDecreaseFailedCardIntervalsIntervalChanged(long value) =>
         _config.DecreaseFailedCardIntervalsInterval.SetValue(value);
 
     [ObservableProperty]
-    private int _timeboxSentenceRead;
-    partial void OnTimeboxSentenceReadChanged(int value) =>
+    private long _timeboxSentenceRead;
+    partial void OnTimeboxSentenceReadChanged(long value) =>
         _config.TimeboxSentenceRead.SetValue(value);
 
     [ObservableProperty]
-    private int _timeboxSentenceListen;
-    partial void OnTimeboxSentenceListenChanged(int value) =>
+    private long _timeboxSentenceListen;
+    partial void OnTimeboxSentenceListenChanged(long value) =>
         _config.TimeboxSentenceListen.SetValue(value);
 
     [ObservableProperty]
-    private int _timeboxVocabRead;
-    partial void OnTimeboxVocabReadChanged(int value) =>
+    private long _timeboxVocabRead;
+    partial void OnTimeboxVocabReadChanged(long value) =>
         _config.TimeboxVocabRead.SetValue(value);
 
     [ObservableProperty]
-    private int _timeboxVocabListen;
-    partial void OnTimeboxVocabListenChanged(int value) =>
+    private long _timeboxVocabListen;
+    partial void OnTimeboxVocabListenChanged(long value) =>
         _config.TimeboxVocabListen.SetValue(value);
 
     [ObservableProperty]
-    private int _timeboxKanjiRead;
-    partial void OnTimeboxKanjiReadChanged(int value) =>
+    private long _timeboxKanjiRead;
+    partial void OnTimeboxKanjiReadChanged(long value) =>
         _config.TimeboxKanjiRead.SetValue(value);
 
     [ObservableProperty]

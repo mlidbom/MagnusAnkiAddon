@@ -17,6 +17,10 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
   <!-- Stub regeneration moved to JAStudio.UI project (builds last, has all DLLs) -->
 
 </Project>

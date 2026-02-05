@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+import json
 from typing import TYPE_CHECKING
 
 from aqt import mw
 from jaslib import mylog
 from jaslib.configuration import configuration_value
 from JAStudio.Core.Configuration import ConfigurationValue
-from JAStudio.PythonInterop import PythonDotNetShim
+from System import Action
 
 from jastudio.ankiutils import app
 
@@ -21,13 +22,16 @@ def _write_config_dict(config_dict: dict[str, object]) -> None:
     if not app.is_testing:
         mw.addonManager.writeConfig(app.addon_name, config_dict)  # pyright: ignore[reportUnknownMemberType]
 
+def _write_config_dict_json(config_dict_json: str) -> None:
+    _write_config_dict(json.loads(config_dict_json))
+
 # Initialize Python configuration system
 configuration_value.init(_get_config_dict(), _write_config_dict)
 
 # Initialize C# configuration system
-cs_config_dict = PythonDotNetShim.ConfigDict.ToDotNetDict(_get_config_dict())
-cs_update_callback = PythonDotNetShim.ConfigDict.ToDotNetDictAction(_write_config_dict)
-ConfigurationValue.Init(cs_config_dict, cs_update_callback)
+_callback = Action[str](_write_config_dict_json)  # pyright: ignore [reportCallIssue]
+_json_dict = json.dumps(_get_config_dict(), indent=3, ensure_ascii=False)
+ConfigurationValue.InitJson(_json_dict, _callback)
 mylog.info("C# ConfigurationValue initialized successfully")
 
 config: Lazy[JapaneseConfig] = configuration_value.config
