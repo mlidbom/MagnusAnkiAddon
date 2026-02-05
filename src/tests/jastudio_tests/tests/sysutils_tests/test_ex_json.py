@@ -5,12 +5,11 @@ from typing import override
 from anki.notes import NoteId
 from autoslot import Slots
 from deepdiff import DeepDiff
-from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction import WordExclusion
-from JAStudio.Core.Note.Sentences import SentenceConfiguration
-from JAStudio.Core.Note.Sentences import WordExclusionSet
 from jaspythonutils.sysutils.json import ex_json
 from jaspythonutils.sysutils.json.json_reader import JsonReader
 from jastudio.ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa  # pyright: ignore[reportUnusedImport]
+from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction import WordExclusion
+from JAStudio.Core.Note.Sentences import SentenceConfiguration, WordExclusionSet
 from typed_linq_collections.collections.q_unique_list import QUniqueList
 
 
@@ -54,8 +53,7 @@ def test_round_object_list() -> None:
     assert_object_graphs_identical(start_value, round_tripped_value)
 
 def test_roundtrip_parsing_result() -> None:
-    from JAStudio.Core.Note.Sentences import ParsedMatch
-    from JAStudio.Core.Note.Sentences import ParsingResult
+    from JAStudio.Core.Note.Sentences import ParsedMatch, ParsingResult
 
     parsing_result = ParsingResult([ParsedMatch("B", 0, True, "foo", NoteId(1)), #the information string is not read when loading so don't set it to anything
                                     ParsedMatch("B", 4, False, "bar", NoteId(2))], "foo bar", "1.0") #the information string is not read when loading so don't set it to anything

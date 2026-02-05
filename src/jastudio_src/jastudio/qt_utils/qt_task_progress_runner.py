@@ -5,12 +5,12 @@ import time
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
-from JAStudio.Core import MyLog
-from JAStudio.Core.TaskRunners import ITaskProgressRunner
 from jaspythonutils.sysutils import timeutil
 from jaspythonutils.sysutils.timeutil import StopWatch
 from jaspythonutils.sysutils.typed import non_optional
 from jastudio.ankiutils import app
+from JAStudio.Core import MyLog
+from JAStudio.Core.TaskRunners import ITaskProgressRunner
 from jastudio.sysutils import app_thread_pool, ex_thread
 from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
 from PyQt6.QtCore import Qt

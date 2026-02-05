@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING
 
 from anki.notes import NoteId
 from autoslot import Slots
-from JAStudio.Core.Note import JPNote
 from jaspythonutils.sysutils.weak_ref import WeakRef, WeakRefable
 from jastudio.ankiutils import app
+from JAStudio.Core.Note import JPNote
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
 from typed_linq_collections.collections.q_set import QSet
 

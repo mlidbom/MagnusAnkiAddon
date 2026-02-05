@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from anki.notes import Note
-from JAStudio.Core.Note import IBackendNoteCreator, NoteTypes
 from jastudio.ankiutils import app
+from JAStudio.Core.Note import IBackendNoteCreator, NoteTypes
 from jastudio.note import studing_status_helper
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
 

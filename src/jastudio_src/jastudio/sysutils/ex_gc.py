@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import gc
 
-from JAStudio.Core import MyLog
 from jastudio.ankiutils import app
+from JAStudio.Core import MyLog
 from jastudio.sysutils import app_thread_pool
 
 

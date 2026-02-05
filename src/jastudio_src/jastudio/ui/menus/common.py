@@ -4,11 +4,11 @@ import typing
 
 import pyperclip
 from aqt import gui_hooks
+from jaspythonutils.sysutils import ex_lambda, typed
+from jaspythonutils.sysutils.typed import non_optional
 from JAStudio.Core import App
 from JAStudio.Core.Batches import LocalNoteUpdater
 from JAStudio.Core.Note import KanjiNote, Mine, SentenceNote, VocabNote
-from jaspythonutils.sysutils import ex_lambda, typed
-from jaspythonutils.sysutils.typed import non_optional
 from typed_linq_collections.collections.q_list import QList
 
 from jastudio.anki_extentions.note_ex import NoteEx

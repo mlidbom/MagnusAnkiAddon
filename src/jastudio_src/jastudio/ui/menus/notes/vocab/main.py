@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pyperclip
-from JAStudio.Core import App
-from JAStudio.Core.Note import NoteFields, NoteTypes
 from jaspythonutils.sysutils import ex_str
 from jaspythonutils.sysutils.ex_str import newline
 from jaspythonutils.sysutils.typed import non_optional
+from JAStudio.Core import App
+from JAStudio.Core.Note import NoteFields, NoteTypes
 
 from jastudio.ankiutils import query_builder
 from jastudio.ui.menus.menu_utils import shortcutfinger

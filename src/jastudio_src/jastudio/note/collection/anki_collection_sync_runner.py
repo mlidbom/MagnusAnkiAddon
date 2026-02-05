@@ -6,11 +6,11 @@ from typing import TYPE_CHECKING
 from anki import hooks
 from anki.models import ModelManager
 from autoslot import Slots
-from JAStudio.Core.Note import NoteTypes
 from jaspythonutils.sysutils import ex_assert
 from jaspythonutils.sysutils.typed import checked_cast, non_optional
 from jastudio.anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from jastudio.ankiutils import app
+from JAStudio.Core.Note import NoteTypes
 from jastudio.sysutils import app_thread_pool, ex_thread
 from typed_linq_collections.collections.q_list import QList
 

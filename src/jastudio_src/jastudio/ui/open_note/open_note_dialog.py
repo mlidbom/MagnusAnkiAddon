@@ -4,11 +4,11 @@ import threading
 from typing import TYPE_CHECKING, cast, final
 
 from anki.notes import NoteId
+from jaspythonutils.sysutils import ex_str, typed
+from jaspythonutils.sysutils.typed import non_optional
 from JAStudio.Core import App
 from JAStudio.Core.Note import JPNote, KanjiNote, SentenceNote, VocabNote
 from JAStudio.Core.SysUtils import KanaUtils
-from jaspythonutils.sysutils import ex_str, typed
-from jaspythonutils.sysutils.typed import non_optional
 from PyQt6.QtCore import Qt, pyqtBoundSignal
 from PyQt6.QtWidgets import QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QProgressBar, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
 

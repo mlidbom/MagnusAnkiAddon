@@ -4,15 +4,15 @@ import threading
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from JAStudio.Core import App, MyLog
-from JAStudio.Core.Note import JPNote, KanjiNote, Mine, NoteTypes, SentenceNote, VocabNote
-from JAStudio.Core.TaskRunners import TaskRunner
+from jaslib.task_runners.task_progress_runner import TaskRunner
 from jaspythonutils.sysutils.memory_usage import string_auto_interner
 from jaspythonutils.sysutils.timeutil import StopWatch
 from jaspythonutils.sysutils.typed import non_optional
 from jaspythonutils.sysutils.weak_ref import WeakRefable
 from jastudio.anki_extentions.note_bulk_loader import NoteBulkLoader
 from jastudio.ankiutils import app
+from JAStudio.Core import App, MyLog
+from JAStudio.Core.Note import JPNote, KanjiNote, Mine, NoteTypes, SentenceNote, VocabNote
 from jastudio.note import studing_status_helper
 from jastudio.note.anki_backend_note_creator import AnkiBackendNoteCreator
 from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner
@@ -75,7 +75,7 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
         ex_trace_malloc_instance.ensure_initialized()
         stopwatch = StopWatch()
         with StopWatch.log_warning_if_slower_than(5, "Full collection setup"):  # noqa: SIM117
-            with TaskRunner.Current(f"Loading {Mine.app_name}", "reading notes from anki",
+            with TaskRunner.current(f"Loading {Mine.app_name}", "reading notes from anki",
                                     forceHide=not app.config().load_studio_in_foreground.get_value(),
                                     forceGc=not AnkiJPCollectionSyncer._is_inital_load,
                                     allowCancel=False) as task_runner:

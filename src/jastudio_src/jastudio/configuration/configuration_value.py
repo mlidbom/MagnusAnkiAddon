@@ -8,8 +8,8 @@ from JAStudio.Core import Configuration
 from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
-    from JAStudio.Core.Configuration import JapaneseConfig
     from jaspythonutils.sysutils.lazy import Lazy
+    from JAStudio.Core.Configuration import JapaneseConfig
 
 def _get_config_dict() -> dict[str, object]:
     return mw.addonManager.getConfig(app.addon_name) or {} if not app.is_testing else {}

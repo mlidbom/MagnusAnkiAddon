@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING, cast
 
 from anki.models import NotetypeDict
 from autoslot import Slots
-from JAStudio.Core.Note import JPNote, KanjiNote, NoteTypes, SentenceNote, VocabNote
 from jaspythonutils.sysutils.typed import str_
 from jaspythonutils.sysutils.weak_ref import WeakRefable
+from JAStudio.Core.Note import JPNote, KanjiNote, NoteTypes, SentenceNote, VocabNote
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
 
 if TYPE_CHECKING:

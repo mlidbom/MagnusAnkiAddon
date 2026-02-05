@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction import WordExclusion
 from jaspythonutils.sysutils import ex_lambda
 from jaspythonutils.sysutils.lazy import Lazy
 from jaspythonutils.sysutils.typed import non_optional
+from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction import WordExclusion
 
 from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.menu_utils.ex_qmenu import add_ui_action

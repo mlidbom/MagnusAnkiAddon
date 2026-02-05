@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 from aqt import gui_hooks, mw
 from aqt.reviewer import Reviewer
-from JAStudio.Core.Note import CardTypes, DifficultyCalculator, KanjiNote, SentenceNote, VocabNote
 from jaspythonutils.sysutils.typed import non_optional
+from JAStudio.Core.Note import CardTypes, DifficultyCalculator, KanjiNote, SentenceNote, VocabNote
 
 from jastudio.anki_extentions.card_ex import CardEx
 from jastudio.ankiutils import app, ui_utils

@@ -12,8 +12,8 @@ from jastudio.ui.menus.notes.vocab.require_forbid_widget import RequireForbidWid
 from jastudio.ui.menus.notes.vocab.string_set_widget import StringSetWidget
 
 if TYPE_CHECKING:
-    from JAStudio.Core.Note.NoteFields import RequireForbidFlagField, TagFlagField
     from JAStudio.Core.Note import VocabNote
+    from JAStudio.Core.Note.NoteFields import RequireForbidFlagField, TagFlagField
 
 class VocabFlagsDialog(QDialog):
     def __init__(self, vocab: VocabNote, parent: QWidget | None = None) -> None:

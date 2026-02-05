@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from JAStudio.Core.Batches import LocalNoteUpdater
 from jaspythonutils.sysutils.typed import checked_cast, non_optional
+from JAStudio.Core.Batches import LocalNoteUpdater
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QInputDialog, QLineEdit, QMenu

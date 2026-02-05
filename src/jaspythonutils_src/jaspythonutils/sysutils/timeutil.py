@@ -6,9 +6,9 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from JAStudio.Core import MyLog
 from jaspythonutils.sysutils import typed
 from jaspythonutils.sysutils.time_span import TimeSpan
+from JAStudio.Core import MyLog
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

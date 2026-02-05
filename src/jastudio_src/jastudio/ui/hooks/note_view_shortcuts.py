@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
-from JAStudio.Core.Note import KanjiNote, SentenceNote, VocabNote
 from jaspythonutils.sysutils import typed
 from jaspythonutils.sysutils.typed import try_cast
+from JAStudio.Core.Note import KanjiNote, SentenceNote, VocabNote
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtGui import QKeySequence, QShortcut
 

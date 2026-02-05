@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
-from JAStudio.Core.Note import SentenceNote
 from jaspythonutils.sysutils import ex_lambda
 from jaspythonutils.sysutils.typed import non_optional
+from JAStudio.Core.Note import SentenceNote
 
 import jastudio.note.ankijpnote
 from jastudio.ankiutils import app

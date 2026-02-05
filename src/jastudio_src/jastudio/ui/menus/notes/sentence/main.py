@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from anki.notes import NoteId
-from JAStudio.Core.Note import NoteFields, NoteTypes
 from jaspythonutils.sysutils.typed import non_optional
+from JAStudio.Core.Note import NoteFields, NoteTypes
 
 from jastudio.ankiutils import app, query_builder
 from jastudio.ui.menus.menu_utils import shortcutfinger

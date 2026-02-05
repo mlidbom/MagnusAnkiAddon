@@ -4,14 +4,14 @@ from typing import TYPE_CHECKING
 
 from anki.consts import QUEUE_TYPE_SUSPENDED
 from anki.notes import Note, NoteId
-from JAStudio.Core import App
-from JAStudio.Core.Note import NoteTypes
-from JAStudio.Core.Note.Collection import CardStudyingStatus
-from JAStudio.Core.TaskRunners import TaskRunner
+from jaslib.task_runners.task_progress_runner import TaskRunner
 from jaspythonutils.sysutils import typed
 from jaspythonutils.sysutils.memory_usage import string_auto_interner
 from jaspythonutils.sysutils.typed import non_optional
 from jastudio.anki_extentions.note_ex import NoteEx
+from JAStudio.Core import App
+from JAStudio.Core.Note import NoteTypes
+from JAStudio.Core.Note.Collection import CardStudyingStatus
 from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
@@ -53,7 +53,7 @@ def fetch_card_studying_statuses(col: Collection, ) -> list[CardStudyingStatus]:
         WHERE notetypes.name COLLATE NOCASE IN ('{NoteTypes.Sentence}', '{NoteTypes.Vocab}', '{NoteTypes.Kanji}')
     """
 
-    with TaskRunner.Current("Fetching card studying status from Anki db") as task_runner:
+    with TaskRunner.current("Fetching card studying status from Anki db") as task_runner:
         return task_runner.RunOnBackgroundThreadWithSpinningProgressDialog(
                 "Fetching card studying status from Anki db",
                 lambda: query(non_optional(col.db).all(sql_query)).select(CardStudyingStatusFactory.from_row).to_list())

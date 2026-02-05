@@ -3,7 +3,7 @@ from __future__ import annotations
 import gc
 from typing import TYPE_CHECKING
 
-from JAStudio.Core.TaskRunners import TaskRunner
+from jaslib.task_runners.task_progress_runner import TaskRunner
 
 from jastudio.ankiutils import app, query_builder
 
@@ -18,7 +18,7 @@ def convert_immersion_kit_sentences() -> None:
         jastudio.note.sentences.ankisentencenote.AnkiSentenceNote.import_immersion_kit_sentence(immersion_kit_note)
         app.anki_collection().remove_notes([note_id])
 
-    with TaskRunner.Current("Converting immersion kit sentences", inhibitGc=True) as runner:
+    with TaskRunner.current("Converting immersion kit sentences", inhibitGc=True) as runner:
         immersion_kit_sences = list(app.anki_collection().find_notes(query_builder.immersion_kit_sentences()))
         runner.ProcessWithProgress(immersion_kit_sences, convert_note, "Converting immersion kit sentences", runGc=True, minimumItemsToGc=100)
 
