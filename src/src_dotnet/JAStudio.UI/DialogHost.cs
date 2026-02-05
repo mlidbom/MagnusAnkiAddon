@@ -154,6 +154,20 @@ public static class DialogHost
     }
 
     /// <summary>
+    /// Toggle the English Word Search dialog visibility.
+    /// Shows the dialog if hidden, hides it if visible.
+    /// </summary>
+    public static void ToggleEnglishWordSearchDialog()
+    {
+        JALogger.Log("ToggleEnglishWordSearchDialog() called");
+        EnsureInitialized();
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            EnglishWordSearchDialog.ToggleVisibility();
+        });
+    }
+
+    /// <summary>
     /// Show the context menu popup at the current cursor position.
     /// </summary>
     /// <param name="clipboardContent">Content from clipboard</param>
