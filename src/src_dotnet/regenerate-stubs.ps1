@@ -13,9 +13,12 @@ param(
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 Push-Location $ScriptDir
 
+$StubGenRoot = "..\..\src_dotnet\pythonnet-stub-generator"
+$TypingsPath = "..\..\typings"
+
 try {
     Write-Host "Building stub generator..." -ForegroundColor Cyan
-    dotnet build pythonnet-stub-generator\csharp\PythonNetStubTool\PythonNetStubGenerator.Tool.csproj
+    dotnet build "$StubGenRoot\csharp\PythonNetStubTool\PythonNetStubGenerator.Tool.csproj"
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Build failed!" -ForegroundColor Red
@@ -23,13 +26,13 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host "`nCleaning old JAStudio stubs..." -ForegroundColor Cyan
-$jastudioPath = "..\typings\JAStudio"
+$jastudioPath = "$TypingsPath\JAStudio"
 if (Test-Path $jastudioPath) {
     Remove-Item -Recurse -Force $jastudioPath
     Write-Host "Removed old JAStudio stubs" -ForegroundColor Yellow
 }
 
-$globalPath = "..\typings\global_"
+$globalPath = "$TypingsPath\global_"
 if (Test-Path $globalPath) {
     Remove-Item -Recurse -Force $globalPath
     Write-Host "Removed broken global_ stubs" -ForegroundColor Yellow
@@ -38,8 +41,8 @@ if (Test-Path $globalPath) {
 Write-Host "`nGenerating stubs..." -ForegroundColor Cyan
 
 $args = @(
-    "pythonnet-stub-generator\csharp\PythonNetStubTool\bin\Debug\net10.0\PythonNetStubGenerator.Tool.dll",
-    "--dest-path", "..\typings",
+    "$StubGenRoot\csharp\PythonNetStubTool\bin\Debug\net10.0\PythonNetStubGenerator.Tool.dll",
+    "--dest-path", $TypingsPath,
     "--target-dlls", "JAStudio.Core\bin\Debug\net10.0\JAStudio.Core.dll,JAStudio.PythonInterop\bin\Debug\net10.0\JAStudio.PythonInterop.dll"
 )
 

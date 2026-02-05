@@ -2,6 +2,16 @@ import typing, clr, abc
 from System.Buffers import OperationStatus
 from System import ReadOnlySpan_1, Span_1, IFormatProvider
 
+class UnicodeRange:
+    def __init__(self, firstCodePoint: int, length: int) -> None: ...
+    @property
+    def FirstCodePoint(self) -> int: ...
+    @property
+    def Length(self) -> int: ...
+    @staticmethod
+    def Create(firstCharacter: str, lastCharacter: str) -> UnicodeRange: ...
+
+
 class Utf8(abc.ABC):
     @staticmethod
     def FromUtf16(source: ReadOnlySpan_1[str], destination: Span_1[int], charsRead: clr.Reference[int], bytesWritten: clr.Reference[int], replaceInvalidSequences: bool = ..., isFinalBlock: bool = ...) -> OperationStatus: ...
