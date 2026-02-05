@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Web;
-using JAStudio.UI.Anki;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
 using SpecMenuItem = JAStudio.UI.Menus.UIAgnosticMenuStructure.MenuItem;
@@ -158,7 +157,7 @@ public static class WebSearchMenus
                 var searchText = getSearchText();
                 var encodedText = HttpUtility.UrlEncode(searchText);
                 var url = urlTemplate.Replace("%s", encodedText);
-                AnkiFacade.OpenUrl(url);
+                BrowserLauncher.OpenUrl(url);
             }
         );
     }

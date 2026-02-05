@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using JAStudio.Core.Batches;
 using JAStudio.UI.Anki;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
@@ -123,15 +124,15 @@ public class JapaneseMainMenu
 
     // Local Actions menu actions
     private void OnConvertImmersionKitSentences() => AnkiFacade.ConvertImmersionKitSentences();
-    private void OnCreateMissingVocab() => AnkiFacade.CreateMissingVocab();
-    private void OnRegenerateVocabAnswers() => AnkiFacade.RegenerateVocabAnswers();
+    private void OnCreateMissingVocab() => LocalNoteUpdater.CreateMissingVocabWithDictionaryEntries();
+    private void OnRegenerateVocabAnswers() => LocalNoteUpdater.RegenerateJamdictVocabAnswers();
 
     // Update submenu actions
-    private void OnUpdateVocab() => AnkiFacade.UpdateVocab();
-    private void OnUpdateKanji() => AnkiFacade.UpdateKanji();
-    private void OnUpdateSentences() => AnkiFacade.UpdateSentences();
-    private void OnTagNoteMetadata() => AnkiFacade.TagNoteMetadata();
-    private void OnUpdateAll() => AnkiFacade.UpdateAll();
-    private void OnReparseSentences() => AnkiFacade.ReparseAllSentences();
-    private void OnFullRebuild() => AnkiFacade.FullRebuild();
+    private void OnUpdateVocab() => LocalNoteUpdater.UpdateVocab();
+    private void OnUpdateKanji() => LocalNoteUpdater.UpdateKanji();
+    private void OnUpdateSentences() => LocalNoteUpdater.UpdateSentences();
+    private void OnTagNoteMetadata() => LocalNoteUpdater.TagNoteMetadata();
+    private void OnUpdateAll() => LocalNoteUpdater.UpdateAll();
+    private void OnReparseSentences() => LocalNoteUpdater.ReparseAllSentences();
+    private void OnFullRebuild() => LocalNoteUpdater.FullRebuild();
 }
