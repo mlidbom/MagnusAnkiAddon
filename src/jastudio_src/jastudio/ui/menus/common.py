@@ -161,9 +161,6 @@ def _add_avalonia_menu_entry(menu: QMenu, selection: str, clipboard: str) -> Non
             screen = QApplication.screenAt(action_global_pos)
             dpi_scale = screen.devicePixelRatio() if screen else 1.0
 
-            # Position the Avalonia popup to the right of this action (like a submenu)
-            # x: right edge of the menu (in logical pixels)
-            # y: aligned with this action's top (in logical pixels)
             logical_x = action_global_pos.x()
             logical_y = action_global_pos.y()
 

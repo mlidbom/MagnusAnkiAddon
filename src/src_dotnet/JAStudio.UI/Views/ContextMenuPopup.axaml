@@ -2,42 +2,43 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="JAStudio.UI.Views.ContextMenuPopup"
         Title="JAStudio Menu"
-        Width="300" Height="120"
+        Width="250"
+        SizeToContent="Height"
         WindowStartupLocation="Manual"
         CanResize="False"
         ShowInTaskbar="False"
         SystemDecorations="None"
         ExtendClientAreaToDecorationsHint="True"
-        Background="#2D2D30"
-        BorderBrush="#3E3E42"
-        BorderThickness="1"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
         Topmost="True">
 
-    <StackPanel Margin="4" Spacing="2">
-        <!-- Clipboard Content Item -->
-        <Border Background="Transparent"
-                Padding="8,4"
-                PointerEntered="OnMenuItemEnter"
-                PointerExited="OnMenuItemExit"
-                PointerPressed="OnClipboardItemClick"
-                x:Name="ClipboardItem">
-            <TextBlock x:Name="ClipboardText" 
-                       Text="Clipboard: (empty)"
-                       Foreground="White"
-                       FontSize="12" />
-        </Border>
-        
-        <!-- Selection Content Item -->
-        <Border Background="Transparent"
-                Padding="8,4"
-                PointerEntered="OnMenuItemEnter"
-                PointerExited="OnMenuItemExit"
-                PointerPressed="OnSelectionItemClick"
-                x:Name="SelectionItem">
-            <TextBlock x:Name="SelectionText" 
-                       Text="Selection: (empty)"
-                       Foreground="White"
-                       FontSize="12" />
-        </Border>
-    </StackPanel>
+    <Border BorderBrush="#707070"
+            BorderThickness="1"
+            Background="#F0F0F0"
+            CornerRadius="2"
+            Padding="2">
+        <Menu x:Name="MainMenu"
+              Background="Transparent">
+            <Menu.Styles>
+                <Style Selector="MenuItem">
+                    <Setter Property="Padding" Value="8,4"/>
+                    <Setter Property="Background" Value="Transparent"/>
+                </Style>
+                <Style Selector="MenuItem:pointerover /template/ Border#PART_LayoutRoot">
+                    <Setter Property="Background" Value="#3399FF"/>
+                </Style>
+                <Style Selector="MenuItem:pointerover /template/ ContentPresenter">
+                    <Setter Property="TextBlock.Foreground" Value="White"/>
+                </Style>
+            </Menu.Styles>
+            
+            <MenuItem x:Name="ClipboardMenuItem" 
+                      Header="Clipboard: (empty)" 
+                      Click="OnClipboardItemClick" />
+            <MenuItem x:Name="SelectionMenuItem" 
+                      Header="Selection: (empty)" 
+                      Click="OnSelectionItemClick" />
+        </Menu>
+    </Border>
 </Window>

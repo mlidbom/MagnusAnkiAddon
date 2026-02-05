@@ -1,8 +1,7 @@
 using System;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.Media;
+using Avalonia.Interactivity;
 
 namespace JAStudio.UI.Views;
 
@@ -19,12 +18,12 @@ public partial class ContextMenuPopup : Window
         
         InitializeComponent();
         
-        // Set the text for the menu items
-        ClipboardText.Text = string.IsNullOrEmpty(clipboardContent) 
+        // Set the menu item headers
+        ClipboardMenuItem.Header = string.IsNullOrEmpty(clipboardContent) 
             ? "Clipboard: (empty)" 
             : $"Clipboard: {TruncateText(clipboardContent, 30)}";
             
-        SelectionText.Text = string.IsNullOrEmpty(selectionContent) 
+        SelectionMenuItem.Header = string.IsNullOrEmpty(selectionContent) 
             ? "Selection: (empty)" 
             : $"Selection: {TruncateText(selectionContent, 30)}";
     }
@@ -57,30 +56,14 @@ public partial class ContextMenuPopup : Window
         return text.Substring(0, maxLength) + "...";
     }
 
-    private void OnMenuItemEnter(object? sender, PointerEventArgs e)
-    {
-        if (sender is Border border)
-        {
-            border.Background = new SolidColorBrush(Color.Parse("#3E3E42"));
-        }
-    }
-
-    private void OnMenuItemExit(object? sender, PointerEventArgs e)
-    {
-        if (sender is Border border)
-        {
-            border.Background = Brushes.Transparent;
-        }
-    }
-
-    private void OnClipboardItemClick(object? sender, PointerPressedEventArgs e)
+    private void OnClipboardItemClick(object? sender, RoutedEventArgs e)
     {
         // For now, just show a message - this is where you'd implement actual functionality
         System.Diagnostics.Debug.WriteLine($"Clipboard item clicked: {_clipboardContent}");
         Close();
     }
 
-    private void OnSelectionItemClick(object? sender, PointerPressedEventArgs e)
+    private void OnSelectionItemClick(object? sender, RoutedEventArgs e)
     {
         // For now, just show a message - this is where you'd implement actual functionality
         System.Diagnostics.Debug.WriteLine($"Selection item clicked: {_selectionContent}");
