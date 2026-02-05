@@ -75,15 +75,15 @@
   - Create vocab notes for parsed words - TODO
   - Regenerate vocab source answers from jamdict - TODO
   
-- **Debug Menu**: SCAFFOLDED (menu items exist, actions are TODO stubs)
-  - Show instance report - TODO
-  - Take Snapshot - TODO
-  - Show current snapshot diff - TODO
-  - Show diff against first snapshot - TODO
-  - Show diff against current snapshot - TODO
-  - Run GC and report - TODO
-  - Reset - TODO
-  - Refresh UI (F5) - wired to refresh callback ✅
+- **Debug Menu**: ❌ EXCLUDED (Python runtime diagnostics, not relevant to .NET)
+  - ❌ Show instance report - EXCLUDED
+  - ❌ Take Snapshot - EXCLUDED
+  - ❌ Show current snapshot diff - EXCLUDED
+  - ❌ Show diff against first snapshot - EXCLUDED
+  - ❌ Show diff against current snapshot - EXCLUDED
+  - ❌ Run GC and report - EXCLUDED
+  - ❌ Reset - EXCLUDED
+  - (NOTE: These are Python memory management diagnostics, addressing Python's poor performance with >100MB memory usage. Not needed in .NET. Remain in Python menu for now.)
 
 ---
 
@@ -181,9 +181,10 @@
 ## Summary Statistics
 - **Total menu items tracked**: ~200+ items
 - **COMPLETE**: ~40 items (QueryBuilder methods + OpenInAnki + WebSearch menus, integrated in both main and context)
-- **SCAFFOLDED**: ~40 items (menu structure exists, actions are TODO stubs)
+- **SCAFFOLDED**: ~33 items (menu structure exists, actions are TODO stubs)
+- **EXCLUDED**: ~7 items (Debug menu - Python runtime diagnostics not relevant to .NET)
 - **MISSING**: ~120+ items (note-specific actions not yet ported)
-- **Porting completion**: ~20% complete, ~20% scaffolded, ~60% not started
+- **Porting completion**: ~20% complete, ~17% scaffolded, ~4% excluded, ~59% not started
 
 ### Phase 1 Complete ✅
 - QueryBuilder (21 methods) - ✅ COMPLETE
@@ -197,10 +198,12 @@
 ### Phase 2 Scaffolded (TODO stubs in place)
 - Main menu Config actions (Options, Readings mappings)
 - Main menu Local Actions (Update, Convert, Create, Regenerate)
-- Main menu Debug actions (Snapshots, GC, Reset)
 - Context menu Create actions (vocab, sentence, kanji)
 - Context menu Universal note actions (previewer, suspend/unsuspend)
 - Context menu scaffolding for note-specific actions
+
+### Excluded from Porting ❌
+- **Debug Menu** (7 items) - Python runtime memory diagnostics used to manage Python's poor performance with >100MB memory. Not relevant to .NET which handles memory efficiently. These remain in the Python menu and may be removed entirely after full .NET migration.
 
 ### Phase 3 Not Started
 - Note-specific actions (Kanji, Vocab, Sentence)
@@ -261,25 +264,21 @@ Header = ShortcutFinger.Up1("Text")      // Alt+P
 ## Next Steps for Porting
 
 ### Immediate Priority (Phase 2A)
-1. **Implement Config menu actions** - Wire up TODO stubs in JapaneseMainMenu.cs
-   - Options dialog (Python callback needed)
-   - Readings mappings dialog (Python callback needed)
-2. **Implement Debug menu actions** - Wire up TODO stubs in JapaneseMainMenu.cs
-   - Snapshot operations (Python callback needed)
-   - GC operations (Python callback needed)
-   - Already done: Refresh UI ✅
+1. **Port Config dialogs to Avalonia** - Replace PyQt6 dialogs with C# Avalonia UI
+   - Options dialog (needs full Avalonia dialog implementation)
+   - Readings mappings dialog (needs full Avalonia dialog implementation)
 
 ### Medium Priority (Phase 2B)  
 1. **Implement Local Actions menu** - Wire up TODO stubs in JapaneseMainMenu.cs
-   - Update operations (Python callbacks needed)
-   - Convert/Create/Regenerate operations (Python callbacks needed)
+   - Update operations (Python callbacks needed - Anki note operations)
+   - Convert/Create/Regenerate operations (Python callbacks needed - Anki note operations)
 2. **Implement Context menu Create actions** - Wire up TODO stubs in NoteContextMenu.cs
-   - Create vocab note (Python callback needed)
-   - Create sentence note (Python callback needed)
-   - Create kanji note (Python callback needed)
+   - Create vocab note (Python callback needed - creates Anki note)
+   - Create sentence note (Python callback needed - creates Anki note)
+   - Create kanji note (Python callback needed - creates Anki note)
 3. **Implement Universal note actions** - Wire up TODO stubs in NoteContextMenu.cs
-   - Open in previewer (Python callback needed)
-   - Suspend/Unsuspend operations (Python callbacks needed)
+   - Open in previewer (Python callback needed - Anki previewer)
+   - Suspend/Unsuspend operations (Python callbacks needed - Anki operations)
 
 ### Large Effort (Phase 3)
 1. **Note-specific main actions** - Port from Python note menu files

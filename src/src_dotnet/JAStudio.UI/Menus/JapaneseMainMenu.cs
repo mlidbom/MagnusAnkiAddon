@@ -34,8 +34,8 @@ public class JapaneseMainMenu
         {
             BuildConfigMenu(),
             BuildLookupMenu(),
-            BuildLocalActionsMenu(),
-            BuildDebugMenu()
+            BuildLocalActionsMenu()
+            // Note: Debug menu excluded from C# port - Python runtime diagnostics remain in Python menu
         };
     }
 
@@ -88,27 +88,6 @@ public class JapaneseMainMenu
         };
     }
 
-    private MenuItem BuildDebugMenu()
-    {
-        var menuItems = new List<MenuItem>
-        {
-            CreateMenuItem(ShortcutFinger.Home1("Show instance report"), OnShowInstanceReport),
-            CreateMenuItem(ShortcutFinger.Home2("Take Snapshot"), OnTakeSnapshot),
-            CreateMenuItem(ShortcutFinger.Home3("Show current snapshot diff"), OnShowCurrentSnapshotDiff),
-            CreateMenuItem(ShortcutFinger.Home4("Show diff against first snapshot"), OnShowDiffAgainstFirst),
-            CreateMenuItem(ShortcutFinger.Home5("Show diff against current snapshot"), OnShowDiffAgainstCurrent),
-            CreateMenuItem(ShortcutFinger.Up1("Run GC and report"), OnRunGC),
-            CreateMenuItem(ShortcutFinger.Up2("Reset"), OnReset),
-            CreateMenuItem(ShortcutFinger.Down1("Refresh UI (F5)"), _refreshCallback)
-        };
-
-        return new MenuItem
-        {
-            Header = ShortcutFinger.Home4("Debug"),
-            ItemsSource = menuItems
-        };
-    }
-
     private MenuItem BuildUpdateSubmenu()
     {
         var menuItems = new List<MenuItem>
@@ -156,13 +135,4 @@ public class JapaneseMainMenu
     private void OnUpdateAll() => JALogger.Log("TODO: Update all");
     private void OnReparseSentences() => JALogger.Log("TODO: Reparse sentences");
     private void OnFullRebuild() => JALogger.Log("TODO: Full rebuild");
-
-    // Debug menu actions
-    private void OnShowInstanceReport() => JALogger.Log("TODO: Show instance report");
-    private void OnTakeSnapshot() => JALogger.Log("TODO: Take snapshot");
-    private void OnShowCurrentSnapshotDiff() => JALogger.Log("TODO: Show current snapshot diff");
-    private void OnShowDiffAgainstFirst() => JALogger.Log("TODO: Show diff against first snapshot");
-    private void OnShowDiffAgainstCurrent() => JALogger.Log("TODO: Show diff against current snapshot");
-    private void OnRunGC() => JALogger.Log("TODO: Run GC and report");
-    private void OnReset() => JALogger.Log("TODO: Reset");
 }
