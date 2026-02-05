@@ -1,5 +1,28 @@
 # JAStudio Menu Porting Status
 
+## Code Locations
+
+### Python Source (What to Port From)
+- **Main "Japanese" menu**: `src/jastudio_src/jastudio/ui/tools_menu.py`
+- **Right-click context menu**: `src/jastudio_src/jastudio/ui/menus/common.py`
+- **Kanji note menus**: `src/jastudio_src/jastudio/ui/menus/notes/kanji/main.py` and `string_menu.py`
+- **Vocab note menus**: `src/jastudio_src/jastudio/ui/menus/notes/vocab/main.py` and `string_menu.py`
+- **Sentence note menus**: `src/jastudio_src/jastudio/ui/menus/notes/sentence/main.py` and `string_menu.py`
+- **Shared lookup menus**: `src/jastudio_src/jastudio/ui/menus/open_in_anki.py` and `web_search.py`
+
+### C# Target (Where to Port To)
+- **Main menu class**: `src/src_dotnet/JAStudio.UI/Menus/JapaneseMainMenu.cs`
+- **Context menu class**: `src/src_dotnet/JAStudio.UI/Menus/NoteContextMenu.cs`
+- **Menu host infrastructure**: `src/src_dotnet/JAStudio.UI/PopupMenuHost.cs`
+- **Dialog host (entry points)**: `src/src_dotnet/JAStudio.UI/DialogHost.cs`
+
+### Python Integration Layer
+- **Avalonia host wrapper**: `src/jastudio_src/jastudio/ui/avalonia_host.py`
+- **Menu hooks**: `src/jastudio_src/jastudio/ui/tools_menu.py` (see `_add_avalonia_main_menu()`)
+- **Context menu hooks**: `src/jastudio_src/jastudio/ui/menus/common.py` (see `_add_avalonia_menu_entry()`)
+
+---
+
 ## Porting Rules
 
 **Stay faithful to the Python - refactoring comes later.** We want almost completely equivalent code, only in C#.
