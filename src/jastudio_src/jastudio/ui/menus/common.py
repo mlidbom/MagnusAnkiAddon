@@ -132,18 +132,30 @@ def null_op_factory(_menu: QMenu, _string: str) -> None:
 
 def _add_avalonia_menu_entry(menu: QMenu, selection: str, clipboard: str) -> None:
     """Add Avalonia menu entry that shows Avalonia popup on hover."""
+    from PyQt6.QtCore import QTimer
 
     # Create a menu action for Avalonia
     avalonia_action = menu.addAction("🎯 AvaloniaMenu (Hover to show)")  # pyright: ignore[reportUnknownMemberType]
 
     # Track if we've already shown the popup for this hover
     shown = [False]
+    reset_timer = [None]
 
     def on_hover() -> None:
         """Called when the action is hovered."""
         if shown[0]:
             return
         shown[0] = True
+
+        # Reset the flag after a short delay (allows re-triggering on next menu open)
+        if reset_timer[0]:
+            reset_timer[0].stop()
+        
+        timer = QTimer()
+        timer.setSingleShot(True)
+        timer.timeout.connect(lambda: shown.__setitem__(0, False))  # pyright: ignore[reportUnknownMemberType]
+        timer.start(500)  # Reset after 500ms
+        reset_timer[0] = timer
 
         try:
             from PyQt6.QtWidgets import QApplication
