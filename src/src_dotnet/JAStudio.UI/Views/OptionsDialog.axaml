@@ -20,7 +20,6 @@
         <!-- Scrollable content with two columns -->
         <ScrollViewer>
             <Grid ColumnDefinitions="*,*" Margin="5">
-                
                 <!-- LEFT COLUMN: Numeric Settings -->
                 <StackPanel Grid.Column="0" Spacing="10" Margin="0,0,10,0">
 
@@ -31,43 +30,43 @@
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Starting Seconds" VerticalAlignment="Center" Margin="0,0,10,5" />
                                 <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding AutoadvanceVocabStartingSeconds}" 
-                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" Margin="0,0,0,5" />
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="120" Margin="0,0,0,5" />
                                 
                                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Hiragana Seconds" VerticalAlignment="Center" Margin="0,0,10,5" />
                                 <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding AutoadvanceVocabHiraganaSeconds}" 
-                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" Margin="0,0,0,5" />
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="120" Margin="0,0,0,5" />
                                 
                                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Katakana Seconds" VerticalAlignment="Center" Margin="0,0,10,5" />
                                 <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding AutoadvanceVocabKatakanaSeconds}" 
-                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" Margin="0,0,0,5" />
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="120" Margin="0,0,0,5" />
                                 
                                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Kanji Seconds" VerticalAlignment="Center" Margin="0,0,10,0" />
                                 <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding AutoadvanceVocabKanjiSeconds}" 
-                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" />
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="120" />
                             </Grid>
                         </StackPanel>
                     </Border>
 
                     <!-- Sentence Autoadvance Timings -->
-                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="20">
                         <StackPanel Spacing="5">
                             <TextBlock Text="Sentence autoadvance timings" FontWeight="SemiBold" />
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Starting Seconds" VerticalAlignment="Center" Margin="0,0,10,5" />
                                 <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding AutoadvanceSentenceStartingSeconds}" 
-                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" Margin="0,0,0,5" />
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="120" Margin="0,0,0,5" />
                                 
                                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Hiragana Seconds" VerticalAlignment="Center" Margin="0,0,10,5" />
                                 <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding AutoadvanceSentenceHiraganaSeconds}" 
-                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" Margin="0,0,0,5" />
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="120" Margin="0,0,0,5" />
                                 
                                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Katakana Seconds" VerticalAlignment="Center" Margin="0,0,10,5" />
                                 <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding AutoadvanceSentenceKatakanaSeconds}" 
-                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" Margin="0,0,0,5" />
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="120" Margin="0,0,0,5" />
                                 
                                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Kanji Seconds" VerticalAlignment="Center" Margin="0,0,10,0" />
                                 <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding AutoadvanceSentenceKanjiSeconds}" 
-                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" />
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="120" />
                             </Grid>
                         </StackPanel>
                     </Border>
@@ -79,7 +78,7 @@
                             <Grid ColumnDefinitions="*,Auto">
                                 <TextBlock Grid.Column="0" Text="Boost Failed Card Allowed Time Factor" VerticalAlignment="Center" />
                                 <NumericUpDown Grid.Column="1" Value="{Binding BoostFailedCardAllowedTimeByFactor}" 
-                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" />
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="120" />
                             </Grid>
                         </StackPanel>
                     </Border>
@@ -131,11 +130,11 @@
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Minimum time viewing question" VerticalAlignment="Center" Margin="0,0,10,5" />
                                 <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding MinimumTimeViewingQuestion}" 
-                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" Margin="0,0,0,5" />
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="120" Margin="0,0,0,5" />
                                 
                                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Minimum time viewing answer" VerticalAlignment="Center" Margin="0,0,10,0" />
                                 <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding MinimumTimeViewingAnswer}" 
-                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" />
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="120" />
                             </Grid>
                         </StackPanel>
                     </Border>

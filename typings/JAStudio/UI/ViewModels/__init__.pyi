@@ -1,9 +1,13 @@
+import typing
 from CommunityToolkit.Mvvm.ComponentModel import ObservableObject
 from Avalonia.Controls import Window
 from CommunityToolkit.Mvvm.Input import IRelayCommand
 from JAStudio.Core.Note import VocabNote
 
 class OptionsDialogViewModel(ObservableObject):
+    @typing.overload
+    def __init__(self) -> None: ...
+    @typing.overload
     def __init__(self, window: Window) -> None: ...
     @property
     def AnkiInternalFsrsSetEnableFsrsShortTermWithSteps(self) -> bool: ...
@@ -182,6 +186,9 @@ class OptionsDialogViewModel(ObservableObject):
 
 
 class VocabFlagsViewModel(ObservableObject):
+    @typing.overload
+    def __init__(self) -> None: ...
+    @typing.overload
     def __init__(self, vocab: VocabNote) -> None: ...
     @property
     def Archaic(self) -> bool: ...

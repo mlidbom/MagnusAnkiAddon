@@ -10,7 +10,14 @@ public static class ConfigurationValue
 {
    static Dictionary<string, object>? _configDict;
    static Action<string>? _updateCallback;
+   internal static Dictionary<string, string>? StaticReadingsMappings;
 
+   public static void InitPreview()
+   {
+      InitJson("{}", s => {});
+      StaticReadingsMappings = new Dictionary<string, string>();
+   }
+   
    public static void InitJson(string json, Action<string> updateCallback)
    {
       if(_configDict != null)
@@ -309,7 +316,7 @@ public class JapaneseConfig
          ("Developers only", DeveloperOnlyToggles)
       ];
 
-      ReadingsMappingsDict = ReadReadingsMappingsFromFile();
+      ReadingsMappingsDict = ConfigurationValue.StaticReadingsMappings ?? ReadReadingsMappingsFromFile();
    }
 
    public void ToggleAllSentenceDisplayAutoYieldFlags(bool? value = null)

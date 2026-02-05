@@ -15,10 +15,16 @@ public partial class OptionsDialogViewModel : ObservableObject
     private readonly Window _window;
     private readonly JapaneseConfig _config;
 
+    public OptionsDialogViewModel() {}
+
     public OptionsDialogViewModel(Window window)
     {
         JALogger.Log("OptionsDialogViewModel constructor: starting...");
         _window = window;
+        if (Design.IsDesignMode)
+        {
+           ConfigurationValue.InitPreview();
+        }
         _config = ConfigurationValue.Config();
         JALogger.Log("OptionsDialogViewModel constructor: calling LoadFromConfig()...");
         LoadFromConfig();

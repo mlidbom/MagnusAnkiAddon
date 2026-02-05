@@ -11,6 +11,8 @@ public partial class VocabFlagsViewModel : ObservableObject
 {
     private readonly VocabNote _vocab;
 
+    public VocabFlagsViewModel() {}
+
     public VocabFlagsViewModel(VocabNote vocab)
     {
         _vocab = vocab;

@@ -1,5 +1,6 @@
 using JAStudio.Core.Note;
 using System;
+using JAStudio.Core.Configuration;
 
 namespace JAStudio.Core.TestUtils;
 
@@ -23,6 +24,7 @@ public static class TestApp
     public static void Reset()
     {
         App.Reset(new TestingBackendNoteCreator());
+        ConfigurationValue.InitPreview();
         App.Config().SetReadingsMappingsForTesting(TestReadingsMappings);
     }
 

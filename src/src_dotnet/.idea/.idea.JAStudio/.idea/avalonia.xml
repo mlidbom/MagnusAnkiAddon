@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="JAStudio.UI/Views/AboutDialog.axaml" value="JAStudio.UI.DesktopHost/JAStudio.UI.DesktopHost.csproj" />
+        <entry key="JAStudio.UI/Views/ContextMenuPopup.axaml" value="JAStudio.UI.DesktopHost/JAStudio.UI.DesktopHost.csproj" />
+        <entry key="JAStudio.UI/Views/OptionsDialog.axaml" value="JAStudio.UI.DesktopHost/JAStudio.UI.DesktopHost.csproj" />
+        <entry key="JAStudio.UI/Views/VocabFlagsDialog.axaml" value="JAStudio.UI.DesktopHost/JAStudio.UI.DesktopHost.csproj" />
+      </map>
+    </option>
+  </component>
+</project>
