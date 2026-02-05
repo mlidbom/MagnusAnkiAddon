@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Platform;
 using Avalonia.Controls.Primitives;
 
 namespace JAStudio.UI;
@@ -12,6 +13,12 @@ namespace JAStudio.UI;
 /// </summary>
 public static class PopupMenuHost
 {
+    static PopupMenuHost()
+    {
+        // Set menu delay to zero for snappy submenu opening
+        DefaultMenuInteractionHandler.MenuShowDelay = TimeSpan.Zero;
+    }
+
     /// <summary>
     /// Show a complete Menu at the specified screen coordinates.
     /// </summary>
