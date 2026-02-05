@@ -111,17 +111,8 @@ public static class DialogHost
         EnsureInitialized();
         Dispatcher.UIThread.InvokeAsync(() =>
         {
-            var window = new ContextMenuPopup(clipboardContent ?? "", selectionContent ?? "");
-            var position = new Avalonia.PixelPoint(x, y);
-            
-            // Set the desired position before showing
-            window.SetDesiredPosition(position);
-            window.Position = position;
-            
-            window.Show();
-            
-            // Auto-close when losing focus
-            window.Deactivated += (s, e) => window.Close();
+            var menuControl = new ContextMenuPopup(clipboardContent ?? "", selectionContent ?? "");
+            menuControl.ShowAt(x, y);
         });
     }
 
