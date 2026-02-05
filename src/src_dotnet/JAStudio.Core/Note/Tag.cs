@@ -10,7 +10,7 @@ public class Tag
 
     public string Name { get; }
     public int Id { get; }
-    public int Bit { get; }
+    public long Bit { get; }
 
     private Tag(string name)
     {
@@ -18,7 +18,7 @@ public class Tag
 
         Name = name;
         Id = id;
-        Bit = 1 << id;
+        Bit = 1L << id;
 
         _usedIds.Add(id);
         _byId[id] = this;

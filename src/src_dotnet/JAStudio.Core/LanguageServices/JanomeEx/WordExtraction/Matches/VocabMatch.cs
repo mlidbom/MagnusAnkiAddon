@@ -95,7 +95,7 @@ public sealed class VocabMatch : Match
     public VocabNoteMatchingRules Rules { get; }
     public VocabNote Vocab { get; }
 
-    private bool? _anotherMatchOwnsTheFormCache;
+    private bool? _anotherMatchOwnsTheFormCache = null;
 
     public VocabMatch(CandidateWordVariant wordVariant, VocabNote vocab) : base(wordVariant)
     {

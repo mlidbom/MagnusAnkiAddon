@@ -6,31 +6,31 @@ namespace JAStudio.Core.Note;
 
 public class BitFlagsSet : IEnumerable<int>
 {
-    private int _bitfield;
+    private long _bitfield;
 
-    public BitFlagsSet(int bitfield = 0)
+    public BitFlagsSet(long bitfield = 0)
     {
         _bitfield = bitfield;
     }
 
     public bool Contains(int value)
     {
-        return (_bitfield & (1 << value)) != 0;
+        return (_bitfield & (1L << value)) != 0;
     }
 
-    public bool ContainsBit(int value)
+    public bool ContainsBit(long value)
     {
         return (_bitfield & value) != 0;
     }
 
     public void SetFlag(int flag)
     {
-        _bitfield |= (1 << flag);
+        _bitfield |= (1L << flag);
     }
 
     public void UnsetFlag(int flag)
     {
-        _bitfield &= ~(1 << flag);
+        _bitfield &= ~(1L << flag);
     }
 
     public IEnumerator<int> GetEnumerator()
@@ -52,7 +52,7 @@ public class BitFlagsSet : IEnumerable<int>
 
     public override int GetHashCode()
     {
-        return _bitfield;
+        return _bitfield.GetHashCode();
     }
 
     public override bool Equals(object? obj)
