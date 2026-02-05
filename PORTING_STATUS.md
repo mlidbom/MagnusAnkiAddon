@@ -296,11 +296,9 @@ Staying this close to the Python is what makes the porting workable at all. If w
                 - 100% test_explore_token_part_of_speech_information.py
             - text_analysis_tests
                 - 100% test_sentence_analysis_viewmodel_common.py
-                - 80% test_sentence_analysis_viewmodel_with_select_data.py
-                    - Note: 38 passing, 96 failing - this is almost certainly production code porting errors. The tests are correct
+                - 100% test_sentence_analysis_viewmodel_with_select_data.py
                 - 100% test_text_analysis_with_per_test_data.py
-                - 80% test_text_analysis_with_select_data.py
-                    - Note: 16 passing, 17 failing - this is almost certainly production code porting errors. The tests are correct
+                - 100% test_text_analysis_with_select_data.py
                 - EXCLUDED text_analysis_state_validator.py
                     - Note: Entirely commented out, not functional
         - note_tests
