@@ -22,7 +22,7 @@ public class VocabNote : JPNote
     public VocabNoteMetaData MetaData { get; }
     public VocabNoteRegister Register { get; }
     public VocabNoteAudio Audio { get; }
-    public VocabNoteMatchingConfiguration MatchingConfiguration { get; }
+    public VocabNoteMatchingConfiguration MatchingConfiguration { get; private set; }
     public VocabCloner Cloner { get; }
 
     // Property accessors for fields
@@ -68,6 +68,11 @@ public class VocabNote : JPNote
     public override HashSet<JPNote> GetDirectDependencies()
     {
         return RelatedNotes.GetDirectDependencies();
+    }
+
+    public override void OnTagsUpdated()
+    {
+        MatchingConfiguration = new VocabNoteMatchingConfiguration(this);
     }
 
     public override void UpdateGeneratedData()
