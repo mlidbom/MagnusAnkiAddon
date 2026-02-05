@@ -138,17 +138,11 @@ def _add_csharp_menu_entry(menu: QMenu, note: JPNote | None, selection: str, cli
     This just converts the UI-agnostic specifications to PyQt QMenus.
     """
     from jastudio.ui.menus.qt_menu_adapter import to_qmenu
-    from jastudio.ui.tools_menu import refresh
     from JAStudio.UI.Menus import NoteContextMenu
     from jaspythonutils.sysutils.typed import non_optional
     
-    # Create callback for Anki browser searches
-    def execute_lookup(query: str) -> None:
-        from jastudio.ankiutils import search_executor
-        search_executor.do_lookup(query)
-    
-    # Get menu specs from C#
-    menu_builder = NoteContextMenu(refresh, execute_lookup)
+    # Get menu specs from C#  - no callbacks needed, AnkiFacade handles it all
+    menu_builder = NoteContextMenu()
     
     try:
         if note:

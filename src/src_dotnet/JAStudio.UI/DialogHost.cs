@@ -151,8 +151,6 @@ public static class DialogHost
     /// <param name="x">X coordinate in physical (device) pixels</param>
     /// <param name="y">Y coordinate in physical (device) pixels</param>
     public static void ShowJapaneseMainMenu(
-        Action refreshCallback, 
-        Action<string> executeLookup,
         string searchText,
         int x, 
         int y)
@@ -160,7 +158,7 @@ public static class DialogHost
         EnsureInitialized();
         Dispatcher.UIThread.Invoke(() =>
         {
-            var menuBuilder = new JapaneseMainMenu(refreshCallback, executeLookup, searchText ?? "");
+            var menuBuilder = new JapaneseMainMenu(searchText ?? "");
             var menuItems = menuBuilder.BuildMenu();
             
             PopupMenuHost.ShowAt(menuItems, x, y);
@@ -171,8 +169,6 @@ public static class DialogHost
     /// Show context menu for a vocab note.
     /// </summary>
     public static void ShowVocabContextMenu(
-        Action refreshCallback, 
-        Action<string> executeLookup,
         int vocabId,
         string selection, 
         string clipboard, 
@@ -182,7 +178,7 @@ public static class DialogHost
         EnsureInitialized();
         Dispatcher.UIThread.Invoke(() =>
         {
-            var menuBuilder = new NoteContextMenu(refreshCallback, executeLookup);
+            var menuBuilder = new NoteContextMenu();
             var menuItems = menuBuilder.BuildVocabContextMenu(vocabId, selection ?? "", clipboard ?? "");
             
             PopupMenuHost.ShowAt(menuItems, x, y);
@@ -193,8 +189,6 @@ public static class DialogHost
     /// Show context menu for a kanji note.
     /// </summary>
     public static void ShowKanjiContextMenu(
-        Action refreshCallback,
-        Action<string> executeLookup,
         int kanjiId,
         string selection, 
         string clipboard, 
@@ -204,7 +198,7 @@ public static class DialogHost
         EnsureInitialized();
         Dispatcher.UIThread.Invoke(() =>
         {
-            var menuBuilder = new NoteContextMenu(refreshCallback, executeLookup);
+            var menuBuilder = new NoteContextMenu();
             var menuItems = menuBuilder.BuildKanjiContextMenu(kanjiId, selection ?? "", clipboard ?? "");
             
             PopupMenuHost.ShowAt(menuItems, x, y);
@@ -215,8 +209,6 @@ public static class DialogHost
     /// Show context menu for a sentence note.
     /// </summary>
     public static void ShowSentenceContextMenu(
-        Action refreshCallback,
-        Action<string> executeLookup,
         int sentenceId,
         string selection, 
         string clipboard, 
@@ -226,7 +218,7 @@ public static class DialogHost
         EnsureInitialized();
         Dispatcher.UIThread.Invoke(() =>
         {
-            var menuBuilder = new NoteContextMenu(refreshCallback, executeLookup);
+            var menuBuilder = new NoteContextMenu();
             var menuItems = menuBuilder.BuildSentenceContextMenu(sentenceId, selection ?? "", clipboard ?? "");
             
             PopupMenuHost.ShowAt(menuItems, x, y);
@@ -237,8 +229,6 @@ public static class DialogHost
     /// Show context menu when no note is available.
     /// </summary>
     public static void ShowGenericContextMenu(
-        Action refreshCallback,
-        Action<string> executeLookup,
         string selection, 
         string clipboard, 
         int x, 
@@ -247,7 +237,7 @@ public static class DialogHost
         EnsureInitialized();
         Dispatcher.UIThread.Invoke(() =>
         {
-            var menuBuilder = new NoteContextMenu(refreshCallback, executeLookup);
+            var menuBuilder = new NoteContextMenu();
             var menuItems = menuBuilder.BuildGenericContextMenu(selection ?? "", clipboard ?? "");
             
             PopupMenuHost.ShowAt(menuItems, x, y);

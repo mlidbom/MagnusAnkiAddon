@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using JAStudio.Core;
 using JAStudio.Core.Note;
+using JAStudio.UI.Anki;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
 using JAStudio.UI.Views;
@@ -12,19 +13,12 @@ namespace JAStudio.UI.Menus;
 /// <summary>
 /// Builds context menus for different note types and contexts.
 /// This will replace the Python menu in common.py.
-/// Now uses UI-agnostic MenuItem specifications.
+/// Now uses UI-agnostic MenuItem specifications and AnkiFacade for Anki calls.
 /// </summary>
 public class NoteContextMenu
 {
-    private readonly Action _refreshCallback;
-    private readonly Action<string> _executeLookup;
-
-    public NoteContextMenu(
-        Action refreshCallback,
-        Action<string> executeLookup)
+    public NoteContextMenu()
     {
-        _refreshCallback = refreshCallback;
-        _executeLookup = executeLookup;
     }
 
     /// <summary>
@@ -190,17 +184,15 @@ public class NoteContextMenu
 
     private List<SpecMenuItem> BuildStringMenuSpec(string text, string? noteType)
     {
-        var menuItems = new List<SpecMenuItem>
+        return new List<SpecMenuItem>
         {
             BuildCurrentNoteActionsSubmenuSpec(text, noteType),
-            OpenInAnkiMenus.BuildOpenInAnkiMenuSpec(() => text, _executeLookup),
-            WebSearchMenus.BuildWebSearchMenuSpec(() => text, BrowserLauncher.OpenUrl),
+            OpenInAnkiMenus.BuildOpenInAnkiMenuSpec(() => text),
+            WebSearchMenus.BuildWebSearchMenuSpec(() => text),
             BuildMatchingNotesSubmenuSpec(text),
             BuildCreateNoteSubmenuSpec(text),
             SpecMenuItem.Command(ShortcutFinger.Down1($"Reparse matching sentences"), () => OnReparseMatchingSentences(text))
         };
-
-        return menuItems;
     }
 
     // Vocab-specific menus

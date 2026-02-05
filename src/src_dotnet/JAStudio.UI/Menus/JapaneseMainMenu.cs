@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using JAStudio.UI.Anki;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
 using SpecMenuItem = JAStudio.UI.Menus.UIAgnosticMenuStructure.MenuItem;
@@ -9,21 +10,14 @@ namespace JAStudio.UI.Menus;
 /// <summary>
 /// Builds the main "Japanese" menu for Anki.
 /// This will replace the Python menu in tools_menu.py.
-/// Now uses UI-agnostic MenuItem specifications.
+/// Now uses UI-agnostic MenuItem specifications and AnkiFacade for Anki calls.
 /// </summary>
 public class JapaneseMainMenu
 {
-    private readonly Action _refreshCallback;
-    private readonly Action<string> _executeLookup;
     private readonly string _searchText;
 
-    public JapaneseMainMenu(
-        Action refreshCallback, 
-        Action<string> executeLookup,
-        string searchText)
+    public JapaneseMainMenu(string searchText = "")
     {
-        _refreshCallback = refreshCallback;
-        _executeLookup = executeLookup;
         _searchText = searchText;
     }
 
@@ -75,8 +69,8 @@ public class JapaneseMainMenu
             new List<SpecMenuItem>
             {
                 SpecMenuItem.Command(ShortcutFinger.Home1("Open note (Ctrl+O)"), OnOpenNote),
-                OpenInAnkiMenus.BuildOpenInAnkiMenuSpec(() => _searchText, _executeLookup),
-                WebSearchMenus.BuildWebSearchMenuSpec(() => _searchText, BrowserLauncher.OpenUrl)
+                OpenInAnkiMenus.BuildOpenInAnkiMenuSpec(() => _searchText),
+                WebSearchMenus.BuildWebSearchMenuSpec(() => _searchText)
             }
         );
     }
@@ -122,22 +116,22 @@ public class JapaneseMainMenu
         JALogger.Log("DialogHost.ShowOptionsDialog() completed");
     }
     
-    private void OnReadingsMappings() => JALogger.Log("TODO: Show readings mappings dialog");
+    private void OnReadingsMappings() => AnkiFacade.ShowReadingsMappingsDialog();
 
     // Lookup menu actions
-    private void OnOpenNote() => JALogger.Log("TODO: Open note search dialog");
+    private void OnOpenNote() => AnkiFacade.ShowNoteSearchDialog();
 
     // Local Actions menu actions
-    private void OnConvertImmersionKitSentences() => JALogger.Log("TODO: Convert Immersion Kit sentences");
-    private void OnCreateMissingVocab() => JALogger.Log("TODO: Create missing vocab notes");
-    private void OnRegenerateVocabAnswers() => JALogger.Log("TODO: Regenerate vocab answers from jamdict");
+    private void OnConvertImmersionKitSentences() => AnkiFacade.ConvertImmersionKitSentences();
+    private void OnCreateMissingVocab() => AnkiFacade.CreateMissingVocab();
+    private void OnRegenerateVocabAnswers() => AnkiFacade.RegenerateVocabAnswers();
 
     // Update submenu actions
-    private void OnUpdateVocab() => JALogger.Log("TODO: Update vocab");
-    private void OnUpdateKanji() => JALogger.Log("TODO: Update kanji");
-    private void OnUpdateSentences() => JALogger.Log("TODO: Update sentences");
-    private void OnTagNoteMetadata() => JALogger.Log("TODO: Tag note metadata");
-    private void OnUpdateAll() => JALogger.Log("TODO: Update all");
-    private void OnReparseSentences() => JALogger.Log("TODO: Reparse sentences");
-    private void OnFullRebuild() => JALogger.Log("TODO: Full rebuild");
+    private void OnUpdateVocab() => AnkiFacade.UpdateVocab();
+    private void OnUpdateKanji() => AnkiFacade.UpdateKanji();
+    private void OnUpdateSentences() => AnkiFacade.UpdateSentences();
+    private void OnTagNoteMetadata() => AnkiFacade.TagNoteMetadata();
+    private void OnUpdateAll() => AnkiFacade.UpdateAll();
+    private void OnReparseSentences() => AnkiFacade.ReparseAllSentences();
+    private void OnFullRebuild() => AnkiFacade.FullRebuild();
 }

@@ -118,19 +118,14 @@ def _add_csharp_main_menu(menu: QMenu) -> None:
     from JAStudio.UI.Menus import JapaneseMainMenu
     from jaslib import mylog
     
-    # Create callback for Anki browser searches
-    def execute_lookup(query: str) -> None:
-        from jastudio.ankiutils import search_executor
-        search_executor.do_lookup(query)
-    
     def get_search_text() -> str:
         """Get search text from user input."""
         text, ok = QInputDialog.getText(None, "input", "enter text", QLineEdit.EchoMode.Normal, "")
         return text if ok and text else ""
     
     try:
-        # Get menu specs from C#
-        menu_builder = JapaneseMainMenu(refresh, execute_lookup, get_search_text())
+        # Get menu specs from C# - no callbacks needed, AnkiFacade handles it all
+        menu_builder = JapaneseMainMenu(get_search_text())
         specs = menu_builder.BuildMenuSpec()
         
         # Convert to PyQt menus and add as a single submenu

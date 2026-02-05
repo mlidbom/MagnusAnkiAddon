@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Web;
+using JAStudio.UI.Anki;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
 using SpecMenuItem = JAStudio.UI.Menus.UIAgnosticMenuStructure.MenuItem;
@@ -20,16 +21,16 @@ public static class WebSearchMenus
     /// </summary>
     /// <param name="getSearchText">Function that returns the text to search for</param>
     /// <param name="openUrl">Action to open a URL in the browser</param>
-    public static SpecMenuItem BuildWebSearchMenuSpec(Func<string> getSearchText, Action<string> openUrl)
+    public static SpecMenuItem BuildWebSearchMenuSpec(Func<string> getSearchText)
     {
         return SpecMenuItem.Submenu(
             ShortcutFinger.Home3("Web"),
             new List<SpecMenuItem>
             {
-                BuildKanjiMenuSpec(getSearchText, openUrl),
-                BuildSentencesMenuSpec(getSearchText, openUrl),
-                BuildMiscMenuSpec(getSearchText, openUrl),
-                BuildLookupMenuSpec(getSearchText, openUrl)
+                BuildKanjiMenuSpec(getSearchText),
+                BuildSentencesMenuSpec(getSearchText),
+                BuildMiscMenuSpec(getSearchText),
+                BuildLookupMenuSpec(getSearchText)
             }
         );
     }
@@ -38,117 +39,117 @@ public static class WebSearchMenus
     /// Build the web search menu and convert to Avalonia MenuItem.
     /// This is a convenience method for backward compatibility.
     /// </summary>
-    public static Avalonia.Controls.MenuItem BuildWebSearchMenu(Func<string> getSearchText, Action<string> openUrl)
+    public static Avalonia.Controls.MenuItem BuildWebSearchMenu(Func<string> getSearchText)
     {
-        var spec = BuildWebSearchMenuSpec(getSearchText, openUrl);
+        var spec = BuildWebSearchMenuSpec(getSearchText);
         return AvaloniaMenuAdapter.ToAvalonia(spec);
     }
 
-    private static SpecMenuItem BuildKanjiMenuSpec(Func<string> getSearchText, Action<string> openUrl)
+    private static SpecMenuItem BuildKanjiMenuSpec(Func<string> getSearchText)
     {
         return SpecMenuItem.Submenu(
             ShortcutFinger.Home1("Kanji"),
             new List<SpecMenuItem>
             {
-                CreateWebLookupSpec(ShortcutFinger.Home1("Kanji explosion"), "https://www.kurumi.com/jp/kjbh/?k=%s", getSearchText, openUrl),
-                CreateWebLookupSpec(ShortcutFinger.Home2("Kanshudo"), "https://www.kanshudo.com/search?q=%s", getSearchText, openUrl),
-                CreateWebLookupSpec(ShortcutFinger.Home3("Kanji map"), "https://thekanjimap.com/%s", getSearchText, openUrl)
+                CreateWebLookupSpec(ShortcutFinger.Home1("Kanji explosion"), "https://kurumi.com/jp/kjbh/?k=%s", getSearchText),
+                CreateWebLookupSpec(ShortcutFinger.Home2("Kanji: Kanshudo"), "https://www.kanshudo.com/search?q=%s", getSearchText),
+                CreateWebLookupSpec(ShortcutFinger.Home3("Kanji map"), "https://thekanjimap.com/index.php?k=%s", getSearchText)
             }
         );
     }
 
-    private static SpecMenuItem BuildSentencesMenuSpec(Func<string> getSearchText, Action<string> openUrl)
+    private static SpecMenuItem BuildSentencesMenuSpec(Func<string> getSearchText)
     {
         return SpecMenuItem.Submenu(
             ShortcutFinger.Home2("Sentences"),
             new List<SpecMenuItem>
             {
-                CreateWebLookupSpec(ShortcutFinger.Home1("Sentences: Immersion Kit"), "https://www.immersionkit.com/dictionary?exact=true&sort=sentence_length%3Aasc&keyword=%s", getSearchText, openUrl),
-                CreateWebLookupSpec(ShortcutFinger.Home2("Sentences: Tatoeba"), "https://tatoeba.org/en/sentences/search?from=jpn&to=eng&query=%s", getSearchText, openUrl)
+                CreateWebLookupSpec(ShortcutFinger.Home1("Sentences: Immersion Kit"), "https://www.immersionkit.com/dictionary?exact=true&sort=sentence_length%3Aasc&keyword=%s", getSearchText),
+                CreateWebLookupSpec(ShortcutFinger.Home2("Sentences: Tatoeba"), "https://tatoeba.org/en/sentences/search?from=jpn&to=eng&query=%s", getSearchText)
             }
         );
     }
 
-    private static SpecMenuItem BuildMiscMenuSpec(Func<string> getSearchText, Action<string> openUrl)
+    private static SpecMenuItem BuildMiscMenuSpec(Func<string> getSearchText)
     {
         return SpecMenuItem.Submenu(
             ShortcutFinger.Home3("Misc"),
             new List<SpecMenuItem>
             {
-                BuildConjugateMenuSpec(getSearchText, openUrl),
-                BuildTranslateMenuSpec(getSearchText, openUrl),
-                BuildGrammarMenuSpec(getSearchText, openUrl),
-                BuildImagesMenuSpec(getSearchText, openUrl)
+                BuildConjugateMenuSpec(getSearchText),
+                BuildTranslateMenuSpec(getSearchText),
+                BuildGrammarMenuSpec(getSearchText),
+                BuildImagesMenuSpec(getSearchText)
             }
         );
     }
 
-    private static SpecMenuItem BuildConjugateMenuSpec(Func<string> getSearchText, Action<string> openUrl)
+    private static SpecMenuItem BuildConjugateMenuSpec(Func<string> getSearchText)
     {
         return SpecMenuItem.Submenu(
             ShortcutFinger.Home1("Conjugate"),
             new List<SpecMenuItem>
             {
-                CreateWebLookupSpec(ShortcutFinger.Home1("Conjugate: Japanese verb conjugator"), "https://www.japaneseverbconjugator.com/VerbDetails.asp?Go=Conjugate&txtVerb=%s", getSearchText, openUrl),
-                CreateWebLookupSpec(ShortcutFinger.Home2("Conjugate: Verbix"), "https://www.verbix.com/webverbix/japanese/%s", getSearchText, openUrl)
+                CreateWebLookupSpec(ShortcutFinger.Home1("Conjugate: Japanese verb conjugator"), "https://www.japaneseverbconjugator.com/VerbDetails.asp?Go=Conjugate&txtVerb=%s", getSearchText),
+                CreateWebLookupSpec(ShortcutFinger.Home2("Conjugate: Verbix"), "https://www.verbix.com/webverbix/japanese/%s", getSearchText)
             }
         );
     }
 
-    private static SpecMenuItem BuildTranslateMenuSpec(Func<string> getSearchText, Action<string> openUrl)
+    private static SpecMenuItem BuildTranslateMenuSpec(Func<string> getSearchText)
     {
         return SpecMenuItem.Submenu(
             ShortcutFinger.Home2("Translate"),
             new List<SpecMenuItem>
             {
-                CreateWebLookupSpec(ShortcutFinger.Home1("Translate: Deepl"), "https://www.deepl.com/en/translator#ja/en/%s", getSearchText, openUrl),
-                CreateWebLookupSpec(ShortcutFinger.Home2("Translate: Kanshudo"), "https://www.kanshudo.com/sentence_translate?q=%s", getSearchText, openUrl)
+                CreateWebLookupSpec(ShortcutFinger.Home1("Translate: Deepl"), "https://www.deepl.com/en/translator#ja/en/%s", getSearchText),
+                CreateWebLookupSpec(ShortcutFinger.Home2("Translate: Kanshudo"), "https://www.kanshudo.com/sentence_translate?q=%s", getSearchText)
             }
         );
     }
 
-    private static SpecMenuItem BuildGrammarMenuSpec(Func<string> getSearchText, Action<string> openUrl)
+    private static SpecMenuItem BuildGrammarMenuSpec(Func<string> getSearchText)
     {
         return SpecMenuItem.Submenu(
             ShortcutFinger.Home3("Grammar"),
             new List<SpecMenuItem>
             {
-                CreateWebLookupSpec(ShortcutFinger.Home1("Grammar: Google"), "https://www.google.com/search?q=japanese+grammar+%s", getSearchText, openUrl),
-                CreateWebLookupSpec(ShortcutFinger.Home2("Grammar: Japanese with anime"), "https://www.google.com/search?q=site:www.japanesewithanime.com+%s", getSearchText, openUrl),
-                CreateWebLookupSpec(ShortcutFinger.Home3("Grammar: Wiktionary"), "https://en.wiktionary.org/wiki/%s", getSearchText, openUrl)
+                CreateWebLookupSpec(ShortcutFinger.Home1("Grammar: Google"), "https://www.google.com/search?q=japanese+grammar+%s", getSearchText),
+                CreateWebLookupSpec(ShortcutFinger.Home2("Grammar: Japanese with anime"), "https://www.google.com/search?q=site:www.japanesewithanime.com+%s", getSearchText),
+                CreateWebLookupSpec(ShortcutFinger.Home3("Grammar: Wiktionary"), "https://en.wiktionary.org/wiki/%s", getSearchText)
             }
         );
     }
 
-    private static SpecMenuItem BuildImagesMenuSpec(Func<string> getSearchText, Action<string> openUrl)
+    private static SpecMenuItem BuildImagesMenuSpec(Func<string> getSearchText)
     {
         return SpecMenuItem.Submenu(
             ShortcutFinger.Home4("Images"),
             new List<SpecMenuItem>
             {
-                CreateWebLookupSpec(ShortcutFinger.Home1("Images: Google"), "https://www.google.com/search?udm=2&tbs=sur:cl&q=%s", getSearchText, openUrl),
-                CreateWebLookupSpec(ShortcutFinger.Home2("Images: Bing"), "https://www.bing.com/images/search?qft=+filterui:licenseType-Any&q=%s", getSearchText, openUrl)
+                CreateWebLookupSpec(ShortcutFinger.Home1("Images: Google"), "https://www.google.com/search?udm=2&tbs=sur:cl&q=%s", getSearchText),
+                CreateWebLookupSpec(ShortcutFinger.Home2("Images: Bing"), "https://www.bing.com/images/search?qft=+filterui:licenseType-Any&q=%s", getSearchText)
             }
         );
     }
 
-    private static SpecMenuItem BuildLookupMenuSpec(Func<string> getSearchText, Action<string> openUrl)
+    private static SpecMenuItem BuildLookupMenuSpec(Func<string> getSearchText)
     {
         return SpecMenuItem.Submenu(
             ShortcutFinger.Home4("Lookup"),
             new List<SpecMenuItem>
             {
-                CreateWebLookupSpec(ShortcutFinger.Home1("English: Merriam Webster"), "https://www.merriam-webster.com/dictionary/%s", getSearchText, openUrl),
-                CreateWebLookupSpec(ShortcutFinger.Home2("Wiktionary"), "https://en.wiktionary.org/wiki/%s", getSearchText, openUrl),
-                CreateWebLookupSpec(ShortcutFinger.Home3("Lookup: Takoboto"), "https://takoboto.jp/?q=%s", getSearchText, openUrl),
-                CreateWebLookupSpec(ShortcutFinger.Home4("Lookup: Jisho"), "https://jisho.org/search/%s", getSearchText, openUrl),
-                CreateWebLookupSpec(ShortcutFinger.Up1("Lookup: Wanikani"), "https://www.wanikani.com/search?query=%s", getSearchText, openUrl),
-                CreateWebLookupSpec(ShortcutFinger.Down1("Lookup: Word Kanshudo"), "https://www.kanshudo.com/searchw?q=%s", getSearchText, openUrl)
+                CreateWebLookupSpec(ShortcutFinger.Home1("English: Merriam Webster"), "https://www.merriam-webster.com/dictionary/%s", getSearchText),
+                CreateWebLookupSpec(ShortcutFinger.Home2("Wiktionary"), "https://en.wiktionary.org/wiki/%s", getSearchText),
+                CreateWebLookupSpec(ShortcutFinger.Home3("Lookup: Takoboto"), "https://takoboto.jp/?q=%s", getSearchText),
+                CreateWebLookupSpec(ShortcutFinger.Home4("Lookup: Jisho"), "https://jisho.org/search/%s", getSearchText),
+                CreateWebLookupSpec(ShortcutFinger.Up1("Lookup: Wanikani"), "https://www.wanikani.com/search?query=%s", getSearchText),
+                CreateWebLookupSpec(ShortcutFinger.Down1("Lookup: Word Kanshudo"), "https://www.kanshudo.com/searchw?q=%s", getSearchText)
             }
         );
     }
 
-    private static SpecMenuItem CreateWebLookupSpec(string header, string urlTemplate, Func<string> getSearchText, Action<string> openUrl)
+    private static SpecMenuItem CreateWebLookupSpec(string header, string urlTemplate, Func<string> getSearchText)
     {
         return SpecMenuItem.Command(
             header,
@@ -157,7 +158,7 @@ public static class WebSearchMenus
                 var searchText = getSearchText();
                 var encodedText = HttpUtility.UrlEncode(searchText);
                 var url = urlTemplate.Replace("%s", encodedText);
-                openUrl(url);
+                AnkiFacade.OpenUrl(url);
             }
         );
     }
