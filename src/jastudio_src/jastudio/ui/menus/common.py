@@ -146,11 +146,11 @@ def _add_avalonia_menu_entry(menu: QMenu, selection: str, clipboard: str) -> Non
             from jaslib.note.vocabulary.vocabnote import VocabNote
 
             if isinstance(note, VocabNote):
-                avalonia_host.show_vocab_context_menu(refresh, note.id, selection, clipboard, physical_x, physical_y)
+                avalonia_host.show_vocab_context_menu(refresh, note.get_id(), selection, clipboard, physical_x, physical_y)
             elif isinstance(note, KanjiNote):
-                avalonia_host.show_kanji_context_menu(refresh, note.id, selection, clipboard, physical_x, physical_y)
+                avalonia_host.show_kanji_context_menu(refresh, note.get_id(), selection, clipboard, physical_x, physical_y)
             elif isinstance(note, SentenceNote):
-                avalonia_host.show_sentence_context_menu(refresh, note.id, selection, clipboard, physical_x, physical_y)
+                avalonia_host.show_sentence_context_menu(refresh, note.get_id(), selection, clipboard, physical_x, physical_y)
             else:
                 avalonia_host.show_generic_context_menu(refresh, selection, clipboard, physical_x, physical_y)
         else:
