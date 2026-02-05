@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Avalonia.Controls;
+using JAStudio.UI.Utils;
 
 namespace JAStudio.UI.Menus;
 
@@ -11,10 +12,17 @@ namespace JAStudio.UI.Menus;
 public class JapaneseMainMenu
 {
     private readonly Action _refreshCallback;
+    private readonly Action<string> _executeLookup;
+    private readonly string _searchText;
 
-    public JapaneseMainMenu(Action refreshCallback)
+    public JapaneseMainMenu(
+        Action refreshCallback, 
+        Action<string> executeLookup,
+        string searchText)
     {
         _refreshCallback = refreshCallback;
+        _executeLookup = executeLookup;
+        _searchText = searchText;
     }
 
     /// <summary>
@@ -51,8 +59,8 @@ public class JapaneseMainMenu
         var menuItems = new List<MenuItem>
         {
             CreateMenuItem("Open note (Ctrl+O)", OnOpenNote),
-            BuildOpenInAnkiSubmenu(),
-            BuildWebSearchSubmenu()
+            OpenInAnkiMenus.BuildOpenInAnkiMenu(() => _searchText, _executeLookup),
+            WebSearchMenus.BuildWebSearchMenu(() => _searchText, BrowserLauncher.OpenUrl)
         };
 
         return new MenuItem
@@ -119,18 +127,6 @@ public class JapaneseMainMenu
             Header = "Update",
             ItemsSource = menuItems
         };
-    }
-
-    private MenuItem BuildOpenInAnkiSubmenu()
-    {
-        // TODO: Port from build_open_in_anki_menu
-        return new MenuItem { Header = "Anki (TODO)" };
-    }
-
-    private MenuItem BuildWebSearchSubmenu()
-    {
-        // TODO: Port from build_web_search_menu
-        return new MenuItem { Header = "Web (TODO)" };
     }
 
     private MenuItem CreateMenuItem(string header, Action onClick)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Avalonia.Controls;
+using JAStudio.UI.Utils;
 
 namespace JAStudio.UI.Menus;
 
@@ -11,10 +12,14 @@ namespace JAStudio.UI.Menus;
 public class NoteContextMenu
 {
     private readonly Action _refreshCallback;
+    private readonly Action<string> _executeLookup;
 
-    public NoteContextMenu(Action refreshCallback)
+    public NoteContextMenu(
+        Action refreshCallback,
+        Action<string> executeLookup)
     {
         _refreshCallback = refreshCallback;
+        _executeLookup = executeLookup;
     }
 
     /// <summary>
@@ -122,8 +127,8 @@ public class NoteContextMenu
         var menuItems = new List<MenuItem>
         {
             BuildCurrentNoteActionsSubmenu(text, noteType),
-            BuildOpenInAnkiSubmenu(text),
-            BuildWebSearchSubmenu(text),
+            OpenInAnkiMenus.BuildOpenInAnkiMenu(() => text, _executeLookup),
+            WebSearchMenus.BuildWebSearchMenu(() => text, BrowserLauncher.OpenUrl),
             BuildMatchingNotesSubmenu(text),
             BuildCreateNoteSubmenu(text),
             CreateMenuItem($"Reparse matching sentences", () => OnReparseMatchingSentences(text))
@@ -246,18 +251,6 @@ public class NoteContextMenu
     {
         // TODO: Port string_note_menu_factory logic
         return new MenuItem { Header = "Current note actions (TODO)" };
-    }
-
-    private MenuItem BuildOpenInAnkiSubmenu(string text)
-    {
-        // TODO: Port from build_open_in_anki_menu
-        return new MenuItem { Header = "Open in Anki (TODO)" };
-    }
-
-    private MenuItem BuildWebSearchSubmenu(string text)
-    {
-        // TODO: Port from build_web_search_menu
-        return new MenuItem { Header = "Search Web (TODO)" };
     }
 
     private MenuItem BuildMatchingNotesSubmenu(string text)

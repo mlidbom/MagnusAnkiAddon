@@ -121,13 +121,21 @@ def show_japanese_main_menu(refresh_callback: Callable[[], None], x: int, y: int
     try:
         from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
         from System import Action  # pyright: ignore[reportMissingImports]
+        from jastudio.ankiutils import search_executor
+        from jastudio.ankiutils.ui_utils import get_selection_or_clipboard
 
-        # Wrap Python callback in .NET Action
-        # Note: Python.NET allows passing callables directly to delegate constructors,
-        # but type stubs show low-level .NET constructor signature
-        action = Action(refresh_callback)  # pyright: ignore[reportCallIssue]
+        # Wrap Python callbacks in .NET delegates
+        refresh_action = Action(refresh_callback)  # pyright: ignore[reportCallIssue]
+        
+        def execute_lookup(query: str) -> None:
+            search_executor.do_lookup(query)
+        
+        lookup_action = Action[str](execute_lookup)  # pyright: ignore[reportCallIssue]
+        
+        # Get selection or clipboard text for searches
+        search_text = get_selection_or_clipboard()
 
-        DialogHost.ShowJapaneseMainMenu(action, x, y)  # pyright: ignore[reportUnknownMemberType]
+        DialogHost.ShowJapaneseMainMenu(refresh_action, lookup_action, search_text, x, y)  # pyright: ignore[reportUnknownMemberType]
     except Exception as e:
         mylog.error(f"Failed to show Japanese main menu: {e}")
         raise
@@ -142,9 +150,16 @@ def show_vocab_context_menu(refresh_callback: Callable[[], None], selection: str
     try:
         from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
         from System import Action  # pyright: ignore[reportMissingImports]
+        from jastudio.ankiutils import search_executor
 
-        action = Action(refresh_callback)  # pyright: ignore[reportCallIssue]
-        DialogHost.ShowVocabContextMenu(action, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
+        refresh_action = Action(refresh_callback)  # pyright: ignore[reportCallIssue]
+        
+        def execute_lookup(query: str) -> None:
+            search_executor.do_lookup(query)
+        
+        lookup_action = Action[str](execute_lookup)  # pyright: ignore[reportCallIssue]
+        
+        DialogHost.ShowVocabContextMenu(refresh_action, lookup_action, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
     except Exception as e:
         mylog.error(f"Failed to show vocab context menu: {e}")
         raise

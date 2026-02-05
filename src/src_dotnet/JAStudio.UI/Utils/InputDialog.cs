@@ -1,0 +1,165 @@
+using System;
+using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.Layout;
+using Avalonia.Media;
+using Avalonia.Threading;
+
+namespace JAStudio.UI.Utils;
+
+/// <summary>
+/// Simple input dialog for getting text from the user.
+/// </summary>
+public class InputDialog : Window
+{
+    private readonly TextBox _textBox;
+    private readonly TaskCompletionSource<string?> _resultSource;
+
+    public InputDialog(string prompt, string initialValue = "")
+    {
+        _resultSource = new TaskCompletionSource<string?>();
+
+        Width = 400;
+        Height = 150;
+        Title = "Input";
+        CanResize = false;
+        WindowStartupLocation = WindowStartupLocation.CenterScreen;
+        
+        var stack = new StackPanel
+        {
+            Margin = new Thickness(10),
+            Spacing = 10
+        };
+
+        // Prompt label
+        stack.Children.Add(new TextBlock
+        {
+            Text = prompt,
+            FontWeight = FontWeight.Bold
+        });
+
+        // Text input
+        _textBox = new TextBox
+        {
+            Text = initialValue,
+            Watermark = "Enter text..."
+        };
+        _textBox.KeyDown += OnTextBoxKeyDown;
+        stack.Children.Add(_textBox);
+
+        // Buttons
+        var buttonPanel = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            HorizontalAlignment = HorizontalAlignment.Right,
+            Spacing = 10
+        };
+
+        var okButton = new Button
+        {
+            Content = "OK",
+            Width = 80,
+            IsDefault = true
+        };
+        okButton.Click += OnOkClicked;
+        buttonPanel.Children.Add(okButton);
+
+        var cancelButton = new Button
+        {
+            Content = "Cancel",
+            Width = 80,
+            IsCancel = true
+        };
+        cancelButton.Click += OnCancelClicked;
+        buttonPanel.Children.Add(cancelButton);
+
+        stack.Children.Add(buttonPanel);
+
+        Content = stack;
+
+        // Focus textbox when shown
+        Opened += (s, e) => _textBox.Focus();
+    }
+
+    private void OnTextBoxKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+        {
+            CompleteWithResult(_textBox.Text);
+            e.Handled = true;
+        }
+        else if (e.Key == Key.Escape)
+        {
+            CompleteWithResult(null);
+            e.Handled = true;
+        }
+    }
+
+    private void OnOkClicked(object? sender, RoutedEventArgs e)
+    {
+        CompleteWithResult(_textBox.Text);
+    }
+
+    private void OnCancelClicked(object? sender, RoutedEventArgs e)
+    {
+        CompleteWithResult(null);
+    }
+
+    private void CompleteWithResult(string? result)
+    {
+        _resultSource.TrySetResult(result);
+        Close();
+    }
+
+    /// <summary>
+    /// Shows the dialog and returns the entered text (or null if cancelled).
+    /// </summary>
+    public static async Task<string?> ShowAsync(string prompt, string initialValue = "")
+    {
+        var dialog = new InputDialog(prompt, initialValue);
+        dialog.Show();
+        return await dialog._resultSource.Task;
+    }
+
+    /// <summary>
+    /// Shows the dialog synchronously on the UI thread and returns the entered text.
+    /// If cancelled or empty, returns the clipboard content.
+    /// </summary>
+    public static string GetInputOrClipboard(string prompt)
+    {
+        string? result = null;
+        
+        Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            result = await ShowAsync(prompt, GetClipboardText());
+        }).Wait();
+
+        return result ?? GetClipboardText();
+    }
+
+    private static string GetClipboardText()
+    {
+        try
+        {
+            var topLevel = Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
+                ? desktop.MainWindow
+                : null;
+            
+            if (topLevel?.Clipboard != null)
+            {
+                var task = topLevel.Clipboard.GetTextAsync();
+                task.Wait();
+                return task.Result ?? string.Empty;
+            }
+        }
+        catch
+        {
+            // Clipboard access failed
+        }
+        return string.Empty;
+    }
+}
