@@ -23,3 +23,4 @@ if not is_testing:
 
         gc.enable()
     ui.init()
+
