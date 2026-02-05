@@ -55,9 +55,7 @@ public partial class ContextMenuPopup : UserControl
     {
         JALogger.Log($"ShowAt called with: ({x}, {y})");
         
-        // Create a Menu (not ContextMenu) as the main content
-        var menu = new Menu();
-        
+        // Create sub-menu items
         var clipboardItem = new MenuItem
         {
             Header = string.IsNullOrEmpty(_clipboardContent) 
@@ -74,7 +72,18 @@ public partial class ContextMenuPopup : UserControl
         };
         selectionItem.Click += OnSelectionItemClick;
         
-        menu.ItemsSource = new List<MenuItem> { clipboardItem, selectionItem };
+        // Create a top-level menu item that contains our items as a submenu
+        var topMenuItem = new MenuItem
+        {
+            Header = "▼", // Just a visual indicator, or empty
+            ItemsSource = new List<MenuItem> { clipboardItem, selectionItem }
+        };
+        
+        // Create the main menu
+        var menu = new Menu
+        {
+            ItemsSource = new List<MenuItem> { topMenuItem }
+        };
         
         // Create window with the Menu as content
         _hostWindow = new Window
@@ -93,9 +102,21 @@ public partial class ContextMenuPopup : UserControl
         {
             _hostWindow.Position = new PixelPoint(x, y);
             JALogger.Log($"Window opened at ({x}, {y}), size: {_hostWindow.Bounds}");
+            
+            // Open the submenu immediately
+            topMenuItem.IsSubMenuOpen = true;
+            JALogger.Log("Submenu opened");
         };
         
-        // Close when clicking outside or losing focus
+        // Close when the submenu closes or window loses focus
+        topMenuItem.PropertyChanged += (s, e) =>
+        {
+            if (e.Property.Name == nameof(MenuItem.IsSubMenuOpen) && !topMenuItem.IsSubMenuOpen)
+            {
+                _hostWindow?.Close();
+            }
+        };
+        
         _hostWindow.Deactivated += (s, e) => _hostWindow.Close();
         
         _hostWindow.Show();
