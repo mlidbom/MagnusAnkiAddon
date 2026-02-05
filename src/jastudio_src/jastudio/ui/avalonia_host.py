@@ -6,6 +6,8 @@ Call initialize() once at addon startup, then use the show_* functions.
 """
 from __future__ import annotations
 
+from collections.abc import Callable
+
 from jaslib import mylog
 
 _initialized = False
@@ -103,7 +105,7 @@ def show_test_main_menu(x: int, y: int) -> None:
         raise
 
 
-def show_japanese_main_menu(refresh_callback: callable, x: int, y: int) -> None:
+def show_japanese_main_menu(refresh_callback: Callable[[], None], x: int, y: int) -> None:
     """
     Show the Japanese main menu at the specified screen coordinates.
 
@@ -121,7 +123,9 @@ def show_japanese_main_menu(refresh_callback: callable, x: int, y: int) -> None:
         from System import Action  # pyright: ignore[reportMissingImports]
 
         # Wrap Python callback in .NET Action
-        action = Action(refresh_callback)  # pyright: ignore[reportUnknownVariableType]
+        # Note: Python.NET allows passing callables directly to delegate constructors,
+        # but type stubs show low-level .NET constructor signature
+        action = Action(refresh_callback)  # pyright: ignore[reportCallIssue]
 
         DialogHost.ShowJapaneseMainMenu(action, x, y)  # pyright: ignore[reportUnknownMemberType]
     except Exception as e:
@@ -129,7 +133,7 @@ def show_japanese_main_menu(refresh_callback: callable, x: int, y: int) -> None:
         raise
 
 
-def show_vocab_context_menu(refresh_callback: callable, selection: str, clipboard: str, x: int, y: int) -> None:
+def show_vocab_context_menu(refresh_callback: Callable[[], None], selection: str, clipboard: str, x: int, y: int) -> None:
     """Show context menu for a vocab note."""
     if not _initialized:
         mylog.warning("Avalonia UI not initialized, initializing now...")
@@ -139,14 +143,14 @@ def show_vocab_context_menu(refresh_callback: callable, selection: str, clipboar
         from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
         from System import Action  # pyright: ignore[reportMissingImports]
 
-        action = Action(refresh_callback)  # pyright: ignore[reportUnknownVariableType]
+        action = Action(refresh_callback)  # pyright: ignore[reportCallIssue]
         DialogHost.ShowVocabContextMenu(action, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
     except Exception as e:
         mylog.error(f"Failed to show vocab context menu: {e}")
         raise
 
 
-def show_kanji_context_menu(refresh_callback: callable, selection: str, clipboard: str, x: int, y: int) -> None:
+def show_kanji_context_menu(refresh_callback: Callable[[], None], selection: str, clipboard: str, x: int, y: int) -> None:
     """Show context menu for a kanji note."""
     if not _initialized:
         mylog.warning("Avalonia UI not initialized, initializing now...")
@@ -156,14 +160,14 @@ def show_kanji_context_menu(refresh_callback: callable, selection: str, clipboar
         from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
         from System import Action  # pyright: ignore[reportMissingImports]
 
-        action = Action(refresh_callback)  # pyright: ignore[reportUnknownVariableType]
+        action = Action(refresh_callback)  # pyright: ignore[reportCallIssue]
         DialogHost.ShowKanjiContextMenu(action, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
     except Exception as e:
         mylog.error(f"Failed to show kanji context menu: {e}")
         raise
 
 
-def show_sentence_context_menu(refresh_callback: callable, selection: str, clipboard: str, x: int, y: int) -> None:
+def show_sentence_context_menu(refresh_callback: Callable[[], None], selection: str, clipboard: str, x: int, y: int) -> None:
     """Show context menu for a sentence note."""
     if not _initialized:
         mylog.warning("Avalonia UI not initialized, initializing now...")
@@ -173,14 +177,14 @@ def show_sentence_context_menu(refresh_callback: callable, selection: str, clipb
         from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
         from System import Action  # pyright: ignore[reportMissingImports]
 
-        action = Action(refresh_callback)  # pyright: ignore[reportUnknownVariableType]
+        action = Action(refresh_callback)  # pyright: ignore[reportCallIssue]
         DialogHost.ShowSentenceContextMenu(action, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
     except Exception as e:
         mylog.error(f"Failed to show sentence context menu: {e}")
         raise
 
 
-def show_generic_context_menu(refresh_callback: callable, selection: str, clipboard: str, x: int, y: int) -> None:
+def show_generic_context_menu(refresh_callback: Callable[[], None], selection: str, clipboard: str, x: int, y: int) -> None:
     """Show context menu when no note is available."""
     if not _initialized:
         mylog.warning("Avalonia UI not initialized, initializing now...")
@@ -190,7 +194,7 @@ def show_generic_context_menu(refresh_callback: callable, selection: str, clipbo
         from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
         from System import Action  # pyright: ignore[reportMissingImports]
 
-        action = Action(refresh_callback)  # pyright: ignore[reportUnknownVariableType]
+        action = Action(refresh_callback)  # pyright: ignore[reportCallIssue]
         DialogHost.ShowGenericContextMenu(action, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
     except Exception as e:
         mylog.error(f"Failed to show generic context menu: {e}")
