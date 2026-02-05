@@ -1,5 +1,25 @@
 # JAStudio UI Porting Status (Python PyQt6 → C# Avalonia)
 
+## Current Status
+
+**Infrastructure: COMPLETE**
+- JAStudio.UI project created with Avalonia 11.2.5
+- DialogHost.cs provides Python → C# entry point
+- Type stubs auto-generated for Python type checking
+- Runtime binaries copied to `src/runtime_binaries/` (~23 MB)
+- Integration tests verify Initialize/Shutdown cycle
+
+**First Dialog: AboutDialog (Test/Demo)**
+- Simple "About JAStudio" window in Avalonia
+- Accessible from Anki: Japanese → Debug → Test Avalonia Dialog
+- Validates the full Python → C# → Avalonia pipeline works
+
+**Python Integration:**
+- `jastudio/ui/avalonia_host.py` - Python wrapper for C# dialogs
+- `show_about_dialog()` - Opens the About dialog from Python
+
+---
+
 ## Porting Strategy
 
 Port the Anki addon's UI from PyQt6 to Avalonia, keeping the domain logic in JAStudio.Core and creating a clean ViewModel layer.
@@ -95,10 +115,11 @@ JAStudio.Core.dll (Domain logic - already ported)
 
 ## Porting Order (Recommended)
 
-### Phase 1: Infrastructure
-1. Create JAStudio.UI project with Avalonia
-2. Create JAStudio.ViewModels project
-3. Set up Python → C# dialog invocation pattern
+### Phase 1: Infrastructure ✅ COMPLETE
+1. ~~Create JAStudio.UI project with Avalonia~~ ✅
+2. ~~Set up Python → C# dialog invocation pattern~~ ✅
+3. ~~Add integration tests~~ ✅
+4. ~~AboutDialog as proof of concept~~ ✅
 
 ### Phase 2: Dialogs (Highest Value)
 1. `vocab_flags_dialog.py` → `VocabFlagsDialog.axaml` (most complex, good test)
