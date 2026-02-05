@@ -110,8 +110,14 @@ public partial class ContextMenuPopup : UserControl
         
         _hostWindow.Opened += (s, e) =>
         {
-            _hostWindow.Position = new PixelPoint(x, y);
-            JALogger.Log($"Window opened at ({x}, {y}), size: {_hostWindow.Bounds}");
+            // Get the actual height of the menu bar
+            var menuHeight = (int)(_hostWindow.Bounds.Height * 1.25); // Convert logical to physical pixels at 125% DPI
+            
+            // Offset the window upward by the menu height so the submenu appears at the correct position
+            var adjustedY = y - menuHeight;
+            
+            _hostWindow.Position = new PixelPoint(x, adjustedY);
+            JALogger.Log($"Window opened at ({x}, {adjustedY}), original y: {y}, menu height: {menuHeight}, bounds: {_hostWindow.Bounds}");
             
             // Open the submenu immediately
             topMenuItem.IsSubMenuOpen = true;
