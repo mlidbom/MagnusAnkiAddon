@@ -67,7 +67,7 @@ JAStudio.Core.dll (Domain logic - already ported)
 | MISSING | ui/open_note/open_note_dialog.py | 264 | Search and open notes dialog |
 | MISSING | ui/english_dict/find_english_words_dialog.py | 94 | English dictionary search |
 | MISSING | configuration/readings_mapping_dialog.py | 120 | Configure reading mappings |
-| MISSING | configuration/configuration.py | 140 | Japanese addon options dialog |
+| 90% | configuration/configuration.py | 140 | Japanese addon options dialog |
 
 **Subtotal: 849 lines**
 
