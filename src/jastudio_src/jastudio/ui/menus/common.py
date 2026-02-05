@@ -132,7 +132,6 @@ def null_op_factory(_menu: QMenu, _string: str) -> None:
 
 def _add_avalonia_menu_entry(menu: QMenu, selection: str, clipboard: str) -> None:
     """Add Avalonia menu entry that shows Avalonia popup on hover."""
-    from PyQt6.QtGui import QCursor
 
     # Create a menu action for Avalonia
     avalonia_action = menu.addAction("🎯 AvaloniaMenu (Hover to show)")  # pyright: ignore[reportUnknownMemberType]
@@ -147,26 +146,44 @@ def _add_avalonia_menu_entry(menu: QMenu, selection: str, clipboard: str) -> Non
         shown[0] = True
 
         try:
+            from PyQt6.QtWidgets import QApplication
+
             from jastudio.ui import avalonia_host
 
-            # Get cursor position in screen coordinates
-            cursor_pos = QCursor.pos()
-            x = cursor_pos.x()
-            y = cursor_pos.y()
+            # Get the action's geometry within the menu
+            action_rect = menu.actionGeometry(avalonia_action)
 
-            # Show the Avalonia popup at cursor position
+            # Map the action's top-left corner to global screen coordinates
+            action_global_pos = menu.mapToGlobal(action_rect.topLeft())
+
+            # Get DPI scale factor to convert logical pixels to physical pixels
+            # Qt gives us logical coordinates, but Avalonia PixelPoint expects physical pixels
+            screen = QApplication.screenAt(action_global_pos)
+            dpi_scale = screen.devicePixelRatio() if screen else 1.0
+
+            # Position the Avalonia popup to the right of this action (like a submenu)
+            # x: right edge of the menu (in logical pixels)
+            # y: aligned with this action's top (in logical pixels)
+            logical_x = action_global_pos.x()
+            logical_y = action_global_pos.y()
+
+            # Convert to physical pixels for Avalonia
+            physical_x = int(logical_x * dpi_scale)
+            physical_y = int(logical_y * dpi_scale)
+
+            # Show the Avalonia popup to the right of the menu
             avalonia_host.show_context_menu_popup(
                 clipboard_content=clipboard,
                 selection_content=selection,
-                x=x,
-                y=y
+                x=physical_x,
+                y=physical_y
             )
         except Exception as e:
             from jaslib import mylog
             mylog.error(f"Failed to show Avalonia menu: {e}")
 
     # Use hovered signal to trigger the popup
-    avalonia_action.hovered.connect(on_hover)  # pyright: ignore[reportUnknownMemberType]
+    avalonia_action.hovered.connect(on_hover)  # pyright: ignore[reportUnknownMemberType, reportOptionalMemberAccess]
 
 def init() -> None:
     gui_hooks.webview_will_show_context_menu.append(build_right_click_menu_webview_hook)  # pyright: ignore[reportUnknownMemberType]

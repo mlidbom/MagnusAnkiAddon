@@ -7,9 +7,11 @@
         CanResize="False"
         ShowInTaskbar="False"
         SystemDecorations="None"
+        ExtendClientAreaToDecorationsHint="True"
         Background="#2D2D30"
         BorderBrush="#3E3E42"
-        BorderThickness="1">
+        BorderThickness="1"
+        Topmost="True">
 
     <StackPanel Margin="4" Spacing="2">
         <!-- Clipboard Content Item -->
