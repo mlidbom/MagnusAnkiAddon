@@ -1,16 +1,18 @@
 using System;
 using System.Collections.Generic;
-using Avalonia.Controls;
 using JAStudio.Core;
 using JAStudio.Core.Note;
+using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
 using JAStudio.UI.Views;
+using SpecMenuItem = JAStudio.UI.Menus.UIAgnosticMenuStructure.MenuItem;
 
 namespace JAStudio.UI.Menus;
 
 /// <summary>
 /// Builds context menus for different note types and contexts.
 /// This will replace the Python menu in common.py.
+/// Now uses UI-agnostic MenuItem specifications.
 /// </summary>
 public class NoteContextMenu
 {
@@ -26,277 +28,292 @@ public class NoteContextMenu
     }
 
     /// <summary>
-    /// Build context menu for a vocab note.
+    /// Build context menu for a vocab note as UI-agnostic specifications.
     /// </summary>
-    public List<MenuItem> BuildVocabContextMenu(int vocabId, string selection, string clipboard)
+    public List<SpecMenuItem> BuildVocabContextMenuSpec(int vocabId, string selection, string clipboard)
     {
         var vocabCache = Core.App.Col().Vocab;
         var vocab = vocabCache.WithIdOrNone(vocabId);
         if (vocab == null)
-            return new List<MenuItem>();
+            return new List<SpecMenuItem>();
 
-        var menuItems = new List<MenuItem>();
+        var menuItems = new List<SpecMenuItem>();
 
         if (!string.IsNullOrEmpty(selection))
-            menuItems.Add(BuildSelectionMenu(selection, "vocab"));
+            menuItems.Add(BuildSelectionMenuSpec(selection, "vocab"));
 
         if (!string.IsNullOrEmpty(clipboard))
-            menuItems.Add(BuildClipboardMenu(clipboard, "vocab"));
+            menuItems.Add(BuildClipboardMenuSpec(clipboard, "vocab"));
 
-        menuItems.Add(BuildVocabNoteActionsMenu(vocab));
-        menuItems.Add(BuildUniversalNoteActionsMenu());
-        menuItems.Add(BuildVocabViewMenu());
+        menuItems.Add(BuildVocabNoteActionsMenuSpec(vocab));
+        menuItems.Add(BuildUniversalNoteActionsMenuSpec());
+        menuItems.Add(BuildVocabViewMenuSpec());
 
         return menuItems;
     }
 
     /// <summary>
-    /// Build context menu for a kanji note.
+    /// Build context menu for a vocab note and convert to Avalonia MenuItems.
     /// </summary>
-    public List<MenuItem> BuildKanjiContextMenu(int kanjiId, string selection, string clipboard)
+    public List<Avalonia.Controls.MenuItem> BuildVocabContextMenu(int vocabId, string selection, string clipboard)
+    {
+        var specs = BuildVocabContextMenuSpec(vocabId, selection, clipboard);
+        var result = new List<Avalonia.Controls.MenuItem>();
+        foreach (var spec in specs)
+            result.Add(AvaloniaMenuAdapter.ToAvalonia(spec));
+        return result;
+    }
+
+    /// <summary>
+    /// Build context menu for a kanji note as UI-agnostic specifications.
+    /// </summary>
+    public List<SpecMenuItem> BuildKanjiContextMenuSpec(int kanjiId, string selection, string clipboard)
     {
         var kanjiCache = Core.App.Col().Kanji;
         var kanji = kanjiCache.WithIdOrNone(kanjiId);
         if (kanji == null)
-            return new List<MenuItem>();
+            return new List<SpecMenuItem>();
 
-        var menuItems = new List<MenuItem>();
+        var menuItems = new List<SpecMenuItem>();
 
         if (!string.IsNullOrEmpty(selection))
-            menuItems.Add(BuildSelectionMenu(selection, "kanji"));
+            menuItems.Add(BuildSelectionMenuSpec(selection, "kanji"));
 
         if (!string.IsNullOrEmpty(clipboard))
-            menuItems.Add(BuildClipboardMenu(clipboard, "kanji"));
+            menuItems.Add(BuildClipboardMenuSpec(clipboard, "kanji"));
 
-        menuItems.Add(BuildKanjiNoteActionsMenu());
-        menuItems.Add(BuildUniversalNoteActionsMenu());
-        menuItems.Add(BuildKanjiViewMenu());
+        menuItems.Add(BuildKanjiNoteActionsMenuSpec());
+        menuItems.Add(BuildUniversalNoteActionsMenuSpec());
+        menuItems.Add(BuildKanjiViewMenuSpec());
 
         return menuItems;
     }
 
     /// <summary>
-    /// Build context menu for a sentence note.
+    /// Build context menu for a kanji note and convert to Avalonia MenuItems.
     /// </summary>
-    public List<MenuItem> BuildSentenceContextMenu(int sentenceId, string selection, string clipboard)
+    public List<Avalonia.Controls.MenuItem> BuildKanjiContextMenu(int kanjiId, string selection, string clipboard)
+    {
+        var specs = BuildKanjiContextMenuSpec(kanjiId, selection, clipboard);
+        var result = new List<Avalonia.Controls.MenuItem>();
+        foreach (var spec in specs)
+            result.Add(AvaloniaMenuAdapter.ToAvalonia(spec));
+        return result;
+    }
+
+    /// <summary>
+    /// Build context menu for a sentence note as UI-agnostic specifications.
+    /// </summary>
+    public List<SpecMenuItem> BuildSentenceContextMenuSpec(int sentenceId, string selection, string clipboard)
     {
         var sentenceCache = Core.App.Col().Sentences;
         var sentence = sentenceCache.WithIdOrNone(sentenceId);
         if (sentence == null)
-            return new List<MenuItem>();
+            return new List<SpecMenuItem>();
 
-        var menuItems = new List<MenuItem>();
+        var menuItems = new List<SpecMenuItem>();
 
         if (!string.IsNullOrEmpty(selection))
-            menuItems.Add(BuildSelectionMenu(selection, "sentence"));
+            menuItems.Add(BuildSelectionMenuSpec(selection, "sentence"));
 
         if (!string.IsNullOrEmpty(clipboard))
-            menuItems.Add(BuildClipboardMenu(clipboard, "sentence"));
+            menuItems.Add(BuildClipboardMenuSpec(clipboard, "sentence"));
 
-        menuItems.Add(BuildSentenceNoteActionsMenu());
-        menuItems.Add(BuildUniversalNoteActionsMenu());
-        menuItems.Add(BuildSentenceViewMenu());
+        menuItems.Add(BuildSentenceNoteActionsMenuSpec());
+        menuItems.Add(BuildUniversalNoteActionsMenuSpec());
+        menuItems.Add(BuildSentenceViewMenuSpec());
 
         return menuItems;
     }
 
     /// <summary>
-    /// Build context menu when no note is available.
+    /// Build context menu for a sentence note and convert to Avalonia MenuItems.
     /// </summary>
-    public List<MenuItem> BuildGenericContextMenu(string selection, string clipboard)
+    public List<Avalonia.Controls.MenuItem> BuildSentenceContextMenu(int sentenceId, string selection, string clipboard)
     {
-        var menuItems = new List<MenuItem>();
+        var specs = BuildSentenceContextMenuSpec(sentenceId, selection, clipboard);
+        var result = new List<Avalonia.Controls.MenuItem>();
+        foreach (var spec in specs)
+            result.Add(AvaloniaMenuAdapter.ToAvalonia(spec));
+        return result;
+    }
+
+    /// <summary>
+    /// Build context menu when no note is available as UI-agnostic specifications.
+    /// </summary>
+    public List<SpecMenuItem> BuildGenericContextMenuSpec(string selection, string clipboard)
+    {
+        var menuItems = new List<SpecMenuItem>();
 
         if (!string.IsNullOrEmpty(selection))
-            menuItems.Add(BuildSelectionMenu(selection, null));
+            menuItems.Add(BuildSelectionMenuSpec(selection, null));
 
         if (!string.IsNullOrEmpty(clipboard))
-            menuItems.Add(BuildClipboardMenu(clipboard, null));
+            menuItems.Add(BuildClipboardMenuSpec(clipboard, null));
 
         return menuItems;
     }
 
-    private MenuItem BuildSelectionMenu(string selection, string? noteType)
+    /// <summary>
+    /// Build generic context menu and convert to Avalonia MenuItems.
+    /// </summary>
+    public List<Avalonia.Controls.MenuItem> BuildGenericContextMenu(string selection, string clipboard)
+    {
+        var specs = BuildGenericContextMenuSpec(selection, clipboard);
+        var result = new List<Avalonia.Controls.MenuItem>();
+        foreach (var spec in specs)
+            result.Add(AvaloniaMenuAdapter.ToAvalonia(spec));
+        return result;
+    }
+
+    private SpecMenuItem BuildSelectionMenuSpec(string selection, string? noteType)
     {
         var truncated = TruncateText(selection, 40);
-        var menuItems = BuildStringMenu(selection, noteType);
+        var menuItems = BuildStringMenuSpec(selection, noteType);
 
-        return new MenuItem
-        {
-            Header = ShortcutFinger.Home1($"Selection: \"{truncated}\""),
-            ItemsSource = menuItems
-        };
+        return SpecMenuItem.Submenu(
+            ShortcutFinger.Home1($"Selection: \"{truncated}\""),
+            menuItems
+        );
     }
 
-    private MenuItem BuildClipboardMenu(string clipboard, string? noteType)
+    private SpecMenuItem BuildClipboardMenuSpec(string clipboard, string? noteType)
     {
         var truncated = TruncateText(clipboard, 40);
-        var menuItems = BuildStringMenu(clipboard, noteType);
+        var menuItems = BuildStringMenuSpec(clipboard, noteType);
 
-        return new MenuItem
-        {
-            Header = ShortcutFinger.Home2($"Clipboard: \"{truncated}\""),
-            ItemsSource = menuItems
-        };
+        return SpecMenuItem.Submenu(
+            ShortcutFinger.Home2($"Clipboard: \"{truncated}\""),
+            menuItems
+        );
     }
 
-    private List<MenuItem> BuildStringMenu(string text, string? noteType)
+    private List<SpecMenuItem> BuildStringMenuSpec(string text, string? noteType)
     {
-        var menuItems = new List<MenuItem>
+        var menuItems = new List<SpecMenuItem>
         {
-            BuildCurrentNoteActionsSubmenu(text, noteType),
-            OpenInAnkiMenus.BuildOpenInAnkiMenu(() => text, _executeLookup),
-            WebSearchMenus.BuildWebSearchMenu(() => text, BrowserLauncher.OpenUrl),
-            BuildMatchingNotesSubmenu(text),
-            BuildCreateNoteSubmenu(text),
-            CreateMenuItem(ShortcutFinger.Down1($"Reparse matching sentences"), () => OnReparseMatchingSentences(text))
+            BuildCurrentNoteActionsSubmenuSpec(text, noteType),
+            OpenInAnkiMenus.BuildOpenInAnkiMenuSpec(() => text, _executeLookup),
+            WebSearchMenus.BuildWebSearchMenuSpec(() => text, BrowserLauncher.OpenUrl),
+            BuildMatchingNotesSubmenuSpec(text),
+            BuildCreateNoteSubmenuSpec(text),
+            SpecMenuItem.Command(ShortcutFinger.Down1($"Reparse matching sentences"), () => OnReparseMatchingSentences(text))
         };
 
         return menuItems;
     }
 
     // Vocab-specific menus
-    private MenuItem BuildVocabNoteActionsMenu(VocabNote vocab)
+    private SpecMenuItem BuildVocabNoteActionsMenuSpec(VocabNote vocab)
     {
-        var menuItems = new List<MenuItem>
-        {
-            CreateMenuItem(ShortcutFinger.Home2("Edit flags"), () => OnEditVocabFlags(vocab)),
-            CreateMenuItem("Vocab Actions (TODO)", () => { })
-        };
-
-        return new MenuItem
-        {
-            Header = ShortcutFinger.Home3("Note actions"),
-            ItemsSource = menuItems
-        };
+        return SpecMenuItem.Submenu(
+            ShortcutFinger.Home3("Note actions"),
+            new List<SpecMenuItem>
+            {
+                SpecMenuItem.Command(ShortcutFinger.Home2("Edit flags"), () => OnEditVocabFlags(vocab)),
+                SpecMenuItem.Command("Vocab Actions (TODO)", () => { })
+            }
+        );
     }
 
-    private MenuItem BuildVocabViewMenu()
+    private SpecMenuItem BuildVocabViewMenuSpec()
     {
-        var menuItems = new List<MenuItem>
-        {
-            // TODO: Port from menus.notes.vocab.main.build_view_menu
-            CreateMenuItem("View Vocab (TODO)", () => { })
-        };
-
-        return new MenuItem
-        {
-            Header = ShortcutFinger.Home5("View"),
-            ItemsSource = menuItems
-        };
+        return SpecMenuItem.Submenu(
+            ShortcutFinger.Home5("View"),
+            new List<SpecMenuItem>
+            {
+                // TODO: Port from menus.notes.vocab.main.build_view_menu
+                SpecMenuItem.Command("View Vocab (TODO)", () => { })
+            }
+        );
     }
 
     // Kanji-specific menus
-    private MenuItem BuildKanjiNoteActionsMenu()
+    private SpecMenuItem BuildKanjiNoteActionsMenuSpec()
     {
-        var menuItems = new List<MenuItem>
-        {
-            // TODO: Port from menus.notes.kanji.main.build_note_menu
-            CreateMenuItem("Kanji Actions (TODO)", () => { })
-        };
-
-        return new MenuItem
-        {
-            Header = ShortcutFinger.Home3("Note actions"),
-            ItemsSource = menuItems
-        };
+        return SpecMenuItem.Submenu(
+            ShortcutFinger.Home3("Note actions"),
+            new List<SpecMenuItem>
+            {
+                // TODO: Port from menus.notes.kanji.main.build_note_menu
+                SpecMenuItem.Command("Kanji Actions (TODO)", () => { })
+            }
+        );
     }
 
-    private MenuItem BuildKanjiViewMenu()
+    private SpecMenuItem BuildKanjiViewMenuSpec()
     {
-        var menuItems = new List<MenuItem>
-        {
-            // TODO: Port from menus.notes.kanji.main.build_view_menu
-            CreateMenuItem("View Kanji (TODO)", () => { })
-        };
-
-        return new MenuItem
-        {
-            Header = ShortcutFinger.Home5("View"),
-            ItemsSource = menuItems
-        };
+        return SpecMenuItem.Submenu(
+            ShortcutFinger.Home5("View"),
+            new List<SpecMenuItem>
+            {
+                // TODO: Port from menus.notes.kanji.main.build_view_menu
+                SpecMenuItem.Command("View Kanji (TODO)", () => { })
+            }
+        );
     }
 
     // Sentence-specific menus
-    private MenuItem BuildSentenceNoteActionsMenu()
+    private SpecMenuItem BuildSentenceNoteActionsMenuSpec()
     {
-        var menuItems = new List<MenuItem>
-        {
-            // TODO: Port from menus.notes.sentence.main.build_note_menu
-            CreateMenuItem("Sentence Actions (TODO)", () => { })
-        };
-
-        return new MenuItem
-        {
-            Header = ShortcutFinger.Home3("Note actions"),
-            ItemsSource = menuItems
-        };
+        return SpecMenuItem.Submenu(
+            ShortcutFinger.Home3("Note actions"),
+            new List<SpecMenuItem>
+            {
+                // TODO: Port from menus.notes.sentence.main.build_note_menu
+                SpecMenuItem.Command("Sentence Actions (TODO)", () => { })
+            }
+        );
     }
 
-    private MenuItem BuildSentenceViewMenu()
+    private SpecMenuItem BuildSentenceViewMenuSpec()
     {
-        var menuItems = new List<MenuItem>
-        {
-            // TODO: Port from menus.notes.sentence.main.build_view_menu
-            CreateMenuItem("View Sentence (TODO)", () => { })
-        };
-
-        return new MenuItem
-        {
-            Header = ShortcutFinger.Home5("View"),
-            ItemsSource = menuItems
-        };
+        return SpecMenuItem.Submenu(
+            ShortcutFinger.Home5("View"),
+            new List<SpecMenuItem>
+            {
+                // TODO: Port from menus.notes.sentence.main.build_view_menu
+                SpecMenuItem.Command("View Sentence (TODO)", () => { })
+            }
+        );
     }
 
-    private MenuItem BuildUniversalNoteActionsMenu()
+    private SpecMenuItem BuildUniversalNoteActionsMenuSpec()
     {
-        var menuItems = new List<MenuItem>
-        {
-            CreateMenuItem(ShortcutFinger.Home1("Open in previewer"), OnOpenInPreviewer),
-            CreateMenuItem(ShortcutFinger.Home3("Unsuspend all cards"), OnUnsuspendAllCards),
-            CreateMenuItem(ShortcutFinger.Home4("Suspend all cards"), OnSuspendAllCards)
-        };
-
-        return new MenuItem
-        {
-            Header = ShortcutFinger.Home4("Universal note actions"),
-            ItemsSource = menuItems
-        };
+        return SpecMenuItem.Submenu(
+            ShortcutFinger.Home4("Universal note actions"),
+            new List<SpecMenuItem>
+            {
+                SpecMenuItem.Command(ShortcutFinger.Home1("Open in previewer"), OnOpenInPreviewer),
+                SpecMenuItem.Command(ShortcutFinger.Home3("Unsuspend all cards"), OnUnsuspendAllCards),
+                SpecMenuItem.Command(ShortcutFinger.Home4("Suspend all cards"), OnSuspendAllCards)
+            }
+        );
     }
 
-    private MenuItem BuildCurrentNoteActionsSubmenu(string text, string? noteType)
+    private SpecMenuItem BuildCurrentNoteActionsSubmenuSpec(string text, string? noteType)
     {
         // TODO: Port string_note_menu_factory logic
-        return new MenuItem { Header = ShortcutFinger.Home1("Current note actions (TODO)") };
+        return SpecMenuItem.Submenu(ShortcutFinger.Home1("Current note actions (TODO)"), new List<SpecMenuItem>());
     }
 
-    private MenuItem BuildMatchingNotesSubmenu(string text)
+    private SpecMenuItem BuildMatchingNotesSubmenuSpec(string text)
     {
         // TODO: Port from build_matching_note_menu
-        return new MenuItem { Header = ShortcutFinger.Home4("Exactly matching notes (TODO)") };
+        return SpecMenuItem.Submenu(ShortcutFinger.Home4("Exactly matching notes (TODO)"), new List<SpecMenuItem>());
     }
 
-    private MenuItem BuildCreateNoteSubmenu(string text)
+    private SpecMenuItem BuildCreateNoteSubmenuSpec(string text)
     {
-        var menuItems = new List<MenuItem>
-        {
-            CreateMenuItem(ShortcutFinger.Home1("vocab"), () => OnCreateVocabNote(text)),
-            CreateMenuItem(ShortcutFinger.Home2("sentence"), () => OnCreateSentenceNote(text)),
-            CreateMenuItem(ShortcutFinger.Home3("kanji"), () => OnCreateKanjiNote(text))
-        };
-
-        return new MenuItem
-        {
-            Header = ShortcutFinger.Up1($"Create: {TruncateText(text, 40)}"),
-            ItemsSource = menuItems
-        };
-    }
-
-    private MenuItem CreateMenuItem(string header, Action onClick)
-    {
-        var item = new MenuItem { Header = header };
-        item.Click += (s, e) => onClick();
-        return item;
+        return SpecMenuItem.Submenu(
+            ShortcutFinger.Up1($"Create: {TruncateText(text, 40)}"),
+            new List<SpecMenuItem>
+            {
+                SpecMenuItem.Command(ShortcutFinger.Home1("vocab"), () => OnCreateVocabNote(text)),
+                SpecMenuItem.Command(ShortcutFinger.Home2("sentence"), () => OnCreateSentenceNote(text)),
+                SpecMenuItem.Command(ShortcutFinger.Home3("kanji"), () => OnCreateKanjiNote(text))
+            }
+        );
     }
 
     private static string TruncateText(string text, int maxLength)

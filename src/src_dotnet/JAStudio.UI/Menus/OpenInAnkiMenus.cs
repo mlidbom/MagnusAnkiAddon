@@ -1,117 +1,127 @@
 using System;
 using System.Collections.Generic;
-using Avalonia.Controls;
 using JAStudio.Core.AnkiUtils;
+using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
+using SpecMenuItem = JAStudio.UI.Menus.UIAgnosticMenuStructure.MenuItem;
 
 namespace JAStudio.UI.Menus;
 
 /// <summary>
 /// Builds "Open in Anki" menus for searching notes in the Anki browser.
 /// Ported from jastudio/ui/menus/open_in_anki.py
+/// Now uses UI-agnostic MenuItem specifications.
 /// </summary>
 public static class OpenInAnkiMenus
 {
     /// <summary>
-    /// Build the complete "Open in Anki" menu structure.
+    /// Build the complete "Open in Anki" menu structure as a UI-agnostic specification.
+    /// Can be passed to AvaloniaMenuAdapter, Python, or any other UI framework.
     /// </summary>
     /// <param name="getSearchText">Function that returns the text to search for</param>
     /// <param name="executeLookup">Action to execute an Anki search query</param>
-    public static MenuItem BuildOpenInAnkiMenu(Func<string> getSearchText, Action<string> executeLookup)
+    public static SpecMenuItem BuildOpenInAnkiMenuSpec(Func<string> getSearchText, Action<string> executeLookup)
     {
-        return new MenuItem
-        {
-            Header = ShortcutFinger.Home2("Anki"),
-            ItemsSource = new List<MenuItem>
+        return SpecMenuItem.Submenu(
+            ShortcutFinger.Home2("Anki"),
+            new List<SpecMenuItem>
             {
-                BuildExactMatchesMenu(getSearchText, executeLookup),
-                BuildKanjiMenu(getSearchText, executeLookup),
-                BuildVocabMenu(getSearchText, executeLookup),
-                BuildSentenceMenu(getSearchText, executeLookup)
+                BuildExactMatchesMenuSpec(getSearchText, executeLookup),
+                BuildKanjiMenuSpec(getSearchText, executeLookup),
+                BuildVocabMenuSpec(getSearchText, executeLookup),
+                BuildSentenceMenuSpec(getSearchText, executeLookup)
             }
-        };
+        );
     }
 
-    private static MenuItem BuildExactMatchesMenu(Func<string> getSearchText, Action<string> executeLookup)
+    /// <summary>
+    /// Build the "Open in Anki" menu and convert to Avalonia MenuItem.
+    /// This is a convenience method for backward compatibility.
+    /// </summary>
+    public static Avalonia.Controls.MenuItem BuildOpenInAnkiMenu(Func<string> getSearchText, Action<string> executeLookup)
     {
-        return new MenuItem
-        {
-            Header = ShortcutFinger.Home1("Exact matches"),
-            ItemsSource = new List<MenuItem>
+        var spec = BuildOpenInAnkiMenuSpec(getSearchText, executeLookup);
+        return AvaloniaMenuAdapter.ToAvalonia(spec);
+    }
+
+    private static SpecMenuItem BuildExactMatchesMenuSpec(Func<string> getSearchText, Action<string> executeLookup)
+    {
+        return SpecMenuItem.Submenu(
+            ShortcutFinger.Home1("Exact matches"),
+            new List<SpecMenuItem>
             {
-                CreateLookupItem(ShortcutFinger.Home1("Open Exact matches | no sentences | reading cards"), 
+                CreateLookupSpec(ShortcutFinger.Home1("Open Exact matches | no sentences | reading cards"), 
                     () => QueryBuilder.ExactMatchesNoSentencesReadingCards(getSearchText()), executeLookup),
-                CreateLookupItem(ShortcutFinger.Home2("Open Exact matches with sentences"), 
+                CreateLookupSpec(ShortcutFinger.Home2("Open Exact matches with sentences"), 
                     () => QueryBuilder.ExactMatches(getSearchText()), executeLookup)
             }
-        };
+        );
     }
 
-    private static MenuItem BuildKanjiMenu(Func<string> getSearchText, Action<string> executeLookup)
+    private static SpecMenuItem BuildKanjiMenuSpec(Func<string> getSearchText, Action<string> executeLookup)
     {
-        return new MenuItem
-        {
-            Header = ShortcutFinger.Home2("Kanji"),
-            ItemsSource = new List<MenuItem>
+        return SpecMenuItem.Submenu(
+            ShortcutFinger.Home2("Kanji"),
+            new List<SpecMenuItem>
             {
-                CreateLookupItem(ShortcutFinger.Home1("All kanji in string"), 
+                CreateLookupSpec(ShortcutFinger.Home1("All kanji in string"), 
                     () => QueryBuilder.KanjiInString(getSearchText()), executeLookup),
-                CreateLookupItem(ShortcutFinger.Home2("By reading part"), 
+                CreateLookupSpec(ShortcutFinger.Home2("By reading part"), 
                     () => QueryBuilder.KanjiWithReadingPart(getSearchText()), executeLookup),
-                CreateLookupItem(ShortcutFinger.Home3("By reading exact"), 
+                CreateLookupSpec(ShortcutFinger.Home3("By reading exact"), 
                     () => QueryBuilder.NotesLookup(Core.App.Col().Kanji.WithReading(getSearchText())), executeLookup),
-                CreateLookupItem(ShortcutFinger.Home4("With radicals"), 
+                CreateLookupSpec(ShortcutFinger.Home4("With radicals"), 
                     () => QueryBuilder.KanjiWithRadicalsInString(getSearchText()), executeLookup),
-                CreateLookupItem(ShortcutFinger.Up1("With meaning"), 
+                CreateLookupSpec(ShortcutFinger.Up1("With meaning"), 
                     () => QueryBuilder.KanjiWithMeaning(getSearchText()), executeLookup)
             }
-        };
+        );
     }
 
-    private static MenuItem BuildVocabMenu(Func<string> getSearchText, Action<string> executeLookup)
+    private static SpecMenuItem BuildVocabMenuSpec(Func<string> getSearchText, Action<string> executeLookup)
     {
-        return new MenuItem
-        {
-            Header = ShortcutFinger.Home3("Vocab"),
-            ItemsSource = new List<MenuItem>
+        return SpecMenuItem.Submenu(
+            ShortcutFinger.Home3("Vocab"),
+            new List<SpecMenuItem>
             {
-                CreateLookupItem(ShortcutFinger.Home1("form -"), 
+                CreateLookupSpec(ShortcutFinger.Home1("form -"), 
                     () => QueryBuilder.SingleVocabByFormExact(getSearchText()), executeLookup),
-                CreateLookupItem(ShortcutFinger.Home2("form - read card only"), 
+                CreateLookupSpec(ShortcutFinger.Home2("form - read card only"), 
                     () => QueryBuilder.SingleVocabByFormExactReadCardOnly(getSearchText()), executeLookup),
-                CreateLookupItem(ShortcutFinger.Home3("form, reading or answer"), 
+                CreateLookupSpec(ShortcutFinger.Home3("form, reading or answer"), 
                     () => QueryBuilder.SingleVocabByQuestionReadingOrAnswerExact(getSearchText()), executeLookup),
-                CreateLookupItem(ShortcutFinger.Home4("Wildcard"), 
+                CreateLookupSpec(ShortcutFinger.Home4("Wildcard"), 
                     () => QueryBuilder.SingleVocabWildcard(getSearchText()), executeLookup),
-                CreateLookupItem(ShortcutFinger.Up1("Text words"), 
+                CreateLookupSpec(ShortcutFinger.Up1("Text words"), 
                     () => QueryBuilder.TextVocabLookup(getSearchText()), executeLookup)
             }
-        };
+        );
     }
 
-    private static MenuItem BuildSentenceMenu(Func<string> getSearchText, Action<string> executeLookup)
+    private static SpecMenuItem BuildSentenceMenuSpec(Func<string> getSearchText, Action<string> executeLookup)
     {
-        return new MenuItem
-        {
-            Header = ShortcutFinger.Home4("Sentence"),
-            ItemsSource = new List<MenuItem>
+        return SpecMenuItem.Submenu(
+            ShortcutFinger.Home4("Sentence"),
+            new List<SpecMenuItem>
             {
-                CreateLookupItem(ShortcutFinger.Home1("Parse Vocabulary"), 
+                CreateLookupSpec(ShortcutFinger.Home1("Parse Vocabulary"), 
                     () => QueryBuilder.SentenceSearch(getSearchText(), exact: false), executeLookup),
-                CreateLookupItem(ShortcutFinger.Home2("Exact String"), 
+                CreateLookupSpec(ShortcutFinger.Home2("Exact String"), 
                     () => QueryBuilder.SentenceSearch(getSearchText(), exact: true), executeLookup)
             }
-        };
+        );
     }
 
-    private static MenuItem CreateLookupItem(string header, Func<string> getQuery, Action<string> executeLookup)
+    private static SpecMenuItem CreateLookupSpec(string header, Func<string> getQuery, Action<string> executeLookup)
     {
-        var item = new MenuItem { Header = header };
-        item.Click += (s, e) =>
-        {
-            var query = getQuery();
-            executeLookup(query);
-        };
-        return item;
+        return SpecMenuItem.Command(
+            header,
+            () =>
+            {
+                var query = getQuery();
+                executeLookup(query);
+            }
+        );
     }
 }
+

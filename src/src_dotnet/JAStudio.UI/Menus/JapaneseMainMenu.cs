@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
-using Avalonia.Controls;
+using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
+using SpecMenuItem = JAStudio.UI.Menus.UIAgnosticMenuStructure.MenuItem;
 
 namespace JAStudio.UI.Menus;
 
 /// <summary>
 /// Builds the main "Japanese" menu for Anki.
 /// This will replace the Python menu in tools_menu.py.
+/// Now uses UI-agnostic MenuItem specifications.
 /// </summary>
 public class JapaneseMainMenu
 {
@@ -26,93 +28,89 @@ public class JapaneseMainMenu
     }
 
     /// <summary>
-    /// Build the complete Japanese main menu structure.
+    /// Build the complete Japanese main menu structure as UI-agnostic specifications.
     /// </summary>
-    public List<MenuItem> BuildMenu()
+    public List<SpecMenuItem> BuildMenuSpec()
     {
-        return new List<MenuItem>
+        return new List<SpecMenuItem>
         {
-            BuildConfigMenu(),
-            BuildLookupMenu(),
-            BuildLocalActionsMenu()
+            BuildConfigMenuSpec(),
+            BuildLookupMenuSpec(),
+            BuildLocalActionsMenuSpec()
             // Note: Debug menu excluded from C# port - Python runtime diagnostics remain in Python menu
         };
     }
 
-    private MenuItem BuildConfigMenu()
+    /// <summary>
+    /// Build the menu and convert to Avalonia MenuItems.
+    /// This is a convenience method for backward compatibility.
+    /// </summary>
+    public List<Avalonia.Controls.MenuItem> BuildMenu()
     {
-        var menuItems = new List<MenuItem>
+        var specs = BuildMenuSpec();
+        var result = new List<Avalonia.Controls.MenuItem>();
+        foreach (var spec in specs)
         {
-            CreateMenuItem(ShortcutFinger.Home1("Options (Ctrl+Shift+S)"), OnOptions),
-            CreateMenuItem(ShortcutFinger.Home2("Readings mappings (Ctrl+Shift+M)"), OnReadingsMappings)
-        };
-
-        return new MenuItem
-        {
-            Header = ShortcutFinger.Home1("Config"),
-            ItemsSource = menuItems
-        };
+            result.Add(AvaloniaMenuAdapter.ToAvalonia(spec));
+        }
+        return result;
     }
 
-    private MenuItem BuildLookupMenu()
+    private SpecMenuItem BuildConfigMenuSpec()
     {
-        var menuItems = new List<MenuItem>
-        {
-            CreateMenuItem(ShortcutFinger.Home1("Open note (Ctrl+O)"), OnOpenNote),
-            OpenInAnkiMenus.BuildOpenInAnkiMenu(() => _searchText, _executeLookup),
-            WebSearchMenus.BuildWebSearchMenu(() => _searchText, BrowserLauncher.OpenUrl)
-        };
-
-        return new MenuItem
-        {
-            Header = ShortcutFinger.Home2("Lookup"),
-            ItemsSource = menuItems
-        };
+        return SpecMenuItem.Submenu(
+            ShortcutFinger.Home1("Config"),
+            new List<SpecMenuItem>
+            {
+                SpecMenuItem.Command(ShortcutFinger.Home1("Options (Ctrl+Shift+S)"), OnOptions),
+                SpecMenuItem.Command(ShortcutFinger.Home2("Readings mappings (Ctrl+Shift+M)"), OnReadingsMappings)
+            }
+        );
     }
 
-    private MenuItem BuildLocalActionsMenu()
+    private SpecMenuItem BuildLookupMenuSpec()
     {
-        var menuItems = new List<MenuItem>
-        {
-            BuildUpdateSubmenu(),
-            CreateMenuItem(ShortcutFinger.Home2("Convert Immersion Kit sentences"), OnConvertImmersionKitSentences),
-            CreateMenuItem(ShortcutFinger.Home3("Update everything except reparsing sentences"), OnUpdateAll),
-            CreateMenuItem(ShortcutFinger.Home4("Create vocab notes for parsed words"), OnCreateMissingVocab),
-            CreateMenuItem(ShortcutFinger.Home5("Regenerate vocab source answers from jamdict"), OnRegenerateVocabAnswers)
-        };
-
-        return new MenuItem
-        {
-            Header = ShortcutFinger.Home3("Local Actions"),
-            ItemsSource = menuItems
-        };
+        return SpecMenuItem.Submenu(
+            ShortcutFinger.Home2("Lookup"),
+            new List<SpecMenuItem>
+            {
+                SpecMenuItem.Command(ShortcutFinger.Home1("Open note (Ctrl+O)"), OnOpenNote),
+                OpenInAnkiMenus.BuildOpenInAnkiMenuSpec(() => _searchText, _executeLookup),
+                WebSearchMenus.BuildWebSearchMenuSpec(() => _searchText, BrowserLauncher.OpenUrl)
+            }
+        );
     }
 
-    private MenuItem BuildUpdateSubmenu()
+    private SpecMenuItem BuildLocalActionsMenuSpec()
     {
-        var menuItems = new List<MenuItem>
-        {
-            CreateMenuItem(ShortcutFinger.Home1("Vocab"), OnUpdateVocab),
-            CreateMenuItem(ShortcutFinger.Home2("Kanji"), OnUpdateKanji),
-            CreateMenuItem(ShortcutFinger.Home3("Sentences"), OnUpdateSentences),
-            CreateMenuItem(ShortcutFinger.Home4("Tag note metadata"), OnTagNoteMetadata),
-            CreateMenuItem(ShortcutFinger.Home5("All the above"), OnUpdateAll),
-            CreateMenuItem(ShortcutFinger.Up1("Reparse sentences"), OnReparseSentences),
-            CreateMenuItem(ShortcutFinger.Down1("All the above: Full rebuild"), OnFullRebuild)
-        };
-
-        return new MenuItem
-        {
-            Header = ShortcutFinger.Home1("Update"),
-            ItemsSource = menuItems
-        };
+        return SpecMenuItem.Submenu(
+            ShortcutFinger.Home3("Local Actions"),
+            new List<SpecMenuItem>
+            {
+                BuildUpdateSubmenuSpec(),
+                SpecMenuItem.Command(ShortcutFinger.Home2("Convert Immersion Kit sentences"), OnConvertImmersionKitSentences),
+                SpecMenuItem.Command(ShortcutFinger.Home3("Update everything except reparsing sentences"), OnUpdateAll),
+                SpecMenuItem.Command(ShortcutFinger.Home4("Create vocab notes for parsed words"), OnCreateMissingVocab),
+                SpecMenuItem.Command(ShortcutFinger.Home5("Regenerate vocab source answers from jamdict"), OnRegenerateVocabAnswers)
+            }
+        );
     }
 
-    private MenuItem CreateMenuItem(string header, Action onClick)
+    private SpecMenuItem BuildUpdateSubmenuSpec()
     {
-        var item = new MenuItem { Header = header };
-        item.Click += (s, e) => onClick();
-        return item;
+        return SpecMenuItem.Submenu(
+            ShortcutFinger.Home1("Update"),
+            new List<SpecMenuItem>
+            {
+                SpecMenuItem.Command(ShortcutFinger.Home1("Vocab"), OnUpdateVocab),
+                SpecMenuItem.Command(ShortcutFinger.Home2("Kanji"), OnUpdateKanji),
+                SpecMenuItem.Command(ShortcutFinger.Home3("Sentences"), OnUpdateSentences),
+                SpecMenuItem.Command(ShortcutFinger.Home4("Tag note metadata"), OnTagNoteMetadata),
+                SpecMenuItem.Command(ShortcutFinger.Home5("All the above"), OnUpdateAll),
+                SpecMenuItem.Command(ShortcutFinger.Up1("Reparse sentences"), OnReparseSentences),
+                SpecMenuItem.Command(ShortcutFinger.Down1("All the above: Full rebuild"), OnFullRebuild)
+            }
+        );
     }
 
     // Config menu actions
