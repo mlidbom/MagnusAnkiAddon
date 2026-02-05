@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from autoslot import Slots
-from jaspythonutils.sysutils import kana_utils
 from typed_linq_collections.q_iterable import query
+
+from jaslib.language_services import kana_utils
 
 
 class DifficultyCalculator(Slots):

@@ -11,7 +11,7 @@ from jastudio.testutils import ex_pytest
 from typed_linq_collections.collections.q_set import QSet
 
 # noinspection Annotator
-from jaslib.dotnet import load_dotnet_runtime  # pyright: ignore [reportUnusedImport]  # noqa: F401
+from jastudio.dotnet import load_dotnet_runtime  # pyright: ignore [reportUnusedImport]  # noqa: F401
 
 is_testing = ex_pytest.is_testing
 

@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Compze\src\Compze\Utilities\Compze.Utilities.csproj" />
-    <ProjectReference Include="..\JAStudio.Core\JAStudio.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

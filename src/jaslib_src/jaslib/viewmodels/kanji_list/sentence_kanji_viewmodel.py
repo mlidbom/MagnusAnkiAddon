@@ -3,7 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
-from jaspythonutils.sysutils import ex_str, kana_utils
+from jaspythonutils.sysutils import ex_str
+
+from jaslib.language_services import kana_utils
 
 if TYPE_CHECKING:
     from jaslib.note.kanjinote import KanjiNote

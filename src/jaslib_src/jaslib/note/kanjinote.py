@@ -8,6 +8,7 @@ from jaspythonutils.sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_list import QList
 
 from jaslib import app
+from jaslib.language_services import kana_utils
 from jaslib.note import kanjinote_mnemonic_maker
 from jaslib.note.vocabulary import vocabnote_sorting
 
@@ -17,7 +18,7 @@ if TYPE_CHECKING:
     from jaslib.note.jpnote_data import JPNoteData
     from jaslib.note.vocabulary.vocabnote import VocabNote
 
-from jaspythonutils.sysutils import ex_str, kana_utils, typed
+from jaspythonutils.sysutils import ex_str, typed
 
 from jaslib.note.jpnote import JPNote
 from jaslib.note.note_constants import NoteFields

@@ -10,13 +10,12 @@ from typed_linq_collections.collections.q_set import QSet
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from jaslib.note.collection.jp_collection import JPCollection
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
-def empty_collection() -> Iterator[JPCollection]:
-    with inject_empty_collection() as collection:
-        yield collection
+def empty_collection() -> Iterator[None]:
+    with inject_empty_collection():
+        yield
 
 def test_answer_syncs_to_synonym_on_add() -> None:
     first = VocabNote.factory.create("first", "first_answer", [])

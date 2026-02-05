@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jaspythonutils.sysutils import ex_lambda, kana_utils
+from jaslib.language_services import kana_utils
+from jaspythonutils.sysutils import ex_lambda
 from jaspythonutils.sysutils.typed import non_optional
 
 from jastudio.ui.menus.menu_utils import shortcutfinger

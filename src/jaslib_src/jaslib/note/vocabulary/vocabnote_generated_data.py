@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jaspythonutils.sysutils import kana_utils
 from typed_linq_collections.collections.q_frozen_set import QFrozenSet
 
+from jaslib.language_services import kana_utils
 from jaslib.note.tags import Tags
 from jaslib.note.vocabulary.pos import POS
 

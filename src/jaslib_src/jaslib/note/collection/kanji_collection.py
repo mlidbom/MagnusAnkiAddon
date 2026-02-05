@@ -12,9 +12,9 @@ if TYPE_CHECKING:
     from jaslib.note.backend_note_creator import IBackendNoteCreator
     from jaslib.note.jpnote import JPNoteId
 
-from jaspythonutils.sysutils import kana_utils
 from typed_linq_collections.collections.q_list import QList
 
+from jaslib.language_services import kana_utils
 from jaslib.note.collection.note_cache import CachedNote, NoteCache
 from jaslib.note.kanjinote import KanjiNote
 

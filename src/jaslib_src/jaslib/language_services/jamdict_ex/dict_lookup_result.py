@@ -3,9 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from jaspythonutils.sysutils import ex_str, kana_utils
+from jaspythonutils.sysutils import ex_str
 from typed_linq_collections.collections.q_list import QList
 
+from jaslib.language_services import kana_utils
 from jaslib.language_services.jamdict_ex.priority_spec import PrioritySpec
 
 if TYPE_CHECKING:

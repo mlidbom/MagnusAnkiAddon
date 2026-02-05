@@ -10,13 +10,12 @@ from jaslib_tests.fixtures.collection_factory import inject_empty_collection
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from jaslib.note.collection.jp_collection import JPCollection
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="module", autouse=True)
-def empty_collection() -> Iterator[JPCollection]:
-    with inject_empty_collection() as collection:
-        yield collection
+def empty_collection() -> Iterator[None]:
+    with inject_empty_collection():
+        yield
 
 def test_blah() -> None:
     _forms_exclusions = re.compile(r"\[\[.*]]")

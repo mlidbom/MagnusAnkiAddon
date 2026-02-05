@@ -20,7 +20,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
 @pytest.mark.parametrize("sentence, expected_output", [
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
-    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
         ("座っているのはいただけない", ["座る", "ている", "の", "は", "いただける:acceptable", "ない"]),
@@ -34,14 +34,14 @@ def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
         ("馴染めないでいる", ["馴染む", "える", "ない", "でいる"]),
 ])
 def test_require_forbid_te_prefix_or_stem(sentence: str, expected_output: list[str]) -> None:
-    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
         ("寝れない", ["寝る", "れない"]),
         ("食べれる", ["食べる", "れる:ichidan", "る:う"])
 ])
 def test_requires_e_stem(sentence: str, expected_output: list[str]) -> None:
-    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
         ("おっせぇ<wbr>な　あいつら", ["おる", "せ", "ぇ:[MISSING]:emergency", "な:s.end", "あいつら"]),
@@ -49,7 +49,7 @@ def test_requires_e_stem(sentence: str, expected_output: list[str]) -> None:
         ("だったら普通に金<wbr>貸せって言えよ", ["だったら", "普通に", "金", "貸す", "え", "って言う", "え", "よ"]),
 ])
 def test_wbr_word_separation(sentence: str, expected_output: list[str]) -> None:
-    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
         ("食べるな", ["食べる", "る:う", "な:dict"]),
@@ -61,7 +61,7 @@ def test_wbr_word_separation(sentence: str, expected_output: list[str]) -> None:
         ("デカいな", ["デカい", "な:masu"]),  # todo: Janome thinks it's いる、な... :/
 ])
 def test_require_forbid_dictionary_form_prefix_and_stem(sentence: str, expected_output: list[str]) -> None:
-    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
         ("なる", ["なる", "う"]),
@@ -77,21 +77,21 @@ def test_require_forbid_dictionary_form_prefix_and_stem(sentence: str, expected_
         ("止めるかな", ["止める", "る:う", "かな"])  # this is both an ichidan hiding a godan, and a dictionary form ending.
 ])
 def test_dictionary_form_splitting(sentence: str, expected_output: list[str]) -> None:
-    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
         ("考えすぎ", ["考えすぎ"]),
         ("難しく考えすぎ", ["難しい", "考える", "すぎ"])
 ])
 def test_forbid_adverb_stem(sentence: str, expected_output: list[str]) -> None:
-    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
         ("平日に切れないよう", ["平日", "に", "切れる", "ない", "よう"]),
         ("償いきれない", ["償い", "きれない"])
 ])
 def test_requires_masu_stem(sentence: str, expected_output: list[str]) -> None:
-    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
         ("教えにしたがって", ["教え", "に", "したがって"])  # should not hide the compound when there parts with no valid matches.
@@ -99,7 +99,7 @@ def test_requires_masu_stem(sentence: str, expected_output: list[str]) -> None:
 def test_hide_all_compounds(sentence: str, expected_output: list[str]) -> None:
     try:
         app.config().hide_all_compounds.set_value(True)
-        assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+        assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], [], expected_output)
     finally:
         app.config().hide_all_compounds.set_value(False)
 
@@ -108,7 +108,7 @@ def test_hide_all_compounds(sentence: str, expected_output: list[str]) -> None:
         ("買い替えています", ["買い替える", "ている", "ます"])
 ])
 def test_hide_transparent_compounds(sentence: str, expected_output: list[str]) -> None:
-    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
         ("お金貸せって", ["お金", "貸す", "え", "って"]),
@@ -133,7 +133,7 @@ def test_hide_transparent_compounds(sentence: str, expected_output: list[str]) -
         ("綺麗 母様に見せよう", ["綺麗", "母様", "に", "見せる", "う"])  # should render 見せる, not detect a potential godan and render 見す
 ])
 def test_godan_potential_and_imperative(sentence: str, expected_output: list[str]) -> None:
-    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
         ("食べろ", ["食べる", "ろ"]),
@@ -145,19 +145,19 @@ def test_godan_potential_and_imperative(sentence: str, expected_output: list[str
         ("食べよう", ["食べる", "う"]),  # not an imperative, just a suggestion
 ])
 def test_ichidan_imperative(sentence: str, expected_output: list[str]) -> None:
-    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
         ("書きなさい", ["書く", "なさい"]),
 ])
 def test_i_imperative_forms(sentence: str, expected_output: list[str]) -> None:
-    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
 
 ])
 def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
-    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
         ("厳密に言えば　俺一人が友達だけど",
@@ -225,16 +225,36 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("思えないしな", ["思える", "ない", "しな"]),  # should detect that な is just part of the sentence end and refuse to show　ないし
 ])
 def test_misc_stuff(sentence: str, expected_output: list[str]) -> None:
-    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
         ("しろ", ["しろ"]),
         ("後で下に下りてらっしゃいね", ["後で", "下に", "下りる", "て", "らっしゃい", "ね"]),
 ])
 def test_yield_to_surface(sentence: str, expected_output: list[str]) -> None:
-    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], [], expected_output)
 
-@pytest.mark.parametrize("sentence, excluded, expected_output", [
+@pytest.mark.parametrize("sentence, incorrect, expected_output", [
+        ("厳密に言えば　俺一人が友達だけど",
+         [WordExclusion.global_("厳密に言えば"), WordExclusion.global_("言え"), WordExclusion.global_("だけど")],
+         ["厳密", "に", "言う", "ば", "俺", "一人", "が", "友達", "だ", "けど"]),
+        ("厳密に言えばだけど俺一人が友達だけど",
+         [WordExclusion.at_index("だけど", 6)],  # You don't get to exclude tokens, it would mutilate the text, so this will remain.
+         ["厳密に言えば", "だけど:emergency", "俺", "一人", "が", "友達", "だけど"]),
+        ("私は毎日ジョギングをすることを習慣にしています。",
+         [WordExclusion.at_index("にして", 17), WordExclusion.at_index("にし", 17), WordExclusion.at_index("して", 18), WordExclusion.at_index("し", 18), WordExclusion.at_index("してい", 18), WordExclusion.at_index("い", 12), WordExclusion.global_("にする")],
+         ["私", "は", "毎日", "ジョギング", "を", "する", "る:う", "こと", "を", "習慣", "に", "する", "ている", "ます"]),
+        ("私は毎日ジョギングをすることを習慣にしています。",
+         [WordExclusion.at_index("にして", 17), WordExclusion.at_index("にし", 17), WordExclusion.at_index("して", 18), WordExclusion.at_index("し", 18), WordExclusion.at_index("してい", 18)],
+         ["私", "は", "毎日", "ジョギング", "を", "する", "る:う", "こと", "を", "習慣", "にする", "ている", "ます"]),
+        ("頑張れたというか", [WordExclusion.global_("頑張る"), WordExclusion.global_("頑張れ")], ["頑張:[MISSING]:emergency", "える", "た", "というか"]),
+        ("いらっしゃいません", [WordExclusion.global_("いらっしゃいませ")], ["いらっしゃいます", "ん"]),
+        ("風の強さに驚きました", [WordExclusion.global_("風の強い")], ["風", "の", "強さ", "に", "驚き", "ます", "た"])
+])
+def test_incorrect_exclusions(sentence: str, incorrect: list[WordExclusion], expected_output: list[str]) -> None:
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, incorrect, [], expected_output)
+
+@pytest.mark.parametrize("sentence, hidden, expected_output", [
         ("厳密に言えば　俺一人が友達だけど",
          [WordExclusion.global_("厳密に言えば"), WordExclusion.global_("言え"), WordExclusion.global_("だけど")],
          ["厳密", "に", "言う", "ば", "俺", "一人", "が", "友達", "だ", "けど"]),
@@ -251,8 +271,8 @@ def test_yield_to_surface(sentence: str, expected_output: list[str]) -> None:
         ("いらっしゃいません", [WordExclusion.global_("いらっしゃいませ")], ["いらっしゃいます", "ん"]),
         ("風の強さに驚きました", [WordExclusion.global_("風の強い")], ["風", "の", "強さ", "に", "驚き", "ます", "た"])
 ])
-def test_exclusions(sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
-    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, excluded, expected_output)
+def test_hidden_exclusions(sentence: str, hidden: list[WordExclusion], expected_output: list[str]) -> None:
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], hidden, expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
         ("風の強さに驚きました", ["風の強い", "風", "の", "強さ", "強", "強い", "さ", "に", "驚き", "驚く", "まし:ませ", "まし", "ます", "た"])

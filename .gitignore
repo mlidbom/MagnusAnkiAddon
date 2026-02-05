@@ -22,5 +22,11 @@ collection.anki2
 *.speedscope.json
 bin
 obj
+runtime_binaries
 /src/jastudio_src/jastudio/user_files/logs/*
 card_history.json
+*.ncrunchsolution.user
+*.DotSettings.user
+CopilotIndices
+.vs
+/src/meta.json

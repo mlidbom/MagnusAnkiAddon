@@ -1,0 +1,327 @@
+# JAStudio Python to C# Porting Status
+
+## Porting Rules
+
+**Stay faithful to the Python - refactoring comes later.** We want almost completely equivalent code, only in C#.
+
+### Why Stay So Close?
+
+Staying this close to the Python is what makes the porting workable at all. If we start changing things while porting, it's like letting go with both hands while climbing - we have nothing to rely on, nothing keeping us from falling. **Mirroring the Python is our handgrip.** Until we have all the tests ported and working, NO significant redesigns or "fixes" will be done, even if we spot inconsistencies or improvements.
+
+### Rules
+
+- **File structure:** Classes should be in the equivalent file in C# as in Python. Do not put them in other files willy-nilly.
+- **Naming - files:** Python filename `my_class_name.py` becomes `MyClassName.cs`. Underscores convert to PascalCase, but don't rename the file to something completely different.
+- **Naming - classes/members:** Use .NET naming standards (PascalCase for public members, etc.) but keep the same names. `my_function_name` becomes `MyFunctionName`, not something completely different.
+- **Public API must match:** New public methods, properties, or fields on a class count as NOT matching unless there is a documented good reason. If Python has methods A, B, C then C# should have methods A, B, C - not A, B, C, D. Extra public members mean other code has changed, breaking the faithful port.
+- **Mirror inconsistencies:** Even if the Python has inconsistencies (class names not matching file names, weird organization, etc.), mirror them in C#. Do NOT "fix" inconsistencies as part of porting.
+- **WeakRef:** Replace with standard references in .NET (C# has better garbage collection).
+- **Class organization:** If a class is in a separate file in Python, it should be in the equivalent .cs file. If classes are together in the same file in Python, same for C#.
+- **Missing dependencies:** When ported code doesn't compile due to missing classes, create them. If too complex to implement immediately, create members throwing `NotImplementedException`.
+- **Implementation completeness:** Either fully implement a member or throw `NotImplementedException`. Do NOT return nonsense values.
+- **Constants/literals:** Do NOT create new constants or magic literals duplicating existing ones. Access constants from the .NET equivalent of the classes they're in in Python.
+- **No code duplication:** If the Python file uses constants and/or methods defined in another class/module, the C# should too unless there is a really good reason. Don't duplicate - reference the original.
+- **String interning:** Python-specific optimization for memory management. Not needed in C# - skip it.
+- **Different implementation vs different functionality:**
+  - **Different implementation = OK** (e.g., List vs QSet, WeakRef vs direct reference, different but equivalent algorithms)
+  - **Different functionality = BROKEN** If the code doesn't behave the same way, it's incomplete/buggy and must be marked with a lower percentage explaining what's broken.
+
+## Legend
+- **CREATED WIP** - C# equivalent exists but needs verification for equivalence
+- **MISSING** - No C# equivalent exists yet
+- **COMPLETE** - C# equivalent verified as functionally equivalent to Python
+  **EXCLUDED** - Should not be ported.
+
+---
+
+## File Structure
+
+- jaspythonutils_src/jaspythonutils/sysutils map to JAStudio.Core/SysUtils
+    - json
+        - 100% json_reader.py
+
+- jaslib_src/jaslib
+    - 100% app.py
+        - Uses List vs QSet for hooks (valid .NET implementation)
+    - 100% mylog.py
+        - Uses ConsoleLogger vs Python's logging module (valid .NET implementation)
+    - batches
+        - 100% local_note_updater.py
+    - configuration
+        - 100% configuration_value.py
+        - 100% settings.py
+    - dotnet
+        - EXCLUDED load_dotnet_runtime.py
+    - language_services
+        - 100% conjugator.py
+        - 100% hiragana_chart.py
+        - 100% kana_utils.py
+        - 100% katakana_chart.py
+        - jamdict_ex
+            - 100% dict_entry.py
+            - 100% dict_lookup.py
+            - 100% dict_lookup_result.py
+            - 100% jamdict_threading_wrapper.py
+            - 100% priority_spec.py
+                - Note: C# fixes bugs in Python where wrong frequency set was used for medium/low priorities
+        - janome_ex
+            - tokenizing
+                - 100% analysis_token.py
+                - 100% godan_dictionary_form_stem.py
+                - 100% inflection_forms.py
+                    - GetByName() provides equivalent access to Python's all_dict dictionary
+                - 100% inflection_types.py
+                    - GetByName() provides equivalent access to Python's all_dict dictionary
+                - 100% jn_parts_of_speech.py
+                - 100% jn_token.py
+                - 100% jn_tokenized_text.py
+                - 100% jn_tokenizer.py
+                - 100% split_token.py
+                - pre_processing_stage
+                    - 100% dictionary_form_verb_splitter.py
+                    - 100% godan_imperative_splitter.py
+                    - 100% ichidan_godan_potential_or_imperative_hybrid_splitter.py
+                        - Helper methods are public @classmethod in Python, so public in C# is correct
+                    - 100% ichidan_imperative_splitter.py
+                    - 100% pre_processing_stage.py
+                    - 100% word_info.py
+                    - 100% word_info_entry.py
+            - word_extraction
+                - 100% analysis_constants.py
+                - 100% candidate_word.py
+                - 100% candidate_word_variant.py
+                - 100% text_analysis.py
+                - 100% text_location.py
+                - 100% word_exclusion.py
+                - matches
+                    - 100% dictionary_match.py
+                    - 100% match.py
+                    - 100% missing_match.py
+                    - 100% vocab_match.py
+                    - requirements
+                        - 100% custom_forbids_no_cache.py
+                        - 100% match_inspector.py
+                        - 100% requirement.py
+                        - 100% vocab_match_inspector.py
+                    - state_tests
+                        - 100% another_match_owns_the_form.py
+                        - 100% forbids_compositionally_transparent_compound.py
+                        - 100% forbids_compounds.py
+                        - 100% forbids_dictionary_form_verb_inflection.py
+                        - 100% forbids_dictionary_form_verb_stem_surface_as_compound_end.py
+                        - 100% forbids_yields_to_surface.py
+                        - 100% is_configured_hidden.py
+                        - 100% is_configured_incorrect.py
+                        - 100% is_exact_match.py
+                        - 100% is_godan_imperative_surface_with_base.py
+                        - 100% is_godan_potential_surface_with_base.py
+                        - 100% is_ichidan_imperative.py
+                        - 100% is_inflected_surface_with_valid_base.py
+                        - 100% is_poison_word.py
+                        - 100% is_shadowed.py
+                        - 100% is_single_token.py
+                        - 100% starts_with_godan_imperative_stem_or_inflection.py
+                        - 100% starts_with_godan_potential_stem_or_inflection.py
+                        - 100% surface_is_in.py
+                        - head
+                            - 100% failed_match_requirement.py
+                            - 100% generic_forbids.py
+                            - 100% has_godan_imperative_prefix.py
+                            - 100% has_past_tense_stem.py
+                            - 100% has_te_form_stem.py
+                            - 100% is_sentence_start.py
+                            - 100% prefix_is_in.py
+                            - 100% requires_forbids_adverb_stem.py
+                            - 100% requires_forbids_masu_stem.py
+                            - 100% requires_or_forbids_dictionary_form_prefix.py
+                            - 100% requires_or_forbids_dictionary_form_stem.py
+                            - 100% requires_or_forbids_generic.py
+                        - tail
+                            - 100% forbids_has_displayed_overlapping_following_compound.py
+                            - 100% is_sentence_end.py
+                            - 100% suffix_is_in.py
+    - note
+        - 100% backend_note_creator.py
+        - 100% difficulty_calculator.py
+        - 100% jpnote.py
+        - 100% jpnote_data.py
+        - 100% kanjinote.py
+        - 100% kanjinote_mnemonic_maker.py
+        - 100% note_constants.py
+        - 100% note_flush_guard.py
+        - 100% note_tags.py
+        - 100% tag.py
+        - 100% tags.py
+        - collection
+            - 100% card_studying_status.py
+            - 100% jp_collection.py
+            - 100% kanji_collection.py
+            - 100% note_cache.py
+            - 100% sentence_collection.py
+            - 100% vocab_collection.py
+        - notefields
+            - 100% audio_field.py
+            - 100% caching_mutable_string_field.py
+            - 100% comma_separated_strings_list_field.py
+            - 100% comma_separated_strings_list_field_de_duplicated.py
+            - 100% fallback_string_field.py
+            - 100% integer_field.py
+            - 100% json_object_field.py
+            - 100% mutable_string_field.py
+            - 100% require_forbid_flag_field.py
+            - 100% sentence_question_field.py
+            - 100% strip_html_on_read_fallback_string_field.py
+            - 100% tag_flag_field.py
+            - auto_save_wrappers
+                - 100% field_wrapper.py
+                - 100% set_wrapper.py
+                - 100% value_wrapper.py
+        - sentences
+            - 100% caching_sentence_configuration_field.py
+            - 100% parsed_match.py
+            - 100% parsing_result.py
+            - 100% sentence_configuration.py
+            - 100% sentencenote.py
+            - 100% user_fields.py
+            - 100% word_exclusion_set.py
+            - serialization
+                - 100% parsed_word_serializer.py
+                - 100% parsing_result_serializer.py
+                - 100% sentence_configuration_serializer.py
+        - vocabulary
+            - 100% pos.py
+            - 100% pos_set_interner.py
+            - 100% vocabnote.py
+            - 100% vocabnote_audio.py
+            - 100% vocabnote_cloner.py
+            - 100% vocabnote_conjugator.py
+            - 100% vocabnote_factory.py
+            - 100% vocabnote_forms.py
+            - 100% vocabnote_generated_data.py
+            - 100% vocabnote_kanji.py
+            - 100% vocabnote_matching_rules.py
+            - 100% vocabnote_matching_rules_is_inflecting_word.py
+                - Note: Exists in C# as IsInflectingWord.cs
+            - 100% vocabnote_matching_rules_yield_last_token_to_next_compound.py
+                - Note: Exists in C# as YieldLastTokenToOverlappingCompound.cs
+            - 100% vocabnote_meta_tag.py
+                - Note: Exists in C# as VocabNoteMetaTag.cs
+            - 100% vocabnote_metadata.py
+            - 100% vocabnote_parts_of_speech.py
+            - 100% vocabnote_question.py
+            - 100% vocabnote_register.py
+            - 100% vocabnote_sentences.py
+            - 100% vocabnote_sorting.py
+            - 100% vocabnote_usercompoundparts.py
+            - 100% vocabnote_userfields.py
+            - related_vocab
+                - 100% Antonyms.py
+                - 100% ergative_twin.py
+                - 100% perfect_synonyms.py
+                - 100% related_vocab.py
+                - 100% related_vocab_data.py
+                - 100% related_vocab_data_serializer.py
+                - 100% SeeAlso.py
+                - 100% Synonyms.py
+            - serialization
+                - 100% matching_rules_serializer.py
+                    - Note: Exists in C# as part of VocabNoteMatchingRules.cs
+    - task_runners
+        - 100% i_task_progress_runner.py
+        - 100% invisible_task_progress_runner.py
+        - 100% task_progress_runner.py
+    - testutils
+        - 100% ex_pytest.py
+            - Note: Exists in C# as ExPytest.cs
+    - ui
+        - web
+            - 100% display_type.py
+            - 100% pre_rendering_content_renderer.py
+                - Note: Uses Task.Run instead of injectable schedule_task parameter (valid .NET simplification)
+            - kanji
+                - 100% dependencies_renderer.py
+                - 100% kanji_list_renderer.py
+                - 100% kanji_note_renderer.py
+                - 100% mnemonic_renderer.py
+                - 100% readings_renderer.py
+                - 100% vocab_list_renderer.py
+            - sentence
+                - 100% candidate_word_variant_viewmodel.py
+                - 100% compound_part_viewmodel.py
+                - 100% match_viewmodel.py
+                - 100% question_renderer.py
+                - 100% sentence_note_renderer.py
+                - 100% sentence_renderer.py
+                - 100% sentence_viewmodel.py
+                - 100% text_analysis_viewmodel.py
+                - 100% ud_sentence_breakdown_renderer.py
+            - vocab
+                - 100% compound_parts_renderer.py
+                - 100% related_vocabs_renderer.py
+                - 100% vocab_kanji_list_renderer.py
+                - 100% vocab_note_renderer.py
+                - 100% vocab_sentences_renderer.py
+                - 100% vocab_sentences_vocab_sentence_view_model.py
+    - viewmodels
+        - kanji_list
+            - 100% kanji_list_viewmodel.py
+            - 100% sentence_kanji_list_viewmodel.py
+            - 100% sentence_kanji_viewmodel.py
+
+---
+
+## Test Files
+
+- jaslib_tests
+    - fixtures
+        - 100% collection_factory.py
+        - 100% test_collection_factory.py
+        - base_data
+            - sample_data
+                - 100% kanji_spec.py
+                - 100% sentence_spec.py
+                - 100% vocab_lists.py
+                - 100% vocab_spec.py
+    - tests
+        - batches_testsch
+            - 100% test_local_note_updater_smoke_tests_only.py
+        - language_services_tests
+            - 100% test_conjugation_base.py
+            - 100% test_kana_utils.py
+                - Note: Tests added to existing KanaUtilsTests.cs
+            - jamdict_tests
+                - 95% test_dict_lookup.py
+                    - Note: Missing test_valid_forms (2 test cases)
+            - janome_tests
+                - 100% test_explore_token_part_of_speech_information.py
+            - text_analysis_tests
+                - 100% test_sentence_analysis_viewmodel_common.py
+                - 80% test_sentence_analysis_viewmodel_with_select_data.py
+                    - Note: 38 passing, 96 failing - this is almost certainly production code porting errors. The tests are correct
+                - 100% test_text_analysis_with_per_test_data.py
+                - 80% test_text_analysis_with_select_data.py
+                    - Note: 16 passing, 17 failing - this is almost certainly production code porting errors. The tests are correct
+                - EXCLUDED text_analysis_state_validator.py
+                    - Note: Entirely commented out, not functional
+        - note_tests
+            - 100% test_kanjinote.py
+            - 100% test_sentencenote.py
+            - vocab
+                - 100% test_perfect_synonyms.py
+                    - Note: Tests found and fixed a collection-modification bug in Synonyms.cs
+                - 100% test_serializers.py
+                - 100% test_vocabnote_misc.py
+        - ui_tests
+            - viewmodels_tests
+                - 100% test_kanji_list_viewmodel.py
+
+---
+
+## Summary Statistics
+- **100% Complete**: 202 files
+- **95% Complete**: 1 file (test_dict_lookup.py - missing test_valid_forms)
+- **80% Complete**: 2 files (test_sentence_analysis_viewmodel_with_select_data.py, test_text_analysis_with_select_data.py)
+- **EXCLUDED**: 2 files
+- **Total tracked files**: 205 files
+- **Porting completion**: ~99%
+

@@ -4,9 +4,10 @@ from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from jaslib.configuration.settings import Settings
+from jaslib.language_services import kana_utils
 from jaslib.language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from jaslib.ui.web.sentence.compound_part_viewmodel import CompoundPartViewModel
-from jaspythonutils.sysutils import kana_utils, typed
+from jaspythonutils.sysutils import typed
 from jaspythonutils.sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
 from jaspythonutils.sysutils.simple_string_list_builder import SimpleStringListBuilder
 from typed_linq_collections.q_iterable import query

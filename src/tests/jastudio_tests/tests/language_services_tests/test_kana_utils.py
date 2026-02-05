@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import pytest
-from jaspythonutils.sysutils import kana_utils
+from jaslib.language_services import kana_utils
 
 
 @pytest.mark.parametrize("kana,expected_romaji, expected_hiragana, expected_katakana", [

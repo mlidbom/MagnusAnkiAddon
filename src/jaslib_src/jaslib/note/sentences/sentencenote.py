@@ -3,11 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast, override
 
 from autoslot import Slots
-from jaspythonutils.sysutils import ex_str, kana_utils
+from jaspythonutils.sysutils import ex_str
 from jaspythonutils.sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_set import QSet
 
 from jaslib import app
+from jaslib.language_services import kana_utils
 from jaslib.note.jpnote import JPNote
 from jaslib.note.note_constants import SentenceNoteFields
 from jaslib.note.notefields.audio_field import WritableAudioField

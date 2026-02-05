@@ -6,4 +6,23 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Compze\src\Compze\Utilities\Compze.Utilities.csproj" />
+    <ProjectReference Include="..\JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="UserFiles\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="RegenerateStubs" AfterTargets="Build" Condition="'$(NCrunch)' != '1'">
+    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\regenerate-stubs.ps1&quot; -OnlyTargetTypes" />
+  </Target>
+
+  <Target Name="CopyRuntimeBinaries" AfterTargets="RegenerateStubs" Condition="'$(NCrunch)' != '1'">
+    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\copy-runtime-binaries.ps1&quot; -SourceDir &quot;$(TargetDir.TrimEnd('\'))&quot; -DestDir &quot;$(MSBuildProjectDirectory)\..\..\runtime_binaries&quot;" />
+  </Target>
+
 </Project>

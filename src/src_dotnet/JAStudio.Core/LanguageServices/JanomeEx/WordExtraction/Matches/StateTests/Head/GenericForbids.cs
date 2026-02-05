@@ -1,0 +1,25 @@
+using System;
+using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Requirements;
+
+namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.Head;
+
+public sealed class Forbids
+{
+    private readonly Func<MatchInspector, bool> _isInState;
+    private readonly FailedMatchRequirement _requiredFailure;
+
+    public Forbids(string name, Func<MatchInspector, bool> isInState)
+    {
+        _isInState = isInState;
+        _requiredFailure = FailedMatchRequirement.Forbids(name);
+    }
+
+    public FailedMatchRequirement? ApplyTo(MatchInspector inspector)
+    {
+        if (_isInState(inspector))
+        {
+            return _requiredFailure;
+        }
+        return null;
+    }
+}

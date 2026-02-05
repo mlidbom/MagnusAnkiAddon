@@ -1,0 +1,280 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using JAStudio.Core.LanguageServices;
+
+namespace JAStudio.Core.Note.Vocabulary;
+
+public class VocabCloner
+{
+    private readonly VocabNote _note;
+
+    public VocabCloner(VocabNote note)
+    {
+        _note = note;
+    }
+
+    private VocabNote Note => _note;
+
+    public VocabNote PrefixToDictionaryForm(string prefix, string speechType = POS.Expression)
+    {
+        return CreatePostfixPrefixVersion(prefix, speechType, isPrefix: true);
+    }
+
+    public VocabNote PrefixToChopped(string prefix, int chopCharacters)
+    {
+        return CreatePostfixPrefixVersion(prefix, POS.Expression, isPrefix: true, chopOffCharacters: chopCharacters);
+    }
+
+    public string PrefixToChoppedPreview(string formPrefix, int chopCharacters)
+    {
+        return formPrefix + Note.GetQuestion().Substring(chopCharacters);
+    }
+
+    public VocabNote CreateSuffixVersion(string suffix, string speechType = POS.Expression, bool setCompounds = true, int truncateCharacters = 0)
+    {
+        return CreatePostfixPrefixVersion(suffix, speechType, setCompounds: setCompounds, chopOffCharacters: truncateCharacters);
+    }
+
+    private VocabNote CreatePostfixPrefixVersion(string addendum, string speechType, bool isPrefix = false, bool setCompounds = true, int chopOffCharacters = 0)
+    {
+        string AppendPrependAddendum(string baseStr)
+        {
+            if (!isPrefix)
+            {
+                return chopOffCharacters == 0 
+                    ? baseStr + addendum 
+                    : baseStr.Substring(0, baseStr.Length - chopOffCharacters) + addendum;
+            }
+            return addendum + baseStr.Substring(chopOffCharacters);
+        }
+
+        var vocabNote = Note;
+        var newQuestion = AppendPrependAddendum(Note.GetQuestion());
+        var newReadings = vocabNote.GetReadings().Select(AppendPrependAddendum).ToList();
+        
+        var newVocab = CreateNewVocabWithSomeDataCopied(newQuestion, Note.GetAnswer(), newReadings);
+
+        if (setCompounds)
+        {
+            var compounds = isPrefix
+                ? new List<string> { addendum, Note.Question.DisambiguationName }
+                : new List<string> { Note.Question.DisambiguationName, addendum };
+            newVocab.CompoundParts.Set(compounds);
+        }
+
+        newVocab.PartsOfSpeech.SetRawStringValue(speechType);
+        newVocab.Forms.SetList(Note.Forms.AllSet().Select(AppendPrependAddendum).ToList());
+        
+        return newVocab;
+    }
+
+    private VocabNote CreateNewVocabWithSomeDataCopied(string question, string answer, List<string> readings, bool copyVocabTags = true, bool copyMatchingRules = true)
+    {
+        var clone = VocabNoteFactory.CreateFromUserData(question, answer, readings);
+        if (copyVocabTags)
+        {
+            CopyVocabTagsTo(clone);
+        }
+        if (copyMatchingRules)
+        {
+            clone.MatchingConfiguration.ConfigurableRules.OverwriteWith(Note.MatchingConfiguration.ConfigurableRules);
+        }
+        return clone;
+    }
+
+    private void CopyVocabTagsTo(VocabNote target)
+    {
+        foreach (var tag in Note.Tags.Where(t => t.Name.StartsWith(Tags.Vocab.Root)))
+        {
+            target.Tags.Set(tag);
+        }
+    }
+
+    public VocabNote Clone()
+    {
+        var data = Note.GetData();
+        data.Id = 0;
+        data.Tags = new List<string>();
+        var clone = new VocabNote(data);
+
+        CopyVocabTagsTo(clone);
+
+        foreach (var related in clone.RelatedNotes.Synonyms.Strings())
+        {
+            clone.RelatedNotes.Synonyms.Add(related);
+        }
+
+        App.Col().Vocab.Add(clone);
+        return clone;
+    }
+
+    public VocabNote CloneToForm(string form)
+    {
+        var clone = Clone();
+        clone.Question.Set(form);
+        return clone;
+    }
+
+    public VocabNote CreateNaAdjective()
+    {
+        return CreatePostfixPrefixVersion("な", "na-adjective");
+    }
+
+    public VocabNote CreateNoAdjective()
+    {
+        return CreatePostfixPrefixVersion("の", "expression, no-adjective");
+    }
+
+    public VocabNote CreateNiAdverb()
+    {
+        return CreatePostfixPrefixVersion("に", "adverb");
+    }
+
+    public VocabNote CreateToAdverb()
+    {
+        return CreatePostfixPrefixVersion("と", "to-adverb");
+    }
+
+    public VocabNote CreateTePrefixedWord()
+    {
+        return CreatePostfixPrefixVersion("て", "auxiliary", isPrefix: true);
+    }
+
+    public VocabNote CreateOPrefixedWord()
+    {
+        return CreatePostfixPrefixVersion("お", Note.PartsOfSpeech.RawStringValue(), isPrefix: true);
+    }
+
+    public VocabNote CreateNSuffixedWord()
+    {
+        return CreatePostfixPrefixVersion("ん", POS.Expression);
+    }
+
+    public VocabNote CreateKaSuffixedWord()
+    {
+        return CreatePostfixPrefixVersion("か", POS.Expression);
+    }
+
+    public VocabNote CreateSuruVerb(bool shimasu = false)
+    {
+        var suruVerb = CreatePostfixPrefixVersion(shimasu ? "します" : "する", POS.SuruVerb);
+
+        var forms = suruVerb.Forms.AllSet()
+            .Concat(suruVerb.Forms.AllSet().Select(form => form.Replace("する", "をする")))
+            .ToList();
+        suruVerb.Forms.SetList(forms);
+
+        if (Note.PartsOfSpeech.IsTransitive())
+        {
+            var value = suruVerb.PartsOfSpeech.RawStringValue() + ", " + POS.Transitive;
+            suruVerb.PartsOfSpeech.SetRawStringValue(value);
+        }
+
+        if (Note.PartsOfSpeech.IsIntransitive())
+        {
+            var value = suruVerb.PartsOfSpeech.RawStringValue() + ", " + POS.Intransitive;
+            suruVerb.PartsOfSpeech.SetRawStringValue(value);
+        }
+
+        return suruVerb;
+    }
+
+    public VocabNote CreateShimasuVerb() => CreateSuruVerb(shimasu: true);
+
+    public VocabNote CreateKuForm()
+    {
+        return CreatePostfixPrefixVersion("く", "adverb", setCompounds: true, chopOffCharacters: 1);
+    }
+
+    public VocabNote CreateSaForm()
+    {
+        return CreatePostfixPrefixVersion("さ", POS.Noun, setCompounds: true, chopOffCharacters: 1);
+    }
+
+    public VocabNote CloneToDerivedForm(string formSuffix, Func<VocabNote, string, string> createFormRoot)
+    {
+        string CreateFullForm(string form) => createFormRoot(Note, form) + formSuffix;
+
+        var clone = CreateNewVocabWithSomeDataCopied(CreateFullForm(Note.GetQuestion()), Note.GetAnswer(), new List<string>());
+        clone.Forms.SetList(Note.Forms.AllList().Select(CreateFullForm).ToList());
+        var readings = Note.GetReadings().Select(CreateFullForm).ToList();
+        clone.Readings.Set(readings);
+        clone.PartsOfSpeech.SetRawStringValue(POS.Expression);
+        var compounds = new List<string> { Note.Question.DisambiguationName, formSuffix };
+        clone.CompoundParts.Set(compounds);
+        return clone;
+    }
+
+    private string CreatePreviewForm(string formSuffix, Func<VocabNote, string, string> createFormRoot)
+    {
+        return createFormRoot(Note, Note.GetQuestion()) + formSuffix;
+    }
+
+    public VocabNote SuffixToAStem(string formSuffix) => CloneToDerivedForm(formSuffix, Conjugator.GetAStemVocab);
+    public string SuffixToAStemPreview(string formSuffix) => CreatePreviewForm(formSuffix, Conjugator.GetAStemVocab);
+
+    public VocabNote SuffixToChopped(string formSuffix, int chopCharacters)
+    {
+        return CloneToDerivedForm(formSuffix, (it, form) => form.Substring(0, form.Length - chopCharacters));
+    }
+
+    public string SuffixToChoppedPreview(string formSuffix, int chopCharacters)
+    {
+        return Note.GetQuestion().Substring(0, Note.GetQuestion().Length - chopCharacters) + formSuffix;
+    }
+
+    public VocabNote SuffixToIStem(string formSuffix) => CloneToDerivedForm(formSuffix, Conjugator.GetIStemVocab);
+    public string SuffixToIStemPreview(string formSuffix) => CreatePreviewForm(formSuffix, Conjugator.GetIStemVocab);
+
+    public VocabNote SuffixToEStem(string formSuffix) => CloneToDerivedForm(formSuffix, Conjugator.GetEStemVocab);
+    public string SuffixToEStemPreview(string formSuffix) => CreatePreviewForm(formSuffix, Conjugator.GetEStemVocab);
+
+    public VocabNote SuffixToTeStem(string formSuffix) => CloneToDerivedForm(formSuffix, Conjugator.GetTeStemVocab);
+    public string SuffixToTeStemPreview(string formSuffix) => CreatePreviewForm(formSuffix, Conjugator.GetTeStemVocab);
+
+    public VocabNote CreateMasuForm() => SuffixToIStem("ます");
+    public VocabNote CreateTeForm() => SuffixToTeStem("て");
+    public VocabNote CreateTaForm() => SuffixToTeStem("た");
+    public VocabNote CreateBaForm() => SuffixToEStem("ば");
+
+    public VocabNote CreateReceptiveForm()
+    {
+        var result = SuffixToAStem("れる");
+        var compoundParts = result.CompoundParts.All();
+        compoundParts[compoundParts.Count - 1] = "あれる";
+        result.CompoundParts.Set(compoundParts);
+        return result;
+    }
+
+    public VocabNote CreateCausativeForm()
+    {
+        var result = SuffixToAStem("せる");
+        var compoundParts = result.CompoundParts.All();
+        compoundParts[compoundParts.Count - 1] = "あせる";
+        result.CompoundParts.Set(compoundParts);
+        return result;
+    }
+
+    public VocabNote CreateNaiForm() => SuffixToAStem("ない");
+
+    public VocabNote CreateImperative()
+    {
+        string CreateImperativeForm(string form) => 
+            Conjugator.GetImperative(form, Note.PartsOfSpeech.IsIchidan(), Note.PartsOfSpeech.IsGodan());
+
+        var clone = CreateNewVocabWithSomeDataCopied(CreateImperativeForm(Note.GetQuestion()), Note.GetAnswer(), new List<string>());
+        clone.Forms.SetList(Note.Forms.AllList().Select(CreateImperativeForm).ToList());
+        var readings = Note.GetReadings().Select(CreateImperativeForm).ToList();
+        clone.Readings.Set(readings);
+        clone.PartsOfSpeech.SetRawStringValue(POS.Expression);
+        return clone;
+    }
+
+    public VocabNote CreatePotentialGodan()
+    {
+        var clone = SuffixToEStem("る");
+        clone.CompoundParts.Set(new List<string> { Note.Question.DisambiguationName, "える" });
+        return clone;
+    }
+}
