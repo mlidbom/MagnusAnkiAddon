@@ -25,11 +25,13 @@ try:
         dotnet_version = Environment.Version
         print(f"Running .NET version: {dotnet_version}")
 
-        # Load JAStudio assemblies
+        # Load JAStudio assemblies from runtime_binaries folder
+        # (copied there by build to avoid locking issues with Anki)
         workspace_root = _get_workspace_root()
+        runtime_binaries = workspace_root / "runtime_binaries"
         jastudio_dlls = [
-                workspace_root / "src_dotnet" / "JAStudio.Core" / "bin" / "Debug" / "net10.0" / "JAStudio.Core.dll",
-                workspace_root / "src_dotnet" / "JAStudio.PythonInterop" / "bin" / "Debug" / "net10.0" / "JAStudio.PythonInterop.dll",
+                runtime_binaries / "JAStudio.Core.dll",
+                runtime_binaries / "JAStudio.PythonInterop.dll",
         ]
 
         for dll_path in jastudio_dlls:

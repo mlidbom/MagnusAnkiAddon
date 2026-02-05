@@ -21,4 +21,8 @@
     <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\regenerate-stubs.ps1&quot; -OnlyTargetTypes" />
   </Target>
 
+  <Target Name="CopyRuntimeBinaries" AfterTargets="RegenerateStubs" Condition="'$(NCrunch)' != '1'">
+    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\copy-runtime-binaries.ps1&quot; -SourceDir &quot;$(TargetDir.TrimEnd('\'))&quot; -DestDir &quot;$(MSBuildProjectDirectory)\..\..\runtime_binaries&quot;" />
+  </Target>
+
 </Project>
