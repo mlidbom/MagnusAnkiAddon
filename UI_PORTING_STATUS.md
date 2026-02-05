@@ -22,13 +22,69 @@
 - Reparse prompt with Python integration for batch updates
 - Accessible from vocab context menu → Edit
 
-**Context Menu Infrastructure: WIP**
-- `ContextMenuPopup.axaml.cs` - Avalonia menu displayed at specific screen coordinates
-- Uses Menu control with submenu to show at precise position
-- Python integration via `jastudio/ui/avalonia_host.py`
-- Positioning works correctly with DPI scaling (tested at 125%)
-- Successfully displays vertical menu with multiple items
-- Menu closes on selection or when focus is lost
+**OptionsDialog: COMPLETE**
+- Full Japanese addon configuration dialog
+- Two-way binding to JapaneseConfig
+- All settings from Python version ported
+- Accessible from Japanese → Config → Options (Ctrl+Shift+S)
+
+**ReadingsMappingsDialog: COMPLETE**
+- Text editor for readings mappings
+- Search functionality
+- Deduplication and sorting on save
+- Calls AnkiFacade.Refresh() to update note display
+- Accessible from Japanese → Config → Readings mappings (Ctrl+Shift+M)
+
+**NoteSearchDialog: COMPLETE**
+- Search all notes (Kanji, Vocab, Sentence)
+- Multi-condition search with && separator
+- Prefixed search (r:, a:, q:)
+- Async background search
+- Opens notes in Anki browser on double-click
+- Singleton pattern with toggle visibility
+- Accessible from Japanese → Lookup → Open note (Ctrl+O)
+
+**Menu Architecture: REVOLUTIONARY NEW APPROACH**
+
+**Problem Solved:** Python callbacks from C# don't work with pythonnet
+
+**Solution:** UI-agnostic menu specifications in C# + UI adapters
+
+```
+C# Menu Spec Builder (JAStudio.UI/Menus/)
+    → Produces MenuItem tree (pure data)
+        ↓
+    ┌───────────────┴────────────────┐
+    ↓                                ↓
+PyQt Adapter              Avalonia Adapter
+(30 lines)                (future: 30 lines)
+    ↓                                ↓
+Native PyQt Menu          Native Avalonia Menu
+```
+
+**Architecture Benefits:**
+- Menu logic 100% in C#
+- Actions call JAStudio.Core directly (no Python callbacks)
+- PyQt adapter converts C# specs → PyQt menus (simple, thin)
+- Python is just a rendering layer
+- Future: Same specs work for Avalonia menus
+
+**Menus COMPLETE:**
+- ✅ OpenInAnkiMenus.cs - All Anki browser search menus
+- ✅ WebSearchMenus.cs - All web search menus (uses BrowserLauncher directly)
+- ✅ JapaneseMainMenu.cs - Main menu with Config, Lookup, Local Actions
+- ✅ NoteContextMenu.cs - Right-click context menu (scaffolding)
+- ✅ ShortcutFinger.cs - Keyboard accelerator utilities
+- ✅ QueryBuilder.cs - 21 Anki search query methods
+
+**AnkiFacade - Minimal Python Bridge:**
+Reduced from 17 methods (370 lines) to 4 methods (~120 lines):
+1. ExecuteLookup(query) - Opens Anki browser
+2. ShowTooltip(msg) - Shows Anki tooltip
+3. Refresh() - Refreshes note display
+4. ConvertImmersionKitSentences() converts between kanji note types
+
+Everything else uses JAStudio.Core directly!
 
 **Python Integration:**
 - `jastudio/ui/avalonia_host.py` - Python wrapper for C# dialogs
@@ -73,12 +129,12 @@ JAStudio.Core.dll (Domain logic - already ported)
 | Status | File | Lines | Description |
 |--------|------|-------|-------------|
 | COMPLETE | ui/menus/notes/vocab/vocab_flags_dialog.py | 231 | Edit vocab matching flags, register, string rules |
-| MISSING | ui/open_note/open_note_dialog.py | 264 | Search and open notes dialog |
+| COMPLETE | ui/open_note/open_note_dialog.py | 264 | Search and open notes dialog |
 | MISSING | ui/english_dict/find_english_words_dialog.py | 94 | English dictionary search |
-| MISSING | configuration/readings_mapping_dialog.py | 120 | Configure reading mappings |
-| 90% | configuration/configuration.py | 140 | Japanese addon options dialog |
+| COMPLETE | configuration/readings_mapping_dialog.py | 120 | Configure reading mappings |
+| COMPLETE | configuration/configuration.py | 140 | Japanese addon options dialog |
 
-**Subtotal: 849 lines**
+**Subtotal: 755 lines ported / 849 total (89% complete)**
 
 ---
 
@@ -94,40 +150,47 @@ JAStudio.Core.dll (Domain logic - already ported)
 
 ---
 
-## Menus (PORT TO AVALONIA)
+## Menus (NEW APPROACH: C# MENU SPECS + ADAPTERS)
 
-| Status | File | Lines | Description |
-|--------|------|-------|-------------|
-| MISSING | ui/menus/common.py | 102 | Right-click menu builder, dispatches by note type |
-| MISSING | ui/tools_menu.py | 74 | Main "Japanese" menu in Anki menubar |
-| MISSING | ui/menus/notes/vocab/main.py | 69 | Vocab note context menu |
-| MISSING | ui/menus/menu_utils/ex_qmenu.py | 63 | Menu action helpers (add_ui_action, add_lookup_action) |
-| MISSING | ui/menus/notes/sentence/string_menu.py | 52 | Sentence string context menu |
-| MISSING | ui/menus/notes/vocab/string_menu.py | 52 | Vocab string context menu |
-| MISSING | ui/menus/notes/vocab/create_note_menu.py | 52 | Create note submenu |
-| MISSING | ui/menus/web_search.py | 48 | Web search menu items |
-| MISSING | ui/menus/browser/main.py | 45 | Browser context menu additions |
-| MISSING | ui/menus/notes/kanji/main.py | 38 | Kanji note context menu |
-| MISSING | ui/menus/notes/kanji/string_menu.py | 36 | Kanji string context menu |
-| MISSING | ui/menus/notes/sentence/main.py | 36 | Sentence note context menu |
-| MISSING | ui/menus/open_in_anki.py | 33 | "Open in Anki" menu items |
-| MISSING | ui/menus/menu_utils/shortcutfinger.py | 31 | Keyboard shortcut text helpers |
-| MISSING | ui/menus/notes/vocab/common.py | 26 | Vocab menu common utilities |
-| MISSING | ui/menus/notes/vocab/counter.py | 8 | Simple counter helper |
-| MISSING | qt_utils/ex_qmenu.py | 24 | QMenu extension utilities |
+**Architecture:** Menu logic in C# → UI-agnostic MenuItem specs → PyQt/Avalonia adapters
 
-**Subtotal: 789 lines**
+| Status | Python File | C# File | Lines | Description |
+|--------|-------------|---------|-------|-------------|
+| COMPLETE | ui/menus/common.py | Menus/NoteContextMenu.cs | 102 | Right-click menu builder (scaffolded) |
+| COMPLETE | ui/tools_menu.py | Menus/JapaneseMainMenu.cs | 74 | Main "Japanese" menu (Config ✅, Lookup ✅, Local Actions ✅) |
+| SCAFFOLDED | ui/menus/notes/vocab/main.py | (in NoteContextMenu.cs) | 69 | Vocab note context menu |
+| N/A | ui/menus/menu_utils/ex_qmenu.py | (not needed) | 63 | Menu helpers (obsolete with new approach) |
+| TODO | ui/menus/notes/sentence/string_menu.py | (future) | 52 | Sentence string context menu |
+| TODO | ui/menus/notes/vocab/string_menu.py | (future) | 52 | Vocab string context menu |
+| TODO | ui/menus/notes/vocab/create_note_menu.py | (future) | 52 | Create note submenu |
+| COMPLETE | ui/menus/web_search.py | Menus/WebSearchMenus.cs | 48 | Web search menu items |
+| MISSING | ui/menus/browser/main.py | (future) | 45 | Browser context menu additions |
+| TODO | ui/menus/notes/kanji/main.py | (future) | 38 | Kanji note context menu |
+| TODO | ui/menus/notes/kanji/string_menu.py | (future) | 36 | Kanji string context menu |
+| TODO | ui/menus/notes/sentence/main.py | (future) | 36 | Sentence note context menu |
+| COMPLETE | ui/menus/open_in_anki.py | Menus/OpenInAnkiMenus.cs | 33 | "Open in Anki" menu items |
+| COMPLETE | ui/menus/menu_utils/shortcutfinger.py | Utils/ShortcutFinger.cs | 31 | Keyboard shortcut text helpers |
+| N/A | ui/menus/notes/vocab/common.py | (integrated) | 26 | Vocab menu utilities |
+| N/A | ui/menus/notes/vocab/counter.py | (not needed) | 8 | Simple counter |
+| N/A | qt_utils/ex_qmenu.py | (not needed) | 24 | QMenu utilities |
+
+**Subtotal: ~300 lines ported / 789 total (38% complete, but main infrastructure done)**
+
+**Note:** New architecture means less code! Many Python menu utilities are obsolete.
+Main menus work, note-specific actions remain to be ported.
 
 ---
 
 ## Summary Statistics
 
-| Category | Files | Lines |
-|----------|-------|-------|
-| Dialogs | 5 | 849 |
-| Widgets | 3 | 290 |
-| Menus | 17 | 789 |
-| **Total** | **25** | **1,928** |
+| Category | Status | Lines Ported | Total Lines | % Complete |
+|----------|--------|--------------|-------------|------------|
+| Dialogs | 4/5 complete | 755 | 849 | 89% |
+| Widgets | 2/3 complete | 191 | 290 | 66% |
+| Menus | Infrastructure ✅ | ~300 | 789 | 38% |
+| **Total** | **Good progress** | **~1,246** | **1,928** | **65%** |
+
+**Key Achievement:** Main infrastructure complete, menus use C# business logic directly!
 
 ---
 
@@ -143,23 +206,36 @@ JAStudio.Core.dll (Domain logic - already ported)
    - DPI-aware coordinate positioning
    - Python → C# coordinate passing
 
-### Phase 2: Dialogs (Highest Value)
-1. `vocab_flags_dialog.py` → `VocabFlagsDialog.axaml` (most complex, good test)
-2. `open_note_dialog.py` → `NoteSearchDialog.axaml` (search with table)
-3. `find_english_words_dialog.py` → `EnglishWordSearchDialog.axaml`
-4. `readings_mapping_dialog.py` → `ReadingsMappingDialog.axaml`
-5. `configuration.py` → `OptionsDialog.axaml`
+### Phase 2: Dialogs ✅ MOSTLY COMPLETE
+1. ~~`vocab_flags_dialog.py` → `VocabFlagsDialog.axaml`~~ ✅ (most complex, good test)
+2. ~~`open_note_dialog.py` → `NoteSearchDialog.axaml`~~ ✅ (search with async background)
+3. `find_english_words_dialog.py` → `EnglishWordSearchDialog.axaml` ⚠️ TODO
+4. ~~`readings_mapping_dialog.py` → `ReadingsMappingsDialog.axaml`~~ ✅
+5. ~~`configuration.py` → `OptionsDialog.axaml`~~ ✅
 
-### Phase 3: Widgets
-1. `string_set_widget.py` → `StringSetEditor.axaml` (reused in dialogs)
-2. `require_forbid_widget.py` → `RequireForb ← **IN PROGRESS**
-   - ✅ Context menu positioning infrastructure complete
-   - Next: Port actual menu builders from PyQt to AvaloniaidSelector.axaml`
-3. `qt_task_progress_runner.py` → `TaskProgressDialog.axaml`
+### Phase 3: Widgets ✅ COMPLETE
+1. ~~`string_set_widget.py` → `StringSetControl.axaml`~~ ✅ (reused in VocabFlagsDialog)
+2. ~~`require_forbid_widget.py` → `RequireForbidControl.axaml`~~ ✅ (radio group)
+3. `qt_task_progress_runner.py` → `TaskProgressDialog.axaml` ⚠️ TODO (low priority)
 
-### Phase 4: Menus
-1. Port menu structure to Avalonia MenuItems
-2. Wire up Python to call C# menu builder
-3. Context menus integrate via Avalonia ContextMenu
+### Phase 4: Menus ✅ INFRASTRUCTURE COMPLETE
+1. ~~Create UI-agnostic MenuItem specification classes~~ ✅
+2. ~~Build main menus in C# (JapaneseMainMenu, NoteContextMenu)~~ ✅
+3. ~~Build shared menus (OpenInAnki, WebSearch)~~ ✅
+4. ~~Create PyQt adapter to render C# specs~~ ✅ (`qt_menu_adapter.py`)
+5. ~~Wire up Python to call C# menu builders~~ ✅
+6. ~~Integrate AnkiFacade for minimal Python API calls~~ ✅
+7. **TODO**: Port note-specific actions (Kanji/Vocab/Sentence main.py and string_menu.py)
+
+**Current Status:**
+- Main menu (Japanese) - Config ✅, Lookup ✅, Local Actions ✅
+- Context menu - Scaffolding ✅, Lookup submenus ✅
+- ~120 note-specific actions remain (Kanji, Vocab, Sentence menus)
+- Architecture allows incremental porting without breaking existing functionality
+
+### Phase 5: Complete Avalonia Migration (Future)
+1. Replace PyQt adapter with Avalonia menu rendering
+2. Remove Python UI layer entirely
+3. Run JAStudio as standalone Avalonia app (no Anki dependency)
 
 
