@@ -15,15 +15,20 @@ Push-Location $ScriptDir
 
 $StubGenRoot = "..\..\src_dotnet\pythonnet-stub-generator"
 $TypingsPath = "..\..\typings"
+$StubGenDll = "$StubGenRoot\csharp\PythonNetStubTool\bin\Debug\net10.0\PythonNetStubGenerator.Tool.dll"
 
 try {
-    Write-Host "Building stub generator..." -ForegroundColor Cyan
-    dotnet build "$StubGenRoot\csharp\PythonNetStubTool\PythonNetStubGenerator.Tool.csproj"
+    if (Test-Path $StubGenDll) {
+        Write-Host "Stub generator already compiled, skipping build..." -ForegroundColor Gray
+    } else {
+        Write-Host "Building stub generator..." -ForegroundColor Cyan
+        dotnet build "$StubGenRoot\csharp\PythonNetStubTool\PythonNetStubGenerator.Tool.csproj"
 
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "Build failed!" -ForegroundColor Red
-    exit 1
-}
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "Build failed!" -ForegroundColor Red
+            exit 1
+        }
+    }
 
 Write-Host "`nCleaning old JAStudio stubs..." -ForegroundColor Cyan
 $jastudioPath = "$TypingsPath\JAStudio"
@@ -41,7 +46,7 @@ if (Test-Path $globalPath) {
 Write-Host "`nGenerating stubs..." -ForegroundColor Cyan
 
 $args = @(
-    "$StubGenRoot\csharp\PythonNetStubTool\bin\Debug\net10.0\PythonNetStubGenerator.Tool.dll",
+    $StubGenDll,
     "--dest-path", $TypingsPath,
     "--target-dlls", "JAStudio.Core\bin\Debug\net10.0\JAStudio.Core.dll,JAStudio.PythonInterop\bin\Debug\net10.0\JAStudio.PythonInterop.dll"
 )
