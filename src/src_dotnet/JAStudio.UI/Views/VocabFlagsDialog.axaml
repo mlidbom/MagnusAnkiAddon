@@ -1,0 +1,91 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:JAStudio.UI.ViewModels"
+        x:Class="JAStudio.UI.Views.VocabFlagsDialog"
+        x:DataType="vm:VocabFlagsViewModel"
+        Title="{Binding Title}"
+        Width="1200" Height="800"
+        WindowStartupLocation="CenterScreen">
+
+    <Design.DataContext>
+        <vm:VocabFlagsViewModel />
+    </Design.DataContext>
+
+    <DockPanel Margin="10">
+        <!-- Button bar at bottom -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0" Spacing="10">
+            <Button Content="OK" Command="{Binding SaveCommand}" Width="80" />
+            <Button Content="Cancel" Command="{Binding CancelCommand}" Width="80" />
+        </StackPanel>
+
+        <!-- Scrollable content -->
+        <ScrollViewer>
+            <StackPanel Orientation="Horizontal" Spacing="20">
+
+                <!-- Left Column: Parsing Settings -->
+                <StackPanel Width="500" Spacing="10">
+                    <TextBlock Text="Parsing" FontSize="18" FontWeight="Bold" Margin="0,0,0,10" />
+
+                    <!-- Is Section -->
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Is" FontWeight="SemiBold" />
+                            <CheckBox Content="Inflecting word" IsChecked="{Binding IsInflectingWord}" />
+                            <CheckBox Content="Poison word" IsChecked="{Binding IsPoisonWord}" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Misc Section -->
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Misc" FontWeight="SemiBold" />
+                            <CheckBox Content="Match with preceding vowel" IsChecked="{Binding MatchWithPrecedingVowel}" />
+                            <CheckBox Content="Question overrides form" IsChecked="{Binding QuestionOverridesForm}" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- TODO: Require/Forbid sections -->
+                    <!-- TODO: String rules sections -->
+
+                </StackPanel>
+
+                <!-- Right Column: Metadata -->
+                <StackPanel Width="400" Spacing="10">
+                    <TextBlock Text="Metadata" FontSize="18" FontWeight="Bold" Margin="0,0,0,10" />
+
+                    <!-- Misc Metadata -->
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Misc" FontWeight="SemiBold" />
+                            <CheckBox Content="Compositionally transparent compound" IsChecked="{Binding IsCompositionallyTransparentCompound}" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Register Section -->
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Register" FontWeight="SemiBold" />
+                            <CheckBox Content="Archaic" IsChecked="{Binding Archaic}" />
+                            <CheckBox Content="Childish" IsChecked="{Binding Childish}" />
+                            <CheckBox Content="Derogatory" IsChecked="{Binding Derogatory}" />
+                            <CheckBox Content="Formal" IsChecked="{Binding Formal}" />
+                            <CheckBox Content="Honorific" IsChecked="{Binding Honorific}" />
+                            <CheckBox Content="Humble" IsChecked="{Binding Humble}" />
+                            <CheckBox Content="Informal" IsChecked="{Binding Informal}" />
+                            <CheckBox Content="Literary" IsChecked="{Binding Literary}" />
+                            <CheckBox Content="Polite" IsChecked="{Binding Polite}" />
+                            <CheckBox Content="Rough, traditionally considered male" IsChecked="{Binding RoughMasculine}" />
+                            <CheckBox Content="Sensitive" IsChecked="{Binding Sensitive}" />
+                            <CheckBox Content="Slang" IsChecked="{Binding Slang}" />
+                            <CheckBox Content="Soft, traditionally considered feminine" IsChecked="{Binding SoftFeminine}" />
+                            <CheckBox Content="Vulgar, usually offensive" IsChecked="{Binding Vulgar}" />
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+
+    </DockPanel>
+</Window>

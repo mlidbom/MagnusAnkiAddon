@@ -3,4 +3,5 @@
   <Project Path="JAStudio.Core.Tests\JAStudio.Core.Tests.csproj" />
   <Project Path="JAStudio.Core\JAStudio.Core.csproj" />
   <Project Path="JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
+  <Project Path="JAStudio.UI\JAStudio.UI.csproj" />
 </Solution>
