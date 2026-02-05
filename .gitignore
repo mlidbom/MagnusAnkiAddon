@@ -26,3 +26,5 @@ obj
 card_history.json
 *.ncrunchsolution.user
 *.DotSettings.user
+CopilotIndices
+.vs

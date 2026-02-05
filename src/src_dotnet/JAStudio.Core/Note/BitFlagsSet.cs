@@ -1,65 +1,66 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace JAStudio.Core.Note;
 
 public class BitFlagsSet : IEnumerable<int>
 {
-    private long _bitfield;
-
-    public BitFlagsSet(long bitfield = 0)
-    {
-        _bitfield = bitfield;
-    }
+    private readonly HashSet<int> _flags = new();
 
     public bool Contains(int value)
     {
-        return (_bitfield & (1L << value)) != 0;
+        return _flags.Contains(value);
     }
 
     public bool ContainsBit(long value)
     {
-        return (_bitfield & value) != 0;
+        // Check if any flag ID in our set, when converted to a bit (1L << id), matches the value
+        // This supports the legacy bit-based API
+        foreach (var flagId in _flags)
+        {
+            if ((1L << flagId) == value)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void SetFlag(int flag)
     {
-        _bitfield |= (1L << flag);
+        _flags.Add(flag);
     }
 
     public void UnsetFlag(int flag)
     {
-        _bitfield &= ~(1L << flag);
+        _flags.Remove(flag);
     }
 
     public IEnumerator<int> GetEnumerator()
     {
-        var bitfield = _bitfield;
-        var flag = 0;
-        while (bitfield != 0)
-        {
-            if ((bitfield & 1) != 0)
-            {
-                yield return flag;
-            }
-            bitfield >>= 1;
-            flag++;
-        }
+        return _flags.GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     public override int GetHashCode()
     {
-        return _bitfield.GetHashCode();
+        // Compute hash from sorted flags for consistency
+        var hash = new HashCode();
+        foreach (var flag in _flags.OrderBy(f => f))
+        {
+            hash.Add(flag);
+        }
+        return hash.ToHashCode();
     }
 
     public override bool Equals(object? obj)
     {
         if (obj is BitFlagsSet other)
         {
-            return _bitfield == other._bitfield;
+            return _flags.SetEquals(other._flags);
         }
         return false;
     }

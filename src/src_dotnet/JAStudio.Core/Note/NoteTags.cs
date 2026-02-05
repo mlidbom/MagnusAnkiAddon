@@ -8,19 +8,18 @@ namespace JAStudio.Core.Note;
 public class NoteTags : IEnumerable<Tag>
 {
     private readonly JPNote _note;
-    private readonly BitFlagsSet _flags;
-    private static readonly Dictionary<BitFlagsSet, List<string>> _internedStringLists = new();
+    private readonly HashSet<Tag> _tags = new();
+    private static readonly Dictionary<HashSet<Tag>, List<string>> _internedStringLists = new();
 
     public NoteTags(JPNote note, JPNoteData? data = null)
     {
         _note = note;
-        _flags = new BitFlagsSet();
 
         if (data != null)
         {
-            foreach (var tag in data.Tags)
+            foreach (var tagName in data.Tags)
             {
-                _flags.SetFlag(Tag.FromName(tag).Id);
+                _tags.Add(Tag.FromName(tagName));
             }
         }
     }
@@ -33,14 +32,14 @@ public class NoteTags : IEnumerable<Tag>
 
     public bool Contains(Tag value)
     {
-        return _flags.ContainsBit(value.Bit);
+        return _tags.Contains(value);
     }
 
     public void Set(Tag tag)
     {
         if (!Contains(tag))
         {
-            _flags.SetFlag(tag.Id);
+            _tags.Add(tag);
             Persist();
         }
     }
@@ -49,7 +48,7 @@ public class NoteTags : IEnumerable<Tag>
     {
         if (Contains(tag))
         {
-            _flags.UnsetFlag(tag.Id);
+            _tags.Remove(tag);
             Persist();
         }
     }
@@ -68,20 +67,20 @@ public class NoteTags : IEnumerable<Tag>
 
     public IEnumerator<Tag> GetEnumerator()
     {
-        return _flags.Select(Tag.FromId).GetEnumerator();
+        return _tags.GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     public List<string> ToInternedStringList()
     {
-        if (!_internedStringLists.TryGetValue(_flags, out var internedList))
+        if (!_internedStringLists.TryGetValue(_tags, out var internedList))
         {
             var sortedNameList = this.Select(t => t.Name).OrderBy(n => n).ToList();
             // Note: Python uses string_auto_interner.auto_intern_qlist() here, but string interning
             // is a Python-specific optimization not needed in C# (per porting rules)
             internedList = sortedNameList;
-            _internedStringLists[_flags] = internedList;
+            _internedStringLists[_tags] = internedList;
         }
         return internedList;
     }
