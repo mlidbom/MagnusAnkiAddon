@@ -21,7 +21,7 @@ public static class WebSearchMenus
     {
         return new MenuItem
         {
-            Header = "Web",
+            Header = ShortcutFinger.Home3("Web"),
             ItemsSource = new List<MenuItem>
             {
                 BuildKanjiMenu(getSearchText, openUrl),

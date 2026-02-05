@@ -21,7 +21,7 @@ public static class OpenInAnkiMenus
     {
         return new MenuItem
         {
-            Header = "Anki",
+            Header = ShortcutFinger.Home2("Anki"),
             ItemsSource = new List<MenuItem>
             {
                 BuildExactMatchesMenu(getSearchText, executeLookup),
