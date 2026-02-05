@@ -23,14 +23,6 @@
 
 ---
 
-## Porting Rules
-
-**Stay faithful to the Python - refactoring comes later.** We want almost completely equivalent code, only in C#.
-
-### Why Stay So Close?
-
-Staying this close to the Python is what makes the porting workable at all. If we start changing things while porting, it's like letting go with both hands while climbing - we have nothing to rely on, nothing keeping us from falling. **Mirroring the Python is our handgrip.**
-
 ### Rules
 
 - **Menu structure:** Maintain the same hierarchy, nesting, and organization as Python
