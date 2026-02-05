@@ -3,77 +3,22 @@ using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Interactivity;
 
 namespace JAStudio.UI;
 
 /// <summary>
-/// Builder for creating Avalonia popup menus that can be shown at any screen position.
-/// Hides the "ugly hack" of using a transparent window with a hidden top-level menu item.
+/// Positions and displays an Avalonia Menu at arbitrary screen coordinates.
+/// Uses a transparent window hack to show menus outside of normal UI hierarchy.
 /// </summary>
-public class AvaloniaMenuBuilder
+public static class PopupMenuHost
 {
-    private readonly List<MenuItemConfig> _items = new();
-
     /// <summary>
-    /// Configuration for a single menu item.
+    /// Show a complete Menu at the specified screen coordinates.
     /// </summary>
-    public class MenuItemConfig
-    {
-        public required string Label { get; init; }
-        public Action? OnClick { get; init; }
-    }
-
-    /// <summary>
-    /// Add a menu item with a label and click handler.
-    /// </summary>
-    public AvaloniaMenuBuilder AddItem(string label, Action onClick)
-    {
-        _items.Add(new MenuItemConfig { Label = label, OnClick = onClick });
-        return this;
-    }
-
-    /// <summary>
-    /// Show the menu at the specified screen coordinates.
-    /// </summary>
+    /// <param name="menuItems">The menu items to display</param>
     /// <param name="x">X coordinate in physical (device) pixels</param>
     /// <param name="y">Y coordinate in physical (device) pixels</param>
-    public void ShowAt(int x, int y)
-    {
-        var menuItems = new List<MenuItem>();
-        
-        foreach (var config in _items)
-        {
-            var menuItem = new MenuItem
-            {
-                Header = config.Label
-            };
-            
-            if (config.OnClick != null)
-            {
-                menuItem.Click += (s, e) =>
-                {
-                    try
-                    {
-                        config.OnClick();
-                    }
-                    catch (Exception ex)
-                    {
-                        JALogger.Log($"Menu item click error: {ex}");
-                    }
-                };
-            }
-            
-            menuItems.Add(menuItem);
-        }
-
-        ShowMenuAtPosition(menuItems, x, y);
-    }
-
-    /// <summary>
-    /// Internal implementation: Show menu at position using the transparent window hack.
-    /// </summary>
-    private static void ShowMenuAtPosition(List<MenuItem> menuItems, int x, int y)
+    public static void ShowAt(IEnumerable<MenuItem> menuItems, int x, int y)
     {
         // Create a top-level menu item that contains our items as a submenu
         // We make this invisible to minimize visual presence

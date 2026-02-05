@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using Avalonia;
 using Avalonia.Controls;
@@ -127,19 +128,15 @@ public static class DialogHost
         EnsureInitialized();
         Dispatcher.UIThread.InvokeAsync(() =>
         {
-            var builder = new AvaloniaMenuBuilder();
+            var item1 = new MenuItem { Header = "Test Item 1" };
+            item1.Click += (s, e) => JALogger.Log("Test Item 1 clicked from main menu");
             
-            builder.AddItem("Test Item 1", () =>
-            {
-                JALogger.Log("Test Item 1 clicked from main menu");
-            });
+            var item2 = new MenuItem { Header = "Test Item 2" };
+            item2.Click += (s, e) => JALogger.Log("Test Item 2 clicked from main menu");
             
-            builder.AddItem("Test Item 2", () =>
-            {
-                JALogger.Log("Test Item 2 clicked from main menu");
-            });
+            var menuItems = new List<MenuItem> { item1, item2 };
             
-            builder.ShowAt(x, y);
+            PopupMenuHost.ShowAt(menuItems, x, y);
         });
     }
 
@@ -156,21 +153,18 @@ public static class DialogHost
         EnsureInitialized();
         Dispatcher.UIThread.InvokeAsync(() =>
         {
-            var builder = new AvaloniaMenuBuilder();
-            
             var selectionText = string.IsNullOrEmpty(selection) ? "(empty)" : selection;
-            builder.AddItem($"Selection: {TruncateText(selectionText, 30)}", () =>
-            {
-                JALogger.Log($"Selection clicked: {selection}");
-            });
-            
             var clipboardText = string.IsNullOrEmpty(clipboard) ? "(empty)" : clipboard;
-            builder.AddItem($"Clipboard: {TruncateText(clipboardText, 30)}", () =>
-            {
-                JALogger.Log($"Clipboard clicked: {clipboard}");
-            });
             
-            builder.ShowAt(x, y);
+            var selectionItem = new MenuItem { Header = $"Selection: {TruncateText(selectionText, 30)}" };
+            selectionItem.Click += (s, e) => JALogger.Log($"Selection clicked: {selection}");
+            
+            var clipboardItem = new MenuItem { Header = $"Clipboard: {TruncateText(clipboardText, 30)}" };
+            clipboardItem.Click += (s, e) => JALogger.Log($"Clipboard clicked: {clipboard}");
+            
+            var menuItems = new List<MenuItem> { selectionItem, clipboardItem };
+            
+            PopupMenuHost.ShowAt(menuItems, x, y);
         });
     }
 
