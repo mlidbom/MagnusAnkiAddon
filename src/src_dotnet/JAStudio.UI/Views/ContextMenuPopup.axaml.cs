@@ -56,6 +56,8 @@ public partial class ContextMenuPopup : UserControl
         JALogger.Log($"ShowAt called with: ({x}, {y})");
         
         // Create sub-menu items
+        var menuItems = new List<MenuItem>();
+        
         var clipboardItem = new MenuItem
         {
             Header = string.IsNullOrEmpty(_clipboardContent) 
@@ -63,6 +65,7 @@ public partial class ContextMenuPopup : UserControl
                 : $"Clipboard: {TruncateText(_clipboardContent, 30)}"
         };
         clipboardItem.Click += OnClipboardItemClick;
+        menuItems.Add(clipboardItem);
         
         var selectionItem = new MenuItem
         {
@@ -71,12 +74,24 @@ public partial class ContextMenuPopup : UserControl
                 : $"Selection: {TruncateText(_selectionContent, 30)}"
         };
         selectionItem.Click += OnSelectionItemClick;
+        menuItems.Add(selectionItem);
+        
+        // Add 10 dummy entries
+        for (int i = 1; i <= 10; i++)
+        {
+            var dummyItem = new MenuItem
+            {
+                Header = $"Dummy Entry {i}"
+            };
+            dummyItem.Click += (s, e) => JALogger.Log($"Dummy item clicked: {((MenuItem)s).Header}");
+            menuItems.Add(dummyItem);
+        }
         
         // Create a top-level menu item that contains our items as a submenu
         var topMenuItem = new MenuItem
         {
             Header = "", // Empty to minimize visual presence
-            ItemsSource = new List<MenuItem> { clipboardItem, selectionItem },
+            ItemsSource = menuItems,
             // Try to make it invisible
             Height = 0,
             MinHeight = 0,
