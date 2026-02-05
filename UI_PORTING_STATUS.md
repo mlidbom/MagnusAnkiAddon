@@ -15,39 +15,14 @@
 - Validates the full Python → C# → Avalonia pipeline works
 
 **VocabFlagsDialog: COMPLETE**
-- Full-featured dialog for editing vocab matching flags, register & string rules
-- 231 lines of Python UI ported to C# Avalonia
-- Includes reusable RequireForbidControl (radio button group)
-- Includes reusable StringSetControl (editable string chips)
-- Reparse prompt with Python integration for batch updates
-- Accessible from vocab context menu → Edit
-
 **OptionsDialog: COMPLETE**
-- Full Japanese addon configuration dialog
-- Two-way binding to JapaneseConfig
-- All settings from Python version ported
-- Accessible from Japanese → Config → Options (Ctrl+Shift+S)
-
 **ReadingsMappingsDialog: COMPLETE**
-- Text editor for readings mappings
-- Search functionality
-- Deduplication and sorting on save
-- Calls AnkiFacade.Refresh() to update note display
-- Accessible from Japanese → Config → Readings mappings (Ctrl+Shift+M)
-
 **NoteSearchDialog: COMPLETE**
-- Search all notes (Kanji, Vocab, Sentence)
-- Multi-condition search with && separator
-- Prefixed search (r:, a:, q:)
-- Async background search
-- Opens notes in Anki browser on double-click
-- Singleton pattern with toggle visibility
-- Accessible from Japanese → Lookup → Open note (Ctrl+O)
+**EnglishWordSearchDialog: COMPLETE**
 
 **Menu Architecture: REVOLUTIONARY NEW APPROACH**
 
 **Problem Solved:** Python callbacks from C# don't work with pythonnet
-
 **Solution:** UI-agnostic menu specifications in C# + UI adapters
 
 ```
@@ -130,11 +105,11 @@ JAStudio.Core.dll (Domain logic - already ported)
 |--------|------|-------|-------------|
 | COMPLETE | ui/menus/notes/vocab/vocab_flags_dialog.py | 231 | Edit vocab matching flags, register, string rules |
 | COMPLETE | ui/open_note/open_note_dialog.py | 264 | Search and open notes dialog |
-| MISSING | ui/english_dict/find_english_words_dialog.py | 94 | English dictionary search |
+| COMPLETE | ui/english_dict/find_english_words_dialog.py | 94 | English dictionary search (pure C# implementation) |
 | COMPLETE | configuration/readings_mapping_dialog.py | 120 | Configure reading mappings |
 | COMPLETE | configuration/configuration.py | 140 | Japanese addon options dialog |
 
-**Subtotal: 755 lines ported / 849 total (89% complete)**
+**Subtotal: 849 lines ported / 849 total (100% complete) ✅**
 
 ---
 
@@ -185,12 +160,12 @@ Main menus work, note-specific actions remain to be ported.
 
 | Category | Status | Lines Ported | Total Lines | % Complete |
 |----------|--------|--------------|-------------|------------|
-| Dialogs | 4/5 complete | 755 | 849 | 89% |
+| Dialogs | **5/5 complete** | **849** | **849** | **100% ✅** |
 | Widgets | 2/3 complete | 191 | 290 | 66% |
 | Menus | Infrastructure ✅ | ~300 | 789 | 38% |
-| **Total** | **Good progress** | **~1,246** | **1,928** | **65%** |
+| **Total** | **Good progress** | **~1,340** | **1,928** | **69%** |
 
-**Key Achievement:** Main infrastructure complete, menus use C# business logic directly!
+**Key Achievement:** All dialogs complete! Menus use C# business logic directly!
 
 ---
 
@@ -206,10 +181,10 @@ Main menus work, note-specific actions remain to be ported.
    - DPI-aware coordinate positioning
    - Python → C# coordinate passing
 
-### Phase 2: Dialogs ✅ MOSTLY COMPLETE
+### Phase 2: Dialogs ✅ COMPLETE (5/5)
 1. ~~`vocab_flags_dialog.py` → `VocabFlagsDialog.axaml`~~ ✅ (most complex, good test)
 2. ~~`open_note_dialog.py` → `NoteSearchDialog.axaml`~~ ✅ (search with async background)
-3. `find_english_words_dialog.py` → `EnglishWordSearchDialog.axaml` ⚠️ TODO
+3. ~~`find_english_words_dialog.py` → `EnglishWordSearchDialog.axaml`~~ ✅ (pure C# with 188k words)
 4. ~~`readings_mapping_dialog.py` → `ReadingsMappingsDialog.axaml`~~ ✅
 5. ~~`configuration.py` → `OptionsDialog.axaml`~~ ✅
 
@@ -231,7 +206,6 @@ Main menus work, note-specific actions remain to be ported.
 - Main menu (Japanese) - Config ✅, Lookup ✅, Local Actions ✅
 - Context menu - Scaffolding ✅, Lookup submenus ✅
 - ~120 note-specific actions remain (Kanji, Vocab, Sentence menus)
-- Architecture allows incremental porting without breaking existing functionality
 
 ### Phase 5: Complete Avalonia Migration (Future)
 1. Replace PyQt adapter with Avalonia menu rendering
