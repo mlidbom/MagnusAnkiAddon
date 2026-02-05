@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Avalonia.Controls;
+using JAStudio.Core;
+using JAStudio.Core.Note;
 using JAStudio.UI.Utils;
+using JAStudio.UI.Views;
 
 namespace JAStudio.UI.Menus;
 
@@ -25,8 +28,13 @@ public class NoteContextMenu
     /// <summary>
     /// Build context menu for a vocab note.
     /// </summary>
-    public List<MenuItem> BuildVocabContextMenu(string selection, string clipboard)
+    public List<MenuItem> BuildVocabContextMenu(int vocabId, string selection, string clipboard)
     {
+        var vocabCache = Core.App.Col().Vocab;
+        var vocab = vocabCache.WithIdOrNone(vocabId);
+        if (vocab == null)
+            return new List<MenuItem>();
+
         var menuItems = new List<MenuItem>();
 
         if (!string.IsNullOrEmpty(selection))
@@ -35,7 +43,7 @@ public class NoteContextMenu
         if (!string.IsNullOrEmpty(clipboard))
             menuItems.Add(BuildClipboardMenu(clipboard, "vocab"));
 
-        menuItems.Add(BuildVocabNoteActionsMenu());
+        menuItems.Add(BuildVocabNoteActionsMenu(vocab));
         menuItems.Add(BuildUniversalNoteActionsMenu());
         menuItems.Add(BuildVocabViewMenu());
 
@@ -45,8 +53,13 @@ public class NoteContextMenu
     /// <summary>
     /// Build context menu for a kanji note.
     /// </summary>
-    public List<MenuItem> BuildKanjiContextMenu(string selection, string clipboard)
+    public List<MenuItem> BuildKanjiContextMenu(int kanjiId, string selection, string clipboard)
     {
+        var kanjiCache = Core.App.Col().Kanji;
+        var kanji = kanjiCache.WithIdOrNone(kanjiId);
+        if (kanji == null)
+            return new List<MenuItem>();
+
         var menuItems = new List<MenuItem>();
 
         if (!string.IsNullOrEmpty(selection))
@@ -65,8 +78,13 @@ public class NoteContextMenu
     /// <summary>
     /// Build context menu for a sentence note.
     /// </summary>
-    public List<MenuItem> BuildSentenceContextMenu(string selection, string clipboard)
+    public List<MenuItem> BuildSentenceContextMenu(int sentenceId, string selection, string clipboard)
     {
+        var sentenceCache = Core.App.Col().Sentences;
+        var sentence = sentenceCache.WithIdOrNone(sentenceId);
+        if (sentence == null)
+            return new List<MenuItem>();
+
         var menuItems = new List<MenuItem>();
 
         if (!string.IsNullOrEmpty(selection))
@@ -138,12 +156,11 @@ public class NoteContextMenu
     }
 
     // Vocab-specific menus
-    private MenuItem BuildVocabNoteActionsMenu()
+    private MenuItem BuildVocabNoteActionsMenu(VocabNote vocab)
     {
         var menuItems = new List<MenuItem>
         {
-            // TODO: Port from menus.notes.vocab.main.setup_note_menu
-            CreateMenuItem("Edit vocab flags (TODO)", () => { }),
+            CreateMenuItem(ShortcutFinger.Home2("Edit flags"), () => OnEditVocabFlags(vocab)),
             CreateMenuItem("Vocab Actions (TODO)", () => { })
         };
 
@@ -290,6 +307,12 @@ public class NoteContextMenu
     }
 
     // Action handlers
+    private void OnEditVocabFlags(VocabNote vocab)
+    {
+        var dialog = new VocabFlagsDialog(vocab);
+        dialog.Show();
+    }
+    
     private void OnReparseMatchingSentences(string text) => JALogger.Log($"TODO: Reparse matching sentences: {text}");
     private void OnOpenInPreviewer() => JALogger.Log("TODO: Open in previewer");
     private void OnUnsuspendAllCards() => JALogger.Log("TODO: Unsuspend all cards");

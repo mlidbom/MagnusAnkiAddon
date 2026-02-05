@@ -166,7 +166,7 @@ def show_japanese_main_menu(refresh_callback: Callable[[], None], x: int, y: int
         raise
 
 
-def show_vocab_context_menu(refresh_callback: Callable[[], None], selection: str, clipboard: str, x: int, y: int) -> None:
+def show_vocab_context_menu(refresh_callback: Callable[[], None], vocab_id: int, selection: str, clipboard: str, x: int, y: int) -> None:
     """Show context menu for a vocab note."""
     if not _initialized:
         mylog.warning("Avalonia UI not initialized, initializing now...")
@@ -185,13 +185,13 @@ def show_vocab_context_menu(refresh_callback: Callable[[], None], selection: str
 
         lookup_action = Action[str](execute_lookup)  # pyright: ignore[reportCallIssue]
 
-        DialogHost.ShowVocabContextMenu(refresh_action, lookup_action, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
+        DialogHost.ShowVocabContextMenu(refresh_action, lookup_action, vocab_id, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
     except Exception as e:
         mylog.error(f"Failed to show vocab context menu: {e}")
         raise
 
 
-def show_kanji_context_menu(refresh_callback: Callable[[], None], selection: str, clipboard: str, x: int, y: int) -> None:
+def show_kanji_context_menu(refresh_callback: Callable[[], None], kanji_id: int, selection: str, clipboard: str, x: int, y: int) -> None:
     """Show context menu for a kanji note."""
     if not _initialized:
         mylog.warning("Avalonia UI not initialized, initializing now...")
@@ -210,13 +210,13 @@ def show_kanji_context_menu(refresh_callback: Callable[[], None], selection: str
 
         lookup_action = Action[str](execute_lookup)  # pyright: ignore[reportCallIssue]
 
-        DialogHost.ShowKanjiContextMenu(refresh_action, lookup_action, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
+        DialogHost.ShowKanjiContextMenu(refresh_action, lookup_action, kanji_id, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
     except Exception as e:
         mylog.error(f"Failed to show kanji context menu: {e}")
         raise
 
 
-def show_sentence_context_menu(refresh_callback: Callable[[], None], selection: str, clipboard: str, x: int, y: int) -> None:
+def show_sentence_context_menu(refresh_callback: Callable[[], None], sentence_id: int, selection: str, clipboard: str, x: int, y: int) -> None:
     """Show context menu for a sentence note."""
     if not _initialized:
         mylog.warning("Avalonia UI not initialized, initializing now...")
@@ -235,7 +235,7 @@ def show_sentence_context_menu(refresh_callback: Callable[[], None], selection: 
 
         lookup_action = Action[str](execute_lookup)  # pyright: ignore[reportCallIssue]
 
-        DialogHost.ShowSentenceContextMenu(refresh_action, lookup_action, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
+        DialogHost.ShowSentenceContextMenu(refresh_action, lookup_action, sentence_id, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
     except Exception as e:
         mylog.error(f"Failed to show sentence context menu: {e}")
         raise

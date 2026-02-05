@@ -78,11 +78,19 @@ public static class DialogHost
     /// <summary>
     /// Show the VocabFlagsDialog for editing a vocab note's flags.
     /// </summary>
-    public static void ShowVocabFlagsDialog(VocabNote vocab)
+    public static void ShowVocabFlagsDialog(int vocabId)
     {
         EnsureInitialized();
         Dispatcher.UIThread.Invoke(() =>
         {
+            var vocabCache = Core.App.Col().Vocab;
+            var vocab = vocabCache.WithIdOrNone(vocabId);
+            if (vocab == null)
+            {
+                JALogger.Log($"Vocab note with ID {vocabId} not found");
+                return;
+            }
+            
             var window = new VocabFlagsDialog(vocab);
             window.Show();
         });
@@ -165,6 +173,7 @@ public static class DialogHost
     public static void ShowVocabContextMenu(
         Action refreshCallback, 
         Action<string> executeLookup,
+        int vocabId,
         string selection, 
         string clipboard, 
         int x, 
@@ -174,7 +183,7 @@ public static class DialogHost
         Dispatcher.UIThread.Invoke(() =>
         {
             var menuBuilder = new NoteContextMenu(refreshCallback, executeLookup);
-            var menuItems = menuBuilder.BuildVocabContextMenu(selection ?? "", clipboard ?? "");
+            var menuItems = menuBuilder.BuildVocabContextMenu(vocabId, selection ?? "", clipboard ?? "");
             
             PopupMenuHost.ShowAt(menuItems, x, y);
         });
@@ -186,6 +195,7 @@ public static class DialogHost
     public static void ShowKanjiContextMenu(
         Action refreshCallback,
         Action<string> executeLookup,
+        int kanjiId,
         string selection, 
         string clipboard, 
         int x, 
@@ -195,7 +205,7 @@ public static class DialogHost
         Dispatcher.UIThread.Invoke(() =>
         {
             var menuBuilder = new NoteContextMenu(refreshCallback, executeLookup);
-            var menuItems = menuBuilder.BuildKanjiContextMenu(selection ?? "", clipboard ?? "");
+            var menuItems = menuBuilder.BuildKanjiContextMenu(kanjiId, selection ?? "", clipboard ?? "");
             
             PopupMenuHost.ShowAt(menuItems, x, y);
         });
@@ -207,6 +217,7 @@ public static class DialogHost
     public static void ShowSentenceContextMenu(
         Action refreshCallback,
         Action<string> executeLookup,
+        int sentenceId,
         string selection, 
         string clipboard, 
         int x, 
@@ -216,7 +227,7 @@ public static class DialogHost
         Dispatcher.UIThread.Invoke(() =>
         {
             var menuBuilder = new NoteContextMenu(refreshCallback, executeLookup);
-            var menuItems = menuBuilder.BuildSentenceContextMenu(selection ?? "", clipboard ?? "");
+            var menuItems = menuBuilder.BuildSentenceContextMenu(sentenceId, selection ?? "", clipboard ?? "");
             
             PopupMenuHost.ShowAt(menuItems, x, y);
         });
