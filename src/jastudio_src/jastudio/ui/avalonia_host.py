@@ -80,3 +80,47 @@ def show_context_menu_popup(clipboard_content: str, selection_content: str, x: i
     except Exception as e:
         mylog.error(f"Failed to show context menu popup: {e}")
         raise
+
+
+def show_test_main_menu(x: int, y: int) -> None:
+    """
+    Show the test main menu (Japanese Avalonia) at the specified screen coordinates.
+
+    Args:
+        x: X coordinate (screen coordinates, physical pixels)
+        y: Y coordinate (screen coordinates, physical pixels)
+    """
+    if not _initialized:
+        mylog.warning("Avalonia UI not initialized, initializing now...")
+        initialize()
+
+    try:
+        from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
+
+        DialogHost.ShowTestMainMenu(x, y)  # pyright: ignore[reportUnknownMemberType]
+    except Exception as e:
+        mylog.error(f"Failed to show test main menu: {e}")
+        raise
+
+
+def show_test_context_menu(selection: str, clipboard: str, x: int, y: int) -> None:
+    """
+    Show the test context menu at the specified screen coordinates.
+
+    Args:
+        selection: Currently selected text
+        clipboard: Clipboard content
+        x: X coordinate (screen coordinates, physical pixels)
+        y: Y coordinate (screen coordinates, physical pixels)
+    """
+    if not _initialized:
+        mylog.warning("Avalonia UI not initialized, initializing now...")
+        initialize()
+
+    try:
+        from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
+
+        DialogHost.ShowTestContextMenu(selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
+    except Exception as e:
+        mylog.error(f"Failed to show test context menu: {e}")
+        raise

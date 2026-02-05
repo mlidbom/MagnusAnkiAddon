@@ -157,29 +157,15 @@ def _add_avalonia_menu_entry(menu: QMenu, selection: str, clipboard: str) -> Non
             action_global_pos = menu.mapToGlobal(action_rect.topLeft())
 
             # Get DPI scale factor to convert logical pixels to physical pixels
-            # Qt gives us logical coordinates, but Avalonia PixelPoint expects physical pixels
             screen = QApplication.screenAt(action_global_pos)
             dpi_scale = screen.devicePixelRatio() if screen else 1.0
 
-            # Use logical coordinates (Qt's native format)
-            logical_x = action_global_pos.x()
-            logical_y = action_global_pos.y()
-
             # Convert to physical pixels for Avalonia
-            physical_x = int(logical_x * dpi_scale)
-            physical_y = int(logical_y * dpi_scale)
+            physical_x = int(action_global_pos.x() * dpi_scale)
+            physical_y = int(action_global_pos.y() * dpi_scale)
 
-            # Debug output
-            from jaslib import mylog
-            mylog.info(f"Menu position - Logical: ({logical_x}, {logical_y}), Physical: ({physical_x}, {physical_y}), DPI scale: {dpi_scale}")
-
-            # Show the Avalonia popup with physical pixels
-            avalonia_host.show_context_menu_popup(
-                clipboard_content=clipboard,
-                selection_content=selection,
-                x=physical_x,
-                y=physical_y
-            )
+            # Show the Avalonia test context menu (all logic in C#)
+            avalonia_host.show_test_context_menu(selection, clipboard, physical_x, physical_y)
         except Exception as e:
             from jaslib import mylog
             mylog.error(f"Failed to show Avalonia menu: {e}")

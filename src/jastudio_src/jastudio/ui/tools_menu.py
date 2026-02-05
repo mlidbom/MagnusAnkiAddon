@@ -49,6 +49,9 @@ def build_main_menu() -> None:
     build_debug_menu(non_optional(my_menu.addMenu(shortcutfinger.home4("Debug"))))
     # Avalonia UI test
     my_menu.addAction(shortcutfinger.down2("About JA Studio"), avalonia_host.show_about_dialog)  # pyright: ignore[reportUnknownMemberType]
+    
+    # Add "Japanese Avalonia" menu that shows Avalonia popup on hover
+    _add_avalonia_main_menu(my_menu)
 
 def build_lookup_menu(lookup_menu: QMenu) -> None:
     def get_text_input() -> str:
@@ -92,6 +95,37 @@ def build_local_menu(local_menu: QMenu) -> None:
     add_menu_ui_action(local_menu, shortcutfinger.home3("Update everyting except reparsing sentences"), local_note_updater.update_all)
     add_menu_ui_action(local_menu, shortcutfinger.home4("Create vocab notes for parsed words with no vocab notes"), local_note_updater.create_missing_vocab_with_dictionary_entries)
     add_menu_ui_action(local_menu, shortcutfinger.home5("Regenerate vocab source answers from jamdict"), local_note_updater.regenerate_jamdict_vocab_answers)
+
+def _add_avalonia_main_menu(menu: QMenu) -> None:
+    """Add Japanese Avalonia menu entry that shows Avalonia popup on hover."""
+    avalonia_action = menu.addAction("🎯 Japanese Avalonia (Hover)")  # pyright: ignore[reportUnknownMemberType]
+    
+    shown = [False]
+    
+    def on_hover() -> None:
+        if shown[0]:
+            return
+        shown[0] = True
+        
+        try:
+            from PyQt6.QtWidgets import QApplication
+            
+            # Get menu position and convert to physical pixels
+            action_rect = menu.actionGeometry(avalonia_action)
+            action_global_pos = menu.mapToGlobal(action_rect.topLeft())
+            
+            screen = QApplication.screenAt(action_global_pos)
+            dpi_scale = screen.devicePixelRatio() if screen else 1.0
+            
+            physical_x = int(action_global_pos.x() * dpi_scale)
+            physical_y = int(action_global_pos.y() * dpi_scale)
+            
+            avalonia_host.show_test_main_menu(physical_x, physical_y)
+        except Exception as e:
+            from jaslib import mylog
+            mylog.error(f"Failed to show Avalonia main menu: {e}")
+    
+    avalonia_action.hovered.connect(on_hover)  # pyright: ignore[reportUnknownMemberType, reportOptionalMemberAccess]
 
 def init() -> None:
     build_main_menu()

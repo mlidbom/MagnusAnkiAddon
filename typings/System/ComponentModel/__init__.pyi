@@ -1,4 +1,4 @@
-import typing
+import typing, abc
 from System import Attribute, Exception
 from System.Runtime.InteropServices import ExternalException
 from System.Collections import IDictionary
@@ -57,6 +57,21 @@ class EditorBrowsableState(typing.SupportsInt):
     Always : EditorBrowsableState # 0
     Never : EditorBrowsableState # 1
     Advanced : EditorBrowsableState # 2
+
+
+class INotifyPropertyChanged(typing.Protocol):
+    pass
+
+
+class INotifyPropertyChanging(typing.Protocol):
+    pass
+
+
+class ISupportInitialize(typing.Protocol):
+    @abc.abstractmethod
+    def BeginInit(self) -> None: ...
+    @abc.abstractmethod
+    def EndInit(self) -> None: ...
 
 
 class Win32Exception(ExternalException):

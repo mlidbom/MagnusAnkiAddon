@@ -117,6 +117,71 @@ public static class DialogHost
     }
 
     /// <summary>
+    /// Show the test main menu ("Japanese Avalonia") at the specified screen coordinates.
+    /// Menu is entirely defined in C#.
+    /// </summary>
+    /// <param name="x">X coordinate in physical (device) pixels</param>
+    /// <param name="y">Y coordinate in physical (device) pixels</param>
+    public static void ShowTestMainMenu(int x, int y)
+    {
+        EnsureInitialized();
+        Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            var builder = new AvaloniaMenuBuilder();
+            
+            builder.AddItem("Test Item 1", () =>
+            {
+                JALogger.Log("Test Item 1 clicked from main menu");
+            });
+            
+            builder.AddItem("Test Item 2", () =>
+            {
+                JALogger.Log("Test Item 2 clicked from main menu");
+            });
+            
+            builder.ShowAt(x, y);
+        });
+    }
+
+    /// <summary>
+    /// Show the test context menu with selection and clipboard options.
+    /// Menu is entirely defined in C#.
+    /// </summary>
+    /// <param name="selection">Currently selected text</param>
+    /// <param name="clipboard">Clipboard content</param>
+    /// <param name="x">X coordinate in physical (device) pixels</param>
+    /// <param name="y">Y coordinate in physical (device) pixels</param>
+    public static void ShowTestContextMenu(string selection, string clipboard, int x, int y)
+    {
+        EnsureInitialized();
+        Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            var builder = new AvaloniaMenuBuilder();
+            
+            var selectionText = string.IsNullOrEmpty(selection) ? "(empty)" : selection;
+            builder.AddItem($"Selection: {TruncateText(selectionText, 30)}", () =>
+            {
+                JALogger.Log($"Selection clicked: {selection}");
+            });
+            
+            var clipboardText = string.IsNullOrEmpty(clipboard) ? "(empty)" : clipboard;
+            builder.AddItem($"Clipboard: {TruncateText(clipboardText, 30)}", () =>
+            {
+                JALogger.Log($"Clipboard clicked: {clipboard}");
+            });
+            
+            builder.ShowAt(x, y);
+        });
+    }
+
+    private static string TruncateText(string text, int maxLength)
+    {
+        if (text.Length <= maxLength)
+            return text;
+        return text.Substring(0, maxLength) + "...";
+    }
+
+    /// <summary>
     /// Shutdown Avalonia. Call at addon unload.
     /// </summary>
     public static void Shutdown()
