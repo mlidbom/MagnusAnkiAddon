@@ -18,7 +18,6 @@ JAStudio.Core.dll (Domain logic - already ported)
 
 ### Porting Rules
 
-- **Stay faithful to the Python** - Same functionality, different UI framework
 - **ViewModels are UI-agnostic** - No Avalonia types in ViewModels, only standard .NET (INotifyPropertyChanged, ICommand)
 - **Views are thin** - XAML bindings to ViewModel properties, minimal code-behind
 
