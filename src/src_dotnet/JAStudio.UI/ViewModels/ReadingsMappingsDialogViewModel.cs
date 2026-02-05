@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JAStudio.Core;
 using JAStudio.Core.Configuration;
+using JAStudio.UI.Anki;
 
 namespace JAStudio.UI.ViewModels;
 
@@ -55,8 +56,8 @@ public partial class ReadingsMappingsDialogViewModel : ObservableObject
             JALogger.Log("Readings mappings saved");
             _window.Close(true);
             
-            // Refresh current note (if any)
-            // Note: Refresh functionality would go here if needed
+            // Refresh current note display to pick up new mappings
+            AnkiFacade.Refresh();
         }
         catch (Exception ex)
         {
