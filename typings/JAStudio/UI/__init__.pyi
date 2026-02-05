@@ -4,10 +4,11 @@ from Avalonia.Styling import ThemeVariant, Styles
 from Avalonia.Controls.ApplicationLifetimes import IApplicationLifetime
 from Avalonia.Controls.Templates import DataTemplates
 from Avalonia.Platform import IPlatformSettings
-from Avalonia.Controls import IResourceDictionary
+from Avalonia.Controls import IResourceDictionary, MenuItem
 from Avalonia.Data import IndexerDescriptor, IBinding
 from System import Action
 from JAStudio.Core.Note import VocabNote
+from System.Collections.Generic import IEnumerable_1
 
 class App(Application):
     def __init__(self) -> None: ...
@@ -57,6 +58,14 @@ class DialogHost(abc.ABC):
     @staticmethod
     def ShowContextMenuPopup(clipboardContent: str, selectionContent: str, x: int, y: int) -> None: ...
     @staticmethod
+    def ShowJapaneseMainMenu(refreshCallback: Action, x: int, y: int) -> None: ...
+    @staticmethod
+    def ShowNoteContextMenu(refreshCallback: Action, selection: str, clipboard: str, noteType: str, x: int, y: int) -> None: ...
+    @staticmethod
+    def ShowTestContextMenu(selection: str, clipboard: str, x: int, y: int) -> None: ...
+    @staticmethod
+    def ShowTestMainMenu(x: int, y: int) -> None: ...
+    @staticmethod
     def ShowVocabFlagsDialog(vocab: VocabNote) -> None: ...
     @staticmethod
     def Shutdown() -> None: ...
@@ -77,4 +86,9 @@ class DialogHost(abc.ABC):
 class JALogger(abc.ABC):
     @staticmethod
     def Log(message: str) -> None: ...
+
+
+class PopupMenuHost(abc.ABC):
+    @staticmethod
+    def ShowAt(menuItems: IEnumerable_1[MenuItem], x: int, y: int) -> None: ...
 

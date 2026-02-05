@@ -149,6 +149,7 @@ def _add_avalonia_menu_entry(menu: QMenu, selection: str, clipboard: str) -> Non
             from PyQt6.QtWidgets import QApplication
 
             from jastudio.ui import avalonia_host
+            from jastudio.ui.tools_menu import refresh
 
             # Get the action's geometry within the menu
             action_rect = menu.actionGeometry(avalonia_action)
@@ -164,8 +165,23 @@ def _add_avalonia_menu_entry(menu: QMenu, selection: str, clipboard: str) -> Non
             physical_x = int(action_global_pos.x() * dpi_scale)
             physical_y = int(action_global_pos.y() * dpi_scale)
 
-            # Show the Avalonia test context menu (all logic in C#)
-            avalonia_host.show_test_context_menu(selection, clipboard, physical_x, physical_y)
+            # Determine note type
+            note = ui_utils.try_get_review_note()
+            note_type = None
+            if note:
+                from jaslib.note.kanjinote import KanjiNote
+                from jaslib.note.sentences.sentencenote import SentenceNote
+                from jaslib.note.vocabulary.vocabnote import VocabNote
+                
+                if isinstance(note, VocabNote):
+                    note_type = "vocab"
+                elif isinstance(note, KanjiNote):
+                    note_type = "kanji"
+                elif isinstance(note, SentenceNote):
+                    note_type = "sentence"
+
+            # Show the real note context menu with refresh callback
+            avalonia_host.show_note_context_menu(refresh, selection, clipboard, note_type, physical_x, physical_y)
         except Exception as e:
             from jaslib import mylog
             mylog.error(f"Failed to show Avalonia menu: {e}")

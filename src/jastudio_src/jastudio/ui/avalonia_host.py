@@ -103,6 +103,68 @@ def show_test_main_menu(x: int, y: int) -> None:
         raise
 
 
+def show_japanese_main_menu(refresh_callback: callable, x: int, y: int) -> None:
+    """
+    Show the Japanese main menu at the specified screen coordinates.
+
+    Args:
+        refresh_callback: Callback to invoke Anki UI refresh
+        x: X coordinate (screen coordinates, physical pixels)
+        y: Y coordinate (screen coordinates, physical pixels)
+    """
+    if not _initialized:
+        mylog.warning("Avalonia UI not initialized, initializing now...")
+        initialize()
+
+    try:
+        from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
+        from System import Action  # pyright: ignore[reportMissingImports]
+
+        # Wrap Python callback in .NET Action
+        action = Action(refresh_callback)  # pyright: ignore[reportUnknownVariableType]
+
+        DialogHost.ShowJapaneseMainMenu(action, x, y)  # pyright: ignore[reportUnknownMemberType]
+    except Exception as e:
+        mylog.error(f"Failed to show Japanese main menu: {e}")
+        raise
+
+
+def show_note_context_menu(
+    refresh_callback: callable,
+    selection: str,
+    clipboard: str,
+    note_type: str | None,
+    x: int,
+    y: int,
+) -> None:
+    """
+    Show the note context menu at the specified screen coordinates.
+
+    Args:
+        refresh_callback: Callback to invoke Anki UI refresh
+        selection: Currently selected text
+        clipboard: Clipboard content
+        note_type: Type of note: "vocab", "kanji", "sentence", or None
+        x: X coordinate (screen coordinates, physical pixels)
+        y: Y coordinate (screen coordinates, physical pixels)
+    """
+    if not _initialized:
+        mylog.warning("Avalonia UI not initialized, initializing now...")
+        initialize()
+
+    try:
+        from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
+        from System import Action  # pyright: ignore[reportMissingImports]
+
+        # Wrap Python callback in .NET Action
+        action = Action(refresh_callback)  # pyright: ignore[reportUnknownVariableType]
+
+        DialogHost.ShowNoteContextMenu(action, selection, clipboard, note_type, x, y)  # pyright: ignore[reportUnknownMemberType]
+    except Exception as e:
+        mylog.error(f"Failed to show note context menu: {e}")
+        raise
+
+
 def show_test_context_menu(selection: str, clipboard: str, x: int, y: int) -> None:
     """
     Show the test context menu at the specified screen coordinates.

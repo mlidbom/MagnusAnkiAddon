@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using JAStudio.Core.Note;
+using JAStudio.UI.Menus;
 using JAStudio.UI.Views;
 
 namespace JAStudio.UI;
@@ -114,6 +115,45 @@ public static class DialogHost
         {
             var menuControl = new ContextMenuPopup(clipboardContent ?? "", selectionContent ?? "");
             menuControl.ShowAt(x, y);
+        });
+    }
+
+    /// <summary>
+    /// Show the Japanese main menu at the specified screen coordinates.
+    /// </summary>
+    /// <param name="refreshCallback">Callback to invoke Anki UI refresh</param>
+    /// <param name="x">X coordinate in physical (device) pixels</param>
+    /// <param name="y">Y coordinate in physical (device) pixels</param>
+    public static void ShowJapaneseMainMenu(Action refreshCallback, int x, int y)
+    {
+        EnsureInitialized();
+        Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            var menuBuilder = new JapaneseMainMenu(refreshCallback);
+            var menuItems = menuBuilder.BuildMenu();
+            
+            PopupMenuHost.ShowAt(menuItems, x, y);
+        });
+    }
+
+    /// <summary>
+    /// Show the context menu for a note with selection and clipboard.
+    /// </summary>
+    /// <param name="refreshCallback">Callback to invoke Anki UI refresh</param>
+    /// <param name="selection">Currently selected text</param>
+    /// <param name="clipboard">Clipboard content</param>
+    /// <param name="noteType">Type of note: "vocab", "kanji", "sentence", or null</param>
+    /// <param name="x">X coordinate in physical (device) pixels</param>
+    /// <param name="y">Y coordinate in physical (device) pixels</param>
+    public static void ShowNoteContextMenu(Action refreshCallback, string selection, string clipboard, string? noteType, int x, int y)
+    {
+        EnsureInitialized();
+        Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            var menuBuilder = new NoteContextMenu(refreshCallback);
+            var menuItems = menuBuilder.BuildContextMenu(selection ?? "", clipboard ?? "", noteType);
+            
+            PopupMenuHost.ShowAt(menuItems, x, y);
         });
     }
 

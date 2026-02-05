@@ -1,0 +1,13 @@
+from System import Action
+from System.Collections.Generic import List_1
+from Avalonia.Controls import MenuItem
+
+class JapaneseMainMenu:
+    def __init__(self, refreshCallback: Action) -> None: ...
+    def BuildMenu(self) -> List_1[MenuItem]: ...
+
+
+class NoteContextMenu:
+    def __init__(self, refreshCallback: Action) -> None: ...
+    def BuildContextMenu(self, selection: str, clipboard: str, noteType: str) -> List_1[MenuItem]: ...
+

@@ -120,7 +120,8 @@ def _add_avalonia_main_menu(menu: QMenu) -> None:
             physical_x = int(action_global_pos.x() * dpi_scale)
             physical_y = int(action_global_pos.y() * dpi_scale)
             
-            avalonia_host.show_test_main_menu(physical_x, physical_y)
+            # Use the real Japanese main menu with refresh callback
+            avalonia_host.show_japanese_main_menu(refresh, physical_x, physical_y)
         except Exception as e:
             from jaslib import mylog
             mylog.error(f"Failed to show Avalonia main menu: {e}")
