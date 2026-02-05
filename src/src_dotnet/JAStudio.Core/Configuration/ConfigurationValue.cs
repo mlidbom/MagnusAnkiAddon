@@ -193,23 +193,15 @@ public class JapaneseConfig
 
    public JapaneseConfig()
    {
-      ConfigurationValue<float> AddFloat(ConfigurationValue<float> value)
+      ConfigurationValue<T> Add<T>(ConfigurationValue<T> value)
       {
          value.OnChange(_ => PublishChange());
          return value;
       }
-
-      ConfigurationValue<int> AddInt(ConfigurationValue<int> value)
-      {
-         value.OnChange(_ => PublishChange());
-         return value;
-      }
-
-      ConfigurationValue<bool> AddBool(ConfigurationValue<bool> value)
-      {
-         value.OnChange(_ => PublishChange());
-         return value;
-      }
+         
+      ConfigurationValue<float> AddFloat(ConfigurationValue<float> value) => Add(value);
+      ConfigurationValue<int> AddInt(ConfigurationValue<int> value) => Add(value);
+      ConfigurationValue<bool> AddBool(ConfigurationValue<bool> value) => Add(value);
 
       BoostFailedCardAllowedTimeByFactor = AddFloat(new ConfigurationValue<float>("boost_failed_card_allowed_time_by_factor", "Boost Failed Card Allowed Time Factor", 1.5f, To.Float));
 
