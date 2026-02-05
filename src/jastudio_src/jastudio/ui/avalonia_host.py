@@ -57,13 +57,3 @@ def show_about_dialog() -> None:
     except Exception as e:
         mylog.error(f"Failed to show AboutDialog: {e}")
         raise
-
-
-def is_available() -> bool:
-    """Check if Avalonia UI is available and can be initialized."""
-    try:
-        import importlib.util
-
-        return importlib.util.find_spec("JAStudio.UI") is not None
-    except (ImportError, ModuleNotFoundError):
-        return False

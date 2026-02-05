@@ -13,6 +13,7 @@ from jastudio.ankiutils.app import get_ui_utils, main_window
 from jastudio.configuration.configuration import show_japanese_options
 from jastudio.configuration.readings_mapping_dialog import show_readings_mappings
 from jastudio.sysutils import object_instance_tracker
+from jastudio.ui import avalonia_host
 from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.open_in_anki import build_open_in_anki_menu
 from jastudio.ui.menus.web_search import build_web_search_menu
@@ -46,6 +47,8 @@ def build_main_menu() -> None:
     build_lookup_menu(non_optional(my_menu.addMenu(shortcutfinger.home2("Lookup"))))
     build_local_menu(non_optional(my_menu.addMenu(shortcutfinger.home3("Local Actions"))))
     build_debug_menu(non_optional(my_menu.addMenu(shortcutfinger.home4("Debug"))))
+    # Avalonia UI test
+    my_menu.addAction(shortcutfinger.down2("About JA Studio"), avalonia_host.show_about_dialog)  # pyright: ignore[reportUnknownMemberType]
 
 def build_lookup_menu(lookup_menu: QMenu) -> None:
     def get_text_input() -> str:
@@ -67,15 +70,6 @@ def build_debug_menu(debug_menu: QMenu) -> None:
     debug_menu.addAction(shortcutfinger.up1("Run GC and report"), jastudio.batches.local_note_updater.print_gc_status_and_collect)  # pyright: ignore[reportUnknownMemberType]
     debug_menu.addAction(shortcutfinger.up2("Reset"), app.reset)  # pyright: ignore[reportUnknownMemberType]
     add_menu_ui_action(debug_menu, shortcutfinger.down1("Refresh UI ('F5')"), refresh)
-
-    # Avalonia UI test
-    debug_menu.addAction(shortcutfinger.down2("Test Avalonia Dialog"), _test_avalonia_dialog)  # pyright: ignore[reportUnknownMemberType]
-
-def _test_avalonia_dialog() -> None:
-    """Test function to open the Avalonia About dialog."""
-    from jastudio.ui import avalonia_host
-
-    avalonia_host.show_about_dialog()
 
 def build_config_menu(config_menu: QMenu) -> None:
     non_optional(config_menu.addAction(shortcutfinger.home1("Options"), show_japanese_options)).setShortcut("Ctrl+Shift+s")  # pyright: ignore[reportUnknownMemberType]
