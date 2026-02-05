@@ -49,7 +49,7 @@ def build_main_menu() -> None:
     build_debug_menu(non_optional(my_menu.addMenu(shortcutfinger.home4("Debug"))))
     # Avalonia UI test
     my_menu.addAction(shortcutfinger.down2("About JA Studio"), avalonia_host.show_about_dialog)  # pyright: ignore[reportUnknownMemberType]
-    
+
     # Add "Japanese Avalonia" menu that shows Avalonia popup on hover
     _add_avalonia_main_menu(my_menu)
 

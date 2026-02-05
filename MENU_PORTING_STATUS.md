@@ -52,365 +52,179 @@
 - Translation (DeepL, Kanshudo)
 - Grammar (Google, Japanese with anime, Wiktionary)
 - Images (Google, Bing)
-- Dict**COMPLETE** Anki (see OpenInAnkiMenus.cs)
-      - **COMPLETE** Exact matches
-        - **COMPLETE** Open Exact matches | no sentences | reading cards
-        - **COMPLETE** Open Exact matches with sentences
-      - **COMPLETE** Kanji
-        - **COMPLETE** All kanji in string
-        - **COMPLETE** By reading part
-        - **COMPLETE** By reading exact
-        - **COMPLETE** With radicals
-        - **COMPLETE** With meaning
-      - **COMPLETE** Vocab
-        - **COMPLETE** form -
-        - **COMPLETE** form - read card only
-        - **COMPLETE** form, reading or answer
-        - **COMPLETE** Wildcard
-        - **COMPLETE** Text words
-      - **COMPLETE** Sentence
-        - **COMPLETE** Parse Vocabulary
-        - **COMPLETE** Exact String
-    - **COMPLETE** Web (see WebSearchMenus.cs)
-      - **COMPLETE** Kanji
-        - **COMPLETE** Kanji explosion
-        - **COMPLETE** Kanshudo
-        - **COMPLETE** Kanji map
-      - **COMPLETE** Sentences
-        - **COMPLETE** Sentences: Immersion Kit
-        - **COMPLETE** Sentences: Tatoeba
-      - **COMPLETE** Misc
-        - **COMPLETE** Conjugate
-          - **COMPLETE** Conjugate: Japanese verb conjugator
-          - **COMPLETE** Conjugate: Verbix
-        - **COMPLETE** Translate
-          - **COMPLETE** Translate: Deepl
-          - **COMPLETE** Translate: Kanshudo
-        - **COMPLETE** Grammar
-          - **COMPLETE** Grammar: Google
-          - **COMPLETE** Grammar: Japanese with anime
-          - **COMPLETE** Grammar: Wiktionary
-        - **COMPLETE** Images
-          - **COMPLETE** Images: Google
-          - **COMPLETE** Images: Bing
-      - **COMPLETE** Lookup
-        - **COMPLETE** English: Merriam Webster
-        - **COMPLETE** Wiktionary
-        - **COMPLETE** Lookup: Takoboto
-        - **COMPLETE** Lookup: Jisho
-        - **COMPLETE** Lookup: Wanikani
-        - **COMPLETE**anji
-        - MISSING All kanji in string
-        - MISSING By reading part
-        - MISSING By reading exact
-        - MISSING With radicals
-        - MISSING With meaning
-      - MISSING Vocab
-        - MISSING form -
-        - MISSING form - read card only
-        - MISSING form, reading or answer
-        - MISSING Wildcard
-        - MISSING Text words
-      - MISSING Sentence
-        - MISSING Parse Vocabulary
-        - MISSING Exact String
-    - MISSING Web
-      - MISSING Kanji
-        - MISSING Kanji explosion
-        - MISSING Kanshudo
-        - MISSING Kanji map
-      - MISSING Sentences
-        - MISSING Sentences: Immersion Kit
-        - MISSING Sentences: Tatoeba
-      - MISSING Misc
-        - MISSING Conjugate
-          - MISSING Conjugate: Japanese verb conjugator
-          - MISSING Conjugate: Verbix
-        - MISSING Translate
-          - MISSING Translate: Deepl
-          - MISSING Translate: Kanshudo
-        - MISSING Grammar
-          - MISSING Grammar: Google
-          - MISSING Grammar: Japanese with anime
-          - MISSING Grammar: Wiktionary
-        - MISSING Images
-          - MISSING Images: Google
-          - MISSING Images: Bing
-      - MISSING Lookup
-        - MISSING English: Merriam Webster
-        - MISSING Wiktionary
-        - MISSING Lookup: Takoboto
-        - MISSING Lookup: Jisho
-        - MISSING Lookup: Wanikani
-        - MISSING Lookup: Word Kanshudo
-  - MISSING Local Actions
-    - MISSING Update
-      - MISSING Vocab
-      - MISSING Kanji
-      - MISSING Sentences
-      - MISSING Tag note metadata
-      - MISSING All the above
-      - MISSING Reparse sentences
-      - MISSING All the above: Full rebuild
-    - MISSING Convert Immersion Kit sentences
-    - MISSING Update everything except reparsing sentences
-    - MISSING Create vocab notes for parsed words with no vocab notes
-    - MISSING Regenerate vocab source answers from jamdict
-  - MISSING Debug
-    - MISSING Show instance report
-    - MISSING Take Snapshot
-    - MISSING Show current snapshot diff
-    - MISSING Show diff against first snapshot
-    - MISSING Show diff against current snapshot
-    - MISSING Run GC and report
-    - MISSING Reset
-    - MISSING Refresh UI (F5)
-  - MISSING About JA Studio
+- Dictionary lookups (Merriam Webster, Wiktionary, Takoboto, Jisho, Wanikani, Word Kanshudo)
 
 ---
 
-## Right-Click Context Menu (common.py)
+## Main Menu Structure (JapaneseMainMenu.cs)
+
+### Status Overview
+- **Config Menu**: SCAFFOLDED (menu items exist, actions are TODO stubs)
+  - Options (Ctrl+Shift+S) - TODO
+  - Readings mappings (Ctrl+Shift+M) - TODO
+  
+- **Lookup Menu**: ✅ COMPLETE
+  - Open note (Ctrl+O) - TODO stub
+  - ✅ Anki (all search menus complete, see OpenInAnkiMenus.cs)
+  - ✅ Web (all search menus complete, see WebSearchMenus.cs)
+  
+- **Local Actions Menu**: SCAFFOLDED (menu items exist, actions are TODO stubs)
+  - Update submenu - TODO (Vocab, Kanji, Sentences, Tag metadata, All, Reparse, Full rebuild)
+  - Convert Immersion Kit sentences - TODO
+  - Update everything except reparsing sentences - TODO
+  - Create vocab notes for parsed words - TODO
+  - Regenerate vocab source answers from jamdict - TODO
+  
+- **Debug Menu**: SCAFFOLDED (menu items exist, actions are TODO stubs)
+  - Show instance report - TODO
+  - Take Snapshot - TODO
+  - Show current snapshot diff - TODO
+  - Show diff against first snapshot - TODO
+  - Show diff against current snapshot - TODO
+  - Run GC and report - TODO
+  - Reset - TODO
+  - Refresh UI (F5) - wired to refresh callback ✅
+
+---
+
+## Right-Click Context Menu (NoteContextMenu.cs)
 
 ### Context Menu Structure
-- MISSING Selection: "{text}" (dynamic, when text is selected)
-  - MISSING Current note actions (see Note-Type Specific Actions below)
-  - **COMPLETE** Open in Anki (same structure as Main Menu > Lookup > Anki)
-  - **COMPLETE** Search Web (same structure as Main Menu > Lookup > Web)
-  - MISSING Exactly matching notes
-    - MISSING Vocab Actions
-    - MISSING Sentence Actions
-    - MISSING Kanji Actions
-  - MISSING Create: {text}
-    - MISSING vocab
-    - MISSING sentence
-    - MISSING kanji
-  - MISSING Reparse matching sentences
-- MISSING Clipboard: "{text}" (dynamic, when clipboard has content)
-  - (Same structure as Selection menu - **Anki/Web lookups COMPLETE**)
-- MISSING Note actions (see Note-Type Specific Actions below)
-- MISSING Universal note actions
-  - MISSING Open in previewer
-  - MISSING Note actions (nested, note-type specific)
-  - MISSING Unsuspend all cards
-  - MISSING Suspend all cards
-- MISSING View (see Note-Type Specific Actions below)
+- SCAFFOLDED Selection: "{text}" (dynamic, when text is selected)
+  - SCAFFOLDED Current note actions (menu entry exists, action is TODO stub)
+  - ✅ COMPLETE Open in Anki (fully implemented via OpenInAnkiMenus.cs)
+  - ✅ COMPLETE Search Web (fully implemented via WebSearchMenus.cs)
+  - SCAFFOLDED Exactly matching notes (menu entry exists, action is TODO stub)
+  - SCAFFOLDED Create: {text} (menu entries exist, actions are TODO stubs)
+    - vocab - TODO stub
+    - sentence - TODO stub
+    - kanji - TODO stub
+  - SCAFFOLDED Reparse matching sentences (menu entry exists, action is TODO stub)
+- SCAFFOLDED Clipboard: "{text}" (dynamic, when clipboard has content)
+  - (Same structure as Selection menu - Anki/Web lookups ✅ COMPLETE, other items SCAFFOLDED)
+- SCAFFOLDED Note actions (menu entry exists, note-type specific, see below)
+- SCAFFOLDED Universal note actions (menu entry exists, actions are TODO stubs)
+  - Open in previewer - TODO stub
+  - Note actions (nested, note-type specific) - TODO stub
+  - Unsuspend all cards - TODO stub
+  - Suspend all cards - TODO stub
+- SCAFFOLDED View (menu entry exists, note-type specific, see below)
 
 ---
 
-## Note-Type Specific Actions
+## Note-Type Specific Actions (Not Yet Started)
 
 ### Kanji Note Actions (notes/kanji/main.py)
-- MISSING Note actions
-  - MISSING Open
-    - MISSING Primary Vocabs
-    - MISSING Vocabs
-    - MISSING Radicals
-    - MISSING Kanji
-    - MISSING Sentences
-  - MISSING Reset Primary Vocabs
-  - MISSING Accept meaning (conditional: only if no user answer)
-  - MISSING Populate radicals from mnemonic tags
-  - MISSING Bootstrap mnemonic from radicals
-  - MISSING Reset mnemonic
-- MISSING View
+- NOT STARTED Note actions
+  - NOT STARTED Open
+    - Primary Vocabs
+    - Vocabs
+    - Radicals
+    - Kanji
+    - Sentences
+  - Reset Primary Vocabs
+  - Accept meaning (conditional: only if no user answer)
+  - Populate radicals from mnemonic tags
+  - Bootstrap mnemonic from radicals
+  - Reset mnemonic
+- NOT STARTED View
   - (Empty in Python)
 
 ### Kanji String Menu Actions (notes/kanji/string_menu.py)
-- MISSING Highlighted Vocab
-  - MISSING {vocab} (dynamic: one per primary vocab, positioned)
-  - MISSING [Last]
-  - MISSING Remove (conditional: if string is in primary vocab)
-- MISSING Add
-  - MISSING Similar meaning
-  - MISSING Confused with
-- MISSING Make primary Onyomi Reading (conditional: if katakana string in readings)
-- MISSING Remove primary Onyomi Reading (conditional: if katakana string in primary readings)
-- MISSING Make primary Kunyomi reading (conditional: if hiragana string in readings)
-- MISSING Remove primary Kunyomi reading (conditional: if hiragana string in primary readings)
+- NOT STARTED Highlighted Vocab
+  - {vocab} (dynamic: one per primary vocab, positioned)
+  - [Last]
+  - Remove (conditional: if string is in primary vocab)
+- NOT STARTED Add
+  - Similar meaning
+  - Confused with
+- NOT STARTED Make primary Onyomi Reading (conditional: if katakana string in readings)
+- NOT STARTED Remove primary Onyomi Reading (conditional: if katakana string in primary readings)
+- NOT STARTED Make primary Kunyomi reading (conditional: if hiragana string in readings)
+- NOT STARTED Remove primary Kunyomi reading (conditional: if hiragana string in primary readings)
 
 ### Vocab Note Actions (notes/vocab/main.py)
-- MISSING Note actions
-  - MISSING Open
-    - MISSING Vocab
-      - MISSING Forms
-      - MISSING Compound parts
-      - MISSING In compounds
-      - MISSING Synonyms
-      - MISSING See also
-      - MISSING Homonyms
-        - MISSING Homonyms: {reading} (dynamic: one per reading)
-      - MISSING Dependencies
-    - MISSING Sentences
-      - MISSING Sentences I'm Studying
-      - MISSING Sentences
-      - MISSING Sentences with primary form
-      - MISSING Sentences with this word highlighted
-      - MISSING Potentially matching sentences
-      - MISSING Marked invalid in sentences
-    - MISSING Kanji
-    - MISSING Ergative twin (conditional: if twin exists)
-  - MISSING Edit
-  - MISSING Create
-    - MISSING Clone to form
-      - MISSING {form} (dynamic: one per form with no vocab)
-    - MISSING Noun variations
-      - MISSING する-verb
-      - MISSING します-verb
-      - MISSING な-adjective
-      - MISSING の-adjective
-      - MISSING に-adverb
-      - MISSING と-adverb
-    - MISSING Verb variations
-      - MISSING ます-form
-      - MISSING て-form
-      - MISSING た-form
-      - MISSING ない-form
-      - MISSING え-stem/godan-imperative
-      - MISSING ば-form
-      - MISSING {receptive/passive}-form
-      - MISSING causative
-      - MISSING imperative
-      - MISSING Potential-godan
-    - MISSING Misc
-      - MISSING く-form-of-い-adjective
-      - MISSING さ-form-of-い-adjective
-      - MISSING て-prefixed
-      - MISSING お-prefixed
-      - MISSING ん-suffixed
-      - MISSING か-suffixed
-    - MISSING Selection (conditional: if selection exists)
-      - MISSING Prefix-onto
-        - MISSING Dictionary form
-        - MISSING chop-1
-        - MISSING chop-2
-        - MISSING chop-3
-      - MISSING Suffix-onto
-        - MISSING dictionary-form
-        - MISSING い-stem
-        - MISSING て-stem
-        - MISSING え-stem
-        - MISSING あ-stem
-        - MISSING chop-1
-        - MISSING chop-2
-        - MISSING chop-3
-        - MISSING chop-4
-    - MISSING Clipboard (conditional: if clipboard has content)
-      - (Same structure as Selection)
-  - MISSING Copy
-    - MISSING Question
-    - MISSING Answer
-    - MISSING Definition (question:answer)
-    - MISSING Sentences: max 30
-  - MISSING Misc
-    - MISSING Accept meaning (conditional: if no user answer)
-    - MISSING Generate answer
-    - MISSING Reparse potentially matching sentences
-    - MISSING Repopulate TOS
-    - MISSING Autogenerate compounds
-  - MISSING Remove
-    - MISSING User explanation (conditional: if has value)
-    - MISSING User explanation long (conditional: if has value)
-    - MISSING User mnemonic (conditional: if has value)
-    - MISSING User answer (conditional: if has value)
-- MISSING View
-  - (Empty in Python)
+- NOT STARTED Note actions
+  - NOT STARTED Open
+    - Vocab (Forms, Compound parts, In compounds, Synonyms, See also, Homonyms, Dependencies)
+    - Sentences (I'm Studying, All, Primary form, Highlighted, Potentially matching, Marked invalid)
+    - Kanji
+    - Ergative twin (conditional)
+  - NOT STARTED Edit
+  - NOT STARTED Create (Clone to form, Noun variations, Verb variations, Misc variations, Selection/Clipboard combinations)
+  - NOT STARTED Copy (Question, Answer, Definition, Sentences)
+  - NOT STARTED Misc (Accept meaning, Generate answer, Reparse sentences, Repopulate TOS, Autogenerate compounds)
+  - NOT STARTED Remove (User explanation, User explanation long, User mnemonic, User answer - all conditional)
+- NOT STARTED View (Empty in Python)
 
 ### Vocab String Menu Actions (notes/vocab/string_menu.py)
-- MISSING Add
-  - MISSING Synonym (conditional: if not already a synonym)
-  - MISSING Synonyms transitively one level
-  - MISSING Confused with (conditional: if not already confused with)
-  - MISSING Antonym (conditional: if not already an antonym)
-  - MISSING Form (conditional: if not already a form)
-  - MISSING See also (conditional: if not already see also)
-  - MISSING Perfect synonym, automatically synchronize answers (conditional: if not already perfect synonym)
-- MISSING Set
-  - MISSING Ergative twin
-  - MISSING Derived from
-- MISSING Remove
-  - MISSING Synonym (conditional: if is a synonym)
-  - MISSING Confused with (conditional: if is confused with)
-  - MISSING Antonym (conditional: if is an antonym)
-  - MISSING Ergative twin (conditional: if string is ergative twin)
-  - MISSING Form (conditional: if is a form)
-  - MISSING See also (conditional: if is see also)
-  - MISSING Perfect synonym (conditional: if is perfect synonym)
-  - MISSING Derived from (conditional: if string is derived from)
-- MISSING Sentence
-  - MISSING Add Highlight (conditional: if not already highlighted)
-  - MISSING Remove highlight (conditional: if is highlighted)
-  - MISSING Remove-sentence: Mark as incorrect match in sentence
-- MISSING Create combined {string}
-  - MISSING Prefix-onto
-    - MISSING Dictionary form
-    - MISSING chop-1
-    - MISSING chop-2
-    - MISSING chop-3
-  - MISSING Suffix-onto
-    - MISSING dictionary-form
-    - MISSING い-stem
-    - MISSING て-stem
-    - MISSING え-stem
-    - MISSING あ-stem
-    - MISSING chop-1
-    - MISSING chop-2
-    - MISSING chop-3
-    - MISSING chop-4
+- NOT STARTED Add (Synonym, Confused with, Antonym, Form, See also, Perfect synonym - conditional)
+- NOT STARTED Set (Ergative twin, Derived from)
+- NOT STARTED Remove (Synonym, Confused with, Antonym, Ergative twin, Form, See also, Perfect synonym, Derived from - all conditional)
+- NOT STARTED Sentence (Add/Remove highlight, Mark as incorrect - conditional)
+- NOT STARTED Create combined {string} (Prefix/Suffix variations)
 
 ### Sentence Note Actions (notes/sentence/main.py)
-- MISSING Note actions
-  - MISSING Open
-    - MISSING Highlighted Vocab
-    - MISSING Highlighted Vocab Read Card
-    - MISSING Kanji
-    - MISSING Parsed words
-  - MISSING Remove
-    - MISSING All highlighted (conditional: if any highlighted)
-    - MISSING All incorrect matches (conditional: if any incorrect matches)
-    - MISSING All hidden matches (conditional: if any hidden matches)
-    - MISSING Source comments (conditional: if has source comments)
-  - MISSING Remove User
-    - MISSING comments (conditional: if has user comments)
-    - MISSING answer (conditional: if has user answer)
-    - MISSING question (conditional: if has user question)
-- MISSING View
-  - MISSING {toggle} (dynamic: one per sentence view toggle)
-  - MISSING Toggle all sentence auto yield compound last token flags (Ctrl+Shift+Alt+D)
+- NOT STARTED Note actions
+  - NOT STARTED Open (Highlighted Vocab, Highlighted Vocab Read Card, Kanji, Parsed words)
+  - NOT STARTED Remove (All highlighted, All incorrect matches, All hidden matches, Source comments - all conditional)
+  - NOT STARTED Remove User (comments, answer, question - all conditional)
+- NOT STARTED View ({toggle} dynamic, Toggle all auto yield flags)
 
 ### Sentence String Menu Actions (notes/sentence/string_menu.py)
-- MISSING Add
-  - MISSING Highlighted Vocab (conditional: if not already highlighted)
-  - MISSING Hidden matches (dynamic: one or more based on matched words)
-  - MISSING Incorrect matches (dynamic: one or more based on matched words)
-- MISSING Remove
-  - MISSING Highlighted vocab (conditional: if is highlighted)
-  - MISSING Hidden matches (dynamic: one or more based on existing exclusions)
-  - MISSING Incorrect matches (dynamic: one or more based on existing exclusions)
-- MISSING Split with word-break tag in question (conditional: if string is in question)
+- NOT STARTED Add (Highlighted Vocab, Hidden matches, Incorrect matches - conditional/dynamic)
+- NOT STARTED Remove (Highlighted vocab, Hidden matches, Incorrect matches - conditional/dynamic)
+- NOT STARTED Split with word-break tag (conditional)
 
 ---
 
 ## Summary Statistics
 - **Total menu items tracked**: ~200+ items
-- **COMPLETE**: ~50+ items (all shared lookup menus)
-- **MISSING**: ~150+ items (note-specific actions, local actions, debug, config)
-- **Porting completion**: ~25%
+- **COMPLETE**: ~40 items (QueryBuilder methods + OpenInAnki + WebSearch menus, integrated in both main and context)
+- **SCAFFOLDED**: ~40 items (menu structure exists, actions are TODO stubs)
+- **MISSING**: ~120+ items (note-specific actions not yet ported)
+- **Porting completion**: ~20% complete, ~20% scaffolded, ~60% not started
 
 ### Phase 1 Complete ✅
-- QueryBuilder (21 methods)
-- OpenInAnkiMenus (17 menu items)
-- WebSearchMenus (22 menu items) ✅
-- The C# scaffolding exists in:
-  - `JAStudio.UI/Menus/JapaneseMainMenu.cs` (scaffolding + shared menus integrated)
-  - `JAStudio.UI/Menus/NoteContextMenu.cs` (scaffolding + shared menus integrated)
+- QueryBuilder (21 methods) - ✅ COMPLETE
+- OpenInAnkiMenus (17 menu items) - ✅ COMPLETE
+- WebSearchMenus (22 menu items) - ✅ COMPLETE
+- ShortcutFinger utility (keyboard accelerators) - ✅ COMPLETE
+- Menu integration into JapaneseMainMenu - ✅ COMPLETE
+- Menu integration into NoteContextMenu - ✅ COMPLETE
+- Python integration layer wiring - ✅ COMPLETE
+
+### Phase 2 Scaffolded (TODO stubs in place)
+- Main menu Config actions (Options, Readings mappings)
+- Main menu Local Actions (Update, Convert, Create, Regenerate)
+- Main menu Debug actions (Snapshots, GC, Reset)
+- Context menu Create actions (vocab, sentence, kanji)
+- Context menu Universal note actions (previewer, suspend/unsuspend)
+- Context menu scaffolding for note-specific actions
+
+### Phase 3 Not Started
+- Note-specific actions (Kanji, Vocab, Sentence)
+- Note-specific string menus (add/remove relationships, highlights, etc.)
+- Conditional menu items based on note state
+- Dynamic menu generation based on data
+
+### Infrastructure Complete ✅
+### Infrastructure Complete ✅
+The C# infrastructure is in place:
+  - `JAStudio.UI/Menus/JapaneseMainMenu.cs` (scaffolding complete, lookup menus integrated ✅)
+  - `JAStudio.UI/Menus/NoteContextMenu.cs` (scaffolding complete, lookup menus integrated ✅)
   - `JAStudio.UI/Menus/OpenInAnkiMenus.cs` ✅ COMPLETE
   - `JAStudio.UI/Menus/WebSearchMenus.cs` ✅ COMPLETE
-  - `JAStudio.UI/PopupMenuHost.cs`
-  - `JAStudio.UI/DialogHost.cs` (updated with callbacks)
-- Python integration layer in:
-  - `jastudio/ui/avalonia_host.py` (updated with callbacks)
-  - `jastudio/ui/tools_menu.py` (see `_add_avalonia_main_menu()`)
-  - `jastudio/ui/menus/common.py` (see `_add_avalonia_menu_entry()`)
+  - `JAStudio.UI/Utils/ShortcutFinger.cs` ✅ COMPLETE (keyboard accelerators)
+  - `JAStudio.UI/Utils/BrowserLauncher.cs` ✅ COMPLETE
+  - `JAStudio.UI/Utils/InputDialog.cs` ✅ COMPLETE
+  - `JAStudio.UI/PopupMenuHost.cs` (infrastructure ready)
+  - `JAStudio.UI/DialogHost.cs` (entry points with callbacks)
+  
+Python integration layer complete ✅:
+  - `jastudio/ui/avalonia_host.py` (all menu show functions wired up)
+  - `jastudio/ui/tools_menu.py` (`_add_avalonia_main_menu()` with accelerator)
+  - `jastudio/ui/menus/common.py` (`_add_avalonia_menu_entry()` with accelerator)
 
 ## Implementation Patterns Established
 
@@ -433,25 +247,58 @@ BrowserLauncher.OpenUrl("https://jisho.org/search/" + encodedText);
 // Menu items use Func<string> for lazy text evaluation
 OpenInAnkiMenus.BuildOpenInAnkiMenu(() => _searchText, _executeLookup)
 WebSearchMenus.BuildWebSearchMenu(() => _searchText, BrowserLauncher.OpenUrl)
-``Vocab, Kanji, Parsed words
+```
+
+### Keyboard Accelerators
+```csharp
+// Use ShortcutFinger for consistent accelerator keys
+Header = ShortcutFinger.Home1("Config")  // Alt+U
+Header = ShortcutFinger.Up1("Text")      // Alt+P
+```
+
+---
+
+## Next Steps for Porting
+
+### Immediate Priority (Phase 2A)
+1. **Implement Config menu actions** - Wire up TODO stubs in JapaneseMainMenu.cs
+   - Options dialog (Python callback needed)
+   - Readings mappings dialog (Python callback needed)
+2. **Implement Debug menu actions** - Wire up TODO stubs in JapaneseMainMenu.cs
+   - Snapshot operations (Python callback needed)
+   - GC operations (Python callback needed)
+   - Already done: Refresh UI ✅
+
+### Medium Priority (Phase 2B)  
+1. **Implement Local Actions menu** - Wire up TODO stubs in JapaneseMainMenu.cs
+   - Update operations (Python callbacks needed)
+   - Convert/Create/Regenerate operations (Python callbacks needed)
+2. **Implement Context menu Create actions** - Wire up TODO stubs in NoteContextMenu.cs
+   - Create vocab note (Python callback needed)
+   - Create sentence note (Python callback needed)
+   - Create kanji note (Python callback needed)
+3. **Implement Universal note actions** - Wire up TODO stubs in NoteContextMenu.cs
+   - Open in previewer (Python callback needed)
+   - Suspend/Unsuspend operations (Python callbacks needed)
+
+### Large Effort (Phase 3)
+1. **Note-specific main actions** - Port from Python note menu files
+   - Vocab note "Open" submenu (forms, compounds, synonyms, sentences, kanji, etc.)
+   - Vocab note "Create" submenu (clone forms, variations, prefixes/suffixes)
+   - Vocab note "Copy" operations
+   - Vocab note "Misc" operations  
+   - Kanji note actions
+   - Sentence note actions
 2. **Note-specific string menus** - Context menu actions on selected text
-   - Kanji string menu (add/remove readings, primary vocab)
+   - Kanji string menu (primary vocab, readings)
    - Vocab string menu (add synonym, form, confused with, etc.)
-   - Sentence string menu (add/remove highlights, hidden matches)
-3. **Note manipulation actions** - Create, edit, copy, remove operations
-   - Will need more Python callbacks for note modification
-4. **Config/Debug/Local Actions** - Lower priority, Python UI dialogs needed
+   - Sentence string menu (highlights, hidden/incorrect matches)
+
+---
 
 ## Notes
+- Menu items marked as "TODO stub" have menu entries created but handler methods just log a message
+- Menu items marked as "SCAFFOLDED" have structure in place but need implementation
 - Menu items marked as "conditional" only appear when certain conditions are met
 - Menu items marked as "dynamic" are generated at runtime based on data
-- Submenu structures under "Open in Anki" and "Search Web" are shared between main menu and context menu
-- The C# scaffolding exists in:
-  - `JAStudio.UI/Menus/JapaneseMainMenu.cs`
-  - `JAStudio.UI/Menus/NoteContextMenu.cs`
-  - `JAStudio.UI/PopupMenuHost.cs`
-  - `JAStudio.UI/DialogHost.cs`
-- Python integration layer in:
-  - `jastudio/ui/avalonia_host.py`
-  - `jastudio/ui/tools_menu.py`
-  - `jastudio/ui/menus/common.py`
+- All ported menus use ShortcutFinger for keyboard accelerators matching the Python originals

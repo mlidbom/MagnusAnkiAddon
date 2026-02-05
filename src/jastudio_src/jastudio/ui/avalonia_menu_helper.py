@@ -1,10 +1,11 @@
 """Helper for adding hover-triggered Avalonia menu items to PyQt menus."""
 from __future__ import annotations
 
-from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from PyQt6.QtWidgets import QMenu
 
 
@@ -15,13 +16,13 @@ def add_hover_avalonia_menu(
 ) -> None:
     """
     Add a menu action that shows an Avalonia menu on hover.
-    
+
     This handles all the boilerplate:
     - Creating the Qt menu action
     - Tracking hover state to prevent duplicate shows
     - Converting Qt coordinates to Avalonia physical pixels
     - Auto-resetting state after a delay
-    
+
     Args:
         menu: The Qt menu to add the action to
         action_label: The text label for the menu action
