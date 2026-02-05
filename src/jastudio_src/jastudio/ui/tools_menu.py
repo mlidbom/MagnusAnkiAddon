@@ -102,23 +102,30 @@ def _add_avalonia_main_menu(menu: QMenu) -> None:
     
     avalonia_action = menu.addAction("🎯 Japanese Avalonia (Hover)")  # pyright: ignore[reportUnknownMemberType]
     
-    shown = [False]
-    reset_timer = [None]
+    shown = False
+    reset_timer: QTimer | None = None
     
     def on_hover() -> None:
-        if shown[0]:
+        nonlocal shown, reset_timer
+        
+        if shown:
             return
-        shown[0] = True
+        shown = True
         
         # Reset the flag after a short delay (allows re-triggering on next menu open)
-        if reset_timer[0]:
-            reset_timer[0].stop()
+        if reset_timer:
+            reset_timer.stop()
         
         timer = QTimer()
         timer.setSingleShot(True)
-        timer.timeout.connect(lambda: shown.__setitem__(0, False))  # pyright: ignore[reportUnknownMemberType]
+        timer.timeout.connect(lambda: on_reset())  # pyright: ignore[reportUnknownMemberType]
         timer.start(500)  # Reset after 500ms
-        reset_timer[0] = timer
+        reset_timer = timer
+    
+    def on_reset() -> None:
+        """Reset the shown flag."""
+        nonlocal shown
+        shown = False
         
         try:
             from PyQt6.QtWidgets import QApplication
