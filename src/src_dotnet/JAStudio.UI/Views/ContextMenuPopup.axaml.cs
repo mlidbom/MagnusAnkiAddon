@@ -75,14 +75,22 @@ public partial class ContextMenuPopup : UserControl
         // Create a top-level menu item that contains our items as a submenu
         var topMenuItem = new MenuItem
         {
-            Header = "▼", // Just a visual indicator, or empty
-            ItemsSource = new List<MenuItem> { clipboardItem, selectionItem }
+            Header = "", // Empty to minimize visual presence
+            ItemsSource = new List<MenuItem> { clipboardItem, selectionItem },
+            // Try to make it invisible
+            Height = 0,
+            MinHeight = 0,
+            Padding = new Thickness(0),
+            Margin = new Thickness(0)
         };
         
         // Create the main menu
         var menu = new Menu
         {
-            ItemsSource = new List<MenuItem> { topMenuItem }
+            ItemsSource = new List<MenuItem> { topMenuItem },
+            Height = 0,
+            Padding = new Thickness(0),
+            Margin = new Thickness(0)
         };
         
         // Create window with the Menu as content
@@ -93,8 +101,10 @@ public partial class ContextMenuPopup : UserControl
             CanResize = false,
             ShowInTaskbar = false,
             SystemDecorations = SystemDecorations.None,
-            Background = Avalonia.Media.Brushes.White,
-            SizeToContent = SizeToContent.WidthAndHeight,
+            Background = Avalonia.Media.Brushes.Transparent,
+            SizeToContent = SizeToContent.Manual,
+            Width = 1,
+            Height = 1,
             Topmost = true
         };
         
