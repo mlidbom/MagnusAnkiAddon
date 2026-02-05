@@ -76,8 +76,8 @@ def build_right_click_menu(right_click_menu: QMenu, note: JPNote | None, selecti
     if clipboard_menu:
         build_string_menu(clipboard_menu, clipboard, string_note_menu_factory)
 
-    # Add Avalonia menu entry (proof of concept)
-    _add_avalonia_menu_entry(right_click_menu, selection, clipboard)
+    # Add C# menu specs rendered as native PyQt menus
+    _add_csharp_menu_entry(right_click_menu, note, selection, clipboard)
 
     ExQmenu.disable_empty_submenus(right_click_menu)
 
@@ -130,33 +130,51 @@ def null_op_factory(_menu: QMenu, _string: str) -> None:
     pass
 
 
-def _add_avalonia_menu_entry(menu: QMenu, selection: str, clipboard: str) -> None:
-    """Add Avalonia menu entry that shows Avalonia popup on hover."""
-    from jastudio.ui import avalonia_host
-    from jastudio.ui.avalonia_menu_helper import add_hover_avalonia_menu
+def _add_csharp_menu_entry(menu: QMenu, note: JPNote | None, selection: str, clipboard: str) -> None:
+    """
+    Add C# menu specs rendered as native PyQt menus.
+    
+    All menu structure and business logic is in C# (JAStudio.UI.Menus.*).
+    This just converts the UI-agnostic specifications to PyQt QMenus.
+    """
+    from jastudio.ui.menus.qt_menu_adapter import to_qmenu
     from jastudio.ui.tools_menu import refresh
-
-    def show_context_menu(physical_x: int, physical_y: int) -> None:
-        """Show the appropriate context menu based on current note type."""
-        # Determine note type and show appropriate menu
-        note = ui_utils.try_get_review_note()
+    from JAStudio.UI.Menus import NoteContextMenu
+    from jaspythonutils.sysutils.typed import non_optional
+    
+    # Create callback for Anki browser searches
+    def execute_lookup(query: str) -> None:
+        from jastudio.ankiutils import search_executor
+        search_executor.do_lookup(query)
+    
+    # Get menu specs from C#
+    menu_builder = NoteContextMenu(refresh, execute_lookup)
+    
+    try:
         if note:
-            from jaslib.note.kanjinote import KanjiNote
-            from jaslib.note.sentences.sentencenote import SentenceNote
-            from jaslib.note.vocabulary.vocabnote import VocabNote
-
             if isinstance(note, VocabNote):
-                avalonia_host.show_vocab_context_menu(refresh, note.get_id(), selection, clipboard, physical_x, physical_y)
+                specs = menu_builder.BuildVocabContextMenuSpec(note.get_id(), selection, clipboard)
             elif isinstance(note, KanjiNote):
-                avalonia_host.show_kanji_context_menu(refresh, note.get_id(), selection, clipboard, physical_x, physical_y)
+                specs = menu_builder.BuildKanjiContextMenuSpec(note.get_id(), selection, clipboard)
             elif isinstance(note, SentenceNote):
-                avalonia_host.show_sentence_context_menu(refresh, note.get_id(), selection, clipboard, physical_x, physical_y)
+                specs = menu_builder.BuildSentenceContextMenuSpec(note.get_id(), selection, clipboard)
             else:
-                avalonia_host.show_generic_context_menu(refresh, selection, clipboard, physical_x, physical_y)
+                specs = menu_builder.BuildGenericContextMenuSpec(selection, clipboard)
         else:
-            avalonia_host.show_generic_context_menu(refresh, selection, clipboard, physical_x, physical_y)
-
-    add_hover_avalonia_menu(menu, shortcutfinger.up1("🎯 AvaloniaMenu (Hover to show)"), show_context_menu)
+            specs = menu_builder.BuildGenericContextMenuSpec(selection, clipboard)
+        
+        # Convert each spec to a PyQt menu and add to parent
+        for spec in specs:
+            if spec.IsVisible:
+                qmenu = to_qmenu(spec)
+                menu.addMenu(qmenu)
+    except Exception as e:
+        from jaslib import mylog
+        mylog.error(f"Failed to build C# menus: {e}")
+        import traceback
+        mylog.error(traceback.format_exc())
+        # Add fallback menu item
+        menu.addAction("⚠️ C# Menu Error (check console)")
 
 
 def init() -> None:

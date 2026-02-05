@@ -50,8 +50,8 @@ def build_main_menu() -> None:
     # Avalonia UI test
     my_menu.addAction(shortcutfinger.down2("About JA Studio"), avalonia_host.show_about_dialog)  # pyright: ignore[reportUnknownMemberType]
 
-    # Add "Japanese Avalonia" menu that shows Avalonia popup on hover
-    _add_avalonia_main_menu(my_menu)
+    # Add C# menu specs rendered as native PyQt submenu
+    _add_csharp_main_menu(my_menu)
 
 def build_lookup_menu(lookup_menu: QMenu) -> None:
     def get_text_input() -> str:
@@ -107,16 +107,43 @@ def build_local_menu(local_menu: QMenu) -> None:
     add_menu_ui_action(local_menu, shortcutfinger.home4("Create vocab notes for parsed words with no vocab notes"), local_note_updater.create_missing_vocab_with_dictionary_entries)
     add_menu_ui_action(local_menu, shortcutfinger.home5("Regenerate vocab source answers from jamdict"), local_note_updater.regenerate_jamdict_vocab_answers)
 
-def _add_avalonia_main_menu(menu: QMenu) -> None:
-    """Add Japanese Avalonia menu entry that shows Avalonia popup on hover."""
-    from jastudio.ui import avalonia_host
-    from jastudio.ui.avalonia_menu_helper import add_hover_avalonia_menu
-
-    def show_main_menu(physical_x: int, physical_y: int) -> None:
-        """Show the Japanese main menu."""
-        avalonia_host.show_japanese_main_menu(refresh, physical_x, physical_y)
-
-    add_hover_avalonia_menu(menu, shortcutfinger.down3("🎯 Japanese Avalonia (Hover)"), show_main_menu)
+def _add_csharp_main_menu(menu: QMenu) -> None:
+    """
+    Add C# main menu specs rendered as a native PyQt submenu.
+    
+    All menu structure and business logic is in C# (JAStudio.UI.Menus.JapaneseMainMenu).
+    This just converts the UI-agnostic specifications to PyQt QMenus.
+    """
+    from jastudio.ui.menus.qt_menu_adapter import to_qmenu_list
+    from JAStudio.UI.Menus import JapaneseMainMenu
+    from jaslib import mylog
+    
+    # Create callback for Anki browser searches
+    def execute_lookup(query: str) -> None:
+        from jastudio.ankiutils import search_executor
+        search_executor.do_lookup(query)
+    
+    def get_search_text() -> str:
+        """Get search text from user input."""
+        text, ok = QInputDialog.getText(None, "input", "enter text", QLineEdit.EchoMode.Normal, "")
+        return text if ok and text else ""
+    
+    try:
+        # Get menu specs from C#
+        menu_builder = JapaneseMainMenu(refresh, execute_lookup, get_search_text())
+        specs = menu_builder.BuildMenuSpec()
+        
+        # Convert to PyQt menus and add as a single submenu
+        csharp_menu = non_optional(menu.addMenu(shortcutfinger.down3("🎯 C# Japanese Menu")))
+        qmenus = to_qmenu_list(specs)
+        for qmenu in qmenus:
+            csharp_menu.addMenu(qmenu)
+    except Exception as e:
+        mylog.error(f"Failed to build C# main menu: {e}")
+        import traceback
+        mylog.error(traceback.format_exc())
+        # Add fallback menu item
+        menu.addAction("⚠️ C# Menu Error (check console)")
 
 
 def init() -> None:
