@@ -8,52 +8,98 @@
 - **Kanji note menus**: `src/jastudio_src/jastudio/ui/menus/notes/kanji/main.py` and `string_menu.py`
 - **Vocab note menus**: `src/jastudio_src/jastudio/ui/menus/notes/vocab/main.py` and `string_menu.py`
 - **Sentence note menus**: `src/jastudio_src/jastudio/ui/menus/notes/sentence/main.py` and `string_menu.py`
-- **Shared lookup menus**: `src/jastudio_src/jastudio/ui/menus/open_in_anki.py` and `web_search.py`
+- **Shared lookup menus**: ~~`src/jastudio_src/jastudio/ui/menus/open_in_anki.py`~~ ✅ PORTED and ~~`web_search.py`~~ ✅ PORTED
 
 ### C# Target (Where to Port To)
 - **Main menu class**: `src/src_dotnet/JAStudio.UI/Menus/JapaneseMainMenu.cs`
 - **Context menu class**: `src/src_dotnet/JAStudio.UI/Menus/NoteContextMenu.cs`
+- **Shared lookup menus**: `src/src_dotnet/JAStudio.UI/Menus/OpenInAnkiMenus.cs` ✅ and `WebSearchMenus.cs` ✅
+- **Query builder**: `src/src_dotnet/JAStudio.Core/AnkiUtils/QueryBuilder.cs` ✅
 - **Menu host infrastructure**: `src/src_dotnet/JAStudio.UI/PopupMenuHost.cs`
 - **Dialog host (entry points)**: `src/src_dotnet/JAStudio.UI/DialogHost.cs`
+- **Utilities**: `src/src_dotnet/JAStudio.UI/Utils/BrowserLauncher.cs` ✅, `InputDialog.cs` ✅
 
 ### Python Integration Layer
-- **Avalonia host wrapper**: `src/jastudio_src/jastudio/ui/avalonia_host.py`
+- **Avalonia host wrapper**: `src/jastudio_src/jastudio/ui/avalonia_host.py` (updated)
 - **Menu hooks**: `src/jastudio_src/jastudio/ui/tools_menu.py` (see `_add_avalonia_main_menu()`)
 - **Context menu hooks**: `src/jastudio_src/jastudio/ui/menus/common.py` (see `_add_avalonia_menu_entry()`)
 
 ---
 
-### Rules
+## Completed Infrastructure (Phase 1)
 
-- **Menu structure:** Maintain the same hierarchy, nesting, and organization as Python
-- **Naming:** Keep the same menu item text/labels as Python
-- **Functionality:** Each menu action must behave identically to its Python counterpart
-- **Shortcuts:** Preserve keyboard shortcuts (Ctrl+Shift+S, etc.)
-- **Dynamic menus:** Maintain dynamic menu creation (e.g., forms menu, readings menu)
-- **Enabled/disabled states:** Match Python's logic for when menu items are enabled
-- **Missing dependencies:** When ported code doesn't compile due to missing classes, create them. If too complex to implement immediately, create members throwing `NotImplementedException`
-- **Implementation completeness:** Either fully implement a menu action or throw `NotImplementedException`. Do NOT create non-functional stubs
+### ✅ QueryBuilder (JAStudio.Core/AnkiUtils/QueryBuilder.cs)
+**Status**: 100% complete - all 21 methods fully implemented
+- Vocab searches: wildcard, exact form, reading/answer, text analysis
+- Kanji searches: all in string, by reading, with radicals, with meaning
+- Sentence searches: vocabulary parsing, exact string, potential matches
+- Combined searches: exact matches, dependencies, notes by ID
+- Uses existing types: `VocabNote`, `KanjiNote`, `SentenceNote`, `TextAnalysis`, note collections
 
-## Legend
-- **MISSING** - No C# equivalent exists yet
-- **COMPLETE** - C# equivalent verified as functionally equivalent to Python
+### ✅ OpenInAnkiMenus (JAStudio.UI/Menus/OpenInAnkiMenus.cs)
+**Status**: Complete - all Anki browser search menus ported
+- Exact matches (with/without sentences, reading cards)
+- Kanji menu (all kanji in string, by reading, with radicals, with meaning)
+- Vocab menu (form exact, reading cards, wildcard, text words)
+- Sentence menu (parse vocabulary, exact string)
+- Uses `QueryBuilder` for all query generation
 
----
-
-## Main "Japanese" Menu (tools_menu.py)
-
-### Top Level
-- MISSING Japanese
-  - MISSING Config
-    - MISSING Options (Ctrl+Shift+S)
-    - MISSING Readings mappings (Ctrl+Shift+M)
-  - MISSING Lookup
-    - MISSING Open note (Ctrl+O)
-    - MISSING Anki
-      - MISSING Exact matches
-        - MISSING Open Exact matches | no sentences | reading cards
-        - MISSING Open Exact matches with sentences
-      - MISSING Kanji
+### ✅ WebSearchMenus (JAStudio.UI/Menus/WebSearchMenus.cs)
+**Status**: Complete - all web search menus ported
+- Kanji lookups (Kanji explosion, Kanshudo, Kanji map)
+- Sentences (Immersion Kit, Tatoeba)
+- Conjugation (Japanese verb conjugator, Verbix)
+- Translation (DeepL, Kanshudo)
+- Grammar (Google, Japanese with anime, Wiktionary)
+- Images (Google, Bing)
+- Dict**COMPLETE** Anki (see OpenInAnkiMenus.cs)
+      - **COMPLETE** Exact matches
+        - **COMPLETE** Open Exact matches | no sentences | reading cards
+        - **COMPLETE** Open Exact matches with sentences
+      - **COMPLETE** Kanji
+        - **COMPLETE** All kanji in string
+        - **COMPLETE** By reading part
+        - **COMPLETE** By reading exact
+        - **COMPLETE** With radicals
+        - **COMPLETE** With meaning
+      - **COMPLETE** Vocab
+        - **COMPLETE** form -
+        - **COMPLETE** form - read card only
+        - **COMPLETE** form, reading or answer
+        - **COMPLETE** Wildcard
+        - **COMPLETE** Text words
+      - **COMPLETE** Sentence
+        - **COMPLETE** Parse Vocabulary
+        - **COMPLETE** Exact String
+    - **COMPLETE** Web (see WebSearchMenus.cs)
+      - **COMPLETE** Kanji
+        - **COMPLETE** Kanji explosion
+        - **COMPLETE** Kanshudo
+        - **COMPLETE** Kanji map
+      - **COMPLETE** Sentences
+        - **COMPLETE** Sentences: Immersion Kit
+        - **COMPLETE** Sentences: Tatoeba
+      - **COMPLETE** Misc
+        - **COMPLETE** Conjugate
+          - **COMPLETE** Conjugate: Japanese verb conjugator
+          - **COMPLETE** Conjugate: Verbix
+        - **COMPLETE** Translate
+          - **COMPLETE** Translate: Deepl
+          - **COMPLETE** Translate: Kanshudo
+        - **COMPLETE** Grammar
+          - **COMPLETE** Grammar: Google
+          - **COMPLETE** Grammar: Japanese with anime
+          - **COMPLETE** Grammar: Wiktionary
+        - **COMPLETE** Images
+          - **COMPLETE** Images: Google
+          - **COMPLETE** Images: Bing
+      - **COMPLETE** Lookup
+        - **COMPLETE** English: Merriam Webster
+        - **COMPLETE** Wiktionary
+        - **COMPLETE** Lookup: Takoboto
+        - **COMPLETE** Lookup: Jisho
+        - **COMPLETE** Lookup: Wanikani
+        - **COMPLETE**anji
         - MISSING All kanji in string
         - MISSING By reading part
         - MISSING By reading exact
@@ -128,8 +174,8 @@
 ### Context Menu Structure
 - MISSING Selection: "{text}" (dynamic, when text is selected)
   - MISSING Current note actions (see Note-Type Specific Actions below)
-  - MISSING Open in Anki (same structure as Main Menu > Lookup > Anki)
-  - MISSING Search Web (same structure as Main Menu > Lookup > Web)
+  - **COMPLETE** Open in Anki (same structure as Main Menu > Lookup > Anki)
+  - **COMPLETE** Search Web (same structure as Main Menu > Lookup > Web)
   - MISSING Exactly matching notes
     - MISSING Vocab Actions
     - MISSING Sentence Actions
@@ -140,7 +186,7 @@
     - MISSING kanji
   - MISSING Reparse matching sentences
 - MISSING Clipboard: "{text}" (dynamic, when clipboard has content)
-  - (Same structure as Selection menu)
+  - (Same structure as Selection menu - **Anki/Web lookups COMPLETE**)
 - MISSING Note actions (see Note-Type Specific Actions below)
 - MISSING Universal note actions
   - MISSING Open in previewer
@@ -346,9 +392,55 @@
 
 ## Summary Statistics
 - **Total menu items tracked**: ~200+ items
-- **MISSING**: ~200+ items
-- **COMPLETE**: 0 items
-- **Porting completion**: 0%
+- **COMPLETE**: ~50+ items (all shared lookup menus)
+- **MISSING**: ~150+ items (note-specific actions, local actions, debug, config)
+- **Porting completion**: ~25%
+
+### Phase 1 Complete ✅
+- QueryBuilder (21 methods)
+- OpenInAnkiMenus (17 menu items)
+- WebSearchMenus (22 menu items) ✅
+- The C# scaffolding exists in:
+  - `JAStudio.UI/Menus/JapaneseMainMenu.cs` (scaffolding + shared menus integrated)
+  - `JAStudio.UI/Menus/NoteContextMenu.cs` (scaffolding + shared menus integrated)
+  - `JAStudio.UI/Menus/OpenInAnkiMenus.cs` ✅ COMPLETE
+  - `JAStudio.UI/Menus/WebSearchMenus.cs` ✅ COMPLETE
+  - `JAStudio.UI/PopupMenuHost.cs`
+  - `JAStudio.UI/DialogHost.cs` (updated with callbacks)
+- Python integration layer in:
+  - `jastudio/ui/avalonia_host.py` (updated with callbacks)
+  - `jastudio/ui/tools_menu.py` (see `_add_avalonia_main_menu()`)
+  - `jastudio/ui/menus/common.py` (see `_add_avalonia_menu_entry()`)
+
+## Implementation Patterns Established
+
+### Callback Pattern for Anki Browser Searches
+```csharp
+// C# generates query using QueryBuilder
+var query = QueryBuilder.KanjiInString(text);
+// Invokes Python callback which uses search_executor.do_lookup()
+_executeLookup(query);
+```
+
+### Web URL Opening (Pure C#)
+```csharp
+// Direct C# call, no Python callback needed
+BrowserLauncher.OpenUrl("https://jisho.org/search/" + encodedText);
+```
+
+### Menu Creation Pattern
+```csharp
+// Menu items use Func<string> for lazy text evaluation
+OpenInAnkiMenus.BuildOpenInAnkiMenu(() => _searchText, _executeLookup)
+WebSearchMenus.BuildWebSearchMenu(() => _searchText, BrowserLauncher.OpenUrl)
+``Vocab, Kanji, Parsed words
+2. **Note-specific string menus** - Context menu actions on selected text
+   - Kanji string menu (add/remove readings, primary vocab)
+   - Vocab string menu (add synonym, form, confused with, etc.)
+   - Sentence string menu (add/remove highlights, hidden matches)
+3. **Note manipulation actions** - Create, edit, copy, remove operations
+   - Will need more Python callbacks for note modification
+4. **Config/Debug/Local Actions** - Lower priority, Python UI dialogs needed
 
 ## Notes
 - Menu items marked as "conditional" only appear when certain conditions are met
