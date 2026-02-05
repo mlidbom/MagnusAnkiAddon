@@ -39,7 +39,7 @@ public class SentenceAnalysisViewModelWithSelectDataTests : IDisposable
     [InlineData("馴染めないでいる", "馴染む", "える", "ない", "でいる")]
     public void RequireForbidTePrefixOrStem(string sentence, params string[] expectedOutput)
     {
-        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, new List<WordExclusion>(), new List<string>(expectedOutput));
+        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, expectedOutput);
     }
 
     [Theory]
@@ -47,7 +47,7 @@ public class SentenceAnalysisViewModelWithSelectDataTests : IDisposable
     [InlineData("食べれる", "食べる", "れる:ichidan", "る:う")]
     public void RequiresEStem(string sentence, params string[] expectedOutput)
     {
-        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, new List<WordExclusion>(), new List<string>(expectedOutput));
+        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, expectedOutput);
     }
 
     [Theory]
@@ -56,7 +56,7 @@ public class SentenceAnalysisViewModelWithSelectDataTests : IDisposable
     [InlineData("だったら普通に金<wbr>貸せって言えよ", "だったら", "普通に", "金", "貸す", "え", "って言う", "え", "よ")]
     public void WbrWordSeparation(string sentence, params string[] expectedOutput)
     {
-        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, new List<WordExclusion>(), new List<string>(expectedOutput));
+        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, expectedOutput);
     }
 
     [Theory]
@@ -69,7 +69,7 @@ public class SentenceAnalysisViewModelWithSelectDataTests : IDisposable
     [InlineData("デカいな", "デカい", "な:masu")]
     public void RequireForbidDictionaryFormPrefixAndStem(string sentence, params string[] expectedOutput)
     {
-        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, new List<WordExclusion>(), new List<string>(expectedOutput));
+        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, expectedOutput);
     }
 
     [Theory]
@@ -86,7 +86,7 @@ public class SentenceAnalysisViewModelWithSelectDataTests : IDisposable
     [InlineData("止めるかな", "止める", "る:う", "かな")]
     public void DictionaryFormSplitting(string sentence, params string[] expectedOutput)
     {
-        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, new List<WordExclusion>(), new List<string>(expectedOutput));
+        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, expectedOutput);
     }
 
     [Theory]
@@ -94,7 +94,7 @@ public class SentenceAnalysisViewModelWithSelectDataTests : IDisposable
     [InlineData("難しく考えすぎ", "難しい", "考える", "すぎ")]
     public void ForbidAdverbStem(string sentence, params string[] expectedOutput)
     {
-        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, new List<WordExclusion>(), new List<string>(expectedOutput));
+        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, expectedOutput);
     }
 
     [Theory]
@@ -102,7 +102,7 @@ public class SentenceAnalysisViewModelWithSelectDataTests : IDisposable
     [InlineData("償いきれない", "償い", "きれない")]
     public void RequiresMasuStem(string sentence, params string[] expectedOutput)
     {
-        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, new List<WordExclusion>(), new List<string>(expectedOutput));
+        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, expectedOutput);
     }
 
     [Theory]
@@ -112,7 +112,7 @@ public class SentenceAnalysisViewModelWithSelectDataTests : IDisposable
         try
         {
             App.Config().HideAllCompounds.SetValue(true);
-            AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, new List<WordExclusion>(), new List<string>(expectedOutput));
+            AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, expectedOutput);
         }
         finally
         {
@@ -125,7 +125,7 @@ public class SentenceAnalysisViewModelWithSelectDataTests : IDisposable
     [InlineData("買い替えています", "買い替える", "ている", "ます")]
     public void HideTransparentCompounds(string sentence, params string[] expectedOutput)
     {
-        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, new List<WordExclusion>(), new List<string>(expectedOutput));
+        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, expectedOutput);
     }
 
     [Theory]
@@ -151,7 +151,7 @@ public class SentenceAnalysisViewModelWithSelectDataTests : IDisposable
     [InlineData("綺麗 母様に見せよう", "綺麗", "母様", "に", "見せる", "う")]
     public void GodanPotentialAndImperative(string sentence, params string[] expectedOutput)
     {
-        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, new List<WordExclusion>(), new List<string>(expectedOutput));
+        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, expectedOutput);
     }
 
     [Theory]
@@ -164,14 +164,14 @@ public class SentenceAnalysisViewModelWithSelectDataTests : IDisposable
     [InlineData("食べよう", "食べる", "う")]
     public void IchidanImperative(string sentence, params string[] expectedOutput)
     {
-        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, new List<WordExclusion>(), new List<string>(expectedOutput));
+        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, expectedOutput);
     }
 
     [Theory]
     [InlineData("書きなさい", "書く", "なさい")]
     public void IImperativeForms(string sentence, params string[] expectedOutput)
     {
-        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, new List<WordExclusion>(), new List<string>(expectedOutput));
+        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, expectedOutput);
     }
 
     // test_bugs_todo_fixme - empty parametrize, no tests to port
@@ -236,7 +236,7 @@ public class SentenceAnalysisViewModelWithSelectDataTests : IDisposable
     [InlineData("思えないしな", "思える", "ない", "しな")]
     public void MiscStuff(string sentence, params string[] expectedOutput)
     {
-        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, new List<WordExclusion>(), new List<string>(expectedOutput));
+        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, expectedOutput);
     }
 
     [Theory]
@@ -244,7 +244,20 @@ public class SentenceAnalysisViewModelWithSelectDataTests : IDisposable
     [InlineData("後で下に下りてらっしゃいね", "後で", "下に", "下りる", "て", "らっしゃい", "ね")]
     public void YieldToSurface(string sentence, params string[] expectedOutput)
     {
-        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, new List<WordExclusion>(), new List<string>(expectedOutput));
+        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, expectedOutput);
+    }
+
+    [Theory]
+    [InlineData("厳密に言えば　俺一人が友達だけど", new[] { "厳密に言えば", "言え", "だけど" }, new[] { "厳密", "に", "言う", "ば", "俺", "一人", "が", "友達", "だ", "けど" })]
+    [InlineData("厳密に言えばだけど俺一人が友達だけど", new[] { "だけど:6" }, new[] { "厳密に言えば", "だけど:emergency", "俺", "一人", "が", "友達", "だけど" })]
+    [InlineData("私は毎日ジョギングをすることを習慣にしています。", new[] { "にして:17", "にし:17", "して:18", "し:18", "してい:18", "い:12", "にする" }, new[] { "私", "は", "毎日", "ジョギング", "を", "する", "る:う", "こと", "を", "習慣", "に", "する", "ている", "ます" })]
+    [InlineData("私は毎日ジョギングをすることを習慣にしています。", new[] { "にして:17", "にし:17", "して:18", "し:18", "してい:18" }, new[] { "私", "は", "毎日", "ジョギング", "を", "する", "る:う", "こと", "を", "習慣", "にする", "ている", "ます" })]
+    [InlineData("頑張れたというか", new[] { "頑張る", "頑張れ" }, new[] { "頑張:[MISSING]:emergency", "える", "た", "というか" })]
+    [InlineData("いらっしゃいません", new[] { "いらっしゃいませ" }, new[] { "いらっしゃいます", "ん" })]
+    [InlineData("風の強さに驚きました", new[] { "風の強い" }, new[] { "風", "の", "強さ", "に", "驚き", "ます", "た" })]
+    public void IncorrectExclusions(string sentence, string[] incorrectStrings, string[] expectedOutput)
+    {
+        AssertDisplayWordsEqualWithIncorrectExclusions(sentence, incorrectStrings, expectedOutput);
     }
 
     [Theory]
@@ -255,9 +268,9 @@ public class SentenceAnalysisViewModelWithSelectDataTests : IDisposable
     [InlineData("頑張れたというか", new[] { "頑張る", "頑張れ" }, new[] { "える", "た", "というか" })]
     [InlineData("いらっしゃいません", new[] { "いらっしゃいませ" }, new[] { "いらっしゃいます", "ん" })]
     [InlineData("風の強さに驚きました", new[] { "風の強い" }, new[] { "風", "の", "強さ", "に", "驚き", "ます", "た" })]
-    public void Exclusions(string sentence, string[] exclusionStrings, string[] expectedOutput)
+    public void HiddenExclusions(string sentence, string[] hiddenStrings, string[] expectedOutput)
     {
-        AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, exclusionStrings, expectedOutput);
+        AssertDisplayWordsEqualWithHiddenExclusions(sentence, hiddenStrings, expectedOutput);
     }
 
     [Theory]
