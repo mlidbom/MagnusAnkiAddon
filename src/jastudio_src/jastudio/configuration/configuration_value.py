@@ -3,7 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import mw
+from jaslib import mylog
 from jaslib.configuration import configuration_value
+from JAStudio.Core.Configuration import ConfigurationValue
+from JAStudio.PythonInterop import PythonDotNetShim
 
 from jastudio.ankiutils import app
 
@@ -21,16 +24,10 @@ def _write_config_dict(config_dict: dict[str, object]) -> None:
 # Initialize Python configuration system
 configuration_value.init(_get_config_dict(), _write_config_dict)
 
-# Initialize C# configuration system using PythonInterop shim
-from jaslib import mylog
-from JAStudio.Core.Configuration import ConfigurationValue  # pyright: ignore[reportMissingImports]
-from JAStudio.PythonInterop import PythonDotNetShim  # pyright: ignore[reportMissingImports]
-
-# Convert Python dict and callable to .NET types using shim
-cs_config_dict = PythonDotNetShim.ToDotNetDict(_get_config_dict())  # pyright: ignore[reportUnknownMemberType]
-cs_update_callback = PythonDotNetShim.ToDotNetDictAction(_write_config_dict)  # pyright: ignore[reportUnknownMemberType]
-
-ConfigurationValue.Init(cs_config_dict, cs_update_callback)  # pyright: ignore[reportUnknownMemberType]
+# Initialize C# configuration system
+cs_config_dict = PythonDotNetShim.ConfigDict.ToDotNetDict(_get_config_dict())
+cs_update_callback = PythonDotNetShim.ConfigDict.ToDotNetDictAction(_write_config_dict)
+ConfigurationValue.Init(cs_config_dict, cs_update_callback)
 mylog.info("C# ConfigurationValue initialized successfully")
 
 config: Lazy[JapaneseConfig] = configuration_value.config

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using JAStudio.PythonInterop.Utilities;
 
 namespace JAStudio.PythonInterop;
 
@@ -9,39 +10,38 @@ namespace JAStudio.PythonInterop;
 /// </summary>
 public static class PythonDotNetShim
 {
-    /// <summary>
-    /// Converts a Python dictionary to a .NET Dictionary&lt;string, object&gt;.
-    /// </summary>
-    /// <param name="pythonDict">Python dictionary object</param>
-    /// <returns>.NET Dictionary with string keys and object values</returns>
-    public static Dictionary<string, object> ToDotNetDict(dynamic pythonDict)
+    public static class ConfigDict
     {
-        var result = new Dictionary<string, object>();
-        
-        foreach (var key in pythonDict.Keys)
+        public static Dictionary<string, string> ToDotNetDict(dynamic pythonDict)
         {
-            result[key.ToString()] = pythonDict[key];
-        }
-        
-        return result;
-    }
-    
-    /// <summary>
-    /// Converts a Python callable to a .NET Action&lt;Dictionary&lt;string, object&gt;&gt;.
-    /// </summary>
-    /// <param name="pythonCallable">Python callable that accepts a dictionary</param>
-    /// <returns>.NET Action delegate</returns>
-    public static Action<Dictionary<string, object>> ToDotNetDictAction(dynamic pythonCallable)
-    {
-        return (dict) =>
-        {
-            // Convert .NET Dictionary back to Python dict for the callback
-            dynamic pythonDict = new Python.Runtime.PyDict();
-            foreach (var kvp in dict)
+            return PythonEnvironment.Use(() =>
             {
-                pythonDict[kvp.Key] = kvp.Value;
-            }
-            pythonCallable(pythonDict);
-        };
+                var result = new Dictionary<string, string>();
+
+                foreach (var key in pythonDict.keys())
+                {
+                    result[(string)key] = (string)pythonDict[key];
+                }
+
+                return result;
+            });
+        }
+
+        public static Action<Dictionary<string, string>> ToDotNetDictAction(dynamic pythonCallable)
+        {
+            return dict =>
+            {
+                PythonEnvironment.Use(() =>
+                {
+                    dynamic pythonDict = new Python.Runtime.PyDict();
+                    foreach (var kvp in dict)
+                    {
+                        pythonDict[kvp.Key] = kvp.Value;
+                    }
+
+                    pythonCallable(pythonDict);
+                });
+            };
+        }
     }
 }

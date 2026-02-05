@@ -51,8 +51,8 @@ public static class App
         get
         {
             var assemblyLocation = typeof(App).Assembly.Location;
-            var assemblyDir = Path.GetDirectoryName(assemblyLocation) ?? string.Empty;
-            return Path.Combine(assemblyDir, "UserFiles");
+            var assemblyDir = Path.GetDirectoryName(Path.GetDirectoryName(assemblyLocation)) ?? string.Empty;
+            return Path.Combine(assemblyDir, "user_files");
         }
     }
 }

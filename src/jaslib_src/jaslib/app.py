@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from typed_linq_collections.collections.q_set import QSet
@@ -46,4 +47,4 @@ def reset(backend_note_creator: IBackendNoteCreator) -> None:
         _collection = JPCollection(backend_note_creator)
     _backend_note_creator = backend_note_creator
 
-user_files_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "user_files")
+user_files_dir = str(Path(os.path.abspath(__file__)).parent.parent.parent / "user_files")

@@ -118,11 +118,11 @@ public class InputDialog : Window
     /// <summary>
     /// Shows the dialog and returns the entered text (or null if cancelled).
     /// </summary>
-    public static async Task<string?> ShowAsync(string prompt, string initialValue = "")
+    public static string? ShowAsync(string prompt, string initialValue = "")
     {
         var dialog = new InputDialog(prompt, initialValue);
         dialog.Show();
-        return await dialog._resultSource.Task;
+        return dialog._resultSource.Task.Result;
     }
 
     /// <summary>
@@ -133,10 +133,10 @@ public class InputDialog : Window
     {
         string? result = null;
         
-        Dispatcher.UIThread.InvokeAsync(async () =>
+        Dispatcher.UIThread.Invoke(() =>
         {
-            result = await ShowAsync(prompt, GetClipboardText());
-        }).Wait();
+            result = ShowAsync(prompt, GetClipboardText());
+        });
 
         return result ?? GetClipboardText();
     }

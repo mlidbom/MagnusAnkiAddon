@@ -1,6 +1,6 @@
 import typing, abc
 from System.Collections.Generic import Dictionary_2, List_1
-from System import Action_1, ValueTuple_2, Action
+from System import Action_1, Func_2, ValueTuple_2, Action
 
 class ConfigurationValue_GenericClasses(abc.ABCMeta):
     Generic_ConfigurationValue_GenericClasses_ConfigurationValue_1_T = typing.TypeVar('Generic_ConfigurationValue_GenericClasses_ConfigurationValue_1_T')
@@ -12,12 +12,12 @@ class ConfigurationValue_0(abc.ABC):
     @staticmethod
     def Config() -> JapaneseConfig: ...
     @staticmethod
-    def Init(configDict: Dictionary_2[str, typing.Any], updateCallback: Action_1[Dictionary_2[str, typing.Any]]) -> None: ...
+    def Init(configDict: Dictionary_2[str, str], updateCallback: Action_1[Dictionary_2[str, str]]) -> None: ...
 
 
 ConfigurationValue_1_T = typing.TypeVar('ConfigurationValue_1_T')
 class ConfigurationValue_1(typing.Generic[ConfigurationValue_1_T]):
-    def __init__(self, name: str, title: str, defaultValue: ConfigurationValue_1_T, featureToggler: Action_1[ConfigurationValue_1_T] = ...) -> None: ...
+    def __init__(self, name: str, title: str, defaultValue: ConfigurationValue_1_T, converter: Func_2[str, ConfigurationValue_1_T], featureToggler: Action_1[ConfigurationValue_1_T] = ...) -> None: ...
     @property
     def FeatureToggler(self) -> Action_1[ConfigurationValue_1_T]: ...
     @property

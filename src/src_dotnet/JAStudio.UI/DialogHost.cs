@@ -68,7 +68,7 @@ public static class DialogHost
     public static void ShowDialog<T>() where T : Window, new()
     {
         EnsureInitialized();
-        Dispatcher.UIThread.InvokeAsync(() =>
+        Dispatcher.UIThread.Invoke(() =>
         {
             var window = new T();
             window.Show();
@@ -81,7 +81,7 @@ public static class DialogHost
     public static void ShowVocabFlagsDialog(VocabNote vocab)
     {
         EnsureInitialized();
-        Dispatcher.UIThread.InvokeAsync(() =>
+        Dispatcher.UIThread.Invoke(() =>
         {
             var window = new VocabFlagsDialog(vocab);
             window.Show();
@@ -94,7 +94,7 @@ public static class DialogHost
     public static void ShowAboutDialog()
     {
         EnsureInitialized();
-        Dispatcher.UIThread.InvokeAsync(() =>
+        Dispatcher.UIThread.Invoke(() =>
         {
             var window = new AboutDialog();
             window.Show();
@@ -107,7 +107,7 @@ public static class DialogHost
     public static void ShowOptionsDialog()
     {
         EnsureInitialized();
-        Dispatcher.UIThread.InvokeAsync(() =>
+        Dispatcher.UIThread.Invoke(() =>
         {
             JALogger.Log("Creating OptionsDialog window...");
             var window = new OptionsDialog();
@@ -127,7 +127,7 @@ public static class DialogHost
     public static void ShowContextMenuPopup(string clipboardContent, string selectionContent, int x, int y)
     {
         EnsureInitialized();
-        Dispatcher.UIThread.InvokeAsync(() =>
+        Dispatcher.UIThread.Invoke(() =>
         {
             var menuControl = new ContextMenuPopup(clipboardContent ?? "", selectionContent ?? "");
             menuControl.ShowAt(x, y);
@@ -150,7 +150,7 @@ public static class DialogHost
         int y)
     {
         EnsureInitialized();
-        Dispatcher.UIThread.InvokeAsync(() =>
+        Dispatcher.UIThread.Invoke(() =>
         {
             var menuBuilder = new JapaneseMainMenu(refreshCallback, executeLookup, searchText ?? "");
             var menuItems = menuBuilder.BuildMenu();
@@ -171,7 +171,7 @@ public static class DialogHost
         int y)
     {
         EnsureInitialized();
-        Dispatcher.UIThread.InvokeAsync(() =>
+        Dispatcher.UIThread.Invoke(() =>
         {
             var menuBuilder = new NoteContextMenu(refreshCallback, executeLookup);
             var menuItems = menuBuilder.BuildVocabContextMenu(selection ?? "", clipboard ?? "");
@@ -192,7 +192,7 @@ public static class DialogHost
         int y)
     {
         EnsureInitialized();
-        Dispatcher.UIThread.InvokeAsync(() =>
+        Dispatcher.UIThread.Invoke(() =>
         {
             var menuBuilder = new NoteContextMenu(refreshCallback, executeLookup);
             var menuItems = menuBuilder.BuildKanjiContextMenu(selection ?? "", clipboard ?? "");
@@ -213,7 +213,7 @@ public static class DialogHost
         int y)
     {
         EnsureInitialized();
-        Dispatcher.UIThread.InvokeAsync(() =>
+        Dispatcher.UIThread.Invoke(() =>
         {
             var menuBuilder = new NoteContextMenu(refreshCallback, executeLookup);
             var menuItems = menuBuilder.BuildSentenceContextMenu(selection ?? "", clipboard ?? "");
@@ -234,7 +234,7 @@ public static class DialogHost
         int y)
     {
         EnsureInitialized();
-        Dispatcher.UIThread.InvokeAsync(() =>
+        Dispatcher.UIThread.Invoke(() =>
         {
             var menuBuilder = new NoteContextMenu(refreshCallback, executeLookup);
             var menuItems = menuBuilder.BuildGenericContextMenu(selection ?? "", clipboard ?? "");
@@ -252,7 +252,7 @@ public static class DialogHost
     public static void ShowTestMainMenu(int x, int y)
     {
         EnsureInitialized();
-        Dispatcher.UIThread.InvokeAsync(() =>
+        Dispatcher.UIThread.Invoke(() =>
         {
             var item1 = new MenuItem { Header = "Test Item 1" };
             item1.Click += (s, e) => JALogger.Log("Test Item 1 clicked from main menu");
@@ -277,7 +277,7 @@ public static class DialogHost
     public static void ShowTestContextMenu(string selection, string clipboard, int x, int y)
     {
         EnsureInitialized();
-        Dispatcher.UIThread.InvokeAsync(() =>
+        Dispatcher.UIThread.Invoke(() =>
         {
             var selectionText = string.IsNullOrEmpty(selection) ? "(empty)" : selection;
             var clipboardText = string.IsNullOrEmpty(clipboard) ? "(empty)" : clipboard;
@@ -308,7 +308,7 @@ public static class DialogHost
     {
         if (!_initialized) return;
 
-        Dispatcher.UIThread.InvokeAsync(() =>
+        Dispatcher.UIThread.Invoke(() =>
         {
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
             {
