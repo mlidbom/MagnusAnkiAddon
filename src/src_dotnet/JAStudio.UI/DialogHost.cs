@@ -100,6 +100,29 @@ public static class DialogHost
     }
 
     /// <summary>
+    /// Show the context menu popup at the current cursor position.
+    /// </summary>
+    /// <param name="clipboardContent">Content from clipboard</param>
+    /// <param name="selectionContent">Currently selected text</param>
+    /// <param name="x">X coordinate for popup position (screen coordinates)</param>
+    /// <param name="y">Y coordinate for popup position (screen coordinates)</param>
+    public static void ShowContextMenuPopup(string clipboardContent, string selectionContent, int x, int y)
+    {
+        EnsureInitialized();
+        Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            var window = new ContextMenuPopup(clipboardContent ?? "", selectionContent ?? "")
+            {
+                Position = new Avalonia.PixelPoint(x, y)
+            };
+            window.Show();
+            
+            // Auto-close when losing focus
+            window.Deactivated += (s, e) => window.Close();
+        });
+    }
+
+    /// <summary>
     /// Shutdown Avalonia. Call at addon unload.
     /// </summary>
     public static void Shutdown()

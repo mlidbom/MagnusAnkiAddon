@@ -1,3 +1,9 @@
+"""
+Avalonia UI integration for JAStudio.
+
+This module provides Python wrappers for the C# Avalonia UI dialogs.
+Call initialize() once at addon startup, then use the show_* functions.
+"""
 from __future__ import annotations
 
 import typing
@@ -70,6 +76,9 @@ def build_right_click_menu(right_click_menu: QMenu, note: JPNote | None, selecti
     if clipboard_menu:
         build_string_menu(clipboard_menu, clipboard, string_note_menu_factory)
 
+    # Add Avalonia menu entry (proof of concept)
+    _add_avalonia_menu_entry(right_click_menu, selection, clipboard)
+
     ExQmenu.disable_empty_submenus(right_click_menu)
 
 def build_string_menu(menu: QMenu, string: str, string_note_menu_factory: typing.Callable[[QMenu, str], None]) -> None:
@@ -119,6 +128,45 @@ def build_universal_note_actions_menu(universal_actions_menu: QMenu, note: JPNot
 
 def null_op_factory(_menu: QMenu, _string: str) -> None:
     pass
+
+
+def _add_avalonia_menu_entry(menu: QMenu, selection: str, clipboard: str) -> None:
+    """Add Avalonia menu entry that shows Avalonia popup on hover."""
+    from PyQt6.QtGui import QCursor
+
+    # Create a menu action for Avalonia
+    avalonia_action = menu.addAction("🎯 AvaloniaMenu (Hover to show)")  # pyright: ignore[reportUnknownMemberType]
+
+    # Track if we've already shown the popup for this hover
+    shown = [False]
+
+    def on_hover() -> None:
+        """Called when the action is hovered."""
+        if shown[0]:
+            return
+        shown[0] = True
+
+        try:
+            from jastudio.ui import avalonia_host
+
+            # Get cursor position in screen coordinates
+            cursor_pos = QCursor.pos()
+            x = cursor_pos.x()
+            y = cursor_pos.y()
+
+            # Show the Avalonia popup at cursor position
+            avalonia_host.show_context_menu_popup(
+                clipboard_content=clipboard,
+                selection_content=selection,
+                x=x,
+                y=y
+            )
+        except Exception as e:
+            from jaslib import mylog
+            mylog.error(f"Failed to show Avalonia menu: {e}")
+
+    # Use hovered signal to trigger the popup
+    avalonia_action.hovered.connect(on_hover)  # pyright: ignore[reportUnknownMemberType]
 
 def init() -> None:
     gui_hooks.webview_will_show_context_menu.append(build_right_click_menu_webview_hook)  # pyright: ignore[reportUnknownMemberType]

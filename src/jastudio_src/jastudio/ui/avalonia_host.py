@@ -57,3 +57,26 @@ def show_about_dialog() -> None:
     except Exception as e:
         mylog.error(f"Failed to show AboutDialog: {e}")
         raise
+
+
+def show_context_menu_popup(clipboard_content: str, selection_content: str, x: int, y: int) -> None:
+    """
+    Show the Avalonia context menu popup at the specified screen coordinates.
+
+    Args:
+        clipboard_content: Content from clipboard
+        selection_content: Currently selected text
+        x: X coordinate (screen coordinates)
+        y: Y coordinate (screen coordinates)
+    """
+    if not _initialized:
+        mylog.warning("Avalonia UI not initialized, initializing now...")
+        initialize()
+
+    try:
+        from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
+
+        DialogHost.ShowContextMenuPopup(clipboard_content, selection_content, x, y)  # pyright: ignore[reportUnknownMemberType]
+    except Exception as e:
+        mylog.error(f"Failed to show context menu popup: {e}")
+        raise
