@@ -60,28 +60,6 @@ public static class AnkiFacade
     }
 
     /// <summary>
-    /// Show the note search dialog.
-    /// TEMPORARY: This is a Python dialog that should eventually be ported to Avalonia.
-    /// Equivalent to: jastudio.ui.open_note.open_note_dialog.NoteSearchDialog.toggle_dialog_visibility()
-    /// </summary>
-    public static void ShowNoteSearchDialog()
-    {
-        PythonEnvironment.Use(() =>
-        {
-            try
-            {
-                dynamic openNoteDialog = Py.Import("jastudio.ui.open_note.open_note_dialog");
-                openNoteDialog.NoteSearchDialog.toggle_dialog_visibility();
-            }
-            catch (Exception ex)
-            {
-                JALogger.Log($"AnkiFacade.ShowNoteSearchDialog failed: {ex.Message}");
-                throw;
-            }
-        });
-    }
-
-    /// <summary>
     /// Convert Immersion Kit sentences.
     /// TEMPORARY: This operation is not yet ported to C#.
     /// Equivalent to: jastudio.batches.local_note_updater.convert_immersion_kit_sentences()

@@ -140,6 +140,20 @@ public static class DialogHost
     }
 
     /// <summary>
+    /// Toggle the Note Search dialog visibility.
+    /// Shows the dialog if hidden, hides it if visible.
+    /// </summary>
+    public static void ToggleNoteSearchDialog()
+    {
+        JALogger.Log("ToggleNoteSearchDialog() called");
+        EnsureInitialized();
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            NoteSearchDialog.ToggleVisibility();
+        });
+    }
+
+    /// <summary>
     /// Show the context menu popup at the current cursor position.
     /// </summary>
     /// <param name="clipboardContent">Content from clipboard</param>

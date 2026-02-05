@@ -1,0 +1,315 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using JAStudio.Core;
+using JAStudio.Core.Note;
+using JAStudio.Core.Note.Sentences;
+using JAStudio.Core.Note.Vocabulary;
+using JAStudio.Core.SysUtils;
+using JAStudio.UI.Anki;
+
+namespace JAStudio.UI.ViewModels;
+
+public partial class NoteSearchDialogViewModel : ObservableObject
+{
+    private const int MaxResults = 100;
+
+    [ObservableProperty]
+    private string _searchText = string.Empty;
+
+    [ObservableProperty]
+    private string _statusText = "Hit enter to search";
+
+    [ObservableProperty]
+    private bool _isSearching = false;
+
+    [ObservableProperty]
+    private NoteSearchResultViewModel? _selectedResult;
+
+    public ObservableCollection<NoteSearchResultViewModel> Results { get; } = new();
+
+    public AsyncRelayCommand SearchCommand { get; }
+
+    public NoteSearchDialogViewModel()
+    {
+        SearchCommand = new AsyncRelayCommand(PerformSearchAsync);
+    }
+
+    partial void OnSearchTextChanged(string value)
+    {
+        // Execute search when Enter is pressed (handled via command binding)
+    }
+
+    private async Task PerformSearchAsync()
+    {
+        var searchText = SearchText.Trim();
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            Results.Clear();
+            StatusText = "Hit enter to search";
+            return;
+        }
+
+        IsSearching = true;
+        StatusText = "Searching...";
+
+        try
+        {
+            // Run search in background to avoid blocking UI
+            var results = await Task.Run(() => SearchNotes(searchText));
+
+            Results.Clear();
+            foreach (var result in results)
+            {
+                Results.Add(result);
+            }
+
+            // Update status
+            if (results.Count == 0)
+            {
+                StatusText = "No results found";
+            }
+            else if (results.Count >= MaxResults)
+            {
+                StatusText = $"{MaxResults}+ notes found. Showing first {MaxResults}";
+            }
+            else
+            {
+                StatusText = $"{results.Count} note{(results.Count != 1 ? "s" : "")} found";
+            }
+        }
+        catch (Exception ex)
+        {
+            JALogger.Log($"Search error: {ex.Message}");
+            StatusText = $"Search error: {ex.Message}";
+        }
+        finally
+        {
+            IsSearching = false;
+        }
+    }
+
+    private List<NoteSearchResultViewModel> SearchNotes(string searchText)
+    {
+        var results = new List<NoteSearchResultViewModel>();
+
+        try
+        {
+            var col = Core.App.Col();
+
+            // Search in kanji notes
+            results.AddRange(SearchInNotes(
+                col.Kanji.All().ToList(),
+                searchText,
+                note => new Dictionary<string, Func<string>>
+                {
+                    ["kanji_readings"] = () => string.Join(" ", note.GetReadingsClean()),
+                    ["kanji_romaji_readings"] = () => KanaUtils.Romanize(string.Join(" ", note.GetReadingsClean())),
+                    ["question"] = () => StripHtml(note.GetQuestion()),
+                    ["answer"] = () => StripHtml(note.GetAnswer())
+                }
+            ));
+
+            if (results.Count >= MaxResults)
+                return results.Take(MaxResults).ToList();
+
+            // Search in vocab notes
+            var vocabs = col.Vocab.All()
+                .OrderBy(v => v.GetQuestion().Length)
+                .ToList();
+
+            results.AddRange(SearchInNotes(
+                vocabs,
+                searchText,
+                note => new Dictionary<string, Func<string>>
+                {
+                    ["vocab_readings"] = () => string.Join(" ", note.Readings.Get()),
+                    ["vocab_romaji_readings"] = () => KanaUtils.Romanize(string.Join(" ", note.Readings.Get())),
+                    ["forms"] = () => string.Join(" ", note.Forms.WithoutNoiseCharacters()),
+                    ["question"] = () => StripHtml(note.GetQuestion()),
+                    ["answer"] = () => StripHtml(note.GetAnswer())
+                }
+            ));
+
+            if (results.Count >= MaxResults)
+                return results.Take(MaxResults).ToList();
+
+            // Search in sentence notes
+            var sentences = col.Sentences.All()
+                .OrderBy(s => s.GetQuestion().Length)
+                .ToList();
+
+            results.AddRange(SearchInNotes(
+                sentences,
+                searchText,
+                note => new Dictionary<string, Func<string>>
+                {
+                    ["question"] = () => StripHtml(note.GetQuestion()),
+                    ["answer"] = () => StripHtml(note.GetAnswer())
+                }
+            ));
+
+            return results.Take(MaxResults).ToList();
+        }
+        catch (Exception ex)
+        {
+            JALogger.Log($"SearchNotes error: {ex.Message}");
+            throw;
+        }
+    }
+
+    private List<NoteSearchResultViewModel> SearchInNotes<TNote>(
+        List<TNote> notes,
+        string searchText,
+        Func<TNote, Dictionary<string, Func<string>>> extractorsFactory)
+        where TNote : JPNote
+    {
+        var results = new List<NoteSearchResultViewModel>();
+
+        // Split search text by " && " to get multiple conditions
+        var searchConditions = searchText
+            .Split(new[] { " && " }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(c => c.Trim())
+            .ToList();
+
+        foreach (var note in notes)
+        {
+            if (results.Count >= MaxResults)
+                break;
+
+            var extractors = extractorsFactory(note);
+            var allConditionsMatch = true;
+
+            foreach (var condition in searchConditions)
+            {
+                var conditionMatches = false;
+                var conditionLower = condition.ToLowerInvariant();
+
+                // Check for prefixed search
+                if (condition.StartsWith("r:", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Only search in reading fields
+                    var readingValue = condition.Substring(2).Trim().ToLowerInvariant();
+                    var readingFields = extractors
+                        .Where(kvp => kvp.Key.Contains("reading", StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+
+                    if (!readingFields.Any())
+                    {
+                        allConditionsMatch = false;
+                        break;
+                    }
+
+                    foreach (var extractor in readingFields)
+                    {
+                        var fieldText = extractor.Value().ToLowerInvariant();
+                        if (fieldText.Contains(readingValue))
+                        {
+                            conditionMatches = true;
+                            break;
+                        }
+                    }
+                }
+                else if (condition.StartsWith("a:", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Only search in answer field
+                    var answerValue = condition.Substring(2).Trim().ToLowerInvariant();
+                    if (extractors.TryGetValue("answer", out var answerExtractor))
+                    {
+                        var fieldText = answerExtractor().ToLowerInvariant();
+                        if (fieldText.Contains(answerValue))
+                        {
+                            conditionMatches = true;
+                        }
+                    }
+                }
+                else if (condition.StartsWith("q:", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Only search in question field
+                    var questionValue = condition.Substring(2).Trim().ToLowerInvariant();
+                    if (extractors.TryGetValue("question", out var questionExtractor))
+                    {
+                        var fieldText = questionExtractor().ToLowerInvariant();
+                        if (fieldText.Contains(questionValue))
+                        {
+                            conditionMatches = true;
+                        }
+                    }
+                }
+                else
+                {
+                    // Standard search in all fields
+                    foreach (var extractor in extractors.Values)
+                    {
+                        var fieldText = extractor().ToLowerInvariant();
+                        if (fieldText.Contains(conditionLower))
+                        {
+                            conditionMatches = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!conditionMatches)
+                {
+                    allConditionsMatch = false;
+                    break;
+                }
+            }
+
+            if (allConditionsMatch)
+            {
+                results.Add(new NoteSearchResultViewModel(note));
+            }
+        }
+
+        return results;
+    }
+
+    private static string StripHtml(string html)
+    {
+        // Strip HTML tags and bracket markup
+        return ExStr.StripHtmlAndBracketMarkupAndNoiseCharacters(html);
+    }
+
+    public void OpenSelectedNote()
+    {
+        if (SelectedResult == null)
+            return;
+
+        var noteId = SelectedResult.NoteId;
+        var query = Core.AnkiUtils.QueryBuilder.NotesByIds(new[] { (long)noteId });
+        AnkiFacade.ExecuteLookup(query);
+    }
+}
+
+public class NoteSearchResultViewModel
+{
+    public int NoteId { get; }
+    public string NoteType { get; }
+    public string Question { get; }
+    public string Answer { get; }
+
+    public NoteSearchResultViewModel(JPNote note)
+    {
+        NoteId = note.GetId();
+        NoteType = GetNoteTypeDisplay(note);
+        Question = ExStr.StripHtmlAndBracketMarkupAndNoiseCharacters(note.GetQuestion());
+        Answer = ExStr.StripHtmlAndBracketMarkupAndNoiseCharacters(note.GetAnswer());
+    }
+
+    private static string GetNoteTypeDisplay(JPNote note)
+    {
+        return note switch
+        {
+            VocabNote => "Vocab",
+            KanjiNote => "Kanji",
+            SentenceNote => "Sentence",
+            _ => "Note"
+        };
+    }
+}

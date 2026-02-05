@@ -120,7 +120,7 @@ public class JapaneseMainMenu
     private void OnReadingsMappings() => DialogHost.ShowReadingsMappingsDialog();
 
     // Lookup menu actions
-    private void OnOpenNote() => AnkiFacade.ShowNoteSearchDialog();
+    private void OnOpenNote() => DialogHost.ToggleNoteSearchDialog();
 
     // Local Actions menu actions
     private void OnConvertImmersionKitSentences() => AnkiFacade.ConvertImmersionKitSentences();
