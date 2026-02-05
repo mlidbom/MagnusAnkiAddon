@@ -59,8 +59,11 @@ if ($skipped -gt 0) {
     Write-Host ""
 }
 
+# Always print status
 if ($copied -gt 0 -or $skipped -gt 0) {
     Write-Host "Runtime binaries: $copied copied, $skipped skipped (locked)" -ForegroundColor $(if ($skipped -gt 0) { "Yellow" } else { "Green" })
+} else {
+    Write-Host "Runtime binaries: All files up to date (no changes detected)" -ForegroundColor Cyan
 }
 
 # Always exit successfully

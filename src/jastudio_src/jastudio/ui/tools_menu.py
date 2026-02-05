@@ -83,7 +83,7 @@ def build_config_menu(config_menu: QMenu) -> None:
             mylog.error(f"Failed to show Options dialog: {e}")
             import traceback
             mylog.error(traceback.format_exc())
-    
+
     non_optional(config_menu.addAction(shortcutfinger.home1("Options"), show_options_with_logging)).setShortcut("Ctrl+Shift+s")  # pyright: ignore[reportUnknownMemberType]
     non_optional(config_menu.addAction(shortcutfinger.home2("Readings mappings"), show_readings_mappings)).setShortcut("Ctrl+Shift+m")  # pyright: ignore[reportUnknownMemberType]
 
