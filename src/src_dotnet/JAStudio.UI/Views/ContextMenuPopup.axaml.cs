@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 
 namespace JAStudio.UI.Views;
@@ -40,7 +41,8 @@ public partial class ContextMenuPopup : UserControl
         
         var contextMenu = new ContextMenu
         {
-            ItemsSource = new List<MenuItem> { clipboardItem, selectionItem }
+            ItemsSource = new List<MenuItem> { clipboardItem, selectionItem },
+            Placement = PlacementMode.Pointer
         };
         
         // Close the host window when the context menu closes
@@ -51,27 +53,50 @@ public partial class ContextMenuPopup : UserControl
 
     public void ShowAt(int x, int y)
     {
-        // Create a transparent window at the specified location
+        JALogger.Log($"ShowAt called with: ({x}, {y})");
+        
+        // Create a Menu (not ContextMenu) as the main content
+        var menu = new Menu();
+        
+        var clipboardItem = new MenuItem
+        {
+            Header = string.IsNullOrEmpty(_clipboardContent) 
+                ? "Clipboard: (empty)" 
+                : $"Clipboard: {TruncateText(_clipboardContent, 30)}"
+        };
+        clipboardItem.Click += OnClipboardItemClick;
+        
+        var selectionItem = new MenuItem
+        {
+            Header = string.IsNullOrEmpty(_selectionContent) 
+                ? "Selection: (empty)" 
+                : $"Selection: {TruncateText(_selectionContent, 30)}"
+        };
+        selectionItem.Click += OnSelectionItemClick;
+        
+        menu.ItemsSource = new List<MenuItem> { clipboardItem, selectionItem };
+        
+        // Create window with the Menu as content
         _hostWindow = new Window
         {
-            Width = 1,
-            Height = 1,
-            Position = new PixelPoint(x, y),
+            Content = menu,
             WindowStartupLocation = WindowStartupLocation.Manual,
+            CanResize = false,
             ShowInTaskbar = false,
             SystemDecorations = SystemDecorations.None,
-            Background = Avalonia.Media.Brushes.Transparent,
-            TransparencyLevelHint = new[] { WindowTransparencyLevel.Transparent },
+            Background = Avalonia.Media.Brushes.White,
+            SizeToContent = SizeToContent.WidthAndHeight,
             Topmost = true
         };
-
-        var contextMenu = CreateContextMenu();
         
         _hostWindow.Opened += (s, e) =>
         {
-            // Open the context menu on this window
-            contextMenu.Open(_hostWindow);
+            _hostWindow.Position = new PixelPoint(x, y);
+            JALogger.Log($"Window opened at ({x}, {y}), size: {_hostWindow.Bounds}");
         };
+        
+        // Close when clicking outside or losing focus
+        _hostWindow.Deactivated += (s, e) => _hostWindow.Close();
         
         _hostWindow.Show();
     }
@@ -85,13 +110,12 @@ public partial class ContextMenuPopup : UserControl
 
     private void OnClipboardItemClick(object? sender, RoutedEventArgs e)
     {
-        // For now, just show a message - this is where you'd implement actual functionality
-        System.Diagnostics.Debug.WriteLine($"Clipboard item clicked: {_clipboardContent}");
+        JALogger.Log($"Clipboard item clicked: {_clipboardContent}");
     }
 
     private void OnSelectionItemClick(object? sender, RoutedEventArgs e)
     {
-        // For now, just show a message - this is where you'd implement actual functionality
-        System.Diagnostics.Debug.WriteLine($"Selection item clicked: {_selectionContent}");
+        JALogger.Log($"Selection item clicked: {_selectionContent}");
     }
 }
+

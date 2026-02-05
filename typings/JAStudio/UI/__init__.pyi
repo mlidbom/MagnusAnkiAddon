@@ -73,3 +73,8 @@ class DialogHost(abc.ABC):
 
 
 
+
+class JALogger(abc.ABC):
+    @staticmethod
+    def Log(message: str) -> None: ...
+

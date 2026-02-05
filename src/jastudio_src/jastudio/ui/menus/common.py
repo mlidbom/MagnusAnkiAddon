@@ -161,6 +161,7 @@ def _add_avalonia_menu_entry(menu: QMenu, selection: str, clipboard: str) -> Non
             screen = QApplication.screenAt(action_global_pos)
             dpi_scale = screen.devicePixelRatio() if screen else 1.0
 
+            # Use logical coordinates (Qt's native format)
             logical_x = action_global_pos.x()
             logical_y = action_global_pos.y()
 
@@ -168,7 +169,11 @@ def _add_avalonia_menu_entry(menu: QMenu, selection: str, clipboard: str) -> Non
             physical_x = int(logical_x * dpi_scale)
             physical_y = int(logical_y * dpi_scale)
 
-            # Show the Avalonia popup to the right of the menu
+            # Debug output
+            from jaslib import mylog
+            mylog.info(f"Menu position - Logical: ({logical_x}, {logical_y}), Physical: ({physical_x}, {physical_y}), DPI scale: {dpi_scale}")
+
+            # Show the Avalonia popup with physical pixels
             avalonia_host.show_context_menu_popup(
                 clipboard_content=clipboard,
                 selection_content=selection,
