@@ -1,5 +1,22 @@
 # JAStudio Menu Porting Status
 
+## IMPORTANT: Business Logic Already in C#
+
+**VIRTUALLY EVERYTHING EXCEPT FOR UI CODE IS ALREADY PORTED TO C#.**
+
+The business logic, note operations, parsing, lookups, and data manipulation are all in `JAStudio.Core`. The UI only needs to:
+1. Create Avalonia dialogs/menus (in C#)
+2. Call existing C# methods in `JAStudio.Core`
+3. **DO NOT** create Python callbacks except for the thin Anki integration layer
+
+When porting menus/dialogs:
+- ✅ **DO**: Create Avalonia UI in C# that calls `JAStudio.Core` methods
+- ✅ **DO**: Use existing C# types like `VocabNote`, `KanjiNote`, `SentenceNote`, `JPCollection`
+- ❌ **DO NOT**: Create callbacks to Python UNLESS YOU HAVE BEEN EXPLICITLY INSTRUCTED TO
+- ❌ **DO NOT**: Implement business logic in Python - it's already in C#
+
+---
+
 ## Code Locations
 
 ### Python Source (What to Port From)
