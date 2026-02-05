@@ -47,3 +47,70 @@ See [UI_PORTING_STATUS.md](../UI_PORTING_STATUS.md) for current porting progress
 ## Python Environment
 
 The project uses a virtual environment at `.venv\`. Python dependencies are managed via `requirements.txt`.
+
+## Exception Handling
+
+### CRITICAL: Never Swallow Exceptions
+
+**NEVER, EVER swallow exceptions with empty catch blocks or logging-only handlers.**
+
+❌ **FORBIDDEN - Silent failure:**
+```python
+try:
+    critical_operation()
+except Exception as e:
+    logger.error(f"Error: {e}")  # WRONG - exception is swallowed
+    # Execution continues as if nothing happened
+```
+
+```csharp
+try
+{
+    CriticalOperation();
+}
+catch (Exception ex)
+{
+    JALogger.Log($"Error: {ex.Message}");  // WRONG - exception is swallowed
+    // Execution continues as if nothing happened
+}
+```
+
+✅ **CORRECT - Re-throw or wrap:**
+```python
+try:
+    critical_operation()
+except Exception as e:
+    logger.error(f"Context: Operation failed: {e}")
+    raise  # Re-throw the original exception
+```
+
+```python
+try:
+    critical_operation()
+except SpecificError as e:
+    # Add context and re-throw as a more specific error
+    raise RuntimeError(f"Failed during initialization step X: {e}") from e
+```
+
+```csharp
+try
+{
+    CriticalOperation();
+}
+catch (Exception ex)
+{
+    JALogger.Log($"Context: Operation failed: {ex.Message}");
+    throw;  // Re-throw the original exception
+}
+```
+
+### When Catching is Acceptable
+
+Only catch exceptions when you have a **specific recovery strategy**:
+
+✅ Retry logic with backoff
+✅ Fallback to default values (for non-critical operations)
+✅ Wrapping with more context and re-throwing
+✅ Cleanup operations followed by re-throw
+
+**Bottom line**: If you can't handle the error meaningfully, don't catch it. Let it propagate.

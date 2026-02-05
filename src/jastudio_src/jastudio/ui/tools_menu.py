@@ -10,7 +10,6 @@ from PyQt6.QtWidgets import QInputDialog, QLineEdit, QMenu
 
 from jastudio.ankiutils import app, ui_utils
 from jastudio.ankiutils.app import get_ui_utils, main_window
-from jastudio.configuration.configuration import show_japanese_options
 from jastudio.configuration.readings_mapping_dialog import show_readings_mappings
 from jastudio.sysutils import object_instance_tracker
 from jastudio.ui import avalonia_host
@@ -75,7 +74,17 @@ def build_debug_menu(debug_menu: QMenu) -> None:
     add_menu_ui_action(debug_menu, shortcutfinger.down1("Refresh UI ('F5')"), refresh)
 
 def build_config_menu(config_menu: QMenu) -> None:
-    non_optional(config_menu.addAction(shortcutfinger.home1("Options"), show_japanese_options)).setShortcut("Ctrl+Shift+s")  # pyright: ignore[reportUnknownMemberType]
+    def show_options_with_logging() -> None:
+        from jaslib import mylog
+        try:
+            mylog.info("Opening Options dialog...")
+            avalonia_host.show_options_dialog()
+        except Exception as e:
+            mylog.error(f"Failed to show Options dialog: {e}")
+            import traceback
+            mylog.error(traceback.format_exc())
+    
+    non_optional(config_menu.addAction(shortcutfinger.home1("Options"), show_options_with_logging)).setShortcut("Ctrl+Shift+s")  # pyright: ignore[reportUnknownMemberType]
     non_optional(config_menu.addAction(shortcutfinger.home2("Readings mappings"), show_readings_mappings)).setShortcut("Ctrl+Shift+m")  # pyright: ignore[reportUnknownMemberType]
 
 def build_local_menu(local_menu: QMenu) -> None:

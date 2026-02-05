@@ -116,7 +116,14 @@ public class JapaneseMainMenu
     }
 
     // Config menu actions
-    private void OnOptions() => JALogger.Log("TODO: Show Japanese options dialog");
+    private void OnOptions()
+    {
+        JALogger.Log("OnOptions() called!");
+        JALogger.Log("Calling DialogHost.ShowOptionsDialog()...");
+        DialogHost.ShowOptionsDialog();
+        JALogger.Log("DialogHost.ShowOptionsDialog() completed");
+    }
+    
     private void OnReadingsMappings() => JALogger.Log("TODO: Show readings mappings dialog");
 
     // Lookup menu actions

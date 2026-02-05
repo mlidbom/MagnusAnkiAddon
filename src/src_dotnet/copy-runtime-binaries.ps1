@@ -45,6 +45,20 @@ foreach ($pattern in $filesToCopy) {
     }
 }
 
+if ($skipped -gt 0) {
+    Write-Host ""
+    Write-Host "============================================================================" -ForegroundColor Red
+    Write-Host "==================== FAILED TO UPDATE ASSEMBLIES FOR ANKI ==================" -ForegroundColor Red
+    Write-Host "============================================================================" -ForegroundColor Red
+    Write-Host "  $skipped file(s) were locked and could not be updated." -ForegroundColor Red
+    Write-Host "  Anki is probably running and has the DLLs loaded." -ForegroundColor Red
+    Write-Host "  1. CLOSE ANKI" -ForegroundColor Red
+    Write-Host "  2. REBUILD THE SOLUTION to copy the updated assemblies" -ForegroundColor Red
+    Write-Host "  3. Start Anki to load the new assemblies" -ForegroundColor Red
+    Write-Host "============================================================================" -ForegroundColor Red
+    Write-Host ""
+}
+
 if ($copied -gt 0 -or $skipped -gt 0) {
     Write-Host "Runtime binaries: $copied copied, $skipped skipped (locked)" -ForegroundColor $(if ($skipped -gt 0) { "Yellow" } else { "Green" })
 }

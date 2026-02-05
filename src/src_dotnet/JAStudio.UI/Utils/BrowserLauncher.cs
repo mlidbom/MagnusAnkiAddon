@@ -35,12 +35,13 @@ public static class BrowserLauncher
             }
             else
             {
-                JALogger.Log($"Cannot open URL: Unsupported platform");
+                throw new PlatformNotSupportedException("Cannot open URL: Unsupported platform");
             }
         }
         catch (Exception ex)
         {
             JALogger.Log($"Failed to open URL: {url}. Error: {ex.Message}");
+            throw new InvalidOperationException($"Failed to open URL in browser: {url}", ex);
         }
     }
 
@@ -67,8 +68,7 @@ public static class BrowserLauncher
             }
             else
             {
-                JALogger.Log($"Cannot open URL: Unsupported platform");
-                return false;
+                throw new PlatformNotSupportedException("Cannot open URL: Unsupported platform");
             }
 
             if (process != null)
@@ -82,7 +82,7 @@ public static class BrowserLauncher
         catch (Exception ex)
         {
             JALogger.Log($"Failed to open URL: {url}. Error: {ex.Message}");
-            return false;
+            throw new InvalidOperationException($"Failed to open URL in browser: {url}", ex);
         }
     }
 }

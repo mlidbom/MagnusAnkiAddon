@@ -10,13 +10,6 @@ public static class JALogger
 {
     public static void Log(string message)
     {
-        try
-        {
-            Console.WriteLine($"[JAStudio.UI] {message}");
-        }
-        catch
-        {
-            // Silently fail if console not available
-        }
+        Console.WriteLine($"[JAStudio.UI] {message}");
     }
 }

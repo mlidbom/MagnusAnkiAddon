@@ -76,8 +76,8 @@ When porting menus/dialogs:
 ## Main Menu Structure (JapaneseMainMenu.cs)
 
 ### Status Overview
-- **Config Menu**: SCAFFOLDED (menu items exist, actions are TODO stubs)
-  - Options (Ctrl+Shift+S) - TODO
+- **Config Menu**: PARTIALLY COMPLETE
+  - Options (Ctrl+Shift+S) - ✅ COMPLETE (Avalonia dialog with full two-way binding to JapaneseConfig)
   - Readings mappings (Ctrl+Shift+M) - TODO
   
 - **Lookup Menu**: ✅ COMPLETE
@@ -197,11 +197,11 @@ When porting menus/dialogs:
 
 ## Summary Statistics
 - **Total menu items tracked**: ~200+ items
-- **COMPLETE**: ~40 items (QueryBuilder methods + OpenInAnki + WebSearch menus, integrated in both main and context)
-- **SCAFFOLDED**: ~33 items (menu structure exists, actions are TODO stubs)
+- **COMPLETE**: ~41 items (QueryBuilder methods + OpenInAnki + WebSearch menus + Options dialog, integrated in both main and context)
+- **SCAFFOLDED**: ~32 items (menu structure exists, actions are TODO stubs)
 - **EXCLUDED**: ~7 items (Debug menu - Python runtime diagnostics not relevant to .NET)
 - **MISSING**: ~120+ items (note-specific actions not yet ported)
-- **Porting completion**: ~20% complete, ~17% scaffolded, ~4% excluded, ~59% not started
+- **Porting completion**: ~20% complete, ~16% scaffolded, ~4% excluded, ~60% not started
 
 ### Phase 1 Complete ✅
 - QueryBuilder (21 methods) - ✅ COMPLETE
@@ -211,8 +211,9 @@ When porting menus/dialogs:
 - Menu integration into JapaneseMainMenu - ✅ COMPLETE
 - Menu integration into NoteContextMenu - ✅ COMPLETE
 - Python integration layer wiring - ✅ COMPLETE
+- OptionsDialog (full configuration UI) - ✅ COMPLETE
 
-### Phase 2 Scaffolded (TODO stubs in place)
+### Phase 2 Scaffolded (TODO place)
 - Main menu Config actions (Options, Readings mappings)
 - Main menu Local Actions (Update, Convert, Create, Regenerate)
 - Context menu Create actions (vocab, sentence, kanji)
@@ -235,6 +236,8 @@ The C# infrastructure is in place:
   - `JAStudio.UI/Menus/NoteContextMenu.cs` (scaffolding complete, lookup menus integrated ✅)
   - `JAStudio.UI/Menus/OpenInAnkiMenus.cs` ✅ COMPLETE
   - `JAStudio.UI/Menus/WebSearchMenus.cs` ✅ COMPLETE
+  - `JAStudio.UI/Views/OptionsDialog.axaml` ✅ COMPLETE (Full configuration dialog)
+  - `JAStudio.UI/ViewModels/OptionsDialogViewModel.cs` ✅ COMPLETE (Two-way binding to JapaneseConfig)
   - `JAStudio.UI/Utils/ShortcutFinger.cs` ✅ COMPLETE (keyboard accelerators)
   - `JAStudio.UI/Utils/BrowserLauncher.cs` ✅ COMPLETE
   - `JAStudio.UI/Utils/InputDialog.cs` ✅ COMPLETE
@@ -242,8 +245,8 @@ The C# infrastructure is in place:
   - `JAStudio.UI/DialogHost.cs` (entry points with callbacks)
   
 Python integration layer complete ✅:
-  - `jastudio/ui/avalonia_host.py` (all menu show functions wired up)
-  - `jastudio/ui/tools_menu.py` (`_add_avalonia_main_menu()` with accelerator)
+  - `jastudio/ui/avalonia_host.py` (all menu show functions wired up, including show_options_dialog)
+  - `jastudio/ui/tools_menu.py` (`_add_avalonia_main_menu()` with accelerator, Options menu uses Avalonia)
   - `jastudio/ui/menus/common.py` (`_add_avalonia_menu_entry()` with accelerator)
 
 ## Implementation Patterns Established
@@ -281,9 +284,8 @@ Header = ShortcutFinger.Up1("Text")      // Alt+P
 ## Next Steps for Porting
 
 ### Immediate Priority (Phase 2A)
-1. **Port Config dialogs to Avalonia** - Replace PyQt6 dialogs with C# Avalonia UI
-   - Options dialog (needs full Avalonia dialog implementation)
-   - Readings mappings dialog (needs full Avalonia dialog implementation)
+1. **Port Readings Mappings dialog to Avalonia** - Replace PyQt6 dialog with C# Avalonia UI
+   - Readings mappings dialog (needs full Avalonia dialog implementation with text editor and search)
 
 ### Medium Priority (Phase 2B)  
 1. **Implement Local Actions menu** - Wire up TODO stubs in JapaneseMainMenu.cs

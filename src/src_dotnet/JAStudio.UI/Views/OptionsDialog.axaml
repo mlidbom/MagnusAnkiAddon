@@ -1,0 +1,219 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:JAStudio.UI.ViewModels"
+        x:Class="JAStudio.UI.Views.OptionsDialog"
+        x:DataType="vm:OptionsDialogViewModel"
+        Title="Japanese Options"
+        Width="900" Height="700"
+        WindowStartupLocation="CenterScreen">
+
+    <Design.DataContext>
+        <vm:OptionsDialogViewModel />
+    </Design.DataContext>
+
+    <DockPanel Margin="10">
+        <!-- Button bar at bottom -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0" Spacing="10">
+            <Button Content="OK" Command="{Binding CloseCommand}" Width="80" IsDefault="True" />
+        </StackPanel>
+
+        <!-- Scrollable content with two columns -->
+        <ScrollViewer>
+            <Grid ColumnDefinitions="*,*" Margin="5">
+                
+                <!-- LEFT COLUMN: Numeric Settings -->
+                <StackPanel Grid.Column="0" Spacing="10" Margin="0,0,10,0">
+
+                    <!-- Vocab Autoadvance Timings -->
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Vocab autoadvance timings" FontWeight="SemiBold" />
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Starting Seconds" VerticalAlignment="Center" Margin="0,0,10,5" />
+                                <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding AutoadvanceVocabStartingSeconds}" 
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" Margin="0,0,0,5" />
+                                
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Hiragana Seconds" VerticalAlignment="Center" Margin="0,0,10,5" />
+                                <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding AutoadvanceVocabHiraganaSeconds}" 
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" Margin="0,0,0,5" />
+                                
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Katakana Seconds" VerticalAlignment="Center" Margin="0,0,10,5" />
+                                <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding AutoadvanceVocabKatakanaSeconds}" 
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" Margin="0,0,0,5" />
+                                
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Kanji Seconds" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding AutoadvanceVocabKanjiSeconds}" 
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Sentence Autoadvance Timings -->
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Sentence autoadvance timings" FontWeight="SemiBold" />
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Starting Seconds" VerticalAlignment="Center" Margin="0,0,10,5" />
+                                <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding AutoadvanceSentenceStartingSeconds}" 
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" Margin="0,0,0,5" />
+                                
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Hiragana Seconds" VerticalAlignment="Center" Margin="0,0,10,5" />
+                                <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding AutoadvanceSentenceHiraganaSeconds}" 
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" Margin="0,0,0,5" />
+                                
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Katakana Seconds" VerticalAlignment="Center" Margin="0,0,10,5" />
+                                <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding AutoadvanceSentenceKatakanaSeconds}" 
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" Margin="0,0,0,5" />
+                                
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Kanji Seconds" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding AutoadvanceSentenceKanjiSeconds}" 
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Boost Failed Card Allowed Time -->
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Boost failed card allowed time" FontWeight="SemiBold" />
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Grid.Column="0" Text="Boost Failed Card Allowed Time Factor" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Column="1" Value="{Binding BoostFailedCardAllowedTimeByFactor}" 
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Decrease Failed Card Intervals -->
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Decrease failed card intervals" FontWeight="SemiBold" />
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Grid.Column="0" Text="Failed card again seconds for next again" VerticalAlignment="Center" TextWrapping="Wrap" />
+                                <NumericUpDown Grid.Column="1" Value="{Binding DecreaseFailedCardIntervalsInterval}" 
+                                             Minimum="0" Maximum="99999" Increment="1" FormatString="F0" Width="100" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Timeboxes -->
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Timeboxes" FontWeight="SemiBold" />
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Sentence Read" VerticalAlignment="Center" Margin="0,0,10,5" />
+                                <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding TimeboxSentenceRead}" 
+                                             Minimum="0" Maximum="99999" Increment="1" FormatString="F0" Width="100" Margin="0,0,0,5" />
+                                
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Sentence Listen" VerticalAlignment="Center" Margin="0,0,10,5" />
+                                <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding TimeboxSentenceListen}" 
+                                             Minimum="0" Maximum="99999" Increment="1" FormatString="F0" Width="100" Margin="0,0,0,5" />
+                                
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Vocab Read" VerticalAlignment="Center" Margin="0,0,10,5" />
+                                <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding TimeboxVocabRead}" 
+                                             Minimum="0" Maximum="99999" Increment="1" FormatString="F0" Width="100" Margin="0,0,0,5" />
+                                
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Vocab Listen" VerticalAlignment="Center" Margin="0,0,10,5" />
+                                <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding TimeboxVocabListen}" 
+                                             Minimum="0" Maximum="99999" Increment="1" FormatString="F0" Width="100" Margin="0,0,0,5" />
+                                
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="Kanji" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                <NumericUpDown Grid.Row="4" Grid.Column="1" Value="{Binding TimeboxKanjiRead}" 
+                                             Minimum="0" Maximum="99999" Increment="1" FormatString="F0" Width="100" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Prevent Accidental Clicks -->
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Prevent accidental clicks" FontWeight="SemiBold" />
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Minimum time viewing question" VerticalAlignment="Center" Margin="0,0,10,5" />
+                                <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding MinimumTimeViewingQuestion}" 
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" Margin="0,0,0,5" />
+                                
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Minimum time viewing answer" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding MinimumTimeViewingAnswer}" 
+                                             Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="100" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+
+                <!-- RIGHT COLUMN: Feature Toggles -->
+                <StackPanel Grid.Column="1" Spacing="10">
+
+                    <!-- Sentence Display -->
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Sentence Display" FontWeight="SemiBold" />
+                            <CheckBox Content="Show kanji in sentence breakdown" IsChecked="{Binding ShowKanjiInSentenceBreakdown}" />
+                            <CheckBox Content="Show compound parts in sentence breakdown" IsChecked="{Binding ShowCompoundPartsInSentenceBreakdown}" />
+                            <CheckBox Content="Show kanji mnemonics in sentence breakdown" IsChecked="{Binding ShowKanjiMnemonicsInSentenceBreakdown}" />
+                            <CheckBox Content="Hide compositionally transparent compounds" IsChecked="{Binding HideCompositionallyTransparentCompounds}" />
+                            <CheckBox Content="Automatically yield last token in suru verb compounds to overlapping compounds (Ctrl+Shift+Alt+s)" 
+                                    IsChecked="{Binding AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound}" />
+                            <CheckBox Content="Automatically yield last token in passive verb compounds to overlapping compounds (Ctrl+Shift+Alt+h)" 
+                                    IsChecked="{Binding AutomaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound}" />
+                            <CheckBox Content="Automatically yield last token in causative verb compounds to overlapping compounds (Ctrl+Shift+Alt+t)" 
+                                    IsChecked="{Binding AutomaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound}" />
+                            <CheckBox Content="Hide all compounds" IsChecked="{Binding HideAllCompounds}" />
+                            <CheckBox Content="Show sentence breakdown in edit mode" IsChecked="{Binding ShowSentenceBreakdownInEditMode}" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Misc -->
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Misc" FontWeight="SemiBold" />
+                            <CheckBox Content="Yomitan integration: Copy reviewer answer to clipboard" IsChecked="{Binding YomitanIntegrationCopyAnswerToClipboard}" />
+                            <CheckBox Content="FSRS: Enable short term scheduler with steps" IsChecked="{Binding AnkiInternalFsrsSetEnableFsrsShortTermWithSteps}" />
+                            <CheckBox Content="Decrease failed card intervals" IsChecked="{Binding DecreaseFailedCardIntervals}" />
+                            <CheckBox Content="Prevent double clicks" IsChecked="{Binding PreventDoubleClicks}" />
+                            <CheckBox Content="Boost failed card allowed time" IsChecked="{Binding BoostFailedCardAllowedTime}" />
+                            <CheckBox Content="Prefer default mnemonics to source mnemonics" IsChecked="{Binding PreferDefaultMnemonicsToSourceMnemonics}" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Performance and Memory Usage -->
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Performance and memory usage" FontWeight="SemiBold" />
+                            <CheckBox Content="Load Studio in foreground. Makes it clear when done. Anki will be responsive when done. But you can't use anki while loading." 
+                                    IsChecked="{Binding LoadStudioInForeground}" />
+                            <CheckBox Content="Load Jamdict DB into memory [Requires restart]" IsChecked="{Binding LoadJamdictDbIntoMemory}" />
+                            <CheckBox Content="Cache card studying status on startup. Only disable for dev/testing purposes. [Requires restart]" 
+                                    IsChecked="{Binding PreCacheCardStudyingStatus}" />
+                            <CheckBox Content="Prevent Anki from garbage collecting every time a window closes, causing a short hang every time. [Requires restart]" 
+                                    IsChecked="{Binding PreventAnkiFromGarbageCollectingEveryTimeAWindowCloses}" />
+                            <CheckBox Content="Prevent all automatic garbage collection. Will stop the mini-hangs but memory usage will grow gradually. [Requires restart]" 
+                                    IsChecked="{Binding DisableAllAutomaticGarbageCollection}" />
+                            <CheckBox Content="Enable Batch GC. [Requires restart]" IsChecked="{Binding EnableGarbageCollectionDuringBatches}" />
+                            <CheckBox Content="Enable automatic GC. [Requires restart. Reduces memory usage the most but slows Anki down and may cause crashes due to Qt incompatibility.]" 
+                                    IsChecked="{Binding EnableAutomaticGarbageCollection}" />
+                            <CheckBox Content="Enable automatic string interning. Reduces memory usage at the cost of some CPU overhead and slowdown. [Requires restart]" 
+                                    IsChecked="{Binding EnableAutoStringInterning}" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Developers Only -->
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Devolpers only" FontWeight="SemiBold" />
+                            <CheckBox Content="Enable tracemalloc. Will show memory usage in logs and increase memory usage A LOT. [Requires restart]" 
+                                    IsChecked="{Binding EnableTraceMalloc}" />
+                            <CheckBox Content="Track instances in memory. [Requires restart.. Only useful to developers and will use extra memory.]" 
+                                    IsChecked="{Binding TrackInstancesInMemory}" />
+                            <CheckBox Content="Log when flushing notes to backend." IsChecked="{Binding LogWhenFlushingNotes}" />
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+
+            </Grid>
+        </ScrollViewer>
+
+    </DockPanel>
+</Window>

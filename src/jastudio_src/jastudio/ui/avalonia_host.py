@@ -65,6 +65,27 @@ def show_about_dialog() -> None:
         raise
 
 
+def show_options_dialog() -> None:
+    """Show the Avalonia Options dialog for Japanese configuration settings."""
+    mylog.info("show_options_dialog() called")
+    if not _initialized:
+        mylog.warning("Avalonia UI not initialized, initializing now...")
+        initialize()
+
+    try:
+        mylog.info("Importing DialogHost...")
+        from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
+
+        mylog.info("Calling DialogHost.ShowOptionsDialog()...")
+        DialogHost.ShowOptionsDialog()  # pyright: ignore[reportUnknownMemberType]
+        mylog.info("OptionsDialog shown successfully")
+    except Exception as e:
+        mylog.error(f"Failed to show OptionsDialog: {e}")
+        import traceback
+        mylog.error(traceback.format_exc())
+        raise
+
+
 def show_context_menu_popup(clipboard_content: str, selection_content: str, x: int, y: int) -> None:
     """
     Show the Avalonia context menu popup at the specified screen coordinates.

@@ -102,6 +102,22 @@ public static class DialogHost
     }
 
     /// <summary>
+    /// Show the Options dialog for Japanese configuration settings.
+    /// </summary>
+    public static void ShowOptionsDialog()
+    {
+        EnsureInitialized();
+        Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            JALogger.Log("Creating OptionsDialog window...");
+            var window = new OptionsDialog();
+            JALogger.Log("OptionsDialog created, calling Show()...");
+            window.Show();
+            JALogger.Log("OptionsDialog.Show() completed");
+        });
+    }
+
+    /// <summary>
     /// Show the context menu popup at the current cursor position.
     /// </summary>
     /// <param name="clipboardContent">Content from clipboard</param>
