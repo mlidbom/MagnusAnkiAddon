@@ -82,28 +82,6 @@ public static class AnkiFacade
     }
 
     /// <summary>
-    /// Show the readings mappings dialog.
-    /// TEMPORARY: This is a Python dialog that should eventually be ported to Avalonia.
-    /// Equivalent to: jastudio.configuration.readings_mapping_dialog.show_readings_mappings()
-    /// </summary>
-    public static void ShowReadingsMappingsDialog()
-    {
-        PythonEnvironment.Use(() =>
-        {
-            try
-            {
-                dynamic readingsMappingDialog = Py.Import("jastudio.configuration.readings_mapping_dialog");
-                readingsMappingDialog.show_readings_mappings();
-            }
-            catch (Exception ex)
-            {
-                JALogger.Log($"AnkiFacade.ShowReadingsMappingsDialog failed: {ex.Message}");
-                throw;
-            }
-        });
-    }
-
-    /// <summary>
     /// Convert Immersion Kit sentences.
     /// TEMPORARY: This operation is not yet ported to C#.
     /// Equivalent to: jastudio.batches.local_note_updater.convert_immersion_kit_sentences()

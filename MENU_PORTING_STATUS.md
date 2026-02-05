@@ -76,21 +76,21 @@ When porting menus/dialogs:
 ## Main Menu Structure (JapaneseMainMenu.cs)
 
 ### Status Overview
-- **Config Menu**: PARTIALLY COMPLETE
+- **Config Menu**: ✅ COMPLETE
   - Options (Ctrl+Shift+S) - ✅ COMPLETE (Avalonia dialog with full two-way binding to JapaneseConfig)
-  - Readings mappings (Ctrl+Shift+M) - TODO
+  - Readings mappings (Ctrl+Shift+M) - ✅ COMPLETE (Avalonia dialog with text editor, search, deduplication)
   
-- **Lookup Menu**: ✅ COMPLETE
-  - Open note (Ctrl+O) - TODO stub
+- **Lookup Menu**: PARTIALLY COMPLETE
+  - Open note (Ctrl+O) - TODO (Python dialog, needs porting to Avalonia)
   - ✅ Anki (all search menus complete, see OpenInAnkiMenus.cs)
   - ✅ Web (all search menus complete, see WebSearchMenus.cs)
   
-- **Local Actions Menu**: SCAFFOLDED (menu items exist, actions are TODO stubs)
-  - Update submenu - TODO (Vocab, Kanji, Sentences, Tag metadata, All, Reparse, Full rebuild)
-  - Convert Immersion Kit sentences - TODO
-  - Update everything except reparsing sentences - TODO
-  - Create vocab notes for parsed words - TODO
-  - Regenerate vocab source answers from jamdict - TODO
+- **Local Actions Menu**: ✅ COMPLETE (all operations use JAStudio.Core.Batches.LocalNoteUpdater directly)
+  - Update submenu - ✅ COMPLETE (Vocab, Kanji, Sentences, Tag metadata, All, Reparse, Full rebuild)
+  - Convert Immersion Kit sentences - TODO (not yet ported to C#, uses Python via AnkiFacade)
+  - Update everything except reparsing sentences - ✅ COMPLETE
+  - Create vocab notes for parsed words - ✅ COMPLETE
+  - Regenerate vocab source answers from jamdict - ✅ COMPLETE
   
 - **Debug Menu**: ❌ EXCLUDED (Python runtime diagnostics, not relevant to .NET)
   - ❌ Show instance report - EXCLUDED
@@ -197,11 +197,11 @@ When porting menus/dialogs:
 
 ## Summary Statistics
 - **Total menu items tracked**: ~200+ items
-- **COMPLETE**: ~41 items (QueryBuilder methods + OpenInAnki + WebSearch menus + Options dialog, integrated in both main and context)
-- **SCAFFOLDED**: ~32 items (menu structure exists, actions are TODO stubs)
+- **COMPLETE**: ~53 items (QueryBuilder, OpenInAnki, WebSearch, Options/Readings dialogs, all Local Actions update operations)
+- **SCAFFOLDED**: ~20 items (menu structure exists, some actions still TODO)
 - **EXCLUDED**: ~7 items (Debug menu - Python runtime diagnostics not relevant to .NET)
 - **MISSING**: ~120+ items (note-specific actions not yet ported)
-- **Porting completion**: ~20% complete, ~16% scaffolded, ~4% excluded, ~60% not started
+- **Porting completion**: ~27% complete, ~10% scaffolded, ~4% excluded, ~60% not started
 
 ### Phase 1 Complete ✅
 - QueryBuilder (21 methods) - ✅ COMPLETE
@@ -212,13 +212,19 @@ When porting menus/dialogs:
 - Menu integration into NoteContextMenu - ✅ COMPLETE
 - Python integration layer wiring - ✅ COMPLETE
 - OptionsDialog (full configuration UI) - ✅ COMPLETE
+- ReadingsMappingsDialog (Avalonia text editor) - ✅ COMPLETE
+- Config Menu (Options + Readings Mappings) - ✅ COMPLETE
+- Local Actions Menu (all update operations) - ✅ COMPLETE
+- **Architecture cleanup**: Menus use JAStudio.Core directly instead of Python callbacks
+- **AnkiFacade reduced**: From 17 methods (370 lines) to 4 methods (~110 lines) - 70% reduction
 
-### Phase 2 Scaffolded (TODO place)
-- Main menu Config actions (Options, Readings mappings)
-- Main menu Local Actions (Update, Convert, Create, Regenerate)
-- Context menu Create actions (vocab, sentence, kanji)
-- Context menu Universal note actions (previewer, suspend/unsuspend)
-- Context menu scaffolding for note-specific actions
+### Phase 2 In Progress
+- ✅ Main menu Config actions (Options ✅, Readings mappings ✅)
+- ✅ Main menu Local Actions (Update ✅, Create ✅, Regenerate ✅, Convert Immersion Kit TODO)
+- TODO Context menu Create actions (vocab, sentence, kanji)
+- TODO Context menu Universal note actions (previewer, suspend/unsuspend)
+- TODO Context menu scaffolding for note-specific actions
+- TODO Open Note dialog (currently Python dialog, needs Avalonia port)
 
 ### Excluded from Porting ❌
 - **Debug Menu** (7 items) - Python runtime memory diagnostics used to manage Python's poor performance with >100MB memory. Not relevant to .NET which handles memory efficiently. These remain in the Python menu and may be removed entirely after full .NET migration.
@@ -230,46 +236,68 @@ When porting menus/dialogs:
 - Dynamic menu generation based on data
 
 ### Infrastructure Complete ✅
-### Infrastructure Complete ✅
 The C# infrastructure is in place:
-  - `JAStudio.UI/Menus/JapaneseMainMenu.cs` (scaffolding complete, lookup menus integrated ✅)
+  - `JAStudio.UI/Menus/JapaneseMainMenu.cs` ✅ COMPLETE (Config + Local Actions + Lookup menus)
   - `JAStudio.UI/Menus/NoteContextMenu.cs` (scaffolding complete, lookup menus integrated ✅)
   - `JAStudio.UI/Menus/OpenInAnkiMenus.cs` ✅ COMPLETE
-  - `JAStudio.UI/Menus/WebSearchMenus.cs` ✅ COMPLETE
+  - `JAStudio.UI/Menus/WebSearchMenus.cs` ✅ COMPLETE (uses BrowserLauncher directly)
   - `JAStudio.UI/Views/OptionsDialog.axaml` ✅ COMPLETE (Full configuration dialog)
   - `JAStudio.UI/ViewModels/OptionsDialogViewModel.cs` ✅ COMPLETE (Two-way binding to JapaneseConfig)
+  - `JAStudio.UI/Views/ReadingsMappingsDialog.axaml` ✅ COMPLETE (Text editor with search)
+  - `JAStudio.UI/ViewModels/ReadingsMappingsDialogViewModel.cs` ✅ COMPLETE (Edit/save mappings)
   - `JAStudio.UI/Utils/ShortcutFinger.cs` ✅ COMPLETE (keyboard accelerators)
-  - `JAStudio.UI/Utils/BrowserLauncher.cs` ✅ COMPLETE
+  - `JAStudio.UI/Utils/BrowserLauncher.cs` ✅ COMPLETE (pure C# URL opening)
   - `JAStudio.UI/Utils/InputDialog.cs` ✅ COMPLETE
+  - `JAStudio.UI/Anki/AnkiFacade.cs` ✅ MINIMIZED (4 methods, only true Anki API calls)
   - `JAStudio.UI/PopupMenuHost.cs` (infrastructure ready)
-  - `JAStudio.UI/DialogHost.cs` (entry points with callbacks)
+  - `JAStudio.UI/DialogHost.cs` (entry points for dialogs)
   
 Python integration layer complete ✅:
-  - `jastudio/ui/avalonia_host.py` (all menu show functions wired up, including show_options_dialog)
-  - `jastudio/ui/tools_menu.py` (`_add_avalonia_main_menu()` with accelerator, Options menu uses Avalonia)
-  - `jastudio/ui/menus/common.py` (`_add_avalonia_menu_entry()` with accelerator)
+  - `jastudio/ui/avalonia_host.py` (minimal - only dialogs not yet ported)
+  - `jastudio/ui/tools_menu.py` (uses C# menus via PyQt adapter)
+  - `jastudio/ui/menus/common.py` (uses C# menus via PyQt adapter)
+  - `jastudio/ui/menus/qt_menu_adapter.py` ✅ COMPLETE (converts C# menu specs to PyQt)
+  
+**Architecture**: Menus are 100% C# → All business logic uses JAStudio.Core directly → Python is just a thin PyQt rendering layer
 
 ## Implementation Patterns Established
 
-### Callback Pattern for Anki Browser Searches
+### Business Logic Uses C# Core Directly (NEW PATTERN)
+```csharp
+// Menus call JAStudio.Core directly - no Python callbacks!
+private void OnUpdateVocab() => LocalNoteUpdater.UpdateVocab();
+private void OnUpdateAll() => LocalNoteUpdater.UpdateAll();
+private void OnCreateMissingVocab() => LocalNoteUpdater.CreateMissingVocabWithDictionaryEntries();
+```
+
+### Anki Browser Searches (Via AnkiFacade)
 ```csharp
 // C# generates query using QueryBuilder
 var query = QueryBuilder.KanjiInString(text);
-// Invokes Python callback which uses search_executor.do_lookup()
-_executeLookup(query);
+// AnkiFacade calls Python's Anki browser API
+AnkiFacade.ExecuteLookup(query);
 ```
 
 ### Web URL Opening (Pure C#)
 ```csharp
-// Direct C# call, no Python callback needed
+// Direct C# call, no Python needed
 BrowserLauncher.OpenUrl("https://jisho.org/search/" + encodedText);
 ```
 
 ### Menu Creation Pattern
 ```csharp
-// Menu items use Func<string> for lazy text evaluation
-OpenInAnkiMenus.BuildOpenInAnkiMenu(() => _searchText, _executeLookup)
-WebSearchMenus.BuildWebSearchMenu(() => _searchText, BrowserLauncher.OpenUrl)
+// Menu specs are UI-agnostic, converted to PyQt or Avalonia
+OpenInAnkiMenus.BuildOpenInAnkiMenuSpec(() => _searchText)
+WebSearchMenus.BuildWebSearchMenuSpec(() => _searchText)
+```
+
+### AnkiFacade - Minimal Python Interop
+```csharp
+// Only 4 methods remain - true Anki API calls only:
+- ExecuteLookup(query)     // Opens Anki browser
+- ShowTooltip(msg)          // Shows Anki tooltip  
+- ShowNoteSearchDialog()    // TODO: Port to Avalonia
+- ConvertImmersionKit()     // TODO: Port to C#
 ```
 
 ### Keyboard Accelerators
@@ -284,8 +312,10 @@ Header = ShortcutFinger.Up1("Text")      // Alt+P
 ## Next Steps for Porting
 
 ### Immediate Priority (Phase 2A)
-1. **Port Readings Mappings dialog to Avalonia** - Replace PyQt6 dialog with C# Avalonia UI
-   - Readings mappings dialog (needs full Avalonia dialog implementation with text editor and search)
+1. ✅ ~~**Port Readings Mappings dialog to Avalonia**~~ - COMPLETE
+   - ✅ Readings mappings dialog with text editor, search box, save/cancel
+2. **Port Open Note dialog to Avalonia** - Replace Python dialog with C# Avalonia UI
+   - Note search dialog (needs search functionality and note browsing)
 
 ### Medium Priority (Phase 2B)  
 1. **Implement Local Actions menu** - Wire up TODO stubs in JapaneseMainMenu.cs

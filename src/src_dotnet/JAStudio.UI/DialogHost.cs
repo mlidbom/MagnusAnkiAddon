@@ -126,6 +126,20 @@ public static class DialogHost
     }
 
     /// <summary>
+    /// Show the Readings Mappings dialog for editing readings mappings.
+    /// </summary>
+    public static void ShowReadingsMappingsDialog()
+    {
+        JALogger.Log("ShowReadingsMappingsDialog() called");
+        EnsureInitialized();
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var window = new ReadingsMappingsDialog();
+            window.Show();
+        });
+    }
+
+    /// <summary>
     /// Show the context menu popup at the current cursor position.
     /// </summary>
     /// <param name="clipboardContent">Content from clipboard</param>

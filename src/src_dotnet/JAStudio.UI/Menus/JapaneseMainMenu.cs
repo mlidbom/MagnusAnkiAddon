@@ -117,7 +117,7 @@ public class JapaneseMainMenu
         JALogger.Log("DialogHost.ShowOptionsDialog() completed");
     }
     
-    private void OnReadingsMappings() => AnkiFacade.ShowReadingsMappingsDialog();
+    private void OnReadingsMappings() => DialogHost.ShowReadingsMappingsDialog();
 
     // Lookup menu actions
     private void OnOpenNote() => AnkiFacade.ShowNoteSearchDialog();
