@@ -1,13 +1,13 @@
 using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 
 namespace JAStudio.UI.Utils;
 
 /// <summary>
-/// Utility for opening URLs in the default browser using Avalonia's Launcher API.
+/// Utility for opening URLs in the default browser.
+/// Uses OS-specific commands since Avalonia app runs without a MainWindow.
 /// </summary>
 public static class BrowserLauncher
 {
@@ -16,8 +16,32 @@ public static class BrowserLauncher
     /// </summary>
     public static void OpenUrl(string url)
     {
-        // Fire and forget - async void is acceptable for event handlers
-        _ = OpenUrlAsync(url);
+        try
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                // Windows: use explorer to open URL
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                // Linux: use xdg-open
+                Process.Start("xdg-open", url);
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                // macOS: use open
+                Process.Start("open", url);
+            }
+            else
+            {
+                JALogger.Log($"Cannot open URL: Unsupported platform");
+            }
+        }
+        catch (Exception ex)
+        {
+            JALogger.Log($"Failed to open URL: {url}. Error: {ex.Message}");
+        }
     }
 
     /// <summary>
@@ -27,36 +51,38 @@ public static class BrowserLauncher
     {
         try
         {
-            var topLevel = GetTopLevel();
-            if (topLevel?.Launcher == null)
+            Process? process = null;
+            
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                JALogger.Log($"Cannot open URL: Launcher not available");
+                process = Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                process = Process.Start("xdg-open", url);
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                process = Process.Start("open", url);
+            }
+            else
+            {
+                JALogger.Log($"Cannot open URL: Unsupported platform");
                 return false;
             }
 
-            var uri = new Uri(url);
-            var result = await topLevel.Launcher.LaunchUriAsync(uri);
-            
-            if (!result)
+            if (process != null)
             {
-                JALogger.Log($"Failed to open URL: {url} - OS cannot handle the request");
+                await process.WaitForExitAsync();
+                return process.ExitCode == 0;
             }
             
-            return result;
+            return false;
         }
         catch (Exception ex)
         {
             JALogger.Log($"Failed to open URL: {url}. Error: {ex.Message}");
             return false;
         }
-    }
-
-    private static TopLevel? GetTopLevel()
-    {
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            return desktop.MainWindow != null ? TopLevel.GetTopLevel(desktop.MainWindow) : null;
-        }
-        return null;
     }
 }
