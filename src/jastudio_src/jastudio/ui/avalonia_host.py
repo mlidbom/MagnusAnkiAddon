@@ -129,25 +129,8 @@ def show_japanese_main_menu(refresh_callback: callable, x: int, y: int) -> None:
         raise
 
 
-def show_note_context_menu(
-    refresh_callback: callable,
-    selection: str,
-    clipboard: str,
-    note_type: str | None,
-    x: int,
-    y: int,
-) -> None:
-    """
-    Show the note context menu at the specified screen coordinates.
-
-    Args:
-        refresh_callback: Callback to invoke Anki UI refresh
-        selection: Currently selected text
-        clipboard: Clipboard content
-        note_type: Type of note: "vocab", "kanji", "sentence", or None
-        x: X coordinate (screen coordinates, physical pixels)
-        y: Y coordinate (screen coordinates, physical pixels)
-    """
+def show_vocab_context_menu(refresh_callback: callable, selection: str, clipboard: str, x: int, y: int) -> None:
+    """Show context menu for a vocab note."""
     if not _initialized:
         mylog.warning("Avalonia UI not initialized, initializing now...")
         initialize()
@@ -156,12 +139,61 @@ def show_note_context_menu(
         from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
         from System import Action  # pyright: ignore[reportMissingImports]
 
-        # Wrap Python callback in .NET Action
         action = Action(refresh_callback)  # pyright: ignore[reportUnknownVariableType]
-
-        DialogHost.ShowNoteContextMenu(action, selection, clipboard, note_type, x, y)  # pyright: ignore[reportUnknownMemberType]
+        DialogHost.ShowVocabContextMenu(action, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
     except Exception as e:
-        mylog.error(f"Failed to show note context menu: {e}")
+        mylog.error(f"Failed to show vocab context menu: {e}")
+        raise
+
+
+def show_kanji_context_menu(refresh_callback: callable, selection: str, clipboard: str, x: int, y: int) -> None:
+    """Show context menu for a kanji note."""
+    if not _initialized:
+        mylog.warning("Avalonia UI not initialized, initializing now...")
+        initialize()
+
+    try:
+        from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
+        from System import Action  # pyright: ignore[reportMissingImports]
+
+        action = Action(refresh_callback)  # pyright: ignore[reportUnknownVariableType]
+        DialogHost.ShowKanjiContextMenu(action, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
+    except Exception as e:
+        mylog.error(f"Failed to show kanji context menu: {e}")
+        raise
+
+
+def show_sentence_context_menu(refresh_callback: callable, selection: str, clipboard: str, x: int, y: int) -> None:
+    """Show context menu for a sentence note."""
+    if not _initialized:
+        mylog.warning("Avalonia UI not initialized, initializing now...")
+        initialize()
+
+    try:
+        from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
+        from System import Action  # pyright: ignore[reportMissingImports]
+
+        action = Action(refresh_callback)  # pyright: ignore[reportUnknownVariableType]
+        DialogHost.ShowSentenceContextMenu(action, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
+    except Exception as e:
+        mylog.error(f"Failed to show sentence context menu: {e}")
+        raise
+
+
+def show_generic_context_menu(refresh_callback: callable, selection: str, clipboard: str, x: int, y: int) -> None:
+    """Show context menu when no note is available."""
+    if not _initialized:
+        mylog.warning("Avalonia UI not initialized, initializing now...")
+        initialize()
+
+    try:
+        from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
+        from System import Action  # pyright: ignore[reportMissingImports]
+
+        action = Action(refresh_callback)  # pyright: ignore[reportUnknownVariableType]
+        DialogHost.ShowGenericContextMenu(action, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
+    except Exception as e:
+        mylog.error(f"Failed to show generic context menu: {e}")
         raise
 
 

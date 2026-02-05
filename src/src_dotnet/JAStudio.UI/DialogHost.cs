@@ -137,21 +137,60 @@ public static class DialogHost
     }
 
     /// <summary>
-    /// Show the context menu for a note with selection and clipboard.
+    /// Show context menu for a vocab note.
     /// </summary>
-    /// <param name="refreshCallback">Callback to invoke Anki UI refresh</param>
-    /// <param name="selection">Currently selected text</param>
-    /// <param name="clipboard">Clipboard content</param>
-    /// <param name="noteType">Type of note: "vocab", "kanji", "sentence", or null</param>
-    /// <param name="x">X coordinate in physical (device) pixels</param>
-    /// <param name="y">Y coordinate in physical (device) pixels</param>
-    public static void ShowNoteContextMenu(Action refreshCallback, string selection, string clipboard, string? noteType, int x, int y)
+    public static void ShowVocabContextMenu(Action refreshCallback, string selection, string clipboard, int x, int y)
     {
         EnsureInitialized();
         Dispatcher.UIThread.InvokeAsync(() =>
         {
             var menuBuilder = new NoteContextMenu(refreshCallback);
-            var menuItems = menuBuilder.BuildContextMenu(selection ?? "", clipboard ?? "", noteType);
+            var menuItems = menuBuilder.BuildVocabContextMenu(selection ?? "", clipboard ?? "");
+            
+            PopupMenuHost.ShowAt(menuItems, x, y);
+        });
+    }
+
+    /// <summary>
+    /// Show context menu for a kanji note.
+    /// </summary>
+    public static void ShowKanjiContextMenu(Action refreshCallback, string selection, string clipboard, int x, int y)
+    {
+        EnsureInitialized();
+        Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            var menuBuilder = new NoteContextMenu(refreshCallback);
+            var menuItems = menuBuilder.BuildKanjiContextMenu(selection ?? "", clipboard ?? "");
+            
+            PopupMenuHost.ShowAt(menuItems, x, y);
+        });
+    }
+
+    /// <summary>
+    /// Show context menu for a sentence note.
+    /// </summary>
+    public static void ShowSentenceContextMenu(Action refreshCallback, string selection, string clipboard, int x, int y)
+    {
+        EnsureInitialized();
+        Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            var menuBuilder = new NoteContextMenu(refreshCallback);
+            var menuItems = menuBuilder.BuildSentenceContextMenu(selection ?? "", clipboard ?? "");
+            
+            PopupMenuHost.ShowAt(menuItems, x, y);
+        });
+    }
+
+    /// <summary>
+    /// Show context menu when no note is available.
+    /// </summary>
+    public static void ShowGenericContextMenu(Action refreshCallback, string selection, string clipboard, int x, int y)
+    {
+        EnsureInitialized();
+        Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            var menuBuilder = new NoteContextMenu(refreshCallback);
+            var menuItems = menuBuilder.BuildGenericContextMenu(selection ?? "", clipboard ?? "");
             
             PopupMenuHost.ShowAt(menuItems, x, y);
         });

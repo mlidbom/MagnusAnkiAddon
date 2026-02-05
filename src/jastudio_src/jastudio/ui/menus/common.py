@@ -165,23 +165,23 @@ def _add_avalonia_menu_entry(menu: QMenu, selection: str, clipboard: str) -> Non
             physical_x = int(action_global_pos.x() * dpi_scale)
             physical_y = int(action_global_pos.y() * dpi_scale)
 
-            # Determine note type
+            # Determine note type and show appropriate menu
             note = ui_utils.try_get_review_note()
-            note_type = None
             if note:
                 from jaslib.note.kanjinote import KanjiNote
                 from jaslib.note.sentences.sentencenote import SentenceNote
                 from jaslib.note.vocabulary.vocabnote import VocabNote
                 
                 if isinstance(note, VocabNote):
-                    note_type = "vocab"
+                    avalonia_host.show_vocab_context_menu(refresh, selection, clipboard, physical_x, physical_y)
                 elif isinstance(note, KanjiNote):
-                    note_type = "kanji"
+                    avalonia_host.show_kanji_context_menu(refresh, selection, clipboard, physical_x, physical_y)
                 elif isinstance(note, SentenceNote):
-                    note_type = "sentence"
-
-            # Show the real note context menu with refresh callback
-            avalonia_host.show_note_context_menu(refresh, selection, clipboard, note_type, physical_x, physical_y)
+                    avalonia_host.show_sentence_context_menu(refresh, selection, clipboard, physical_x, physical_y)
+                else:
+                    avalonia_host.show_generic_context_menu(refresh, selection, clipboard, physical_x, physical_y)
+            else:
+                avalonia_host.show_generic_context_menu(refresh, selection, clipboard, physical_x, physical_y)
         except Exception as e:
             from jaslib import mylog
             mylog.error(f"Failed to show Avalonia menu: {e}")

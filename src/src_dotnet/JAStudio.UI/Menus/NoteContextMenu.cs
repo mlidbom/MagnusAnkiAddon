@@ -18,35 +18,77 @@ public class NoteContextMenu
     }
 
     /// <summary>
-    /// Build a context menu for a note with selection and clipboard.
+    /// Build context menu for a vocab note.
     /// </summary>
-    /// <param name="selection">Currently selected text (can be empty)</param>
-    /// <param name="clipboard">Clipboard content (can be empty)</param>
-    /// <param name="noteType">Type of note: "vocab", "kanji", "sentence", or null</param>
-    public List<MenuItem> BuildContextMenu(string selection, string clipboard, string? noteType)
+    public List<MenuItem> BuildVocabContextMenu(string selection, string clipboard)
     {
         var menuItems = new List<MenuItem>();
 
-        // Selection menu (if text is selected)
         if (!string.IsNullOrEmpty(selection))
-        {
-            menuItems.Add(BuildSelectionMenu(selection, noteType));
-        }
+            menuItems.Add(BuildSelectionMenu(selection, "vocab"));
 
-        // Clipboard menu (if clipboard has content)
         if (!string.IsNullOrEmpty(clipboard))
-        {
-            menuItems.Add(BuildClipboardMenu(clipboard, noteType));
-        }
+            menuItems.Add(BuildClipboardMenu(clipboard, "vocab"));
 
-        // Note actions menu
-        menuItems.Add(BuildNoteActionsMenu(noteType));
-
-        // Universal note actions menu
+        menuItems.Add(BuildVocabNoteActionsMenu());
         menuItems.Add(BuildUniversalNoteActionsMenu());
+        menuItems.Add(BuildVocabViewMenu());
 
-        // View menu
-        menuItems.Add(BuildViewMenu(noteType));
+        return menuItems;
+    }
+
+    /// <summary>
+    /// Build context menu for a kanji note.
+    /// </summary>
+    public List<MenuItem> BuildKanjiContextMenu(string selection, string clipboard)
+    {
+        var menuItems = new List<MenuItem>();
+
+        if (!string.IsNullOrEmpty(selection))
+            menuItems.Add(BuildSelectionMenu(selection, "kanji"));
+
+        if (!string.IsNullOrEmpty(clipboard))
+            menuItems.Add(BuildClipboardMenu(clipboard, "kanji"));
+
+        menuItems.Add(BuildKanjiNoteActionsMenu());
+        menuItems.Add(BuildUniversalNoteActionsMenu());
+        menuItems.Add(BuildKanjiViewMenu());
+
+        return menuItems;
+    }
+
+    /// <summary>
+    /// Build context menu for a sentence note.
+    /// </summary>
+    public List<MenuItem> BuildSentenceContextMenu(string selection, string clipboard)
+    {
+        var menuItems = new List<MenuItem>();
+
+        if (!string.IsNullOrEmpty(selection))
+            menuItems.Add(BuildSelectionMenu(selection, "sentence"));
+
+        if (!string.IsNullOrEmpty(clipboard))
+            menuItems.Add(BuildClipboardMenu(clipboard, "sentence"));
+
+        menuItems.Add(BuildSentenceNoteActionsMenu());
+        menuItems.Add(BuildUniversalNoteActionsMenu());
+        menuItems.Add(BuildSentenceViewMenu());
+
+        return menuItems;
+    }
+
+    /// <summary>
+    /// Build context menu when no note is available.
+    /// </summary>
+    public List<MenuItem> BuildGenericContextMenu(string selection, string clipboard)
+    {
+        var menuItems = new List<MenuItem>();
+
+        if (!string.IsNullOrEmpty(selection))
+            menuItems.Add(BuildSelectionMenu(selection, null));
+
+        if (!string.IsNullOrEmpty(clipboard))
+            menuItems.Add(BuildClipboardMenu(clipboard, null));
 
         return menuItems;
     }
@@ -90,30 +132,96 @@ public class NoteContextMenu
         return menuItems;
     }
 
-    private MenuItem BuildNoteActionsMenu(string? noteType)
+    // Vocab-specific menus
+    private MenuItem BuildVocabNoteActionsMenu()
     {
-        var menuItems = new List<MenuItem>();
-
-        // TODO: Add note-specific actions based on note type
-        switch (noteType)
+        var menuItems = new List<MenuItem>
         {
-            case "vocab":
-                // TODO: Port from menus.notes.vocab.main.setup_note_menu
-                menuItems.Add(CreateMenuItem("Vocab Actions (TODO)", () => { }));
-                break;
-            case "kanji":
-                // TODO: Port from menus.notes.kanji.main.build_note_menu
-                menuItems.Add(CreateMenuItem("Kanji Actions (TODO)", () => { }));
-                break;
-            case "sentence":
-                // TODO: Port from menus.notes.sentence.main.build_note_menu
-                menuItems.Add(CreateMenuItem("Sentence Actions (TODO)", () => { }));
-                break;
-        }
+            // TODO: Port from menus.notes.vocab.main.setup_note_menu
+            CreateMenuItem("Edit vocab flags (TODO)", () => { }),
+            CreateMenuItem("Vocab Actions (TODO)", () => { })
+        };
 
         return new MenuItem
         {
             Header = "Note actions",
+            ItemsSource = menuItems
+        };
+    }
+
+    private MenuItem BuildVocabViewMenu()
+    {
+        var menuItems = new List<MenuItem>
+        {
+            // TODO: Port from menus.notes.vocab.main.build_view_menu
+            CreateMenuItem("View Vocab (TODO)", () => { })
+        };
+
+        return new MenuItem
+        {
+            Header = "View",
+            ItemsSource = menuItems
+        };
+    }
+
+    // Kanji-specific menus
+    private MenuItem BuildKanjiNoteActionsMenu()
+    {
+        var menuItems = new List<MenuItem>
+        {
+            // TODO: Port from menus.notes.kanji.main.build_note_menu
+            CreateMenuItem("Kanji Actions (TODO)", () => { })
+        };
+
+        return new MenuItem
+        {
+            Header = "Note actions",
+            ItemsSource = menuItems
+        };
+    }
+
+    private MenuItem BuildKanjiViewMenu()
+    {
+        var menuItems = new List<MenuItem>
+        {
+            // TODO: Port from menus.notes.kanji.main.build_view_menu
+            CreateMenuItem("View Kanji (TODO)", () => { })
+        };
+
+        return new MenuItem
+        {
+            Header = "View",
+            ItemsSource = menuItems
+        };
+    }
+
+    // Sentence-specific menus
+    private MenuItem BuildSentenceNoteActionsMenu()
+    {
+        var menuItems = new List<MenuItem>
+        {
+            // TODO: Port from menus.notes.sentence.main.build_note_menu
+            CreateMenuItem("Sentence Actions (TODO)", () => { })
+        };
+
+        return new MenuItem
+        {
+            Header = "Note actions",
+            ItemsSource = menuItems
+        };
+    }
+
+    private MenuItem BuildSentenceViewMenu()
+    {
+        var menuItems = new List<MenuItem>
+        {
+            // TODO: Port from menus.notes.sentence.main.build_view_menu
+            CreateMenuItem("View Sentence (TODO)", () => { })
+        };
+
+        return new MenuItem
+        {
+            Header = "View",
             ItemsSource = menuItems
         };
     }
@@ -130,27 +238,6 @@ public class NoteContextMenu
         return new MenuItem
         {
             Header = "Universal note actions",
-            ItemsSource = menuItems
-        };
-    }
-
-    private MenuItem BuildViewMenu(string? noteType)
-    {
-        var menuItems = new List<MenuItem>();
-
-        // TODO: Add view actions based on note type
-        switch (noteType)
-        {
-            case "vocab":
-            case "kanji":
-            case "sentence":
-                menuItems.Add(CreateMenuItem("View Actions (TODO)", () => { }));
-                break;
-        }
-
-        return new MenuItem
-        {
-            Header = "View",
             ItemsSource = menuItems
         };
     }
