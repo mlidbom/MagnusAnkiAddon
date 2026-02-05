@@ -14,9 +14,18 @@
 - Accessible from Anki: Japanese → Debug → Test Avalonia Dialog
 - Validates the full Python → C# → Avalonia pipeline works
 
+**Context Menu Infrastructure: WIP**
+- `ContextMenuPopup.axaml.cs` - Avalonia menu displayed at specific screen coordinates
+- Uses Menu control with submenu to show at precise position
+- Python integration via `jastudio/ui/avalonia_host.py`
+- Positioning works correctly with DPI scaling (tested at 125%)
+- Successfully displays vertical menu with multiple items
+- Menu closes on selection or when focus is lost
+
 **Python Integration:**
 - `jastudio/ui/avalonia_host.py` - Python wrapper for C# dialogs
 - `show_about_dialog()` - Opens the About dialog from Python
+- `show_context_menu_popup()` - Shows context menu at (x, y) coordinates
 
 ---
 
@@ -120,6 +129,10 @@ JAStudio.Core.dll (Domain logic - already ported)
 2. ~~Set up Python → C# dialog invocation pattern~~ ✅
 3. ~~Add integration tests~~ ✅
 4. ~~AboutDialog as proof of concept~~ ✅
+5. ~~Context menu positioning infrastructure~~ ✅
+   - Window-based menu with submenu pattern
+   - DPI-aware coordinate positioning
+   - Python → C# coordinate passing
 
 ### Phase 2: Dialogs (Highest Value)
 1. `vocab_flags_dialog.py` → `VocabFlagsDialog.axaml` (most complex, good test)
@@ -130,7 +143,9 @@ JAStudio.Core.dll (Domain logic - already ported)
 
 ### Phase 3: Widgets
 1. `string_set_widget.py` → `StringSetEditor.axaml` (reused in dialogs)
-2. `require_forbid_widget.py` → `RequireForbidSelector.axaml`
+2. `require_forbid_widget.py` → `RequireForb ← **IN PROGRESS**
+   - ✅ Context menu positioning infrastructure complete
+   - Next: Port actual menu builders from PyQt to AvaloniaidSelector.axaml`
 3. `qt_task_progress_runner.py` → `TaskProgressDialog.axaml`
 
 ### Phase 4: Menus
