@@ -42,8 +42,8 @@ class AnkiSingleCollectionSyncer[TNote: JPNote](WeakRefable, Slots):
     def _update_anki_note(self, note: TNote) -> None:
         self._is_updating_anki_note = True
         try:
-            if note.get_id():
-                anki_note = app.anki_collection().get_note(NoteId(note.get_id()))
+            if note.GetId():
+                anki_note = app.anki_collection().get_note(NoteId(note.GetId()))
                 JPNoteDataShim.sync_note_to_anki_note(note, anki_note)
                 app.anki_collection().update_note(anki_note)
         finally:
@@ -81,7 +81,7 @@ class AnkiSingleCollectionSyncer[TNote: JPNote](WeakRefable, Slots):
 
     def _on_will_be_removed(self, note_ids: Sequence[JPNoteId]) -> None:
         cached_notes = [it for it in (self._cache.with_id_or_none(note_id) for note_id in note_ids) if it is not None]
-        self._deleted.update(it.get_id() for it in cached_notes)
+        self._deleted.update(it.GetId() for it in cached_notes)
         for cached in cached_notes:
             self._cache.remove_from_cache(cached)
 

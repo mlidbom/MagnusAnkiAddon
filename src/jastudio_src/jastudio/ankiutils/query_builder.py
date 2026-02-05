@@ -70,7 +70,7 @@ def potentially_matching_sentences_for_vocab(word: VocabNote) -> str:
     return f"""{note_sentence} {field_contains_string(f_question, *search_strings)}"""
 
 def notes_lookup(notes: Iterable[JPNote]) -> str:
-    return notes_by_id([NoteId(note.get_id()) for note in notes])
+    return notes_by_id([NoteId(note.GetId()) for note in notes])
 
 def notes_by_id(note_ids: list[NoteId]) -> str:
     return f"""{NoteFields.note_id}:{",".join([str(note_id) for note_id in note_ids])}""" if note_ids else ""

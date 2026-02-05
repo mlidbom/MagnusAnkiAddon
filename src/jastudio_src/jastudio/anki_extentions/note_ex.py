@@ -10,6 +10,7 @@ from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
     from anki.notes import Note
+    from jaslib.jpnote_id import JPNoteId
     from JAStudio.Core.Note import JPNote
 
     from jastudio.anki_extentions.card_ex import CardEx
@@ -47,4 +48,4 @@ class NoteEx:
 
     @classmethod
     def from_note(cls, note: JPNote) -> NoteEx:
-        return cls.from_id(note.get_id())
+        return cls.from_id(note.GetId())

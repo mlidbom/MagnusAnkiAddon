@@ -272,7 +272,7 @@ class NoteSearchDialog(QDialog): # Cannot inherit Slots for some QT internal rea
 
             # Create type column
             self.results_table.setItem(i, 0, QTableWidgetItem(self._get_note_type_display(note)))
-            non_optional(self.results_table.item(i, 0)).setData(Qt.ItemDataRole.UserRole, note.get_id())
+            non_optional(self.results_table.item(i, 0)).setData(Qt.ItemDataRole.UserRole, note.GetId())
 
             self.results_table.setItem(i, 1, self._create_item(note.get_question(), is_question=True))
             self.results_table.setItem(i, 2, self._create_item(note.get_answer()))
