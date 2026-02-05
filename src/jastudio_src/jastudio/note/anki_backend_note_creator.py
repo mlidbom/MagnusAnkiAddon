@@ -19,18 +19,18 @@ class AnkiBackendNoteCreator(IBackendNoteCreator):
         backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(note_type))
         JPNoteDataShim.sync_note_to_anki_note(note, backend_note)
         app.anki_collection().addNote(backend_note)
-        note.set_id(backend_note.id)
+        note.SetId(backend_note.id)
         callback()
         studing_status_helper.update_note_in_studying_cache(backend_note)
 
     @override
-    def create_kanji(self, note: KanjiNote, callback: Callable[[], None]) -> None:
+    def CreateKanji(self, note: KanjiNote, callback: Callable[[], None]) -> None:
         self._create_note(note, NoteTypes.Kanji, callback)
 
     @override
-    def create_vocab(self, note: VocabNote, callback: Callable[[], None]) -> None:
+    def CreateVocab(self, note: VocabNote, callback: Callable[[], None]) -> None:
         self._create_note(note, NoteTypes.Vocab, callback)
 
     @override
-    def create_sentence(self, note: SentenceNote, callback: Callable[[], None]) -> None:
+    def CreateSentence(self, note: SentenceNote, callback: Callable[[], None]) -> None:
         self._create_note(note, NoteTypes.Sentence, callback)

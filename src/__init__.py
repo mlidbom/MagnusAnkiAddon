@@ -18,7 +18,7 @@ if not is_testing:
     app.addon_name = os.path.basename(str(top_dir))
     from jastudio import ui  # noqa
 
-    if app.config().enable_automatic_garbage_collection.get_value():
+    if app.config().EnableAutomaticGarbageCollection.GetValue():
         import gc
 
         gc.enable()

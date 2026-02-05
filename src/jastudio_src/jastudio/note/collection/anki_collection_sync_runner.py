@@ -36,8 +36,8 @@ class AnkiCollectionSyncRunner(Slots):
 
         model_manager: ModelManager = anki_collection.models
         all_note_types: list[NoteTypeEx] = [NoteTypeEx.from_dict(model) for model in model_manager.all()]
-        self._note_types: list[NoteTypeEx] = [note_type for note_type in all_note_types if note_type.name in NoteTypes.ALL]
-        ex_assert.equal(len(self._note_types), len(NoteTypes.ALL))
+        self._note_types: list[NoteTypeEx] = [note_type for note_type in all_note_types if note_type.name in NoteTypes.All]
+        ex_assert.equal(len(self._note_types), NoteTypes.All.Count)
 
         hooks.notes_will_be_deleted.append(self._on_will_be_removed)  # pyright: ignore[reportUnknownMemberType]
         hooks.note_will_be_added.append(self._on_will_be_added)  # pyright: ignore[reportUnknownMemberType]

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from anki.notes import NoteId
 from JAStudio.Core import App
 from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction import TextAnalysis
-from JAStudio.Core.Note import Builtin, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
+from JAStudio.Core.Note import Builtin, MyNoteFields, NoteFieldsConstants, NoteTypes, SentenceNoteFields
 from JAStudio.Core.SysUtils import KanaUtils
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
@@ -16,14 +16,14 @@ if TYPE_CHECKING:
     from anki.cards import CardId
     from JAStudio.Core.Note import JPNote, KanjiNote, VocabNote
 
-f_question = MyNoteFields.question
-f_reading = NoteFields.Vocab.Reading
-f_answer = MyNoteFields.answer
-f_forms = NoteFields.Vocab.Forms
-f_reading_on = NoteFields.Kanji.Reading_On
-f_reading_kun = NoteFields.Kanji.Reading_Kun
+f_question = MyNoteFields.Question
+f_reading = NoteFieldsConstants.Vocab.ReadingKana
+f_answer = MyNoteFields.Answer
+f_forms = NoteFieldsConstants.Vocab.UserForms
+f_reading_on = NoteFieldsConstants.Kanji.ReadingOn
+f_reading_kun = NoteFieldsConstants.Kanji.ReadingKun
 
-card_read = f"{Builtin.Card}:{NoteFields.VocabNoteType.Card.Reading}"
+card_read = f"{Builtin.Card}:{NoteFieldsConstants.VocabNoteType.Card.Reading}"
 
 note_kanji = f"{Builtin.Note}:{NoteTypes.Kanji}"
 note_vocab = f"{Builtin.Note}:{NoteTypes.Vocab}"
@@ -46,21 +46,21 @@ def sentence_search(word: str, exact: bool = False) -> str:
     result = f"""{note_sentence} """
 
     def form_query(form: str) -> str:
-        return f"""(({f_question}:*{form}* OR {field_contains_word(SentenceNoteFields.parsing_result, form)}))"""
+        return f"""(({f_question}:*{form}* OR {field_contains_word(SentenceNoteFields.ParsingResult, form)}))"""
 
     if not exact:
         vocabs = App.Col().Vocab.WithForm(word)
         if vocabs:
-            forms: QSet[str] = query(vocabs).select_many(lambda voc: voc.forms.all_list()).to_set()  # set(ex_sequence.flatten([v.forms.all_list() for v in vocabs]))
+            forms: QSet[str] = query(vocabs).select_many(lambda voc: list(voc.Forms.AllList())).to_set()  # set(ex_sequence.flatten([v.forms.all_list() for v in vocabs]))
             return result + "(" + "　OR ".join([form_query(form) for form in forms]) + ")"
 
     return result + f"""({form_query(word)})"""
 
 def potentially_matching_sentences_for_vocab(word: VocabNote) -> str:
-    if word.matching_configuration.requires_forbids.surface.is_required:  # noqa: SIM108
-        search_strings = word.forms.all_list()
+    if word.MatchingConfiguration.RequiresForbids.Surface.IsRequired:  # noqa: SIM108
+        search_strings = list(word.Forms.AllList())
     else:
-        search_strings = word.conjugator.get_stems_for_all_forms() + word.forms.all_list()
+        search_strings = list(word.Conjugator.GetStemsForAllForms()) + list(word.Forms.AllList())
         # we'd much rather catch too much than not enough here. False positives only slow things down a bit,
         # false negatives on the other hand, can totally confuse things, giving the user entirely the wrong idea about the value of a word when no/few matches are found.
         #
@@ -73,7 +73,7 @@ def notes_lookup(notes: Iterable[JPNote]) -> str:
     return notes_by_id([NoteId(note.GetId()) for note in notes])
 
 def notes_by_id(note_ids: list[NoteId]) -> str:
-    return f"""{NoteFields.note_id}:{",".join([str(note_id) for note_id in note_ids])}""" if note_ids else ""
+    return f"""{NoteFieldsConstants.NoteId}:{",".join([str(note_id) for note_id in note_ids])}""" if note_ids else ""
 
 def single_vocab_wildcard(form: str) -> str: return f"{note_vocab} ({f_forms}:*{form}* OR {f_reading}:*{form}* OR {f_answer}:*{form}*)"
 
@@ -91,24 +91,24 @@ def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
         return f"{field_contains_word(f_forms, voc)}"
 
     def create_vocab_clause(text: str) -> str:
-        dictionary_forms = TextAnalysis.from_text(text).all_words_strings()
+        dictionary_forms = list(TextAnalysis.FromText(text).AllWordsStrings())
         return f"({note_vocab} ({' OR '.join([single_vocab_clause(voc) for voc in dictionary_forms])})) OR " if dictionary_forms else ""
 
     def create_vocab_vocab_clause() -> str:
-        return create_vocab_clause(vocab.get_question())
+        return create_vocab_clause(vocab.GetQuestion())
 
     def create_kanji_clause() -> str:
-        return f"{note_kanji} ( {' OR '.join([f'{f_question}:{char}' for char in vocab.get_question()])} )"
+        return f"{note_kanji} ( {' OR '.join([f'{f_question}:{char}' for char in vocab.GetQuestion()])} )"
 
     return f"""{create_vocab_vocab_clause()} ({create_kanji_clause()})"""
 
-def vocab_with_kanji(note: KanjiNote) -> str: return f"{note_vocab} {f_forms}:*{note.get_question()}*"
+def vocab_with_kanji(note: KanjiNote) -> str: return f"{note_vocab} {f_forms}:*{note.GetQuestion()}*"
 
 def vocab_clause(voc: str) -> str:
     return f"""{field_contains_word(f_forms, voc)}"""
 
 def text_vocab_lookup(text: str) -> str:
-    dictionary_forms = TextAnalysis.from_text(text).all_words_strings()
+    dictionary_forms = list(TextAnalysis.FromText(text).AllWordsStrings())
     return vocabs_lookup(dictionary_forms)
 
 def vocabs_lookup(dictionary_forms: list[str]) -> str:
@@ -134,13 +134,13 @@ def exact_matches_no_sentences_reading_cards(question: str) -> str:
     return f"""({exact_matches_no_sentences(question)}) {card_read} -{deck_excluded}"""
 
 def immersion_kit_sentences() -> str:
-    return f'''"{Builtin.Note}:{NoteTypes.immersion_kit}"'''
+    return f'''"{{Builtin.Note}}:{{NoteTypes.ImmersionKit}}"'''
 
 def kanji_with_radicals_in_string(search: str) -> str:
     radicals = QSet(search.strip().replace(",", "").replace(" ", ""))
-    def kanji_contails_all_radicals(kanji: KanjiNote) -> bool: return not any(rad for rad in radicals if rad not in kanji.get_radicals())
+    def kanji_contails_all_radicals(kanji: KanjiNote) -> bool: return not any(rad for rad in radicals if rad not in list(kanji.GetRadicals()))
     return (radicals
-            .select_many(lambda radical: App.Col().Kanji.WithRadical(radical))
+            .select_many(lambda radical: list(App.Col().Kanji.WithRadical(radical)))
             .where(kanji_contails_all_radicals)
             .pipe(notes_lookup))
 

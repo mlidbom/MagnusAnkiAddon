@@ -27,7 +27,7 @@ def refresh() -> None:
 
     note = ui_utils.try_get_review_note()
     if note:
-        note.update_generated_data()
+        note.UpdateGeneratedData()
 
 def add_menu_ui_action(sub_menu: QMenu, heading: str, callback: Callable[[], None], shortcut: str = "") -> None:
     action = QAction(heading, main_window())

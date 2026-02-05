@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypeAlias
 
 from anki.notes import NoteId as AnkiNoteId
 from jaspythonutils.sysutils.typed import non_optional
@@ -8,9 +8,10 @@ from jaspythonutils.sysutils.typed import non_optional
 from jastudio.anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from jastudio.ankiutils import app
 
+JPNoteId: TypeAlias = int
+
 if TYPE_CHECKING:
     from anki.notes import Note
-    from jaslib.jpnote_id import JPNoteId
     from JAStudio.Core.Note import JPNote
 
     from jastudio.anki_extentions.card_ex import CardEx

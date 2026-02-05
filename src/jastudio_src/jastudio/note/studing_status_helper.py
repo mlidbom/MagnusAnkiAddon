@@ -25,12 +25,12 @@ def update_note_in_studying_cache(note: Note) -> None:
 
 def update_card_in_studying_cache(card_ex: CardEx) -> None:
     status = CardStudyingStatus(card_ex.note_ex().id, card_ex.card_type, card_ex.is_suspended(), card_ex.note_ex().note_type.name)
-    if status.note_type_name == NoteTypes.Kanji:
-        App.Col().Kanji.cache.set_studying_statuses([status])
-    if status.note_type_name == NoteTypes.Vocab:
-        App.Col().Vocab.cache.set_studying_statuses([status])
-    if status.note_type_name == NoteTypes.Sentence:
-        App.Col().Sentences.cache.set_studying_statuses([status])
+    if status.NoteTypeName == NoteTypes.Kanji:
+        App.Col().Kanji.Cache.SetStudyingStatuses([status])
+    if status.NoteTypeName == NoteTypes.Vocab:
+        App.Col().Vocab.Cache.SetStudyingStatuses([status])
+    if status.NoteTypeName == NoteTypes.Sentence:
+        App.Col().Sentences.Cache.SetStudyingStatuses([status])
 
 class CardStudyingStatusFactory:
     @classmethod

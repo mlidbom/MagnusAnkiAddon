@@ -20,7 +20,7 @@ class JPNoteDataShim:
 
     @classmethod
     def sync_note_to_anki_note(cls, jp_note: JPNote, note: Note) -> None:
-        data = jp_note.get_data()
+        data = jp_note.GetData()
         note.tags = data.tags
         for field_name, field_value in data.fields.items():
             note[field_name] = field_value

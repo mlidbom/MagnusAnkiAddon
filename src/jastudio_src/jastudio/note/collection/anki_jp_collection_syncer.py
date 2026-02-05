@@ -58,7 +58,7 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
         return self
 
     def _initialize_wrapper(self) -> None:
-        if app.config().load_studio_in_foreground.get_value():
+        if app.config().LoadStudioInForeground.GetValue():
             app_thread_pool.run_on_ui_thread_synchronously(self._initialize)
         else:
             self._initialize()
@@ -75,35 +75,35 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
         ex_trace_malloc_instance.ensure_initialized()
         stopwatch = StopWatch()
         with StopWatch.log_warning_if_slower_than(5, "Full collection setup"):  # noqa: SIM117
-            with TaskRunner.current(f"Loading {Mine.app_name}", "reading notes from anki",
-                                    forceHide=not app.config().load_studio_in_foreground.get_value(),
+            with TaskRunner.current(f"Loading {Mine.AppName}", "reading notes from anki",
+                                    forceHide=not app.config().LoadStudioInForeground.GetValue(),
                                     forceGc=not AnkiJPCollectionSyncer._is_inital_load,
                                     allowCancel=False) as task_runner:
                 if task_runner.IsHidden():
-                    app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
+                    app.get_ui_utils().tool_tip(f"{Mine.AppName} loading", 60000)
 
                 with StopWatch.log_warning_if_slower_than(5, "Core collection setup - no gc"):
                     self._cache_runner = AnkiCollectionSyncRunner(self.anki_collection)
 
                     all_vocab = NoteBulkLoader.load_all_notes_of_type(self.anki_collection, NoteTypes.Vocab)
-                    self._vocab = AnkiSingleCollectionSyncer[VocabNote](all_vocab, VocabNote, VocabNote, App.Col().Vocab.cache, self._cache_runner)
+                    self._vocab = AnkiSingleCollectionSyncer[VocabNote](all_vocab, VocabNote, VocabNote, App.Col().Vocab.Cache, self._cache_runner)
 
                     all_kanji = NoteBulkLoader.load_all_notes_of_type(self.anki_collection, NoteTypes.Sentence)
-                    self._sentences = AnkiSingleCollectionSyncer[SentenceNote](all_kanji, SentenceNote, SentenceNote, App.Col().Sentences.cache, self._cache_runner)
+                    self._sentences = AnkiSingleCollectionSyncer[SentenceNote](all_kanji, SentenceNote, SentenceNote, App.Col().Sentences.Cache, self._cache_runner)
 
                     all_sentences = NoteBulkLoader.load_all_notes_of_type(self.anki_collection, NoteTypes.Kanji)
-                    self._kanji = AnkiSingleCollectionSyncer[KanjiNote](all_sentences, KanjiNote, KanjiNote, App.Col().Kanji.cache, self._cache_runner)
+                    self._kanji = AnkiSingleCollectionSyncer[KanjiNote](all_sentences, KanjiNote, KanjiNote, App.Col().Kanji.Cache, self._cache_runner)
 
                 self._cache_runner.start()
 
-                if app.config().load_jamdict_db_into_memory.get_value():
+                if app.config().LoadJamdictDbIntoMemory.GetValue():
                     from JAStudio.Core.LanguageServices.JamdictEx import DictLookup
                     task_runner.RunOnBackgroundThreadWithSpinningProgressDialog("Loading Jamdict db into memory", DictLookup.EnsureLoadedIntoMemory)
 
                 studying_statuses = studing_status_helper.fetch_card_studying_statuses(self.anki_collection)
-                self._vocab.set_studying_statuses([it for it in studying_statuses if it.note_type_name == NoteTypes.Vocab])
-                self._sentences.set_studying_statuses([it for it in studying_statuses if it.note_type_name == NoteTypes.Sentence])
-                self._kanji.set_studying_statuses([it for it in studying_statuses if it.note_type_name == NoteTypes.Kanji])
+                self._vocab.set_studying_statuses([it for it in studying_statuses if it.NoteTypeName == NoteTypes.Vocab])
+                self._sentences.set_studying_statuses([it for it in studying_statuses if it.NoteTypeName == NoteTypes.Sentence])
+                self._kanji.set_studying_statuses([it for it in studying_statuses if it.NoteTypeName == NoteTypes.Kanji])
 
                 ex_trace_malloc_instance.log_memory_delta("Done loading add-on")
                 ex_trace_malloc_instance.stop()
@@ -111,7 +111,7 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
                 self._is_initialized = True
                 AnkiJPCollectionSyncer._is_inital_load = False
 
-            app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading in {str(stopwatch.elapsed_seconds())[0:4]} seconds.", milliseconds=6000)
+            app.get_ui_utils().tool_tip(f"{Mine.AppName} done loading in {str(stopwatch.elapsed_seconds())[0:4]} seconds.", milliseconds=6000)
 
     @property
     def cache_runner(self) -> AnkiCollectionSyncRunner: return non_optional(self._initialized_self()._cache_runner)

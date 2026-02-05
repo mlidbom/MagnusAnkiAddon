@@ -9,7 +9,7 @@ from PyQt6.QtWidgets import QCheckBox, QDialog, QDialogButtonBox, QDoubleSpinBox
 from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
-    from JAStudio.Core.Configuration import ConfigurationValueBool, ConfigurationValueFloat, ConfigurationValueInt, JapaneseConfig
+    from JAStudio.Core.Configuration import ConfigurationValue_1, JapaneseConfig
 
 class JapaneseOptionsDialog(QDialog): # Cannot inherit Slots for some QT internal reason
     def __init__(self, parent: QWidget | None = None) -> None:
@@ -30,37 +30,37 @@ class JapaneseOptionsDialog(QDialog): # Cannot inherit Slots for some QT interna
         # Right side - toggleable settings
         right_layout = QVBoxLayout()
 
-        def add_number_spinner_value(grid: QGridLayout, row: int, config_value: ConfigurationValueInt) -> None:
-            label = QLabel(config_value.title)
+        def add_number_spinner_value(grid: QGridLayout, row: int, config_value: ConfigurationValue_1[int]) -> None:
+            label = QLabel(config_value.Title)
             grid.addWidget(label, row, 0)
 
             # noinspection PyArgumentList
             number_input = QSpinBox()
             number_input.setRange(0, 99999)
-            number_input.setValue(config_value.get_value())
-            checked_cast(pyqtBoundSignal, number_input.valueChanged).connect(config_value.set_value)  # pyright: ignore[reportUnknownMemberType]
+            number_input.setValue(config_value.GetValue())
+            checked_cast(pyqtBoundSignal, number_input.valueChanged).connect(config_value.SetValue)  # pyright: ignore[reportUnknownMemberType]
             grid.addWidget(number_input, row, 1)
 
-        def add_double_spinner_value(grid: QGridLayout, row: int, config_value: ConfigurationValueFloat) -> None:
-            label = QLabel(config_value.title)
+        def add_double_spinner_value(grid: QGridLayout, row: int, config_value: ConfigurationValue_1[float]) -> None:
+            label = QLabel(config_value.Title)
             grid.addWidget(label, row, 0)
 
             # Create a QDoubleSpinBox for floating-point input
             double_input = QDoubleSpinBox()
             double_input.setRange(0.0, 100.0)  # Set the range for the floating-point values
             double_input.setDecimals(2)  # Set precision to 2 decimal places
-            double_input.setValue(config_value.get_value())  # Set initial value
+            double_input.setValue(config_value.GetValue())  # Set initial value
             double_input.setSingleStep(0.05)  # Set step size for increment/decrementb
 
             # Connect the valueChanged signal to update the config value
-            checked_cast(pyqtBoundSignal, double_input.valueChanged).connect(config_value.set_value)  # pyright: ignore[reportUnknownMemberType]
+            checked_cast(pyqtBoundSignal, double_input.valueChanged).connect(config_value.SetValue)  # pyright: ignore[reportUnknownMemberType]
 
             grid.addWidget(double_input, row, 1)
 
-        def add_checkbox_value(layout: QVBoxLayout, config_value: ConfigurationValueBool) -> None:
-            checkbox = QCheckBox(config_value.title)
-            checkbox.setChecked(config_value.get_value())
-            checked_cast(pyqtBoundSignal, checkbox.toggled).connect(config_value.set_value)  # pyright: ignore[reportUnknownMemberType]
+        def add_checkbox_value(layout: QVBoxLayout, config_value: ConfigurationValue_1[bool]) -> None:
+            checkbox = QCheckBox(config_value.Title)
+            checkbox.setChecked(config_value.GetValue())
+            checked_cast(pyqtBoundSignal, checkbox.toggled).connect(config_value.SetValue)  # pyright: ignore[reportUnknownMemberType]
             layout.addWidget(checkbox)
 
         def setup_decrease_failed_card_interval_section() -> None:
@@ -70,7 +70,7 @@ class JapaneseOptionsDialog(QDialog): # Cannot inherit Slots for some QT interna
             failed_card_layout.setColumnStretch(0, 1)  # Make the label column expandable
             failed_card_layout.setColumnStretch(1, 0)  # Keep the spinner column fixed width
 
-            add_number_spinner_value(failed_card_layout, 0, self.config.decrease_failed_card_intervals_interval)
+            add_number_spinner_value(failed_card_layout, 0, self.config.DecreaseFailedCardIntervalsInterval)
 
             failed_card_group.setLayout(failed_card_layout)
             left_layout.addWidget(failed_card_group)
@@ -82,7 +82,7 @@ class JapaneseOptionsDialog(QDialog): # Cannot inherit Slots for some QT interna
             failed_card_allowed_time_layout.setColumnStretch(0, 1)  # Make the label column expandable
             failed_card_allowed_time_layout.setColumnStretch(1, 0)  # Keep the spinner column fixed width
 
-            add_double_spinner_value(failed_card_allowed_time_layout, 0, self.config.boost_failed_card_allowed_time_by_factor)
+            add_double_spinner_value(failed_card_allowed_time_layout, 0, self.config.BoostFailedCardAllowedTimeByFactor)
 
             failed_card_allowed_time_group.setLayout(failed_card_allowed_time_layout)
             left_layout.addWidget(failed_card_allowed_time_group)
@@ -94,10 +94,10 @@ class JapaneseOptionsDialog(QDialog): # Cannot inherit Slots for some QT interna
             vocab_autoadvance_timings_layout.setColumnStretch(0, 1)  # Make the label column expandable
             vocab_autoadvance_timings_layout.setColumnStretch(1, 0)  # Keep the spinner column fixed width
 
-            add_double_spinner_value(vocab_autoadvance_timings_layout, 0, self.config.autoadvance_vocab_starting_seconds)
-            add_double_spinner_value(vocab_autoadvance_timings_layout, 1, self.config.autoadvance_vocab_hiragana_seconds)
-            add_double_spinner_value(vocab_autoadvance_timings_layout, 2, self.config.autoadvance_vocab_katakana_seconds)
-            add_double_spinner_value(vocab_autoadvance_timings_layout, 3, self.config.autoadvance_vocab_kanji_seconds)
+            add_double_spinner_value(vocab_autoadvance_timings_layout, 0, self.config.AutoadvanceVocabStartingSeconds)
+            add_double_spinner_value(vocab_autoadvance_timings_layout, 1, self.config.AutoadvanceVocabHiraganaSeconds)
+            add_double_spinner_value(vocab_autoadvance_timings_layout, 2, self.config.AutoadvanceVocabKatakanaSeconds)
+            add_double_spinner_value(vocab_autoadvance_timings_layout, 3, self.config.AutoadvanceVocabKanjiSeconds)
 
             vocab_autoadvance_timings_group.setLayout(vocab_autoadvance_timings_layout)
             left_layout.addWidget(vocab_autoadvance_timings_group)
@@ -109,10 +109,10 @@ class JapaneseOptionsDialog(QDialog): # Cannot inherit Slots for some QT interna
             sentence_autoadvance_timings_layout.setColumnStretch(0, 1)  # Make the label column expandable
             sentence_autoadvance_timings_layout.setColumnStretch(1, 0)  # Keep the spinner column fixed width
 
-            add_double_spinner_value(sentence_autoadvance_timings_layout, 0, self.config.autoadvance_sentence_starting_seconds)
-            add_double_spinner_value(sentence_autoadvance_timings_layout, 1, self.config.autoadvance_sentence_hiragana_seconds)
-            add_double_spinner_value(sentence_autoadvance_timings_layout, 2, self.config.autoadvance_sentence_katakana_seconds)
-            add_double_spinner_value(sentence_autoadvance_timings_layout, 3, self.config.autoadvance_sentence_kanji_seconds)
+            add_double_spinner_value(sentence_autoadvance_timings_layout, 0, self.config.AutoadvanceSentenceStartingSeconds)
+            add_double_spinner_value(sentence_autoadvance_timings_layout, 1, self.config.AutoadvanceSentenceHiraganaSeconds)
+            add_double_spinner_value(sentence_autoadvance_timings_layout, 2, self.config.AutoadvanceSentenceKatakanaSeconds)
+            add_double_spinner_value(sentence_autoadvance_timings_layout, 3, self.config.AutoadvanceSentenceKanjiSeconds)
 
             sentence_autoadvance_timings_group.setLayout(sentence_autoadvance_timings_layout)
             left_layout.addWidget(sentence_autoadvance_timings_group)
@@ -124,11 +124,11 @@ class JapaneseOptionsDialog(QDialog): # Cannot inherit Slots for some QT interna
             number_layout.setColumnStretch(0, 1)  # Make the label column expandable
             number_layout.setColumnStretch(1, 0)  # Keep the spinner column fixed width
 
-            add_number_spinner_value(number_layout, 0, self.config.timebox_sentence_read)
-            add_number_spinner_value(number_layout, 1, self.config.timebox_sentence_listen)
-            add_number_spinner_value(number_layout, 2, self.config.timebox_vocab_read)
-            add_number_spinner_value(number_layout, 3, self.config.timebox_vocab_listen)
-            add_number_spinner_value(number_layout, 4, self.config.timebox_kanji_read)
+            add_number_spinner_value(number_layout, 0, self.config.TimeboxSentenceRead)
+            add_number_spinner_value(number_layout, 1, self.config.TimeboxSentenceListen)
+            add_number_spinner_value(number_layout, 2, self.config.TimeboxVocabRead)
+            add_number_spinner_value(number_layout, 3, self.config.TimeboxVocabListen)
+            add_number_spinner_value(number_layout, 4, self.config.TimeboxKanjiRead)
 
             number_group.setLayout(number_layout)
             left_layout.addWidget(number_group)
@@ -140,14 +140,16 @@ class JapaneseOptionsDialog(QDialog): # Cannot inherit Slots for some QT interna
             no_accidental_clicks_layout.setColumnStretch(0, 1)  # Make the label column expandable
             no_accidental_clicks_layout.setColumnStretch(1, 0)  # Keep the spinner column fixed width
 
-            add_double_spinner_value(no_accidental_clicks_layout, 0, self.config.minimum_time_viewing_question)
-            add_double_spinner_value(no_accidental_clicks_layout, 1, self.config.minimum_time_viewing_answer)
+            add_double_spinner_value(no_accidental_clicks_layout, 0, self.config.MinimumTimeViewingQuestion)
+            add_double_spinner_value(no_accidental_clicks_layout, 1, self.config.MinimumTimeViewingAnswer)
 
             number_group.setLayout(no_accidental_clicks_layout)
             left_layout.addWidget(number_group)
 
         def setup_feature_toggles_section() -> None:
-            for section_name, toggles in self.config.feature_toggles:
+            for toggle_section in self.config.FeatureToggles:
+                section_name = toggle_section.Item1
+                toggles = toggle_section.Item2
                 toggles_group = QGroupBox(section_name)
                 toggles_layout = QVBoxLayout()
 

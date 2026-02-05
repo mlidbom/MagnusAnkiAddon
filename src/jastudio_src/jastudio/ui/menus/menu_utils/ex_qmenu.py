@@ -21,12 +21,12 @@ if TYPE_CHECKING:
 def add_checkbox_config(menu: QMenu, config_value: ConfigurationValueBool, _title: str) -> None:
     checkbox_action = QAction(_title, app.main_window())
     checkbox_action.setCheckable(True)
-    checkbox_action.setChecked(config_value.get_value())
+    checkbox_action.setChecked(config_value.GetValue())
 
-    config_value.on_change(checkbox_action.setChecked)  # when the value changes through another mechanism, make sure the menu changes state
+    config_value.OnChange(checkbox_action.setChecked)  # when the value changes through another mechanism, make sure the menu changes state
 
     def set_value(value: bool) -> None:
-        config_value.set_value(value)
+        config_value.SetValue(value)
         app.get_ui_utils().refresh()
 
     checked_cast(pyqtBoundSignal, checkbox_action.triggered).connect(set_value)  # pyright: ignore[reportUnknownMemberType]

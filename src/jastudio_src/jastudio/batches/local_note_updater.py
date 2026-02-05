@@ -3,7 +3,7 @@ from __future__ import annotations
 import gc
 from typing import TYPE_CHECKING
 
-from jaslib.task_runners.task_progress_runner import TaskRunner
+from JAStudio.Core.TaskRunners import TaskRunner
 
 from jastudio.ankiutils import app, query_builder
 

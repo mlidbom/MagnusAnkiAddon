@@ -23,7 +23,7 @@ class ReadingsOptionsDialog(QDialog): # Cannot inherit Slots for some QT interna
         self.setWindowTitle("Readings Mappings")
         self.setMinimumWidth(500)
 
-        mappings_text = newline + self.config.read_readings_mappings_file()
+        mappings_text = newline + self.config.ReadReadingsMappingsFile()
 
         # Create search field
         search_layout = QHBoxLayout()
@@ -143,7 +143,7 @@ class ReadingsOptionsDialog(QDialog): # Cannot inherit Slots for some QT interna
 
             return "\n".join(sorted(new_lines))
 
-        self.config.save_mappings(sorted_value_lines_without_duplicates_or_blank_lines())
+        self.config.SaveMappings(sorted_value_lines_without_duplicates_or_blank_lines())
         self.accept()
 
         app.get_ui_utils().refresh()
