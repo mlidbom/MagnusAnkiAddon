@@ -43,13 +43,13 @@ public class JapaneseMainMenu
     {
         var menuItems = new List<MenuItem>
         {
-            CreateMenuItem("Options (Ctrl+Shift+S)", OnOptions),
-            CreateMenuItem("Readings mappings (Ctrl+Shift+M)", OnReadingsMappings)
+            CreateMenuItem(ShortcutFinger.Home1("Options (Ctrl+Shift+S)"), OnOptions),
+            CreateMenuItem(ShortcutFinger.Home2("Readings mappings (Ctrl+Shift+M)"), OnReadingsMappings)
         };
 
         return new MenuItem
         {
-            Header = "Config",
+            Header = ShortcutFinger.Home1("Config"),
             ItemsSource = menuItems
         };
     }
@@ -58,14 +58,14 @@ public class JapaneseMainMenu
     {
         var menuItems = new List<MenuItem>
         {
-            CreateMenuItem("Open note (Ctrl+O)", OnOpenNote),
+            CreateMenuItem(ShortcutFinger.Home1("Open note (Ctrl+O)"), OnOpenNote),
             OpenInAnkiMenus.BuildOpenInAnkiMenu(() => _searchText, _executeLookup),
             WebSearchMenus.BuildWebSearchMenu(() => _searchText, BrowserLauncher.OpenUrl)
         };
 
         return new MenuItem
         {
-            Header = "Lookup",
+            Header = ShortcutFinger.Home2("Lookup"),
             ItemsSource = menuItems
         };
     }
@@ -75,15 +75,15 @@ public class JapaneseMainMenu
         var menuItems = new List<MenuItem>
         {
             BuildUpdateSubmenu(),
-            CreateMenuItem("Convert Immersion Kit sentences", OnConvertImmersionKitSentences),
-            CreateMenuItem("Update everything except reparsing sentences", OnUpdateAll),
-            CreateMenuItem("Create vocab notes for parsed words", OnCreateMissingVocab),
-            CreateMenuItem("Regenerate vocab source answers from jamdict", OnRegenerateVocabAnswers)
+            CreateMenuItem(ShortcutFinger.Home2("Convert Immersion Kit sentences"), OnConvertImmersionKitSentences),
+            CreateMenuItem(ShortcutFinger.Home3("Update everything except reparsing sentences"), OnUpdateAll),
+            CreateMenuItem(ShortcutFinger.Home4("Create vocab notes for parsed words"), OnCreateMissingVocab),
+            CreateMenuItem(ShortcutFinger.Home5("Regenerate vocab source answers from jamdict"), OnRegenerateVocabAnswers)
         };
 
         return new MenuItem
         {
-            Header = "Local Actions",
+            Header = ShortcutFinger.Home3("Local Actions"),
             ItemsSource = menuItems
         };
     }
@@ -92,19 +92,19 @@ public class JapaneseMainMenu
     {
         var menuItems = new List<MenuItem>
         {
-            CreateMenuItem("Show instance report", OnShowInstanceReport),
-            CreateMenuItem("Take Snapshot", OnTakeSnapshot),
-            CreateMenuItem("Show current snapshot diff", OnShowCurrentSnapshotDiff),
-            CreateMenuItem("Show diff against first snapshot", OnShowDiffAgainstFirst),
-            CreateMenuItem("Show diff against current snapshot", OnShowDiffAgainstCurrent),
-            CreateMenuItem("Run GC and report", OnRunGC),
-            CreateMenuItem("Reset", OnReset),
-            CreateMenuItem("Refresh UI (F5)", _refreshCallback)
+            CreateMenuItem(ShortcutFinger.Home1("Show instance report"), OnShowInstanceReport),
+            CreateMenuItem(ShortcutFinger.Home2("Take Snapshot"), OnTakeSnapshot),
+            CreateMenuItem(ShortcutFinger.Home3("Show current snapshot diff"), OnShowCurrentSnapshotDiff),
+            CreateMenuItem(ShortcutFinger.Home4("Show diff against first snapshot"), OnShowDiffAgainstFirst),
+            CreateMenuItem(ShortcutFinger.Home5("Show diff against current snapshot"), OnShowDiffAgainstCurrent),
+            CreateMenuItem(ShortcutFinger.Up1("Run GC and report"), OnRunGC),
+            CreateMenuItem(ShortcutFinger.Up2("Reset"), OnReset),
+            CreateMenuItem(ShortcutFinger.Down1("Refresh UI (F5)"), _refreshCallback)
         };
 
         return new MenuItem
         {
-            Header = "Debug",
+            Header = ShortcutFinger.Home4("Debug"),
             ItemsSource = menuItems
         };
     }
@@ -113,18 +113,18 @@ public class JapaneseMainMenu
     {
         var menuItems = new List<MenuItem>
         {
-            CreateMenuItem("Vocab", OnUpdateVocab),
-            CreateMenuItem("Kanji", OnUpdateKanji),
-            CreateMenuItem("Sentences", OnUpdateSentences),
-            CreateMenuItem("Tag note metadata", OnTagNoteMetadata),
-            CreateMenuItem("All the above", OnUpdateAll),
-            CreateMenuItem("Reparse sentences", OnReparseSentences),
-            CreateMenuItem("All the above: Full rebuild", OnFullRebuild)
+            CreateMenuItem(ShortcutFinger.Home1("Vocab"), OnUpdateVocab),
+            CreateMenuItem(ShortcutFinger.Home2("Kanji"), OnUpdateKanji),
+            CreateMenuItem(ShortcutFinger.Home3("Sentences"), OnUpdateSentences),
+            CreateMenuItem(ShortcutFinger.Home4("Tag note metadata"), OnTagNoteMetadata),
+            CreateMenuItem(ShortcutFinger.Home5("All the above"), OnUpdateAll),
+            CreateMenuItem(ShortcutFinger.Up1("Reparse sentences"), OnReparseSentences),
+            CreateMenuItem(ShortcutFinger.Down1("All the above: Full rebuild"), OnFullRebuild)
         };
 
         return new MenuItem
         {
-            Header = "Update",
+            Header = ShortcutFinger.Home1("Update"),
             ItemsSource = menuItems
         };
     }

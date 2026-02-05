@@ -156,7 +156,7 @@ def _add_avalonia_menu_entry(menu: QMenu, selection: str, clipboard: str) -> Non
         else:
             avalonia_host.show_generic_context_menu(refresh, selection, clipboard, physical_x, physical_y)
 
-    add_hover_avalonia_menu(menu, "🎯 AvaloniaMenu (Hover to show)", show_context_menu)
+    add_hover_avalonia_menu(menu, shortcutfinger.up1("🎯 AvaloniaMenu (Hover to show)"), show_context_menu)
 
 
 def init() -> None:

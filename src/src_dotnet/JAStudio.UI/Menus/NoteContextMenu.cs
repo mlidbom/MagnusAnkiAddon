@@ -105,7 +105,7 @@ public class NoteContextMenu
 
         return new MenuItem
         {
-            Header = $"Selection: \"{truncated}\"",
+            Header = ShortcutFinger.Home1($"Selection: \"{truncated}\""),
             ItemsSource = menuItems
         };
     }
@@ -117,7 +117,7 @@ public class NoteContextMenu
 
         return new MenuItem
         {
-            Header = $"Clipboard: \"{truncated}\"",
+            Header = ShortcutFinger.Home2($"Clipboard: \"{truncated}\""),
             ItemsSource = menuItems
         };
     }
@@ -131,7 +131,7 @@ public class NoteContextMenu
             WebSearchMenus.BuildWebSearchMenu(() => text, BrowserLauncher.OpenUrl),
             BuildMatchingNotesSubmenu(text),
             BuildCreateNoteSubmenu(text),
-            CreateMenuItem($"Reparse matching sentences", () => OnReparseMatchingSentences(text))
+            CreateMenuItem(ShortcutFinger.Down1($"Reparse matching sentences"), () => OnReparseMatchingSentences(text))
         };
 
         return menuItems;
@@ -149,7 +149,7 @@ public class NoteContextMenu
 
         return new MenuItem
         {
-            Header = "Note actions",
+            Header = ShortcutFinger.Home3("Note actions"),
             ItemsSource = menuItems
         };
     }
@@ -164,7 +164,7 @@ public class NoteContextMenu
 
         return new MenuItem
         {
-            Header = "View",
+            Header = ShortcutFinger.Home5("View"),
             ItemsSource = menuItems
         };
     }
@@ -180,7 +180,7 @@ public class NoteContextMenu
 
         return new MenuItem
         {
-            Header = "Note actions",
+            Header = ShortcutFinger.Home3("Note actions"),
             ItemsSource = menuItems
         };
     }
@@ -195,7 +195,7 @@ public class NoteContextMenu
 
         return new MenuItem
         {
-            Header = "View",
+            Header = ShortcutFinger.Home5("View"),
             ItemsSource = menuItems
         };
     }
@@ -211,7 +211,7 @@ public class NoteContextMenu
 
         return new MenuItem
         {
-            Header = "Note actions",
+            Header = ShortcutFinger.Home3("Note actions"),
             ItemsSource = menuItems
         };
     }
@@ -226,7 +226,7 @@ public class NoteContextMenu
 
         return new MenuItem
         {
-            Header = "View",
+            Header = ShortcutFinger.Home5("View"),
             ItemsSource = menuItems
         };
     }
@@ -235,14 +235,14 @@ public class NoteContextMenu
     {
         var menuItems = new List<MenuItem>
         {
-            CreateMenuItem("Open in previewer", OnOpenInPreviewer),
-            CreateMenuItem("Unsuspend all cards", OnUnsuspendAllCards),
-            CreateMenuItem("Suspend all cards", OnSuspendAllCards)
+            CreateMenuItem(ShortcutFinger.Home1("Open in previewer"), OnOpenInPreviewer),
+            CreateMenuItem(ShortcutFinger.Home3("Unsuspend all cards"), OnUnsuspendAllCards),
+            CreateMenuItem(ShortcutFinger.Home4("Suspend all cards"), OnSuspendAllCards)
         };
 
         return new MenuItem
         {
-            Header = "Universal note actions",
+            Header = ShortcutFinger.Home4("Universal note actions"),
             ItemsSource = menuItems
         };
     }
@@ -250,27 +250,27 @@ public class NoteContextMenu
     private MenuItem BuildCurrentNoteActionsSubmenu(string text, string? noteType)
     {
         // TODO: Port string_note_menu_factory logic
-        return new MenuItem { Header = "Current note actions (TODO)" };
+        return new MenuItem { Header = ShortcutFinger.Home1("Current note actions (TODO)") };
     }
 
     private MenuItem BuildMatchingNotesSubmenu(string text)
     {
         // TODO: Port from build_matching_note_menu
-        return new MenuItem { Header = "Exactly matching notes (TODO)" };
+        return new MenuItem { Header = ShortcutFinger.Home4("Exactly matching notes (TODO)") };
     }
 
     private MenuItem BuildCreateNoteSubmenu(string text)
     {
         var menuItems = new List<MenuItem>
         {
-            CreateMenuItem("vocab", () => OnCreateVocabNote(text)),
-            CreateMenuItem("sentence", () => OnCreateSentenceNote(text)),
-            CreateMenuItem("kanji", () => OnCreateKanjiNote(text))
+            CreateMenuItem(ShortcutFinger.Home1("vocab"), () => OnCreateVocabNote(text)),
+            CreateMenuItem(ShortcutFinger.Home2("sentence"), () => OnCreateSentenceNote(text)),
+            CreateMenuItem(ShortcutFinger.Home3("kanji"), () => OnCreateKanjiNote(text))
         };
 
         return new MenuItem
         {
-            Header = $"Create: {TruncateText(text, 40)}",
+            Header = ShortcutFinger.Up1($"Create: {TruncateText(text, 40)}"),
             ItemsSource = menuItems
         };
     }

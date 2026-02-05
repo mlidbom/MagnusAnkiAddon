@@ -105,7 +105,7 @@ def _add_avalonia_main_menu(menu: QMenu) -> None:
         """Show the Japanese main menu."""
         avalonia_host.show_japanese_main_menu(refresh, physical_x, physical_y)
 
-    add_hover_avalonia_menu(menu, "🎯 Japanese Avalonia (Hover)", show_main_menu)
+    add_hover_avalonia_menu(menu, shortcutfinger.down3("🎯 Japanese Avalonia (Hover)"), show_main_menu)
 
 
 def init() -> None:

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Avalonia.Controls;
 using JAStudio.Core.AnkiUtils;
+using JAStudio.UI.Utils;
 
 namespace JAStudio.UI.Menus;
 
@@ -35,12 +36,12 @@ public static class OpenInAnkiMenus
     {
         return new MenuItem
         {
-            Header = "Exact matches",
+            Header = ShortcutFinger.Home1("Exact matches"),
             ItemsSource = new List<MenuItem>
             {
-                CreateLookupItem("Open Exact matches | no sentences | reading cards", 
+                CreateLookupItem(ShortcutFinger.Home1("Open Exact matches | no sentences | reading cards"), 
                     () => QueryBuilder.ExactMatchesNoSentencesReadingCards(getSearchText()), executeLookup),
-                CreateLookupItem("Open Exact matches with sentences", 
+                CreateLookupItem(ShortcutFinger.Home2("Open Exact matches with sentences"), 
                     () => QueryBuilder.ExactMatches(getSearchText()), executeLookup)
             }
         };
@@ -50,18 +51,18 @@ public static class OpenInAnkiMenus
     {
         return new MenuItem
         {
-            Header = "Kanji",
+            Header = ShortcutFinger.Home2("Kanji"),
             ItemsSource = new List<MenuItem>
             {
-                CreateLookupItem("All kanji in string", 
+                CreateLookupItem(ShortcutFinger.Home1("All kanji in string"), 
                     () => QueryBuilder.KanjiInString(getSearchText()), executeLookup),
-                CreateLookupItem("By reading part", 
+                CreateLookupItem(ShortcutFinger.Home2("By reading part"), 
                     () => QueryBuilder.KanjiWithReadingPart(getSearchText()), executeLookup),
-                CreateLookupItem("By reading exact", 
+                CreateLookupItem(ShortcutFinger.Home3("By reading exact"), 
                     () => QueryBuilder.NotesLookup(Core.App.Col().Kanji.WithReading(getSearchText())), executeLookup),
-                CreateLookupItem("With radicals", 
+                CreateLookupItem(ShortcutFinger.Home4("With radicals"), 
                     () => QueryBuilder.KanjiWithRadicalsInString(getSearchText()), executeLookup),
-                CreateLookupItem("With meaning", 
+                CreateLookupItem(ShortcutFinger.Up1("With meaning"), 
                     () => QueryBuilder.KanjiWithMeaning(getSearchText()), executeLookup)
             }
         };
@@ -71,18 +72,18 @@ public static class OpenInAnkiMenus
     {
         return new MenuItem
         {
-            Header = "Vocab",
+            Header = ShortcutFinger.Home3("Vocab"),
             ItemsSource = new List<MenuItem>
             {
-                CreateLookupItem("form -", 
+                CreateLookupItem(ShortcutFinger.Home1("form -"), 
                     () => QueryBuilder.SingleVocabByFormExact(getSearchText()), executeLookup),
-                CreateLookupItem("form - read card only", 
+                CreateLookupItem(ShortcutFinger.Home2("form - read card only"), 
                     () => QueryBuilder.SingleVocabByFormExactReadCardOnly(getSearchText()), executeLookup),
-                CreateLookupItem("form, reading or answer", 
+                CreateLookupItem(ShortcutFinger.Home3("form, reading or answer"), 
                     () => QueryBuilder.SingleVocabByQuestionReadingOrAnswerExact(getSearchText()), executeLookup),
-                CreateLookupItem("Wildcard", 
+                CreateLookupItem(ShortcutFinger.Home4("Wildcard"), 
                     () => QueryBuilder.SingleVocabWildcard(getSearchText()), executeLookup),
-                CreateLookupItem("Text words", 
+                CreateLookupItem(ShortcutFinger.Up1("Text words"), 
                     () => QueryBuilder.TextVocabLookup(getSearchText()), executeLookup)
             }
         };
@@ -92,12 +93,12 @@ public static class OpenInAnkiMenus
     {
         return new MenuItem
         {
-            Header = "Sentence",
+            Header = ShortcutFinger.Home4("Sentence"),
             ItemsSource = new List<MenuItem>
             {
-                CreateLookupItem("Parse Vocabulary", 
+                CreateLookupItem(ShortcutFinger.Home1("Parse Vocabulary"), 
                     () => QueryBuilder.SentenceSearch(getSearchText(), exact: false), executeLookup),
-                CreateLookupItem("Exact String", 
+                CreateLookupItem(ShortcutFinger.Home2("Exact String"), 
                     () => QueryBuilder.SentenceSearch(getSearchText(), exact: true), executeLookup)
             }
         };

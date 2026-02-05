@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Web;
 using Avalonia.Controls;
+using JAStudio.UI.Utils;
 
 namespace JAStudio.UI.Menus;
 
@@ -35,12 +36,12 @@ public static class WebSearchMenus
     {
         return new MenuItem
         {
-            Header = "Kanji",
+            Header = ShortcutFinger.Home1("Kanji"),
             ItemsSource = new List<MenuItem>
             {
-                CreateWebLookupItem("Kanji explosion", "https://www.kurumi.com/jp/kjbh/?k=%s", getSearchText, openUrl),
-                CreateWebLookupItem("Kanshudo", "https://www.kanshudo.com/search?q=%s", getSearchText, openUrl),
-                CreateWebLookupItem("Kanji map", "https://thekanjimap.com/%s", getSearchText, openUrl)
+                CreateWebLookupItem(ShortcutFinger.Home1("Kanji explosion"), "https://www.kurumi.com/jp/kjbh/?k=%s", getSearchText, openUrl),
+                CreateWebLookupItem(ShortcutFinger.Home2("Kanshudo"), "https://www.kanshudo.com/search?q=%s", getSearchText, openUrl),
+                CreateWebLookupItem(ShortcutFinger.Home3("Kanji map"), "https://thekanjimap.com/%s", getSearchText, openUrl)
             }
         };
     }
@@ -49,11 +50,11 @@ public static class WebSearchMenus
     {
         return new MenuItem
         {
-            Header = "Sentences",
+            Header = ShortcutFinger.Home2("Sentences"),
             ItemsSource = new List<MenuItem>
             {
-                CreateWebLookupItem("Sentences: Immersion Kit", "https://www.immersionkit.com/dictionary?exact=true&sort=sentence_length%3Aasc&keyword=%s", getSearchText, openUrl),
-                CreateWebLookupItem("Sentences: Tatoeba", "https://tatoeba.org/en/sentences/search?from=jpn&to=eng&query=%s", getSearchText, openUrl)
+                CreateWebLookupItem(ShortcutFinger.Home1("Sentences: Immersion Kit"), "https://www.immersionkit.com/dictionary?exact=true&sort=sentence_length%3Aasc&keyword=%s", getSearchText, openUrl),
+                CreateWebLookupItem(ShortcutFinger.Home2("Sentences: Tatoeba"), "https://tatoeba.org/en/sentences/search?from=jpn&to=eng&query=%s", getSearchText, openUrl)
             }
         };
     }
@@ -62,7 +63,7 @@ public static class WebSearchMenus
     {
         return new MenuItem
         {
-            Header = "Misc",
+            Header = ShortcutFinger.Home3("Misc"),
             ItemsSource = new List<MenuItem>
             {
                 BuildConjugateMenu(getSearchText, openUrl),
@@ -77,11 +78,11 @@ public static class WebSearchMenus
     {
         return new MenuItem
         {
-            Header = "Conjugate",
+            Header = ShortcutFinger.Home1("Conjugate"),
             ItemsSource = new List<MenuItem>
             {
-                CreateWebLookupItem("Conjugate: Japanese verb conjugator", "https://www.japaneseverbconjugator.com/VerbDetails.asp?Go=Conjugate&txtVerb=%s", getSearchText, openUrl),
-                CreateWebLookupItem("Conjugate: Verbix", "https://www.verbix.com/webverbix/japanese/%s", getSearchText, openUrl)
+                CreateWebLookupItem(ShortcutFinger.Home1("Conjugate: Japanese verb conjugator"), "https://www.japaneseverbconjugator.com/VerbDetails.asp?Go=Conjugate&txtVerb=%s", getSearchText, openUrl),
+                CreateWebLookupItem(ShortcutFinger.Home2("Conjugate: Verbix"), "https://www.verbix.com/webverbix/japanese/%s", getSearchText, openUrl)
             }
         };
     }
@@ -90,11 +91,11 @@ public static class WebSearchMenus
     {
         return new MenuItem
         {
-            Header = "Translate",
+            Header = ShortcutFinger.Home2("Translate"),
             ItemsSource = new List<MenuItem>
             {
-                CreateWebLookupItem("Translate: Deepl", "https://www.deepl.com/en/translator#ja/en/%s", getSearchText, openUrl),
-                CreateWebLookupItem("Translate: Kanshudo", "https://www.kanshudo.com/sentence_translate?q=%s", getSearchText, openUrl)
+                CreateWebLookupItem(ShortcutFinger.Home1("Translate: Deepl"), "https://www.deepl.com/en/translator#ja/en/%s", getSearchText, openUrl),
+                CreateWebLookupItem(ShortcutFinger.Home2("Translate: Kanshudo"), "https://www.kanshudo.com/sentence_translate?q=%s", getSearchText, openUrl)
             }
         };
     }
@@ -103,12 +104,12 @@ public static class WebSearchMenus
     {
         return new MenuItem
         {
-            Header = "Grammar",
+            Header = ShortcutFinger.Home3("Grammar"),
             ItemsSource = new List<MenuItem>
             {
-                CreateWebLookupItem("Grammar: Google", "https://www.google.com/search?q=japanese+grammar+%s", getSearchText, openUrl),
-                CreateWebLookupItem("Grammar: Japanese with anime", "https://www.google.com/search?q=site:www.japanesewithanime.com+%s", getSearchText, openUrl),
-                CreateWebLookupItem("Grammar: Wiktionary", "https://en.wiktionary.org/wiki/%s", getSearchText, openUrl)
+                CreateWebLookupItem(ShortcutFinger.Home1("Grammar: Google"), "https://www.google.com/search?q=japanese+grammar+%s", getSearchText, openUrl),
+                CreateWebLookupItem(ShortcutFinger.Home2("Grammar: Japanese with anime"), "https://www.google.com/search?q=site:www.japanesewithanime.com+%s", getSearchText, openUrl),
+                CreateWebLookupItem(ShortcutFinger.Home3("Grammar: Wiktionary"), "https://en.wiktionary.org/wiki/%s", getSearchText, openUrl)
             }
         };
     }
@@ -117,11 +118,11 @@ public static class WebSearchMenus
     {
         return new MenuItem
         {
-            Header = "Images",
+            Header = ShortcutFinger.Home4("Images"),
             ItemsSource = new List<MenuItem>
             {
-                CreateWebLookupItem("Images: Google", "https://www.google.com/search?udm=2&tbs=sur:cl&q=%s", getSearchText, openUrl),
-                CreateWebLookupItem("Images: Bing", "https://www.bing.com/images/search?qft=+filterui:licenseType-Any&q=%s", getSearchText, openUrl)
+                CreateWebLookupItem(ShortcutFinger.Home1("Images: Google"), "https://www.google.com/search?udm=2&tbs=sur:cl&q=%s", getSearchText, openUrl),
+                CreateWebLookupItem(ShortcutFinger.Home2("Images: Bing"), "https://www.bing.com/images/search?qft=+filterui:licenseType-Any&q=%s", getSearchText, openUrl)
             }
         };
     }
@@ -130,15 +131,15 @@ public static class WebSearchMenus
     {
         return new MenuItem
         {
-            Header = "Lookup",
+            Header = ShortcutFinger.Home4("Lookup"),
             ItemsSource = new List<MenuItem>
             {
-                CreateWebLookupItem("English: Merriam Webster", "https://www.merriam-webster.com/dictionary/%s", getSearchText, openUrl),
-                CreateWebLookupItem("Wiktionary", "https://en.wiktionary.org/wiki/%s", getSearchText, openUrl),
-                CreateWebLookupItem("Lookup: Takoboto", "https://takoboto.jp/?q=%s", getSearchText, openUrl),
-                CreateWebLookupItem("Lookup: Jisho", "https://jisho.org/search/%s", getSearchText, openUrl),
-                CreateWebLookupItem("Lookup: Wanikani", "https://www.wanikani.com/search?query=%s", getSearchText, openUrl),
-                CreateWebLookupItem("Lookup: Word Kanshudo", "https://www.kanshudo.com/searchw?q=%s", getSearchText, openUrl)
+                CreateWebLookupItem(ShortcutFinger.Home1("English: Merriam Webster"), "https://www.merriam-webster.com/dictionary/%s", getSearchText, openUrl),
+                CreateWebLookupItem(ShortcutFinger.Home2("Wiktionary"), "https://en.wiktionary.org/wiki/%s", getSearchText, openUrl),
+                CreateWebLookupItem(ShortcutFinger.Home3("Lookup: Takoboto"), "https://takoboto.jp/?q=%s", getSearchText, openUrl),
+                CreateWebLookupItem(ShortcutFinger.Home4("Lookup: Jisho"), "https://jisho.org/search/%s", getSearchText, openUrl),
+                CreateWebLookupItem(ShortcutFinger.Up1("Lookup: Wanikani"), "https://www.wanikani.com/search?query=%s", getSearchText, openUrl),
+                CreateWebLookupItem(ShortcutFinger.Down1("Lookup: Word Kanshudo"), "https://www.kanshudo.com/searchw?q=%s", getSearchText, openUrl)
             }
         };
     }
