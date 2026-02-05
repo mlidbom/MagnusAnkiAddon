@@ -4,6 +4,13 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <!-- Copy NuGet assemblies (Avalonia, Skia) to output folder -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <!-- Include native libraries for current platform -->
+    <RuntimeIdentifier Condition="$([MSBuild]::IsOSPlatform('Windows'))">win-x64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="$([MSBuild]::IsOSPlatform('Linux'))">linux-x64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="$([MSBuild]::IsOSPlatform('OSX'))">osx-x64</RuntimeIdentifier>
+    <SelfContained>false</SelfContained>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,5 +23,13 @@
   <ItemGroup>
     <ProjectReference Include="..\JAStudio.Core\JAStudio.Core.csproj" />
   </ItemGroup>
+
+  <Target Name="RegenerateStubs" AfterTargets="Build" Condition="'$(NCrunch)' != '1'">
+    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\regenerate-stubs.ps1&quot; -OnlyTargetTypes" />
+  </Target>
+
+  <Target Name="CopyRuntimeBinaries" AfterTargets="RegenerateStubs" Condition="'$(NCrunch)' != '1'">
+    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\copy-runtime-binaries.ps1&quot; -SourceDir &quot;$(TargetDir.TrimEnd('\'))&quot; -DestDir &quot;$(MSBuildProjectDirectory)\..\..\runtime_binaries&quot;" />
+  </Target>
 
 </Project>

@@ -48,7 +48,7 @@ Write-Host "`nGenerating stubs..." -ForegroundColor Cyan
 $args = @(
     $StubGenDll,
     "--dest-path", $TypingsPath,
-    "--target-dlls", "JAStudio.Core\bin\Debug\net10.0\JAStudio.Core.dll,JAStudio.PythonInterop\bin\Debug\net10.0\JAStudio.PythonInterop.dll"
+    "--target-dlls", "JAStudio.Core\bin\Debug\net10.0\JAStudio.Core.dll,JAStudio.PythonInterop\bin\Debug\net10.0\JAStudio.PythonInterop.dll,JAStudio.UI\bin\Debug\net10.0\win-x64\JAStudio.UI.dll"
 )
 
 if ($OnlyTargetTypes) {

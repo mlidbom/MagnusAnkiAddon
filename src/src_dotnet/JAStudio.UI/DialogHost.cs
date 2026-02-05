@@ -87,6 +87,19 @@ public static class DialogHost
     }
 
     /// <summary>
+    /// Show the About dialog.
+    /// </summary>
+    public static void ShowAboutDialog()
+    {
+        EnsureInitialized();
+        Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            var window = new AboutDialog();
+            window.Show();
+        });
+    }
+
+    /// <summary>
     /// Shutdown Avalonia. Call at addon unload.
     /// </summary>
     public static void Shutdown()

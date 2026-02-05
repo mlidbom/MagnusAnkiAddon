@@ -32,6 +32,7 @@ try:
         jastudio_dlls = [
                 runtime_binaries / "JAStudio.Core.dll",
                 runtime_binaries / "JAStudio.PythonInterop.dll",
+                runtime_binaries / "JAStudio.UI.dll",
         ]
 
         for dll_path in jastudio_dlls:

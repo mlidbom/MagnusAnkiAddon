@@ -68,6 +68,15 @@ def build_debug_menu(debug_menu: QMenu) -> None:
     debug_menu.addAction(shortcutfinger.up2("Reset"), app.reset)  # pyright: ignore[reportUnknownMemberType]
     add_menu_ui_action(debug_menu, shortcutfinger.down1("Refresh UI ('F5')"), refresh)
 
+    # Avalonia UI test
+    debug_menu.addAction(shortcutfinger.down2("Test Avalonia Dialog"), _test_avalonia_dialog)  # pyright: ignore[reportUnknownMemberType]
+
+def _test_avalonia_dialog() -> None:
+    """Test function to open the Avalonia About dialog."""
+    from jastudio.ui import avalonia_host
+
+    avalonia_host.show_about_dialog()
+
 def build_config_menu(config_menu: QMenu) -> None:
     non_optional(config_menu.addAction(shortcutfinger.home1("Options"), show_japanese_options)).setShortcut("Ctrl+Shift+s")  # pyright: ignore[reportUnknownMemberType]
     non_optional(config_menu.addAction(shortcutfinger.home2("Readings mappings"), show_readings_mappings)).setShortcut("Ctrl+Shift+m")  # pyright: ignore[reportUnknownMemberType]
