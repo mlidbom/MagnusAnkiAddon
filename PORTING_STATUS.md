@@ -306,7 +306,6 @@ Staying this close to the Python is what makes the porting workable at all. If w
             - 100% test_sentencenote.py
             - vocab
                 - 100% test_perfect_synonyms.py
-                    - Note: Tests found and fixed a collection-modification bug in Synonyms.cs
                 - 100% test_serializers.py
                 - 100% test_vocabnote_misc.py
         - ui_tests
