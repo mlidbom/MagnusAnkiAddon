@@ -1,0 +1,36 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="JAStudio.UI.Controls.StringSetControl">
+    <StackPanel Spacing="5">
+        <DockPanel>
+            <TextBlock Text="{Binding Title}" FontWeight="Bold" DockPanel.Dock="Left" VerticalAlignment="Center" MinWidth="120" />
+            <Button Content="+ Add..." Command="{Binding AddCommand}" Width="80" DockPanel.Dock="Left" Margin="10,0,0,0" />
+        </DockPanel>
+        <ItemsControl ItemsSource="{Binding Items}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Background="#e0e0e0" 
+                            CornerRadius="3" 
+                            Padding="6,3" 
+                            Margin="2">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock Text="{Binding Value}" VerticalAlignment="Center" />
+                            <Button Content="×" 
+                                    Command="{Binding RemoveCommand}" 
+                                    Width="16" 
+                                    Height="16" 
+                                    Padding="0" 
+                                    FontSize="14" 
+                                    FontWeight="Bold" />
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
+</UserControl>

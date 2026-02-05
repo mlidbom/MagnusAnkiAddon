@@ -14,6 +14,14 @@
 - Accessible from Anki: Japanese → Debug → Test Avalonia Dialog
 - Validates the full Python → C# → Avalonia pipeline works
 
+**VocabFlagsDialog: COMPLETE**
+- Full-featured dialog for editing vocab matching flags, register & string rules
+- 231 lines of Python UI ported to C# Avalonia
+- Includes reusable RequireForbidControl (radio button group)
+- Includes reusable StringSetControl (editable string chips)
+- Reparse prompt with Python integration for batch updates
+- Accessible from vocab context menu → Edit
+
 **Context Menu Infrastructure: WIP**
 - `ContextMenuPopup.axaml.cs` - Avalonia menu displayed at specific screen coordinates
 - Uses Menu control with submenu to show at precise position
@@ -26,6 +34,7 @@
 - `jastudio/ui/avalonia_host.py` - Python wrapper for C# dialogs
 - `show_about_dialog()` - Opens the About dialog from Python
 - `show_context_menu_popup()` - Shows context menu at (x, y) coordinates
+- `show_vocab_flags_dialog()` - Opens VocabFlagsDialog (now C# Avalonia)
 
 ---
 
@@ -63,7 +72,7 @@ JAStudio.Core.dll (Domain logic - already ported)
 
 | Status | File | Lines | Description |
 |--------|------|-------|-------------|
-| MISSING | ui/menus/notes/vocab/vocab_flags_dialog.py | 231 | Edit vocab matching flags, register, string rules |
+| COMPLETE | ui/menus/notes/vocab/vocab_flags_dialog.py | 231 | Edit vocab matching flags, register, string rules |
 | MISSING | ui/open_note/open_note_dialog.py | 264 | Search and open notes dialog |
 | MISSING | ui/english_dict/find_english_words_dialog.py | 94 | English dictionary search |
 | MISSING | configuration/readings_mapping_dialog.py | 120 | Configure reading mappings |
