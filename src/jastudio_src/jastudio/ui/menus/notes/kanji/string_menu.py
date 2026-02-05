@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jaslib.language_services import kana_utils
+from JAStudio.Core.SysUtils import KanaUtils
 from jaspythonutils.sysutils import ex_lambda
 from jaspythonutils.sysutils.typed import non_optional
 
@@ -12,7 +12,7 @@ from jastudio.ui.menus.menu_utils.ex_qmenu import add_ui_action
 if TYPE_CHECKING:
     import collections.abc
 
-    from jaslib.note.kanjinote import KanjiNote
+    from JAStudio.Core.Note import KanjiNote
     from PyQt6.QtWidgets import QMenu
 
 
@@ -27,13 +27,13 @@ def build(string_menu: QMenu, kanji: KanjiNote, menu_string: str) -> None:
             add_ui_action(highlighted_vocab_menu, shortcutfinger.home2("Remove"), ex_lambda.bind1(kanji.remove_primary_vocab, _vocab_to_add))
 
     def add_primary_readings_actions(menu: QMenu, title_factory: collections.abc.Callable[[str], str], string: str) -> None:
-        if kana_utils.is_only_katakana(string):
-            hiragana_string = kana_utils.katakana_to_hiragana(string)
+        if KanaUtils.IsOnlyKatakana(string):
+            hiragana_string = KanaUtils.KatakanaToHiragana(string)
             if hiragana_string in kanji.get_primary_readings_on():
                 add_ui_action(menu, title_factory("Remove primary Onyomi Reading"), lambda: kanji.remove_primary_on_reading(hiragana_string))
             elif hiragana_string in kanji.get_readings_on():
                 add_ui_action(menu, title_factory("Make primary Onyomi Reading"), lambda: kanji.add_primary_on_reading(hiragana_string))
-        elif kana_utils.is_only_hiragana(string):
+        elif KanaUtils.IsOnlyHiragana(string):
             if string in kanji.get_primary_readings_kun():
                 add_ui_action(menu, title_factory("Remove primary Kunyomi reading"), lambda: kanji.remove_primary_kun_reading(string))
             elif string in kanji.get_readings_kun():

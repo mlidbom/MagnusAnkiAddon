@@ -9,7 +9,7 @@ from PyQt6.QtWidgets import QFrame, QHBoxLayout, QInputDialog, QLabel, QPushButt
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from jaslib.note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
+    from JAStudio.Core.Note.NoteFields import FieldSetWrapper
 
 class StringChipWidget(QFrame):
     """A chip widget displaying a string with an X button to remove it."""

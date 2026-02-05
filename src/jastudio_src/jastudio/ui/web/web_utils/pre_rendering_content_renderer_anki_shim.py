@@ -3,15 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from jaslib.note.jpnote import JPNote
-from jaslib.note.note_constants import Mine
+from JAStudio.Core.Note import JPNote, Mine
 
 from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
 
     from anki.cards import Card
-    from jaslib.ui.web.pre_rendering_content_renderer import PreRenderingContentRenderer
+    from JAStudio.Core.UI.Web import PreRenderingContentRenderer
 
 
 class PrerenderingContentRendererAnkiShim[TNote: JPNote](Slots):

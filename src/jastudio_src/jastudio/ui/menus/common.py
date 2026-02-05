@@ -4,12 +4,9 @@ import typing
 
 import pyperclip
 from aqt import gui_hooks
-from jaslib import app
-from jaslib.batches import local_note_updater
-from jaslib.note.kanjinote import KanjiNote
-from jaslib.note.note_constants import Mine
-from jaslib.note.sentences.sentencenote import SentenceNote
-from jaslib.note.vocabulary.vocabnote import VocabNote
+from JAStudio.Core import App
+from JAStudio.Core.Batches import LocalNoteUpdater
+from JAStudio.Core.Note import KanjiNote, Mine, SentenceNote, VocabNote
 from jaspythonutils.sysutils import ex_lambda, typed
 from jaspythonutils.sysutils.typed import non_optional
 from typed_linq_collections.collections.q_list import QList
@@ -25,7 +22,7 @@ from jastudio.ui.menus.web_search import build_web_search_menu
 
 if typing.TYPE_CHECKING:
     from aqt.webview import AnkiWebView
-    from jaslib.note.jpnote import JPNote
+    from JAStudio.Core.Note import JPNote
     from PyQt6.QtWidgets import QMenu
 
 def build_browser_right_click_menu(root_menu: QMenu, note: JPNote) -> None:
@@ -79,9 +76,9 @@ def build_string_menu(menu: QMenu, string: str, string_note_menu_factory: typing
         create_note_action(create_note_menu, shortcutfinger.home3("kanji"), ex_lambda.bind4(KanjiNote.create, to_create, "TODO", "", ""))
 
     def build_matching_note_menu(matching_note_menu: QMenu, search_string: str) -> None:
-        vocabs = list(app.col().vocab.with_question_prefer_disambiguation_name(search_string))
-        sentences = app.col().sentences.with_question(search_string)
-        kanjis = app.col().kanji.with_any_kanji_in([search_string]) if len(search_string) == 1 else QList[KanjiNote]()
+        vocabs = list(App.Col().Vocab.WithQuestionPreferDisambiguationName(search_string))
+        sentences = App.Col().Sentences.WithQuestion(search_string)
+        kanjis = App.Col().Kanji.WithAnyKanjiIn([search_string]) if len(search_string) == 1 else QList[KanjiNote]()
 
         if not any(vocabs) and not any(sentences) and not any(kanjis):
             return
@@ -95,7 +92,7 @@ def build_string_menu(menu: QMenu, string: str, string_note_menu_factory: typing
     build_web_search_menu(non_optional(menu.addMenu(shortcutfinger.home3("Search Web"))), lambda: string)
     build_matching_note_menu(non_optional(menu.addMenu(shortcutfinger.home4("Exactly matching notes"))), string)
     build_create_note_menu(non_optional(menu.addMenu(shortcutfinger.up1(f"Create: {string[:40]}"))), string)
-    add_ui_action(menu, shortcutfinger.down1("Reparse matching sentences"), lambda: local_note_updater.reparse_matching_sentences(string))
+    add_ui_action(menu, shortcutfinger.down1("Reparse matching sentences"), lambda: LocalNoteUpdater.ReparseMatchingSentences(string))
 
 def build_universal_note_actions_menu(universal_actions_menu: QMenu, note: JPNote | None) -> None:
     if not note: return

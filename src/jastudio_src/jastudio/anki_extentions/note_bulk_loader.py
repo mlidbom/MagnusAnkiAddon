@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 from anki.models import FieldDict, NotetypeDict, NotetypeId
 from anki.notes import NoteId
-from jaslib.note.jpnote_data import JPNoteData
-from jaslib.task_runners.task_progress_runner import TaskRunner
+from JAStudio.Core.Note import JPNoteData
+from JAStudio.Core.TaskRunners import TaskRunner
 from jaspythonutils.sysutils import typed
 from jaspythonutils.sysutils.typed import non_optional
 
@@ -46,6 +46,6 @@ class NoteBulkLoader:
 
             return JPNoteData(id, fields_dict, tags)
 
-        with TaskRunner.current(f"Loading {note_type_name} notes from Anki db") as task_runner:
+        with TaskRunner.Current(f"Loading {note_type_name} notes from Anki db") as task_runner:
             # do not use a temporary variable for the rows, that will prevent the garbage collector from collecting them, giving us incorrect data about what takes how much memory in our tracemalloc code.
-            return task_runner.process_with_progress(non_optional(col.db).all(query, note_type_id), note_bulkloader_note_constructor, f"Loading {note_type_name} notes from Anki db")
+            return task_runner.ProcessWithProgress(non_optional(col.db).all(query, note_type_id), note_bulkloader_note_constructor, f"Loading {note_type_name} notes from Anki db")

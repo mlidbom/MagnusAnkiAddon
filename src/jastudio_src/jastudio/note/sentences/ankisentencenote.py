@@ -3,9 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from jaslib.note.note_constants import ImmersionKitSentenceNoteFields
-from jaslib.note.sentences.sentencenote import SentenceNote
-from jaslib.note.tags import Tags
+from JAStudio.Core.Note import ImmersionKitSentenceNoteFields, SentenceNote, Tags
 from jastudio.note.ankijpnote import AnkiJPNote
 from typed_linq_collections.collections.q_set import QSet
 

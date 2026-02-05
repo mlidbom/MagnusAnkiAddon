@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jaslib import app
+from JAStudio.Core import App
 from jaspythonutils.sysutils.typed import non_optional
 
 from jastudio.ui.menus.menu_utils import shortcutfinger
@@ -10,7 +10,7 @@ from jastudio.ui.menus.menu_utils.ex_qmenu import add_ui_action
 from jastudio.ui.menus.notes.vocab.common import build_create_prefix_postfix_note_menu
 
 if TYPE_CHECKING:
-    from jaslib.note.vocabulary.vocabnote import VocabNote
+    from JAStudio.Core.Note import VocabNote
     from PyQt6.QtWidgets import QMenu
 
 def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) -> None:
@@ -57,7 +57,7 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
         add_ui_action(note_set_menu, shortcutfinger.home1("Ergative twin"), lambda: vocab.related_notes.ergative_twin.set(menu_string))
         add_ui_action(note_set_menu, shortcutfinger.home2("Derived from"), lambda: vocab.related_notes.derived_from.set(menu_string))
 
-    sentences = app.col().sentences.with_question(menu_string)
+    sentences = App.Col().Sentences.WithQuestion(menu_string)
 
     build_add_menu(non_optional(string_menu.addMenu(shortcutfinger.home1("Add"))))
     build_set_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Set"))))

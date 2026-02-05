@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING
 
 from anki.consts import QUEUE_TYPE_SUSPENDED
 from anki.notes import Note, NoteId
-from jaslib import app
-from jaslib.note.collection.card_studying_status import CardStudyingStatus
-from jaslib.note.note_constants import NoteTypes
-from jaslib.task_runners.task_progress_runner import TaskRunner
+from JAStudio.Core import App
+from JAStudio.Core.Note import NoteTypes
+from JAStudio.Core.Note.Collection import CardStudyingStatus
+from JAStudio.Core.TaskRunners import TaskRunner
 from jaspythonutils.sysutils import typed
 from jaspythonutils.sysutils.memory_usage import string_auto_interner
 from jaspythonutils.sysutils.typed import non_optional
@@ -26,11 +26,11 @@ def update_note_in_studying_cache(note: Note) -> None:
 def update_card_in_studying_cache(card_ex: CardEx) -> None:
     status = CardStudyingStatus(card_ex.note_ex().id, card_ex.card_type, card_ex.is_suspended(), card_ex.note_ex().note_type.name)
     if status.note_type_name == NoteTypes.Kanji:
-        app.col().kanji.cache.set_studying_statuses([status])
+        App.Col().Kanji.cache.set_studying_statuses([status])
     if status.note_type_name == NoteTypes.Vocab:
-        app.col().vocab.cache.set_studying_statuses([status])
+        App.Col().Vocab.cache.set_studying_statuses([status])
     if status.note_type_name == NoteTypes.Sentence:
-        app.col().sentences.cache.set_studying_statuses([status])
+        App.Col().Sentences.cache.set_studying_statuses([status])
 
 class CardStudyingStatusFactory:
     @classmethod
@@ -53,7 +53,7 @@ def fetch_card_studying_statuses(col: Collection, ) -> list[CardStudyingStatus]:
         WHERE notetypes.name COLLATE NOCASE IN ('{NoteTypes.Sentence}', '{NoteTypes.Vocab}', '{NoteTypes.Kanji}')
     """
 
-    with TaskRunner.current("Fetching card studying status from Anki db") as task_runner:
-        return task_runner.run_on_background_thread_with_spinning_progress_dialog(
+    with TaskRunner.Current("Fetching card studying status from Anki db") as task_runner:
+        return task_runner.RunOnBackgroundThreadWithSpinningProgressDialog(
                 "Fetching card studying status from Anki db",
                 lambda: query(non_optional(col.db).all(sql_query)).select(CardStudyingStatusFactory.from_row).to_list())

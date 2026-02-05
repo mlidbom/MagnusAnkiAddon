@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from jaslib.task_runners.task_progress_runner import TaskRunner
+from JAStudio.Core.TaskRunners import TaskRunner
 
 from jastudio.qt_utils.qt_task_progress_runner import QtTaskProgressRunner
 
@@ -14,4 +14,4 @@ def init() -> None:
     menus.init()
     garbage_collection_fixes.init()
 
-    TaskRunner.set_ui_task_runner_factory(QtTaskProgressRunner)
+    TaskRunner.SetUiTaskRunnerFactory(QtTaskProgressRunner)

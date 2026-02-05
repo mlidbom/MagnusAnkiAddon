@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from anki.consts import QUEUE_TYPE_NEW
 from autoslot import Slots
-from jaslib.note.note_constants import NoteTypes
+from JAStudio.Core.Note import NoteTypes
 from jaspythonutils.sysutils import typed
 
 if TYPE_CHECKING:

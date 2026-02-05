@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import aqt.utils
 from aqt import gui_hooks
 from aqt.overview import Overview
-from jaslib.note.note_constants import CardTypes, NoteTypes
+from JAStudio.Core.Note import CardTypes, NoteTypes
 from jaspythonutils.sysutils import typed
 
 from jastudio.anki_extentions.card_ex import CardEx

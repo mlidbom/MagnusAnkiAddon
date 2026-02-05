@@ -3,8 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from anki.notes import Note
-from jaslib.note.backend_note_creator import IBackendNoteCreator
-from jaslib.note.note_constants import NoteTypes
+from JAStudio.Core.Note import IBackendNoteCreator, NoteTypes
 from jastudio.ankiutils import app
 from jastudio.note import studing_status_helper
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
@@ -12,10 +11,7 @@ from jastudio.note.jpnotedata_shim import JPNoteDataShim
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from jaslib.note.jpnote import JPNote
-    from jaslib.note.kanjinote import KanjiNote
-    from jaslib.note.sentences.sentencenote import SentenceNote
-    from jaslib.note.vocabulary.vocabnote import VocabNote
+    from JAStudio.Core.Note import JPNote, KanjiNote, SentenceNote, VocabNote
 
 class AnkiBackendNoteCreator(IBackendNoteCreator):
     @classmethod

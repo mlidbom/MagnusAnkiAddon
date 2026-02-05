@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jaslib import app
+from JAStudio.Core import App
 from jaspythonutils.sysutils.typed import non_optional
 
 from jastudio.ankiutils import query_builder
@@ -24,7 +24,7 @@ def build_open_in_anki_menu(open_in_anki_menu:QMenu, search_string:Callable[[],s
     def build_kanji_menu(kanji_menu:QMenu) -> None:
         add_lookup_action_lambda(kanji_menu, shortcutfinger.home1("All kanji in string"), lambda: query_builder.kanji_in_string(search_string()))
         add_lookup_action_lambda(kanji_menu, shortcutfinger.home2("By reading part"), lambda: query_builder.kanji_with_reading_part(search_string()))
-        add_lookup_action_lambda(kanji_menu, shortcutfinger.home3("By reading exact"), lambda: query_builder.notes_lookup(list(app.col().kanji.with_reading(search_string()))))
+        add_lookup_action_lambda(kanji_menu, shortcutfinger.home3("By reading exact"), lambda: query_builder.notes_lookup(list(App.Col().Kanji.WithReading(search_string()))))
         add_lookup_action_lambda(kanji_menu, shortcutfinger.home4("With radicals"), lambda: query_builder.kanji_with_radicals_in_string(search_string()))
         add_lookup_action_lambda(kanji_menu, shortcutfinger.up1("With meaning"), lambda: query_builder.kanji_with_meaning(search_string()))
 

@@ -6,7 +6,7 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from jaslib import mylog
+from JAStudio.Core import MyLog
 from jaspythonutils.sysutils import typed
 from jaspythonutils.sysutils.time_span import TimeSpan
 
@@ -68,9 +68,9 @@ class StopWatch(Slots):
         finally:
             elapsed = watch.elapsed()
             if elapsed.total_seconds > warn_if_slower_than:
-                mylog.warning(get_message())
+                MyLog.Warning(get_message())
             elif elapsed.total_seconds * 2 > warn_if_slower_than:
-                mylog.info(get_message())
+                MyLog.Info(get_message())
 
     @classmethod
     @contextmanager
@@ -89,7 +89,7 @@ class StopWatch(Slots):
         try:
             yield
         finally:
-            mylog.info(get_message())
+            MyLog.Info(get_message())
 
     @classmethod
     @contextmanager

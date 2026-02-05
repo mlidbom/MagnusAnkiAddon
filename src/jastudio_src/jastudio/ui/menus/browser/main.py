@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
-from jaslib.note.sentences.sentencenote import SentenceNote
+from JAStudio.Core.Note import SentenceNote
 from jaspythonutils.sysutils import ex_lambda
 from jaspythonutils.sysutils.typed import non_optional
 
@@ -53,9 +53,9 @@ def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
 
     selected_sentences:list[SentenceNote] = [note for note in selected_notes if isinstance(note, SentenceNote)]
     if selected_sentences:
-        from jaslib.batches import local_note_updater
+        from JAStudio.Core.Batches import LocalNoteUpdater
 
-        magnus_menu.addAction("Reparse sentence words", lambda: local_note_updater.reparse_sentences(selected_sentences, run_gc_during_batch=True))  # pyright: ignore[reportUnknownMemberType]
+        magnus_menu.addAction("Reparse sentence words", lambda: LocalNoteUpdater.ReparseSentences(selected_sentences, runGcDuringBatch=True))  # pyright: ignore[reportUnknownMemberType]
 
 
 def init() -> None:

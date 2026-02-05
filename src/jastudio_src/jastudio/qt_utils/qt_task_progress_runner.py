@@ -5,8 +5,8 @@ import time
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
-from jaslib import mylog
-from jaslib.task_runners.i_task_progress_runner import ITaskRunner
+from JAStudio.Core import MyLog
+from JAStudio.Core.TaskRunners import ITaskProgressRunner
 from jaspythonutils.sysutils import timeutil
 from jaspythonutils.sysutils.timeutil import StopWatch
 from jaspythonutils.sysutils.typed import non_optional
@@ -19,7 +19,7 @@ from PyQt6.QtWidgets import QApplication, QLabel, QProgressDialog
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-class QtTaskProgressRunner(ITaskRunner, Slots):
+class QtTaskProgressRunner(ITaskProgressRunner, Slots):
     def __init__(self, window_title: str, label_text: str, allow_cancel: bool = True, modal: bool = True) -> None:
         self.allow_cancel: bool = allow_cancel
         dialog = QProgressDialog(f"""{window_title}...""", "Cancel" if allow_cancel else None, 0, 0)
@@ -62,7 +62,7 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
         # noinspection PyUnusedLocal
         future = None
 
-        mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()}{ex_trace_malloc_instance.get_memory_delta_message(' | ')}")
+        MyLog.Info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()}{ex_trace_malloc_instance.get_memory_delta_message(' | ')}")
         return result
 
     @override
@@ -110,7 +110,7 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
 
         # noinspection PyUnusedLocal
         items = []  # Make the garbage collection happening on the next line able to get rid of the items
-        mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()} handled {total_items} items{ex_trace_malloc_instance.get_memory_delta_message(' | ')}")
+        MyLog.Info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()} handled {total_items} items{ex_trace_malloc_instance.get_memory_delta_message(' | ')}")
         if run_gc: self.run_gc()
         return results
 

@@ -3,7 +3,7 @@
 # from typing import TYPE_CHECKING
 #
 # import pytest
-# from jaslib.note.vocabulary.vocabnote import VocabNote
+# from JAStudio.Core.Note import VocabNote
 # from jastudio.ankiutils import query_builder
 # from jastudio_tests.fixtures.collection_factory import inject_empty_collection
 #

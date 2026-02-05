@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pyperclip
-from jaslib import app
-from jaslib.note.note_constants import NoteFields, NoteTypes
+from JAStudio.Core import App
+from JAStudio.Core.Note import NoteFields, NoteTypes
 from jaspythonutils.sysutils import ex_str
 from jaspythonutils.sysutils.ex_str import newline
 from jaspythonutils.sysutils.typed import non_optional
@@ -16,7 +16,7 @@ from jastudio.ui.menus.notes.vocab.create_note_menu import build_create_note_men
 from jastudio.ui.menus.notes.vocab.vocab_flags_dialog import show_vocab_flags_dialog
 
 if TYPE_CHECKING:
-    from jaslib.note.vocabulary.vocabnote import VocabNote
+    from JAStudio.Core.Note import VocabNote
     from PyQt6.QtWidgets import QMenu
 
 def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboard: str) -> None:
@@ -38,9 +38,9 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
         def build_vocab_lookup_menu(vocab_lookup_menu: QMenu) -> None:
             def build_readings_menu(readings_vocab_lookup_menu: QMenu) -> None:
                 for index, reading in enumerate(vocab.readings.get()):
-                    add_lookup_action(readings_vocab_lookup_menu, shortcutfinger.finger_by_priority_order(index, f"Homonyms: {reading}"), query_builder.notes_lookup(app.col().vocab.with_reading(reading)))
+                    add_lookup_action(readings_vocab_lookup_menu, shortcutfinger.finger_by_priority_order(index, f"Homonyms: {reading}"), query_builder.notes_lookup(App.Col().Vocab.WithReading(reading)))
 
-            add_lookup_action(vocab_lookup_menu, shortcutfinger.home1("Forms"), query_builder.notes_lookup(vocab.forms.all_list_notes()))  # query_builder.notes_lookup(ex_sequence.flatten([app.col().vocab.with_question(form) for form in vocab.forms.all_set()])))
+            add_lookup_action(vocab_lookup_menu, shortcutfinger.home1("Forms"), query_builder.notes_lookup(vocab.forms.all_list_notes()))  # query_builder.notes_lookup(ex_sequence.flatten([App.Col().Vocab.WithQuestion(form) for form in vocab.forms.all_set()])))
             add_lookup_action(vocab_lookup_menu, shortcutfinger.home2("Compound parts"), query_builder.vocabs_lookup_strings(vocab.compound_parts.all()))
             add_lookup_action(vocab_lookup_menu, shortcutfinger.home3("In compounds"), query_builder.notes_lookup(vocab.related_notes.in_compounds()))
             add_lookup_action(vocab_lookup_menu, shortcutfinger.home4("Synonyms"), query_builder.notes_lookup(vocab.related_notes.synonyms.notes()))
@@ -60,8 +60,8 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
         add_ui_action(misc_menu, shortcutfinger.home1("Accept meaning"), lambda: vocab.user.answer.set(format_vocab_meaning(vocab.get_answer())), not vocab.user.answer.value)
         add_ui_action(misc_menu, shortcutfinger.home2("Generate answer"), lambda: vocab.generate_and_set_answer())
 
-        from jaslib.batches import local_note_updater
-        add_ui_action(misc_menu, shortcutfinger.home3("Reparse potentially matching sentences: (Only reparse all sentences is sure to catch everything)"), lambda: local_note_updater.reparse_sentences_for_vocab(vocab))
+        from JAStudio.Core.Batches import LocalNoteUpdater
+        add_ui_action(misc_menu, shortcutfinger.home3("Reparse potentially matching sentences: (Only reparse all sentences is sure to catch everything)"), lambda: LocalNoteUpdater.ReparseSentencesForVocab(vocab))
         add_ui_action(misc_menu, shortcutfinger.home4("Repopulate TOS"), lambda: vocab.parts_of_speech.set_automatically_from_dictionary())
 
         add_ui_action(misc_menu, shortcutfinger.home5("Autogenerate compounds"), lambda: vocab.compound_parts.auto_generate())

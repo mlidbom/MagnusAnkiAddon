@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from jaslib import mylog
+from JAStudio.Core import MyLog
 from jaspythonutils.sysutils.timeutil import StopWatch
 from pythonnet import load
 
@@ -15,7 +15,7 @@ def _get_workspace_root() -> Path:
 try:
     with StopWatch.log_execution_time("Loading .NET runtime"):
         load("coreclr", runtime_config=config_file)
-        mylog.info("Loaded .NET runtime")
+        MyLog.Info("Loaded .NET runtime")
         import clr
 
         clr.AddReference("System.Runtime")
@@ -36,15 +36,15 @@ try:
 
         for dll_path in jastudio_dlls:
             clr.AddReference(str(dll_path))
-            mylog.info(f"Loaded assembly: {dll_path.name}")
+            MyLog.Info(f"Loaded assembly: {dll_path.name}")
 
 except RuntimeError as e:
     if "Failed to create a .NET runtime" in str(e):
-        mylog.error(
+        MyLog.Error(
                 """This addon requires .NET 10.0 or newer.
                 Please install from: https://dotnet.microsoft.com/download"""
         )
     raise
 except ImportError as e:
-    mylog.error(f"Python.NET package {e.name} not found.")
+    MyLog.Error(f"Python.NET package {e.name} not found.")
     raise

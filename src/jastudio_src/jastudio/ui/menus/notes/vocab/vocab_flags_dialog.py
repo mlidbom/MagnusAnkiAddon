@@ -12,9 +12,8 @@ from jastudio.ui.menus.notes.vocab.require_forbid_widget import RequireForbidWid
 from jastudio.ui.menus.notes.vocab.string_set_widget import StringSetWidget
 
 if TYPE_CHECKING:
-    from jaslib.note.notefields.require_forbid_flag_field import RequireForbidFlagField
-    from jaslib.note.notefields.tag_flag_field import TagFlagField
-    from jaslib.note.vocabulary.vocabnote import VocabNote
+    from JAStudio.Core.Note.NoteFields import RequireForbidFlagField, TagFlagField
+    from JAStudio.Core.Note import VocabNote
 
 class VocabFlagsDialog(QDialog):
     def __init__(self, vocab: VocabNote, parent: QWidget | None = None) -> None:
@@ -277,8 +276,8 @@ class VocabFlagsDialog(QDialog):
             )
 
             if reply == QMessageBox.StandardButton.Yes:
-                from jaslib.batches import local_note_updater
-                local_note_updater.reparse_sentences_for_vocab(self.vocab)
+                from JAStudio.Core.Batches import LocalNoteUpdater
+                LocalNoteUpdater.ReparseSentencesForVocab(self.vocab)
 
         app.get_ui_utils().refresh()
 

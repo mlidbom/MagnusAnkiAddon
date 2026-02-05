@@ -9,7 +9,7 @@ from PyQt6.QtWidgets import QCheckBox, QDialog, QDialogButtonBox, QDoubleSpinBox
 from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
-    from jaslib.configuration.configuration_value import ConfigurationValueBool, ConfigurationValueFloat, ConfigurationValueInt, JapaneseConfig
+    from JAStudio.Core.Configuration import ConfigurationValueBool, ConfigurationValueFloat, ConfigurationValueInt, JapaneseConfig
 
 class JapaneseOptionsDialog(QDialog): # Cannot inherit Slots for some QT internal reason
     def __init__(self, parent: QWidget | None = None) -> None:

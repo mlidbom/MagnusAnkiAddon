@@ -75,6 +75,6 @@ def get_logger(module: str) -> logging.Logger:
 _addon_name = os.path.basename(os.path.dirname(os.path.dirname(__file__)))
 
 # noinspection PyPep8
-import jaslib.mylog  # noqa: E402
+from JAStudio.Core import MyLog  # noqa: E402
 
-jaslib.mylog.set_logger_factory(Lazy(lambda: get_logger(_addon_name)))
+MyLog.SetLoggerFactory(Lazy(lambda: get_logger(_addon_name)))

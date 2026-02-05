@@ -4,8 +4,7 @@ from typing import TYPE_CHECKING, cast
 
 from anki.models import NotetypeDict
 from autoslot import Slots
-from jaslib.note.jpnote import JPNote
-from jaslib.note.note_constants import NoteTypes
+from JAStudio.Core.Note import JPNote, KanjiNote, NoteTypes, SentenceNote, VocabNote
 from jaspythonutils.sysutils.typed import str_
 from jaspythonutils.sysutils.weak_ref import WeakRefable
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
@@ -22,10 +21,6 @@ class AnkiJPNote(WeakRefable, Slots):
 
     @classmethod
     def note_from_note(cls, note: Note) -> JPNote:
-        from jaslib.note.kanjinote import KanjiNote
-        from jaslib.note.sentences.sentencenote import SentenceNote
-        from jaslib.note.vocabulary.vocabnote import VocabNote
-
         data = JPNoteDataShim.from_note(note)
 
         if cls.get_note_type(note) == NoteTypes.Kanji: return KanjiNote(data)

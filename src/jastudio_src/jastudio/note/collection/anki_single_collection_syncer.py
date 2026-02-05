@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from anki.notes import NoteId
 from autoslot import Slots
-from jaslib.note.jpnote import JPNote, JPNoteId
+from JAStudio.Core.Note import JPNote
 from jaspythonutils.sysutils.weak_ref import WeakRef, WeakRefable
 from jastudio.ankiutils import app
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
@@ -14,9 +14,8 @@ if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
 
     from anki.notes import Note
-    from jaslib.note.collection.card_studying_status import CardStudyingStatus
-    from jaslib.note.collection.note_cache import NoteCacheBase
-    from jaslib.note.jpnote_data import JPNoteData
+    from JAStudio.Core.Note import JPNoteData
+    from JAStudio.Core.Note.Collection import CardStudyingStatus, NoteCacheBase
     from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner
 
 class AnkiSingleCollectionSyncer[TNote: JPNote](WeakRefable, Slots):

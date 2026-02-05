@@ -3,9 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
-from jaslib.note.kanjinote import KanjiNote
-from jaslib.note.sentences.sentencenote import SentenceNote
-from jaslib.note.vocabulary.vocabnote import VocabNote
+from JAStudio.Core.Note import KanjiNote, SentenceNote, VocabNote
 from jaspythonutils.sysutils import typed
 from jaspythonutils.sysutils.typed import try_cast
 from PyQt6.QtCore import pyqtBoundSignal
@@ -17,7 +15,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from aqt.main import MainWindowState
-    from jaslib.configuration.configuration_value import ConfigurationValueBool
+    from JAStudio.Core.Configuration import ConfigurationValueBool
     from PyQt6.QtWidgets import QWidget
 
 def init() -> None:

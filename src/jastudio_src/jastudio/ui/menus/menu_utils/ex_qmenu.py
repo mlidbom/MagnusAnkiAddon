@@ -15,9 +15,8 @@ from jastudio.ui.menus.menu_utils import shortcutfinger
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from jaslib.configuration.configuration_value import ConfigurationValueBool
-    from jaslib.note.jpnote import JPNote
-    from jaslib.note.vocabulary.vocabnote import VocabNote
+    from JAStudio.Core.Configuration import ConfigurationValueBool
+    from JAStudio.Core.Note import JPNote, VocabNote
 
 def add_checkbox_config(menu: QMenu, config_value: ConfigurationValueBool, _title: str) -> None:
     checkbox_action = QAction(_title, app.main_window())
@@ -76,8 +75,8 @@ def create_note_action(menu: QMenu, name: str, callback: Callable[[], JPNote]) -
 def create_vocab_note_action(menu: QMenu, name: str, callback: Callable[[], VocabNote]) -> None:
     def do_it() -> VocabNote:
         new_note = callback()
-        from jaslib.batches import local_note_updater
-        local_note_updater.reparse_sentences_for_vocab(new_note)
+        from JAStudio.Core.Batches import LocalNoteUpdater
+        LocalNoteUpdater.ReparseSentencesForVocab(new_note)
         return new_note
 
     create_note_action(menu, name, do_it)

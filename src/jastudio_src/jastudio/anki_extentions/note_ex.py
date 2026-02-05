@@ -10,7 +10,7 @@ from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
     from anki.notes import Note
-    from jaslib.note.jpnote import JPNote, JPNoteId
+    from JAStudio.Core.Note import JPNote
 
     from jastudio.anki_extentions.card_ex import CardEx
 

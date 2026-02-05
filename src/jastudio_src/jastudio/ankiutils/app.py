@@ -3,7 +3,7 @@ from __future__ import annotations  # noqa: I001
 import os
 from typing import TYPE_CHECKING
 
-from jaslib import mylog
+from JAStudio.Core import MyLog
 from jaspythonutils.sysutils.typed import checked_cast, non_optional
 # noinspection PyUnusedImports, Annotator
 import jastudio.mylog  # pyright: ignore [reportUnusedImport]  # noqa: F401
@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     from anki.dbproxy import DBProxy
     from anki.scheduler.v3 import Scheduler  # pyright: ignore[reportMissingTypeStubs]
     from aqt import AnkiQt  # type: ignore[attr-defined]  # pyright: ignore[reportPrivateImportUsage]
-    from jaslib.configuration.configuration_value import JapaneseConfig
+    from JAStudio.Core.Configuration import JapaneseConfig
 
     from jastudio.anki_extentions.config_manager_ex import ConfigManagerEx
     from jastudio.ankiutils.ui_utils_interface import IUIUtils
@@ -44,7 +44,7 @@ def config() -> JapaneseConfig:
     return configuration_value.config()
 
 def _init(delay_seconds: float = 1.0) -> None:
-    mylog.info(f"_init delay= {delay_seconds}")
+    MyLog.Info(f"_init delay= {delay_seconds}")
 
     from aqt import mw
 
@@ -60,17 +60,17 @@ def is_initialized() -> bool:
     return _collection is not None and _collection.is_initialized
 
 def reset(delay_seconds: float = 0) -> None:
-    mylog.info(f"reset: delay= {delay_seconds}")
+    MyLog.Info(f"reset: delay= {delay_seconds}")
     _destruct()
     _init(delay_seconds)
 
 # noinspection Annotator
 def _reset(_col: object | None = None) -> None:
-    mylog.info("_reset")
+    MyLog.Info("_reset")
     reset()
 
 def _destruct() -> None:
-    mylog.info("_destruct_ja_app")
+    MyLog.Info("_destruct_ja_app")
     from jaspythonutils.sysutils.timeutil import StopWatch
     with StopWatch.log_warning_if_slower_than(0.2):
         global _collection
@@ -81,12 +81,12 @@ def _destruct() -> None:
 
 # noinspection Annotator
 def _collection_is_being_invalidated(_col: object | None = None) -> None:
-    mylog.info("_collection_is_being_invalidated")
+    MyLog.Info("_collection_is_being_invalidated")
     _destruct()
     reset(delay_seconds=9999)  # Unless forced by the user we don't actually want to run an initialization here
 
 def _profile_closing() -> None:
-    mylog.info("anki_profile_closing")
+    MyLog.Info("anki_profile_closing")
     from aqt import gui_hooks
     gui_hooks.sync_will_start.remove(_collection_is_being_invalidated)
     _collection_closed_hooks.remove(_destruct)
@@ -95,7 +95,7 @@ def _profile_closing() -> None:
     _destruct()
 
 def _profile_opened() -> None:
-    mylog.info("profile_opened")
+    MyLog.Info("profile_opened")
     from aqt import gui_hooks
     gui_hooks.sync_will_start.append(_collection_is_being_invalidated)
     _collection_closed_hooks.add(_destruct)

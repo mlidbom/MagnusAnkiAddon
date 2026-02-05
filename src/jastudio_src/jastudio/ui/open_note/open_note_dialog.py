@@ -4,12 +4,9 @@ import threading
 from typing import TYPE_CHECKING, cast, final
 
 from anki.notes import NoteId
-from jaslib.app import col
-from jaslib.language_services import kana_utils
-from jaslib.note.jpnote import JPNote
-from jaslib.note.kanjinote import KanjiNote
-from jaslib.note.sentences.sentencenote import SentenceNote
-from jaslib.note.vocabulary.vocabnote import VocabNote
+from JAStudio.Core import App
+from JAStudio.Core.Note import JPNote, KanjiNote, SentenceNote, VocabNote
+from JAStudio.Core.SysUtils import KanaUtils
 from jaspythonutils.sysutils import ex_str, typed
 from jaspythonutils.sysutils.typed import non_optional
 from PyQt6.QtCore import Qt, pyqtBoundSignal
@@ -117,7 +114,7 @@ class NoteSearchDialog(QDialog): # Cannot inherit Slots for some QT internal rea
                     return " ".join(vocab.readings.get())
 
                 def vocab_romaji_readings(vocab: VocabNote) -> str:
-                    return kana_utils.romanize(vocab_readings(vocab))
+                    return KanaUtils.Romanize(vocab_readings(vocab))
 
                 def vocab_forms(vocab: VocabNote) -> str:
                     return " ".join(vocab.forms.without_noise_characters())
@@ -137,7 +134,7 @@ class NoteSearchDialog(QDialog): # Cannot inherit Slots for some QT internal rea
                 # Search in kanji notes
                 matching_notes.extend(self._search_in_notes(
                     self._max_results - len(matching_notes),
-                    col().kanji.all(),
+                    App.Col().Kanji.All(),
                     search_text,
                     kanji_readings=kanji_readings,
                     kanji_romaji_readings=kanji_romaji_readings,
@@ -148,7 +145,7 @@ class NoteSearchDialog(QDialog): # Cannot inherit Slots for some QT internal rea
                 # Search in vocab notes
                 matching_notes.extend(self._search_in_notes(
                     self._max_results - len(matching_notes),
-                    sorted(col().vocab.all(), key=question_length),
+                    sorted(App.Col().Vocab.All(), key=question_length),
                     search_text,
                     vocab_readings=vocab_readings,
                     vocab_romaji_readings=vocab_romaji_readings,
@@ -160,7 +157,7 @@ class NoteSearchDialog(QDialog): # Cannot inherit Slots for some QT internal rea
                 # Search in sentence notes
                 matching_notes.extend(self._search_in_notes(
                     self._max_results - len(matching_notes),
-                    sorted(col().sentences.all(), key=question_length),
+                    sorted(App.Col().Sentences.All(), key=question_length),
                     search_text,
                     question=note_question,
                     answer=note_answer

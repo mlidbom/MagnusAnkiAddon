@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from anki.notes import NoteId
-from jaslib import app
-from jaslib.language_services import kana_utils
-from jaslib.language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-from jaslib.note.note_constants import Builtin, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
+from JAStudio.Core import App
+from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction import TextAnalysis
+from JAStudio.Core.Note import Builtin, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
+from JAStudio.Core.SysUtils import KanaUtils
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
 
@@ -14,9 +14,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from anki.cards import CardId
-    from jaslib.note.jpnote import JPNote
-    from jaslib.note.kanjinote import KanjiNote
-    from jaslib.note.vocabulary.vocabnote import VocabNote
+    from JAStudio.Core.Note import JPNote, KanjiNote, VocabNote
 
 f_question = MyNoteFields.question
 f_reading = NoteFields.Vocab.Reading
@@ -51,7 +49,7 @@ def sentence_search(word: str, exact: bool = False) -> str:
         return f"""(({f_question}:*{form}* OR {field_contains_word(SentenceNoteFields.parsing_result, form)}))"""
 
     if not exact:
-        vocabs = app.col().vocab.with_form(word)
+        vocabs = App.Col().Vocab.WithForm(word)
         if vocabs:
             forms: QSet[str] = query(vocabs).select_many(lambda voc: voc.forms.all_list()).to_set()  # set(ex_sequence.flatten([v.forms.all_list() for v in vocabs]))
             return result + "(" + "　OR ".join([form_query(form) for form in forms]) + ")"
@@ -68,7 +66,7 @@ def potentially_matching_sentences_for_vocab(word: VocabNote) -> str:
         #
         # the above makes sense, but this REALLY slows things down, and off the top of my head I cannot think of cases that are not caught by the conjugator stuff above which results in FAR faster reparsing....
         # the conjugator handles all potential stems for all verbs and adjectives, what's left that might cause the parsing to miss instances of the word?
-        # search_strings += [form[:-1] for form in word.forms.all_list() if (len(form) > 2 or kana_utils.contains_kanji(form)) and kana_utils.character_is_kana(form[-1])]
+        # search_strings += [form[:-1] for form in word.forms.all_list() if (len(form) > 2 or KanaUtils.ContainsKanji(form)) and KanaUtils.CharacterIsKana(form[-1])]
     return f"""{note_sentence} {field_contains_string(f_question, *search_strings)}"""
 
 def notes_lookup(notes: Iterable[JPNote]) -> str:
@@ -80,7 +78,7 @@ def notes_by_id(note_ids: list[NoteId]) -> str:
 def single_vocab_wildcard(form: str) -> str: return f"{note_vocab} ({f_forms}:*{form}* OR {f_reading}:*{form}* OR {f_answer}:*{form}*)"
 
 def single_vocab_by_question_reading_or_answer_exact(search: str) -> str:
-    return f"{note_vocab} ({field_contains_word(f_forms, search)} OR {field_contains_word(f_reading, kana_utils.katakana_to_hiragana(search))} OR {field_contains_word(f_answer, search)})"
+    return f"{note_vocab} ({field_contains_word(f_forms, search)} OR {field_contains_word(f_reading, KanaUtils.KatakanaToHiragana(search))} OR {field_contains_word(f_answer, search)})"
 
 def single_vocab_by_form_exact(string: str) -> str: return f"{note_vocab} {field_contains_word(f_forms, string)}"
 
@@ -123,7 +121,7 @@ def vocabs_lookup_strings_read_card(words: list[str]) -> str:
     return f"""{vocabs_lookup_strings(words)} {card_read}"""
 
 def kanji_with_reading_part(reading_part: str) -> str:
-    hiragana_reading_part = kana_utils.anything_to_hiragana(reading_part)
+    hiragana_reading_part = KanaUtils.AnythingToHiragana(reading_part)
     return f"""note:{NoteTypes.Kanji} ({f_reading_on}:*{hiragana_reading_part}* OR {f_reading_kun}:*{hiragana_reading_part}*)"""
 
 def exact_matches(question: str) -> str:
@@ -142,7 +140,7 @@ def kanji_with_radicals_in_string(search: str) -> str:
     radicals = QSet(search.strip().replace(",", "").replace(" ", ""))
     def kanji_contails_all_radicals(kanji: KanjiNote) -> bool: return not any(rad for rad in radicals if rad not in kanji.get_radicals())
     return (radicals
-            .select_many(lambda radical: app.col().kanji.with_radical(radical))
+            .select_many(lambda radical: App.Col().Kanji.WithRadical(radical))
             .where(kanji_contails_all_radicals)
             .pipe(notes_lookup))
 

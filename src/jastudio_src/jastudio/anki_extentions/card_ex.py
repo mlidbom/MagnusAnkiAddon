@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from anki.dbproxy import Row
     from anki.decks import DeckManager
     from anki.scheduler.v3 import Scheduler  # pyright: ignore[reportMissingTypeStubs]
-    from jaslib.note.jpnote import JPNote
+    from JAStudio.Core.Note import JPNote
 
     from jastudio.anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
 

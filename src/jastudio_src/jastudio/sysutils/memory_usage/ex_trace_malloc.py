@@ -4,7 +4,7 @@ import os
 import tracemalloc
 
 from autoslot import Slots
-from jaslib import mylog
+from JAStudio.Core import MyLog
 from jastudio.ankiutils import app
 from jastudio.sysutils import ex_gc
 
@@ -24,7 +24,7 @@ class ExMalloc(Slots):
         if not tracemalloc.is_tracing():
             ex_gc.collect_on_ui_thread_synchronously()
             tracemalloc.start()
-            mylog.info("Started tracing malloc")
+            MyLog.Info("Started tracing malloc")
             self._last_memory = tracemalloc.get_traced_memory()[0] / 1024 / 1024  # MB
 
     def get_memory_delta(self) -> tuple[float, float]:
@@ -46,7 +46,7 @@ class ExMalloc(Slots):
 
     def log_memory_delta(self, message: str) -> None:
         if self.disabled: return
-        mylog.info(f"{message} | {self.get_memory_delta_message('')}")
+        MyLog.Info(f"{message} | {self.get_memory_delta_message('')}")
 
     def stop(self) -> None:
         if self.disabled: return

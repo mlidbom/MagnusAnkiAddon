@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jaslib import app
+from JAStudio.Core import App
 from jaspythonutils.sysutils.typed import non_optional
 
 from jastudio.ui.menus.menu_utils import shortcutfinger
@@ -10,12 +10,12 @@ from jastudio.ui.menus.menu_utils.ex_qmenu import create_vocab_note_action
 from jastudio.ui.menus.notes.vocab.common import build_create_prefix_postfix_note_menu
 
 if TYPE_CHECKING:
-    from jaslib.note.vocabulary.vocabnote import VocabNote
+    from JAStudio.Core.Note import VocabNote
     from PyQt6.QtWidgets import QMenu
 
 def build_create_note_menu(note_create_menu: QMenu, vocab: VocabNote, selection: str, clipboard: str) -> None:
     def build_forms_menu(clone_to_form_menu: QMenu) -> None:
-        forms_with_no_vocab = [form for form in vocab.forms.all_set() if not any(app.col().vocab.with_question(form))]
+        forms_with_no_vocab = [form for form in vocab.forms.all_set() if not any(App.Col().Vocab.WithQuestion(form))]
 
         def add_clone_to_form_action(title:str, form:str) -> None:
             create_vocab_note_action(clone_to_form_menu, title, lambda: vocab.cloner.clone_to_form(form))

@@ -2,14 +2,14 @@ from __future__ import annotations
 
 import gc
 
-from jaslib import mylog
+from JAStudio.Core import MyLog
 from jastudio.ankiutils import app
 from jastudio.sysutils import app_thread_pool
 
 
 def collect_on_ui_thread_and_display_message(message: str = "Garbage collecting") -> None:
     def collect_with_progress() -> None:
-        mylog.info("collect_with_progress")
+        MyLog.Info("collect_with_progress")
         import gc
         app.get_ui_utils().tool_tip(message, 6000)
         gc.collect()

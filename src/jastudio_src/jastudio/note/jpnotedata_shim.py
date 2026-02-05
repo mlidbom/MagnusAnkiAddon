@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jaslib.note.jpnote_data import JPNoteData
+from JAStudio.Core.Note import JPNoteData
 
 if TYPE_CHECKING:
     from anki.notes import Note
-    from jaslib.note.jpnote import JPNote
+    from JAStudio.Core.Note import JPNote
 
 class JPNoteDataShim:
     @classmethod

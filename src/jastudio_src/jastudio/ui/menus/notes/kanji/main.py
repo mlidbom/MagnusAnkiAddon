@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jaslib import app
+from JAStudio.Core import App
 from jaspythonutils.sysutils import ex_str
 from jaspythonutils.sysutils.typed import non_optional
 
@@ -11,7 +11,7 @@ from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.menu_utils.ex_qmenu import add_lookup_action, add_ui_action
 
 if TYPE_CHECKING:
-    from jaslib.note.kanjinote import KanjiNote
+    from JAStudio.Core.Note import KanjiNote
     from PyQt6.QtWidgets import QMenu
 
 def build_note_menu(note_menu: QMenu, kanji: KanjiNote) -> None:
@@ -19,7 +19,7 @@ def build_note_menu(note_menu: QMenu, kanji: KanjiNote) -> None:
         add_lookup_action(note_lookup_menu, shortcutfinger.home1("Primary Vocabs"), query_builder.vocabs_lookup_strings(kanji.get_primary_vocab()))
         add_lookup_action(note_lookup_menu, shortcutfinger.home2("Vocabs"), query_builder.vocab_with_kanji(kanji))
         add_lookup_action(note_lookup_menu, shortcutfinger.home3("Radicals"), query_builder.notes_lookup(kanji.get_radicals_notes()))
-        add_lookup_action(note_lookup_menu, shortcutfinger.home4("Kanji"), query_builder.notes_lookup(app.col().kanji.with_radical(kanji.get_question())))
+        add_lookup_action(note_lookup_menu, shortcutfinger.home4("Kanji"), query_builder.notes_lookup(App.Col().Kanji.WithRadical(kanji.get_question())))
         add_lookup_action(note_lookup_menu, shortcutfinger.home5("Sentences"), query_builder.sentence_search(kanji.get_question(), exact=True))
 
     build_lookup_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Open"))))

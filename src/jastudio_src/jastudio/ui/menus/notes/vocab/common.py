@@ -8,7 +8,7 @@ from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.menu_utils.ex_qmenu import create_vocab_note_action
 
 if TYPE_CHECKING:
-    from jaslib.note.vocabulary.vocabnote import VocabNote
+    from JAStudio.Core.Note import VocabNote
     from PyQt6.QtWidgets import QMenu
 
 def build_create_prefix_postfix_note_menu(prefix_postfix_note_menu: QMenu, vocab: VocabNote, addendum: str) -> None:

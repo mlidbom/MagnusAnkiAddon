@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jaslib.batches import local_note_updater
+from JAStudio.Core.Batches import LocalNoteUpdater
 from jaspythonutils.sysutils.typed import checked_cast, non_optional
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtGui import QAction
@@ -74,21 +74,21 @@ def build_config_menu(config_menu: QMenu) -> None:
 
 def build_local_menu(local_menu: QMenu) -> None:
     def build_update_menu(update_menu: QMenu) -> None:
-        add_menu_ui_action(update_menu, shortcutfinger.home1("Vocab"), local_note_updater.update_vocab)
-        add_menu_ui_action(update_menu, shortcutfinger.home2("Kanji"), local_note_updater.update_kanji)
-        add_menu_ui_action(update_menu, shortcutfinger.home3("Sentences"), local_note_updater.update_sentences)
-        add_menu_ui_action(update_menu, shortcutfinger.home4("Tag note metadata"), local_note_updater.tag_note_metadata)
-        add_menu_ui_action(update_menu, shortcutfinger.home5("All the above"), local_note_updater.update_all)
-        add_menu_ui_action(update_menu, shortcutfinger.up1("Reparse sentences"), local_note_updater.reparse_all_sentences)
-        add_menu_ui_action(update_menu, shortcutfinger.down1("All the above: Full rebuild"), local_note_updater.full_rebuild)
+        add_menu_ui_action(update_menu, shortcutfinger.home1("Vocab"), LocalNoteUpdater.UpdateVocab)
+        add_menu_ui_action(update_menu, shortcutfinger.home2("Kanji"), LocalNoteUpdater.UpdateKanji)
+        add_menu_ui_action(update_menu, shortcutfinger.home3("Sentences"), LocalNoteUpdater.UpdateSentences)
+        add_menu_ui_action(update_menu, shortcutfinger.home4("Tag note metadata"), LocalNoteUpdater.TagNoteMetadata)
+        add_menu_ui_action(update_menu, shortcutfinger.home5("All the above"), LocalNoteUpdater.UpdateAll)
+        add_menu_ui_action(update_menu, shortcutfinger.up1("Reparse sentences"), LocalNoteUpdater.ReparseAllSentences)
+        add_menu_ui_action(update_menu, shortcutfinger.down1("All the above: Full rebuild"), LocalNoteUpdater.FullRebuild)
 
     build_update_menu(non_optional(local_menu.addMenu(shortcutfinger.home1("Update"))))
 
     import jastudio.batches.local_note_updater
     add_menu_ui_action(local_menu, shortcutfinger.home2("Convert &Immersion Kit sentences"), jastudio.batches.local_note_updater.convert_immersion_kit_sentences)
-    add_menu_ui_action(local_menu, shortcutfinger.home3("Update everyting except reparsing sentences"), local_note_updater.update_all)
-    add_menu_ui_action(local_menu, shortcutfinger.home4("Create vocab notes for parsed words with no vocab notes"), local_note_updater.create_missing_vocab_with_dictionary_entries)
-    add_menu_ui_action(local_menu, shortcutfinger.home5("Regenerate vocab source answers from jamdict"), local_note_updater.regenerate_jamdict_vocab_answers)
+    add_menu_ui_action(local_menu, shortcutfinger.home3("Update everyting except reparsing sentences"), LocalNoteUpdater.UpdateAll)
+    add_menu_ui_action(local_menu, shortcutfinger.home4("Create vocab notes for parsed words with no vocab notes"), LocalNoteUpdater.CreateMissingVocabWithDictionaryEntries)
+    add_menu_ui_action(local_menu, shortcutfinger.home5("Regenerate vocab source answers from jamdict"), LocalNoteUpdater.RegenerateJamdictVocabAnswers)
 
 def init() -> None:
     build_main_menu()
