@@ -28,6 +28,7 @@ static class AppBootstrapper
          Singleton.For<ConfigurationStore>().CreatedBy(() => new ConfigurationStore()),
          Singleton.For<TemporaryServiceCollection>().CreatedBy(() => new TemporaryServiceCollection(container.ServiceLocator)),
          Singleton.For<App>().CreatedBy((TemporaryServiceCollection services) => new App(services)),
+         Singleton.For<Settings>().CreatedBy((TemporaryServiceCollection services) => new Settings(services)),
          Singleton.For<QueryBuilder>().CreatedBy((TemporaryServiceCollection services) => new QueryBuilder(services)),
 
          // Core services

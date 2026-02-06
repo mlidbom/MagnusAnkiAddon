@@ -2,6 +2,9 @@ namespace JAStudio.Core.Configuration;
 
 public class Settings
 {
+    readonly TemporaryServiceCollection? _services;
+    internal Settings(TemporaryServiceCollection services) => _services = services;
+
     private static Settings? _instance;
     private static bool _initialized;
 

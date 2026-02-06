@@ -17,12 +17,14 @@ using JAStudio.Core.ViewModels.KanjiList;
 namespace JAStudio.Core;
 
 //TODO: We should redesign so that we have a sane dependency graph and just use normal dependency injection, but first we need to get rid of all the static classes and this will help us do that
-public class TemporaryServiceCollection(IServiceLocator serviceLocator) : IDisposable
+public class TemporaryServiceCollection : IDisposable
 {
-   readonly IServiceLocator _serviceLocator = serviceLocator;
+   readonly IServiceLocator _serviceLocator;
+   public TemporaryServiceCollection(IServiceLocator serviceLocator) => _serviceLocator = serviceLocator;
 
    public App App => _serviceLocator.Resolve<App>();
    public ConfigurationStore ConfigurationStore => _serviceLocator.Resolve<ConfigurationStore>();
+   public Settings Settings => _serviceLocator.Resolve<Settings>();
    public QueryBuilder QueryBuilder => _serviceLocator.Resolve<QueryBuilder>();
 
    // Core services
