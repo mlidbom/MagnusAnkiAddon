@@ -13,20 +13,18 @@ namespace JAStudio.UI.Menus;
 /// </summary>
 public static class VocabStringMenus
 {
-    public static SpecMenuItem BuildStringMenuSpec(string text, VocabNote vocab)
-    {
-        return SpecMenuItem.Submenu(
-            ShortcutFinger.Home1("Current note actions"),
-            new List<SpecMenuItem>
-            {
-                BuildAddMenuSpec(text, vocab),
-                BuildSetMenuSpec(text, vocab),
-                BuildRemoveMenuSpec(text, vocab),
-                BuildSentenceMenuSpec(text, vocab),
-                BuildCreateCombinedMenuSpec(text, vocab)
-            }
-        );
-    }
+    public static SpecMenuItem BuildStringMenuSpec(string text, VocabNote vocab) =>
+       SpecMenuItem.Submenu(
+          ShortcutFinger.Home1("Current note actions"),
+          new List<SpecMenuItem>
+          {
+             BuildAddMenuSpec(text, vocab),
+             BuildSetMenuSpec(text, vocab),
+             BuildRemoveMenuSpec(text, vocab),
+             BuildSentenceMenuSpec(text, vocab),
+             BuildCreateCombinedMenuSpec(text, vocab)
+          }
+       );
 
     private static SpecMenuItem BuildAddMenuSpec(string text, VocabNote vocab)
     {

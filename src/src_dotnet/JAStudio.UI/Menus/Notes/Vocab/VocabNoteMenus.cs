@@ -261,16 +261,14 @@ public static class VocabNoteMenus
         return SpecMenuItem.Submenu(ShortcutFinger.Up1("Remove"), items);
     }
 
-    public static SpecMenuItem BuildViewMenuSpec()
-    {
-        return SpecMenuItem.Submenu(
-            ShortcutFinger.Home5("View"),
-            new List<SpecMenuItem>
-            {
-                // Empty in Python implementation
-            }
-        );
-    }
+    public static SpecMenuItem BuildViewMenuSpec() =>
+       SpecMenuItem.Submenu(
+          ShortcutFinger.Home5("View"),
+          new List<SpecMenuItem>
+          {
+             // Empty in Python implementation
+          }
+       );
 
     // Action handlers
     static void OnEditVocabFlags(VocabNote vocab)
@@ -285,11 +283,9 @@ public static class VocabNoteMenus
         vocab.User.Answer.Set(meaning);
     }
 
-    static string FormatVocabMeaning(string meaning)
-    {
-        return Core.SysUtils.ExStr.StripHtmlAndBracketMarkupAndNoiseCharacters(
-            meaning.Replace(" SOURCE", "").Replace(", ", "/").Replace(" ", "-").ToLower());
-    }
+    static string FormatVocabMeaning(string meaning) =>
+       Core.SysUtils.ExStr.StripHtmlAndBracketMarkupAndNoiseCharacters(
+          meaning.Replace(" SOURCE", "").Replace(", ", "/").Replace(" ", "-").ToLower());
 
     static void CopyToClipboard(string text)
     {

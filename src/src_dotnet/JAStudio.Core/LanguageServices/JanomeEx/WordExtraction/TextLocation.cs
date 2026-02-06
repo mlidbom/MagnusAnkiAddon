@@ -147,10 +147,7 @@ TextLocation('{CharacterStartIndex}-{CharacterEndIndex}, {Token.Surface} | {Toke
         Shadows.Clear();
     }
 
-    public bool IsNextLocationInflectingWord()
-    {
-        return Next != null && Next.IsInflectingWord();
-    }
+    public bool IsNextLocationInflectingWord() => Next != null && Next.IsInflectingWord();
 
     // todo: having this check here only means that marking a compound as an inflecting word has no effect, and figuring out why things are not working can be quite a pain
     public bool IsInflectingWord()

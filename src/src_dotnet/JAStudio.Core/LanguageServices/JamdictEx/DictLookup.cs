@@ -229,20 +229,11 @@ public class DictLookup
         return lookupResult.Names;
     }
 
-    public static bool MightBeWord(string word)
-    {
-        return App.IsTesting || AllWordForms().Contains(word);
-    }
+    public static bool MightBeWord(string word) => App.IsTesting || AllWordForms().Contains(word);
 
-    public static bool MightBeName(string word)
-    {
-        return App.IsTesting || AllNameForms().Contains(word);
-    }
+    public static bool MightBeName(string word) => App.IsTesting || AllNameForms().Contains(word);
 
-    public static bool MightBeEntry(string word)
-    {
-        return MightBeWord(word) || MightBeName(word);
-    }
+    public static bool MightBeEntry(string word) => MightBeWord(word) || MightBeName(word);
 
     public static bool IsWord(string word)
     {
@@ -254,15 +245,9 @@ public class DictLookup
         return IsWordCache.GetOrAdd(word, IsWordInner);
     }
 
-    static bool IsWordInner(string word)
-    {
-        return LookupWord(word).FoundWords();
-    }
+    static bool IsWordInner(string word) => LookupWord(word).FoundWords();
 
-    public static bool IsDictionaryOrCollectionWord(string word)
-    {
-        return App.Col().Vocab.IsWord(word) || IsWord(word);
-    }
+    public static bool IsDictionaryOrCollectionWord(string word) => App.Col().Vocab.IsWord(word) || IsWord(word);
 
     public static void EnsureLoadedIntoMemory()
     {

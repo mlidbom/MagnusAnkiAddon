@@ -67,17 +67,15 @@ public class JNToken : IAnalysisToken
         internal set => _previous = value;
     }
 
-    public override string ToString()
-    {
-        return string.Concat(
-            "JNToken(",
-            KanaUtils.PadToLength($"'{BaseForm}'", 6),
-            ", ", KanaUtils.PadToLength($"'{Surface}'", 6),
-            ", ", KanaUtils.PadToLength($"'{InflectionType}'", 6),
-            ", ", KanaUtils.PadToLength($"'{InflectedForm}'", 10),
-            ", ", PartsOfSpeech.ToString()
-        );
-    }
+    public override string ToString() =>
+       string.Concat(
+          "JNToken(",
+          KanaUtils.PadToLength($"'{BaseForm}'", 6),
+          ", ", KanaUtils.PadToLength($"'{Surface}'", 6),
+          ", ", KanaUtils.PadToLength($"'{InflectionType}'", 6),
+          ", ", KanaUtils.PadToLength($"'{InflectedForm}'", 10),
+          ", ", PartsOfSpeech.ToString()
+       );
 
     public override bool Equals(object? obj)
     {
@@ -92,10 +90,7 @@ public class JNToken : IAnalysisToken
         return false;
     }
 
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(BaseForm, Surface, InflectionType, InflectedForm, PartsOfSpeech);
-    }
+    public override int GetHashCode() => HashCode.Combine(BaseForm, Surface, InflectionType, InflectedForm, PartsOfSpeech);
 
     // <IAnalysisToken implementation>
     public override bool IsPastTenseStem => Equals(InflectedForm, InflectionForms.Continuative.TaConnection);
@@ -196,13 +191,11 @@ public class JNToken : IAnalysisToken
     public bool IsTeForm =>
         Equals(PartsOfSpeech, JNPOS.Particle.Conjunctive) && TeForms.Contains(Surface);
 
-    public bool IsProgressiveForm()
-    {
-        return Surface == "てる" ||
-               (ProgressiveForms.Contains(Surface) && Previous != null && 
-                Equals(Previous.InflectedForm, InflectionForms.Continuative.TaConnection)) ||
-               (Surface == "いる" && Previous != null && Previous.IsTeForm);
-    }
+    public bool IsProgressiveForm() =>
+       Surface == "てる" ||
+       (ProgressiveForms.Contains(Surface) && Previous != null && 
+        Equals(Previous.InflectedForm, InflectionForms.Continuative.TaConnection)) ||
+       (Surface == "いる" && Previous != null && Previous.IsTeForm);
 
     public bool IsTFormMarker() => Equals(InflectionType, InflectionTypes.Special.Ta);
 

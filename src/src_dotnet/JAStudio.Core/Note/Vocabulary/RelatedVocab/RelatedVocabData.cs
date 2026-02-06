@@ -37,11 +37,9 @@ public class RelatedVocabData
         SeeAlso = seeAlso;
     }
 
-    public override string ToString()
-    {
-        return $"RelatedVocabData(ergative_twin={ErgativeTwin}, derived_from={DerivedFrom}, " +
-               $"perfect_synonyms={string.Join(",", PerfectSynonyms)}, synonyms={string.Join(",", Synonyms)}, " +
-               $"antonyms={string.Join(",", Antonyms)}, confused_with={string.Join(",", ConfusedWith)}, " +
-               $"see_also={string.Join(",", SeeAlso)})";
-    }
+    public override string ToString() =>
+       $"RelatedVocabData(ergative_twin={ErgativeTwin}, derived_from={DerivedFrom}, " +
+       $"perfect_synonyms={string.Join(",", PerfectSynonyms)}, synonyms={string.Join(",", Synonyms)}, " +
+       $"antonyms={string.Join(",", Antonyms)}, confused_with={string.Join(",", ConfusedWith)}, " +
+       $"see_also={string.Join(",", SeeAlso)})";
 }

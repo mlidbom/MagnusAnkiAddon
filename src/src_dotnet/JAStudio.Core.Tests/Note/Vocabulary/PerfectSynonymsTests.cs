@@ -13,10 +13,7 @@ public class PerfectSynonymsTests : IDisposable
 {
     private readonly IDisposable _collectionScope;
 
-    public PerfectSynonymsTests()
-    {
-        _collectionScope = CollectionFactory.InjectEmptyCollection();
-    }
+    public PerfectSynonymsTests() => _collectionScope = CollectionFactory.InjectEmptyCollection();
 
     public void Dispose()
     {

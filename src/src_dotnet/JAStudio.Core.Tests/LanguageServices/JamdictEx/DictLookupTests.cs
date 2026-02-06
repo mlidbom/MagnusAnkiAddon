@@ -14,10 +14,7 @@ public class DictLookupTests : IDisposable
 {
     private readonly IDisposable _collectionScope;
 
-    public DictLookupTests()
-    {
-        _collectionScope = CollectionFactory.InjectEmptyCollection();
-    }
+    public DictLookupTests() => _collectionScope = CollectionFactory.InjectEmptyCollection();
 
     public void Dispose()
     {

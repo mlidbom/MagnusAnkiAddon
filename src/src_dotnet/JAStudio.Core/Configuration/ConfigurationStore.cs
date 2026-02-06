@@ -57,10 +57,7 @@ public class ConfigurationStore
 
    static Dictionary<string, string>? _readingsMappingsOverride;
 
-   public static Dictionary<string, string> GetReadingsMappings()
-   {
-      return _readingsMappingsOverride ?? ReadReadingsMappingsFromFile();
-   }
+   public static Dictionary<string, string> GetReadingsMappings() => _readingsMappingsOverride ?? ReadReadingsMappingsFromFile();
 
    public static void SaveMappings(string mappings)
    {

@@ -8,15 +8,9 @@ public class PreProcessingStage
 {
     private readonly VocabCollection _vocabs;
 
-    public PreProcessingStage(VocabCollection vocabs)
-    {
-        _vocabs = vocabs;
-    }
+    public PreProcessingStage(VocabCollection vocabs) => _vocabs = vocabs;
 
-    public List<IAnalysisToken> PreProcess(List<JNToken> tokens)
-    {
-        return tokens.SelectMany(PreProcessToken).ToList();
-    }
+    public List<IAnalysisToken> PreProcess(List<JNToken> tokens) => tokens.SelectMany(PreProcessToken).ToList();
 
     private List<IAnalysisToken> PreProcessToken(JNToken token)
     {

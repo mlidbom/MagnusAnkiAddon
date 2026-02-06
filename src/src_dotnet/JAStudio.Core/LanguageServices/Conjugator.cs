@@ -81,10 +81,7 @@ public static class Conjugator
                GodanPotentialVerbEndingToDictionaryFormEndings[ending];
     }
 
-    private static bool IsAruVerb(string word)
-    {
-        return AruVerbs.Any(aruEnding => word.EndsWith(aruEnding));
-    }
+    private static bool IsAruVerb(string word) => AruVerbs.Any(word.EndsWith);
 
     public static List<string> GetWordStems(string word, bool isIchidanVerb = false, bool isGodan = false)
     {
@@ -189,20 +186,11 @@ public static class Conjugator
         return word;
     }
 
-    public static List<string> GetVocabStems(VocabNote vocab)
-    {
-        return GetWordStems(vocab.GetQuestion(), vocab.PartsOfSpeech.IsIchidan(), vocab.PartsOfSpeech.IsGodan());
-    }
+    public static List<string> GetVocabStems(VocabNote vocab) => GetWordStems(vocab.GetQuestion(), vocab.PartsOfSpeech.IsIchidan(), vocab.PartsOfSpeech.IsGodan());
 
-    public static string GetIStem(string word, bool isIchidan = false, bool isGodan = false)
-    {
-        return GetStem(word, IStemIndex, isIchidan, isGodan);
-    }
+    public static string GetIStem(string word, bool isIchidan = false, bool isGodan = false) => GetStem(word, IStemIndex, isIchidan, isGodan);
 
-    public static string GetAStem(string word, bool isIchidan = false, bool isGodan = false)
-    {
-        return GetStem(word, AStemIndex, isIchidan, isGodan);
-    }
+    public static string GetAStem(string word, bool isIchidan = false, bool isGodan = false) => GetStem(word, AStemIndex, isIchidan, isGodan);
 
     public static string GetEStem(string word, bool isIchidan = false, bool isGodan = false)
     {
@@ -213,10 +201,7 @@ public static class Conjugator
         return GetStem(word, EStemIndex, isIchidan, isGodan);
     }
 
-    public static string GetTeStem(string word, bool isIchidan = false, bool isGodan = false)
-    {
-        return GetStem(word, TeStemIndex, isIchidan, isGodan);
-    }
+    public static string GetTeStem(string word, bool isIchidan = false, bool isGodan = false) => GetStem(word, TeStemIndex, isIchidan, isGodan);
 
     public static string GetIStemVocab(VocabNote vocab, string form = "")
     {

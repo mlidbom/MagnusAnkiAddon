@@ -23,10 +23,7 @@ public class Synonyms
         _data.Save();
     }
 
-    public List<VocabNote> Notes()
-    {
-        return App.Col().Vocab.WithAnyFormInPreferDisambiguationNameOrExactMatch(Strings().ToList());
-    }
+    public List<VocabNote> Notes() => App.Col().Vocab.WithAnyFormInPreferDisambiguationNameOrExactMatch(Strings().ToList());
 
     public void Add(string synonym)
     {

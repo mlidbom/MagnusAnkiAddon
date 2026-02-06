@@ -20,10 +20,7 @@ public class VocabNotePartsOfSpeech
 
     private VocabNote Vocab => _vocab;
 
-    public string RawStringValue()
-    {
-        return Vocab.GetField(FieldName);
-    }
+    public string RawStringValue() => Vocab.GetField(FieldName);
 
     public void SetRawStringValue(string value)
     {
@@ -35,10 +32,7 @@ public class VocabNotePartsOfSpeech
         SetRawStringValue(string.Join(",", value));
     }
 
-    public HashSet<string> Get()
-    {
-        return POSSetManager.Get(RawStringValue()).ToHashSet();
-    }
+    public HashSet<string> Get() => POSSetManager.Get(RawStringValue()).ToHashSet();
 
     public bool IsIchidan() => Get().Contains(POS.IchidanVerb);
     public bool IsGodan() => Get().Contains(POS.GodanVerb);
@@ -64,10 +58,7 @@ public class VocabNotePartsOfSpeech
         return GaSuruNiSuruEndings.Contains(ending);
     }
 
-    public bool IsUk()
-    {
-        return Vocab.Tags.Contains(Tags.Vocab.UsuallyKanaOnly);
-    }
+    public bool IsUk() => Vocab.Tags.Contains(Tags.Vocab.UsuallyKanaOnly);
 
     public void SetAutomaticallyFromDictionary()
     {
@@ -103,10 +94,7 @@ public class VocabNotePartsOfSpeech
         return AnalysisConstants.CausativeVerbEndings.Contains(compounds[compounds.Count - 1]);
     }
 
-    public bool IsCompleteNaAdjective()
-    {
-        return Vocab.Question.Raw.EndsWith("な") && Get().Contains(POS.NaAdjective);
-    }
+    public bool IsCompleteNaAdjective() => Vocab.Question.Raw.EndsWith("な") && Get().Contains(POS.NaAdjective);
 
     public override string ToString() => RawStringValue();
 }

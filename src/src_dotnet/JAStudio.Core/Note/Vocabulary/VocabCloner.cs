@@ -9,32 +9,17 @@ public class VocabCloner
 {
     private readonly VocabNote _note;
 
-    public VocabCloner(VocabNote note)
-    {
-        _note = note;
-    }
+    public VocabCloner(VocabNote note) => _note = note;
 
     private VocabNote Note => _note;
 
-    public VocabNote PrefixToDictionaryForm(string prefix, string speechType = POS.Expression)
-    {
-        return CreatePostfixPrefixVersion(prefix, speechType, isPrefix: true);
-    }
+    public VocabNote PrefixToDictionaryForm(string prefix, string speechType = POS.Expression) => CreatePostfixPrefixVersion(prefix, speechType, isPrefix: true);
 
-    public VocabNote PrefixToChopped(string prefix, int chopCharacters)
-    {
-        return CreatePostfixPrefixVersion(prefix, POS.Expression, isPrefix: true, chopOffCharacters: chopCharacters);
-    }
+    public VocabNote PrefixToChopped(string prefix, int chopCharacters) => CreatePostfixPrefixVersion(prefix, POS.Expression, isPrefix: true, chopOffCharacters: chopCharacters);
 
-    public string PrefixToChoppedPreview(string formPrefix, int chopCharacters)
-    {
-        return formPrefix + Note.GetQuestion().Substring(chopCharacters);
-    }
+    public string PrefixToChoppedPreview(string formPrefix, int chopCharacters) => formPrefix + Note.GetQuestion().Substring(chopCharacters);
 
-    public VocabNote CreateSuffixVersion(string suffix, string speechType = POS.Expression, bool setCompounds = true, int truncateCharacters = 0)
-    {
-        return CreatePostfixPrefixVersion(suffix, speechType, setCompounds: setCompounds, chopOffCharacters: truncateCharacters);
-    }
+    public VocabNote CreateSuffixVersion(string suffix, string speechType = POS.Expression, bool setCompounds = true, int truncateCharacters = 0) => CreatePostfixPrefixVersion(suffix, speechType, setCompounds: setCompounds, chopOffCharacters: truncateCharacters);
 
     private VocabNote CreatePostfixPrefixVersion(string addendum, string speechType, bool isPrefix = false, bool setCompounds = true, int chopOffCharacters = 0)
     {
@@ -116,45 +101,21 @@ public class VocabCloner
         return clone;
     }
 
-    public VocabNote CreateNaAdjective()
-    {
-        return CreatePostfixPrefixVersion("な", "na-adjective");
-    }
+    public VocabNote CreateNaAdjective() => CreatePostfixPrefixVersion("な", "na-adjective");
 
-    public VocabNote CreateNoAdjective()
-    {
-        return CreatePostfixPrefixVersion("の", "expression, no-adjective");
-    }
+    public VocabNote CreateNoAdjective() => CreatePostfixPrefixVersion("の", "expression, no-adjective");
 
-    public VocabNote CreateNiAdverb()
-    {
-        return CreatePostfixPrefixVersion("に", "adverb");
-    }
+    public VocabNote CreateNiAdverb() => CreatePostfixPrefixVersion("に", "adverb");
 
-    public VocabNote CreateToAdverb()
-    {
-        return CreatePostfixPrefixVersion("と", "to-adverb");
-    }
+    public VocabNote CreateToAdverb() => CreatePostfixPrefixVersion("と", "to-adverb");
 
-    public VocabNote CreateTePrefixedWord()
-    {
-        return CreatePostfixPrefixVersion("て", "auxiliary", isPrefix: true);
-    }
+    public VocabNote CreateTePrefixedWord() => CreatePostfixPrefixVersion("て", "auxiliary", isPrefix: true);
 
-    public VocabNote CreateOPrefixedWord()
-    {
-        return CreatePostfixPrefixVersion("お", Note.PartsOfSpeech.RawStringValue(), isPrefix: true);
-    }
+    public VocabNote CreateOPrefixedWord() => CreatePostfixPrefixVersion("お", Note.PartsOfSpeech.RawStringValue(), isPrefix: true);
 
-    public VocabNote CreateNSuffixedWord()
-    {
-        return CreatePostfixPrefixVersion("ん", POS.Expression);
-    }
+    public VocabNote CreateNSuffixedWord() => CreatePostfixPrefixVersion("ん", POS.Expression);
 
-    public VocabNote CreateKaSuffixedWord()
-    {
-        return CreatePostfixPrefixVersion("か", POS.Expression);
-    }
+    public VocabNote CreateKaSuffixedWord() => CreatePostfixPrefixVersion("か", POS.Expression);
 
     public VocabNote CreateSuruVerb(bool shimasu = false)
     {
@@ -182,15 +143,9 @@ public class VocabCloner
 
     public VocabNote CreateShimasuVerb() => CreateSuruVerb(shimasu: true);
 
-    public VocabNote CreateKuForm()
-    {
-        return CreatePostfixPrefixVersion("く", "adverb", setCompounds: true, chopOffCharacters: 1);
-    }
+    public VocabNote CreateKuForm() => CreatePostfixPrefixVersion("く", "adverb", setCompounds: true, chopOffCharacters: 1);
 
-    public VocabNote CreateSaForm()
-    {
-        return CreatePostfixPrefixVersion("さ", POS.Noun, setCompounds: true, chopOffCharacters: 1);
-    }
+    public VocabNote CreateSaForm() => CreatePostfixPrefixVersion("さ", POS.Noun, setCompounds: true, chopOffCharacters: 1);
 
     public VocabNote CloneToDerivedForm(string formSuffix, Func<VocabNote, string, string> createFormRoot)
     {
@@ -206,10 +161,7 @@ public class VocabCloner
         return clone;
     }
 
-    private string CreatePreviewForm(string formSuffix, Func<VocabNote, string, string> createFormRoot)
-    {
-        return createFormRoot(Note, Note.GetQuestion()) + formSuffix;
-    }
+    private string CreatePreviewForm(string formSuffix, Func<VocabNote, string, string> createFormRoot) => createFormRoot(Note, Note.GetQuestion()) + formSuffix;
 
     public VocabNote SuffixToAStem(string formSuffix) => CloneToDerivedForm(formSuffix, Conjugator.GetAStemVocab);
     public string SuffixToAStemPreview(string formSuffix) => CreatePreviewForm(formSuffix, Conjugator.GetAStemVocab);
@@ -219,10 +171,7 @@ public class VocabCloner
         return CloneToDerivedForm(formSuffix, (it, form) => form.Substring(0, form.Length - chopCharacters));
     }
 
-    public string SuffixToChoppedPreview(string formSuffix, int chopCharacters)
-    {
-        return Note.GetQuestion().Substring(0, Note.GetQuestion().Length - chopCharacters) + formSuffix;
-    }
+    public string SuffixToChoppedPreview(string formSuffix, int chopCharacters) => Note.GetQuestion().Substring(0, Note.GetQuestion().Length - chopCharacters) + formSuffix;
 
     public VocabNote SuffixToIStem(string formSuffix) => CloneToDerivedForm(formSuffix, Conjugator.GetIStemVocab);
     public string SuffixToIStemPreview(string formSuffix) => CreatePreviewForm(formSuffix, Conjugator.GetIStemVocab);

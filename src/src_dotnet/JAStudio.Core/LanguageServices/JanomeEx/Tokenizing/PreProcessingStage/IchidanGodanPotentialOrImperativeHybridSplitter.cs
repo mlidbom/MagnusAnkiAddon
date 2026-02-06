@@ -192,10 +192,7 @@ public static class IchidanGodanPotentialOrImperativeHybridSplitter
         return null;
     }
 
-    public static bool IsIchidanHidingGodan(VocabNote vocab)
-    {
-        return TryGetGodanHiddenByIchidan(vocab) != null;
-    }
+    public static bool IsIchidanHidingGodan(VocabNote vocab) => TryGetGodanHiddenByIchidan(vocab) != null;
 
     public static WordInfoEntry? TryGetGodanHiddenByIchidan(VocabNote vocab)
     {

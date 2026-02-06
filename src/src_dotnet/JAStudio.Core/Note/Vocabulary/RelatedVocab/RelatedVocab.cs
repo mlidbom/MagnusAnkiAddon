@@ -45,10 +45,7 @@ public class RelatedVocab
 
     public HashSet<int> InCompoundIds => _inCompoundIds.Value;
 
-    public List<VocabNote> InCompounds()
-    {
-        return App.Col().Vocab.WithCompoundPart(_vocab.Question.DisambiguationName);
-    }
+    public List<VocabNote> InCompounds() => App.Col().Vocab.WithCompoundPart(_vocab.Question.DisambiguationName);
 
     public HashSet<VocabNote> HomophonesNotes()
     {
@@ -65,13 +62,7 @@ public class RelatedVocab
             .ToHashSet();
     }
 
-    private HashSet<KanjiNote> MainFormKanjiNotes
-    {
-        get
-        {
-            return App.Col().Kanji.WithAnyKanjiIn(_vocab.Kanji.ExtractMainFormKanji()).ToHashSet();
-        }
-    }
+    private HashSet<KanjiNote> MainFormKanjiNotes => App.Col().Kanji.WithAnyKanjiIn(_vocab.Kanji.ExtractMainFormKanji()).ToHashSet();
 
     public HashSet<JPNote> GetDirectDependencies()
     {

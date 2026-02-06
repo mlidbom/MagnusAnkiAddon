@@ -23,10 +23,7 @@ public class WordExclusionSet
         return new WordExclusionSet(() => { }, new List<WordExclusion>());
     }
 
-    public static WordExclusionSet Empty(Action saveCallback)
-    {
-        return new WordExclusionSet(saveCallback, new List<WordExclusion>());
-    }
+    public static WordExclusionSet Empty(Action saveCallback) => new(saveCallback, new List<WordExclusion>());
 
     public bool IsEmpty() => !_exclusions.Any();
 

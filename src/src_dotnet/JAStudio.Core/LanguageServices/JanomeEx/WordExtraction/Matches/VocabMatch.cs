@@ -123,10 +123,7 @@ public sealed class VocabMatch : Match
              .Any(failure => failure != null);
    }
 
-   protected override IEnumerable<MatchRequirement?> CreateDynamicDisplayRequirements()
-   {
-      return [ForbidsHasDisplayedOverlappingFollowingCompound.ApplyTo(VocabInspector)];
-   }
+   protected override IEnumerable<MatchRequirement?> CreateDynamicDisplayRequirements() => [ForbidsHasDisplayedOverlappingFollowingCompound.ApplyTo(VocabInspector)];
 
    protected override List<FailedMatchRequirement> CreatePrimaryValidityFailures()
    {
@@ -149,10 +146,7 @@ public sealed class VocabMatch : Match
       return failure != null ? [failure] : [];
    }
 
-   protected override bool IsInterdependentlyValid()
-   {
-      return ForbidsAnotherMatchIsHigherPriority.ApplyTo(VocabInspector) == null;
-   }
+   protected override bool IsInterdependentlyValid() => ForbidsAnotherMatchIsHigherPriority.ApplyTo(VocabInspector) == null;
 
    public VocabNoteMatchingConfiguration MatchingConfiguration => Vocab.MatchingConfiguration;
    public override string MatchForm => Vocab.GetQuestion();

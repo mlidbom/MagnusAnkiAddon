@@ -109,10 +109,7 @@ public abstract class Match
             .Any(failure => failure != null);
     }
 
-    protected virtual IEnumerable<MatchRequirement?> CreateDynamicDisplayRequirements()
-    {
-        return [];
-    }
+    protected virtual IEnumerable<MatchRequirement?> CreateDynamicDisplayRequirements() => [];
 
     public abstract string Answer { get; }
     public abstract List<string> Readings { get; }
@@ -135,10 +132,7 @@ public abstract class Match
         }
     }
 
-    bool IsValidInternal()
-    {
-        return IsValidInternalProperty || IsHighlighted;
-    }
+    bool IsValidInternal() => IsValidInternalProperty || IsHighlighted;
 
     public bool IsPrimarilyValidProperty
     {

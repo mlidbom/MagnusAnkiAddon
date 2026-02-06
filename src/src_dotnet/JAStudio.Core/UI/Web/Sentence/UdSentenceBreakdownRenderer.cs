@@ -15,12 +15,10 @@ public class UdSentenceBreakdownRenderer
     readonly TemporaryServiceCollection _services;
     internal UdSentenceBreakdownRenderer(TemporaryServiceCollection services) => _services = services;
 
-    private static string FormatReason(string reason)
-    {
-        return reason.Contains("configured") 
-            ? $"""<span class="configured">{reason}</span>""" 
-            : reason;
-    }
+    private static string FormatReason(string reason) =>
+       reason.Contains("configured") 
+          ? $"""<span class="configured">{reason}</span>""" 
+          : reason;
 
     private static string BuildInvalidForDisplaySpan(MatchViewModel viewModel)
     {
@@ -81,17 +79,12 @@ public class UdSentenceBreakdownRenderer
         { "hide_all_compounds", "HAC" }
     };
 
-    private static string GetToggleAbbreviation(string toggle)
-    {
-        return ToggleAbbreviations.TryGetValue(toggle, out var abbr) 
-            ? abbr 
-            : $"MISSING_ABBREVIATION:{toggle}";
-    }
+    private static string GetToggleAbbreviation(string toggle) =>
+       ToggleAbbreviations.TryGetValue(toggle, out var abbr) 
+          ? abbr 
+          : $"MISSING_ABBREVIATION:{toggle}";
 
-    private static string RenderToggle(ConfigurationValue<bool> toggle)
-    {
-        return $"""<span class="toggle {toggle.Name}" title="{toggle.Title}">{GetToggleAbbreviation(toggle.Name)}</span>  """;
-    }
+    private static string RenderToggle(ConfigurationValue<bool> toggle) => $"""<span class="toggle {toggle.Name}" title="{toggle.Title}">{GetToggleAbbreviation(toggle.Name)}</span>  """;
 
     private static string RenderToggleList()
     {
@@ -101,15 +94,13 @@ public class UdSentenceBreakdownRenderer
                 .Select(RenderToggle));
     }
 
-    private static string RenderViewSettings()
-    {
-        return $"""
-            <span class="view_settings">
-                <span class="view_settings_title">Settings:</span>
-                {RenderToggleList()}
-            </span>
-            """;
-    }
+    private static string RenderViewSettings() =>
+       $"""
+        <span class="view_settings">
+            <span class="view_settings_title">Settings:</span>
+            {RenderToggleList()}
+        </span>
+        """;
 
     public static string RenderSentenceAnalysis(SentenceNote note)
     {

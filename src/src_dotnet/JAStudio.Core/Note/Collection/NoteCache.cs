@@ -35,10 +35,7 @@ public abstract class NoteCacheBase<TNote> where TNote : JPNote
         _updateListeners.Add(listener);
     }
 
-    public TNote? WithIdOrNone(int noteId)
-    {
-        return _byId.TryGetValue(noteId, out var note) ? note : null;
-    }
+    public TNote? WithIdOrNone(int noteId) => _byId.TryGetValue(noteId, out var note) ? note : null;
 
     public void AnkiNoteUpdated(TNote note)
     {
@@ -108,15 +105,9 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
     {
     }
 
-    public List<TNote> All()
-    {
-        return _byId.Values.ToList();
-    }
+    public List<TNote> All() => _byId.Values.ToList();
 
-    public List<TNote> WithQuestion(string question)
-    {
-        return _byQuestion.TryGetValue(question, out var notes) ? notes : new List<TNote>();
-    }
+    public List<TNote> WithQuestion(string question) => _byQuestion.TryGetValue(question, out var notes) ? notes : new List<TNote>();
 
     protected abstract TSnapshot CreateSnapshot(TNote note);
     protected abstract void InheritorRemoveFromCache(TNote note, TSnapshot snapshot);

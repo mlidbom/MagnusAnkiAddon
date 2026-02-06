@@ -30,10 +30,7 @@ public sealed class DictionaryMatch : Match
 
     public DictEntry DictionaryEntry { get; }
 
-    public DictionaryMatch(CandidateWordVariant wordVariant, DictEntry dictionaryEntry) : base(wordVariant)
-    {
-        DictionaryEntry = dictionaryEntry;
-    }
+    public DictionaryMatch(CandidateWordVariant wordVariant, DictEntry dictionaryEntry) : base(wordVariant) => DictionaryEntry = dictionaryEntry;
 
     public override string Answer => DictionaryEntry.FormatAnswer();
     public override List<string> Readings => DictionaryEntry.KanaFormsText();
