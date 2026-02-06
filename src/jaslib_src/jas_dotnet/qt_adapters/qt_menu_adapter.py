@@ -17,7 +17,6 @@ if TYPE_CHECKING:
 
     from JAStudio.UI.Menus.UIAgnosticMenuStructure import SpecMenuItem
 
-
 def to_qmenu(spec: SpecMenuItem, parent: QMenu | None = None) -> QMenu:
     if spec.IsSeparator:
         raise ValueError("to_qmenu should not be called on separators - parent handles them")
@@ -47,7 +46,6 @@ def to_qmenu(spec: SpecMenuItem, parent: QMenu | None = None) -> QMenu:
                 menu.addAction(action)  # pyright: ignore [reportUnknownMemberType]
 
     return menu
-
 
 def to_qmenu_list(specs: Iterable[SpecMenuItem]) -> list[QMenu]:
     result: list[QMenu] = []
