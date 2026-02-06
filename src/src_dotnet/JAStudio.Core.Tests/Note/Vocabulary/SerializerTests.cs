@@ -9,9 +9,7 @@ namespace JAStudio.Core.Tests.Note.Vocabulary;
 
 public class RelatedVocabDataSerializerTests : TestStartingWithEmptyCollection
 {
-   private readonly RelatedVocabDataSerializer _serializer;
-
-   public RelatedVocabDataSerializerTests() => _serializer = RelatedVocabData.Serializer();
+   private readonly RelatedVocabDataSerializer _serializer = RelatedVocabData.Serializer();
 
    [Fact]
    public void EmptyObjectSerializesToEmptyString()
@@ -71,15 +69,9 @@ public class RelatedVocabDataSerializerTests : TestStartingWithEmptyCollection
    }
 }
 
-public class VocabNoteMatchingRulesSerializerTests
+public class VocabNoteMatchingRulesSerializerTests : TestStartingWithEmptyCollection
 {
-   private readonly VocabNoteMatchingRulesSerializer _serializer;
-
-   public VocabNoteMatchingRulesSerializerTests()
-   {
-      TestApp.Reset();
-      _serializer = new VocabNoteMatchingRulesSerializer();
-   }
+   private readonly VocabNoteMatchingRulesSerializer _serializer = new();
 
    [Fact]
    public void EmptyObjectSerializesToEmptyString()

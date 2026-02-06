@@ -12,7 +12,6 @@ public sealed class CandidateWordVariant
 {
     private readonly LazyCE<DictLookupResult> _dictLookup;
     private bool _completedValidityAnalysis;
-    private bool _completedVisibilityAnalysis;
     private bool _isValid;
     private IEnumerable<Match> _validMatches;
     private List<Match> _displayMatches;
@@ -78,7 +77,6 @@ public sealed class CandidateWordVariant
     public void RunVisibilityAnalysis()
     {
         _displayMatches = OnceValidityAnalyzed.Matches.Where(match => match.IsDisplayed).ToList();
-        _completedVisibilityAnalysis = true;
     }
 
     public int StartIndex => Word.StartLocation.CharacterStartIndex;

@@ -35,7 +35,6 @@ public abstract class Match
     private bool? _isValidCache;
     private int? _startIndexCache;
     private bool? _staticDisplayRequirementsFulfilledCache;
-    private bool? _isInterdependentlyValidCache;
     private List<MatchRequirement>? _displayRequirementsCache;
 
     protected Match(CandidateWordVariant wordVariant)

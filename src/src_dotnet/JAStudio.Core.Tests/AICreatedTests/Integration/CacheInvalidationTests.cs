@@ -4,13 +4,8 @@ using Xunit;
 
 namespace JAStudio.Core.Tests.AICreatedTests.Integration;
 
-public class CacheInvalidationTests : IAIGeneratedTestClass
+public class CacheInvalidationTests : TestStartingWithEmptyCollection, IAIGeneratedTestClass
 {
-    public CacheInvalidationTests()
-    {
-        TestApp.Reset();
-    }
-
     [Fact]
     public void UpdatingVocabQuestion_UpdatesCache()
     {
