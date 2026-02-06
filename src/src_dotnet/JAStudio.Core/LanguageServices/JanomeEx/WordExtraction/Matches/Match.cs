@@ -17,7 +17,7 @@ public abstract class Match
         ForbidsIsGodanPotentialInflectionWithBase.ApplyTo,
         ForbidsIsGodanImperativeInflectionWithBase.ApplyTo,
         ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb.ApplyTo,
-        new Forbids("compound_ending_on_dictionary_form_where_surface_differs_from_base", 
+        new Forbids("compound_ending_on_dictionary_form_where_surface_differs_from_base",
             it => it.IsCompoundEndingOnDictionaryFormWhereSurfaceDiffersFromBase).ApplyTo,
     };
 
@@ -79,7 +79,7 @@ public abstract class Match
     protected virtual bool IsInterdependentlyValid() => true;
 
     protected virtual List<FailedMatchRequirement> CreateInterdependentValidityFailures() => new();
-    
+
     protected virtual List<FailedMatchRequirement> CreateStaticDisplayRequirementFailures()
     {
         return MatchStaticDisplayRequirements
@@ -179,10 +179,10 @@ public abstract class Match
     }
 
     protected virtual int StartIndexInternal() => Variant.StartIndex;
-    
-    public bool IsValidForDisplay => 
-        IsValid && 
-        StaticDisplayRequirementsFulfilled && 
+
+    public bool IsValidForDisplay =>
+        IsValid &&
+        StaticDisplayRequirementsFulfilled &&
         DynamicDisplayRequirements.All(requirement => requirement.IsFulfilled);
 
     public bool IsEmergencyDisplayed =>
@@ -193,13 +193,13 @@ public abstract class Match
         !IsShadowed &&
         !HasValidForDisplaySibling;
 
-    private bool HasValidForDisplaySibling => 
+    private bool HasValidForDisplaySibling =>
         Variant.Matches.Any(otherMatch => otherMatch != this && otherMatch.IsValidForDisplay);
-    
+
     private bool BaseIsValidWord => Word.BaseVariant != null && Word.BaseVariant.HasValidMatch;
     private bool SurfaceIsSeeminglyValidSingleToken => Word.HasSeeminglyValidSingleToken;
     public bool IsShadowed => Word.IsShadowed;
-    
+
     public virtual List<string> FailureReasons =>
         !IsValid
             ? CreatePrimaryValidityFailures().Select(r => r.FailureReason).Concat(
@@ -215,7 +215,7 @@ public abstract class Match
 
     public WordExclusion ToExclusion() => WordExclusion.AtIndex(ExclusionForm, StartIndex);
 
-    public override string ToString() => 
+    public override string ToString() =>
         $"{ParsedForm}, {MatchForm[..Math.Min(10, MatchForm.Length)]}: " +
         $"failure_reasons: {string.Join(" ", FailureReasons) ?? "None"} " +
         $"## hiding_reasons: {string.Join(" ", HidingReasons) ?? "None"}";

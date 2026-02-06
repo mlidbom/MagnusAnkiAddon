@@ -39,7 +39,7 @@ public class CacheInvalidationTests : TestStartingWithEmptyCollection, IAIGenera
         // Assert - Forms are not questions, so WithQuestion should NOT find it
         var results = App.Col().Vocab.WithQuestion("taberu-form");
         Assert.Empty(results);
-        
+
         // But it should still be findable by its actual question
         var byQuestion = App.Col().Vocab.WithQuestion("\u98df\u3079\u308b");
         Assert.Single(byQuestion);
@@ -51,7 +51,7 @@ public class CacheInvalidationTests : TestStartingWithEmptyCollection, IAIGenera
         // Arrange
         var vocab = VocabNote.Create("食べる", "to eat", "たべる");
         vocab.Forms.Add("食う");
-        
+
         // Verify forms are stored
         Assert.Contains("食う", vocab.Forms.AllSet());
 
@@ -60,7 +60,7 @@ public class CacheInvalidationTests : TestStartingWithEmptyCollection, IAIGenera
 
         // Assert - Form should be removed
         Assert.DoesNotContain("食う", vocab.Forms.AllSet());
-        
+
         // But still findable by its question
         var results = App.Col().Vocab.WithQuestion("食べる");
         Assert.Single(results);

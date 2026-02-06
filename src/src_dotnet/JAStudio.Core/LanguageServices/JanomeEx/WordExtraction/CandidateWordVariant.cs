@@ -37,7 +37,7 @@ public sealed class CandidateWordVariant
     }
 
     public bool IsSurface => Form == Word.SurfaceForm;
-    
+
     public bool VocabsControlMatchStatus =>
         FormOwningVocabMatches.Any() ||
         (VocabMatches.Any() && !_dictLookup.Value.FoundWords() && Word.IsCompound);
@@ -82,10 +82,10 @@ public sealed class CandidateWordVariant
     public int StartIndex => Word.StartLocation.CharacterStartIndex;
     public SentenceConfiguration Configuration => Word.Analysis.Configuration;
     public bool IsKnownWord => VocabMatches.Count > 0 || _dictLookup.Value.FoundWords();
-    
-    private List<VocabMatch> FormOwningVocabMatches => 
+
+    private List<VocabMatch> FormOwningVocabMatches =>
         VocabMatches.Where(vm => vm.Vocab.Forms.IsOwnedForm(Form)).ToList();
-    
+
     public bool HasValidMatch => OnceValidityAnalyzed._isValid;
     public IEnumerable<Match> ValidMatches => OnceValidityAnalyzed._validMatches;
     public List<Match> DisplayMatches => OnceVisibilityAnalyzed._displayMatches;

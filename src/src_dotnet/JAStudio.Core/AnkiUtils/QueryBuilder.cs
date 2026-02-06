@@ -21,7 +21,7 @@ public class QueryBuilder
    {
       _services = services;
    }
-   
+
     private const string ExcludedDeckSubstring = "*Excluded*";
 
     /// <summary>
@@ -265,7 +265,7 @@ public class QueryBuilder
     public static string KanjiWithRadicalsInString(string search)
     {
         var radicals = search.Trim().Replace(",", "").Replace(" ", "").ToCharArray().ToHashSet();
-        
+
         bool KanjiContainsAllRadicals(KanjiNote kanji)
         {
             var kanjiRadicals = kanji.GetRadicals().ToHashSet();
@@ -310,20 +310,20 @@ public class QueryBuilder
             var dictionaryForms = TextAnalysis.FromText(text).AllWordsStrings();
             if (!dictionaryForms.Any())
                 return "";
-                
+
             var clauses = dictionaryForms.Select(VocabClause);
             return $"({Builtin.Note}:{NoteTypes.Vocab} ({string.Join(" OR ", clauses)})) OR ";
         }
-        
+
         string CreateKanjiClause()
         {
             var kanjiClauses = vocab.GetQuestion().Select(c => $"{MyNoteFields.Question}:{c}");
             return $"{Builtin.Note}:{NoteTypes.Kanji} ( {string.Join(" OR ", kanjiClauses)} )";
         }
-        
+
         var vocabVocabClause = CreateVocabClause(vocab.GetQuestion());
         var kanjiClause = CreateKanjiClause();
-        
+
         return $"{vocabVocabClause}({kanjiClause})";
     }
 }

@@ -130,12 +130,12 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
         var cached = _snapshotById[id];
         _snapshotById.Remove(id);
         _byId.Remove(id);
-        
+
         if (_byQuestion.TryGetValue(cached.Question, out var questionList))
         {
             questionList.Remove(note);
         }
-        
+
         InheritorRemoveFromCache(note, cached);
     }
 
@@ -147,13 +147,13 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
         var snapshot = CreateSnapshot(note);
         _snapshotById[id] = snapshot;
         _byId[id] = note;
-        
+
         if (!_byQuestion.ContainsKey(snapshot.Question))
         {
             _byQuestion[snapshot.Question] = new List<TNote>();
         }
         _byQuestion[snapshot.Question].Add(note);
-        
+
         InheritorAddToCache(note, snapshot);
     }
 }

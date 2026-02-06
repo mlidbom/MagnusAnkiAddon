@@ -10,7 +10,7 @@ public interface IAnkiCardOperations
 {
     /// <summary>Suspend all cards for the given note ID.</summary>
     void SuspendAllCardsForNote(int noteId);
-    
+
     /// <summary>Unsuspend all cards for the given note ID.</summary>
     void UnsuspendAllCardsForNote(int noteId);
 }
@@ -25,7 +25,7 @@ public class AnkiCardOperations
     internal AnkiCardOperations(TemporaryServiceCollection services) => _services = services;
 
     private static IAnkiCardOperations? _implementation;
-    
+
     /// <summary>
     /// Set the implementation of card operations (called by JAStudio.UI during initialization).
     /// </summary>
@@ -33,7 +33,7 @@ public class AnkiCardOperations
     {
         _implementation = implementation;
     }
-    
+
     /// <summary>Suspend all cards for the given note ID.</summary>
     public static void SuspendAllCardsForNote(int noteId)
     {
@@ -42,10 +42,10 @@ public class AnkiCardOperations
             throw new InvalidOperationException(
                 "AnkiCardOperations.SetImplementation() must be called before using card operations");
         }
-        
+
         _implementation.SuspendAllCardsForNote(noteId);
     }
-    
+
     /// <summary>Unsuspend all cards for the given note ID.</summary>
     public static void UnsuspendAllCardsForNote(int noteId)
     {
@@ -54,7 +54,7 @@ public class AnkiCardOperations
             throw new InvalidOperationException(
                 "AnkiCardOperations.SetImplementation() must be called before using card operations");
         }
-        
+
         _implementation.UnsuspendAllCardsForNote(noteId);
     }
 }

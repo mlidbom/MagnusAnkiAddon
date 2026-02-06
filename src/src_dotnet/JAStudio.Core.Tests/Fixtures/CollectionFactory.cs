@@ -22,7 +22,7 @@ public static class CollectionFactory
    public static IDisposable InjectCollectionWithSelectData(DataNeeded data)
    {
       TestApp.Reset();
-      if(data == DataNeeded.None) 
+      if(data == DataNeeded.None)
          return new CollectionScope();
 
       if(data.HasFlag(DataNeeded.Kanji))

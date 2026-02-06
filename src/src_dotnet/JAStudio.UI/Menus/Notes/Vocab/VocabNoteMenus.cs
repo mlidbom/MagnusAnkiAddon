@@ -50,18 +50,18 @@ public static class VocabNoteMenus
     {
         var items = new List<SpecMenuItem>
         {
-            SpecMenuItem.Command(ShortcutFinger.Home1("Forms"), 
+            SpecMenuItem.Command(ShortcutFinger.Home1("Forms"),
                 () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(vocab.Forms.AllListNotes()))),
-            SpecMenuItem.Command(ShortcutFinger.Home2("Compound parts"), 
+            SpecMenuItem.Command(ShortcutFinger.Home2("Compound parts"),
                 () => AnkiFacade.ExecuteLookup(QueryBuilder.VocabsLookupStrings(vocab.CompoundParts.All()))),
-            SpecMenuItem.Command(ShortcutFinger.Home3("In compounds"), 
+            SpecMenuItem.Command(ShortcutFinger.Home3("In compounds"),
                 () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(vocab.RelatedNotes.InCompounds()))),
-            SpecMenuItem.Command(ShortcutFinger.Home4("Synonyms"), 
+            SpecMenuItem.Command(ShortcutFinger.Home4("Synonyms"),
                 () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(vocab.RelatedNotes.Synonyms.Notes()))),
-            SpecMenuItem.Command(ShortcutFinger.Home5("See also"), 
+            SpecMenuItem.Command(ShortcutFinger.Home5("See also"),
                 () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(vocab.RelatedNotes.SeeAlso.Notes()))),
             BuildOpenHomonymsMenuSpec(vocab),
-            SpecMenuItem.Command(ShortcutFinger.Up2("Dependencies"), 
+            SpecMenuItem.Command(ShortcutFinger.Up2("Dependencies"),
                 () => AnkiFacade.ExecuteLookup(QueryBuilder.VocabDependenciesLookupQuery(vocab)))
         };
 
@@ -88,17 +88,17 @@ public static class VocabNoteMenus
     {
         var items = new List<SpecMenuItem>
         {
-            SpecMenuItem.Command(ShortcutFinger.Home1("Sentences I'm Studying"), 
+            SpecMenuItem.Command(ShortcutFinger.Home1("Sentences I'm Studying"),
                 () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(vocab.Sentences.Studying()))),
-            SpecMenuItem.Command(ShortcutFinger.Home2("Sentences"), 
+            SpecMenuItem.Command(ShortcutFinger.Home2("Sentences"),
                 () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(vocab.Sentences.All()))),
-            SpecMenuItem.Command(ShortcutFinger.Home3("Sentences with primary form"), 
+            SpecMenuItem.Command(ShortcutFinger.Home3("Sentences with primary form"),
                 () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(vocab.Sentences.WithPrimaryForm()))),
-            SpecMenuItem.Command(ShortcutFinger.Home4("Sentences with this word highlighted"), 
+            SpecMenuItem.Command(ShortcutFinger.Home4("Sentences with this word highlighted"),
                 () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(vocab.Sentences.UserHighlighted()))),
-            SpecMenuItem.Command(ShortcutFinger.Home5("Potentially matching sentences"), 
+            SpecMenuItem.Command(ShortcutFinger.Home5("Potentially matching sentences"),
                 () => AnkiFacade.ExecuteLookup(QueryBuilder.PotentiallyMatchingSentencesForVocab(vocab))),
-            SpecMenuItem.Command(ShortcutFinger.Up1("Marked invalid in sentences"), 
+            SpecMenuItem.Command(ShortcutFinger.Up1("Marked invalid in sentences"),
                 () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(vocab.Sentences.InvalidIn())))
         };
 
@@ -108,7 +108,7 @@ public static class VocabNoteMenus
     private static SpecMenuItem BuildOpenKanjiMenuSpec(VocabNote vocab)
     {
         var query = QueryBuilder.KanjiInString(vocab.GetQuestion());
-        return SpecMenuItem.Command(ShortcutFinger.Home3("Kanji"), 
+        return SpecMenuItem.Command(ShortcutFinger.Home3("Kanji"),
             () => AnkiFacade.ExecuteLookup(query));
     }
 
@@ -122,7 +122,7 @@ public static class VocabNoteMenus
         if (!ergativeTwinNotes.Any())
             return null;
 
-        return SpecMenuItem.Command(ShortcutFinger.Home4("Ergative twin"), 
+        return SpecMenuItem.Command(ShortcutFinger.Home4("Ergative twin"),
             () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(ergativeTwinNotes)));
     }
 
@@ -181,7 +181,7 @@ public static class VocabNoteMenus
             SpecMenuItem.Command(ShortcutFinger.Home2("て-form"), () => vocab.Cloner.CreateTeForm()),
             SpecMenuItem.Command(ShortcutFinger.Home3("た-form"), () => vocab.Cloner.CreateTaForm()),
             SpecMenuItem.Command(ShortcutFinger.Home4("ない-form"), () => vocab.Cloner.CreateNaiForm()),
-            SpecMenuItem.Command(ShortcutFinger.Home5($"え-stem/godan-imperative {vocab.Cloner.SuffixToEStemPreview("")}"), 
+            SpecMenuItem.Command(ShortcutFinger.Home5($"え-stem/godan-imperative {vocab.Cloner.SuffixToEStemPreview("")}"),
                 () => vocab.Cloner.SuffixToEStem("")),
             SpecMenuItem.Command(ShortcutFinger.Up1("ば-form"), () => vocab.Cloner.CreateBaForm()),
             SpecMenuItem.Command(ShortcutFinger.Up2("{receptive/passive}-form"), () => vocab.Cloner.CreateReceptiveForm()),
@@ -214,9 +214,9 @@ public static class VocabNoteMenus
         {
             SpecMenuItem.Command(ShortcutFinger.Home1("Question"), () => CopyToClipboard(vocab.GetQuestion())),
             SpecMenuItem.Command(ShortcutFinger.Home2("Answer"), () => CopyToClipboard(vocab.GetAnswer())),
-            SpecMenuItem.Command(ShortcutFinger.Home3("Definition (question:answer)"), 
+            SpecMenuItem.Command(ShortcutFinger.Home3("Definition (question:answer)"),
                 () => CopyToClipboard($"{vocab.GetQuestion()}:{vocab.GetAnswer()}")),
-            SpecMenuItem.Command(ShortcutFinger.Home4("Sentences: max 30"), 
+            SpecMenuItem.Command(ShortcutFinger.Home4("Sentences: max 30"),
                 () => CopyToClipboard(string.Join("\n", vocab.Sentences.All().Take(30)
                     .Select(s => s.Question.WithoutInvisibleSpace()))))
         };
@@ -228,16 +228,16 @@ public static class VocabNoteMenus
     {
         var items = new List<SpecMenuItem>
         {
-            SpecMenuItem.Command(ShortcutFinger.Home1("Accept meaning"), 
-                () => OnAcceptVocabMeaning(vocab), 
+            SpecMenuItem.Command(ShortcutFinger.Home1("Accept meaning"),
+                () => OnAcceptVocabMeaning(vocab),
                 null, null, !vocab.User.Answer.HasValue()),
-            SpecMenuItem.Command(ShortcutFinger.Home2("Generate answer"), 
+            SpecMenuItem.Command(ShortcutFinger.Home2("Generate answer"),
                 () => vocab.GenerateAndSetAnswer()),
-            SpecMenuItem.Command(ShortcutFinger.Home3("Reparse potentially matching sentences: (Only reparse all sentences is sure to catch everything)"), 
+            SpecMenuItem.Command(ShortcutFinger.Home3("Reparse potentially matching sentences: (Only reparse all sentences is sure to catch everything)"),
                 () => Core.Batches.LocalNoteUpdater.ReparseSentencesForVocab(vocab)),
-            SpecMenuItem.Command(ShortcutFinger.Home4("Repopulate TOS"), 
+            SpecMenuItem.Command(ShortcutFinger.Home4("Repopulate TOS"),
                 () => vocab.PartsOfSpeech.SetAutomaticallyFromDictionary()),
-            SpecMenuItem.Command(ShortcutFinger.Home5("Autogenerate compounds"), 
+            SpecMenuItem.Command(ShortcutFinger.Home5("Autogenerate compounds"),
                 () => vocab.CompoundParts.AutoGenerate())
         };
 
@@ -248,13 +248,13 @@ public static class VocabNoteMenus
     {
         var items = new List<SpecMenuItem>
         {
-            SpecMenuItem.Command(ShortcutFinger.Home1("User explanation"), 
+            SpecMenuItem.Command(ShortcutFinger.Home1("User explanation"),
                 () => vocab.User.Explanation.Empty(), null, null, vocab.User.Explanation.HasValue()),
-            SpecMenuItem.Command(ShortcutFinger.Home2("User explanation long"), 
+            SpecMenuItem.Command(ShortcutFinger.Home2("User explanation long"),
                 () => vocab.User.ExplanationLong.Empty(), null, null, vocab.User.ExplanationLong.HasValue()),
-            SpecMenuItem.Command(ShortcutFinger.Home3("User mnemonic"), 
+            SpecMenuItem.Command(ShortcutFinger.Home3("User mnemonic"),
                 () => vocab.User.Mnemonic.Empty(), null, null, vocab.User.Mnemonic.HasValue()),
-            SpecMenuItem.Command(ShortcutFinger.Home4("User answer"), 
+            SpecMenuItem.Command(ShortcutFinger.Home4("User answer"),
                 () => vocab.User.Answer.Empty(), null, null, vocab.User.Answer.HasValue())
         };
 
@@ -297,11 +297,11 @@ public static class VocabNoteMenus
         {
             Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
             {
-                var topLevel = Avalonia.Application.Current?.ApplicationLifetime 
+                var topLevel = Avalonia.Application.Current?.ApplicationLifetime
                     is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
                     ? desktop.MainWindow
                     : null;
-                    
+
                 if (topLevel?.Clipboard != null)
                 {
                     topLevel.Clipboard.SetTextAsync(text).Wait();

@@ -86,7 +86,7 @@ public class ConjugationBaseTests : TestStartingWithEmptyCollection
     {
         var result = Conjugator.GetWordStems(word, isIchidan, isGodan);
         Assert.Equal(conjugationBases, result);
-        
+
         if (conjugationBases.Length > 1)
         {
             var iStem = Conjugator.GetIStem(word, isIchidan, isGodan);
@@ -103,13 +103,13 @@ public class ConjugationBaseTests : TestStartingWithEmptyCollection
             var aStem = Conjugator.GetAStem(word, isIchidan, isGodan);
             Assert.Equal(conjugationBases[1], aStem);
         }
-        
+
         if (conjugationBases.Length > 3)
         {
             var eStem = Conjugator.GetEStem(word, isIchidan, isGodan);
             Assert.Equal(conjugationBases[2], eStem);
         }
-        
+
         if (conjugationBases.Length > 4)
         {
             var teStem = Conjugator.GetTeStem(word, isIchidan, isGodan);
