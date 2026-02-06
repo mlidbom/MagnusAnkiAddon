@@ -8,7 +8,7 @@ using System.IO;
 
 namespace JAStudio.Core;
 
-public static class App
+public class App
 {
     public static bool IsTesting => ExPytest.IsTesting;
 

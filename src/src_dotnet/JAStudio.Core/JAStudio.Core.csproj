@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="SimpleInjector" Version="5.5.0" />
   </ItemGroup>
 
   <!-- Stub regeneration moved to JAStudio.UI project (builds last, has all DLLs) -->
