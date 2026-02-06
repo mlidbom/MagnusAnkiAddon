@@ -49,7 +49,7 @@ public static class NoteTypes
     public const string Vocab = "_Vocab";
     public const string Sentence = "_japanese_sentence";
 
-    public static readonly HashSet<string> All = new() { Kanji, Vocab, Sentence };
+    public static readonly HashSet<string> All = [Kanji, Vocab, Sentence];
 }
 
 public static class NoteFieldsConstants

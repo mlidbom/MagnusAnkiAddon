@@ -7,7 +7,7 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTe
 public static class ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb
 {
     private static readonly FailedMatchRequirement Failed = FailedMatchRequirement.Forbids("inflected_surface_with_valid_base");
-    private static readonly HashSet<string> PrefixesThatIndicatesVerbIfFollowedByEndOfStatement = new() { "を", "が" };
+    private static readonly HashSet<string> PrefixesThatIndicatesVerbIfFollowedByEndOfStatement = ["を", "が"];
 
     public static FailedMatchRequirement? ApplyTo(MatchInspector inspector)
     {

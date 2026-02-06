@@ -24,7 +24,7 @@ public class PreProcessingStage
         
         if (token.Surface == JNToken.SplitterTokenText)
         {
-            return new List<IAnalysisToken>();
+            return [];
         }
 
         var splitGodanImperative = GodanImperativeSplitter.TrySplit(token);
@@ -51,6 +51,6 @@ public class PreProcessingStage
             return splitDictionaryFormVerb;
         }
 
-        return new List<IAnalysisToken> { token };
+        return [token];
     }
 }

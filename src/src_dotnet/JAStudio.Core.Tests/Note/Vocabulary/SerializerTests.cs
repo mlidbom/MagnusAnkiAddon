@@ -17,11 +17,11 @@ public class RelatedVocabDataSerializerTests : TestStartingWithEmptyCollection
       var emptyData = new RelatedVocabData(
          ergativeTwin: "",
          derivedFrom: new ValueWrapper<string>(""),
-         perfectSynonyms: new HashSet<string>(),
-         similar: new HashSet<string>(),
-         antonyms: new HashSet<string>(),
-         confusedWith: new HashSet<string>(),
-         seeAlso: new HashSet<string>()
+         perfectSynonyms: [],
+         similar: [],
+         antonyms: [],
+         confusedWith: [],
+         seeAlso: []
       );
 
       var result = _serializer.Serialize(emptyData);
@@ -49,11 +49,11 @@ public class RelatedVocabDataSerializerTests : TestStartingWithEmptyCollection
       var original = new RelatedVocabData(
          ergativeTwin: "開く",
          derivedFrom: new ValueWrapper<string>("開ける"),
-         perfectSynonyms: new HashSet<string> { "完璧", "完全" },
-         similar: new HashSet<string> { "似ている", "同様" },
-         antonyms: new HashSet<string> { "閉じる", "閉める" },
-         confusedWith: new HashSet<string> { "明く" },
-         seeAlso: new HashSet<string> { "開放", "開始" }
+         perfectSynonyms: ["完璧", "完全"],
+         similar: ["似ている", "同様"],
+         antonyms: ["閉じる", "閉める"],
+         confusedWith: ["明く"],
+         seeAlso: ["開放", "開始"]
       );
 
       var serialized = _serializer.Serialize(original);
@@ -61,11 +61,11 @@ public class RelatedVocabDataSerializerTests : TestStartingWithEmptyCollection
 
       Assert.Equal("開く", deserialized.ErgativeTwin);
       Assert.Equal("開ける", deserialized.DerivedFrom.Get());
-      Assert.Equal(new HashSet<string> { "完璧", "完全" }, deserialized.PerfectSynonyms);
-      Assert.Equal(new HashSet<string> { "似ている", "同様" }, deserialized.Synonyms);
-      Assert.Equal(new HashSet<string> { "閉じる", "閉める" }, deserialized.Antonyms);
-      Assert.Equal(new HashSet<string> { "明く" }, deserialized.ConfusedWith);
-      Assert.Equal(new HashSet<string> { "開放", "開始" }, deserialized.SeeAlso);
+      Assert.Equal(["完璧", "完全"], deserialized.PerfectSynonyms);
+      Assert.Equal(["似ている", "同様"], deserialized.Synonyms);
+      Assert.Equal(["閉じる", "閉める"], deserialized.Antonyms);
+      Assert.Equal(["明く"], deserialized.ConfusedWith);
+      Assert.Equal(["開放", "開始"], deserialized.SeeAlso);
    }
 }
 
@@ -77,11 +77,11 @@ public class VocabNoteMatchingRulesSerializerTests : TestStartingWithEmptyCollec
    public void EmptyObjectSerializesToEmptyString()
    {
       var emptyData = new VocabNoteMatchingRulesData(
-         surfaceIsNot: new HashSet<string>(),
-         prefixIsNot: new HashSet<string>(),
-         suffixIsNot: new HashSet<string>(),
-         requiredPrefix: new HashSet<string>(),
-         yieldToSurface: new HashSet<string>()
+         surfaceIsNot: [],
+         prefixIsNot: [],
+         suffixIsNot: [],
+         requiredPrefix: [],
+         yieldToSurface: []
       );
 
       var result = _serializer.Serialize(emptyData);
@@ -93,20 +93,20 @@ public class VocabNoteMatchingRulesSerializerTests : TestStartingWithEmptyCollec
    public void RoundtripWithDataPreservesAllFields()
    {
       var original = new VocabNoteMatchingRulesData(
-         surfaceIsNot: new HashSet<string> { "surface1", "surface2" },
-         prefixIsNot: new HashSet<string> { "prefix1" },
-         suffixIsNot: new HashSet<string> { "suffix1", "suffix2", "suffix3" },
-         requiredPrefix: new HashSet<string> { "req1" },
-         yieldToSurface: new HashSet<string> { "yield1", "yield2" }
+         surfaceIsNot: ["surface1", "surface2"],
+         prefixIsNot: ["prefix1"],
+         suffixIsNot: ["suffix1", "suffix2", "suffix3"],
+         requiredPrefix: ["req1"],
+         yieldToSurface: ["yield1", "yield2"]
       );
 
       var serialized = _serializer.Serialize(original);
       var deserialized = _serializer.Deserialize(serialized);
 
-      Assert.Equal(new HashSet<string> { "surface1", "surface2" }, deserialized.SurfaceIsNot);
-      Assert.Equal(new HashSet<string> { "prefix1" }, deserialized.PrefixIsNot);
-      Assert.Equal(new HashSet<string> { "suffix1", "suffix2", "suffix3" }, deserialized.SuffixIsNot);
-      Assert.Equal(new HashSet<string> { "req1" }, deserialized.RequiredPrefix);
-      Assert.Equal(new HashSet<string> { "yield1", "yield2" }, deserialized.YieldToSurface);
+      Assert.Equal(["surface1", "surface2"], deserialized.SurfaceIsNot);
+      Assert.Equal(["prefix1"], deserialized.PrefixIsNot);
+      Assert.Equal(["suffix1", "suffix2", "suffix3"], deserialized.SuffixIsNot);
+      Assert.Equal(["req1"], deserialized.RequiredPrefix);
+      Assert.Equal(["yield1", "yield2"], deserialized.YieldToSurface);
    }
 }

@@ -9,9 +9,9 @@ namespace JAStudio.UI.Views;
 
 public partial class ContextMenuPopup : UserControl
 {
-   private readonly string _clipboardContent;
-   private readonly string _selectionContent;
-   private Window? _hostWindow;
+   readonly string _clipboardContent;
+   readonly string _selectionContent;
+   Window? _hostWindow;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
    [Obsolete("Parameterless constructor is only for XAML designer support and should not be used directly.")]
@@ -158,19 +158,19 @@ public partial class ContextMenuPopup : UserControl
       _hostWindow.Show();
    }
 
-   private static string TruncateText(string text, int maxLength)
+   static string TruncateText(string text, int maxLength)
    {
       if(text.Length <= maxLength)
          return text;
       return text.Substring(0, maxLength) + "...";
    }
 
-   private void OnClipboardItemClick(object? sender, RoutedEventArgs e)
+   void OnClipboardItemClick(object? sender, RoutedEventArgs e)
    {
       JALogger.Log($"Clipboard item clicked: {_clipboardContent}");
    }
 
-   private void OnSelectionItemClick(object? sender, RoutedEventArgs e)
+   void OnSelectionItemClick(object? sender, RoutedEventArgs e)
    {
       JALogger.Log($"Selection item clicked: {_selectionContent}");
    }

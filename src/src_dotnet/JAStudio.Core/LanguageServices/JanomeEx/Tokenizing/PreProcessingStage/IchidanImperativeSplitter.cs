@@ -21,10 +21,10 @@ public static class IchidanImperativeSplitter
     {
         var ichidanSurface = token.Surface[..^1];
         var ichidanImperativePart = token.Surface[^1..];
-        return new List<IAnalysisToken>
-        {
-            new SplitToken(token, ichidanSurface, token.BaseForm, isInflectableWord: true, isIchidanImperativeStem: true),
-            new SplitToken(token, ichidanImperativePart, ichidanImperativePart, isInflectableWord: true, isIchidanImperativeInflection: true)
-        };
+        return
+        [
+           new SplitToken(token, ichidanSurface, token.BaseForm, isInflectableWord: true, isIchidanImperativeStem: true),
+           new SplitToken(token, ichidanImperativePart, ichidanImperativePart, isInflectableWord: true, isIchidanImperativeInflection: true)
+        ];
     }
 }

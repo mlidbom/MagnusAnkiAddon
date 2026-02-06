@@ -135,7 +135,7 @@ public class DictLookupTests : IDisposable
 
     private static DictLookupResult GetDictEntry(string word, string[] readings)
     {
-        var vocab = VocabNoteFactory.Create(word, "", new List<string>(readings));
+        var vocab = VocabNoteFactory.Create(word, "", [..readings]);
         return DictLookup.LookupVocabWordOrName(vocab);
     }
 }

@@ -9,33 +9,34 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches;
 
 public abstract class Match
 {
-    private static readonly List<Func<MatchInspector, FailedMatchRequirement?>> MatchPrimaryValidityRequirements = new()
-    {
-        ForbidsIsConfiguredIncorrect.ApplyTo,
-        ForbidsDictionaryInflectionSurfaceWithBase.ApplyTo,
-        ForbidsDictionaryVerbFormStemAsCompoundEnd.ApplyTo,
-        ForbidsIsGodanPotentialInflectionWithBase.ApplyTo,
-        ForbidsIsGodanImperativeInflectionWithBase.ApplyTo,
-        ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb.ApplyTo,
-        new Forbids("compound_ending_on_dictionary_form_where_surface_differs_from_base",
-            it => it.IsCompoundEndingOnDictionaryFormWhereSurfaceDiffersFromBase).ApplyTo,
-    };
+   static readonly List<Func<MatchInspector, FailedMatchRequirement?>> MatchPrimaryValidityRequirements =
+   [
+      ForbidsIsConfiguredIncorrect.ApplyTo,
+      ForbidsDictionaryInflectionSurfaceWithBase.ApplyTo,
+      ForbidsDictionaryVerbFormStemAsCompoundEnd.ApplyTo,
+      ForbidsIsGodanPotentialInflectionWithBase.ApplyTo,
+      ForbidsIsGodanImperativeInflectionWithBase.ApplyTo,
+      ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb.ApplyTo,
+      new Forbids("compound_ending_on_dictionary_form_where_surface_differs_from_base",
+                  it => it.IsCompoundEndingOnDictionaryFormWhereSurfaceDiffersFromBase).ApplyTo
 
-    private static readonly List<Func<MatchInspector, FailedMatchRequirement?>> MatchStaticDisplayRequirements = new()
-    {
-        ForbidsIsConfiguredHidden.ApplyTo,
-        ForbidsConfiguredToHideAllCompounds.ApplyTo
-    };
+   ];
+
+   static readonly List<Func<MatchInspector, FailedMatchRequirement?>> MatchStaticDisplayRequirements =
+   [
+      ForbidsIsConfiguredHidden.ApplyTo,
+      ForbidsConfiguredToHideAllCompounds.ApplyTo
+   ];
 
     public MatchInspector Inspector { get; }
     public CandidateWordVariant Variant { get; }
 
-    private bool? _isPrimarilyValidInternalCache;
-    private bool? _isValidInternalCache;
-    private bool? _isValidCache;
-    private int? _startIndexCache;
-    private bool? _staticDisplayRequirementsFulfilledCache;
-    private List<MatchRequirement>? _displayRequirementsCache;
+    bool? _isPrimarilyValidInternalCache;
+    bool? _isValidInternalCache;
+    bool? _isValidCache;
+    int? _startIndexCache;
+    bool? _staticDisplayRequirementsFulfilledCache;
+    List<MatchRequirement>? _displayRequirementsCache;
 
     protected Match(CandidateWordVariant wordVariant)
     {
@@ -78,7 +79,7 @@ public abstract class Match
 
     protected virtual bool IsInterdependentlyValid() => true;
 
-    protected virtual List<FailedMatchRequirement> CreateInterdependentValidityFailures() => new();
+    protected virtual List<FailedMatchRequirement> CreateInterdependentValidityFailures() => [];
 
     protected virtual List<FailedMatchRequirement> CreateStaticDisplayRequirementFailures()
     {
@@ -110,7 +111,7 @@ public abstract class Match
 
     protected virtual IEnumerable<MatchRequirement?> CreateDynamicDisplayRequirements()
     {
-        return Enumerable.Empty<MatchRequirement?>();
+        return [];
     }
 
     public abstract string Answer { get; }
@@ -134,7 +135,7 @@ public abstract class Match
         }
     }
 
-    private bool IsValidInternal()
+    bool IsValidInternal()
     {
         return IsValidInternalProperty || IsHighlighted;
     }
@@ -151,7 +152,7 @@ public abstract class Match
         }
     }
 
-    private bool IsValidInternalProperty
+    bool IsValidInternalProperty
     {
         get
         {
@@ -193,18 +194,18 @@ public abstract class Match
         !IsShadowed &&
         !HasValidForDisplaySibling;
 
-    private bool HasValidForDisplaySibling =>
+    bool HasValidForDisplaySibling =>
         Variant.Matches.Any(otherMatch => otherMatch != this && otherMatch.IsValidForDisplay);
 
-    private bool BaseIsValidWord => Word.BaseVariant != null && Word.BaseVariant.HasValidMatch;
-    private bool SurfaceIsSeeminglyValidSingleToken => Word.HasSeeminglyValidSingleToken;
+    bool BaseIsValidWord => Word.BaseVariant != null && Word.BaseVariant.HasValidMatch;
+    bool SurfaceIsSeeminglyValidSingleToken => Word.HasSeeminglyValidSingleToken;
     public bool IsShadowed => Word.IsShadowed;
 
     public virtual List<string> FailureReasons =>
         !IsValid
             ? CreatePrimaryValidityFailures().Select(r => r.FailureReason).Concat(
                 CreateInterdependentValidityFailures().Select(r => r.FailureReason)).ToList()
-            : new List<string>();
+            : [];
 
     public List<string> HidingReasons =>
         DynamicDisplayRequirements

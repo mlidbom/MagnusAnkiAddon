@@ -95,7 +95,7 @@ public class VocabCloner
     {
         var data = Note.GetData();
         data.Id = 0;
-        data.Tags = new List<string>();
+        data.Tags = [];
         var clone = new VocabNote(data);
 
         CopyVocabTagsTo(clone);
@@ -196,7 +196,7 @@ public class VocabCloner
     {
         string CreateFullForm(string form) => createFormRoot(Note, form) + formSuffix;
 
-        var clone = CreateNewVocabWithSomeDataCopied(CreateFullForm(Note.GetQuestion()), Note.GetAnswer(), new List<string>());
+        var clone = CreateNewVocabWithSomeDataCopied(CreateFullForm(Note.GetQuestion()), Note.GetAnswer(), []);
         clone.Forms.SetList(Note.Forms.AllList().Select(CreateFullForm).ToList());
         var readings = Note.GetReadings().Select(CreateFullForm).ToList();
         clone.Readings.Set(readings);
@@ -263,7 +263,7 @@ public class VocabCloner
         string CreateImperativeForm(string form) => 
             Conjugator.GetImperative(form, Note.PartsOfSpeech.IsIchidan(), Note.PartsOfSpeech.IsGodan());
 
-        var clone = CreateNewVocabWithSomeDataCopied(CreateImperativeForm(Note.GetQuestion()), Note.GetAnswer(), new List<string>());
+        var clone = CreateNewVocabWithSomeDataCopied(CreateImperativeForm(Note.GetQuestion()), Note.GetAnswer(), []);
         clone.Forms.SetList(Note.Forms.AllList().Select(CreateImperativeForm).ToList());
         var readings = Note.GetReadings().Select(CreateImperativeForm).ToList();
         clone.Readings.Set(readings);
@@ -274,7 +274,7 @@ public class VocabCloner
     public VocabNote CreatePotentialGodan()
     {
         var clone = SuffixToEStem("る");
-        clone.CompoundParts.Set(new List<string> { Note.Question.DisambiguationName, "える" });
+        clone.CompoundParts.Set([Note.Question.DisambiguationName, "える"]);
         return clone;
     }
 }

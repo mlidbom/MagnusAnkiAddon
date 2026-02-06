@@ -19,10 +19,10 @@ public class CachedNote
 
 public abstract class NoteCacheBase<TNote> where TNote : JPNote
 {
-    private readonly Func<JPNoteData, TNote> _noteConstructor;
-    private readonly Type _noteType;
+   readonly Func<JPNoteData, TNote> _noteConstructor;
+   readonly Type _noteType;
     protected readonly Dictionary<int, TNote> _byId = new();
-    private readonly List<Action<TNote>> _updateListeners = new();
+    readonly List<Action<TNote>> _updateListeners = new();
 
     protected NoteCacheBase(Type cachedNoteType, Func<JPNoteData, TNote> noteConstructor)
     {
@@ -51,7 +51,7 @@ public abstract class NoteCacheBase<TNote> where TNote : JPNote
         NotifyUpdateListeners(note);
     }
 
-    private void NotifyUpdateListeners(TNote note)
+    void NotifyUpdateListeners(TNote note)
     {
         foreach (var listener in _updateListeners)
         {
@@ -59,7 +59,7 @@ public abstract class NoteCacheBase<TNote> where TNote : JPNote
         }
     }
 
-    private void RefreshInCache(TNote note)
+    void RefreshInCache(TNote note)
     {
         RemoveFromCache(note);
         AddToCache(note);
@@ -78,7 +78,7 @@ public abstract class NoteCacheBase<TNote> where TNote : JPNote
         }
     }
 
-    private void AddToCacheFromData(JPNoteData noteData)
+    void AddToCacheFromData(JPNoteData noteData)
     {
         AddToCache(_noteConstructor(noteData));
     }
@@ -100,8 +100,8 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
     where TNote : JPNote
     where TSnapshot : CachedNote
 {
-    private readonly Dictionary<string, List<TNote>> _byQuestion = new();
-    private readonly Dictionary<int, TSnapshot> _snapshotById = new();
+   readonly Dictionary<string, List<TNote>> _byQuestion = new();
+   readonly Dictionary<int, TSnapshot> _snapshotById = new();
 
     protected NoteCache(Type cachedNoteType, Func<JPNoteData, TNote> noteConstructor)
         : base(cachedNoteType, noteConstructor)

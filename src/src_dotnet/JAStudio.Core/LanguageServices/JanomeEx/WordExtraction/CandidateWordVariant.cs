@@ -10,11 +10,11 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 
 public sealed class CandidateWordVariant
 {
-    private readonly LazyCE<DictLookupResult> _dictLookup;
-    private bool _completedValidityAnalysis;
-    private bool _isValid;
-    private IEnumerable<Match> _validMatches;
-    private List<Match> _displayMatches;
+   readonly LazyCE<DictLookupResult> _dictLookup;
+   bool _completedValidityAnalysis;
+   bool _isValid;
+   IEnumerable<Match> _validMatches;
+   List<Match> _displayMatches;
 
     public CandidateWord Word { get; }
     public string Form { get; }
@@ -83,16 +83,16 @@ public sealed class CandidateWordVariant
     public SentenceConfiguration Configuration => Word.Analysis.Configuration;
     public bool IsKnownWord => VocabMatches.Count > 0 || _dictLookup.Value.FoundWords();
 
-    private List<VocabMatch> FormOwningVocabMatches =>
+    List<VocabMatch> FormOwningVocabMatches =>
         VocabMatches.Where(vm => vm.Vocab.Forms.IsOwnedForm(Form)).ToList();
 
     public bool HasValidMatch => OnceValidityAnalyzed._isValid;
     public IEnumerable<Match> ValidMatches => OnceValidityAnalyzed._validMatches;
     public List<Match> DisplayMatches => OnceVisibilityAnalyzed._displayMatches;
 
-    private List<VocabMatch> ValidVocabMatches { get; set; } = new();
+    List<VocabMatch> ValidVocabMatches { get; set; } = new();
 
-    private CandidateWordVariant OnceValidityAnalyzed
+    CandidateWordVariant OnceValidityAnalyzed
     {
         get
         {
@@ -102,7 +102,7 @@ public sealed class CandidateWordVariant
         }
     }
 
-    private CandidateWordVariant OnceVisibilityAnalyzed
+    CandidateWordVariant OnceVisibilityAnalyzed
     {
         get
         {

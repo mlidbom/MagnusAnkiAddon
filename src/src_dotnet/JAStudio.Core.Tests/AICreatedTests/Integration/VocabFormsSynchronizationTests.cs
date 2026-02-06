@@ -45,7 +45,7 @@ public class VocabFormsSynchronizationTests : TestStartingWithEmptyCollection, I
       var vocab = VocabNote.Create("走る", "to run", "はしる");
 
       // Act - Set forms with bracketed (owned) and non-bracketed (borrowed) forms
-      vocab.Forms.SetList(new List<string> { "[駆ける]", "ダッシュする" });
+      vocab.Forms.SetList(["[駆ける]", "ダッシュする"]);
 
       // Assert
       Assert.True(vocab.Forms.IsOwnedForm("駆ける"));
@@ -72,7 +72,7 @@ public class VocabFormsSynchronizationTests : TestStartingWithEmptyCollection, I
       var vocab2 = VocabNote.Create("食う", "to eat (casual)", "くう");
       var vocab3 = VocabNote.Create("召し上がる", "to eat (honorific)", "めしあがる");
 
-      vocab1.Forms.SetList(new List<string> { "食う", "召し上がる" });
+      vocab1.Forms.SetList(["食う", "召し上がる"]);
 
       // Act
       var formNotes = vocab1.Forms.AllListNotes();

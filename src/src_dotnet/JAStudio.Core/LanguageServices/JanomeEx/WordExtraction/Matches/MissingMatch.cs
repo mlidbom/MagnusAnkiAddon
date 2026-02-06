@@ -11,7 +11,7 @@ public sealed class MissingMatch : Match
     public override string Answer => "---";
     public override string MatchForm => "[MISSING]"; // Change this so the tests can distinguish that this is a missing match
     public override bool IsValid => false;
-    public override List<string> Readings => new();
+    public override List<string> Readings => [];
     public override List<string> FailureReasons =>
-        new List<string>(base.FailureReasons) { "no_dictionary_or_vocabulary_match_found" };
+       [..base.FailureReasons, "no_dictionary_or_vocabulary_match_found"];
 }

@@ -72,7 +72,7 @@ public static class InflectionForms
         public static readonly InflectionForm NiConnection = AddForm("連用ニ接続", "Continuative ni-connection");
         public static readonly InflectionForm GozaiConnection = AddForm("連用ゴザイ接続", "Continuative gozai connection");
 
-        public static readonly HashSet<InflectionForm> TeConnectionForms = new() { TeConnection, DeConnection };
+        public static readonly HashSet<InflectionForm> TeConnectionForms = [TeConnection, DeConnection];
     }
 
     public static class Misc
@@ -96,10 +96,7 @@ public static class InflectionForms
         public static readonly InflectionForm ReruConnection =
             AddForm("未然レル接続", "Irrealis reru-connection - passive/potential \"reru\"");
 
-        public static readonly HashSet<InflectionForm> AllForms = new()
-        {
-            GeneralIrrealisMizenkei, SpecialIrrealis, UConnection, NuConnection, ReruConnection
-        };
+        public static readonly HashSet<InflectionForm> AllForms = [GeneralIrrealisMizenkei, SpecialIrrealis, UConnection, NuConnection, ReruConnection];
     }
 
     public static class Hypothetical
@@ -118,8 +115,8 @@ public static class InflectionForms
         public static readonly InflectionForm Yo = AddForm("命令ｙｏ", "Imperative/command/meireikei - yo");
         public static readonly InflectionForm I = AddForm("命令ｉ", "Imperative/command/meireikei - i");
 
-        public static readonly HashSet<InflectionForm> GodanForms = new() { E, I };
-        public static readonly HashSet<InflectionForm> IchidanForms = new() { Ro, Yo };
+        public static readonly HashSet<InflectionForm> GodanForms = [E, I];
+        public static readonly HashSet<InflectionForm> IchidanForms = [Ro, Yo];
     }
 
     public static class NounConnection

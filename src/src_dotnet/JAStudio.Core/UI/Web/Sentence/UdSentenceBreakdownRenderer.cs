@@ -184,28 +184,28 @@ public class UdSentenceBreakdownRenderer
         return html.ToString();
     }
 
-    private static readonly List<(Func<IAnalysisToken, bool> Predicate, string Abbr, string Title)> TokenBooleanFlags = new()
-    {
-        (t => t.IsPastTenseStem, "PTS", "past_tense_stem"),
-        (t => t.IsPastTenseMarker, "PTM", "past_tense_marker"),
-        (t => t.IsMasuStem, "Masu", "masu_stem"),
-        (t => t.IsAdverb, "Adv", "adverb"),
-        (t => t.IsIrrealis, "Irr", "irrealis"),
-        (t => t.IsEndOfStatement, "EOS", "end_of_statement"),
-        (t => t.HasTeFormStem, "HTFS", "has_te_form_stem"),
-        (t => t.IsNonWordCharacter, "NWC", "non_word_character"),
-        (t => t.IsDictionaryVerbFormStem, "DVS", "dictionary_verb_form_stem"),
-        (t => t.IsDictionaryVerbInflection, "DVI", "dictionary_verb_inflection"),
-        (t => t.IsGodanPotentialStem, "GPS", "godan_potential_stem"),
-        (t => t.IsGodanImperativeStem, "GIS", "godan_imperative_stem"),
-        (t => t.IsIchidanImperativeStem, "IIS", "ichidan_imperative_stem"),
-        (t => t.IsGodanPotentialInflection, "GPI", "godan_potential_inflection"),
-        (t => t.IsGodanImperativeInflection, "GII", "godan_imperative_inflection"),
-        (t => t.IsIchidanImperativeInflection, "III", "ichidan_imperative_inflection"),
-        (t => t.IsInflectableWord, "Infl", "inflectable_word"),
-        (t => t.IsIchidanVerb, "一段", "ichidan_verb"),
-        (t => t.IsGodanVerb, "五弾", "godan_verb"),
-    };
+    private static readonly List<(Func<IAnalysisToken, bool> Predicate, string Abbr, string Title)> TokenBooleanFlags =
+    [
+       (t => t.IsPastTenseStem, "PTS", "past_tense_stem"),
+       (t => t.IsPastTenseMarker, "PTM", "past_tense_marker"),
+       (t => t.IsMasuStem, "Masu", "masu_stem"),
+       (t => t.IsAdverb, "Adv", "adverb"),
+       (t => t.IsIrrealis, "Irr", "irrealis"),
+       (t => t.IsEndOfStatement, "EOS", "end_of_statement"),
+       (t => t.HasTeFormStem, "HTFS", "has_te_form_stem"),
+       (t => t.IsNonWordCharacter, "NWC", "non_word_character"),
+       (t => t.IsDictionaryVerbFormStem, "DVS", "dictionary_verb_form_stem"),
+       (t => t.IsDictionaryVerbInflection, "DVI", "dictionary_verb_inflection"),
+       (t => t.IsGodanPotentialStem, "GPS", "godan_potential_stem"),
+       (t => t.IsGodanImperativeStem, "GIS", "godan_imperative_stem"),
+       (t => t.IsIchidanImperativeStem, "IIS", "ichidan_imperative_stem"),
+       (t => t.IsGodanPotentialInflection, "GPI", "godan_potential_inflection"),
+       (t => t.IsGodanImperativeInflection, "GII", "godan_imperative_inflection"),
+       (t => t.IsIchidanImperativeInflection, "III", "ichidan_imperative_inflection"),
+       (t => t.IsInflectableWord, "Infl", "inflectable_word"),
+       (t => t.IsIchidanVerb, "一段", "ichidan_verb"),
+       (t => t.IsGodanVerb, "五弾", "godan_verb")
+    ];
 
     private static string RenderTokens(SentenceViewModel sentenceAnalysis)
     {

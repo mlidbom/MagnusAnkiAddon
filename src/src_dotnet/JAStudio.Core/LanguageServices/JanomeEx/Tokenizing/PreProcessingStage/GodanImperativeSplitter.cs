@@ -39,12 +39,12 @@ public static class GodanImperativeSplitter
             // Handles cases like 放せよ which janome turns into a single token and believes is an ichidan よ imperative
             var godanSurface = token.Surface[..^2];
             var imperativePart = token.Surface[^2..^1];
-            return new List<IAnalysisToken>
-            {
-                new SplitToken(token, godanSurface, godanBase, isInflectableWord: true, isGodanImperativeStem: true),
-                new SplitToken(token, imperativePart, "え", isInflectableWord: true, isGodanImperativeInflection: true),
-                new SplitToken(token, "よ", "よ", isInflectableWord: false)
-            };
+            return
+            [
+               new SplitToken(token, godanSurface, godanBase, isInflectableWord: true, isGodanImperativeStem: true),
+               new SplitToken(token, imperativePart, "え", isInflectableWord: true, isGodanImperativeInflection: true),
+               new SplitToken(token, "よ", "よ", isInflectableWord: false)
+            ];
         }
         else if (Equals(token.InflectedForm, InflectionForms.ImperativeMeireikei.Ro))
         {
@@ -55,11 +55,11 @@ public static class GodanImperativeSplitter
             var godanSurface = token.Surface[..^1];
             var imperativePart = token.Surface[^1..];
             var imperativeBase = imperativePart == "い" ? "い" : "え";
-            return new List<IAnalysisToken>
-            {
-                new SplitToken(token, godanSurface, godanBase, isInflectableWord: true, isGodanImperativeStem: true),
-                new SplitToken(token, imperativePart, imperativeBase, isInflectableWord: true, isGodanImperativeInflection: true)
-            };
+            return
+            [
+               new SplitToken(token, godanSurface, godanBase, isInflectableWord: true, isGodanImperativeStem: true),
+               new SplitToken(token, imperativePart, imperativeBase, isInflectableWord: true, isGodanImperativeInflection: true)
+            ];
         }
     }
 }

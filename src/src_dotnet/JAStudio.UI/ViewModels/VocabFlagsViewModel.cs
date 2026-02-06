@@ -18,8 +18,8 @@ namespace JAStudio.UI.ViewModels;
 /// </summary>
 public partial class VocabFlagsViewModel : ObservableObject
 {
-   private readonly VocabNote _vocab;
-   private readonly Window? _parentWindow;
+   readonly VocabNote _vocab;
+   readonly Window? _parentWindow;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
    [Obsolete("Parameterless constructor is only for XAML designer support and should not be used directly.")]
@@ -38,64 +38,45 @@ public partial class VocabFlagsViewModel : ObservableObject
 
    // --- Matching Configuration: Bool Flags ---
 
-   [ObservableProperty]
-   private bool _isInflectingWord;
+   [ObservableProperty] bool _isInflectingWord;
 
-   [ObservableProperty]
-   private bool _isPoisonWord;
+   [ObservableProperty] bool _isPoisonWord;
 
-   [ObservableProperty]
-   private bool _matchWithPrecedingVowel;
+   [ObservableProperty] bool _matchWithPrecedingVowel;
 
-   [ObservableProperty]
-   private bool _questionOverridesForm;
+   [ObservableProperty] bool _questionOverridesForm;
 
-   [ObservableProperty]
-   private bool _isCompositionallyTransparentCompound;
+   [ObservableProperty] bool _isCompositionallyTransparentCompound;
 
    // --- Register Flags ---
 
-   [ObservableProperty]
-   private bool _archaic;
+   [ObservableProperty] bool _archaic;
 
-   [ObservableProperty]
-   private bool _childish;
+   [ObservableProperty] bool _childish;
 
-   [ObservableProperty]
-   private bool _derogatory;
+   [ObservableProperty] bool _derogatory;
 
-   [ObservableProperty]
-   private bool _formal;
+   [ObservableProperty] bool _formal;
 
-   [ObservableProperty]
-   private bool _honorific;
+   [ObservableProperty] bool _honorific;
 
-   [ObservableProperty]
-   private bool _humble;
+   [ObservableProperty] bool _humble;
 
-   [ObservableProperty]
-   private bool _informal;
+   [ObservableProperty] bool _informal;
 
-   [ObservableProperty]
-   private bool _literary;
+   [ObservableProperty] bool _literary;
 
-   [ObservableProperty]
-   private bool _polite;
+   [ObservableProperty] bool _polite;
 
-   [ObservableProperty]
-   private bool _roughMasculine;
+   [ObservableProperty] bool _roughMasculine;
 
-   [ObservableProperty]
-   private bool _sensitive;
+   [ObservableProperty] bool _sensitive;
 
-   [ObservableProperty]
-   private bool _slang;
+   [ObservableProperty] bool _slang;
 
-   [ObservableProperty]
-   private bool _softFeminine;
+   [ObservableProperty] bool _softFeminine;
 
-   [ObservableProperty]
-   private bool _vulgar;
+   [ObservableProperty] bool _vulgar;
 
    // --- Require/Forbid ViewModels ---
 
@@ -128,10 +109,10 @@ public partial class VocabFlagsViewModel : ObservableObject
    public StringSetControlViewModel YieldToSurface { get; private set; } = null!;
 
    // List of all require/forbid controls for change tracking
-   private List<RequireForbidControlViewModel> AllRequireForbidControls { get; set; } = new();
+   List<RequireForbidControlViewModel> AllRequireForbidControls { get; set; } = [];
 
    // List of all string set controls for change tracking
-   private List<StringSetControlViewModel> AllStringSetControls { get; set; } = new();
+   List<StringSetControlViewModel> AllStringSetControls { get; set; } = [];
 
    // --- Commands (note: these will be replaced in the code-behind) ---
 
@@ -140,7 +121,7 @@ public partial class VocabFlagsViewModel : ObservableObject
 
    // --- Load/Save ---
 
-   private void LoadFromNote()
+   void LoadFromNote()
    {
       // Bool flags
       IsInflectingWord = _vocab.MatchingConfiguration.BoolFlags.IsInflectingWord.IsSet();
@@ -174,7 +155,7 @@ public partial class VocabFlagsViewModel : ObservableObject
       SentenceEnd = new RequireForbidControlViewModel(_vocab.MatchingConfiguration.RequiresForbids.SentenceEnd, "Sentence end");
       SentenceStart = new RequireForbidControlViewModel(_vocab.MatchingConfiguration.RequiresForbids.SentenceStart, "Sentence start");
       SingleToken = new RequireForbidControlViewModel(_vocab.MatchingConfiguration.RequiresForbids.SingleToken, "Single token");
-      AllRequireForbidControls.AddRange(new[] { Surface, SentenceEnd, SentenceStart, SingleToken });
+      AllRequireForbidControls.AddRange([Surface, SentenceEnd, SentenceStart, SingleToken]);
 
       // Require/Forbid controls (Stem matching rules)
       GodanImperative = new RequireForbidControlViewModel(_vocab.MatchingConfiguration.RequiresForbids.GodanImperative, "Godan imperative");
@@ -191,7 +172,7 @@ public partial class VocabFlagsViewModel : ObservableObject
       PrecedingAdverb = new RequireForbidControlViewModel(_vocab.MatchingConfiguration.RequiresForbids.PrecedingAdverb, "Preceding adverb");
       TeFormStem = new RequireForbidControlViewModel(_vocab.MatchingConfiguration.RequiresForbids.TeFormStem, "て-form stem");
       TeFormPrefix = new RequireForbidControlViewModel(_vocab.MatchingConfiguration.RequiresForbids.TeFormPrefix, "て-form prefix");
-      AllRequireForbidControls.AddRange(new[] { GodanImperative, GodanImperativePrefix, GodanPotential, IchidanImperative, MasuStem, Godan, Ichidan, Irrealis, PastTenseStem, DictionaryFormStem, DictionaryFormPrefix, PrecedingAdverb, TeFormStem, TeFormPrefix });
+      AllRequireForbidControls.AddRange([GodanImperative, GodanImperativePrefix, GodanPotential, IchidanImperative, MasuStem, Godan, Ichidan, Irrealis, PastTenseStem, DictionaryFormStem, DictionaryFormPrefix, PrecedingAdverb, TeFormStem, TeFormPrefix]);
 
       // String set controls
       var rules = _vocab.MatchingConfiguration.ConfigurableRules;
@@ -200,7 +181,7 @@ public partial class VocabFlagsViewModel : ObservableObject
       SuffixIsNot = new StringSetControlViewModel(rules.SuffixIsNot, "Suffix is not", _parentWindow);
       SurfaceIsNot = new StringSetControlViewModel(rules.SurfaceIsNot, "Surface is not", _parentWindow);
       YieldToSurface = new StringSetControlViewModel(rules.YieldToSurface, "Yield to surface", _parentWindow);
-      AllStringSetControls.AddRange(new[] { PrefixIsNot, RequiredPrefix, SuffixIsNot, SurfaceIsNot, YieldToSurface });
+      AllStringSetControls.AddRange([PrefixIsNot, RequiredPrefix, SuffixIsNot, SurfaceIsNot, YieldToSurface]);
    }
 
    public async Task SaveAsync()
@@ -231,7 +212,7 @@ public partial class VocabFlagsViewModel : ObservableObject
       // Note: UI refresh is handled by Python layer when dialog closes
    }
 
-   private void SaveToNote()
+   void SaveToNote()
    {
       // Bool flags
       _vocab.MatchingConfiguration.BoolFlags.IsInflectingWord.SetTo(IsInflectingWord);
@@ -262,7 +243,7 @@ public partial class VocabFlagsViewModel : ObservableObject
       // Note: Require/Forbid controls save directly to the note via their fields
    }
 
-   private bool ShouldPromptToReparse()
+   bool ShouldPromptToReparse()
    {
       // Check if any reparse-triggering flag has changed
       bool changedReparseFlags = AllRequireForbidControls.Any(c => c.RepraiseTrigger && c.HasChanged());

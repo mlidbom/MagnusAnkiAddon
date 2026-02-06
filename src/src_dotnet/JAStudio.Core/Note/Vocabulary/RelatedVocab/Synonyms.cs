@@ -46,7 +46,7 @@ public class Synonyms
 
     public void AddTransitivelyOneLevel(string synonym)
     {
-        var newSynonymNotes = App.Col().Vocab.WithAnyFormInPreferDisambiguationNameOrExactMatch(new List<string> { synonym });
+        var newSynonymNotes = App.Col().Vocab.WithAnyFormInPreferDisambiguationNameOrExactMatch([synonym]);
 
         foreach (var synonymNote in newSynonymNotes)
         {

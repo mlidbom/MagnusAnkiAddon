@@ -21,7 +21,7 @@ public class KanjiNotePortedTests : CollectionUsingTest
 
       inside.PopulateRadicalsFromMnemonicTags();
 
-      Assert.Equal(new List<string> { "冂", "人" }, inside.GetRadicals());
+      Assert.Equal(["冂", "人"], inside.GetRadicals());
    }
 
    [Theory]

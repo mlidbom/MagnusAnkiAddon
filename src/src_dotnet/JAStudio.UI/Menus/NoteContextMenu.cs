@@ -24,7 +24,7 @@ public class NoteContextMenu
     {
         var vocab = Core.App.Col().Vocab.WithIdOrNone(vocabId);
         if (vocab == null)
-            return new List<SpecMenuItem>();
+            return [];
 
         var menuItems = new List<SpecMenuItem>();
 
@@ -48,7 +48,7 @@ public class NoteContextMenu
     {
         var kanji = Core.App.Col().Kanji.WithIdOrNone(kanjiId);
         if (kanji == null)
-            return new List<SpecMenuItem>();
+            return [];
 
         var menuItems = new List<SpecMenuItem>();
 
@@ -72,7 +72,7 @@ public class NoteContextMenu
     {
         var sentence = Core.App.Col().Sentences.WithIdOrNone(sentenceId);
         if (sentence == null)
-            return new List<SpecMenuItem>();
+            return [];
 
         var menuItems = new List<SpecMenuItem>();
 
@@ -166,15 +166,15 @@ public class NoteContextMenu
 
     private List<SpecMenuItem> BuildStringMenuSpec(string text, string? noteType, JPNote? note)
     {
-        return new List<SpecMenuItem>
-        {
-            BuildCurrentNoteActionsSubmenuSpec(text, noteType, note),
-            OpenInAnkiMenus.BuildOpenInAnkiMenuSpec(() => text),
-            WebSearchMenus.BuildWebSearchMenuSpec(() => text),
-            BuildMatchingNotesSubmenuSpec(text),
-            BuildCreateNoteSubmenuSpec(text),
-            SpecMenuItem.Command(ShortcutFinger.Down1($"Reparse matching sentences"), () => OnReparseMatchingSentences(text))
-        };
+        return
+        [
+           BuildCurrentNoteActionsSubmenuSpec(text, noteType, note),
+           OpenInAnkiMenus.BuildOpenInAnkiMenuSpec(() => text),
+           WebSearchMenus.BuildWebSearchMenuSpec(() => text),
+           BuildMatchingNotesSubmenuSpec(text),
+           BuildCreateNoteSubmenuSpec(text),
+           SpecMenuItem.Command(ShortcutFinger.Down1($"Reparse matching sentences"), () => OnReparseMatchingSentences(text))
+        ];
     }
 
     private SpecMenuItem BuildCurrentNoteActionsSubmenuSpec(string text, string? noteType, JPNote? note)
@@ -223,8 +223,8 @@ public class NoteContextMenu
         var vocabs = Core.App.Col().Vocab.WithQuestionPreferDisambiguationName(text).ToList();
         var sentences = Core.App.Col().Sentences.WithQuestion(text);
         var kanjis = text.Length == 1 
-            ? Core.App.Col().Kanji.WithAnyKanjiIn(new List<string> { text })
-            : new List<KanjiNote>();
+            ? Core.App.Col().Kanji.WithAnyKanjiIn([text])
+            : [];
 
         // Only show submenu if any notes match
         if (!vocabs.Any() && !sentences.Any() && !kanjis.Any())
@@ -298,7 +298,7 @@ public class NoteContextMenu
     // Action handlers
     private void OnOpenInPreviewer(JPNote note)
     {
-        var query = QueryBuilder.NotesLookup(new[] { note });
+        var query = QueryBuilder.NotesLookup([note]);
         AnkiFacade.ExecuteLookupAndShowPreviewer(query);
     }
     
@@ -324,7 +324,7 @@ public class NoteContextMenu
             var newVocab = VocabNoteFactory.CreateWithDictionary(text);
             Core.Batches.LocalNoteUpdater.ReparseSentencesForVocab(newVocab);
             
-            var query = QueryBuilder.NotesLookup(new JPNote[] { newVocab });
+            var query = QueryBuilder.NotesLookup([newVocab]);
             AnkiFacade.ExecuteLookupAndShowPreviewer(query);
             AnkiFacade.Refresh();
         }
@@ -341,7 +341,7 @@ public class NoteContextMenu
         {
             var newSentence = SentenceNote.Create(text);
             
-            var query = QueryBuilder.NotesLookup(new JPNote[] { newSentence });
+            var query = QueryBuilder.NotesLookup([newSentence]);
             AnkiFacade.ExecuteLookupAndShowPreviewer(query);
             AnkiFacade.Refresh();
         }
@@ -359,7 +359,7 @@ public class NoteContextMenu
             // Create with placeholder values - user will need to fill them in
             var newKanji = KanjiNote.Create(text, "TODO", "", "");
             
-            var query = QueryBuilder.NotesLookup(new JPNote[] { newKanji });
+            var query = QueryBuilder.NotesLookup([newKanji]);
             AnkiFacade.ExecuteLookupAndShowPreviewer(query);
             AnkiFacade.Refresh();
         }

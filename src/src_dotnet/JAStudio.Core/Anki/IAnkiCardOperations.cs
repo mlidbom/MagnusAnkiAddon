@@ -24,7 +24,7 @@ public class AnkiCardOperations
     readonly TemporaryServiceCollection _services;
     internal AnkiCardOperations(TemporaryServiceCollection services) => _services = services;
 
-    private static IAnkiCardOperations? _implementation;
+    static IAnkiCardOperations? _implementation;
 
     /// <summary>
     /// Set the implementation of card operations (called by JAStudio.UI during initialization).

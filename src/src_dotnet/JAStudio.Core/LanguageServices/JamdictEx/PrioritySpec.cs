@@ -10,9 +10,9 @@ public class PrioritySpec
     private static readonly HashSet<string> FrequencyMedium;
     private static readonly HashSet<string> FrequencyLow;
 
-    private static readonly HashSet<string> TagsMaximum = new() { "ichi1" };
-    private static readonly HashSet<string> TagsHigh = new() { "news1", "spec1" };
-    private static readonly HashSet<string> TagsMedium = new() { "news2", "spec2" };
+    private static readonly HashSet<string> TagsMaximum = ["ichi1"];
+    private static readonly HashSet<string> TagsHigh = ["news1", "spec1"];
+    private static readonly HashSet<string> TagsMedium = ["news2", "spec2"];
 
     static PrioritySpec()
     {

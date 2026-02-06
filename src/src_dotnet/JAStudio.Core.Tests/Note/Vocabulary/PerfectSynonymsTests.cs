@@ -53,13 +53,13 @@ public class PerfectSynonymsTests : IDisposable
         Assert.Equal("third_new", first.GetAnswer());
         Assert.Equal("third_new", second.GetAnswer());
 
-        Assert.Equal(new HashSet<string> { second.GetQuestion(), third.GetQuestion() }, first.RelatedNotes.PerfectSynonyms.Get());
-        Assert.Equal(new HashSet<string> { first.GetQuestion(), third.GetQuestion() }, second.RelatedNotes.PerfectSynonyms.Get());
-        Assert.Equal(new HashSet<string> { first.GetQuestion(), second.GetQuestion() }, third.RelatedNotes.PerfectSynonyms.Get());
+        Assert.Equal([second.GetQuestion(), third.GetQuestion()], first.RelatedNotes.PerfectSynonyms.Get());
+        Assert.Equal([first.GetQuestion(), third.GetQuestion()], second.RelatedNotes.PerfectSynonyms.Get());
+        Assert.Equal([first.GetQuestion(), second.GetQuestion()], third.RelatedNotes.PerfectSynonyms.Get());
 
         first.RelatedNotes.PerfectSynonyms.Remove(third.GetQuestion());
-        Assert.Equal(new HashSet<string> { second.GetQuestion() }, first.RelatedNotes.PerfectSynonyms.Get());
-        Assert.Equal(new HashSet<string> { first.GetQuestion() }, second.RelatedNotes.PerfectSynonyms.Get());
+        Assert.Equal([second.GetQuestion()], first.RelatedNotes.PerfectSynonyms.Get());
+        Assert.Equal([first.GetQuestion()], second.RelatedNotes.PerfectSynonyms.Get());
         Assert.Empty(third.RelatedNotes.PerfectSynonyms.Get());
 
         first.User.Answer.Set("first_latest");
@@ -75,17 +75,17 @@ public class PerfectSynonymsTests : IDisposable
         var second = VocabNoteFactory.Create("second", "", []);
         first.RelatedNotes.PerfectSynonyms.AddOverwritingTheAnswerOfTheAddedSynonym(second.GetQuestion());
 
-        Assert.Equal(new HashSet<string> { "second" }, first.RelatedNotes.PerfectSynonyms.Get());
-        Assert.Equal(new HashSet<string> { "first" }, second.RelatedNotes.PerfectSynonyms.Get());
+        Assert.Equal(["second"], first.RelatedNotes.PerfectSynonyms.Get());
+        Assert.Equal(["first"], second.RelatedNotes.PerfectSynonyms.Get());
 
         var third = VocabNoteFactory.Create("third", "", []);
         var fourth = VocabNoteFactory.Create("fourth", "", []);
         second.RelatedNotes.PerfectSynonyms.AddOverwritingTheAnswerOfTheAddedSynonym(third.GetQuestion());
         second.RelatedNotes.PerfectSynonyms.AddOverwritingTheAnswerOfTheAddedSynonym(fourth.GetQuestion());
 
-        Assert.Equal(new HashSet<string> { "second", "third", "fourth" }, first.RelatedNotes.PerfectSynonyms.Get());
-        Assert.Equal(new HashSet<string> { "first", "third", "fourth" }, second.RelatedNotes.PerfectSynonyms.Get());
-        Assert.Equal(new HashSet<string> { "first", "second", "fourth" }, third.RelatedNotes.PerfectSynonyms.Get());
-        Assert.Equal(new HashSet<string> { "first", "second", "third" }, fourth.RelatedNotes.PerfectSynonyms.Get());
+        Assert.Equal(["second", "third", "fourth"], first.RelatedNotes.PerfectSynonyms.Get());
+        Assert.Equal(["first", "third", "fourth"], second.RelatedNotes.PerfectSynonyms.Get());
+        Assert.Equal(["first", "second", "fourth"], third.RelatedNotes.PerfectSynonyms.Get());
+        Assert.Equal(["first", "second", "third"], fourth.RelatedNotes.PerfectSynonyms.Get());
     }
 }

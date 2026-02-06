@@ -140,43 +140,54 @@ public static class VocabStringMenus
         // Nested local function for suffix operations (mirroring Python structure)
         List<SpecMenuItem> BuildSuffixMenuItems()
         {
-            return new List<SpecMenuItem>
-            {
-                SpecMenuItem.Command(ShortcutFinger.Home1("dictionary-form"), 
-                    () => vocab.Cloner.CreateSuffixVersion(text)),
-                SpecMenuItem.Command(ShortcutFinger.Home2($"い-stem {vocab.Cloner.SuffixToIStemPreview(text)}"), 
-                    () => vocab.Cloner.SuffixToIStem(text)),
-                SpecMenuItem.Command(ShortcutFinger.Home3($"て-stem  {vocab.Cloner.SuffixToTeStemPreview(text)}"), 
-                    () => vocab.Cloner.SuffixToTeStem(text)),
-                SpecMenuItem.Command(ShortcutFinger.Home4($"え-stem  {vocab.Cloner.SuffixToEStemPreview(text)}"), 
-                    () => vocab.Cloner.SuffixToEStem(text)),
-                SpecMenuItem.Command(ShortcutFinger.Home5($"あ-stem  {vocab.Cloner.SuffixToAStemPreview(text)}"), 
-                    () => vocab.Cloner.SuffixToAStem(text)),
-                SpecMenuItem.Command(ShortcutFinger.Up1($"chop-1  {vocab.Cloner.SuffixToChoppedPreview(text, 1)}"), 
-                    () => vocab.Cloner.SuffixToChopped(text, 1)),
-                SpecMenuItem.Command(ShortcutFinger.Up2($"chop-2  {vocab.Cloner.SuffixToChoppedPreview(text, 2)}"), 
-                    () => vocab.Cloner.SuffixToChopped(text, 2)),
-                SpecMenuItem.Command(ShortcutFinger.Up3($"chop-3  {vocab.Cloner.SuffixToChoppedPreview(text, 3)}"), 
-                    () => vocab.Cloner.SuffixToChopped(text, 3)),
-                SpecMenuItem.Command(ShortcutFinger.Up4($"chop-4  {vocab.Cloner.SuffixToChoppedPreview(text, 4)}"), 
-                    () => vocab.Cloner.SuffixToChopped(text, 4))
-            };
+            return
+            [
+               SpecMenuItem.Command(ShortcutFinger.Home1("dictionary-form"),
+                                    () => vocab.Cloner.CreateSuffixVersion(text)),
+
+               SpecMenuItem.Command(ShortcutFinger.Home2($"い-stem {vocab.Cloner.SuffixToIStemPreview(text)}"),
+                                    () => vocab.Cloner.SuffixToIStem(text)),
+
+               SpecMenuItem.Command(ShortcutFinger.Home3($"て-stem  {vocab.Cloner.SuffixToTeStemPreview(text)}"),
+                                    () => vocab.Cloner.SuffixToTeStem(text)),
+
+               SpecMenuItem.Command(ShortcutFinger.Home4($"え-stem  {vocab.Cloner.SuffixToEStemPreview(text)}"),
+                                    () => vocab.Cloner.SuffixToEStem(text)),
+
+               SpecMenuItem.Command(ShortcutFinger.Home5($"あ-stem  {vocab.Cloner.SuffixToAStemPreview(text)}"),
+                                    () => vocab.Cloner.SuffixToAStem(text)),
+
+               SpecMenuItem.Command(ShortcutFinger.Up1($"chop-1  {vocab.Cloner.SuffixToChoppedPreview(text, 1)}"),
+                                    () => vocab.Cloner.SuffixToChopped(text, 1)),
+
+               SpecMenuItem.Command(ShortcutFinger.Up2($"chop-2  {vocab.Cloner.SuffixToChoppedPreview(text, 2)}"),
+                                    () => vocab.Cloner.SuffixToChopped(text, 2)),
+
+               SpecMenuItem.Command(ShortcutFinger.Up3($"chop-3  {vocab.Cloner.SuffixToChoppedPreview(text, 3)}"),
+                                    () => vocab.Cloner.SuffixToChopped(text, 3)),
+
+               SpecMenuItem.Command(ShortcutFinger.Up4($"chop-4  {vocab.Cloner.SuffixToChoppedPreview(text, 4)}"),
+                                    () => vocab.Cloner.SuffixToChopped(text, 4))
+            ];
         }
 
         // Nested local function for prefix operations (mirroring Python structure)
         List<SpecMenuItem> BuildPrefixMenuItems()
         {
-            return new List<SpecMenuItem>
-            {
-                SpecMenuItem.Command(ShortcutFinger.Home1($"Dictionary form: {text}{vocab.GetQuestion()}"), 
-                    () => vocab.Cloner.PrefixToDictionaryForm(text)),
-                SpecMenuItem.Command(ShortcutFinger.Home2($"chop-1  {vocab.Cloner.PrefixToChoppedPreview(text, 1)}"), 
-                    () => vocab.Cloner.PrefixToChopped(text, 1)),
-                SpecMenuItem.Command(ShortcutFinger.Home3($"chop-2  {vocab.Cloner.PrefixToChoppedPreview(text, 2)}"), 
-                    () => vocab.Cloner.PrefixToChopped(text, 2)),
-                SpecMenuItem.Command(ShortcutFinger.Home4($"chop-3  {vocab.Cloner.PrefixToChoppedPreview(text, 3)}"), 
-                    () => vocab.Cloner.PrefixToChopped(text, 3))
-            };
+            return
+            [
+               SpecMenuItem.Command(ShortcutFinger.Home1($"Dictionary form: {text}{vocab.GetQuestion()}"),
+                                    () => vocab.Cloner.PrefixToDictionaryForm(text)),
+
+               SpecMenuItem.Command(ShortcutFinger.Home2($"chop-1  {vocab.Cloner.PrefixToChoppedPreview(text, 1)}"),
+                                    () => vocab.Cloner.PrefixToChopped(text, 1)),
+
+               SpecMenuItem.Command(ShortcutFinger.Home3($"chop-2  {vocab.Cloner.PrefixToChoppedPreview(text, 2)}"),
+                                    () => vocab.Cloner.PrefixToChopped(text, 2)),
+
+               SpecMenuItem.Command(ShortcutFinger.Home4($"chop-3  {vocab.Cloner.PrefixToChoppedPreview(text, 3)}"),
+                                    () => vocab.Cloner.PrefixToChopped(text, 3))
+            ];
         }
 
         return SpecMenuItem.Submenu(

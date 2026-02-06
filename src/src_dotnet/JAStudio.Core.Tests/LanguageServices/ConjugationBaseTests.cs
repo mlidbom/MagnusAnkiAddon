@@ -82,7 +82,7 @@ public class ConjugationBaseTests : TestStartingWithEmptyCollection
         RunTests(word, conjugationBases, isIchidan: false, isGodan: true);
     }
 
-    private static void RunTests(string word, string[] conjugationBases, bool isIchidan = false, bool isGodan = false)
+    static void RunTests(string word, string[] conjugationBases, bool isIchidan = false, bool isGodan = false)
     {
         var result = Conjugator.GetWordStems(word, isIchidan, isGodan);
         Assert.Equal(conjugationBases, result);

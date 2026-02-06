@@ -42,7 +42,7 @@ public class VocabNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
       var vocab = VocabNote.Create("本", "book", "ほん");
 
       // Act
-      vocab.SetReadings(new List<string> { "ほん", "もと" });
+      vocab.SetReadings(["ほん", "もと"]);
       var readings = vocab.GetReadings();
 
       // Assert
@@ -120,7 +120,7 @@ public class VocabNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
       // Arrange
       var vocab = new VocabNote();
       vocab.Question.Set("走る");
-      vocab.Forms.SetList(new List<string> { "[駆ける]", "はしる" });
+      vocab.Forms.SetList(["[駆ける]", "はしる"]);
 
       // Act
       var isOwnedBracketed = vocab.Forms.IsOwnedForm("駆ける");
@@ -187,8 +187,8 @@ public class VocabNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
       // Arrange & Act
       var vocab = VocabNote.Create("食べる",
                                    "to eat",
-                                   new List<string> { "たべる" },
-                                   new List<string> { "食う", "召し上がる" });
+                                   ["たべる"],
+                                   ["食う", "召し上がる"]);
 
       // Assert
       var forms = vocab.Forms.AllSet();

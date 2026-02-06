@@ -22,7 +22,7 @@ public class VocabNoteGeneratedData
 
         if (string.IsNullOrEmpty(readings) && KanaUtils.IsOnlyKana(question))
         {
-            vocab.SetReadings(new List<string> { question });
+            vocab.SetReadings([question]);
             vocab.Tags.Set(Tags.Vocab.UsuallyKanaOnly);
         }
 
@@ -66,7 +66,7 @@ public class VocabNoteGeneratedData
 
             if (!vocab.Forms.AllSet().Contains(vocab.GetQuestion()) && vocab.Question.IsValid)
             {
-                var updatedForms = vocab.Forms.AllSet().Union(new[] { vocab.GetQuestion() }).ToHashSet();
+                var updatedForms = vocab.Forms.AllSet().Union([vocab.GetQuestion()]).ToHashSet();
                 vocab.Forms.SetSet(updatedForms);
             }
         }

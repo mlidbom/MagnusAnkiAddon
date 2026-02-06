@@ -52,7 +52,7 @@ public static class CollectionFactory
       return new CollectionScope();
    }
 
-   private class CollectionScope : IDisposable
+   class CollectionScope : IDisposable
    {
       public void Dispose()
       {

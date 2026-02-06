@@ -112,7 +112,7 @@ public class TextAnalysisWithSelectDataTests : CollectionUsingTest
                                .Select(w => w.ParsedForm)
                                .Distinct()
                                .ToList();
-      Assert.Equal(new List<string> { "勝つ", "う", "んだ", "ん", "だ" }, words);
+      Assert.Equal(["勝つ", "う", "んだ", "ん", "だ"], words);
    }
 
    // test_no_memory_leak_weak_references_are_disposed - Skipped

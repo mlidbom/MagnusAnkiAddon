@@ -13,58 +13,58 @@ public class DictLookup
    readonly TemporaryServiceCollection _services;
    internal DictLookup(TemporaryServiceCollection services) => _services = services;
 
-    private static readonly JamdictThreadingWrapper JamdictThreadingWrapper = new();
-    
-    private static HashSet<string>? _allWordForms;
-    private static HashSet<string>? _allNameForms;
+   static readonly JamdictThreadingWrapper JamdictThreadingWrapper = new();
+
+   static HashSet<string>? _allWordForms;
+   static HashSet<string>? _allNameForms;
 
     // Cache dictionaries for @cache decorator equivalent
-    private static readonly ConcurrentDictionary<(string, string), DictLookupResult> TryLookupWithReadingCache = new();
-    private static readonly ConcurrentDictionary<string, List<DictEntry>> LookupWordRawCache = new();
-    private static readonly ConcurrentDictionary<string, List<DictEntry>> LookupNameRawCache = new();
-    private static readonly ConcurrentDictionary<string, bool> IsWordCache = new();
+    static readonly ConcurrentDictionary<(string, string), DictLookupResult> TryLookupWithReadingCache = new();
+    static readonly ConcurrentDictionary<string, List<DictEntry>> LookupWordRawCache = new();
+    static readonly ConcurrentDictionary<string, List<DictEntry>> LookupNameRawCache = new();
+    static readonly ConcurrentDictionary<string, bool> IsWordCache = new();
 
-    private static HashSet<string> FindAllWords()
+    static HashSet<string> FindAllWords()
     {
         var stopwatch = Stopwatch.StartNew();
         MyLog.Info("Prepopulating all word forms from jamdict.");
-        
+
         var kanjiFormsQuery = "SELECT distinct text FROM Kanji";
         var kanaFormsQuery = "SELECT distinct text FROM Kana";
-        
+
         var kanjiForms = JamdictThreadingWrapper.RunStringQuery(kanjiFormsQuery);
         var kanaForms = JamdictThreadingWrapper.RunStringQuery(kanaFormsQuery);
-        
+
         var result = new HashSet<string>(kanjiForms);
         result.UnionWith(kanaForms);
-        
+
         stopwatch.Stop();
         MyLog.Info($"Prepopulating all word forms from jamdict completed in {stopwatch.ElapsedMilliseconds}ms");
-        
+
         return result;
     }
 
-    private static HashSet<string> FindAllNames()
+    static HashSet<string> FindAllNames()
     {
         var stopwatch = Stopwatch.StartNew();
         MyLog.Info("Prepopulating all name forms from jamdict.");
-        
+
         var kanjiFormsQuery = "SELECT distinct text FROM NEKanji";
         var kanaFormsQuery = "SELECT distinct text FROM NEKana";
-        
+
         var kanjiForms = JamdictThreadingWrapper.RunStringQuery(kanjiFormsQuery);
         var kanaForms = JamdictThreadingWrapper.RunStringQuery(kanaFormsQuery);
-        
+
         var result = new HashSet<string>(kanjiForms);
         result.UnionWith(kanaForms);
-        
+
         stopwatch.Stop();
         MyLog.Info($"Prepopulating all name forms from jamdict completed in {stopwatch.ElapsedMilliseconds}ms");
-        
+
         return result;
     }
 
-    private static HashSet<string> AllWordForms()
+    static HashSet<string> AllWordForms()
     {
         if (_allWordForms == null)
         {
@@ -73,7 +73,7 @@ public class DictLookup
         return _allWordForms;
     }
 
-    private static HashSet<string> AllNameForms()
+    static HashSet<string> AllNameForms()
     {
         if (_allNameForms == null)
         {
@@ -87,7 +87,7 @@ public class DictLookup
         if (vocab.Readings.Get().Any())
         {
             return LookupWordOrNameWithMatchingReading(
-                vocab.Question.WithoutNoiseCharacters, 
+                vocab.Question.WithoutNoiseCharacters,
                 vocab.Readings.Get()
             );
         }
@@ -101,11 +101,11 @@ public class DictLookup
         {
             throw new ArgumentException("readings may not be empty. If you want to match without filtering on reading, use LookupWordOrName instead");
         }
-        
+
         return TryLookupWordOrNameWithMatchingReading(word, readings);
     }
 
-    private static DictLookupResult TryLookupWordOrNameWithMatchingReading(string word, List<string> readings)
+    static DictLookupResult TryLookupWordOrNameWithMatchingReading(string word, List<string> readings)
     {
         if (!MightBeEntry(word))
         {
@@ -116,11 +116,11 @@ public class DictLookup
         var readingsKey = string.Join(",", readings.OrderBy(x => x));
         var cacheKey = (word, readingsKey);
 
-        return TryLookupWithReadingCache.GetOrAdd(cacheKey, _ => 
+        return TryLookupWithReadingCache.GetOrAdd(cacheKey, _ =>
             TryLookupWordOrNameWithMatchingReadingInner(word, readings));
     }
 
-    private static DictLookupResult TryLookupWordOrNameWithMatchingReadingInner(string word, List<string> readings)
+    static DictLookupResult TryLookupWordOrNameWithMatchingReadingInner(string word, List<string> readings)
     {
         List<DictEntry> KanjiFormMatches(List<DictEntry> lookup)
         {
@@ -145,8 +145,8 @@ public class DictLookup
             lookup = LookupNameRaw(word);
         }
 
-        var matching = KanaUtils.IsOnlyKana(word) 
-            ? AnyKanaOnlyMatches(lookup) 
+        var matching = KanaUtils.IsOnlyKana(word)
+            ? AnyKanaOnlyMatches(lookup)
             : KanjiFormMatches(lookup);
 
         return new DictLookupResult(matching, word, readings);
@@ -190,7 +190,7 @@ public class DictLookup
         return new DictLookupResult(entries, word, new List<string>());
     }
 
-    private static List<DictEntry> LookupWordRaw(string word)
+    static List<DictEntry> LookupWordRaw(string word)
     {
         if (!MightBeWord(word))
         {
@@ -200,7 +200,7 @@ public class DictLookup
         return LookupWordRawCache.GetOrAdd(word, LookupWordRawInner);
     }
 
-    private static List<DictEntry> LookupWordRawInner(string word)
+    static List<DictEntry> LookupWordRawInner(string word)
     {
         var lookupResult = JamdictThreadingWrapper.Lookup(word, includeNames: false);
         var entries = lookupResult.Entries;
@@ -209,11 +209,11 @@ public class DictLookup
         {
             return entries;
         }
-        
+
         return entries.Where(ent => ent.IsKanaOnly()).ToList();
     }
 
-    private static List<DictEntry> LookupNameRaw(string word)
+    static List<DictEntry> LookupNameRaw(string word)
     {
         if (!MightBeName(word))
         {
@@ -223,7 +223,7 @@ public class DictLookup
         return LookupNameRawCache.GetOrAdd(word, LookupNameRawInner);
     }
 
-    private static List<DictEntry> LookupNameRawInner(string word)
+    static List<DictEntry> LookupNameRawInner(string word)
     {
         var lookupResult = JamdictThreadingWrapper.Lookup(word, includeNames: true);
         return lookupResult.Names;
@@ -254,7 +254,7 @@ public class DictLookup
         return IsWordCache.GetOrAdd(word, IsWordInner);
     }
 
-    private static bool IsWordInner(string word)
+    static bool IsWordInner(string word)
     {
         return LookupWord(word).FoundWords();
     }

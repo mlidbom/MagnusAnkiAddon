@@ -8,8 +8,8 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;
 
 public sealed class JNTokenizer
 {
-    private static readonly HashSet<string> CharactersThatMayConfuseJanomeSoWeReplaceThemWithOrdinaryFullWidthSpaces = 
-        new() { "!", "！", "|", "（", "）" };
+    private static readonly HashSet<string> CharactersThatMayConfuseJanomeSoWeReplaceThemWithOrdinaryFullWidthSpaces =
+       ["!", "！", "|", "（", "）"];
 
     private readonly dynamic _tokenizer;
 

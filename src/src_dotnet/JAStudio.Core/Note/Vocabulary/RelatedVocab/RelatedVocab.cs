@@ -76,17 +76,17 @@ public class RelatedVocab
     public HashSet<JPNote> GetDirectDependencies()
     {
         var dependencies = new HashSet<JPNote>();
-        
+
         foreach (var kanji in MainFormKanjiNotes)
         {
             dependencies.Add(kanji);
         }
-        
+
         foreach (var compoundPart in _vocab.CompoundParts.AllNotes())
         {
             dependencies.Add(compoundPart);
         }
-        
+
         return dependencies;
     }
 }

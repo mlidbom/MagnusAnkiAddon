@@ -52,7 +52,7 @@ public class VocabNotePartsOfSpeech
         return question.Length > 2 && question.EndsWith("する");
     }
 
-    private static readonly HashSet<string> GaSuruNiSuruEndings = new() { "がする", "にする", "くする" };
+    private static readonly HashSet<string> GaSuruNiSuruEndings = ["がする", "にする", "くする"];
     
     public bool IsNiSuruGaSuruKuSuruCompound()
     {
@@ -83,7 +83,7 @@ public class VocabNotePartsOfSpeech
             question = question.Substring(0, question.Length - 2);
             var readings = Vocab.GetReadings().Select(r => r.Substring(0, r.Length - 2)).ToList();
             lookup = DictLookup.LookupWordOrNameWithMatchingReading(question, readings);
-            var pos = lookup.PartsOfSpeech().Intersect(new[] { POS.Transitive, POS.Intransitive }).ToList();
+            var pos = lookup.PartsOfSpeech().Intersect([POS.Transitive, POS.Intransitive]).ToList();
             var value = POS.SuruVerb + ", " + string.Join(", ", pos);
             SetRawStringValue(value);
         }

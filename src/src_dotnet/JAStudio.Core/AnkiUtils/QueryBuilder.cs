@@ -22,12 +22,12 @@ public class QueryBuilder
       _services = services;
    }
 
-    private const string ExcludedDeckSubstring = "*Excluded*";
+   const string ExcludedDeckSubstring = "*Excluded*";
 
     /// <summary>
     /// Combines clauses with OR, wrapping in parentheses if multiple clauses.
     /// </summary>
-    private static string OrClauses(IEnumerable<string> clauses)
+    static string OrClauses(IEnumerable<string> clauses)
     {
         var clauseList = clauses.ToList();
         return clauseList.Count == 1 ? clauseList[0] : $"({string.Join(" OR ", clauseList)})";
@@ -36,7 +36,7 @@ public class QueryBuilder
     /// <summary>
     /// Creates a field search for whole word matches using regex word boundaries.
     /// </summary>
-    private static string FieldContainsWord(string field, params string[] words)
+    static string FieldContainsWord(string field, params string[] words)
     {
         return OrClauses(words.Select(word => $"\"{field}:re:\\\\b{word}\\\\b\""));
     }
@@ -44,7 +44,7 @@ public class QueryBuilder
     /// <summary>
     /// Creates a field search for substring matches using wildcards.
     /// </summary>
-    private static string FieldContainsString(string field, params string[] words)
+    static string FieldContainsString(string field, params string[] words)
     {
         return OrClauses(words.Select(word => $"\"{field}:*{word}*\""));
     }
@@ -176,7 +176,7 @@ public class QueryBuilder
     /// Creates a vocab clause for a single form.
     /// Ported from vocab_clause()
     /// </summary>
-    private static string VocabClause(string form)
+    static string VocabClause(string form)
     {
         return FieldContainsWord(NoteFieldsConstants.Vocab.UserForms, form);
     }

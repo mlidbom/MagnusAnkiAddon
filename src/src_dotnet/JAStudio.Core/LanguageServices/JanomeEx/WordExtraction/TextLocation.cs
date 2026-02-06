@@ -27,17 +27,17 @@ public sealed class TextAnalysisLocation
     public TextAnalysisLocation(TextAnalysis analysis, IAnalysisToken token, int characterStartIndex, int tokenIndex)
     {
         Token = token;
-        IsShadowedBy = new List<TextAnalysisLocation>();
-        Shadows = new List<TextAnalysisLocation>();
+        IsShadowedBy = [];
+        Shadows = [];
         Analysis = analysis;
         TokenIndex = tokenIndex;
         CharacterStartIndex = characterStartIndex;
         CharacterEndIndex = characterStartIndex + token.Surface.Length - 1;
 
-        DisplayVariants = new List<CandidateWordVariant>();
-        IndexingVariants = new List<CandidateWordVariant>();
-        CandidateWords = new List<CandidateWord>();
-        DisplayWords = new List<CandidateWord>();
+        DisplayVariants = [];
+        IndexingVariants = [];
+        CandidateWords = [];
+        DisplayWords = [];
     }
 
     public override string ToString()
@@ -155,7 +155,7 @@ TextLocation('{CharacterStartIndex}-{CharacterEndIndex}, {Token.Surface} | {Toke
     // todo: having this check here only means that marking a compound as an inflecting word has no effect, and figuring out why things are not working can be quite a pain
     public bool IsInflectingWord()
     {
-        var vocab = App.Col().Vocab.WithAnyFormIn(new List<string> { Token.BaseForm, Token.Surface });
+        var vocab = App.Col().Vocab.WithAnyFormIn([Token.BaseForm, Token.Surface]);
         return vocab.Any(voc => voc.MatchingConfiguration.BoolFlags.IsInflectingWord.IsActive);
     }
 }

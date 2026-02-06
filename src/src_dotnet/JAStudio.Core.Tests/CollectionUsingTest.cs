@@ -10,7 +10,7 @@ public abstract class CollectionUsingTest : IDisposable
 
    public void Dispose() => _collectionScope.Dispose();
 
-   private readonly IDisposable _collectionScope;
+   readonly IDisposable _collectionScope;
 }
 
 public abstract class TestStartingWithEmptyCollection : CollectionUsingTest

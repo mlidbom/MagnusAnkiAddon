@@ -8,11 +8,12 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches;
 
 public sealed class DictionaryMatch : Match
 {
-    private static readonly List<System.Func<MatchInspector, FailedMatchRequirement?>> RequirementsList = new()
-    {
-        new Forbids("dict_match_with_dictionary_form_stem", 
-            it => it.StartLocationIsDictionaryVerbInflection).ApplyTo,
-    };
+    private static readonly List<System.Func<MatchInspector, FailedMatchRequirement?>> RequirementsList =
+    [
+       new Forbids("dict_match_with_dictionary_form_stem",
+                   it => it.StartLocationIsDictionaryVerbInflection).ApplyTo
+
+    ];
 
     private static readonly List<System.Func<MatchInspector, FailedMatchRequirement?>> CombinedRequirements;
 
@@ -23,7 +24,7 @@ public sealed class DictionaryMatch : Match
             .GetValue(null) as List<System.Func<MatchInspector, FailedMatchRequirement?>>;
 
         CombinedRequirements = new List<System.Func<MatchInspector, FailedMatchRequirement?>>(
-            matchRequirements ?? new());
+            matchRequirements ?? []);
         CombinedRequirements.AddRange(RequirementsList);
     }
 

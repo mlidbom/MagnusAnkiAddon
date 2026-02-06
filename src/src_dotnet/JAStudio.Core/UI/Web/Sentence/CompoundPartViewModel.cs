@@ -46,9 +46,9 @@ public class CompoundPartViewModel
     {
         if (!Settings.HideAllCompounds())
         {
-            if (!Settings.ShowCompoundPartsInSentenceBreakdown()) return new List<CompoundPartViewModel>();
-            visited ??= new HashSet<long>();
-            if (visited.Contains(vocabNote.GetId())) return new List<CompoundPartViewModel>();
+            if (!Settings.ShowCompoundPartsInSentenceBreakdown()) return [];
+            visited ??= [];
+            if (visited.Contains(vocabNote.GetId())) return [];
 
             visited.Add(vocabNote.GetId());
 
@@ -74,13 +74,13 @@ public class CompoundPartViewModel
             var godanPotential = App.Col().Vocab.WithFormPreferDisambiguationNameOrExactMatch(godanPotentialPartBase);
             if (godan.Any() && godanPotential.Any())
             {
-                return new List<CompoundPartViewModel>
-                {
-                    new CompoundPartViewModel(godan.First(), depth, config),
-                    new CompoundPartViewModel(godanPotential.First(), depth, config)
-                };
+                return
+                [
+                   new CompoundPartViewModel(godan.First(), depth, config),
+                   new CompoundPartViewModel(godanPotential.First(), depth, config)
+                ];
             }
-            return new List<CompoundPartViewModel>();
+            return [];
         }
 
         // We may still have parts if janome tokenizes a word we consider a compound as a single token

@@ -7,7 +7,7 @@ namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 
 public class RelatedVocabData
 {
-    private static readonly Lazy<RelatedVocabDataSerializer> SerializerInstance = new(() => new RelatedVocabDataSerializer());
+   static readonly Lazy<RelatedVocabDataSerializer> SerializerInstance = new(() => new RelatedVocabDataSerializer());
 
     public static RelatedVocabDataSerializer Serializer() => SerializerInstance.Value;
 

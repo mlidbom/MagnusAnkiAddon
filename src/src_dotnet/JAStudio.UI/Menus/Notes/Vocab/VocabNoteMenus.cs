@@ -32,7 +32,7 @@ public static class VocabNoteMenus
         );
     }
 
-    private static SpecMenuItem BuildOpenMenuSpec(VocabNote vocab)
+    static SpecMenuItem BuildOpenMenuSpec(VocabNote vocab)
     {
         return SpecMenuItem.Submenu(
             ShortcutFinger.Home1("Open"),
@@ -46,7 +46,7 @@ public static class VocabNoteMenus
         );
     }
 
-    private static SpecMenuItem BuildOpenVocabMenuSpec(VocabNote vocab)
+    static SpecMenuItem BuildOpenVocabMenuSpec(VocabNote vocab)
     {
         var items = new List<SpecMenuItem>
         {
@@ -68,7 +68,7 @@ public static class VocabNoteMenus
         return SpecMenuItem.Submenu(ShortcutFinger.Home1("Vocab"), items);
     }
 
-    private static SpecMenuItem BuildOpenHomonymsMenuSpec(VocabNote vocab)
+    static SpecMenuItem BuildOpenHomonymsMenuSpec(VocabNote vocab)
     {
         var readings = vocab.GetReadings();
         var items = new List<SpecMenuItem>();
@@ -84,7 +84,7 @@ public static class VocabNoteMenus
         return SpecMenuItem.Submenu(ShortcutFinger.Up1("Homonyms"), items);
     }
 
-    private static SpecMenuItem BuildOpenSentencesMenuSpec(VocabNote vocab)
+    static SpecMenuItem BuildOpenSentencesMenuSpec(VocabNote vocab)
     {
         var items = new List<SpecMenuItem>
         {
@@ -105,14 +105,14 @@ public static class VocabNoteMenus
         return SpecMenuItem.Submenu(ShortcutFinger.Home2("Sentences"), items);
     }
 
-    private static SpecMenuItem BuildOpenKanjiMenuSpec(VocabNote vocab)
+    static SpecMenuItem BuildOpenKanjiMenuSpec(VocabNote vocab)
     {
         var query = QueryBuilder.KanjiInString(vocab.GetQuestion());
         return SpecMenuItem.Command(ShortcutFinger.Home3("Kanji"),
             () => AnkiFacade.ExecuteLookup(query));
     }
 
-    private static SpecMenuItem? BuildOpenErgativeTwinMenuSpec(VocabNote vocab)
+    static SpecMenuItem? BuildOpenErgativeTwinMenuSpec(VocabNote vocab)
     {
         var ergativeTwinQuestion = vocab.RelatedNotes.ErgativeTwin.Get();
         if (string.IsNullOrEmpty(ergativeTwinQuestion))
@@ -126,7 +126,7 @@ public static class VocabNoteMenus
             () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(ergativeTwinNotes)));
     }
 
-    private static SpecMenuItem BuildCreateMenuSpec(VocabNote vocab)
+    static SpecMenuItem BuildCreateMenuSpec(VocabNote vocab)
     {
         var items = new List<SpecMenuItem>
         {
@@ -139,7 +139,7 @@ public static class VocabNoteMenus
         return SpecMenuItem.Submenu(ShortcutFinger.Home3("Create"), items);
     }
 
-    private static SpecMenuItem BuildCreateCloneToFormMenuSpec(VocabNote vocab)
+    static SpecMenuItem BuildCreateCloneToFormMenuSpec(VocabNote vocab)
     {
         var col = Core.App.Col();
         var formsWithNoVocab = vocab.Forms.AllSet()
@@ -158,7 +158,7 @@ public static class VocabNoteMenus
         return SpecMenuItem.Submenu(ShortcutFinger.Home1("Clone to form"), items);
     }
 
-    private static SpecMenuItem BuildCreateNounVariationsMenuSpec(VocabNote vocab)
+    static SpecMenuItem BuildCreateNounVariationsMenuSpec(VocabNote vocab)
     {
         var items = new List<SpecMenuItem>
         {
@@ -173,7 +173,7 @@ public static class VocabNoteMenus
         return SpecMenuItem.Submenu(ShortcutFinger.Home2("Noun variations"), items);
     }
 
-    private static SpecMenuItem BuildCreateVerbVariationsMenuSpec(VocabNote vocab)
+    static SpecMenuItem BuildCreateVerbVariationsMenuSpec(VocabNote vocab)
     {
         var items = new List<SpecMenuItem>
         {
@@ -193,7 +193,7 @@ public static class VocabNoteMenus
         return SpecMenuItem.Submenu(ShortcutFinger.Home3("Verb variations"), items);
     }
 
-    private static SpecMenuItem BuildCreateMiscMenuSpec(VocabNote vocab)
+    static SpecMenuItem BuildCreateMiscMenuSpec(VocabNote vocab)
     {
         var items = new List<SpecMenuItem>
         {
@@ -208,7 +208,7 @@ public static class VocabNoteMenus
         return SpecMenuItem.Submenu(ShortcutFinger.Home4("Misc"), items);
     }
 
-    private static SpecMenuItem BuildCopyMenuSpec(VocabNote vocab)
+    static SpecMenuItem BuildCopyMenuSpec(VocabNote vocab)
     {
         var items = new List<SpecMenuItem>
         {
@@ -224,7 +224,7 @@ public static class VocabNoteMenus
         return SpecMenuItem.Submenu(ShortcutFinger.Home4("Copy"), items);
     }
 
-    private static SpecMenuItem BuildMiscMenuSpec(VocabNote vocab)
+    static SpecMenuItem BuildMiscMenuSpec(VocabNote vocab)
     {
         var items = new List<SpecMenuItem>
         {
@@ -244,7 +244,7 @@ public static class VocabNoteMenus
         return SpecMenuItem.Submenu(ShortcutFinger.Home5("Misc"), items);
     }
 
-    private static SpecMenuItem BuildRemoveMenuSpec(VocabNote vocab)
+    static SpecMenuItem BuildRemoveMenuSpec(VocabNote vocab)
     {
         var items = new List<SpecMenuItem>
         {
@@ -273,25 +273,25 @@ public static class VocabNoteMenus
     }
 
     // Action handlers
-    private static void OnEditVocabFlags(VocabNote vocab)
+    static void OnEditVocabFlags(VocabNote vocab)
     {
         var dialog = new VocabFlagsDialog(vocab);
         dialog.Show();
     }
 
-    private static void OnAcceptVocabMeaning(VocabNote vocab)
+    static void OnAcceptVocabMeaning(VocabNote vocab)
     {
         var meaning = FormatVocabMeaning(vocab.GetAnswer());
         vocab.User.Answer.Set(meaning);
     }
 
-    private static string FormatVocabMeaning(string meaning)
+    static string FormatVocabMeaning(string meaning)
     {
         return Core.SysUtils.ExStr.StripHtmlAndBracketMarkupAndNoiseCharacters(
             meaning.Replace(" SOURCE", "").Replace(", ", "/").Replace(" ", "-").ToLower());
     }
 
-    private static void CopyToClipboard(string text)
+    static void CopyToClipboard(string text)
     {
         try
         {
