@@ -26,7 +26,7 @@ def add_to_qt_menu(target_qt_menu: QMenu, specs: Iterable[SpecMenuItem]) -> None
             add_to_qt_menu(qt_sub_menu, spec.Children)
         elif spec.IsSeparator:
             target_qt_menu.addSeparator()
-        else:
+        elif spec.IsCommand:
             action = QAction(spec.Name, target_qt_menu)
             action.setEnabled(spec.IsEnabled)
 
@@ -36,3 +36,5 @@ def add_to_qt_menu(target_qt_menu: QMenu, specs: Iterable[SpecMenuItem]) -> None
             if spec.IsCommand:
                 action.triggered.connect(lambda checked, a=spec.Action: a.Invoke())  # pyright: ignore [reportUnknownMemberType, reportUnknownLambdaType]
             target_qt_menu.addAction(action)  # pyright: ignore [reportUnknownMemberType]
+        else:
+            raise Exception(f"Unknown menu spec type: {spec}")
