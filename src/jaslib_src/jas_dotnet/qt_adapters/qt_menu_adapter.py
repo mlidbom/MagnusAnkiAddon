@@ -13,7 +13,6 @@ if TYPE_CHECKING:
 
     from JAStudio.UI.Menus.UIAgnosticMenuStructure import SpecMenuItem
 
-
 def add_to_qt_menu(target_qt_menu: QMenu, specs: Iterable[SpecMenuItem]) -> None:
     """
     Add C# menu specs to a parent QMenu. This is the single integration point for adding C#-defined menus to PyQt.
@@ -22,11 +21,11 @@ def add_to_qt_menu(target_qt_menu: QMenu, specs: Iterable[SpecMenuItem]) -> None
         if not spec.IsVisible:
             continue
 
-        if spec.IsSeparator:
-            target_qt_menu.addSeparator()
-        elif spec.IsSubmenu:
+        if spec.IsSubmenu:
             qt_sub_menu = non_optional(target_qt_menu.addMenu(spec.Name))
             add_to_qt_menu(qt_sub_menu, spec.Children)
+        elif spec.IsSeparator:
+            target_qt_menu.addSeparator()
         else:
             action = QAction(spec.Name, target_qt_menu)
             action.setEnabled(spec.IsEnabled)
