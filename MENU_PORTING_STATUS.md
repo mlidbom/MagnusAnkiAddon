@@ -185,17 +185,17 @@ When porting menus/dialogs:
 - ✅ COMPLETE View (Empty in Python)
 
 ### Kanji String Menu Actions (notes/kanji/string_menu.py)
-- NOT STARTED Highlighted Vocab
+- ✅ COMPLETE Highlighted Vocab
   - {vocab} (dynamic: one per primary vocab, positioned)
   - [Last]
   - Remove (conditional: if string is in primary vocab)
-- NOT STARTED Add
+- ✅ COMPLETE Add
   - Similar meaning
   - Confused with
-- NOT STARTED Make primary Onyomi Reading (conditional: if katakana string in readings)
-- NOT STARTED Remove primary Onyomi Reading (conditional: if katakana string in primary readings)
-- NOT STARTED Make primary Kunyomi reading (conditional: if hiragana string in readings)
-- NOT STARTED Remove primary Kunyomi reading (conditional: if hiragana string in primary readings)
+- ✅ COMPLETE Make primary Onyomi Reading (conditional: if katakana string in readings)
+- ✅ COMPLETE Remove primary Onyomi Reading (conditional: if katakana string in primary readings)
+- ✅ COMPLETE Make primary Kunyomi reading (conditional: if hiragana string in readings)
+- ✅ COMPLETE Remove primary Kunyomi reading (conditional: if hiragana string in primary readings)
 
 ### Vocab Note Actions (notes/vocab/main.py)
 - ✅ COMPLETE Note actions
@@ -212,11 +212,11 @@ When porting menus/dialogs:
 - ✅ COMPLETE View (Empty in Python)
 
 ### Vocab String Menu Actions (notes/vocab/string_menu.py)
-- NOT STARTED Add (Synonym, Confused with, Antonym, Form, See also, Perfect synonym - conditional)
-- NOT STARTED Set (Ergative twin, Derived from)
-- NOT STARTED Remove (Synonym, Confused with, Antonym, Ergative twin, Form, See also, Perfect synonym, Derived from - all conditional)
-- NOT STARTED Sentence (Add/Remove highlight, Mark as incorrect - conditional)
-- NOT STARTED Create combined {string} (Prefix/Suffix variations)
+- ✅ COMPLETE Add submenu (7 items): synonym, synonyms transitively, confused with, antonym, form, see also, perfect synonym
+- ✅ COMPLETE Set submenu (2 items): ergative twin, derived from
+- ✅ COMPLETE Remove submenu (8 items): synonym, confused with, antonym, ergative twin, form, see also, perfect synonym, derived from  
+- ✅ COMPLETE Sentence submenu (3 items): add highlight, remove highlight, mark as incorrect match
+- NOT STARTED Create combined submenu (prefix/postfix operations)
 
 ### Sentence Note Actions (notes/sentence/main.py)
 - ✅ COMPLETE Note actions
@@ -234,11 +234,11 @@ When porting menus/dialogs:
 
 ## Summary Statistics
 - **Total menu items tracked**: ~200+ items
-- **COMPLETE**: ~125 items (QueryBuilder, OpenInAnkiMenus, WebSearch, Options/Readings dialogs, all Local Actions, **All 3 note type actions complete**, **Universal actions complete**, **Create note actions complete**, **Reparse action complete**, **Vocab string menu complete**)
+- **COMPLETE**: ~145 items (QueryBuilder, OpenInAnkiMenus, WebSearch, Options/Readings dialogs, all Local Actions, **All 3 note type actions complete**, **Universal actions complete**, **Create note actions complete**, **Reparse action complete**, **Vocab string menu complete**, **Kanji string menu complete**)
 - **SCAFFOLDED**: ~20 items (menu structure exists, some actions still TODO)
 - **EXCLUDED**: ~7 items (Debug menu - Python runtime diagnostics not relevant to .NET)
-- **MISSING**: ~48+ items (Kanji and Sentence string menus not yet ported)
-- **Porting completion**: ~62% complete, ~10% scaffolded, ~4% excluded, ~24% not started
+- **MISSING**: ~28+ items (Sentence string menu not yet ported, vocab create combined)
+- **Porting completion**: ~72% complete, ~10% scaffolded, ~4% excluded, ~14% not started
 
 ### Phase 1 Complete ✅
 - QueryBuilder (21 methods) - ✅ COMPLETE
