@@ -6,6 +6,7 @@ from Avalonia.Controls.Templates import DataTemplates
 from Avalonia.Platform import IPlatformSettings
 from Avalonia.Controls import IResourceDictionary, MenuItem
 from Avalonia.Data import IndexerDescriptor, IBinding
+from JAStudio.UI.Menus.UIAgnosticMenuStructure import MenuItem
 from System import Action
 from System.Collections.Generic import IEnumerable_1
 
@@ -48,6 +49,8 @@ class App(Application):
 
 
 class DialogHost(abc.ABC):
+    @staticmethod
+    def BuildBrowserMenuSpec(selectedCardIds: typing.Any, selectedNoteIds: typing.Any) -> MenuItem: ...
     @staticmethod
     def Initialize() -> None: ...
     @staticmethod

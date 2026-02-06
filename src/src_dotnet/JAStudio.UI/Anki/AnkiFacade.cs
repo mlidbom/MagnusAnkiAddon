@@ -163,6 +163,44 @@ public static class AnkiFacade
       });
    }
 
+   /// <summary>Suspend all cards for the given note ID.</summary>
+   public static void SuspendAllCardsForNote(int noteId)
+   {
+      PythonEnvironment.Use(() =>
+      {
+         try
+         {
+            dynamic noteEx = Py.Import("jastudio.anki_extentions.note_ex");
+            dynamic note = noteEx.NoteEx.from_id(noteId);
+            note.suspend_all_cards();
+         }
+         catch(Exception ex)
+         {
+            JALogger.Log($"AnkiFacade.SuspendAllCardsForNote failed: {ex.Message}");
+            throw;
+         }
+      });
+   }
+
+   /// <summary>Unsuspend all cards for the given note ID.</summary>
+   public static void UnsuspendAllCardsForNote(int noteId)
+   {
+      PythonEnvironment.Use(() =>
+      {
+         try
+         {
+            dynamic noteEx = Py.Import("jastudio.anki_extentions.note_ex");
+            dynamic note = noteEx.NoteEx.from_id(noteId);
+            note.un_suspend_all_cards();
+         }
+         catch(Exception ex)
+         {
+            JALogger.Log($"AnkiFacade.UnsuspendAllCardsForNote failed: {ex.Message}");
+            throw;
+         }
+      });
+   }
+
    /// <summary>Helper to convert C# list to Python list.</summary>
    private static dynamic ToPythonList(System.Collections.Generic.List<long> items)
    {

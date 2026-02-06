@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.Anki;
 using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.Note;
@@ -10,7 +11,8 @@ public abstract class JPNote
    public NoteFlushGuard RecursiveFlushGuard { get; }
    int _hashValue;
 
-   readonly HashSet<string> _unsuspendedCards = new();
+   // Dictionary tracks card suspend status: true = active/unsuspended, false = suspended
+   readonly Dictionary<string, bool> _cardStatus = new();
    public NoteTags Tags { get; }
 
    readonly Dictionary<string, string> _fields;
@@ -31,19 +33,8 @@ public abstract class JPNote
 
    public void SetStudyingStatus(CardStudyingStatus status)
    {
-      if(_unsuspendedCards.Contains(status.CardType))
-      {
-         if(status.IsSuspended)
-         {
-            _unsuspendedCards.Remove(status.CardType);
-         }
-      } else
-      {
-         if(!status.IsSuspended)
-         {
-            _unsuspendedCards.Add(status.CardType);
-         }
-      }
+      // Update card status: true = active/unsuspended, false = suspended
+      _cardStatus[status.CardType] = !status.IsSuspended;
    }
 
    public JPNoteData GetData() => new(GetId(), _fields, Tags.ToInternedStringList());
@@ -65,20 +56,52 @@ public abstract class JPNote
    {
       if(cardType == null)
       {
-         return _unsuspendedCards.Count > 0;
+         // Return true if ANY card is active/unsuspended
+         return _cardStatus.Any(kvp => kvp.Value);
       }
 
-      return _unsuspendedCards.Contains(cardType);
+      // Return true if specific card type is active/unsuspended
+      return _cardStatus.TryGetValue(cardType, out var isActive) && isActive;
    }
 
    public bool IsStudyingRead() => IsStudying(CardTypes.Reading);
    public bool IsStudyingListening() => IsStudying(CardTypes.Listening);
 
-   public void SuspendAllCards() => throw new NotImplementedException();
+   public void SuspendAllCards()
+   {
+      // Suspend all cards in Anki via service locator
+      AnkiCardOperations.SuspendAllCardsForNote(GetId());
+      
+      // Update local status for all known card types
+      var cardTypes = _cardStatus.Keys.ToList();
+      foreach (var cardType in cardTypes)
+      {
+         _cardStatus[cardType] = false; // false = suspended
+      }
+      
+      Flush();
+   }
 
-   public void UnsuspendAllCards() => throw new NotImplementedException();
+   public void UnsuspendAllCards()
+   {
+      // Unsuspend all cards in Anki via service locator
+      AnkiCardOperations.UnsuspendAllCardsForNote(GetId());
+      
+      // Update local status for all known card types
+      var cardTypes = _cardStatus.Keys.ToList();
+      foreach (var cardType in cardTypes)
+      {
+         _cardStatus[cardType] = true; // true = active/unsuspended
+      }
+      
+      Flush();
+   }
 
-   public bool HasSuspendedCards() => throw new NotImplementedException();
+   public bool HasSuspendedCards()
+   {
+      // Return true if ANY card is suspended (value == false)
+      return _cardStatus.Any(kvp => !kvp.Value);
+   }
 
    public bool HasActiveCards() => IsStudying();
 

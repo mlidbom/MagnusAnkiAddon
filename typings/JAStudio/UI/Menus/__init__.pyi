@@ -1,13 +1,31 @@
-import abc
+import typing, abc
+from JAStudio.UI.Menus.UIAgnosticMenuStructure import MenuItem
 from System.Collections.Generic import List_1
 from Avalonia.Controls import MenuItem
-from JAStudio.UI.Menus.UIAgnosticMenuStructure import MenuItem
+from JAStudio.Core.Note import KanjiNote, SentenceNote, VocabNote
 from System import Func_1
+
+class BrowserMenus(abc.ABC):
+    @staticmethod
+    def BuildBrowserMenuSpec(selectedCardIds: typing.Any, selectedNoteIds: typing.Any) -> MenuItem: ...
+
 
 class JapaneseMainMenu:
     def __init__(self, searchText: str = ...) -> None: ...
     def BuildMenu(self) -> List_1[MenuItem]: ...
     def BuildMenuSpec(self) -> List_1[MenuItem]: ...
+
+
+class KanjiNoteMenus(abc.ABC):
+    @staticmethod
+    def BuildNoteActionsMenuSpec(kanji: KanjiNote) -> MenuItem: ...
+    @staticmethod
+    def BuildViewMenuSpec() -> MenuItem: ...
+
+
+class KanjiStringMenus(abc.ABC):
+    @staticmethod
+    def BuildStringMenuSpec(text: str, kanji: KanjiNote) -> MenuItem: ...
 
 
 class NoteContextMenu:
@@ -27,6 +45,30 @@ class OpenInAnkiMenus(abc.ABC):
     def BuildOpenInAnkiMenu(getSearchText: Func_1[str]) -> MenuItem: ...
     @staticmethod
     def BuildOpenInAnkiMenuSpec(getSearchText: Func_1[str]) -> MenuItem: ...
+
+
+class SentenceNoteMenus(abc.ABC):
+    @staticmethod
+    def BuildNoteActionsMenuSpec(sentence: SentenceNote) -> MenuItem: ...
+    @staticmethod
+    def BuildViewMenuSpec() -> MenuItem: ...
+
+
+class SentenceStringMenus(abc.ABC):
+    @staticmethod
+    def BuildStringMenuSpec(sentence: SentenceNote, menuString: str) -> MenuItem: ...
+
+
+class VocabNoteMenus(abc.ABC):
+    @staticmethod
+    def BuildNoteActionsMenuSpec(vocab: VocabNote) -> MenuItem: ...
+    @staticmethod
+    def BuildViewMenuSpec() -> MenuItem: ...
+
+
+class VocabStringMenus(abc.ABC):
+    @staticmethod
+    def BuildStringMenuSpec(text: str, vocab: VocabNote) -> MenuItem: ...
 
 
 class WebSearchMenus(abc.ABC):
