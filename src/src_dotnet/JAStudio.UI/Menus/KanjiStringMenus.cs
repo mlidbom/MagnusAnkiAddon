@@ -1,0 +1,121 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using JAStudio.Core.Note;
+using JAStudio.Core.SysUtils;
+using JAStudio.UI.Utils;
+using SpecMenuItem = JAStudio.UI.Menus.UIAgnosticMenuStructure.MenuItem;
+
+namespace JAStudio.UI.Menus;
+
+/// <summary>
+/// Kanji string menu builders (selection/clipboard context menus).
+/// Corresponds to notes/kanji/string_menu.py in Python.
+/// </summary>
+public static class KanjiStringMenus
+{
+    public static SpecMenuItem BuildStringMenuSpec(string text, KanjiNote kanji)
+    {
+        // Nested local functions - mirrors Python structure
+
+        SpecMenuItem BuildHighlightedVocabMenuSpec(string vocabToAdd)
+        {
+            var items = new List<SpecMenuItem>();
+            var primaryVocab = kanji.GetPrimaryVocab();
+
+            // Add positioning actions for each existing primary vocab
+            for (int i = 0; i < primaryVocab.Count; i++)
+            {
+                var vocab = primaryVocab[i];
+                var index = i; // Capture for lambda
+                items.Add(SpecMenuItem.Command(
+                    ShortcutFinger.Numpad(index, vocab),
+                    () => kanji.PositionPrimaryVocab(vocabToAdd, index)));
+            }
+
+            // Add [Last] option
+            items.Add(SpecMenuItem.Command(
+                ShortcutFinger.Home1("[Last]"),
+                () => kanji.PositionPrimaryVocab(vocabToAdd)));
+
+            // Add Remove option if vocab is already in primary vocab
+            if (primaryVocab.Contains(vocabToAdd))
+            {
+                items.Add(SpecMenuItem.Command(
+                    ShortcutFinger.Home2("Remove"),
+                    () => kanji.RemovePrimaryVocab(vocabToAdd)));
+            }
+
+            return SpecMenuItem.Submenu(ShortcutFinger.Home1("Highlighted Vocab"), items);
+        }
+
+        List<SpecMenuItem> AddPrimaryReadingsActions(Func<string, string> titleFactory, string str)
+        {
+            var items = new List<SpecMenuItem>();
+
+            if (KanaUtils.IsOnlyKatakana(str))
+            {
+                var hiraganaString = KanaUtils.KatakanaToHiragana(str);
+                if (kanji.GetPrimaryReadingsOn().Contains(hiraganaString))
+                {
+                    items.Add(SpecMenuItem.Command(
+                        titleFactory("Remove primary Onyomi Reading"),
+                        () => kanji.RemovePrimaryOnReading(hiraganaString)));
+                }
+                else if (kanji.GetReadingsOn().Contains(hiraganaString))
+                {
+                    items.Add(SpecMenuItem.Command(
+                        titleFactory("Make primary Onyomi Reading"),
+                        () => kanji.AddPrimaryOnReading(hiraganaString)));
+                }
+            }
+            else if (KanaUtils.IsOnlyHiragana(str))
+            {
+                if (kanji.GetPrimaryReadingsKun().Contains(str))
+                {
+                    items.Add(SpecMenuItem.Command(
+                        titleFactory("Remove primary Kunyomi reading"),
+                        () => kanji.RemovePrimaryKunReading(str)));
+                }
+                else if (kanji.GetReadingsKun().Contains(str))
+                {
+                    items.Add(SpecMenuItem.Command(
+                        titleFactory("Make primary Kunyomi reading"),
+                        () => kanji.AddPrimaryKunReading(str)));
+                }
+            }
+
+            return items;
+        }
+
+        SpecMenuItem BuildAddMenuSpec()
+        {
+            var items = new List<SpecMenuItem>
+            {
+                SpecMenuItem.Command(ShortcutFinger.Home1("Similar meaning"),
+                    () => kanji.AddUserSimilarMeaning(text)),
+                SpecMenuItem.Command(ShortcutFinger.Home2("Confused with"),
+                    () => kanji.AddRelatedConfusedWith(text))
+            };
+
+            return SpecMenuItem.Submenu(ShortcutFinger.Home2("Add"), items);
+        }
+
+        // Build the menu hierarchy
+        var menuItems = new List<SpecMenuItem>
+        {
+            BuildHighlightedVocabMenuSpec(text),
+            BuildAddMenuSpec()
+        };
+
+        // Add primary readings actions directly to menu
+        menuItems.AddRange(AddPrimaryReadingsActions(
+            title => ShortcutFinger.Home3(title),
+            text));
+
+        return SpecMenuItem.Submenu(
+            ShortcutFinger.Home1("Current note actions"),
+            menuItems
+        );
+    }
+}

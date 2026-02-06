@@ -203,6 +203,80 @@ public class KanjiNote : JPNote
         SetField(NoteFieldsConstants.Kanji.Radicals, value);
     }
 
+    public void PositionPrimaryVocab(string vocab, int newIndex = -1)
+    {
+        vocab = vocab.Trim();
+        var primaryVocabList = GetPrimaryVocab();
+        
+        // Remove if already present
+        if (primaryVocabList.Contains(vocab))
+        {
+            primaryVocabList.Remove(vocab);
+        }
+
+        // Add at specified index or end
+        if (newIndex == -1)
+        {
+            primaryVocabList.Add(vocab);
+        }
+        else
+        {
+            primaryVocabList.Insert(newIndex, vocab);
+        }
+
+        SetPrimaryVocab(primaryVocabList);
+    }
+
+    public void RemovePrimaryVocab(string vocab)
+    {
+        var primaryVocabList = GetPrimaryVocab();
+        primaryVocabList.RemoveAll(v => v == vocab);
+        SetPrimaryVocab(primaryVocabList);
+    }
+
+    public List<string> GetUserSimilarMeaning()
+    {
+        return StringExtensions.ExtractCommaSeparatedValues(
+            GetField(NoteFieldsConstants.Kanji.UserSimilarMeaning));
+    }
+
+    public void AddUserSimilarMeaning(string newSynonymQuestion, bool isRecursiveCall = false)
+    {
+        var nearSynonymsQuestions = GetUserSimilarMeaning();
+        if (!nearSynonymsQuestions.Contains(newSynonymQuestion))
+        {
+            nearSynonymsQuestions.Add(newSynonymQuestion);
+        }
+
+        SetField(NoteFieldsConstants.Kanji.UserSimilarMeaning, string.Join(", ", nearSynonymsQuestions));
+
+        // Reciprocal relationship
+        if (!isRecursiveCall)
+        {
+            var newSynonym = App.Col().Kanji.WithKanji(newSynonymQuestion);
+            if (newSynonym != null)
+            {
+                newSynonym.AddUserSimilarMeaning(GetQuestion(), isRecursiveCall: true);
+            }
+        }
+    }
+
+    public List<string> GetRelatedConfusedWith()
+    {
+        return StringExtensions.ExtractCommaSeparatedValues(
+            GetField(NoteFieldsConstants.Kanji.RelatedConfusedWith));
+    }
+
+    public void AddRelatedConfusedWith(string newConfusedWith)
+    {
+        var confusedWith = GetRelatedConfusedWith();
+        if (!confusedWith.Contains(newConfusedWith))
+        {
+            confusedWith.Add(newConfusedWith);
+        }
+        SetField(NoteFieldsConstants.Kanji.RelatedConfusedWith, string.Join(", ", confusedWith));
+    }
+
     public List<string> GetPrimaryVocabsOrDefaults()
     {
         var primaryVocab = GetPrimaryVocab();

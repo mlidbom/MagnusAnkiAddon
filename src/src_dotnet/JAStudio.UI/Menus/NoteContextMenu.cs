@@ -186,7 +186,12 @@ public class NoteContextMenu
             return VocabStringMenus.BuildStringMenuSpec(text, vocab);
         }
         
-        // TODO: Implement kanji and sentence string menus
+        if (noteType == "kanji" && note is KanjiNote kanji)
+        {
+            return KanjiStringMenus.BuildStringMenuSpec(text, kanji);
+        }
+        
+        // TODO: Implement sentence string menu
         return SpecMenuItem.Submenu(ShortcutFinger.Home1("Current note actions (TODO)"), new List<SpecMenuItem>());
     }
 
