@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace JAStudio.Core.Configuration;
 
-static class ConfigurationStore
+public class ConfigurationStore
 {
    static Dictionary<string, object>? _configDict;
    static Action<string>? _updateCallback;

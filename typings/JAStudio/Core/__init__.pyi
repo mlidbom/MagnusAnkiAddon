@@ -1,7 +1,7 @@
 import abc
 from System import IDisposable, Action, Action_1
 from JAStudio.Core.Note.Collection import JPCollection
-from JAStudio.Core.Configuration import JapaneseConfig
+from JAStudio.Core.Configuration import JapaneseConfig, ConfigurationStore
 from JAStudio.Core.Note import IBackendNoteCreator, KanjiNoteMnemonicMaker
 from System.Collections.Generic import List_1
 from Compze.Utilities.DependencyInjection.Abstractions import IServiceLocator
@@ -9,13 +9,13 @@ from JAStudio.Core.Anki import AnkiCardOperations
 from JAStudio.Core.LanguageServices.JamdictEx import DictLookup
 from JAStudio.Core.UI.Web.Kanji import KanjiListRenderer
 from JAStudio.Core.Batches import LocalNoteUpdater
-from JAStudio.Core.Note.Vocabulary import POSSetManager, VocabNoteFactory, VocabNoteGeneratedData
 from JAStudio.Core.AnkiUtils import QueryBuilder
 from JAStudio.Core.UI.Web.Sentence import QuestionRenderer, SentenceRenderer, UdSentenceBreakdownRenderer
 from JAStudio.Core.UI.Web.Vocab import RelatedVocabsRenderer, VocabKanjiListRenderer
 from JAStudio.Core.ViewModels.KanjiList import SentenceKanjiListViewModel
 from JAStudio.Core.TaskRunners import TaskRunner
 from JAStudio.Core.TestUtils import TestApp
+from JAStudio.Core.Note.Vocabulary import VocabNoteFactory, VocabNoteGeneratedData
 
 class App(IDisposable):
     @classmethod
@@ -23,9 +23,6 @@ class App(IDisposable):
     def IsTesting(cls) -> bool: ...
     @property
     def Services(self) -> TemporaryServiceCollection: ...
-    @classmethod
-    @property
-    def UserFilesDir(cls) -> str: ...
     @staticmethod
     def AddInitHook(hook: Action) -> None: ...
     @staticmethod
@@ -75,6 +72,8 @@ class TemporaryServiceCollection(IDisposable):
     @property
     def App(self) -> App: ...
     @property
+    def ConfigurationStore(self) -> ConfigurationStore: ...
+    @property
     def DictLookup(self) -> DictLookup: ...
     @property
     def KanjiListRenderer(self) -> KanjiListRenderer: ...
@@ -82,8 +81,6 @@ class TemporaryServiceCollection(IDisposable):
     def KanjiNoteMnemonicMaker(self) -> KanjiNoteMnemonicMaker: ...
     @property
     def LocalNoteUpdater(self) -> LocalNoteUpdater: ...
-    @property
-    def POSSetManager(self) -> POSSetManager: ...
     @property
     def QueryBuilder(self) -> QueryBuilder: ...
     @property

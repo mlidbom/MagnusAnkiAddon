@@ -60,6 +60,7 @@ class POS(abc.ABC):
 
 
 class POSSetManager:
+    def __init__(self) -> None: ...
     @staticmethod
     def Get(pos: str) -> FrozenSet_1[str]: ...
     @staticmethod

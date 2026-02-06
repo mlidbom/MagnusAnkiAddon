@@ -2,6 +2,7 @@
 using Compze.Utilities.DependencyInjection.Abstractions;
 using JAStudio.Core.Anki;
 using JAStudio.Core.AnkiUtils;
+using JAStudio.Core.Configuration;
 using JAStudio.Core.Batches;
 using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.Note;
@@ -21,6 +22,7 @@ public class TemporaryServiceCollection(IServiceLocator serviceLocator) : IDispo
    readonly IServiceLocator _serviceLocator = serviceLocator;
 
    public App App => _serviceLocator.Resolve<App>();
+   public ConfigurationStore ConfigurationStore => _serviceLocator.Resolve<ConfigurationStore>();
    public QueryBuilder QueryBuilder => _serviceLocator.Resolve<QueryBuilder>();
 
    // Core services

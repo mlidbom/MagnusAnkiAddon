@@ -3,6 +3,7 @@ using Compze.Utilities.DependencyInjection.Abstractions;
 using Compze.Utilities.DependencyInjection.SimpleInjector;
 using JAStudio.Core.Anki;
 using JAStudio.Core.AnkiUtils;
+using JAStudio.Core.Configuration;
 using JAStudio.Core.Batches;
 using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.Note;
@@ -24,6 +25,7 @@ static class AppBootstrapper
       var registrar = container.Register();
 
       registrar.Register(
+         Singleton.For<ConfigurationStore>().CreatedBy(() => new ConfigurationStore()),
          Singleton.For<TemporaryServiceCollection>().CreatedBy(() => new TemporaryServiceCollection(container.ServiceLocator)),
          Singleton.For<App>().CreatedBy((TemporaryServiceCollection services) => new App(services)),
          Singleton.For<QueryBuilder>().CreatedBy((TemporaryServiceCollection services) => new QueryBuilder(services)),
