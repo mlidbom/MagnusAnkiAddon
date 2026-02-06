@@ -34,10 +34,9 @@ public class App : IDisposable
 
    public static App Bootstrap() => AppBootstrapper.Bootstrap();
 
-   public static void InitConfigForTesting() => ConfigurationManager.InitForTesting();
-   public static void InitConfigJson(string json, Action<string> updateCallback) => ConfigurationManager.InitJson(json, updateCallback);
-   public static JapaneseConfig Config() => ConfigurationManager.Config();
-   internal static Dictionary<string, string>? StaticReadingsMappings => ConfigurationManager.StaticReadingsMappings;
+   public static void InitConfigForTesting() => ConfigurationStore.InitForTesting();
+   public static void InitConfigJson(string json, Action<string> updateCallback) => ConfigurationStore.InitJson(json, updateCallback);
+   public static JapaneseConfig Config() => ConfigurationStore.Config();
 
    public static JPCollection Col()
    {

@@ -6,19 +6,19 @@ namespace JAStudio.Core.Configuration;
 public class ConfigurationValue<T>
 {
    T _value;
+   readonly Dictionary<string, object> _configDict;
    readonly List<Action<T>> _changeCallbacks = [];
 
    public string Title { get; }
    public Action<T>? FeatureToggler { get; }
    public string Name { get; }
 
-   public ConfigurationValue(string name, string title, T defaultValue, Func<object, T> converter, Action<T>? featureToggler = null)
+   public ConfigurationValue(string name, string title, T defaultValue, Func<object, T> converter, Dictionary<string, object> configDict, Action<T>? featureToggler = null)
    {
       Title = title;
       FeatureToggler = featureToggler;
       Name = name;
-
-      var configDict = ConfigurationManager.GetConfigDict();
+      _configDict = configDict;
 
       _value = configDict.TryGetValue(name, out var value)
                   ? converter(value)
@@ -36,11 +36,9 @@ public class ConfigurationValue<T>
    {
       _value = value;
 
-      ConfigurationManager.GetConfigDict()[Name] = value!;
+      _configDict[Name] = value!;
 
       ToggleFeature();
-
-      ConfigurationManager.WriteConfigDict();
 
       foreach(var callback in _changeCallbacks)
       {

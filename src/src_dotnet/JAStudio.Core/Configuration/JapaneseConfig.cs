@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace JAStudio.Core.Configuration;
 
@@ -89,41 +87,50 @@ public class JapaneseConfig
 
    public JapaneseConfig()
    {
+      var configDict = ConfigurationStore.GetConfigDict();
+
+      ConfigurationValue<T> New<T>(string name, string title, T defaultValue, Func<object, T> converter, Action<T>? featureToggler = null)
+         => new(name, title, defaultValue, converter, configDict, featureToggler);
+
       ConfigurationValue<T> Add<T>(ConfigurationValue<T> value)
       {
-         value.OnChange(_ => PublishChange());
+         value.OnChange(_ =>
+         {
+            ConfigurationStore.WriteConfigDict();
+            PublishChange();
+         });
          return value;
       }
 
-      BoostFailedCardAllowedTimeByFactor = Add(new ConfigurationValue<double>("boost_failed_card_allowed_time_by_factor", "Boost Failed Card Allowed Time Factor", 1.5f, To.Double));
+      BoostFailedCardAllowedTimeByFactor = Add(New("boost_failed_card_allowed_time_by_factor", "Boost Failed Card Allowed Time Factor", 1.5f, To.Double));
 
-      AutoadvanceVocabStartingSeconds = Add(new ConfigurationValue<double>("autoadvance_vocab_starting_seconds", "Starting Seconds", 3.0f, To.Double));
-      AutoadvanceVocabHiraganaSeconds = Add(new ConfigurationValue<double>("autoadvance_vocab_hiragana_seconds", "Hiragana Seconds", 0.7f, To.Double));
-      AutoadvanceVocabKatakanaSeconds = Add(new ConfigurationValue<double>("autoadvance_vocab_katakana_seconds", "Katakana Seconds", 0.7f, To.Double));
-      AutoadvanceVocabKanjiSeconds = Add(new ConfigurationValue<double>("autoadvance_vocab_kanji_seconds", "Kanji Seconds", 1.5f, To.Double));
+      AutoadvanceVocabStartingSeconds = Add(New("autoadvance_vocab_starting_seconds", "Starting Seconds", 3.0f, To.Double));
+      AutoadvanceVocabHiraganaSeconds = Add(New("autoadvance_vocab_hiragana_seconds", "Hiragana Seconds", 0.7f, To.Double));
+      AutoadvanceVocabKatakanaSeconds = Add(New("autoadvance_vocab_katakana_seconds", "Katakana Seconds", 0.7f, To.Double));
+      AutoadvanceVocabKanjiSeconds = Add(New("autoadvance_vocab_kanji_seconds", "Kanji Seconds", 1.5f, To.Double));
 
-      AutoadvanceSentenceStartingSeconds = Add(new ConfigurationValue<double>("autoadvance_sentence_starting_seconds", "Starting Seconds", 3.0f, To.Double));
-      AutoadvanceSentenceHiraganaSeconds = Add(new ConfigurationValue<double>("autoadvance_sentence_hiragana_seconds", "Hiragana Seconds", 0.7f, To.Double));
-      AutoadvanceSentenceKatakanaSeconds = Add(new ConfigurationValue<double>("autoadvance_sentence_katakana_seconds", "Katakana Seconds", 0.7f, To.Double));
-      AutoadvanceSentenceKanjiSeconds = Add(new ConfigurationValue<double>("autoadvance_sentence_kanji_seconds", "Kanji Seconds", 1.5f, To.Double));
+      AutoadvanceSentenceStartingSeconds = Add(New("autoadvance_sentence_starting_seconds", "Starting Seconds", 3.0f, To.Double));
+      AutoadvanceSentenceHiraganaSeconds = Add(New("autoadvance_sentence_hiragana_seconds", "Hiragana Seconds", 0.7f, To.Double));
+      AutoadvanceSentenceKatakanaSeconds = Add(New("autoadvance_sentence_katakana_seconds", "Katakana Seconds", 0.7f, To.Double));
+      AutoadvanceSentenceKanjiSeconds = Add(New("autoadvance_sentence_kanji_seconds", "Kanji Seconds", 1.5f, To.Double));
 
-      MinimumTimeViewingQuestion = Add(new ConfigurationValue<double>("minimum_time_viewing_question", "Minimum time viewing question", 0.5f, To.Double));
-      MinimumTimeViewingAnswer = Add(new ConfigurationValue<double>("minimum_time_viewing_answer", "Minimum time viewing answer", 0.5f, To.Double));
+      MinimumTimeViewingQuestion = Add(New("minimum_time_viewing_question", "Minimum time viewing question", 0.5f, To.Double));
+      MinimumTimeViewingAnswer = Add(New("minimum_time_viewing_answer", "Minimum time viewing answer", 0.5f, To.Double));
 
-      TimeboxVocabRead = Add(new ConfigurationValue<long>("time_box_length_vocab_read", "Vocab Read", 15, To.Long));
-      TimeboxVocabListen = Add(new ConfigurationValue<long>("time_box_length_vocab_listen", "Vocab Listen", 15, To.Long));
-      TimeboxSentenceRead = Add(new ConfigurationValue<long>("time_box_length_sentence_read", "Sentence Read", 15, To.Long));
-      TimeboxSentenceListen = Add(new ConfigurationValue<long>("time_box_length_sentence_listen", "Sentence Listen", 15, To.Long));
-      TimeboxKanjiRead = Add(new ConfigurationValue<long>("time_box_length_kanji", "Kanji", 15, To.Long));
-      DecreaseFailedCardIntervalsInterval = Add(new ConfigurationValue<long>("decrease_failed_card_intervals_interval", "Failed card again seconds for next again", 60, To.Long));
+      TimeboxVocabRead = Add(New("time_box_length_vocab_read", "Vocab Read", 15, To.Long));
+      TimeboxVocabListen = Add(New("time_box_length_vocab_listen", "Vocab Listen", 15, To.Long));
+      TimeboxSentenceRead = Add(New("time_box_length_sentence_read", "Sentence Read", 15, To.Long));
+      TimeboxSentenceListen = Add(New("time_box_length_sentence_listen", "Sentence Listen", 15, To.Long));
+      TimeboxKanjiRead = Add(New("time_box_length_kanji", "Kanji", 15, To.Long));
+      DecreaseFailedCardIntervalsInterval = Add(New("decrease_failed_card_intervals_interval", "Failed card again seconds for next again", 60, To.Long));
 
       // misc toggles
-      BoostFailedCardAllowedTime = new ConfigurationValue<bool>("boost_failed_card_allowed_time", "Boost failed card allowed time", true, To.Bool);
-      YomitanIntegrationCopyAnswerToClipboard = Add(new ConfigurationValue<bool>("yomitan_integration_copy_answer_to_clipboard", "Yomitan integration: Copy reviewer answer to clipboard", false, To.Bool));
-      AnkiInternalFsrsSetEnableFsrsShortTermWithSteps = new ConfigurationValue<bool>("fsrs_set_enable_fsrs_short_term_with_steps", "FSRS: Enable short term scheduler with steps", false, To.Bool);
-      DecreaseFailedCardIntervals = Add(new ConfigurationValue<bool>("decrease_failed_card_intervals", "Decrease failed card intervals", false, To.Bool));
-      PreventDoubleClicks = Add(new ConfigurationValue<bool>("prevent_double_clicks", "Prevent double clicks", true, To.Bool));
-      PreferDefaultMnemonicsToSourceMnemonics = Add(new ConfigurationValue<bool>("prefer_default_mnemocs_to_source_mnemonics", "Prefer default mnemonics to source mnemonics", false, To.Bool));
+      BoostFailedCardAllowedTime = New("boost_failed_card_allowed_time", "Boost failed card allowed time", true, To.Bool);
+      YomitanIntegrationCopyAnswerToClipboard = Add(New("yomitan_integration_copy_answer_to_clipboard", "Yomitan integration: Copy reviewer answer to clipboard", false, To.Bool));
+      AnkiInternalFsrsSetEnableFsrsShortTermWithSteps = New("fsrs_set_enable_fsrs_short_term_with_steps", "FSRS: Enable short term scheduler with steps", false, To.Bool);
+      DecreaseFailedCardIntervals = Add(New("decrease_failed_card_intervals", "Decrease failed card intervals", false, To.Bool));
+      PreventDoubleClicks = Add(New("prevent_double_clicks", "Prevent double clicks", true, To.Bool));
+      PreferDefaultMnemonicsToSourceMnemonics = Add(New("prefer_default_mnemocs_to_source_mnemonics", "Prefer default mnemonics to source mnemonics", false, To.Bool));
 
       MiscToggles =
       [
@@ -136,16 +143,16 @@ public class JapaneseConfig
       ];
 
       // sentence_view_toggles
-      ShowCompoundPartsInSentenceBreakdown = Add(new ConfigurationValue<bool>("show_compound_parts_in_sentence_breakdown", "Show compound parts in sentence breakdown", true, To.Bool));
-      ShowKanjiInSentenceBreakdown = Add(new ConfigurationValue<bool>("show_kanji_in_sentence_breakdown", "Show kanji in sentence breakdown", true, To.Bool));
-      ShowKanjiMnemonicsInSentenceBreakdown = Add(new ConfigurationValue<bool>("show_kanji_mnemonics_in_sentence_breakdown", "Show kanji mnemonics in sentence breakdown", true, To.Bool));
-      ShowSentenceBreakdownInEditMode = Add(new ConfigurationValue<bool>("show_sentence_breakdown_in_edit_mode", "Show sentence breakdown in edit mode", false, To.Bool));
-      AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound = Add(new ConfigurationValue<bool>("automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound", "Automatically yield last token in suru verb compounds to overlapping compounds (Ctrl+Shift+Alt+s)", true, To.Bool));
-      AutomaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound = Add(new ConfigurationValue<bool>("automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound", "Automatically yield last token in passive verb compounds to overlapping compounds (Ctrl+Shift+Alt+h)", true, To.Bool));
-      AutomaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound = Add(new ConfigurationValue<bool>("automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound", "Automatically yield last token in causative verb compounds to overlapping compounds (Ctrl+Shift+Alt+t)", true, To.Bool));
+      ShowCompoundPartsInSentenceBreakdown = Add(New("show_compound_parts_in_sentence_breakdown", "Show compound parts in sentence breakdown", true, To.Bool));
+      ShowKanjiInSentenceBreakdown = Add(New("show_kanji_in_sentence_breakdown", "Show kanji in sentence breakdown", true, To.Bool));
+      ShowKanjiMnemonicsInSentenceBreakdown = Add(New("show_kanji_mnemonics_in_sentence_breakdown", "Show kanji mnemonics in sentence breakdown", true, To.Bool));
+      ShowSentenceBreakdownInEditMode = Add(New("show_sentence_breakdown_in_edit_mode", "Show sentence breakdown in edit mode", false, To.Bool));
+      AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound = Add(New("automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound", "Automatically yield last token in suru verb compounds to overlapping compounds (Ctrl+Shift+Alt+s)", true, To.Bool));
+      AutomaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound = Add(New("automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound", "Automatically yield last token in passive verb compounds to overlapping compounds (Ctrl+Shift+Alt+h)", true, To.Bool));
+      AutomaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound = Add(New("automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound", "Automatically yield last token in causative verb compounds to overlapping compounds (Ctrl+Shift+Alt+t)", true, To.Bool));
 
-      HideCompositionallyTransparentCompounds = Add(new ConfigurationValue<bool>("hide_compositionally_transparent_compounds", "Hide compositionally transparent compounds", true, To.Bool));
-      HideAllCompounds = Add(new ConfigurationValue<bool>("hide_all_compounds", "Hide all compounds", false, To.Bool));
+      HideCompositionallyTransparentCompounds = Add(New("hide_compositionally_transparent_compounds", "Hide compositionally transparent compounds", true, To.Bool));
+      HideAllCompounds = Add(New("hide_all_compounds", "Hide all compounds", false, To.Bool));
 
       SentenceViewToggles =
       [
@@ -161,16 +168,16 @@ public class JapaneseConfig
       ];
 
       // performance toggles
-      LoadJamdictDbIntoMemory = Add(new ConfigurationValue<bool>("load_jamdict_db_into_memory", "Load Jamdict DB into memory [Requires restart]", false, To.Bool));
-      PreCacheCardStudyingStatus = Add(new ConfigurationValue<bool>("pre_cache_card_studying_status", "Cache card studying status on startup. Only disable for dev/testing purposes. [Requires restart]", false, To.Bool));
-      PreventAnkiFromGarbageCollectingEveryTimeAWindowCloses = Add(new ConfigurationValue<bool>("prevent_anki_from_garbage_collecting_every_time_a_window_closes", "Prevent Anki from garbage collecting every time a window closes, causing a short hang every time. [Requires restart]", true, To.Bool));
-      DisableAllAutomaticGarbageCollection = Add(new ConfigurationValue<bool>("disable_periodic_garbage_collection", "Prevent all automatic garbage collection. Will stop the mini-hangs but memory usage will grow gradually. [Requires restart]", false, To.Bool));
-      LoadStudioInForeground = Add(new ConfigurationValue<bool>("load_studio_in_foreground", "Load Studio in foreground. Makes it clear when done. Anki will be responsive when done. But you can't use anki while loading.", true, To.Bool));
+      LoadJamdictDbIntoMemory = Add(New("load_jamdict_db_into_memory", "Load Jamdict DB into memory [Requires restart]", false, To.Bool));
+      PreCacheCardStudyingStatus = Add(New("pre_cache_card_studying_status", "Cache card studying status on startup. Only disable for dev/testing purposes. [Requires restart]", false, To.Bool));
+      PreventAnkiFromGarbageCollectingEveryTimeAWindowCloses = Add(New("prevent_anki_from_garbage_collecting_every_time_a_window_closes", "Prevent Anki from garbage collecting every time a window closes, causing a short hang every time. [Requires restart]", true, To.Bool));
+      DisableAllAutomaticGarbageCollection = Add(New("disable_periodic_garbage_collection", "Prevent all automatic garbage collection. Will stop the mini-hangs but memory usage will grow gradually. [Requires restart]", false, To.Bool));
+      LoadStudioInForeground = Add(New("load_studio_in_foreground", "Load Studio in foreground. Makes it clear when done. Anki will be responsive when done. But you can't use anki while loading.", true, To.Bool));
 
       // memory toggles
-      EnableGarbageCollectionDuringBatches = Add(new ConfigurationValue<bool>("enable_garbage_collection_during_batches", "Enable Batch GC. [Requires restart]", true, To.Bool));
-      EnableAutomaticGarbageCollection = Add(new ConfigurationValue<bool>("enable_automatic_garbage_collection", "Enable automatic GC. [Requires restart. Reduces memory usage the most but slows Anki down and may cause crashes due to Qt incompatibility.]", false, To.Bool));
-      EnableAutoStringInterning = Add(new ConfigurationValue<bool>("enable_auto_string_interning", "Enable automatic string interning. Reduces memory usage at the cost of some CPU overhead and slowdown. [Requires restart]", false, To.Bool));
+      EnableGarbageCollectionDuringBatches = Add(New("enable_garbage_collection_during_batches", "Enable Batch GC. [Requires restart]", true, To.Bool));
+      EnableAutomaticGarbageCollection = Add(New("enable_automatic_garbage_collection", "Enable automatic GC. [Requires restart. Reduces memory usage the most but slows Anki down and may cause crashes due to Qt incompatibility.]", false, To.Bool));
+      EnableAutoStringInterning = Add(New("enable_auto_string_interning", "Enable automatic string interning. Reduces memory usage at the cost of some CPU overhead and slowdown. [Requires restart]", false, To.Bool));
 
       PerformanceAndMemoryToggles =
       [
@@ -185,9 +192,9 @@ public class JapaneseConfig
       ];
 
       // developer only toggles
-      TrackInstancesInMemory = Add(new ConfigurationValue<bool>("track_instances_in_memory", "Track instances in memory. [Requires restart.. Only useful to developers and will use extra memory.]", false, To.Bool));
-      EnableTraceMalloc = Add(new ConfigurationValue<bool>("enable_trace_malloc", "Enable tracemalloc. Will show memory usage in logs and increase memory usage A LOT. [Requires restart]", false, To.Bool));
-      LogWhenFlushingNotes = Add(new ConfigurationValue<bool>("log_when_flushing_notes", "Log when flushing notes to backend.", false, To.Bool));
+      TrackInstancesInMemory = Add(New("track_instances_in_memory", "Track instances in memory. [Requires restart.. Only useful to developers and will use extra memory.]", false, To.Bool));
+      EnableTraceMalloc = Add(New("enable_trace_malloc", "Enable tracemalloc. Will show memory usage in logs and increase memory usage A LOT. [Requires restart]", false, To.Bool));
+      LogWhenFlushingNotes = Add(New("log_when_flushing_notes", "Log when flushing notes to backend.", false, To.Bool));
 
       DeveloperOnlyToggles =
       [
@@ -204,7 +211,7 @@ public class JapaneseConfig
          ("Developers only", DeveloperOnlyToggles)
       ];
 
-      ReadingsMappingsDict = ConfigurationManager.StaticReadingsMappings ?? ReadReadingsMappingsFromFile();
+      ReadingsMappingsDict = ConfigurationStore.GetReadingsMappings();
    }
 
    public void ToggleAllSentenceDisplayAutoYieldFlags(bool? value = null)
@@ -217,17 +224,17 @@ public class JapaneseConfig
 
    public void SaveMappings(string mappings)
    {
-      var mappingsFilePath = MappingsFilePath();
-      File.WriteAllText(mappingsFilePath, mappings);
-      ReadingsMappingsDict = ReadReadingsMappingsFromFile();
+      ConfigurationStore.SaveMappings(mappings);
+      ReadingsMappingsDict = ConfigurationStore.GetReadingsMappings();
    }
 
    public void SetReadingsMappingsForTesting(string mappings)
    {
-      ReadingsMappingsDict = ParseMappingsFromString(mappings);
+      ConfigurationStore.SetReadingsMappingsForTesting(mappings);
+      ReadingsMappingsDict = ConfigurationStore.GetReadingsMappings();
    }
 
-   public static string ReadReadingsMappingsFile() => File.ReadAllText(MappingsFilePath());
+   public static string ReadReadingsMappingsFile() => ConfigurationStore.ReadReadingsMappingsFile();
 
    void PublishChange()
    {
@@ -241,35 +248,4 @@ public class JapaneseConfig
    {
       _changeCallbacks.Add(callback);
    }
-
-   static Dictionary<string, string> ReadReadingsMappingsFromFile() => ParseMappingsFromString(ReadReadingsMappingsFile());
-
-   static Dictionary<string, string> ParseMappingsFromString(string mappingsString)
-   {
-      string ParseValuePart(string valuePart)
-      {
-         if(valuePart.Contains("<read>"))
-         {
-            return valuePart;
-         }
-
-         if(valuePart.Contains(":"))
-         {
-            var parts = valuePart.Split([':'], 2);
-            return $"<read>{parts[0].Trim()}</read>{parts[1]}";
-         }
-
-         return $"<read>{valuePart}</read>";
-      }
-
-      return mappingsString.Trim().Split('\n')
-                           .Where(line => line.Contains(":"))
-                           .Select(line => line.Split([':'], 2))
-                           .ToDictionary(
-                               parts => parts[0].Trim(),
-                               parts => ParseValuePart(parts[1].Trim())
-                            );
-   }
-
-   static string MappingsFilePath() => Path.Combine(App.UserFilesDir, "readings_mappings.txt");
 }
