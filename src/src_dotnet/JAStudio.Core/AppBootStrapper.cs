@@ -3,7 +3,7 @@
 namespace JAStudio.Core;
 using SimpleInjector;
 
-static class AppBootStrapper
+static class AppBootstrapper
 {
    public static App Bootstrap()
    {
