@@ -31,6 +31,24 @@ public static class AnkiFacade
       });
    }
 
+   /// <summary>Execute an Anki browser search query and show the previewer. </summary>
+   public static void ExecuteLookupAndShowPreviewer(string query)
+   {
+      PythonEnvironment.Use(() =>
+      {
+         try
+         {
+            dynamic searchExecutor = Py.Import("jastudio.ankiutils.search_executor");
+            searchExecutor.do_lookup_and_show_previewer(query);
+         }
+         catch(Exception ex)
+         {
+            JALogger.Log($"AnkiFacade.ExecuteLookupAndShowPreviewer failed: {ex.Message}");
+            throw;
+         }
+      });
+   }
+
    /// <summary>Show a tooltip message in Anki. </summary>
    public static void ShowTooltip(string message, int periodMs = 3000)
    {

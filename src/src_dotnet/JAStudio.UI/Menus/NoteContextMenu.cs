@@ -42,7 +42,7 @@ public class NoteContextMenu
             menuItems.Add(BuildClipboardMenuSpec(clipboard, "vocab"));
 
         menuItems.Add(BuildVocabNoteActionsMenuSpec(vocab));
-        menuItems.Add(BuildUniversalNoteActionsMenuSpec());
+        menuItems.Add(BuildUniversalNoteActionsMenuSpec(vocab));
         menuItems.Add(BuildVocabViewMenuSpec());
 
         return menuItems;
@@ -79,7 +79,7 @@ public class NoteContextMenu
             menuItems.Add(BuildClipboardMenuSpec(clipboard, "kanji"));
 
         menuItems.Add(BuildKanjiNoteActionsMenuSpec(kanji));
-        menuItems.Add(BuildUniversalNoteActionsMenuSpec());
+        menuItems.Add(BuildUniversalNoteActionsMenuSpec(kanji));
         menuItems.Add(BuildKanjiViewMenuSpec());
 
         return menuItems;
@@ -116,7 +116,7 @@ public class NoteContextMenu
             menuItems.Add(BuildClipboardMenuSpec(clipboard, "sentence"));
 
         menuItems.Add(BuildSentenceNoteActionsMenuSpec(sentence));
-        menuItems.Add(BuildUniversalNoteActionsMenuSpec());
+        menuItems.Add(BuildUniversalNoteActionsMenuSpec(sentence));
         menuItems.Add(BuildSentenceViewMenuSpec());
 
         return menuItems;
@@ -617,15 +617,21 @@ public class NoteContextMenu
         return vocabIds;
     }
 
-    private SpecMenuItem BuildUniversalNoteActionsMenuSpec()
+    private SpecMenuItem BuildUniversalNoteActionsMenuSpec(JPNote note)
     {
+        var hasSuspendedCards = note.HasSuspendedCards();
+        var hasActiveCards = note.HasActiveCards();
+
         return SpecMenuItem.Submenu(
             ShortcutFinger.Home4("Universal note actions"),
             new List<SpecMenuItem>
             {
-                SpecMenuItem.Command(ShortcutFinger.Home1("Open in previewer"), OnOpenInPreviewer),
-                SpecMenuItem.Command(ShortcutFinger.Home3("Unsuspend all cards"), OnUnsuspendAllCards),
-                SpecMenuItem.Command(ShortcutFinger.Home4("Suspend all cards"), OnSuspendAllCards)
+                SpecMenuItem.Command(ShortcutFinger.Home1("Open in previewer"), 
+                    () => OnOpenInPreviewer(note)),
+                SpecMenuItem.Command(ShortcutFinger.Home3("Unsuspend all cards"), 
+                    () => note.UnsuspendAllCards(), null, null, hasSuspendedCards),
+                SpecMenuItem.Command(ShortcutFinger.Home4("Suspend all cards"), 
+                    () => note.SuspendAllCards(), null, null, hasActiveCards)
             }
         );
     }
@@ -725,11 +731,14 @@ public class NoteContextMenu
             JALogger.Log($"Failed to copy to clipboard: {ex.Message}");
         }
     }
+
+    private void OnOpenInPreviewer(JPNote note)
+    {
+        var query = QueryBuilder.NotesLookup(new[] { note });
+        AnkiFacade.ExecuteLookupAndShowPreviewer(query);
+    }
     
     private void OnReparseMatchingSentences(string text) => JALogger.Log($"TODO: Reparse matching sentences: {text}");
-    private void OnOpenInPreviewer() => JALogger.Log("TODO: Open in previewer");
-    private void OnUnsuspendAllCards() => JALogger.Log("TODO: Unsuspend all cards");
-    private void OnSuspendAllCards() => JALogger.Log("TODO: Suspend all cards");
     private void OnCreateVocabNote(string text) => JALogger.Log($"TODO: Create vocab note: {text}");
     private void OnCreateSentenceNote(string text) => JALogger.Log($"TODO: Create sentence note: {text}");
     private void OnCreateKanjiNote(string text) => JALogger.Log($"TODO: Create kanji note: {text}");

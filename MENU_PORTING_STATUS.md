@@ -234,11 +234,11 @@ When porting menus/dialogs:
 
 ## Summary Statistics
 - **Total menu items tracked**: ~200+ items
-- **COMPLETE**: ~93 items (QueryBuilder, OpenInAnki, WebSearch, Options/Readings dialogs, all Local Actions, **All 3 note type actions complete: Vocab ✅ Kanji ✅ Sentence ✅**)
+- **COMPLETE**: ~96 items (QueryBuilder, OpenInAnki, WebSearch, Options/Readings dialogs, all Local Actions, **All 3 note type actions complete**, **Universal actions complete**)
 - **SCAFFOLDED**: ~20 items (menu structure exists, some actions still TODO)
 - **EXCLUDED**: ~7 items (Debug menu - Python runtime diagnostics not relevant to .NET)
-- **MISSING**: ~80+ items (String menus for all note types not yet ported)
-- **Porting completion**: ~46% complete, ~10% scaffolded, ~4% excluded, ~40% not started
+- **MISSING**: ~77+ items (String menus for all note types not yet ported)
+- **Porting completion**: ~48% complete, ~10% scaffolded, ~4% excluded, ~38% not started
 
 ### Phase 1 Complete ✅
 - QueryBuilder (21 methods) - ✅ COMPLETE
@@ -276,8 +276,13 @@ When porting menus/dialogs:
   - Remove User: 3 menu items (all conditional - user comments, answer, question)
   - View: Dynamic menu (config toggles + toggle all auto yield flags)
   - **All operations call JAStudio.Core directly - SentenceNote and Configuration used directly!**
+- ✅ **Universal Note Actions COMPLETE** (applies to all note types)
+  - Open in previewer (via AnkiFacade.ExecuteLookupAndShowPreviewer - requires Anki UI)
+  - Suspend all cards (JPNote.SuspendAllCards - stubbed, needs implementation)
+  - Unsuspend all cards (JPNote.UnsuspendAllCards - stubbed, needs implementation)
+  - Conditional enable/disable based on card suspend status (JPNote.HasSuspendedCards/HasActiveCards)
+  - **Logic encapsulated in JPNote where it belongs!**
 - TODO Context menu Create actions (vocab, sentence, kanji)
-- TODO Context menu Universal note actions (previewer, suspend/unsuspend)
 - TODO Open Note dialog (currently Python dialog, needs Avalonia port)
 
 ### Excluded from Porting ❌
