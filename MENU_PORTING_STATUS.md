@@ -1,5 +1,43 @@
 # JAStudio Menu Porting Status
 
+---
+
+## ⚠️ CRITICAL ARCHITECTURAL CONSTRAINT: ALL-AT-ONCE SWITCH
+
+**Why C# Cannot Call Python (jaslib):**
+
+This project manages massive in-memory state:
+- ~30,000 vocabulary entries with metadata
+- ~50,000+ sentences with metadata
+- Complex synchronization with Anki's database
+
+In Python, this state consumes **gigabytes of RAM** and causes severe performance degradation.
+
+**The Problem:**
+- Maintaining this state in BOTH Python (jaslib) and C# (JAStudio.Core) would require **three-way synchronization** (Python ↔ C# ↔ Anki)
+- The Python and C# types are **incompatible and do not interoperate**
+- This is architecturally impossible to maintain
+- We cannot have two copies of this massive state
+
+**The Solution:**
+- We CANNOT switch gradually from jaslib → JAStudio.Core
+- When we switch, we must **remove ALL of jaslib** and replace it **ALL AT ONCE** with JAStudio.Core
+- This switch will happen **SOON** - as soon as remaining menu code is ported
+
+**What This Means for Menu Porting:**
+- ✅ C# menus MUST call JAStudio.Core directly (no Python business logic callbacks)
+- ✅ C# can ONLY call minimal Anki APIs (via AnkiFacade: ExecuteLookup, ShowTooltip, Refresh)
+- ✅ All menu actions must be implemented in C# using existing JAStudio.Core types
+- ❌ NEVER create menu callbacks to Python business logic - it will be deleted soon
+
+**This is why:**
+- Menu architecture uses pure data specs (MenuItem trees)
+- Actions are lambdas calling JAStudio.Core methods
+- PyQt adapter is a thin 30-line renderer
+- We can't gradually migrate - it's all or nothing
+
+---
+
 ## IMPORTANT: Business Logic Already in C#
 
 **VIRTUALLY EVERYTHING EXCEPT FOR UI CODE IS ALREADY PORTED TO C#.**

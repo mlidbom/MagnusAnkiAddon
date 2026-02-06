@@ -1,5 +1,43 @@
 # JAStudio UI Porting Status (Python PyQt6 → C# Avalonia)
 
+---
+
+## ⚠️ CRITICAL ARCHITECTURAL CONSTRAINT: ALL-AT-ONCE SWITCH
+
+**Why C# Cannot Call Python (jaslib):**
+
+This project manages massive in-memory state:
+- ~30,000 vocabulary entries with metadata
+- ~50,000+ sentences with metadata
+- Complex synchronization with Anki's database
+
+In Python, this state consumes **gigabytes of RAM** and causes severe performance degradation.
+
+**The Problem:**
+- Maintaining this state in BOTH Python (jaslib) and C# (JAStudio.Core) would require **three-way synchronization** (Python ↔ C# ↔ Anki)
+- The Python and C# types are **incompatible and do not interoperate**
+- This is architecturally impossible to maintain
+- We cannot have two copies of this massive state
+
+**The Solution:**
+- We CANNOT switch gradually from jaslib → JAStudio.Core
+- When we switch, we must **remove ALL of jaslib** and replace it **ALL AT ONCE** with JAStudio.Core
+- This switch will happen **SOON** - as soon as remaining menu code is ported
+
+**What This Means for Porting:**
+- ✅ C# MUST implement everything internally (no calls to jaslib/Python business logic)
+- ✅ C# can ONLY call minimal Anki APIs (via AnkiFacade: ExecuteLookup, ShowTooltip, Refresh)
+- ✅ All dialogs, widgets, and menus must be pure C# calling JAStudio.Core
+- ❌ NEVER create dependencies on Python business logic - it will be deleted soon
+
+**This explains:**
+- Why we ported EnglishDictionary to C# instead of calling Python
+- Why menus must be pure C# specs calling JAStudio.Core
+- Why we can't have gradual migration
+- Why the architecture keeps Python as a thin rendering layer only
+
+---
+
 ## Current Status
 
 **Infrastructure: COMPLETE**
