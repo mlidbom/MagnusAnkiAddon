@@ -156,11 +156,7 @@ def _add_csharp_menu_entry(menu: QMenu, note: JPNote | None, selection: str, cli
         else:
             specs = menu_builder.BuildGenericContextMenuSpec(selection, clipboard)  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
 
-        # Convert each spec to a PyQt menu and add to parent
-        for spec in specs:  # pyright: ignore[reportUnknownVariableType]
-            if spec.IsVisible:  # pyright: ignore[reportUnknownMemberType]
-                qmenu = qt_menu_adapter.to_qmenu(spec)  # pyright: ignore[reportUnknownArgumentType]
-                menu.addMenu(qmenu)
+        qt_menu_adapter.add_to_qt_menu(menu, specs)  # pyright: ignore[reportUnknownArgumentType]
     except Exception as e:
         from jaslib import mylog
         mylog.error(f"Failed to build C# menus: {e}")

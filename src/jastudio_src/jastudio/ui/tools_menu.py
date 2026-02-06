@@ -127,11 +127,8 @@ def _add_csharp_main_menu(menu: QMenu) -> None:
         menu_builder = JapaneseMainMenu(get_search_text())  # pyright: ignore[reportUnknownVariableType]
         specs = menu_builder.BuildMenuSpec()  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
 
-        # Convert to PyQt menus and add as a single submenu
         csharp_menu = non_optional(menu.addMenu(shortcutfinger.down3("🎯 C# Japanese Menu")))
-        qmenus = qt_menu_adapter.to_qmenu_list(specs)  # pyright: ignore[reportUnknownArgumentType]
-        for qmenu in qmenus:
-            csharp_menu.addMenu(qmenu)
+        qt_menu_adapter.add_to_qt_menu(csharp_menu, specs)  # pyright: ignore[reportUnknownArgumentType]
     except Exception as e:
         mylog.error(f"Failed to build C# main menu: {e}")
         import traceback

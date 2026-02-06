@@ -45,11 +45,7 @@ def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
 
         menu_spec:SpecMenuItem = DialogHost.BuildBrowserMenuSpec(selected_cards, selected_notes)
 
-        qt_menu = qt_menu_adapter.to_qmenu(menu_spec)
-
-        # Add converted menu to browser's context menu
-        for action in qt_menu.actions():  # pyright: ignore[reportUnknownMemberType]
-            menu.addAction(action)  # pyright: ignore[reportUnknownMemberType]
+        qt_menu_adapter.add_to_qt_menu(menu, [menu_spec])
     except Exception as e:
         from jaslib import mylog
         mylog.error(f"Failed to build browser context menu: {e}")
