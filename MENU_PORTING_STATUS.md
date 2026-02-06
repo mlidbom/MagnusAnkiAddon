@@ -170,20 +170,19 @@ When porting menus/dialogs:
 ## Note-Type Specific Actions (Not Yet Started)
 
 ### Kanji Note Actions (notes/kanji/main.py)
-- NOT STARTED Note actions
-  - NOT STARTED Open
+- ✅ COMPLETE Note actions
+  - ✅ COMPLETE Open
     - Primary Vocabs
-    - Vocabs
+    - Vocabs (all vocab with this kanji)
     - Radicals
-    - Kanji
+    - Kanji (kanji containing this kanji as a radical)
     - Sentences
-  - Reset Primary Vocabs
-  - Accept meaning (conditional: only if no user answer)
-  - Populate radicals from mnemonic tags
-  - Bootstrap mnemonic from radicals
-  - Reset mnemonic
-- NOT STARTED View
-  - (Empty in Python)
+  - ✅ COMPLETE Reset Primary Vocabs
+  - ✅ COMPLETE Accept meaning (conditional: only if no user answer)
+  - ✅ COMPLETE Populate radicals from mnemonic tags
+  - ✅ COMPLETE Bootstrap mnemonic from radicals
+  - ✅ COMPLETE Reset mnemonic
+- ✅ COMPLETE View (Empty in Python)
 
 ### Kanji String Menu Actions (notes/kanji/string_menu.py)
 - NOT STARTED Highlighted Vocab
@@ -235,11 +234,11 @@ When porting menus/dialogs:
 
 ## Summary Statistics
 - **Total menu items tracked**: ~200+ items
-- **COMPLETE**: ~66 items (QueryBuilder, OpenInAnki, WebSearch, Options/Readings dialogs, all Local Actions, **Vocab Note Actions complete**)
+- **COMPLETE**: ~77 items (QueryBuilder, OpenInAnki, WebSearch, Options/Readings dialogs, all Local Actions, **Vocab Note Actions complete**, **Kanji Note Actions complete**)
 - **SCAFFOLDED**: ~20 items (menu structure exists, some actions still TODO)
 - **EXCLUDED**: ~7 items (Debug menu - Python runtime diagnostics not relevant to .NET)
-- **MISSING**: ~107+ items (Kanji/Sentence note-specific actions not yet ported)
-- **Porting completion**: ~33% complete, ~10% scaffolded, ~4% excluded, ~53% not started
+- **MISSING**: ~96+ items (Sentence note-specific actions, string menus not yet ported)
+- **Porting completion**: ~38% complete, ~10% scaffolded, ~4% excluded, ~48% not started
 
 ### Phase 1 Complete ✅
 - QueryBuilder (21 methods) - ✅ COMPLETE
@@ -266,6 +265,11 @@ When porting menus/dialogs:
   - Misc: 5 menu items (accept meaning, generate answer, reparse, repopulate TOS, autogenerate compounds)
   - Remove: 4 menu items (conditional enable/disable for user fields)
   - **All operations call JAStudio.Core directly - zero Python business logic dependencies!**
+- ✅ **Kanji Note Actions Menu COMPLETE** (Open, Reset, Populate, Accept meaning - all operations fully implemented)
+  - Open: 5 menu items (primary vocabs, all vocabs, radicals, kanji with this radical, sentences)
+  - Reset/Populate: 4 menu items (reset primary vocabs, populate radicals, bootstrap mnemonic, reset mnemonic)
+  - Accept meaning: Conditional menu item (only shown if no user answer)
+  - **All operations call JAStudio.Core directly - KanjiNote methods used directly!**
 - TODO Context menu Create actions (vocab, sentence, kanji)
 - TODO Context menu Universal note actions (previewer, suspend/unsuspend)
 - TODO Open Note dialog (currently Python dialog, needs Avalonia port)
@@ -274,10 +278,9 @@ When porting menus/dialogs:
 - **Debug Menu** (7 items) - Python runtime memory diagnostics used to manage Python's poor performance with >100MB memory. Not relevant to .NET which handles memory efficiently. These remain in the Python menu and may be removed entirely after full .NET migration.
 
 ### Phase 3 Not Started
-- Kanji note-specific actions (Open, Remove, View)
-- Kanji string menus (add/remove relationships, highlights, etc.)
 - Sentence note-specific actions (Open, Remove, User fields, View)
 - Sentence string menus (add/remove relationships, highlights, parse operations)
+- Kanji string menus (add/remove relationships, highlighted vocab, primary readings)
 - Vocab string menus (add/remove relationships, sentence highlighting)
 - Conditional menu items based on note state
 - Dynamic menu generation based on data
@@ -285,7 +288,7 @@ When porting menus/dialogs:
 ### Infrastructure Complete ✅
 The C# infrastructure is in place:
   - `JAStudio.UI/Menus/JapaneseMainMenu.cs` ✅ COMPLETE (Config + Local Actions + Lookup menus)
-  - `JAStudio.UI/Menus/NoteContextMenu.cs` ✅ VOCAB ACTIONS COMPLETE (scaffolding complete, vocab note menu fully implemented, kanji/sentence TODO)
+  - `JAStudio.UI/Menus/NoteContextMenu.cs` ✅ VOCAB + KANJI COMPLETE (vocab + kanji note menus fully implemented, sentence TODO)
   - `JAStudio.UI/Menus/OpenInAnkiMenus.cs` ✅ COMPLETE
   - `JAStudio.UI/Menus/WebSearchMenus.cs` ✅ COMPLETE (uses BrowserLauncher directly)
   - `JAStudio.UI/Views/OptionsDialog.axaml` ✅ COMPLETE (Full configuration dialog)

@@ -78,7 +78,7 @@ public class NoteContextMenu
         if (!string.IsNullOrEmpty(clipboard))
             menuItems.Add(BuildClipboardMenuSpec(clipboard, "kanji"));
 
-        menuItems.Add(BuildKanjiNoteActionsMenuSpec());
+        menuItems.Add(BuildKanjiNoteActionsMenuSpec(kanji));
         menuItems.Add(BuildUniversalNoteActionsMenuSpec());
         menuItems.Add(BuildKanjiViewMenuSpec());
 
@@ -455,16 +455,50 @@ public class NoteContextMenu
     }
 
     // Kanji-specific menus
-    private SpecMenuItem BuildKanjiNoteActionsMenuSpec()
+    private SpecMenuItem BuildKanjiNoteActionsMenuSpec(KanjiNote kanji)
     {
-        return SpecMenuItem.Submenu(
-            ShortcutFinger.Home3("Note actions"),
-            new List<SpecMenuItem>
-            {
-                // TODO: Port from menus.notes.kanji.main.build_note_menu
-                SpecMenuItem.Command("Kanji Actions (TODO)", () => { })
-            }
-        );
+        var items = new List<SpecMenuItem>
+        {
+            BuildKanjiOpenMenuSpec(kanji),
+            SpecMenuItem.Command(ShortcutFinger.Home5("Reset Primary Vocabs"), 
+                () => kanji.SetPrimaryVocab(new List<string>()))
+        };
+
+        // Add conditional "Accept meaning" if no user answer exists
+        if (string.IsNullOrEmpty(kanji.GetUserAnswer()))
+        {
+            items.Add(SpecMenuItem.Command(ShortcutFinger.Up1("Accept meaning"), 
+                () => OnAcceptKanjiMeaning(kanji)));
+        }
+
+        items.Add(SpecMenuItem.Command(ShortcutFinger.Up2("Populate radicals from mnemonic tags"), 
+            () => kanji.PopulateRadicalsFromMnemonicTags()));
+        items.Add(SpecMenuItem.Command(ShortcutFinger.Up3("Bootstrap mnemonic from radicals"), 
+            () => kanji.BootstrapMnemonicFromRadicals()));
+        items.Add(SpecMenuItem.Command(ShortcutFinger.Up4("Reset mnemonic"), 
+            () => kanji.SetUserMnemonic("")));
+
+        return SpecMenuItem.Submenu(ShortcutFinger.Home3("Note actions"), items);
+    }
+
+    private SpecMenuItem BuildKanjiOpenMenuSpec(KanjiNote kanji)
+    {
+        var items = new List<SpecMenuItem>
+        {
+            SpecMenuItem.Command(ShortcutFinger.Home1("Primary Vocabs"), 
+                () => AnkiFacade.ExecuteLookup(QueryBuilder.VocabsLookupStrings(kanji.GetPrimaryVocab()))),
+            SpecMenuItem.Command(ShortcutFinger.Home2("Vocabs"), 
+                () => AnkiFacade.ExecuteLookup(QueryBuilder.VocabWithKanji(kanji))),
+            SpecMenuItem.Command(ShortcutFinger.Home3("Radicals"), 
+                () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(kanji.GetRadicalsNotes()))),
+            SpecMenuItem.Command(ShortcutFinger.Home4("Kanji"), 
+                () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(
+                    Core.App.Col().Kanji.WithRadical(kanji.GetQuestion())))),
+            SpecMenuItem.Command(ShortcutFinger.Home5("Sentences"), 
+                () => AnkiFacade.ExecuteLookup(QueryBuilder.SentenceSearch(kanji.GetQuestion(), exact: true)))
+        };
+
+        return SpecMenuItem.Submenu(ShortcutFinger.Home1("Open"), items);
     }
 
     private SpecMenuItem BuildKanjiViewMenuSpec()
@@ -473,8 +507,7 @@ public class NoteContextMenu
             ShortcutFinger.Home5("View"),
             new List<SpecMenuItem>
             {
-                // TODO: Port from menus.notes.kanji.main.build_view_menu
-                SpecMenuItem.Command("View Kanji (TODO)", () => { })
+                // Empty in Python implementation
             }
         );
     }
@@ -562,10 +595,37 @@ public class NoteContextMenu
         vocab.User.Answer.Set(meaning);
     }
 
+    private void OnAcceptKanjiMeaning(KanjiNote kanji)
+    {
+        var meaning = FormatKanjiMeaning(kanji.GetAnswer());
+        kanji.SetUserAnswer(meaning);
+    }
+
     private static string FormatVocabMeaning(string meaning)
     {
         return Core.SysUtils.ExStr.StripHtmlAndBracketMarkupAndNoiseCharacters(
             meaning.Replace(" SOURCE", "").Replace(", ", "/").Replace(" ", "-").ToLower());
+    }
+
+    private static string FormatKanjiMeaning(string meaning)
+    {
+        // Replace HTML and bracket markup with pipe separator
+        var result = meaning
+            .Replace("<", "|")
+            .Replace(">", "|")
+            .Replace("[", "|")
+            .Replace("]", "|")
+            .ToLower()
+            .Replace("||", "|")
+            .Replace("||", "|")
+            .Replace("||", "|")
+            .Replace(", ", "|")
+            .Replace(" ", "-")
+            .Replace("-|-", " | ");
+
+        // Remove leading/trailing pipes
+        result = result.TrimEnd('|').TrimStart('|');
+        return result;
     }
 
     private static void CopyToClipboard(string text)
