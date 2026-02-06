@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Compze.Utilities.DependencyInjection.Abstractions;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
@@ -11,8 +10,8 @@ namespace JAStudio.Core;
 
 public class App : IDisposable
 {
-   readonly TemporaryServiceLocator _services;
-   internal App(TemporaryServiceLocator services) => _services = services;
+   public TemporaryServiceCollection Services { get; }
+   internal App(TemporaryServiceCollection services) => Services = services;
 
    public static bool IsTesting => ExPytest.IsTesting;
 
@@ -28,7 +27,7 @@ public class App : IDisposable
 
    public void Dispose()
    {
-      _services.Dispose();
+      Services.Dispose();
       GC.Collect(2);
       GC.WaitForPendingFinalizers();
    }

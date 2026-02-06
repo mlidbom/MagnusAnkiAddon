@@ -5,7 +5,7 @@ using JAStudio.Core.AnkiUtils;
 namespace JAStudio.Core;
 
 //TODO: We should redesign so that we have a sane dependency graph and just use normal dependency injection, but first we need to get rid of all the static classes and this will help us do that
-class TemporaryServiceLocator(IServiceLocator serviceLocator) : IDisposable
+public class TemporaryServiceCollection(IServiceLocator serviceLocator) : IDisposable
 {
    readonly IServiceLocator _serviceLocator = serviceLocator;
    public App App => _serviceLocator.Resolve<App>();

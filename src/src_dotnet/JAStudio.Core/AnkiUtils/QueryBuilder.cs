@@ -15,9 +15,9 @@ namespace JAStudio.Core.AnkiUtils;
 /// </summary>
 public class QueryBuilder
 {
-   readonly TemporaryServiceLocator _services;
+   readonly TemporaryServiceCollection _services;
 
-   internal QueryBuilder(TemporaryServiceLocator services)
+   internal QueryBuilder(TemporaryServiceCollection services)
    {
       _services = services;
    }

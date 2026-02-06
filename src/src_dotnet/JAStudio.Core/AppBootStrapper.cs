@@ -13,9 +13,9 @@ static class AppBootstrapper
       var registrar = container.Register();
 
       registrar.Register(
-         Singleton.For<TemporaryServiceLocator>().CreatedBy(() => new TemporaryServiceLocator(container.ServiceLocator)),
-         Singleton.For<App>().CreatedBy((TemporaryServiceLocator services) => new App(services)),
-         Singleton.For<QueryBuilder>().CreatedBy((TemporaryServiceLocator services) => new QueryBuilder(services))
+         Singleton.For<TemporaryServiceCollection>().CreatedBy(() => new TemporaryServiceCollection(container.ServiceLocator)),
+         Singleton.For<App>().CreatedBy((TemporaryServiceCollection services) => new App(services)),
+         Singleton.For<QueryBuilder>().CreatedBy((TemporaryServiceCollection services) => new QueryBuilder(services))
       );
 
       return container.ServiceLocator.Resolve<App>();
