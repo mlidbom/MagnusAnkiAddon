@@ -1,11 +1,7 @@
-using System.Collections.Generic;
-using System.Linq;
-using Xunit;
 using JAStudio.UI.Menus;
-using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using SpecMenuItem = JAStudio.UI.Menus.UIAgnosticMenuStructure.MenuItem;
 
-namespace JAStudio.Core.Tests;
+namespace JAStudio.UI.Tests;
 
 /// <summary>
 /// Demonstrates the benefit of UI-agnostic menu specifications:
