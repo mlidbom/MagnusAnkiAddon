@@ -5,7 +5,7 @@ namespace JAStudio.Core.Tests;
 
 public abstract class CollectionUsingTest : IDisposable
 {
-   protected CollectionUsingTest(DataNeeded data)
+   protected CollectionUsingTest(DataNeeded data = DataNeeded.All)
    {
       _collectionScope = CollectionFactory.InjectCollectionWithSelectData(data);
       App.Config().SetReadingsMappingsForTesting(ReadingsMappings);

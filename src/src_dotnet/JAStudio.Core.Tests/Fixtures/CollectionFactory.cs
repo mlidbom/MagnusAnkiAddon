@@ -53,8 +53,6 @@ public static class CollectionFactory
       return new CollectionScope();
    }
 
-   public static IDisposable InjectCollectionWithAllSampleData() => InjectCollectionWithSelectData(DataNeeded.All);
-
    private class CollectionScope : IDisposable
    {
       public void Dispose()
