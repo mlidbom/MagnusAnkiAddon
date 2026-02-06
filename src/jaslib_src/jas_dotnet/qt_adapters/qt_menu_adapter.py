@@ -21,13 +21,15 @@ def add_to_qt_menu(target_qt_menu: QMenu, specs: Iterable[SpecMenuItem]) -> None
         if not spec.IsVisible:
             continue
 
+        name_with_accelerator = _add_acceleratator_key_to_name(spec.Name, spec.KeyboardShortcut)
+
         if spec.IsSubmenu:
-            qt_sub_menu = non_optional(target_qt_menu.addMenu(spec.Name))
+            qt_sub_menu = non_optional(target_qt_menu.addMenu(name_with_accelerator))
             add_to_qt_menu(qt_sub_menu, spec.Children)
         elif spec.IsSeparator:
             target_qt_menu.addSeparator()
         elif spec.IsCommand:
-            action = QAction(spec.Name, target_qt_menu)
+            action = QAction(name_with_accelerator, target_qt_menu)
             action.setEnabled(spec.IsEnabled)
 
             if spec.KeyboardShortcut:
@@ -38,3 +40,7 @@ def add_to_qt_menu(target_qt_menu: QMenu, specs: Iterable[SpecMenuItem]) -> None
             target_qt_menu.addAction(action)  # pyright: ignore [reportUnknownMemberType]
         else:
             raise Exception(f"Unknown menu spec type: {spec}")
+
+def _add_acceleratator_key_to_name(name: str, accelerator: str) -> str:
+    if accelerator == "": return name
+    return f"&{accelerator} {name}"
