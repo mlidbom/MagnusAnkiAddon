@@ -5,11 +5,8 @@ namespace JAStudio.Core.UI.Web;
 /// <summary>
 /// Display type constants and checks.
 /// </summary>
-public class DisplayType
+public static class DisplayType
 {
-    readonly TemporaryServiceCollection _services;
-    internal DisplayType(TemporaryServiceCollection services) => _services = services;
-
     public const string ReviewQuestion = "reviewQuestion";
     public const string ReviewAnswer = "reviewAnswer";
 

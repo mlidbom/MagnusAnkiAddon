@@ -5,11 +5,8 @@ using JAStudio.Core.LanguageServices;
 
 namespace JAStudio.Core.UI.Web.Kanji;
 
-public class ReadingsRenderer
+public static class ReadingsRenderer
 {
-    readonly TemporaryServiceCollection _services;
-    internal ReadingsRenderer(TemporaryServiceCollection services) => _services = services;
-
     public static string RenderKatakanaOnyomi(KanjiNote kanjiNote)
     {
         var onReadingsList = kanjiNote.GetReadingOnListHtml()

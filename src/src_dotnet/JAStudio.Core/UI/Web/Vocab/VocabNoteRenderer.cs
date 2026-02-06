@@ -7,11 +7,8 @@ namespace JAStudio.Core.UI.Web.Vocab;
 /// <summary>
 /// Factory for creating PreRenderingContentRenderer with VocabNote tag mappings.
 /// </summary>
-public class VocabNoteRenderer
+public static class VocabNoteRenderer
 {
-    readonly TemporaryServiceCollection _services;
-    internal VocabNoteRenderer(TemporaryServiceCollection services) => _services = services;
-
     public static PreRenderingContentRenderer<VocabNote> CreateRenderer()
     {
         return new PreRenderingContentRenderer<VocabNote>(new Dictionary<string, Func<VocabNote, string>>

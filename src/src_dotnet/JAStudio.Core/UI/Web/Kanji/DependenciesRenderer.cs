@@ -7,11 +7,8 @@ using JAStudio.Core.LanguageServices;
 
 namespace JAStudio.Core.UI.Web.Kanji;
 
-public class DependenciesRenderer
+public static class DependenciesRenderer
 {
-    readonly TemporaryServiceCollection _services;
-    internal DependenciesRenderer(TemporaryServiceCollection services) => _services = services;
-
     public static string RenderDependenciesList(KanjiNote note)
     {
         var readings = note.GetReadingsClean();

@@ -5,11 +5,8 @@ using System.Linq;
 
 namespace JAStudio.Core.UI.Web.Kanji;
 
-public class VocabListRenderer
+public static class VocabListRenderer
 {
-    readonly TemporaryServiceCollection _services;
-    internal VocabListRenderer(TemporaryServiceCollection services) => _services = services;
-
     public static string GenerateVocabHtmlList(KanjiNote kanjiNote)
     {
         var primaryVocab = kanjiNote.GetPrimaryVocabsOrDefaults();

@@ -10,13 +10,13 @@ from JAStudio.Core.UI.Web.Vocab import CompoundPartsRenderer, RelatedVocabsRende
 from JAStudio.Core.UI.Web.Kanji import DependenciesRenderer, KanjiListRenderer, KanjiNoteRenderer, MnemonicRenderer, ReadingsRenderer, VocabListRenderer
 from JAStudio.Core.LanguageServices.JamdictEx import DictLookup
 from JAStudio.Core.UI.Web import DisplayType
-from JAStudio.Core.TestUtils import ExPytest, TestApp
 from JAStudio.Core.Batches import LocalNoteUpdater
 from JAStudio.Core.Note.Vocabulary import POSSetManager, VocabNoteFactory, VocabNoteGeneratedData, VocabNoteMetaTagFormatter, VocabNoteSorting
 from JAStudio.Core.AnkiUtils import QueryBuilder
 from JAStudio.Core.UI.Web.Sentence import QuestionRenderer, SentenceNoteRenderer, SentenceRenderer, UdSentenceBreakdownRenderer
 from JAStudio.Core.ViewModels.KanjiList import SentenceKanjiListViewModel
 from JAStudio.Core.TaskRunners import TaskRunner
+from JAStudio.Core.TestUtils import TestApp, TestEnvDetector
 
 class App(IDisposable):
     @classmethod
@@ -82,8 +82,6 @@ class TemporaryServiceCollection(IDisposable):
     @property
     def DisplayType(self) -> DisplayType: ...
     @property
-    def ExPytest(self) -> ExPytest: ...
-    @property
     def KanjiListRenderer(self) -> KanjiListRenderer: ...
     @property
     def KanjiNoteMnemonicMaker(self) -> KanjiNoteMnemonicMaker: ...
@@ -115,6 +113,8 @@ class TemporaryServiceCollection(IDisposable):
     def TaskRunner(self) -> TaskRunner: ...
     @property
     def TestApp(self) -> TestApp: ...
+    @property
+    def TestEnvDetector(self) -> TestEnvDetector: ...
     @property
     def UdSentenceBreakdownRenderer(self) -> UdSentenceBreakdownRenderer: ...
     @property

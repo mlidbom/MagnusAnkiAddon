@@ -3,11 +3,8 @@ using JAStudio.Core.TestUtils;
 
 namespace JAStudio.Core;
 
-public class MyLog
+public static class MyLog
 {
-   readonly TemporaryServiceCollection _services;
-   internal MyLog(TemporaryServiceCollection services) => _services = services;
-
    public static void Debug(string message) => Log("DEBUG", message, !TestEnvDetector.IsTesting);
    public static void Info(string message) => Log("INFO", message, !TestEnvDetector.IsTesting);
    public static void Warning(string message) => Log($"WARNING", message);
