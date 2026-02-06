@@ -39,7 +39,6 @@ static class AppBootstrapper
          Singleton.For<KanjiNoteMnemonicMaker>().CreatedBy((TemporaryServiceCollection services) => new KanjiNoteMnemonicMaker(services)),
          Singleton.For<VocabNoteFactory>().CreatedBy((TemporaryServiceCollection services) => new VocabNoteFactory(services)),
          Singleton.For<VocabNoteGeneratedData>().CreatedBy((TemporaryServiceCollection services) => new VocabNoteGeneratedData(services)),
-         Singleton.For<POSSetManager>().CreatedBy((TemporaryServiceCollection services) => new POSSetManager(services)),
 
          // ViewModels
          Singleton.For<SentenceKanjiListViewModel>().CreatedBy((TemporaryServiceCollection services) => new SentenceKanjiListViewModel(services)),

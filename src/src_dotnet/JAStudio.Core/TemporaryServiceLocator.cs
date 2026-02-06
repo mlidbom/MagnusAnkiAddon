@@ -34,7 +34,6 @@ public class TemporaryServiceCollection(IServiceLocator serviceLocator) : IDispo
    public KanjiNoteMnemonicMaker KanjiNoteMnemonicMaker => _serviceLocator.Resolve<KanjiNoteMnemonicMaker>();
    public VocabNoteFactory VocabNoteFactory => _serviceLocator.Resolve<VocabNoteFactory>();
    public VocabNoteGeneratedData VocabNoteGeneratedData => _serviceLocator.Resolve<VocabNoteGeneratedData>();
-   public POSSetManager POSSetManager => _serviceLocator.Resolve<POSSetManager>();
 
    // ViewModels
    public SentenceKanjiListViewModel SentenceKanjiListViewModel => _serviceLocator.Resolve<SentenceKanjiListViewModel>();
