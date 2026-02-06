@@ -22,18 +22,6 @@ class CachingMutableStringField:
     def OnChange(self, callback: Action) -> None: ...
     def Set(self, value: str) -> None: ...
     def ToString(self) -> str: ...
-    # Skipped LazyReader due to it being static, abstract and generic.
-
-    LazyReader : LazyReader_MethodGroup
-    class LazyReader_MethodGroup:
-        def __getitem__(self, t:typing.Type[LazyReader_1_T1]) -> LazyReader_1[LazyReader_1_T1]: ...
-
-        LazyReader_1_T1 = typing.TypeVar('LazyReader_1_T1')
-        class LazyReader_1(typing.Generic[LazyReader_1_T1]):
-            LazyReader_1_TValue = CachingMutableStringField.LazyReader_MethodGroup.LazyReader_1_T1
-            def __call__(self, reader: Func_1[LazyReader_1_TValue]) -> LazyCE_1[LazyReader_1_TValue]:...
-
-
 
 
 class FallbackStringField:

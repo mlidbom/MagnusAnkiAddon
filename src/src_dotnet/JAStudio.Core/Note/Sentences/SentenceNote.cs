@@ -4,6 +4,7 @@ using JAStudio.Core.Note.Sentences;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.LanguageServices;
 using JAStudio.Core.Note.Sentences.Serialization;
 using JAStudio.Core.SysUtils;
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.LanguageServices;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
@@ -12,8 +13,15 @@ namespace JAStudio.Core.AnkiUtils;
 /// Builds Anki search query strings for finding notes and cards.
 /// Ported from jastudio/ankiutils/query_builder.py
 /// </summary>
-public static class QueryBuilder
+public class QueryBuilder
 {
+   readonly TemporaryServiceLocator _services;
+
+   internal QueryBuilder(TemporaryServiceLocator services)
+   {
+      _services = services;
+   }
+   
     private const string ExcludedDeckSubstring = "*Excluded*";
 
     /// <summary>

@@ -1,12 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Compze\src\Compze\Utilities\Compze.Utilities.csproj" />
+    <PackageReference Include="JetBrains.Annotations" Version="2025.2.4" />
+    <PackageReference Include="pythonnet" Version="3.0.5" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2025.2.4" />
-    <PackageReference Include="pythonnet" Version="3.0.5" />
+    <Reference Include="Compze.Utilities">
+      <HintPath>..\manual_libs\Compze.Utilities.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <PropertyGroup>

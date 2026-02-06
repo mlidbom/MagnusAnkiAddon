@@ -4,6 +4,7 @@ using JAStudio.Core.ViewModels.KanjiList;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using JAStudio.Core.LanguageServices;
 
 namespace JAStudio.Core.UI.Web.Kanji;
 

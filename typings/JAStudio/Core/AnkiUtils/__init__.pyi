@@ -1,8 +1,7 @@
-import abc
 from System.Collections.Generic import IEnumerable_1
 from JAStudio.Core.Note import JPNote, VocabNote, KanjiNote
 
-class QueryBuilder(abc.ABC):
+class QueryBuilder:
     @staticmethod
     def ExactMatches(question: str) -> str: ...
     @staticmethod

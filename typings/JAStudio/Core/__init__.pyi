@@ -1,11 +1,11 @@
 import abc
-from System import Action
+from System import IDisposable, Action
 from JAStudio.Core.Note.Collection import JPCollection
 from JAStudio.Core.Configuration import JapaneseConfig
 from JAStudio.Core.Note import IBackendNoteCreator
 from System.Collections.Generic import List_1
 
-class App(abc.ABC):
+class App(IDisposable):
     @classmethod
     @property
     def IsTesting(cls) -> bool: ...
@@ -15,9 +15,12 @@ class App(abc.ABC):
     @staticmethod
     def AddInitHook(hook: Action) -> None: ...
     @staticmethod
+    def Bootstrap() -> App: ...
+    @staticmethod
     def Col() -> JPCollection: ...
     @staticmethod
     def Config() -> JapaneseConfig: ...
+    def Dispose(self) -> None: ...
     @staticmethod
     def Reset(backendNoteCreator: IBackendNoteCreator) -> None: ...
 

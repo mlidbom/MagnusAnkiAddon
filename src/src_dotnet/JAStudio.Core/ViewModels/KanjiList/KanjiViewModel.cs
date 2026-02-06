@@ -1,3 +1,4 @@
+using JAStudio.Core.LanguageServices;
 using JAStudio.Core.Note;
 using JAStudio.Core.SysUtils;
 

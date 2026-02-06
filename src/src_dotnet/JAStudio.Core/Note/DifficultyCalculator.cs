@@ -1,4 +1,5 @@
 using System.Linq;
+using JAStudio.Core.LanguageServices;
 using JAStudio.Core.SysUtils;
 
 namespace JAStudio.Core.Note;

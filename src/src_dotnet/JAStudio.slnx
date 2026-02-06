@@ -1,5 +1,5 @@
 <Solution>
-  <Project Path="../../../Compze/src/Compze/Utilities/Compze.Utilities.csproj" />
+  <Folder Name="/Compze/" />
   <Project Path="JAStudio.Core.Tests\JAStudio.Core.Tests.csproj" />
   <Project Path="JAStudio.Core\JAStudio.Core.csproj" />
   <Project Path="JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />

@@ -1,15 +1,23 @@
-﻿using System;
+﻿using Compze.Utilities.DependencyInjection;
+using Compze.Utilities.DependencyInjection.Abstractions;
+using Compze.Utilities.DependencyInjection.SimpleInjector;
+using JAStudio.Core.AnkiUtils;
 
 namespace JAStudio.Core;
-using SimpleInjector;
 
 static class AppBootstrapper
 {
    public static App Bootstrap()
    {
-      var container = new Container();
-      //register all the currently static class as singletons unsing factory method registrations, not the magic autodetect and wire together registration style.
-      //We want manual constructor calls so we can use find usages etc and see how our code works
-      throw new NotImplementedException();
+      var container = new SimpleInjectorDependencyInjectionContainer();
+      var registrar = container.Register();
+
+      registrar.Register(
+         Singleton.For<TemporaryServiceLocator>().CreatedBy(() => new TemporaryServiceLocator(container.ServiceLocator)),
+         Singleton.For<App>().CreatedBy((TemporaryServiceLocator services) => new App(services)),
+         Singleton.For<QueryBuilder>().CreatedBy((TemporaryServiceLocator services) => new QueryBuilder(services))
+      );
+
+      return container.ServiceLocator.Resolve<App>();
    }
 }
