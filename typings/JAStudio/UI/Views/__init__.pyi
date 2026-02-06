@@ -419,6 +419,9 @@ class AboutDialog(Window):
 
 
 class ContextMenuPopup(UserControl):
+    @typing.overload
+    def __init__(self) -> None: ...
+    @typing.overload
     def __init__(self, clipboardContent: str, selectionContent: str) -> None: ...
     @property
     def ActualThemeVariant(self) -> ThemeVariant: ...

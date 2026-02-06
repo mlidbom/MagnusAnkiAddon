@@ -36,7 +36,7 @@ public static class VocabNoteMenus
     {
         return SpecMenuItem.Submenu(
             ShortcutFinger.Home1("Open"),
-            new List<SpecMenuItem>
+            new List<SpecMenuItem?>
             {
                 BuildOpenVocabMenuSpec(vocab),
                 BuildOpenSentencesMenuSpec(vocab),

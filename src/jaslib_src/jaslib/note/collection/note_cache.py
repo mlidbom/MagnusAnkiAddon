@@ -74,10 +74,6 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](NoteCacheBase[TNote], Slot
         self._by_question: defaultdict[str, QList[TNote]] = defaultdict[str, QList[TNote]](QList[TNote])
         self._snapshot_by_id: dict[JPNoteId, TSnapshot] = {}
 
-        self._deleted: QSet[JPNoteId] = QSet()
-
-        self._flushing: bool = False
-
     def all(self) -> QList[TNote]:
         return QList(self._by_id.values())
 

@@ -102,8 +102,6 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
 {
     private readonly Dictionary<string, List<TNote>> _byQuestion = new();
     private readonly Dictionary<int, TSnapshot> _snapshotById = new();
-    private readonly HashSet<int> _deleted = new();
-    private bool _flushing;
 
     protected NoteCache(Type cachedNoteType, Func<JPNoteData, TNote> noteConstructor)
         : base(cachedNoteType, noteConstructor)
