@@ -1,21 +1,12 @@
 import typing, abc
-from System import Action_1, Func_2, ValueTuple_2, Action
+from System import Func_2, Action_1, ValueTuple_2, Action
 from System.Collections.Generic import List_1, Dictionary_2
 
 class ConfigurationValue_GenericClasses(abc.ABCMeta):
     Generic_ConfigurationValue_GenericClasses_ConfigurationValue_1_T = typing.TypeVar('Generic_ConfigurationValue_GenericClasses_ConfigurationValue_1_T')
     def __getitem__(self, types : typing.Type[Generic_ConfigurationValue_GenericClasses_ConfigurationValue_1_T]) -> typing.Type[ConfigurationValue_1[Generic_ConfigurationValue_GenericClasses_ConfigurationValue_1_T]]: ...
 
-class ConfigurationValue(ConfigurationValue_0, metaclass =ConfigurationValue_GenericClasses): ...
-
-class ConfigurationValue_0:
-    @staticmethod
-    def Config() -> JapaneseConfig: ...
-    @staticmethod
-    def InitJson(json: str, updateCallback: Action_1[str]) -> None: ...
-    @staticmethod
-    def InitPreviewForTesting() -> None: ...
-
+ConfigurationValue : ConfigurationValue_GenericClasses
 
 ConfigurationValue_1_T = typing.TypeVar('ConfigurationValue_1_T')
 class ConfigurationValue_1(typing.Generic[ConfigurationValue_1_T]):

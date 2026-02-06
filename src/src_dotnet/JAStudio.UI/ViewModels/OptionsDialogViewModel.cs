@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JAStudio.Core.Configuration;
+using CoreApp = JAStudio.Core.App;
 
 namespace JAStudio.UI.ViewModels;
 
@@ -23,9 +24,9 @@ public partial class OptionsDialogViewModel : ObservableObject
         _window = window;
         if (Design.IsDesignMode)
         {
-           ConfigurationValue.InitPreviewForTesting();
+           CoreApp.InitConfigForTesting();
         }
-        _config = ConfigurationValue.Config();
+        _config = CoreApp.Config();
         JALogger.Log("OptionsDialogViewModel constructor: calling LoadFromConfig()...");
         LoadFromConfig();
         JALogger.Log("OptionsDialogViewModel constructor: completed");

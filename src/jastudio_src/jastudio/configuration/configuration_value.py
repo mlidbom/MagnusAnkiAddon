@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from aqt import mw
 from jaslib import mylog
 from jaslib.configuration import configuration_value
-from JAStudio.Core.Configuration import ConfigurationValue
+from JAStudio.Core import App
 from System import Action
 
 from jastudio.ankiutils import app
@@ -31,7 +31,7 @@ configuration_value.init(_get_config_dict(), _write_config_dict)
 # Initialize C# configuration system
 _callback = Action[str](_write_config_dict_json)  # pyright: ignore [reportCallIssue]
 _json_dict = json.dumps(_get_config_dict(), indent=3, ensure_ascii=False)
-ConfigurationValue.InitJson(_json_dict, _callback)
+App.InitConfigJson(_json_dict, _callback)
 mylog.info("C# ConfigurationValue initialized successfully")
 
 config: Lazy[JapaneseConfig] = configuration_value.config

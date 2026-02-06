@@ -1,3 +1,4 @@
+import abc
 from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction import CandidateWordVariant, TextAnalysis
 from System.Collections.Generic import List_1, HashSet_1
 from JAStudio.Core.Note import VocabNote, SentenceNote
@@ -112,7 +113,7 @@ class QuestionRenderer:
     def RenderWbr(question: str) -> str: ...
 
 
-class SentenceNoteRenderer:
+class SentenceNoteRenderer(abc.ABC):
     @staticmethod
     def CreateRenderer() -> PreRenderingContentRenderer_1[SentenceNote]: ...
 

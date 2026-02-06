@@ -330,7 +330,7 @@ class VocabNoteMetaData:
     def MetaTagsHtml(self, displayExtendedSentenceStatistics: bool = ..., noSentenceStatistics: bool = ...) -> str: ...
 
 
-class VocabNoteMetaTagFormatter:
+class VocabNoteMetaTagFormatter(abc.ABC):
     @staticmethod
     def GetMetaTagsHtml(vocab: VocabNote, displayExtendedSentenceStatistics: bool = ..., noSentenceStatistics: bool = ...) -> str: ...
 
@@ -422,7 +422,7 @@ class VocabNoteSentences:
     def WithPrimaryForm(self) -> List_1[SentenceNote]: ...
 
 
-class VocabNoteSorting:
+class VocabNoteSorting(abc.ABC):
     @staticmethod
     def SortVocabListByStudyingStatus(vocabs: IEnumerable_1[VocabNote], primaryVoc: List_1[str] = ..., preferredKanji: str = ...) -> List_1[VocabNote]: ...
 

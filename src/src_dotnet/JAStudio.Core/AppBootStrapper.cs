@@ -4,7 +4,6 @@ using Compze.Utilities.DependencyInjection.SimpleInjector;
 using JAStudio.Core.Anki;
 using JAStudio.Core.AnkiUtils;
 using JAStudio.Core.Batches;
-using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Vocabulary;
@@ -30,7 +29,6 @@ static class AppBootstrapper
          Singleton.For<QueryBuilder>().CreatedBy((TemporaryServiceCollection services) => new QueryBuilder(services)),
          
          // Core services
-         Singleton.For<ConfigurationValue>().CreatedBy((TemporaryServiceCollection services) => new ConfigurationValue(services)),
          Singleton.For<LocalNoteUpdater>().CreatedBy((TemporaryServiceCollection services) => new LocalNoteUpdater(services)),
          Singleton.For<TaskRunner>().CreatedBy((TemporaryServiceCollection services) => new TaskRunner(services)),
          Singleton.For<AnkiCardOperations>().CreatedBy((TemporaryServiceCollection services) => new AnkiCardOperations(services)),

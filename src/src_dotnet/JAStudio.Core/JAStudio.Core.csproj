@@ -1,38 +1,38 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+   <PropertyGroup>
+      <TargetFramework>net10.0</TargetFramework>
+      <ImplicitUsings>disable</ImplicitUsings>
+      <Nullable>enable</Nullable>
+   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
-  </ItemGroup>
+   <ItemGroup>
+      <ProjectReference Include="..\JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
+   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="UserFiles\**\*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="LanguageServices\EnglishDictionary\data\**\*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+   <ItemGroup>
+      <None Update="UserFiles\**\*">
+         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="LanguageServices\EnglishDictionary\data\**\*">
+         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageReference Include="SimpleInjector" Version="5.5.0" />
-  </ItemGroup>
+   <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+      <PackageReference Include="SimpleInjector" Version="5.5.0" />
+   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Compze.Utilities">
-      <HintPath>..\manual_libs\Compze.Utilities.dll</HintPath>
-    </Reference>
-    <Reference Include="Compze.Utilities.DependencyInjection.SimpleInjector">
-      <HintPath>..\manual_libs\Compze.Utilities.DependencyInjection.SimpleInjector.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+   <ItemGroup>
+      <Reference Include="Compze.Utilities">
+         <HintPath>..\manual_libs\Compze.Utilities.dll</HintPath>
+      </Reference>
+      <Reference Include="Compze.Utilities.DependencyInjection.SimpleInjector">
+         <HintPath>..\manual_libs\Compze.Utilities.DependencyInjection.SimpleInjector.dll</HintPath>
+      </Reference>
+   </ItemGroup>
 
-  <!-- Stub regeneration moved to JAStudio.UI project (builds last, has all DLLs) -->
+   <!-- Stub regeneration moved to JAStudio.UI project (builds last, has all DLLs) -->
 
 </Project>

@@ -1,8 +1,9 @@
+import abc
 from JAStudio.Core.Note import KanjiNote, JPNote
 from System.Collections.Generic import List_1
 from JAStudio.Core.UI.Web import PreRenderingContentRenderer_1
 
-class DependenciesRenderer:
+class DependenciesRenderer(abc.ABC):
     @staticmethod
     def RenderDependenciesList(note: KanjiNote) -> str: ...
 
@@ -14,22 +15,22 @@ class KanjiListRenderer:
     def RenderList(note: JPNote, kanjis: List_1[KanjiNote], kanjiReadings: List_1[str]) -> str: ...
 
 
-class KanjiNoteRenderer:
+class KanjiNoteRenderer(abc.ABC):
     @staticmethod
     def CreateRenderer() -> PreRenderingContentRenderer_1[KanjiNote]: ...
 
 
-class MnemonicRenderer:
+class MnemonicRenderer(abc.ABC):
     @staticmethod
     def RenderMnemonic(note: KanjiNote) -> str: ...
 
 
-class ReadingsRenderer:
+class ReadingsRenderer(abc.ABC):
     @staticmethod
     def RenderKatakanaOnyomi(kanjiNote: KanjiNote) -> str: ...
 
 
-class VocabListRenderer:
+class VocabListRenderer(abc.ABC):
     @staticmethod
     def GenerateVocabHtmlList(kanjiNote: KanjiNote) -> str: ...
 

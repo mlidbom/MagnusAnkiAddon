@@ -1,20 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+   <PropertyGroup>
+      <TargetFramework>net10.0</TargetFramework>
+      <ImplicitUsings>disable</ImplicitUsings>
+      <Nullable>enable</Nullable>
+   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2025.2.4" />
-    <PackageReference Include="pythonnet" Version="3.0.5" />
-  </ItemGroup>
+   <ItemGroup>
+      <PackageReference Include="JetBrains.Annotations" Version="2025.2.4" />
+      <PackageReference Include="pythonnet" Version="3.0.5" />
+   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Compze.Utilities">
-      <HintPath>..\manual_libs\Compze.Utilities.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+   <ItemGroup>
+      <Reference Include="Compze.Utilities">
+         <HintPath>..\manual_libs\Compze.Utilities.dll</HintPath>
+      </Reference>
+   </ItemGroup>
 
 </Project>

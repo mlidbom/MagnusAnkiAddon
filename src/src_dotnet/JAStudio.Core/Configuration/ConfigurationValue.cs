@@ -1,67 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 
 namespace JAStudio.Core.Configuration;
-
-public class ConfigurationValue
-{
-   readonly TemporaryServiceCollection _services;
-   internal ConfigurationValue(TemporaryServiceCollection services) => _services = services;
-
-   static Dictionary<string, object>? _configDict;
-   static Action<string>? _updateCallback;
-   internal static Dictionary<string, string>? StaticReadingsMappings;
-
-   public static void InitPreviewForTesting()
-   {
-      if(_configDict != null) return;
-      InitJson("{}", s => {});
-      StaticReadingsMappings = new Dictionary<string, string>();
-   }
-
-   public static void InitJson(string json, Action<string> updateCallback)
-   {
-      if(_configDict != null)
-      {
-         throw new InvalidOperationException("Configuration dict already initialized");
-      }
-
-      _configDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-      _updateCallback = updateCallback;
-   }
-
-   internal static Dictionary<string, object> GetConfigDict()
-   {
-      if(App.IsTesting)
-      {
-         return new Dictionary<string, object>();
-      }
-
-      if(_configDict == null)
-      {
-         throw new InvalidOperationException("Configuration dict not initialized");
-      }
-
-      return _configDict;
-   }
-
-   internal static void WriteConfigDict()
-   {
-      if(!App.IsTesting && _updateCallback != null && _configDict != null)
-      {
-         var json = JsonConvert.SerializeObject(_configDict, Formatting.None);
-         _updateCallback(json);
-      }
-   }
-
-   static JapaneseConfig? _config;
-
-   public static JapaneseConfig Config()
-   {
-      return _config ??= new JapaneseConfig();
-   }
-}
 
 public class ConfigurationValue<T>
 {
@@ -78,7 +18,7 @@ public class ConfigurationValue<T>
       FeatureToggler = featureToggler;
       Name = name;
 
-      var configDict = ConfigurationValue.GetConfigDict();
+      var configDict = App.GetConfigDict();
 
       _value = configDict.TryGetValue(name, out var value)
                   ? converter(value)
@@ -96,11 +36,11 @@ public class ConfigurationValue<T>
    {
       _value = value;
 
-      ConfigurationValue.GetConfigDict()[Name] = value!;
+      App.GetConfigDict()[Name] = value!;
 
       ToggleFeature();
 
-      ConfigurationValue.WriteConfigDict();
+      App.WriteConfigDict();
 
       foreach(var callback in _changeCallbacks)
       {

@@ -1,3 +1,4 @@
+import abc
 
 class TestApp:
     @staticmethod
@@ -6,7 +7,7 @@ class TestApp:
     def Reset() -> None: ...
 
 
-class TestEnvDetector:
+class TestEnvDetector(abc.ABC):
     @classmethod
     @property
     def IsTesting(cls) -> bool: ...

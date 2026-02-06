@@ -1,3 +1,4 @@
+import abc
 from JAStudio.Core.Note import VocabNote, SentenceNote
 from System.Collections.Generic import List_1, HashSet_1
 from JAStudio.Core.UI.Web import PreRenderingContentRenderer_1
@@ -15,7 +16,7 @@ class CompoundPart:
     def VocabNote(self, value: VocabNote) -> VocabNote: ...
 
 
-class CompoundPartsRenderer:
+class CompoundPartsRenderer(abc.ABC):
     @staticmethod
     def GenerateCompounds(vocabNote: VocabNote) -> str: ...
 
@@ -62,7 +63,7 @@ class VocabKanjiListRenderer:
     def RenderVocabKanjiList(vocab: VocabNote) -> str: ...
 
 
-class VocabNoteRenderer:
+class VocabNoteRenderer(abc.ABC):
     @staticmethod
     def CreateRenderer() -> PreRenderingContentRenderer_1[VocabNote]: ...
 
@@ -87,7 +88,7 @@ class VocabSentenceMatchViewModel:
     def ToString(self) -> str: ...
 
 
-class VocabSentencesRenderer:
+class VocabSentencesRenderer(abc.ABC):
     @staticmethod
     def GenerateMarkedInvalidInListHtml(vocabNote: VocabNote) -> str: ...
     @staticmethod

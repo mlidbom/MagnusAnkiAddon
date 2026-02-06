@@ -2,7 +2,7 @@ import typing, abc
 from System.Collections.Generic import Dictionary_2
 from System import Func_2
 
-class DisplayType:
+class DisplayType(abc.ABC):
     ReviewAnswer : str
     ReviewQuestion : str
     @staticmethod
