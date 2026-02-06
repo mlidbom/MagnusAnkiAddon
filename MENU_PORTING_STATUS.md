@@ -234,11 +234,11 @@ When porting menus/dialogs:
 
 ## Summary Statistics
 - **Total menu items tracked**: ~200+ items
-- **COMPLETE**: ~100 items (QueryBuilder, OpenInAnkiMenus, WebSearch, Options/Readings dialogs, all Local Actions, **All 3 note type actions complete**, **Universal actions complete**, **Create note actions complete**, **Reparse action complete**)
+- **COMPLETE**: ~125 items (QueryBuilder, OpenInAnkiMenus, WebSearch, Options/Readings dialogs, all Local Actions, **All 3 note type actions complete**, **Universal actions complete**, **Create note actions complete**, **Reparse action complete**, **Vocab string menu complete**)
 - **SCAFFOLDED**: ~20 items (menu structure exists, some actions still TODO)
 - **EXCLUDED**: ~7 items (Debug menu - Python runtime diagnostics not relevant to .NET)
-- **MISSING**: ~73+ items (String menus for all note types not yet ported)
-- **Porting completion**: ~50% complete, ~10% scaffolded, ~4% excluded, ~36% not started
+- **MISSING**: ~48+ items (Kanji and Sentence string menus not yet ported)
+- **Porting completion**: ~62% complete, ~10% scaffolded, ~4% excluded, ~24% not started
 
 ### Phase 1 Complete ✅
 - QueryBuilder (21 methods) - ✅ COMPLETE
@@ -292,6 +292,17 @@ When porting menus/dialogs:
   - Calls LocalNoteUpdater.ReparseMatchingSentences(text)
   - Reparses all sentences containing the text substring
   - Shows tooltip feedback on success/failure
+- ✅ **Vocab String Menu COMPLETE** (20 items)
+  - Add submenu: 7 relationship types (synonym, antonym, form, see also, etc.)
+  - Set submenu: 2 single-value relationships (ergative twin, derived from)
+  - Remove submenu: 8 relationship remove operations
+  - Sentence submenu: 3 highlight/incorrect match operations
+  - All operations properly enabled/disabled based on current state
+  - Uses VocabNote.RelatedNotes, VocabNote.Forms, SentenceConfiguration
+  - **Proper architecture: relationships managed by domain objects!**
+- TODO Vocab create combined submenu (prefix/postfix operations)
+- TODO Kanji string menu (~20 items)
+- TODO Sentence string menu (~25 items)
 - TODO Open Note dialog (currently Python dialog, needs Avalonia port)
 
 ### Excluded from Porting ❌
