@@ -59,7 +59,7 @@ public class App : IDisposable
       _backendNoteCreator = backendNoteCreator;
    }
 
-   public static string UserFilesDir
+   internal static string UserFilesDir
    {
       get
       {
