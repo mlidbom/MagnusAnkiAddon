@@ -318,9 +318,14 @@ When porting menus/dialogs:
 ### Infrastructure Complete ✅
 The C# infrastructure is in place:
   - `JAStudio.UI/Menus/JapaneseMainMenu.cs` ✅ COMPLETE (Config + Local Actions + Lookup menus)
-  - `JAStudio.UI/Menus/NoteContextMenu.cs` ✅ VOCAB + KANJI COMPLETE (vocab + kanji note menus fully implemented, sentence TODO)
-  - `JAStudio.UI/Menus/OpenInAnkiMenus.cs` ✅ **ALL NOTE TYPE MENUS COMPLETE** (Vocab ✅ Kanji ✅ Sentence ✅ - string menus
-  - `JAStudio.UI/Menus/WebSearchMenus.cs` ✅ COMPLETE (uses BrowserLauncher directly)
+  - `JAStudio.UI/Menus/NoteContextMenu.cs` ✅ COORDINATOR (delegates to note-type-specific builders)
+  - `JAStudio.UI/Menus/Notes/Vocab/VocabNoteMenus.cs` ✅ COMPLETE (vocab note actions)
+  - `JAStudio.UI/Menus/Notes/Vocab/VocabStringMenus.cs` ✅ COMPLETE (vocab string menu)
+  - `JAStudio.UI/Menus/Notes/Kanji/KanjiNoteMenus.cs` ✅ COMPLETE (kanji note actions)
+  - `JAStudio.UI/Menus/Notes/Kanji/KanjiStringMenus.cs` ✅ COMPLETE (kanji string menu)
+  - `JAStudio.UI/Menus/Notes/Sentence/SentenceNoteMenus.cs` ✅ COMPLETE (sentence note actions)
+  - `JAStudio.UI/Menus/OpenInAnkiMenus.cs` ✅ COMPLETE (shared Anki searches)
+  - `JAStudio.UI/Menus/WebSearchMenus.cs` ✅ COMPLETE (shared web searches)
   - `JAStudio.UI/Views/OptionsDialog.axaml` ✅ COMPLETE (Full configuration dialog)
   - `JAStudio.UI/ViewModels/OptionsDialogViewModel.cs` ✅ COMPLETE (Two-way binding to JapaneseConfig)
   - `JAStudio.UI/Views/ReadingsMappingsDialog.axaml` ✅ COMPLETE (Text editor with search)
