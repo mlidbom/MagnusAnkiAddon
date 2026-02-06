@@ -94,28 +94,20 @@ def build_local_menu(local_menu: QMenu) -> None:
     add_menu_ui_action(local_menu, shortcutfinger.home5("Regenerate vocab source answers from jamdict"), local_note_updater.regenerate_jamdict_vocab_answers)
 
 def _add_csharp_main_menu(menu: QMenu) -> None:
-    """
-    Add C# main menu specs rendered as a native PyQt submenu.
-
-    All menu structure and business logic is in C# (JAStudio.UI.Menus.JapaneseMainMenu).
-    This just converts the UI-agnostic specifications to PyQt QMenus.
-    """
     from jas_dotnet.qt_adapters import qt_menu_adapter
     from jaslib import mylog
     from JAStudio.UI.Menus import JapaneseMainMenu
 
-    def get_search_text() -> str:
-        """Get search text from user input."""
+    def get_user_text_input() -> str:
         text, ok = QInputDialog.getText(None, "input", "enter text", QLineEdit.EchoMode.Normal, "")
         return text if ok and text else ""
 
     try:
-        # Get menu specs from C# - no callbacks needed, AnkiFacade handles it all
-        menu_builder = JapaneseMainMenu(get_search_text())  # pyright: ignore[reportUnknownVariableType]
-        specs = menu_builder.BuildMenuSpec()  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
+        menu_builder = JapaneseMainMenu(get_user_text_input())
+        specs = menu_builder.BuildMenuSpec()
 
         csharp_menu = non_optional(menu.addMenu(shortcutfinger.down3("🎯 C# Japanese Menu")))
-        qt_menu_adapter.add_to_qt_menu(csharp_menu, specs)  # pyright: ignore[reportUnknownArgumentType]
+        qt_menu_adapter.add_to_qt_menu(csharp_menu, specs)
     except Exception as e:
         mylog.error(f"Failed to build C# main menu: {e}")
         import traceback
