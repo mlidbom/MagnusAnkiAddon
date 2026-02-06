@@ -234,11 +234,11 @@ When porting menus/dialogs:
 
 ## Summary Statistics
 - **Total menu items tracked**: ~200+ items
-- **COMPLETE**: ~96 items (QueryBuilder, OpenInAnki, WebSearch, Options/Readings dialogs, all Local Actions, **All 3 note type actions complete**, **Universal actions complete**)
+- **COMPLETE**: ~99 items (QueryBuilder, OpenInAnkiMenus, WebSearch, Options/Readings dialogs, all Local Actions, **All 3 note type actions complete**, **Universal actions complete**, **Create note actions complete**)
 - **SCAFFOLDED**: ~20 items (menu structure exists, some actions still TODO)
 - **EXCLUDED**: ~7 items (Debug menu - Python runtime diagnostics not relevant to .NET)
-- **MISSING**: ~77+ items (String menus for all note types not yet ported)
-- **Porting completion**: ~48% complete, ~10% scaffolded, ~4% excluded, ~38% not started
+- **MISSING**: ~74+ items (String menus for all note types not yet ported)
+- **Porting completion**: ~50% complete, ~10% scaffolded, ~4% excluded, ~36% not started
 
 ### Phase 1 Complete ✅
 - QueryBuilder (21 methods) - ✅ COMPLETE
@@ -282,7 +282,12 @@ When porting menus/dialogs:
   - Unsuspend all cards (JPNote.UnsuspendAllCards - stubbed, needs implementation)
   - Conditional enable/disable based on card suspend status (JPNote.HasSuspendedCards/HasActiveCards)
   - **Logic encapsulated in JPNote where it belongs!**
-- TODO Context menu Create actions (vocab, sentence, kanji)
+- ✅ **Context Menu Create Actions COMPLETE** (3 actions)
+  - Create vocab note from selection (VocabNoteFactory.CreateWithDictionary + reparse sentences)
+  - Create sentence note from selection (SentenceNote.Create)
+  - Create kanji note from selection (KanjiNote.Create with placeholder values)
+  - All open newly created note in previewer and refresh UI
+  - Error handling with user-friendly tooltips
 - TODO Open Note dialog (currently Python dialog, needs Avalonia port)
 
 ### Excluded from Porting ❌

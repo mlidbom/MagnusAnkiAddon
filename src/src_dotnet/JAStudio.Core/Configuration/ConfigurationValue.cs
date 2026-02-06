@@ -12,12 +12,13 @@ public static class ConfigurationValue
    static Action<string>? _updateCallback;
    internal static Dictionary<string, string>? StaticReadingsMappings;
 
-   public static void InitPreview()
+   public static void InitPreviewForTesting()
    {
+      if(_configDict != null) return;
       InitJson("{}", s => {});
       StaticReadingsMappings = new Dictionary<string, string>();
    }
-   
+
    public static void InitJson(string json, Action<string> updateCallback)
    {
       if(_configDict != null)

@@ -23,7 +23,7 @@ public partial class OptionsDialogViewModel : ObservableObject
         _window = window;
         if (Design.IsDesignMode)
         {
-           ConfigurationValue.InitPreview();
+           ConfigurationValue.InitPreviewForTesting();
         }
         _config = ConfigurationValue.Config();
         JALogger.Log("OptionsDialogViewModel constructor: calling LoadFromConfig()...");

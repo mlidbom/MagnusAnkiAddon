@@ -10,11 +10,9 @@ public static class TestApp
 
     public static void Initialize()
     {
-        if (_isInitialized)
-        {
-            return;
-        }
+        if (_isInitialized) return;
 
+        ConfigurationValue.InitPreviewForTesting();
         App.Reset(new TestingBackendNoteCreator());
         App.Config().SetReadingsMappingsForTesting(TestReadingsMappings);
         
@@ -24,7 +22,7 @@ public static class TestApp
     public static void Reset()
     {
         App.Reset(new TestingBackendNoteCreator());
-        ConfigurationValue.InitPreview();
+        ConfigurationValue.InitPreviewForTesting();
         App.Config().SetReadingsMappingsForTesting(TestReadingsMappings);
     }
 

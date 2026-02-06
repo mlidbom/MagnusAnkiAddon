@@ -4,6 +4,8 @@ using System.Linq;
 using JAStudio.Core;
 using JAStudio.Core.AnkiUtils;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.Sentences;
+using JAStudio.Core.Note.Vocabulary;
 using JAStudio.UI.Anki;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
@@ -739,7 +741,57 @@ public class NoteContextMenu
     }
     
     private void OnReparseMatchingSentences(string text) => JALogger.Log($"TODO: Reparse matching sentences: {text}");
-    private void OnCreateVocabNote(string text) => JALogger.Log($"TODO: Create vocab note: {text}");
-    private void OnCreateSentenceNote(string text) => JALogger.Log($"TODO: Create sentence note: {text}");
-    private void OnCreateKanjiNote(string text) => JALogger.Log($"TODO: Create kanji note: {text}");
+    
+    private void OnCreateVocabNote(string text)
+    {
+        try
+        {
+            var newVocab = VocabNoteFactory.CreateWithDictionary(text);
+            Core.Batches.LocalNoteUpdater.ReparseSentencesForVocab(newVocab);
+            
+            var query = QueryBuilder.NotesLookup(new JPNote[] { newVocab });
+            AnkiFacade.ExecuteLookupAndShowPreviewer(query);
+            AnkiFacade.Refresh();
+        }
+        catch (Exception ex)
+        {
+            JALogger.Log($"Failed to create vocab note: {ex.Message}");
+            AnkiFacade.ShowTooltip($"Failed to create vocab note: {ex.Message}", 5000);
+        }
+    }
+    
+    private void OnCreateSentenceNote(string text)
+    {
+        try
+        {
+            var newSentence = SentenceNote.Create(text);
+            
+            var query = QueryBuilder.NotesLookup(new JPNote[] { newSentence });
+            AnkiFacade.ExecuteLookupAndShowPreviewer(query);
+            AnkiFacade.Refresh();
+        }
+        catch (Exception ex)
+        {
+            JALogger.Log($"Failed to create sentence note: {ex.Message}");
+            AnkiFacade.ShowTooltip($"Failed to create sentence note: {ex.Message}", 5000);
+        }
+    }
+    
+    private void OnCreateKanjiNote(string text)
+    {
+        try
+        {
+            // Create with placeholder values - user will need to fill them in
+            var newKanji = KanjiNote.Create(text, "TODO", "", "");
+            
+            var query = QueryBuilder.NotesLookup(new JPNote[] { newKanji });
+            AnkiFacade.ExecuteLookupAndShowPreviewer(query);
+            AnkiFacade.Refresh();
+        }
+        catch (Exception ex)
+        {
+            JALogger.Log($"Failed to create kanji note: {ex.Message}");
+            AnkiFacade.ShowTooltip($"Failed to create kanji note: {ex.Message}", 5000);
+        }
+    }
 }
