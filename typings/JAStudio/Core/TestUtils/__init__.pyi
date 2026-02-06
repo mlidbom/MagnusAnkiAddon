@@ -2,8 +2,6 @@ import abc
 
 class TestApp:
     @staticmethod
-    def Initialize() -> None: ...
-    @staticmethod
     def Reset() -> None: ...
 
 

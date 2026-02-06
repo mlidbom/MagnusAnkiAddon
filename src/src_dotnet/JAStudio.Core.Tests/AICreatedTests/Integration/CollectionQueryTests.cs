@@ -5,13 +5,8 @@ using Xunit;
 
 namespace JAStudio.Core.Tests.AICreatedTests.Integration;
 
-public class CollectionQueryTests : IAIGeneratedTestClass
+public class CollectionQueryTests : TestStartingWithEmptyCollection, IAIGeneratedTestClass
 {
-    public CollectionQueryTests()
-    {
-        TestApp.Reset();
-    }
-
     [Fact]
     public void VocabCollection_WithQuestion_FindsVocabByQuestion()
     {

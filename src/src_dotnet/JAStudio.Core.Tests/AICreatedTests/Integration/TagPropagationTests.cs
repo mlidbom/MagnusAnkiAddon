@@ -4,13 +4,8 @@ using Xunit;
 
 namespace JAStudio.Core.Tests.AICreatedTests.Integration;
 
-public class TagPropagationTests : IAIGeneratedTestClass
+public class TagPropagationTests : TestStartingWithEmptyCollection, IAIGeneratedTestClass
 {
-    public TagPropagationTests()
-    {
-        TestApp.Reset();
-    }
-
     [Fact]
     public void SettingTag_StoresOnNote()
     {

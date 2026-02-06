@@ -5,13 +5,8 @@ using Xunit;
 
 namespace JAStudio.Core.Tests.LanguageServices;
 
-public class ConjugationBaseTests
+public class ConjugationBaseTests : TestStartingWithEmptyCollection
 {
-    public ConjugationBaseTests()
-    {
-        TestApp.Initialize();
-    }
-
     [Theory]
     // irregular verbs
     [InlineData("くる", new[] { "き", "こ", "くれ", "き" })]

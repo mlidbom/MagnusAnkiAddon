@@ -5,85 +5,80 @@ using Xunit;
 
 namespace JAStudio.Core.Tests.AICreatedTests.Integration;
 
-public class VocabFormsSynchronizationTests : IAIGeneratedTestClass
+public class VocabFormsSynchronizationTests : TestStartingWithEmptyCollection, IAIGeneratedTestClass
 {
-    public VocabFormsSynchronizationTests()
-    {
-        TestApp.Reset();
-    }
+   [Fact]
+   public void AddingFormToVocabA_UpdatesVocabB_WhenVocabBHasThatFormAsQuestion()
+   {
+      // Arrange
+      var vocabA = VocabNote.Create("食べる", "to eat", "たべる");
+      var vocabB = VocabNote.Create("食う", "to eat (casual)", "くう");
 
-    [Fact]
-    public void AddingFormToVocabA_UpdatesVocabB_WhenVocabBHasThatFormAsQuestion()
-    {
-        // Arrange
-        var vocabA = VocabNote.Create("食べる", "to eat", "たべる");
-        var vocabB = VocabNote.Create("食う", "to eat (casual)", "くう");
+      // Act - Add vocabB's question as a form of vocabA
+      vocabA.Forms.Add("食う");
 
-        // Act - Add vocabB's question as a form of vocabA
-        vocabA.Forms.Add("食う");
+      // Assert - VocabB should now have vocabA's question as a form
+      Assert.Contains("食べる", vocabB.Forms.AllSet());
+   }
 
-        // Assert - VocabB should now have vocabA's question as a form
-        Assert.Contains("食べる", vocabB.Forms.AllSet());
-    }
+   [Fact]
+   public void RemovingFormFromVocabA_UpdatesVocabB()
+   {
+      // Arrange
+      var vocabA = VocabNote.Create("走る", "to run", "はしる");
+      var vocabB = VocabNote.Create("駆ける", "to run, to dash", "かける");
 
-    [Fact]
-    public void RemovingFormFromVocabA_UpdatesVocabB()
-    {
-        // Arrange
-        var vocabA = VocabNote.Create("走る", "to run", "はしる");
-        var vocabB = VocabNote.Create("駆ける", "to run, to dash", "かける");
-        
-        vocabA.Forms.Add("駆ける");
-        Assert.Contains("走る", vocabB.Forms.AllSet()); // Verify it was added
+      vocabA.Forms.Add("駆ける");
+      Assert.Contains("走る", vocabB.Forms.AllSet()); // Verify it was added
 
-        // Act - Remove the form
-        vocabA.Forms.Remove("駆ける");
+      // Act - Remove the form
+      vocabA.Forms.Remove("駆ける");
 
-        // Assert - VocabB should no longer have vocabA's question as a form
-        Assert.DoesNotContain("走る", vocabB.Forms.AllSet());
-    }
+      // Assert - VocabB should no longer have vocabA's question as a form
+      Assert.DoesNotContain("走る", vocabB.Forms.AllSet());
+   }
 
-    [Fact]
-    public void OwnedForms_IdentifiedByBrackets()
-    {
-        // Arrange
-        var vocab = VocabNote.Create("走る", "to run", "はしる");
-        
-        // Act - Set forms with bracketed (owned) and non-bracketed (borrowed) forms
-        vocab.Forms.SetList(new List<string> { "[駆ける]", "ダッシュする" });
+   [Fact]
+   public void OwnedForms_IdentifiedByBrackets()
+   {
+      // Arrange
+      var vocab = VocabNote.Create("走る", "to run", "はしる");
 
-        // Assert
-        Assert.True(vocab.Forms.IsOwnedForm("駆ける"));
-        Assert.True(vocab.Forms.IsOwnedForm("走る")); // Question is always owned
-        Assert.False(vocab.Forms.IsOwnedForm("ダッシュする"));
-    }
+      // Act - Set forms with bracketed (owned) and non-bracketed (borrowed) forms
+      vocab.Forms.SetList(new List<string> { "[駆ける]", "ダッシュする" });
 
-    [Fact]
-    public void QuestionAlwaysIncludedInOwnedForms()
-    {
-        // Arrange & Act
-        var vocab = VocabNote.Create("本", "book", "ほん");
+      // Assert
+      Assert.True(vocab.Forms.IsOwnedForm("駆ける"));
+      Assert.True(vocab.Forms.IsOwnedForm("走る")); // Question is always owned
+      Assert.False(vocab.Forms.IsOwnedForm("ダッシュする"));
+   }
 
-        // Assert
-        var ownedForms = vocab.Forms.OwnedForms();
-        Assert.Contains("本", ownedForms);
-    }
+   [Fact]
+   public void QuestionAlwaysIncludedInOwnedForms()
+   {
+      // Arrange & Act
+      var vocab = VocabNote.Create("本", "book", "ほん");
 
-    [Fact]
-    public void AllListNotes_ReturnsNotesForAllForms()
-    {
-        // Arrange
-        var vocab1 = VocabNote.Create("食べる", "to eat", "たべる");
-        var vocab2 = VocabNote.Create("食う", "to eat (casual)", "くう");
-        var vocab3 = VocabNote.Create("召し上がる", "to eat (honorific)", "めしあがる");
+      // Assert
+      var ownedForms = vocab.Forms.OwnedForms();
+      Assert.Contains("本", ownedForms);
+   }
 
-        vocab1.Forms.SetList(new List<string> { "食う", "召し上がる" });
+   [Fact]
+   public void AllListNotes_ReturnsNotesForAllForms()
+   {
+      // Arrange
+      var vocab1 = VocabNote.Create("食べる", "to eat", "たべる");
+      var vocab2 = VocabNote.Create("食う", "to eat (casual)", "くう");
+      var vocab3 = VocabNote.Create("召し上がる", "to eat (honorific)", "めしあがる");
 
-        // Act
-        var formNotes = vocab1.Forms.AllListNotes();
+      vocab1.Forms.SetList(new List<string> { "食う", "召し上がる" });
 
-        // Assert
-        Assert.Contains(vocab2, formNotes);
-        Assert.Contains(vocab3, formNotes);
-    }
+      // Act
+      var formNotes = vocab1.Forms.AllListNotes();
+
+      // Assert
+      Assert.Contains(vocab2, formNotes);
+      Assert.Contains(vocab3, formNotes);
+   }
 }
