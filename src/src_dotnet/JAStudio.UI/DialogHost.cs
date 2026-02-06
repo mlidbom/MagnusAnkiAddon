@@ -304,7 +304,7 @@ public static class DialogHost
     /// </summary>
     /// <param name="selectedCardIds">List of selected card IDs (dynamic from Python)</param>
     /// <param name="selectedNoteIds">List of selected note IDs (dynamic from Python)</param>
-    public static Menus.UIAgnosticMenuStructure.MenuItem BuildBrowserMenuSpec(
+    public static Menus.UIAgnosticMenuStructure.SpecMenuItem BuildBrowserMenuSpec(
         dynamic selectedCardIds,
         dynamic selectedNoteIds)
     {

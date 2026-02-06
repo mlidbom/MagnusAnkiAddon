@@ -13,7 +13,7 @@ public static class AvaloniaMenuAdapter
     /// Convert a single MenuItem spec to an Avalonia MenuItem.
     /// Recursively builds submenus.
     /// </summary>
-    public static Avalonia.Controls.MenuItem ToAvalonia(MenuItem spec)
+    public static Avalonia.Controls.MenuItem ToAvalonia(SpecMenuItem spec)
     {
         if (spec.IsSeparator)
         {
@@ -79,7 +79,7 @@ public static class AvaloniaMenuAdapter
     /// Convert a list of MenuItem specs to Avalonia MenuItems.
     /// Useful for building entire menu structures at once.
     /// </summary>
-    public static IEnumerable<object> ToAvaloniaList(IEnumerable<MenuItem> specs)
+    public static IEnumerable<object> ToAvaloniaList(IEnumerable<SpecMenuItem> specs)
     {
         var result = new List<object>();
         foreach (var spec in specs)

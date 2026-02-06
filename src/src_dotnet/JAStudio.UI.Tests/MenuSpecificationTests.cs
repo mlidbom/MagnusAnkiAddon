@@ -1,5 +1,5 @@
 using JAStudio.UI.Menus;
-using SpecMenuItem = JAStudio.UI.Menus.UIAgnosticMenuStructure.MenuItem;
+using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 
 namespace JAStudio.UI.Tests;
 

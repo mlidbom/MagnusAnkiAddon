@@ -8,7 +8,6 @@ using JAStudio.Core.Note.Vocabulary;
 using JAStudio.UI.Anki;
 using JAStudio.UI.Utils;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
-using SpecMenuItem = JAStudio.UI.Menus.UIAgnosticMenuStructure.MenuItem;
 
 namespace JAStudio.UI.Menus;
 

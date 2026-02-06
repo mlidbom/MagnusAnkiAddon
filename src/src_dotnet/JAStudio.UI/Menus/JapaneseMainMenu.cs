@@ -4,7 +4,6 @@ using JAStudio.Core.Batches;
 using JAStudio.UI.Anki;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
-using SpecMenuItem = JAStudio.UI.Menus.UIAgnosticMenuStructure.MenuItem;
 
 namespace JAStudio.UI.Menus;
 

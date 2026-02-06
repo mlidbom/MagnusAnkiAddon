@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.Note;
 using JAStudio.Core.SysUtils;
+using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
-using SpecMenuItem = JAStudio.UI.Menus.UIAgnosticMenuStructure.MenuItem;
 
 namespace JAStudio.UI.Menus;
 

@@ -133,16 +133,16 @@ def null_op_factory(_menu: QMenu, _string: str) -> None:
 def _add_csharp_menu_entry(menu: QMenu, note: JPNote | None, selection: str, clipboard: str) -> None:
     """
     Add C# menu specs rendered as native PyQt menus.
-    
+
     All menu structure and business logic is in C# (JAStudio.UI.Menus.*).
     This just converts the UI-agnostic specifications to PyQt QMenus.
     """
-    from jastudio.ui.menus.qt_menu_adapter import to_qmenu
+    from jas_dotnet.qt_adapters import qt_menu_adapter
     from JAStudio.UI.Menus import NoteContextMenu  # pyright: ignore[reportMissingImports]
-    
+
     # Get menu specs from C#  - no callbacks needed, AnkiFacade handles it all
     menu_builder = NoteContextMenu()
-    
+
     try:
         if note:
             if isinstance(note, VocabNote):
@@ -155,11 +155,11 @@ def _add_csharp_menu_entry(menu: QMenu, note: JPNote | None, selection: str, cli
                 specs = menu_builder.BuildGenericContextMenuSpec(selection, clipboard)  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
         else:
             specs = menu_builder.BuildGenericContextMenuSpec(selection, clipboard)  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
-        
+
         # Convert each spec to a PyQt menu and add to parent
         for spec in specs:  # pyright: ignore[reportUnknownVariableType]
             if spec.IsVisible:  # pyright: ignore[reportUnknownMemberType]
-                qmenu = to_qmenu(spec)  # pyright: ignore[reportUnknownArgumentType]
+                qmenu = qt_menu_adapter.to_qmenu(spec)  # pyright: ignore[reportUnknownArgumentType]
                 menu.addMenu(qmenu)
     except Exception as e:
         from jaslib import mylog
