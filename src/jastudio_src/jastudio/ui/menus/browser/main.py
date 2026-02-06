@@ -33,7 +33,6 @@ def spread_due_dates(cards: Sequence[CardId], start_day: int, days: int) -> None
 
 def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
     """Set up browser context menu using C# menu specs."""
-    from jastudio.ui import avalonia_host
     from jastudio.ui.menus import qt_menu_adapter
     
     selected_cards = browser.selected_cards()
@@ -43,10 +42,10 @@ def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
     try:
         from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
         
-        menu_spec = DialogHost.BuildBrowserMenuSpec(selected_cards, selected_notes)  # pyright: ignore[reportUnknownMemberType]
+        menu_spec = DialogHost.BuildBrowserMenuSpec(selected_cards, selected_notes)  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
         
         # Convert C# menu spec to PyQt menu
-        qt_menu = qt_menu_adapter.to_qmenu(menu_spec)  # pyright: ignore[reportUnknownMemberType]
+        qt_menu = qt_menu_adapter.to_qmenu(menu_spec)  # pyright: ignore[reportUnknownArgumentType]
         
         # Add converted menu to browser's context menu
         for action in qt_menu.actions():  # pyright: ignore[reportUnknownMemberType]

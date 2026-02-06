@@ -23,7 +23,7 @@ def _write_config_dict(config_dict: dict[str, object]) -> None:
         mw.addonManager.writeConfig(app.addon_name, config_dict)  # pyright: ignore[reportUnknownMemberType]
 
 def _write_config_dict_json(config_dict_json: str) -> None:
-    _write_config_dict(json.loads(config_dict_json))
+    _write_config_dict(json.loads(config_dict_json))  # pyright: ignore[reportAny]
 
 # Initialize Python configuration system
 configuration_value.init(_get_config_dict(), _write_config_dict)

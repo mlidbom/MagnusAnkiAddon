@@ -124,12 +124,12 @@ def _add_csharp_main_menu(menu: QMenu) -> None:
     
     try:
         # Get menu specs from C# - no callbacks needed, AnkiFacade handles it all
-        menu_builder = JapaneseMainMenu(get_search_text())
-        specs = menu_builder.BuildMenuSpec()
+        menu_builder = JapaneseMainMenu(get_search_text())  # pyright: ignore[reportUnknownVariableType]
+        specs = menu_builder.BuildMenuSpec()  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
         
         # Convert to PyQt menus and add as a single submenu
         csharp_menu = non_optional(menu.addMenu(shortcutfinger.down3("🎯 C# Japanese Menu")))
-        qmenus = to_qmenu_list(specs)
+        qmenus = to_qmenu_list(specs)  # pyright: ignore[reportUnknownArgumentType]
         for qmenu in qmenus:
             csharp_menu.addMenu(qmenu)
     except Exception as e:
@@ -137,7 +137,7 @@ def _add_csharp_main_menu(menu: QMenu) -> None:
         import traceback
         mylog.error(traceback.format_exc())
         # Add fallback menu item
-        menu.addAction("⚠️ C# Menu Error (check console)")
+        menu.addAction("⚠️ C# Menu Error (check console)")  # pyright: ignore[reportUnknownMemberType]
 
 
 def init() -> None:

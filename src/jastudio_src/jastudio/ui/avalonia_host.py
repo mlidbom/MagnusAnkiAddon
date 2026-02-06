@@ -6,13 +6,8 @@ Call initialize() once at addon startup, then use the show_* functions.
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import pyperclip
 from jaslib import mylog
-
-if TYPE_CHECKING:
-    from collections.abc import Callable
 
 _initialized = False
 
@@ -145,12 +140,11 @@ def show_test_main_menu(x: int, y: int) -> None:
         raise
 
 
-def show_japanese_main_menu(refresh_callback: Callable[[], None], x: int, y: int) -> None:
+def show_japanese_main_menu(x: int, y: int) -> None:
     """
     Show the Japanese main menu at the specified screen coordinates.
 
     Args:
-        refresh_callback: Callback to invoke Anki UI refresh
         x: X coordinate (screen coordinates, physical pixels)
         y: Y coordinate (screen coordinates, physical pixels)
     """
@@ -160,28 +154,17 @@ def show_japanese_main_menu(refresh_callback: Callable[[], None], x: int, y: int
 
     try:
         from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
-        from System import Action  # pyright: ignore[reportMissingImports]
-
-        from jastudio.ankiutils import search_executor
-
-        # Wrap Python callbacks in .NET delegates
-        refresh_action = Action(refresh_callback)  # pyright: ignore[reportCallIssue]
-
-        def execute_lookup(query: str) -> None:
-            search_executor.do_lookup(query)
-
-        lookup_action = Action[str](execute_lookup)  # pyright: ignore[reportCallIssue]
 
         # Get clipboard text for searches (no selection context in main menu)
         search_text = pyperclip.paste().strip()
 
-        DialogHost.ShowJapaneseMainMenu(refresh_action, lookup_action, search_text, x, y)  # pyright: ignore[reportUnknownMemberType]
+        DialogHost.ShowJapaneseMainMenu(search_text, x, y)  # pyright: ignore[reportUnknownMemberType]
     except Exception as e:
         mylog.error(f"Failed to show Japanese main menu: {e}")
         raise
 
 
-def show_vocab_context_menu(refresh_callback: Callable[[], None], vocab_id: int, selection: str, clipboard: str, x: int, y: int) -> None:
+def show_vocab_context_menu(vocab_id: int, selection: str, clipboard: str, x: int, y: int) -> None:
     """Show context menu for a vocab note."""
     if not _initialized:
         mylog.warning("Avalonia UI not initialized, initializing now...")
@@ -189,24 +172,14 @@ def show_vocab_context_menu(refresh_callback: Callable[[], None], vocab_id: int,
 
     try:
         from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
-        from System import Action  # pyright: ignore[reportMissingImports]
 
-        from jastudio.ankiutils import search_executor
-
-        refresh_action = Action(refresh_callback)  # pyright: ignore[reportCallIssue]
-
-        def execute_lookup(query: str) -> None:
-            search_executor.do_lookup(query)
-
-        lookup_action = Action[str](execute_lookup)  # pyright: ignore[reportCallIssue]
-
-        DialogHost.ShowVocabContextMenu(refresh_action, lookup_action, vocab_id, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
+        DialogHost.ShowVocabContextMenu(vocab_id, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
     except Exception as e:
         mylog.error(f"Failed to show vocab context menu: {e}")
         raise
 
 
-def show_kanji_context_menu(refresh_callback: Callable[[], None], kanji_id: int, selection: str, clipboard: str, x: int, y: int) -> None:
+def show_kanji_context_menu(kanji_id: int, selection: str, clipboard: str, x: int, y: int) -> None:
     """Show context menu for a kanji note."""
     if not _initialized:
         mylog.warning("Avalonia UI not initialized, initializing now...")
@@ -214,24 +187,14 @@ def show_kanji_context_menu(refresh_callback: Callable[[], None], kanji_id: int,
 
     try:
         from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
-        from System import Action  # pyright: ignore[reportMissingImports]
 
-        from jastudio.ankiutils import search_executor
-
-        refresh_action = Action(refresh_callback)  # pyright: ignore[reportCallIssue]
-
-        def execute_lookup(query: str) -> None:
-            search_executor.do_lookup(query)
-
-        lookup_action = Action[str](execute_lookup)  # pyright: ignore[reportCallIssue]
-
-        DialogHost.ShowKanjiContextMenu(refresh_action, lookup_action, kanji_id, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
+        DialogHost.ShowKanjiContextMenu(kanji_id, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
     except Exception as e:
         mylog.error(f"Failed to show kanji context menu: {e}")
         raise
 
 
-def show_sentence_context_menu(refresh_callback: Callable[[], None], sentence_id: int, selection: str, clipboard: str, x: int, y: int) -> None:
+def show_sentence_context_menu(sentence_id: int, selection: str, clipboard: str, x: int, y: int) -> None:
     """Show context menu for a sentence note."""
     if not _initialized:
         mylog.warning("Avalonia UI not initialized, initializing now...")
@@ -239,24 +202,14 @@ def show_sentence_context_menu(refresh_callback: Callable[[], None], sentence_id
 
     try:
         from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
-        from System import Action  # pyright: ignore[reportMissingImports]
 
-        from jastudio.ankiutils import search_executor
-
-        refresh_action = Action(refresh_callback)  # pyright: ignore[reportCallIssue]
-
-        def execute_lookup(query: str) -> None:
-            search_executor.do_lookup(query)
-
-        lookup_action = Action[str](execute_lookup)  # pyright: ignore[reportCallIssue]
-
-        DialogHost.ShowSentenceContextMenu(refresh_action, lookup_action, sentence_id, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
+        DialogHost.ShowSentenceContextMenu(sentence_id, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
     except Exception as e:
         mylog.error(f"Failed to show sentence context menu: {e}")
         raise
 
 
-def show_generic_context_menu(refresh_callback: Callable[[], None], selection: str, clipboard: str, x: int, y: int) -> None:
+def show_generic_context_menu(selection: str, clipboard: str, x: int, y: int) -> None:
     """Show context menu when no note is available."""
     if not _initialized:
         mylog.warning("Avalonia UI not initialized, initializing now...")
@@ -264,18 +217,8 @@ def show_generic_context_menu(refresh_callback: Callable[[], None], selection: s
 
     try:
         from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
-        from System import Action  # pyright: ignore[reportMissingImports]
 
-        from jastudio.ankiutils import search_executor
-
-        refresh_action = Action(refresh_callback)  # pyright: ignore[reportCallIssue]
-
-        def execute_lookup(query: str) -> None:
-            search_executor.do_lookup(query)
-
-        lookup_action = Action[str](execute_lookup)  # pyright: ignore[reportCallIssue]
-
-        DialogHost.ShowGenericContextMenu(refresh_action, lookup_action, selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
+        DialogHost.ShowGenericContextMenu(selection, clipboard, x, y)  # pyright: ignore[reportUnknownMemberType]
     except Exception as e:
         mylog.error(f"Failed to show generic context menu: {e}")
         raise

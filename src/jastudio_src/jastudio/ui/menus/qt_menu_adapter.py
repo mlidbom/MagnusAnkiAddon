@@ -8,7 +8,9 @@ All menu structure and business logic lives in C# - this is just a thin adapter.
 """
 
 from aqt.qt import QMenu, QAction, QKeySequence
-from JAStudio.UI.Menus.UIAgnosticMenuStructure import MenuItem as SpecMenuItem
+from JAStudio.UI.Menus.UIAgnosticMenuStructure import MenuItem as SpecMenuItem  # pyright: ignore[reportMissingImports]
+
+from collections.abc import Iterable
 
 
 def to_qmenu(spec: SpecMenuItem, parent: QMenu | None = None) -> QMenu:
@@ -34,42 +36,42 @@ def to_qmenu(spec: SpecMenuItem, parent: QMenu | None = None) -> QMenu:
         menu = parent
     
     # If this is a submenu, build its children
-    if spec.Children is not None and len(spec.Children) > 0:
-        for child_spec in spec.Children:
-            if not child_spec.IsVisible:
+    if spec.Children is not None and spec.Children.Count > 0:  # pyright: ignore[reportUnknownMemberType, reportUnnecessaryComparison]
+        for child_spec in spec.Children:  # pyright: ignore[reportUnknownVariableType]
+            if not child_spec.IsVisible:  # pyright: ignore[reportUnknownMemberType]
                 continue  # Skip invisible items
             
-            if child_spec.IsSeparator:
+            if child_spec.IsSeparator:  # pyright: ignore[reportUnknownMemberType]
                 menu.addSeparator()
-            elif child_spec.IsSubmenu:
+            elif child_spec.IsSubmenu:  # pyright: ignore[reportUnknownMemberType]
                 # Create submenu recursively
-                submenu = menu.addMenu(child_spec.Name)
-                to_qmenu(child_spec, submenu)
+                submenu = menu.addMenu(child_spec.Name)  # pyright: ignore[reportUnknownMemberType]
+                to_qmenu(child_spec, submenu)  # pyright: ignore[reportUnknownArgumentType]
             else:
                 # Leaf command - create action
-                action = QAction(child_spec.Name, menu)
-                action.setEnabled(child_spec.IsEnabled)
+                action = QAction(child_spec.Name, menu)  # pyright: ignore[reportUnknownMemberType, reportUnknownArgumentType]
+                action.setEnabled(child_spec.IsEnabled)  # pyright: ignore[reportUnknownMemberType, reportUnknownArgumentType]
                 
                 # Add keyboard shortcut if specified
-                if child_spec.KeyboardShortcut:
+                if child_spec.KeyboardShortcut:  # pyright: ignore[reportUnknownMemberType]
                     try:
-                        action.setShortcut(QKeySequence(child_spec.KeyboardShortcut))
-                    except:
+                        action.setShortcut(QKeySequence(child_spec.KeyboardShortcut))  # pyright: ignore[reportUnknownMemberType, reportUnknownArgumentType]
+                    except:  # noqa: E722
                         # If parsing fails, just skip the shortcut
                         # Actual keyboard handling is done elsewhere via Anki's shortcut system
                         pass
                 
                 # Wire up the action
-                if child_spec.Action is not None:
+                if child_spec.Action is not None:  # pyright: ignore[reportUnknownMemberType, reportUnnecessaryComparison]
                     # Connect to C# Action - pythonnet handles the marshaling
-                    action.triggered.connect(lambda checked, a=child_spec.Action: _invoke_action(a))
+                    action.triggered.connect(lambda checked, a=child_spec.Action: _invoke_action(a))  # pyright: ignore[reportUnknownMemberType, reportUnknownLambdaType]
                 
-                menu.addAction(action)
+                menu.addAction(action)  # pyright: ignore[reportUnknownMemberType]
     
     return menu
 
 
-def to_qmenu_list(specs: list[SpecMenuItem]) -> list[QMenu]:
+def to_qmenu_list(specs: Iterable[SpecMenuItem]) -> list[QMenu]:
     """
     Convert a list of MenuItem specs to PyQt QMenus.
     Useful for building entire menu bars at once.
@@ -80,25 +82,24 @@ def to_qmenu_list(specs: list[SpecMenuItem]) -> list[QMenu]:
     Returns:
         List of QMenus built from the specifications
     """
-    result = []
+    result: list[QMenu] = []
     for spec in specs:
-        if not spec.IsVisible:
+        if not spec.IsVisible:  # pyright: ignore[reportUnknownMemberType]
             continue
-        if not spec.IsSeparator:  # Skip separators at the top level
+        if not spec.IsSeparator:  # pyright: ignore[reportUnknownMemberType] # Skip separators at the top level
             result.append(to_qmenu(spec))
     return result
 
 
-def _invoke_action(action):
+def _invoke_action(action):  # type: ignore[no-untyped-def]  # pyright: ignore[reportUnknownParameterType, reportMissingParameterType]
     """
     Invoke a C# Action with proper error handling.
     Follows JAStudio exception handling policy - log and re-raise.
     """
     try:
-        action()
+        action()  # pyright: ignore[reportUnknownMemberType]
     except Exception as e:
-        # Log the error
-        from jastudio.utils.logging import log_error
-        log_error(f"Menu action failed: {e}")
+        from jaslib import mylog
+        mylog.error(f"Menu action failed: {e}")
         # Re-raise per project exception handling policy
         raise
