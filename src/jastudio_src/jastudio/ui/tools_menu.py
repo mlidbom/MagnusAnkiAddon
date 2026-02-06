@@ -13,10 +13,10 @@ from jastudio.ankiutils.app import get_ui_utils, main_window
 from jastudio.configuration import configuration
 from jastudio.configuration.readings_mapping_dialog import show_readings_mappings
 from jastudio.sysutils import object_instance_tracker
-from jastudio.ui import avalonia_host
 from jastudio.ui.menus.menu_utils import shortcutfinger
 from jastudio.ui.menus.open_in_anki import build_open_in_anki_menu
 from jastudio.ui.menus.web_search import build_web_search_menu
+from jastudio.ui.open_note.open_note_dialog import NoteSearchDialog
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -55,7 +55,7 @@ def build_lookup_menu(lookup_menu: QMenu) -> None:
         text, ok = QInputDialog.getText(None, "input", "enter text", QLineEdit.EchoMode.Normal, "")
         return text if ok and text else ""
 
-    lookup_menu.addAction(shortcutfinger.home1("Open note Ctrl+o"), avalonia_host.toggle_note_search_dialog)  # pyright: ignore[reportUnknownMemberType]
+    lookup_menu.addAction(shortcutfinger.home1("Open note Ctrl+o"), lambda: NoteSearchDialog.toggle_dialog_visibility())  # pyright: ignore[reportUnknownMemberType]
     build_open_in_anki_menu(non_optional(lookup_menu.addMenu(shortcutfinger.home2("Anki"))), get_text_input)
     build_web_search_menu(non_optional(lookup_menu.addMenu(shortcutfinger.home3("Web"))), get_text_input)
 
