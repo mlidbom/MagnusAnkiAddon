@@ -167,7 +167,7 @@ class KanjiNote(JPNote):
     def UpdateInCache(self) -> None: ...
 
 
-class KanjiNoteMnemonicMaker(abc.ABC):
+class KanjiNoteMnemonicMaker:
     @staticmethod
     def CreateDefaultMnemonic(kanjiNote: KanjiNote) -> str: ...
 

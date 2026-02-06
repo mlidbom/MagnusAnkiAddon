@@ -4,8 +4,11 @@ using JAStudio.Core.Configuration;
 
 namespace JAStudio.Core.TestUtils;
 
-public static class TestApp
+public class TestApp
 {
+    readonly TemporaryServiceCollection _services;
+    internal TestApp(TemporaryServiceCollection services) => _services = services;
+
     private static bool _isInitialized;
 
     public static void Initialize()

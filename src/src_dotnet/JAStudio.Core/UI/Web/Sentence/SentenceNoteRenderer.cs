@@ -7,8 +7,11 @@ namespace JAStudio.Core.UI.Web.Sentence;
 /// <summary>
 /// Factory for creating PreRenderingContentRenderer with SentenceNote tag mappings.
 /// </summary>
-public static class SentenceNoteRenderer
+public class SentenceNoteRenderer
 {
+    readonly TemporaryServiceCollection _services;
+    internal SentenceNoteRenderer(TemporaryServiceCollection services) => _services = services;
+
     public static PreRenderingContentRenderer<SentenceNote> CreateRenderer()
     {
         return new PreRenderingContentRenderer<SentenceNote>(new Dictionary<string, Func<SentenceNote, string>>

@@ -74,7 +74,7 @@ class ITaskProgressRunner(IDisposable, typing.Protocol):
 
 
 
-class TaskRunner(abc.ABC):
+class TaskRunner:
     @staticmethod
     def Create(windowTitle: str, labelText: str, visible: typing.Optional[bool] = ..., allowCancel: bool = ..., modal: bool = ...) -> ITaskProgressRunner: ...
     @staticmethod

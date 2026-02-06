@@ -59,7 +59,7 @@ class POS(abc.ABC):
     ZuruVerb : str
 
 
-class POSSetManager(abc.ABC):
+class POSSetManager:
     @staticmethod
     def Get(pos: str) -> FrozenSet_1[str]: ...
     @staticmethod
@@ -221,7 +221,7 @@ class VocabNoteConjugator:
     def GetStemsForPrimaryForm(self) -> List_1[str]: ...
 
 
-class VocabNoteFactory(abc.ABC):
+class VocabNoteFactory:
     @staticmethod
     def Create(question: str, answer: str, readings: List_1[str], initializer: Action_1[VocabNote] = ...) -> VocabNote: ...
     @staticmethod
@@ -248,7 +248,7 @@ class VocabNoteForms:
     def WithoutNoiseCharacters(self) -> List_1[str]: ...
 
 
-class VocabNoteGeneratedData(abc.ABC):
+class VocabNoteGeneratedData:
     @staticmethod
     def UpdateGeneratedData(vocab: VocabNote) -> None: ...
 
@@ -330,7 +330,7 @@ class VocabNoteMetaData:
     def MetaTagsHtml(self, displayExtendedSentenceStatistics: bool = ..., noSentenceStatistics: bool = ...) -> str: ...
 
 
-class VocabNoteMetaTagFormatter(abc.ABC):
+class VocabNoteMetaTagFormatter:
     @staticmethod
     def GetMetaTagsHtml(vocab: VocabNote, displayExtendedSentenceStatistics: bool = ..., noSentenceStatistics: bool = ...) -> str: ...
 
@@ -422,7 +422,7 @@ class VocabNoteSentences:
     def WithPrimaryForm(self) -> List_1[SentenceNote]: ...
 
 
-class VocabNoteSorting(abc.ABC):
+class VocabNoteSorting:
     @staticmethod
     def SortVocabListByStudyingStatus(vocabs: IEnumerable_1[VocabNote], primaryVoc: List_1[str] = ..., preferredKanji: str = ...) -> List_1[VocabNote]: ...
 

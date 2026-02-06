@@ -1,8 +1,7 @@
-import abc
 from JAStudio.Core.Note import KanjiNote, SentenceNote, VocabNote
 from System.Collections.Generic import List_1
 
-class LocalNoteUpdater(abc.ABC):
+class LocalNoteUpdater:
     @staticmethod
     def CreateMissingVocabWithDictionaryEntries() -> None: ...
     @staticmethod

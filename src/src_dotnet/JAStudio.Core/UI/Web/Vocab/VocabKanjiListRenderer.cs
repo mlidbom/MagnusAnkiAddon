@@ -5,8 +5,11 @@ using System.Linq;
 
 namespace JAStudio.Core.UI.Web.Vocab;
 
-public static class VocabKanjiListRenderer
+public class VocabKanjiListRenderer
 {
+    readonly TemporaryServiceCollection _services;
+    internal VocabKanjiListRenderer(TemporaryServiceCollection services) => _services = services;
+
     public static string RenderKanjiListFromKanji(List<string> kanjis)
     {
         if (kanjis.Count == 0)

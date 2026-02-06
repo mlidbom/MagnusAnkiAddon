@@ -5,8 +5,11 @@ using System.Linq;
 
 namespace JAStudio.Core.UI.Web.Vocab;
 
-public static class VocabSentencesRenderer
+public class VocabSentencesRenderer
 {
+    readonly TemporaryServiceCollection _services;
+    internal VocabSentencesRenderer(TemporaryServiceCollection services) => _services = services;
+
     public static string GenerateMarkedInvalidInListHtml(VocabNote vocabNote)
     {
         var allInvalid = vocabNote.Sentences.InvalidIn();

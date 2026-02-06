@@ -2,8 +2,11 @@ using System;
 
 namespace JAStudio.Core.TaskRunners;
 
-public static class TaskRunner
+public class TaskRunner
 {
+    readonly TemporaryServiceCollection _services;
+    internal TaskRunner(TemporaryServiceCollection services) => _services = services;
+
     private static Func<string, string, bool, bool, ITaskProgressRunner>? _uiTaskRunnerFactory;
     private static int _depth;
     private static ITaskProgressRunner? _current;

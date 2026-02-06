@@ -8,7 +8,7 @@ class ConfigurationValue_GenericClasses(abc.ABCMeta):
 
 class ConfigurationValue(ConfigurationValue_0, metaclass =ConfigurationValue_GenericClasses): ...
 
-class ConfigurationValue_0(abc.ABC):
+class ConfigurationValue_0:
     @staticmethod
     def Config() -> JapaneseConfig: ...
     @staticmethod

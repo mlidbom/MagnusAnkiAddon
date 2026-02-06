@@ -6,8 +6,11 @@ using Newtonsoft.Json;
 
 namespace JAStudio.Core.Configuration;
 
-public static class ConfigurationValue
+public class ConfigurationValue
 {
+   readonly TemporaryServiceCollection _services;
+   internal ConfigurationValue(TemporaryServiceCollection services) => _services = services;
+
    static Dictionary<string, object>? _configDict;
    static Action<string>? _updateCallback;
    internal static Dictionary<string, string>? StaticReadingsMappings;

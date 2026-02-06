@@ -8,8 +8,11 @@ using JAStudio.Core.LanguageServices;
 
 namespace JAStudio.Core.UI.Web.Kanji;
 
-public static class KanjiListRenderer
+public class KanjiListRenderer
 {
+    readonly TemporaryServiceCollection _services;
+    internal KanjiListRenderer(TemporaryServiceCollection services) => _services = services;
+
     public static string RenderList(JPNote note, List<KanjiNote> kanjis, List<string> kanjiReadings)
     {
         if (kanjis.Count == 0)

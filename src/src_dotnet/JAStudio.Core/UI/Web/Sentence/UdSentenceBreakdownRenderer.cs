@@ -10,8 +10,11 @@ using System.Text;
 
 namespace JAStudio.Core.UI.Web.Sentence;
 
-public static class UdSentenceBreakdownRenderer
+public class UdSentenceBreakdownRenderer
 {
+    readonly TemporaryServiceCollection _services;
+    internal UdSentenceBreakdownRenderer(TemporaryServiceCollection services) => _services = services;
+
     private static string FormatReason(string reason)
     {
         return reason.Contains("configured") 

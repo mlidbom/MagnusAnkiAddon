@@ -5,8 +5,11 @@ using JAStudio.Core.SysUtils;
 
 namespace JAStudio.Core.Note;
 
-public static class KanjiNoteMnemonicMaker
+public class KanjiNoteMnemonicMaker
 {
+   readonly TemporaryServiceCollection _services;
+   internal KanjiNoteMnemonicMaker(TemporaryServiceCollection services) => _services = services;
+
     public static string CreateDefaultMnemonic(KanjiNote kanjiNote)
     {
         var readingsMappings = App.Config().ReadingsMappingsDict;

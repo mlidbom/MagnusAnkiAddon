@@ -4,8 +4,11 @@ using System.Linq;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
-public static class VocabNoteSorting
+public class VocabNoteSorting
 {
+   readonly TemporaryServiceCollection _services;
+   internal VocabNoteSorting(TemporaryServiceCollection services) => _services = services;
+
     public static List<VocabNote> SortVocabListByStudyingStatus(
         IEnumerable<VocabNote> vocabs, 
         List<string>? primaryVoc = null, 

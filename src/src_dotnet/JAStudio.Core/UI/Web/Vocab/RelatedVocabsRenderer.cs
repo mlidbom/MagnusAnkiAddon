@@ -6,8 +6,11 @@ using System.Linq;
 
 namespace JAStudio.Core.UI.Web.Vocab;
 
-public static class RelatedVocabsRenderer
+public class RelatedVocabsRenderer
 {
+    readonly TemporaryServiceCollection _services;
+    internal RelatedVocabsRenderer(TemporaryServiceCollection services) => _services = services;
+
     public static string CreateClasses(VocabNote vocab)
     {
         return string.Join(" ", vocab.GetMetaTags());

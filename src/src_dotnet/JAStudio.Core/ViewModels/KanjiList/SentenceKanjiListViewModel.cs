@@ -3,8 +3,11 @@ using System.Linq;
 
 namespace JAStudio.Core.ViewModels.KanjiList;
 
-public static class SentenceKanjiListViewModel
+public class SentenceKanjiListViewModel
 {
+   readonly TemporaryServiceCollection _services;
+   internal SentenceKanjiListViewModel(TemporaryServiceCollection services) => _services = services;
+
     public static KanjiListViewModel Create(List<string> kanji)
     {
         var kanjiNotes = App.Col().Kanji.WithAnyKanjiIn(kanji);

@@ -1,6 +1,6 @@
 import typing, abc
 
-class AnkiCardOperations(abc.ABC):
+class AnkiCardOperations:
     @staticmethod
     def SetImplementation(implementation: IAnkiCardOperations) -> None: ...
     @staticmethod

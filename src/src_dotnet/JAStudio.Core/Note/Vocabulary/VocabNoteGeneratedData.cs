@@ -6,8 +6,11 @@ using JAStudio.Core.SysUtils;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
-public static class VocabNoteGeneratedData
+public class VocabNoteGeneratedData
 {
+   readonly TemporaryServiceCollection _services;
+   internal VocabNoteGeneratedData(TemporaryServiceCollection services) => _services = services;
+
     public static void UpdateGeneratedData(VocabNote vocab)
     {
         vocab.MetaData.SentenceCount.Set(vocab.Sentences.All().Count);

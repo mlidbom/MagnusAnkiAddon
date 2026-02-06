@@ -1,4 +1,4 @@
-import typing, abc
+import typing
 from System.Collections.Generic import List_1, IEnumerable_1, HashSet_1
 from JAStudio.Core.Note import VocabNote
 from System.Collections.Frozen import FrozenSet_1
@@ -26,7 +26,7 @@ class DictEntry:
     def ValidForms(self, forceAllowKanaOnly: bool = ...) -> HashSet_1[str]: ...
 
 
-class DictLookup(abc.ABC):
+class DictLookup:
     @staticmethod
     def EnsureLoadedIntoMemory() -> None: ...
     @staticmethod

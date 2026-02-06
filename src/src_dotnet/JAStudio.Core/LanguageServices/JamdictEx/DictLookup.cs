@@ -8,8 +8,11 @@ using JAStudio.Core.SysUtils;
 
 namespace JAStudio.Core.LanguageServices.JamdictEx;
 
-public static class DictLookup
+public class DictLookup
 {
+   readonly TemporaryServiceCollection _services;
+   internal DictLookup(TemporaryServiceCollection services) => _services = services;
+
     private static readonly JamdictThreadingWrapper JamdictThreadingWrapper = new();
     
     private static HashSet<string>? _allWordForms;

@@ -3,8 +3,11 @@ using JAStudio.Core.TestUtils;
 
 namespace JAStudio.Core;
 
-static class MyLog
+public class MyLog
 {
+   readonly TemporaryServiceCollection _services;
+   internal MyLog(TemporaryServiceCollection services) => _services = services;
+
    public static void Debug(string message) => Log("DEBUG", message, !ExPytest.IsTesting);
    public static void Info(string message) => Log("INFO", message, !ExPytest.IsTesting);
    public static void Warning(string message) => Log($"WARNING", message);

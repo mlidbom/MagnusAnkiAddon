@@ -4,8 +4,11 @@ using JAStudio.Core.LanguageServices.JamdictEx;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
-public static class VocabNoteFactory
+public class VocabNoteFactory
 {
+   readonly TemporaryServiceCollection _services;
+   internal VocabNoteFactory(TemporaryServiceCollection services) => _services = services;
+
     public static VocabNote CreateWithDictionary(string question)
     {
         var lookupResult = DictLookup.LookupWord(question);

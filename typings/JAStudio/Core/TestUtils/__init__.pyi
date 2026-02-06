@@ -1,12 +1,11 @@
-import abc
 
-class ExPytest(abc.ABC):
+class ExPytest:
     @classmethod
     @property
     def IsTesting(cls) -> bool: ...
 
 
-class TestApp(abc.ABC):
+class TestApp:
     @staticmethod
     def Initialize() -> None: ...
     @staticmethod

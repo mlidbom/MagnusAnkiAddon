@@ -5,8 +5,11 @@ using System.Linq;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
-public static class POSSetManager
+public class POSSetManager
 {
+   readonly TemporaryServiceCollection _services;
+   internal POSSetManager(TemporaryServiceCollection services) => _services = services;
+
     private static readonly Dictionary<string, FrozenSet<string>> _posByStr = new();
     private static readonly Dictionary<string, string> _stringInterner = new();
 

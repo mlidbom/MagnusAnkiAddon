@@ -12,8 +12,11 @@ using JAStudio.Core.TaskRunners;
 
 namespace JAStudio.Core.Batches;
 
-public static class LocalNoteUpdater
+public class LocalNoteUpdater
 {
+   readonly TemporaryServiceCollection _services;
+   internal LocalNoteUpdater(TemporaryServiceCollection services) => _services = services;
+
     public static void UpdateAll()
     {
         using (TaskRunner.Current("Updating everything but sentence reparsing"))

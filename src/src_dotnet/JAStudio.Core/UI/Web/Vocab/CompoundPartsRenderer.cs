@@ -16,8 +16,11 @@ public class CompoundPart
     }
 }
 
-public static class CompoundPartsRenderer
+public class CompoundPartsRenderer
 {
+    readonly TemporaryServiceCollection _services;
+    internal CompoundPartsRenderer(TemporaryServiceCollection services) => _services = services;
+
     private static string CreateClasses(VocabNote vocab, int depth = 0)
     {
         var classes = string.Join(" ", vocab.GetMetaTags());

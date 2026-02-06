@@ -1,4 +1,3 @@
-import abc
 from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction import CandidateWordVariant, TextAnalysis
 from System.Collections.Generic import List_1, HashSet_1
 from JAStudio.Core.Note import VocabNote, SentenceNote
@@ -104,7 +103,7 @@ class MatchViewModel:
     def ToString(self) -> str: ...
 
 
-class QuestionRenderer(abc.ABC):
+class QuestionRenderer:
     @staticmethod
     def RenderSourceQuestion(note: SentenceNote) -> str: ...
     @staticmethod
@@ -113,12 +112,12 @@ class QuestionRenderer(abc.ABC):
     def RenderWbr(question: str) -> str: ...
 
 
-class SentenceNoteRenderer(abc.ABC):
+class SentenceNoteRenderer:
     @staticmethod
     def CreateRenderer() -> PreRenderingContentRenderer_1[SentenceNote]: ...
 
 
-class SentenceRenderer(abc.ABC):
+class SentenceRenderer:
     @staticmethod
     def RenderSourceQuestion(note: SentenceNote) -> str: ...
     @staticmethod
@@ -145,7 +144,7 @@ class TextAnalysisViewModel:
     def DisplayedMatches(self) -> List_1[MatchViewModel]: ...
 
 
-class UdSentenceBreakdownRenderer(abc.ABC):
+class UdSentenceBreakdownRenderer:
     @staticmethod
     def RenderSentenceAnalysis(note: SentenceNote) -> str: ...
 

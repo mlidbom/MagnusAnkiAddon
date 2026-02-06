@@ -20,8 +20,11 @@ public class VocabMetaTag
     }
 }
 
-public static class VocabNoteMetaTagFormatter
+public class VocabNoteMetaTagFormatter
 {
+   readonly TemporaryServiceCollection _services;
+   internal VocabNoteMetaTagFormatter(TemporaryServiceCollection services) => _services = services;
+
     public static string GetMetaTagsHtml(VocabNote vocab, bool displayExtendedSentenceStatistics = true, bool noSentenceStatistics = false)
     {
         var tags = vocab.Tags;

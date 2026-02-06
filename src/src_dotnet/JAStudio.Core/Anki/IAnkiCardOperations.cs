@@ -19,8 +19,11 @@ public interface IAnkiCardOperations
 /// Service locator for Anki card operations.
 /// JAStudio.UI must call SetImplementation() during initialization.
 /// </summary>
-public static class AnkiCardOperations
+public class AnkiCardOperations
 {
+    readonly TemporaryServiceCollection _services;
+    internal AnkiCardOperations(TemporaryServiceCollection services) => _services = services;
+
     private static IAnkiCardOperations? _implementation;
     
     /// <summary>

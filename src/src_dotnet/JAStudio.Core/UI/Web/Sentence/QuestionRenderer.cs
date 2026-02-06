@@ -3,8 +3,11 @@ using JAStudio.Core.Note.NoteFields;
 
 namespace JAStudio.Core.UI.Web.Sentence;
 
-public static class QuestionRenderer
+public class QuestionRenderer
 {
+    readonly TemporaryServiceCollection _services;
+    internal QuestionRenderer(TemporaryServiceCollection services) => _services = services;
+
     public static string RenderWbr(string question)
     {
         return App.Config().ShowSentenceBreakdownInEditMode.GetValue()
