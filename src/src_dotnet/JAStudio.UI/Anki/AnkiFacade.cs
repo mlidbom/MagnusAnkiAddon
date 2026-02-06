@@ -103,4 +103,77 @@ public static class AnkiFacade
          }
       });
    }
+
+   /// <summary>Prioritize selected cards (sets card.due based on note type priority).</summary>
+   public static void PrioritizeCards(System.Collections.Generic.List<long> cardIds)
+   {
+      PythonEnvironment.Use(() =>
+      {
+         try
+         {
+            dynamic queueManager = Py.Import("jastudio.note.queue_manager");
+            dynamic pyCardIds = ToPythonList(cardIds);
+            queueManager.prioritize_selected_cards(pyCardIds);
+         }
+         catch(Exception ex)
+         {
+            JALogger.Log($"AnkiFacade.PrioritizeCards failed: {ex.Message}");
+            throw;
+         }
+      });
+   }
+
+   /// <summary>Spread selected cards over days (distributes due dates across time range).</summary>
+   public static void SpreadCardsOverDays(System.Collections.Generic.List<long> cardIds, int startDay, int daysApart)
+   {
+      PythonEnvironment.Use(() =>
+      {
+         try
+         {
+            // Import the spread_due_dates function from browser.main
+            dynamic browserMain = Py.Import("jastudio.ui.menus.browser.main");
+            dynamic pyCardIds = ToPythonList(cardIds);
+            browserMain.spread_due_dates(pyCardIds, startDay, daysApart);
+         }
+         catch(Exception ex)
+         {
+            JALogger.Log($"AnkiFacade.SpreadCardsOverDays failed: {ex.Message}");
+            throw;
+         }
+      });
+   }
+
+   /// <summary>Get note ID from card ID (requires Anki API).</summary>
+   public static long GetNoteIdFromCardId(long cardId)
+   {
+      return PythonEnvironment.Use(() =>
+      {
+         try
+         {
+            dynamic app = Py.Import("jastudio.ankiutils.app");
+            dynamic ankiCol = app.anki_collection();
+            dynamic card = ankiCol.get_card(cardId);
+            return (long)card.nid;
+         }
+         catch(Exception ex)
+         {
+            JALogger.Log($"AnkiFacade.GetNoteIdFromCardId failed: {ex.Message}");
+            throw;
+         }
+      });
+   }
+
+   /// <summary>Helper to convert C# list to Python list.</summary>
+   private static dynamic ToPythonList(System.Collections.Generic.List<long> items)
+   {
+      using (Py.GIL())
+      {
+         dynamic pyList = new Python.Runtime.PyList();
+         foreach (var item in items)
+         {
+            pyList.append(item);
+         }
+         return pyList;
+      }
+   }
 }

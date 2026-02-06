@@ -10,6 +10,7 @@ using JAStudio.Core.Note;
 using JAStudio.Core.TaskRunners;
 using JAStudio.UI.Dialogs;
 using JAStudio.UI.Menus;
+using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Views;
 
 namespace JAStudio.UI;
@@ -295,6 +296,20 @@ public static class DialogHost
     }
 
     /// <summary>
+    /// Build browser context menu specification.
+    /// Returns UI-agnostic menu specs that Python can convert to PyQt menus.
+    /// </summary>
+    /// <param name="selectedCardIds">List of selected card IDs (dynamic from Python)</param>
+    /// <param name="selectedNoteIds">List of selected note IDs (dynamic from Python)</param>
+    public static Menus.UIAgnosticMenuStructure.MenuItem BuildBrowserMenuSpec(
+        dynamic selectedCardIds,
+        dynamic selectedNoteIds)
+    {
+        EnsureInitialized();
+        return BrowserMenus.BuildBrowserMenuSpec(selectedCardIds, selectedNoteIds);
+    }
+
+    /// <summary>
     /// Show the test main menu ("Japanese Avalonia") at the specified screen coordinates.
     /// Menu is entirely defined in C#.
     /// </summary>
@@ -305,13 +320,13 @@ public static class DialogHost
         EnsureInitialized();
         Dispatcher.UIThread.Invoke(() =>
         {
-            var item1 = new MenuItem { Header = "Test Item 1" };
+            var item1 = new Avalonia.Controls.MenuItem { Header = "Test Item 1" };
             item1.Click += (s, e) => JALogger.Log("Test Item 1 clicked from main menu");
             
-            var item2 = new MenuItem { Header = "Test Item 2" };
+            var item2 = new Avalonia.Controls.MenuItem { Header = "Test Item 2" };
             item2.Click += (s, e) => JALogger.Log("Test Item 2 clicked from main menu");
             
-            var menuItems = new List<MenuItem> { item1, item2 };
+            var menuItems = new List<Avalonia.Controls.MenuItem> { item1, item2 };
             
             PopupMenuHost.ShowAt(menuItems, x, y);
         });
@@ -333,13 +348,13 @@ public static class DialogHost
             var selectionText = string.IsNullOrEmpty(selection) ? "(empty)" : selection;
             var clipboardText = string.IsNullOrEmpty(clipboard) ? "(empty)" : clipboard;
             
-            var selectionItem = new MenuItem { Header = $"Selection: {TruncateText(selectionText, 30)}" };
+            var selectionItem = new Avalonia.Controls.MenuItem { Header = $"Selection: {TruncateText(selectionText, 30)}" };
             selectionItem.Click += (s, e) => JALogger.Log($"Selection clicked: {selection}");
             
-            var clipboardItem = new MenuItem { Header = $"Clipboard: {TruncateText(clipboardText, 30)}" };
+            var clipboardItem = new Avalonia.Controls.MenuItem { Header = $"Clipboard: {TruncateText(clipboardText, 30)}" };
             clipboardItem.Click += (s, e) => JALogger.Log($"Clipboard clicked: {clipboard}");
             
-            var menuItems = new List<MenuItem> { selectionItem, clipboardItem };
+            var menuItems = new List<Avalonia.Controls.MenuItem> { selectionItem, clipboardItem };
             
             PopupMenuHost.ShowAt(menuItems, x, y);
         });

@@ -238,11 +238,11 @@ When porting menus/dialogs:
 
 ## Summary Statistics
 - **Total menu items tracked**: ~200+ items
-- **COMPLETE**: ~170 items (QueryBuilder, OpenInAnkiMenus, WebSearch, Options/Readings dialogs, all Local Actions, **All 3 note type actions complete**, **All 3 note type string menus 100% complete**, **Universal actions complete**, **Create note actions complete**, **Reparse action complete**, **Open Note dialog complete**, **Matching notes submenu complete**)
+- **COMPLETE**: ~176 items (QueryBuilder, OpenInAnkiMenus, WebSearch, Options/Readings dialogs, all Local Actions, **All 3 note type actions complete**, **All 3 note type string menus 100% complete**, **Universal actions complete**, **Create note actions complete**, **Reparse action complete**, **Open Note dialog complete**, **Matching notes submenu complete**, **Browser menu complete**)
 - **SCAFFOLDED**: ~17 items (menu structure exists, some actions still TODO)
 - **EXCLUDED**: ~7 items (Debug menu - Python runtime diagnostics not relevant to .NET)
-- **MISSING**: ~6 items (browser menu, misc scaffolded items)
-- **Porting completion**: ~85% complete, ~8% scaffolded, ~4% excluded, ~3% not started
+- **MISSING**: ~0 items
+- **Porting completion**: ~88% complete, ~8% scaffolded, ~4% excluded
 
 ### Phase 1 Complete ✅
 - QueryBuilder (21 methods) - ✅ COMPLETE
@@ -320,7 +320,19 @@ When porting menus/dialogs:
 - TODO Open Note dialog (currently Python dialog, needs Avalonia port)
 
 ### Excluded from Porting ❌
-- **Debug Menu** (7 items) - Python runtime memory diagnostics used to manage Python's poor performance with >100MB memory. Not relevant to .NET which handles memory efficiently. These remain in the Python menu and may be removed entirely after full .NET migration.
+
+**Debug Menu** (7 items) - Python runtime memory diagnostics used to manage Python's poor performance with >100MB memory. Not relevant to .NET which handles memory efficiently. These remain in the Python menu and may be removed entirely after full .NET migration.
+
+**Browser Context Menu** (6 items) - **CANNOT be ported to C#** due to architectural constraints:
+- Uses Anki's `gui_hooks.browser_will_show_context_menu` Python hook
+- This hook is part of Anki's PyQt GUI system and cannot be accessed from C#
+- Operations include:
+  - Prioritize selected cards (sets card.due based on note type)
+  - Spread selected cards (distributes due dates across time range)  
+  - Note submenu (calls existing C# context menu for the selected note)
+  - Reparse sentence words (calls `LocalNoteUpdater.ReparseSentences` in C#)
+- **Status**: Business logic can use C#, but hook integration MUST remain in Python
+- **Conclusion**: This is a thin Python integration layer calling C# business logic - acceptable
 
 ### Phase 3 - String Menus (100% COMPLETE) ✅
 - ✅ Kanji string menu (7 items)

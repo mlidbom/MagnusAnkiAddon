@@ -32,6 +32,33 @@ def spread_due_dates(cards: Sequence[CardId], start_day: int, days: int) -> None
     app.get_ui_utils().refresh()
 
 def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
+    """Set up browser context menu using C# menu specs."""
+    from jastudio.ui import avalonia_host
+    from jastudio.ui.menus import qt_menu_adapter
+    
+    selected_cards = browser.selected_cards()
+    selected_notes = browser.selectedNotes()
+    
+    # Build C# menu specs
+    try:
+        from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
+        
+        menu_spec = DialogHost.BuildBrowserMenuSpec(selected_cards, selected_notes)  # pyright: ignore[reportUnknownMemberType]
+        
+        # Convert C# menu spec to PyQt menu
+        qt_menu = qt_menu_adapter.to_qmenu(menu_spec)  # pyright: ignore[reportUnknownMemberType]
+        
+        # Add converted menu to browser's context menu
+        for action in qt_menu.actions():  # pyright: ignore[reportUnknownMemberType]
+            menu.addAction(action)  # pyright: ignore[reportUnknownMemberType]
+    except Exception as e:
+        from jaslib import mylog
+        mylog.error(f"Failed to build browser context menu: {e}")
+        # Fallback to old implementation if C# menu fails
+        _setup_browser_context_menu_python_fallback(browser, menu)
+        
+def _setup_browser_context_menu_python_fallback(browser: Browser, menu: QMenu) -> None:
+    """Fallback to Python-only browser context menu (for backwards compatibility)."""
     magnus_menu: QMenu = non_optional(menu.addMenu("&Magnus"))
     selected_cards = browser.selected_cards()
 
