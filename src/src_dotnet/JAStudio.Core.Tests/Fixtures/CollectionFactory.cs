@@ -8,6 +8,7 @@ namespace JAStudio.Core.Tests.Fixtures;
 
 public enum DataNeeded
 {
+   None = 0,
    Kanji = 2,
    Vocabulary = 4,
    Sentences = 8,
@@ -16,15 +17,13 @@ public enum DataNeeded
 
 public static class CollectionFactory
 {
-   public static IDisposable InjectEmptyCollection()
-   {
-      TestApp.Reset();
-      return new CollectionScope();
-   }
+   public static IDisposable InjectEmptyCollection() => InjectCollectionWithSelectData(DataNeeded.None);
 
    public static IDisposable InjectCollectionWithSelectData(DataNeeded data)
    {
       TestApp.Reset();
+      if(data == DataNeeded.None) 
+         return new CollectionScope();
 
       if(data.HasFlag(DataNeeded.Kanji))
       {
