@@ -13,6 +13,8 @@ def init() -> None:
     web.init()
     menus.init()
     garbage_collection_fixes.init()
-    avalonia_host.initialize()
+
+    from JAStudio.UI import DialogHost
+    DialogHost.Initialize()
 
     TaskRunner.set_ui_task_runner_factory(QtTaskProgressRunner)

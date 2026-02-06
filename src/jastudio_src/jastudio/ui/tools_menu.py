@@ -36,7 +36,7 @@ def add_menu_ui_action(sub_menu: QMenu, heading: str, callback: Callable[[], Non
     def ui_callback() -> None:
         get_ui_utils().run_ui_action(callback)
 
-    checked_cast(pyqtBoundSignal, action.triggered).connect(ui_callback)  # pyright: ignore[reportUnknownMemberType]
+    checked_cast(pyqtBoundSignal, action.triggered).connect(ui_callback) # pyright: ignore[reportUnknownMemberType]
     sub_menu.addAction(action)  # pyright: ignore[reportUnknownMemberType]
 
 def build_main_menu() -> None:
@@ -46,7 +46,7 @@ def build_main_menu() -> None:
     build_lookup_menu(non_optional(my_menu.addMenu(shortcutfinger.home2("Lookup"))))
     build_local_menu(non_optional(my_menu.addMenu(shortcutfinger.home3("Local Actions"))))
     build_debug_menu(non_optional(my_menu.addMenu(shortcutfinger.home4("Debug"))))
-    # Avalonia UI test
+
     my_menu.addAction(shortcutfinger.down2("About JA Studio"), avalonia_host.show_about_dialog)  # pyright: ignore[reportUnknownMemberType]
 
     # Add C# menu specs rendered as native PyQt submenu
@@ -74,17 +74,6 @@ def build_debug_menu(debug_menu: QMenu) -> None:
     add_menu_ui_action(debug_menu, shortcutfinger.down1("Refresh UI ('F5')"), refresh)
 
 def build_config_menu(config_menu: QMenu) -> None:
-    def show_options_with_logging() -> None:
-        from jaslib import mylog
-        try:
-            mylog.info("Opening Options dialog...")
-            avalonia_host.show_options_dialog()
-        except Exception as e:
-            mylog.error(f"Failed to show Options dialog: {e}")
-            import traceback
-            mylog.error(traceback.format_exc())
-
-    non_optional(config_menu.addAction(shortcutfinger.home1(".NET Options"), show_options_with_logging)).setShortcut("Ctrl+Shift+s")  # pyright: ignore[reportUnknownMemberType]
     non_optional(config_menu.addAction(shortcutfinger.home1("Python Options"), configuration.show_japanese_options)).setShortcut("Ctrl+Shift+s")  # pyright: ignore[reportUnknownMemberType]
     non_optional(config_menu.addAction(shortcutfinger.home2("Readings mappings"), show_readings_mappings)).setShortcut("Ctrl+Shift+m")  # pyright: ignore[reportUnknownMemberType]
 
@@ -135,7 +124,6 @@ def _add_csharp_main_menu(menu: QMenu) -> None:
         mylog.error(traceback.format_exc())
         # Add fallback menu item
         menu.addAction("⚠️ C# Menu Error (check console)")  # pyright: ignore[reportUnknownMemberType]
-
 
 def init() -> None:
     build_main_menu()
