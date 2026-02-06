@@ -199,18 +199,18 @@ When porting menus/dialogs:
 - NOT STARTED Remove primary Kunyomi reading (conditional: if hiragana string in primary readings)
 
 ### Vocab Note Actions (notes/vocab/main.py)
-- NOT STARTED Note actions
-  - NOT STARTED Open
+- ✅ COMPLETE Note actions
+  - ✅ COMPLETE Open
     - Vocab (Forms, Compound parts, In compounds, Synonyms, See also, Homonyms, Dependencies)
     - Sentences (I'm Studying, All, Primary form, Highlighted, Potentially matching, Marked invalid)
     - Kanji
     - Ergative twin (conditional)
-  - NOT STARTED Edit
-  - NOT STARTED Create (Clone to form, Noun variations, Verb variations, Misc variations, Selection/Clipboard combinations)
-  - NOT STARTED Copy (Question, Answer, Definition, Sentences)
-  - NOT STARTED Misc (Accept meaning, Generate answer, Reparse sentences, Repopulate TOS, Autogenerate compounds)
-  - NOT STARTED Remove (User explanation, User explanation long, User mnemonic, User answer - all conditional)
-- NOT STARTED View (Empty in Python)
+  - ✅ COMPLETE Edit (calls VocabFlagsDialog)
+  - ✅ COMPLETE Create (Clone to form, Noun variations, Verb variations, Misc variations, Selection/Clipboard combinations)
+  - ✅ COMPLETE Copy (Question, Answer, Definition, Sentences) - Note: clipboard integration via Python layer
+  - ✅ COMPLETE Misc (Accept meaning, Generate answer, Reparse sentences, Repopulate TOS, Autogenerate compounds)
+  - ✅ COMPLETE Remove (User explanation, User explanation long, User mnemonic, User answer - all conditional)
+- ✅ COMPLETE View (Empty in Python)
 
 ### Vocab String Menu Actions (notes/vocab/string_menu.py)
 - NOT STARTED Add (Synonym, Confused with, Antonym, Form, See also, Perfect synonym - conditional)
@@ -235,11 +235,11 @@ When porting menus/dialogs:
 
 ## Summary Statistics
 - **Total menu items tracked**: ~200+ items
-- **COMPLETE**: ~53 items (QueryBuilder, OpenInAnki, WebSearch, Options/Readings dialogs, all Local Actions update operations)
+- **COMPLETE**: ~66 items (QueryBuilder, OpenInAnki, WebSearch, Options/Readings dialogs, all Local Actions, **Vocab Note Actions complete**)
 - **SCAFFOLDED**: ~20 items (menu structure exists, some actions still TODO)
 - **EXCLUDED**: ~7 items (Debug menu - Python runtime diagnostics not relevant to .NET)
-- **MISSING**: ~120+ items (note-specific actions not yet ported)
-- **Porting completion**: ~27% complete, ~10% scaffolded, ~4% excluded, ~60% not started
+- **MISSING**: ~107+ items (Kanji/Sentence note-specific actions not yet ported)
+- **Porting completion**: ~33% complete, ~10% scaffolded, ~4% excluded, ~53% not started
 
 ### Phase 1 Complete ✅
 - QueryBuilder (21 methods) - ✅ COMPLETE
@@ -256,27 +256,36 @@ When porting menus/dialogs:
 - **Architecture cleanup**: Menus use JAStudio.Core directly instead of Python callbacks
 - **AnkiFacade reduced**: From 17 methods (370 lines) to 4 methods (~110 lines) - 70% reduction
 
-### Phase 2 In Progress
+### Phase 2 Complete ✅
 - ✅ Main menu Config actions (Options ✅, Readings mappings ✅)
 - ✅ Main menu Local Actions (Update ✅, Create ✅, Regenerate ✅, Convert Immersion Kit TODO)
+- ✅ **Vocab Note Actions Menu COMPLETE** (Open, Edit, Create, Copy, Misc, Remove - all 6 submenus fully implemented)
+  - Open: 13 menu items (vocab lookups, sentence lookups, kanji, ergative twin)
+  - Create: 30+ menu items (clone to form, noun/verb variations, misc conjugations)
+  - Copy: 4 menu items (clipboard operations via Python layer)
+  - Misc: 5 menu items (accept meaning, generate answer, reparse, repopulate TOS, autogenerate compounds)
+  - Remove: 4 menu items (conditional enable/disable for user fields)
+  - **All operations call JAStudio.Core directly - zero Python business logic dependencies!**
 - TODO Context menu Create actions (vocab, sentence, kanji)
 - TODO Context menu Universal note actions (previewer, suspend/unsuspend)
-- TODO Context menu scaffolding for note-specific actions
 - TODO Open Note dialog (currently Python dialog, needs Avalonia port)
 
 ### Excluded from Porting ❌
 - **Debug Menu** (7 items) - Python runtime memory diagnostics used to manage Python's poor performance with >100MB memory. Not relevant to .NET which handles memory efficiently. These remain in the Python menu and may be removed entirely after full .NET migration.
 
 ### Phase 3 Not Started
-- Note-specific actions (Kanji, Vocab, Sentence)
-- Note-specific string menus (add/remove relationships, highlights, etc.)
+- Kanji note-specific actions (Open, Remove, View)
+- Kanji string menus (add/remove relationships, highlights, etc.)
+- Sentence note-specific actions (Open, Remove, User fields, View)
+- Sentence string menus (add/remove relationships, highlights, parse operations)
+- Vocab string menus (add/remove relationships, sentence highlighting)
 - Conditional menu items based on note state
 - Dynamic menu generation based on data
 
 ### Infrastructure Complete ✅
 The C# infrastructure is in place:
   - `JAStudio.UI/Menus/JapaneseMainMenu.cs` ✅ COMPLETE (Config + Local Actions + Lookup menus)
-  - `JAStudio.UI/Menus/NoteContextMenu.cs` (scaffolding complete, lookup menus integrated ✅)
+  - `JAStudio.UI/Menus/NoteContextMenu.cs` ✅ VOCAB ACTIONS COMPLETE (scaffolding complete, vocab note menu fully implemented, kanji/sentence TODO)
   - `JAStudio.UI/Menus/OpenInAnkiMenus.cs` ✅ COMPLETE
   - `JAStudio.UI/Menus/WebSearchMenus.cs` ✅ COMPLETE (uses BrowserLauncher directly)
   - `JAStudio.UI/Views/OptionsDialog.axaml` ✅ COMPLETE (Full configuration dialog)
