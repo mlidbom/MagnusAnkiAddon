@@ -219,11 +219,11 @@ When porting menus/dialogs:
 - NOT STARTED Create combined {string} (Prefix/Suffix variations)
 
 ### Sentence Note Actions (notes/sentence/main.py)
-- NOT STARTED Note actions
-  - NOT STARTED Open (Highlighted Vocab, Highlighted Vocab Read Card, Kanji, Parsed words)
-  - NOT STARTED Remove (All highlighted, All incorrect matches, All hidden matches, Source comments - all conditional)
-  - NOT STARTED Remove User (comments, answer, question - all conditional)
-- NOT STARTED View ({toggle} dynamic, Toggle all auto yield flags)
+- ✅ COMPLETE Note actions
+  - ✅ COMPLETE Open (Highlighted Vocab, Highlighted Vocab Read Card, Kanji, Parsed words)
+  - ✅ COMPLETE Remove (All highlighted, All incorrect matches, All hidden matches, Source comments - all conditional)
+  - ✅ COMPLETE Remove User (comments, answer, question - all conditional)
+- ✅ COMPLETE View (Dynamic config toggles + Toggle all auto yield flags)
 
 ### Sentence String Menu Actions (notes/sentence/string_menu.py)
 - NOT STARTED Add (Highlighted Vocab, Hidden matches, Incorrect matches - conditional/dynamic)
@@ -234,11 +234,11 @@ When porting menus/dialogs:
 
 ## Summary Statistics
 - **Total menu items tracked**: ~200+ items
-- **COMPLETE**: ~77 items (QueryBuilder, OpenInAnki, WebSearch, Options/Readings dialogs, all Local Actions, **Vocab Note Actions complete**, **Kanji Note Actions complete**)
+- **COMPLETE**: ~93 items (QueryBuilder, OpenInAnki, WebSearch, Options/Readings dialogs, all Local Actions, **All 3 note type actions complete: Vocab ✅ Kanji ✅ Sentence ✅**)
 - **SCAFFOLDED**: ~20 items (menu structure exists, some actions still TODO)
 - **EXCLUDED**: ~7 items (Debug menu - Python runtime diagnostics not relevant to .NET)
-- **MISSING**: ~96+ items (Sentence note-specific actions, string menus not yet ported)
-- **Porting completion**: ~38% complete, ~10% scaffolded, ~4% excluded, ~48% not started
+- **MISSING**: ~80+ items (String menus for all note types not yet ported)
+- **Porting completion**: ~46% complete, ~10% scaffolded, ~4% excluded, ~40% not started
 
 ### Phase 1 Complete ✅
 - QueryBuilder (21 methods) - ✅ COMPLETE
@@ -270,6 +270,12 @@ When porting menus/dialogs:
   - Reset/Populate: 4 menu items (reset primary vocabs, populate radicals, bootstrap mnemonic, reset mnemonic)
   - Accept meaning: Conditional menu item (only shown if no user answer)
   - **All operations call JAStudio.Core directly - KanjiNote methods used directly!**
+- ✅ **Sentence Note Actions Menu COMPLETE** (Open, Remove, Remove User, View - all operations fully implemented)
+  - Open: 4 menu items (highlighted vocab, highlighted vocab read card, kanji, parsed words)
+  - Remove: 4 menu items (all conditional - highlighted words, incorrect matches, hidden matches, source comments)
+  - Remove User: 3 menu items (all conditional - user comments, answer, question)
+  - View: Dynamic menu (config toggles + toggle all auto yield flags)
+  - **All operations call JAStudio.Core directly - SentenceNote and Configuration used directly!**
 - TODO Context menu Create actions (vocab, sentence, kanji)
 - TODO Context menu Universal note actions (previewer, suspend/unsuspend)
 - TODO Open Note dialog (currently Python dialog, needs Avalonia port)
@@ -278,18 +284,17 @@ When porting menus/dialogs:
 - **Debug Menu** (7 items) - Python runtime memory diagnostics used to manage Python's poor performance with >100MB memory. Not relevant to .NET which handles memory efficiently. These remain in the Python menu and may be removed entirely after full .NET migration.
 
 ### Phase 3 Not Started
-- Sentence note-specific actions (Open, Remove, User fields, View)
 - Sentence string menus (add/remove relationships, highlights, parse operations)
 - Kanji string menus (add/remove relationships, highlighted vocab, primary readings)
 - Vocab string menus (add/remove relationships, sentence highlighting)
-- Conditional menu items based on note state
-- Dynamic menu generation based on data
+- Conditional menu items based on note state (some done, more needed for string menus)
+- Dynamic menu generation based on data (some done, more needed for string menus)
 
 ### Infrastructure Complete ✅
 The C# infrastructure is in place:
   - `JAStudio.UI/Menus/JapaneseMainMenu.cs` ✅ COMPLETE (Config + Local Actions + Lookup menus)
   - `JAStudio.UI/Menus/NoteContextMenu.cs` ✅ VOCAB + KANJI COMPLETE (vocab + kanji note menus fully implemented, sentence TODO)
-  - `JAStudio.UI/Menus/OpenInAnkiMenus.cs` ✅ COMPLETE
+  - `JAStudio.UI/Menus/OpenInAnkiMenus.cs` ✅ **ALL NOTE TYPE MENUS COMPLETE** (Vocab ✅ Kanji ✅ Sentence ✅ - string menus
   - `JAStudio.UI/Menus/WebSearchMenus.cs` ✅ COMPLETE (uses BrowserLauncher directly)
   - `JAStudio.UI/Views/OptionsDialog.axaml` ✅ COMPLETE (Full configuration dialog)
   - `JAStudio.UI/ViewModels/OptionsDialogViewModel.cs` ✅ COMPLETE (Two-way binding to JapaneseConfig)
