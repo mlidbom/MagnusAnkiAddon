@@ -117,11 +117,14 @@ JAStudio.Core.dll (Domain logic - already ported)
 
 | Status | File | Lines | Description |
 |--------|------|-------|-------------|
-| MISSING | ui/menus/notes/vocab/string_set_widget.py | 130 | Editable string set widget |
-| MISSING | ui/menus/notes/vocab/require_forbid_widget.py | 61 | Require/Forbid radio button group |
-| MISSING | qt_utils/qt_task_progress_runner.py | 99 | Progress dialog for batch operations |
+| COMPLETE | ui/menus/notes/vocab/string_set_widget.py | 130 | Editable string set widget (\u2192 StringSetControl.axaml) |
+| COMPLETE | ui/menus/notes/vocab/require_forbid_widget.py | 61 | Require/Forbid radio button group (\u2192 RequireForbidControl.axaml) |
+| COMPLETE | qt_utils/qt_task_progress_runner.py | 99 | Progress dialog for batch operations (→ AvaloniaTaskProgressRunner.cs) |
 
-**Subtotal: 290 lines**
+**Subtotal: 290 lines ported / 290 total (100% complete) ✅**
+
+**Note:** All widgets ported! TaskProgressDialog shows spinning progress or progress bar with time estimates.
+Skipped Python-specific GC operations (not needed in C#).
 
 ---
 
@@ -161,11 +164,11 @@ Main menus work, note-specific actions remain to be ported.
 | Category | Status | Lines Ported | Total Lines | % Complete |
 |----------|--------|--------------|-------------|------------|
 | Dialogs | **5/5 complete** | **849** | **849** | **100% ✅** |
-| Widgets | 2/3 complete | 191 | 290 | 66% |
+| Widgets | **3/3 complete** | **290** | **290** | **100% ✅** |
 | Menus | Infrastructure ✅ | ~300 | 789 | 38% |
-| **Total** | **Good progress** | **~1,340** | **1,928** | **69%** |
+| **Total** | **Great progress** | **~1,439** | **1,928** | **75%** |
 
-**Key Achievement:** All dialogs complete! Menus use C# business logic directly!
+**Key Achievement:** All dialogs and widgets complete! Menus use C# business logic directly!
 
 ---
 
@@ -188,10 +191,10 @@ Main menus work, note-specific actions remain to be ported.
 4. ~~`readings_mapping_dialog.py` → `ReadingsMappingsDialog.axaml`~~ ✅
 5. ~~`configuration.py` → `OptionsDialog.axaml`~~ ✅
 
-### Phase 3: Widgets ✅ COMPLETE
+### Phase 3: Widgets ✅ COMPLETE (3/3)
 1. ~~`string_set_widget.py` → `StringSetControl.axaml`~~ ✅ (reused in VocabFlagsDialog)
 2. ~~`require_forbid_widget.py` → `RequireForbidControl.axaml`~~ ✅ (radio group)
-3. `qt_task_progress_runner.py` → `TaskProgressDialog.axaml` ⚠️ TODO (low priority)
+3. ~~`qt_task_progress_runner.py` → `AvaloniaTaskProgressRunner.cs`~~ ✅ (progress dialog with time estimates)
 
 ### Phase 4: Menus ✅ INFRASTRUCTURE COMPLETE
 1. ~~Create UI-agnostic MenuItem specification classes~~ ✅

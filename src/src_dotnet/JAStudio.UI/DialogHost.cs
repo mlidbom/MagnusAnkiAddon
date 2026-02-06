@@ -5,7 +5,10 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
+using JAStudio.Core;
 using JAStudio.Core.Note;
+using JAStudio.Core.TaskRunners;
+using JAStudio.UI.Dialogs;
 using JAStudio.UI.Menus;
 using JAStudio.UI.Views;
 
@@ -50,6 +53,11 @@ public static class DialogHost
         // Wait for Avalonia to initialize
         // TODO: Add proper synchronization with App.OnFrameworkInitializationCompleted
         Thread.Sleep(500);
+        
+        // Set up task runner factory
+        TaskRunner.SetUiTaskRunnerFactory((windowTitle, labelText, allowCancel, modal) =>
+            new AvaloniaTaskProgressRunner(windowTitle, labelText, allowCancel, modal));
+        
         _initialized = true;
     }
 
