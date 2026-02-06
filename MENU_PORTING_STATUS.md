@@ -218,7 +218,9 @@ When porting menus/dialogs:
 - ✅ COMPLETE Set submenu (2 items): ergative twin, derived from
 - ✅ COMPLETE Remove submenu (8 items): synonym, confused with, antonym, ergative twin, form, see also, perfect synonym, derived from  
 - ✅ COMPLETE Sentence submenu (3 items): add highlight, remove highlight, mark as incorrect match
-- NOT STARTED Create combined submenu (prefix/postfix operations)
+- ✅ COMPLETE Create combined submenu (14 items - prefix/postfix operations)
+  - Prefix-onto submenu: 4 items (dictionary form, chop-1, chop-2, chop-3)
+  - Suffix-onto submenu: 9 items (dictionary form, い-stem, て-stem, え-stem, あ-stem, chop-1 through chop-4)
 
 ### Sentence Note Actions (notes/sentence/main.py)
 - ✅ COMPLETE Note actions
@@ -236,11 +238,11 @@ When porting menus/dialogs:
 
 ## Summary Statistics
 - **Total menu items tracked**: ~200+ items
-- **COMPLETE**: ~152 items (QueryBuilder, OpenInAnkiMenus, WebSearch, Options/Readings dialogs, all Local Actions, **All 3 note type actions complete**, **Universal actions complete**, **Create note actions complete**, **Reparse action complete**, **Vocab string menu complete**, **Kanji string menu complete**, **Sentence string menu complete**)
+- **COMPLETE**: ~166 items (QueryBuilder, OpenInAnkiMenus, WebSearch, Options/Readings dialogs, all Local Actions, **All 3 note type actions complete**, **All 3 note type string menus 100% complete**, **Universal actions complete**, **Create note actions complete**, **Reparse action complete**)
 - **SCAFFOLDED**: ~20 items (menu structure exists, some actions still TODO)
 - **EXCLUDED**: ~7 items (Debug menu - Python runtime diagnostics not relevant to .NET)
-- **MISSING**: ~21 items (vocab create combined submenu)
-- **Porting completion**: ~76% complete, ~10% scaffolded, ~4% excluded, ~10% not started
+- **MISSING**: ~7 items (remaining scaffolded items, browser menu)
+- **Porting completion**: ~83% complete, ~10% scaffolded, ~4% excluded, ~3% not started
 
 ### Phase 1 Complete ✅
 - QueryBuilder (21 methods) - ✅ COMPLETE
@@ -309,17 +311,22 @@ When porting menus/dialogs:
   - Dynamic match detection based on text analysis
   - Nested local functions mirror Python structure for readability
   - **Uses CreateAnalysis() and WordExclusion directly from JAStudio.Core!**
-- TODO Vocab create combined submenu (prefix/postfix operations)
+- ✅ **Vocab Create Combined Submenu COMPLETE** (14 items - in VocabStringMenus.cs)
+  - Prefix-onto submenu: 4 items (dictionary form + chop operations)
+  - Suffix-onto submenu: 9 items (dictionary form + stem conjugations + chop operations)
+  - All preview methods show the resulting form before creation
+  - Nested local functions for excellent code organization
+  - **Uses VocabCloner methods directly - all business logic in JAStudio.Core!**
 - TODO Open Note dialog (currently Python dialog, needs Avalonia port)
 
 ### Excluded from Porting ❌
 - **Debug Menu** (7 items) - Python runtime memory diagnostics used to manage Python's poor performance with >100MB memory. Not relevant to .NET which handles memory efficiently. These remain in the Python menu and may be removed entirely after full .NET migration.
 
-### Phase 3 - String Menus (90% COMPLETE)
-- ✅ Kanji string menu (7 items all complete)
-- ✅ Vocab string menu (20 items all complete)
-- ✅ Sentence string menu (7 items all complete)
-- TODO Vocab create combined submenu only (prefix/postfix operations - ~14 items)
+### Phase 3 - String Menus (100% COMPLETE) ✅
+- ✅ Kanji string menu (7 items)
+- ✅ Vocab string menu (34 items total - includes 14 create combined items)
+- ✅ Sentence string menu (7 items)
+- **ALL NOTE TYPE MENUS NOW 100% COMPLETE!**
 
 ### Infrastructure Complete ✅
 The C# infrastructure is in place:
