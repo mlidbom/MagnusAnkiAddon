@@ -234,10 +234,10 @@ When porting menus/dialogs:
 
 ## Summary Statistics
 - **Total menu items tracked**: ~200+ items
-- **COMPLETE**: ~99 items (QueryBuilder, OpenInAnkiMenus, WebSearch, Options/Readings dialogs, all Local Actions, **All 3 note type actions complete**, **Universal actions complete**, **Create note actions complete**)
+- **COMPLETE**: ~100 items (QueryBuilder, OpenInAnkiMenus, WebSearch, Options/Readings dialogs, all Local Actions, **All 3 note type actions complete**, **Universal actions complete**, **Create note actions complete**, **Reparse action complete**)
 - **SCAFFOLDED**: ~20 items (menu structure exists, some actions still TODO)
 - **EXCLUDED**: ~7 items (Debug menu - Python runtime diagnostics not relevant to .NET)
-- **MISSING**: ~74+ items (String menus for all note types not yet ported)
+- **MISSING**: ~73+ items (String menus for all note types not yet ported)
 - **Porting completion**: ~50% complete, ~10% scaffolded, ~4% excluded, ~36% not started
 
 ### Phase 1 Complete ✅
@@ -288,6 +288,10 @@ When porting menus/dialogs:
   - Create kanji note from selection (KanjiNote.Create with placeholder values)
   - All open newly created note in previewer and refresh UI
   - Error handling with user-friendly tooltips
+- ✅ **Reparse Matching Sentences COMPLETE**
+  - Calls LocalNoteUpdater.ReparseMatchingSentences(text)
+  - Reparses all sentences containing the text substring
+  - Shows tooltip feedback on success/failure
 - TODO Open Note dialog (currently Python dialog, needs Avalonia port)
 
 ### Excluded from Porting ❌

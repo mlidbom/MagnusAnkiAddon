@@ -740,7 +740,20 @@ public class NoteContextMenu
         AnkiFacade.ExecuteLookupAndShowPreviewer(query);
     }
     
-    private void OnReparseMatchingSentences(string text) => JALogger.Log($"TODO: Reparse matching sentences: {text}");
+    private void OnReparseMatchingSentences(string text)
+    {
+        try
+        {
+            Core.Batches.LocalNoteUpdater.ReparseMatchingSentences(text);
+            AnkiFacade.Refresh();
+            AnkiFacade.ShowTooltip($"Reparsed sentences matching: {text}", 3000);
+        }
+        catch (Exception ex)
+        {
+            JALogger.Log($"Failed to reparse matching sentences: {ex.Message}");
+            AnkiFacade.ShowTooltip($"Failed to reparse: {ex.Message}", 5000);
+        }
+    }
     
     private void OnCreateVocabNote(string text)
     {
