@@ -31,3 +31,4 @@ CopilotIndices
 .vs
 /src/meta.json
 /src/src_dotnet/JAStudio.UI/publish
+/diff_out.tmp
