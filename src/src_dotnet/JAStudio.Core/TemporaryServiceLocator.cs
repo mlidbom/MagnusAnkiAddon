@@ -19,26 +19,26 @@ namespace JAStudio.Core;
 public class TemporaryServiceCollection(IServiceLocator serviceLocator) : IDisposable
 {
    readonly IServiceLocator _serviceLocator = serviceLocator;
-   
+
    public App App => _serviceLocator.Resolve<App>();
    public QueryBuilder QueryBuilder => _serviceLocator.Resolve<QueryBuilder>();
-   
+
    // Core services
    public LocalNoteUpdater LocalNoteUpdater => _serviceLocator.Resolve<LocalNoteUpdater>();
    public TaskRunner TaskRunner => _serviceLocator.Resolve<TaskRunner>();
    public AnkiCardOperations AnkiCardOperations => _serviceLocator.Resolve<AnkiCardOperations>();
    public DictLookup DictLookup => _serviceLocator.Resolve<DictLookup>();
    public TestApp TestApp => _serviceLocator.Resolve<TestApp>();
-   
+
    // Note services
    public KanjiNoteMnemonicMaker KanjiNoteMnemonicMaker => _serviceLocator.Resolve<KanjiNoteMnemonicMaker>();
    public VocabNoteFactory VocabNoteFactory => _serviceLocator.Resolve<VocabNoteFactory>();
    public VocabNoteGeneratedData VocabNoteGeneratedData => _serviceLocator.Resolve<VocabNoteGeneratedData>();
    public POSSetManager POSSetManager => _serviceLocator.Resolve<POSSetManager>();
-   
+
    // ViewModels
    public SentenceKanjiListViewModel SentenceKanjiListViewModel => _serviceLocator.Resolve<SentenceKanjiListViewModel>();
-   
+
    // Renderers
    public KanjiListRenderer KanjiListRenderer => _serviceLocator.Resolve<KanjiListRenderer>();
    public VocabKanjiListRenderer VocabKanjiListRenderer => _serviceLocator.Resolve<VocabKanjiListRenderer>();

@@ -132,23 +132,11 @@ public class POSSetManager
         return InternFrozenSet(posValuesSet);
     }
 
-    public static FrozenSet<string> Get(string pos)
-    {
-        return _posByStr[pos];
-    }
+    public static FrozenSet<string> Get(string pos) => _posByStr[pos];
 
-    public static bool IsTransitiveVerb(FrozenSet<string> posSet)
-    {
-        return posSet.Contains(POS.Transitive);
-    }
+    public static bool IsTransitiveVerb(FrozenSet<string> posSet) => posSet.Contains(POS.Transitive);
 
-    public static bool IsIntransitiveVerb(FrozenSet<string> posSet)
-    {
-        return posSet.Contains(POS.Intransitive);
-    }
+    public static bool IsIntransitiveVerb(FrozenSet<string> posSet) => posSet.Contains(POS.Intransitive);
 
-    public static bool IsVerb(FrozenSet<string> posSet)
-    {
-        return posSet.Overlaps(POS.AllVerbPoses);
-    }
+    public static bool IsVerb(FrozenSet<string> posSet) => posSet.Overlaps(POS.AllVerbPoses);
 }

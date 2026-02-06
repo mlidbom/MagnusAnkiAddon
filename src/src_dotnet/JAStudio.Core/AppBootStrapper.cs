@@ -27,23 +27,23 @@ static class AppBootstrapper
          Singleton.For<TemporaryServiceCollection>().CreatedBy(() => new TemporaryServiceCollection(container.ServiceLocator)),
          Singleton.For<App>().CreatedBy((TemporaryServiceCollection services) => new App(services)),
          Singleton.For<QueryBuilder>().CreatedBy((TemporaryServiceCollection services) => new QueryBuilder(services)),
-         
+
          // Core services
          Singleton.For<LocalNoteUpdater>().CreatedBy((TemporaryServiceCollection services) => new LocalNoteUpdater(services)),
          Singleton.For<TaskRunner>().CreatedBy((TemporaryServiceCollection services) => new TaskRunner(services)),
          Singleton.For<AnkiCardOperations>().CreatedBy((TemporaryServiceCollection services) => new AnkiCardOperations(services)),
          Singleton.For<DictLookup>().CreatedBy((TemporaryServiceCollection services) => new DictLookup(services)),
          Singleton.For<TestApp>().CreatedBy((TemporaryServiceCollection services) => new TestApp(services)),
-         
+
          // Note services
          Singleton.For<KanjiNoteMnemonicMaker>().CreatedBy((TemporaryServiceCollection services) => new KanjiNoteMnemonicMaker(services)),
          Singleton.For<VocabNoteFactory>().CreatedBy((TemporaryServiceCollection services) => new VocabNoteFactory(services)),
          Singleton.For<VocabNoteGeneratedData>().CreatedBy((TemporaryServiceCollection services) => new VocabNoteGeneratedData(services)),
          Singleton.For<POSSetManager>().CreatedBy((TemporaryServiceCollection services) => new POSSetManager(services)),
-         
+
          // ViewModels
          Singleton.For<SentenceKanjiListViewModel>().CreatedBy((TemporaryServiceCollection services) => new SentenceKanjiListViewModel(services)),
-         
+
          // Renderers
          Singleton.For<KanjiListRenderer>().CreatedBy((TemporaryServiceCollection services) => new KanjiListRenderer(services)),
          Singleton.For<VocabKanjiListRenderer>().CreatedBy((TemporaryServiceCollection services) => new VocabKanjiListRenderer(services)),
