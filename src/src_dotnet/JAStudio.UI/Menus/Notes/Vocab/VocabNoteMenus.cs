@@ -295,8 +295,18 @@ public static class VocabNoteMenus
     {
         try
         {
-            JALogger.Log($"Copy to clipboard requested: {text.Substring(0, Math.Min(50, text.Length))}...");
-            // TODO: When we have full Avalonia window context, implement clipboard
+            Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+            {
+                var topLevel = Avalonia.Application.Current?.ApplicationLifetime 
+                    is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
+                    ? desktop.MainWindow
+                    : null;
+                    
+                if (topLevel?.Clipboard != null)
+                {
+                    topLevel.Clipboard.SetTextAsync(text).Wait();
+                }
+            });
         }
         catch (Exception ex)
         {

@@ -295,7 +295,22 @@ public class KanjiNote : JPNote
 
     public List<string> GenerateDefaultPrimaryVocab()
     {
-        throw new NotImplementedException();
+        // When no explicit primary vocab is set, derive defaults from vocab notes
+        // that contain this kanji. Prioritize studying vocab, then take by form.
+        var vocabNotes = GetVocabNotes();
+        
+        // Prefer studying vocab first, then all others
+        var studying = vocabNotes.Where(v => v.IsStudying()).ToList();
+        var notStudying = vocabNotes.Where(v => !v.IsStudying()).ToList();
+        
+        var ordered = studying.Concat(notStudying);
+        
+        return ordered
+            .Select(v => v.GetQuestion())
+            .Where(q => !string.IsNullOrEmpty(q))
+            .Distinct()
+            .Take(5)
+            .ToList();
     }
 
     private static readonly Regex AnyWordPattern = new(@"\b[-\w]+\b", RegexOptions.Compiled);

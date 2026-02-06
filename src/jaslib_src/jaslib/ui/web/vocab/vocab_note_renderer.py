@@ -27,7 +27,7 @@ def create_renderer(schedule_task: Callable[[Callable[[], str]], Future[str]]) -
         "##PERFECT_SYNONYMS_LIST##": related_vocabs_renderer.generate_perfect_synonyms_meaning_html_list,
         "##SYNONYMS_LIST##": related_vocabs_renderer.generate_synonyms_meaning_html_list,
         "##SEE_ALSO_LIST##": related_vocabs_renderer.generate_see_also_html_list,
-        "##ANTONYMS_LIST##": related_vocabs_renderer.generate_antonyms_meaning_html_list,
+        "##ANTONYMS_LIST##": related_vocabs_renderer.generate_antonyms_meaning_html_list,   
         "##CONFUSED_WITH_LIST##": related_vocabs_renderer.generate_confused_with_html_list,
         "##VOCAB_META_TAGS_HTML##": related_vocabs_renderer.generate_meta_tags,
         "##VOCAB_CLASSES##": related_vocabs_renderer.create_classes,
