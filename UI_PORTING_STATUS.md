@@ -203,10 +203,10 @@ Main menus work, note-specific actions remain to be ported.
 |----------|--------|--------------|-------------|------------|
 | Dialogs | **5/5 complete** | **849** | **849** | **100% ✅** |
 | Widgets | **3/3 complete** | **290** | **290** | **100% ✅** |
-| Menus | Infrastructure ✅ | ~300 | 789 | 38% |
-| **Total** | **Great progress** | **~1,439** | **1,928** | **75%** |
+| Menus | **Nearly done** | ~630 | 789 | **80%** |
+| **Total** | **Excellent progress** | **~1,769** | **1,928** | **~92%** |
 
-**Key Achievement:** All dialogs and widgets complete! Menus use C# business logic directly!
+**Key Achievement:** All dialogs and widgets complete! All note-type menus complete! Main menu complete!
 
 ---
 
@@ -241,11 +241,11 @@ Main menus work, note-specific actions remain to be ported.
 4. ~~Create PyQt adapter to render C# specs~~ ✅ (`qt_menu_adapter.py`)
 5. ~~Wire up Python to call C# menu builders~~ ✅
 6. ~~Integrate AnkiFacade for minimal Python API calls~~ ✅
-7. **TODO**: Port note-specific actions (Kanji/Vocab/Sentence main.py and string_menu.py)
+7. ~~Port note-specific actions~~ ✅ (All 3 note types - Kanji/Vocab/Sentence main.py and string_menu.py)
+8. ~~Wire Open Note dialog~~ ✅ (NoteSearchDialog integrated with Ctrl+O shortcut)
 
 **Current Status:**
 - Main menu (Japanese) - Config ✅, Lookup ✅, Local Actions ✅
-- Context menu - Scaffolding ✅, Lookup submenus ✅
-- ~120 note-specific actions remain (Kanji, Vocab, Sentence menus)
+- Context menu - All note types complete ✅, Lookup submenus ✅
 
 

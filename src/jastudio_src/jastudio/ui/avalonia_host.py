@@ -86,6 +86,21 @@ def show_options_dialog() -> None:
         raise
 
 
+def toggle_note_search_dialog() -> None:
+    """Toggle the Avalonia Note Search dialog visibility."""
+    if not _initialized:
+        mylog.warning("Avalonia UI not initialized, initializing now...")
+        initialize()
+
+    try:
+        from JAStudio.UI import DialogHost  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
+
+        DialogHost.ToggleNoteSearchDialog()  # pyright: ignore[reportUnknownMemberType]
+    except Exception as e:
+        mylog.error(f"Failed to toggle NoteSearchDialog: {e}")
+        raise
+
+
 def show_context_menu_popup(clipboard_content: str, selection_content: str, x: int, y: int) -> None:
     """
     Show the Avalonia context menu popup at the specified screen coordinates.

@@ -120,8 +120,8 @@ When porting menus/dialogs:
   - Options (Ctrl+Shift+S) - ✅ COMPLETE (Avalonia dialog with full two-way binding to JapaneseConfig)
   - Readings mappings (Ctrl+Shift+M) - ✅ COMPLETE (Avalonia dialog with text editor, search, deduplication)
   
-- **Lookup Menu**: PARTIALLY COMPLETE
-  - Open note (Ctrl+O) - TODO (Python dialog, needs porting to Avalonia)
+- **Lookup Menu**: ✅ COMPLETE
+  - Open note (Ctrl+O) - ✅ COMPLETE (Avalonia dialog, fully integrated)
   - ✅ Anki (all search menus complete, see OpenInAnkiMenus.cs)
   - ✅ Web (all search menus complete, see WebSearchMenus.cs)
   
@@ -238,11 +238,11 @@ When porting menus/dialogs:
 
 ## Summary Statistics
 - **Total menu items tracked**: ~200+ items
-- **COMPLETE**: ~166 items (QueryBuilder, OpenInAnkiMenus, WebSearch, Options/Readings dialogs, all Local Actions, **All 3 note type actions complete**, **All 3 note type string menus 100% complete**, **Universal actions complete**, **Create note actions complete**, **Reparse action complete**)
+- **COMPLETE**: ~167 items (QueryBuilder, OpenInAnkiMenus, WebSearch, Options/Readings dialogs, all Local Actions, **All 3 note type actions complete**, **All 3 note type string menus 100% complete**, **Universal actions complete**, **Create note actions complete**, **Reparse action complete**, **Open Note dialog complete**)
 - **SCAFFOLDED**: ~20 items (menu structure exists, some actions still TODO)
 - **EXCLUDED**: ~7 items (Debug menu - Python runtime diagnostics not relevant to .NET)
-- **MISSING**: ~7 items (remaining scaffolded items, browser menu)
-- **Porting completion**: ~83% complete, ~10% scaffolded, ~4% excluded, ~3% not started
+- **MISSING**: ~6 items (remaining scaffolded items, browser menu)
+- **Porting completion**: ~84% complete, ~10% scaffolded, ~4% excluded, ~2% not started
 
 ### Phase 1 Complete ✅
 - QueryBuilder (21 methods) - ✅ COMPLETE
