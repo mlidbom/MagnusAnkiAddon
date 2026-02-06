@@ -33,7 +33,7 @@ static class AppBootstrapper
          // Core services
          Singleton.For<ConfigurationValue>().CreatedBy((TemporaryServiceCollection services) => new ConfigurationValue(services)),
          Singleton.For<MyLog>().CreatedBy((TemporaryServiceCollection services) => new MyLog(services)),
-         Singleton.For<ExPytest>().CreatedBy((TemporaryServiceCollection services) => new ExPytest(services)),
+         Singleton.For<TestEnvDetector>().CreatedBy((TemporaryServiceCollection services) => new TestEnvDetector(services)),
          Singleton.For<LocalNoteUpdater>().CreatedBy((TemporaryServiceCollection services) => new LocalNoteUpdater(services)),
          Singleton.For<TaskRunner>().CreatedBy((TemporaryServiceCollection services) => new TaskRunner(services)),
          Singleton.For<AnkiCardOperations>().CreatedBy((TemporaryServiceCollection services) => new AnkiCardOperations(services)),

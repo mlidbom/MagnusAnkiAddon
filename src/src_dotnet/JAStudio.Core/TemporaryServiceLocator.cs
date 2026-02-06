@@ -28,7 +28,7 @@ public class TemporaryServiceCollection(IServiceLocator serviceLocator) : IDispo
    // Core services
    public ConfigurationValue ConfigurationValue => _serviceLocator.Resolve<ConfigurationValue>();
    public MyLog MyLog => _serviceLocator.Resolve<MyLog>();
-   public ExPytest ExPytest => _serviceLocator.Resolve<ExPytest>();
+   public TestEnvDetector TestEnvDetector => _serviceLocator.Resolve<TestEnvDetector>();
    public LocalNoteUpdater LocalNoteUpdater => _serviceLocator.Resolve<LocalNoteUpdater>();
    public TaskRunner TaskRunner => _serviceLocator.Resolve<TaskRunner>();
    public AnkiCardOperations AnkiCardOperations => _serviceLocator.Resolve<AnkiCardOperations>();

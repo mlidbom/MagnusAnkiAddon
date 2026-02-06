@@ -13,7 +13,7 @@ public class App : IDisposable
    public TemporaryServiceCollection Services { get; }
    internal App(TemporaryServiceCollection services) => Services = services;
 
-   public static bool IsTesting => ExPytest.IsTesting;
+   public static bool IsTesting => TestEnvDetector.IsTesting;
 
    static JPCollection? _collection;
    static IBackendNoteCreator? _backendNoteCreator;
