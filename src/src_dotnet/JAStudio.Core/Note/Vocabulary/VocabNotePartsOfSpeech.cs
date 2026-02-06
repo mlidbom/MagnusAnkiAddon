@@ -58,7 +58,7 @@ public class VocabNotePartsOfSpeech
         return GaSuruNiSuruEndings.Contains(ending);
     }
 
-    public bool IsUk() => Vocab.Tags.Contains(Tags.Vocab.UsuallyKanaOnly);
+    public bool IsUk() => Vocab.Tags.Contains(Tags.UsuallyKanaOnly);
 
     public void SetAutomaticallyFromDictionary()
     {

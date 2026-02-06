@@ -23,7 +23,7 @@ public class VocabNoteGeneratedData
         if (string.IsNullOrEmpty(readings) && KanaUtils.IsOnlyKana(question))
         {
             vocab.SetReadings([question]);
-            vocab.Tags.Set(Tags.Vocab.UsuallyKanaOnly);
+            vocab.Tags.Set(Tags.UsuallyKanaOnly);
         }
 
         if (vocab.CompoundParts.All().Count == 0 && vocab.PartsOfSpeech.IsSuruVerbIncluded())
@@ -42,7 +42,7 @@ public class VocabNoteGeneratedData
                 var lookup = DictLookup.LookupVocabWordOrName(vocab);
                 if (lookup.IsUk() && !vocab.Tags.Contains(Tags.DisableKanaOnly))
                 {
-                    vocab.Tags.Set(Tags.Vocab.UsuallyKanaOnly);
+                    vocab.Tags.Set(Tags.UsuallyKanaOnly);
                 }
 
                 if (!vocab.Forms.AllSet().Any())
