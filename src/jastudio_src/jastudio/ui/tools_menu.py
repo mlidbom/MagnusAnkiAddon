@@ -7,6 +7,7 @@ from jaspythonutils.sysutils.typed import checked_cast, non_optional
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QInputDialog, QLineEdit, QMenu
+from System import Func
 
 from jastudio.ankiutils import app, ui_utils
 from jastudio.ankiutils.app import get_ui_utils, main_window
@@ -36,7 +37,7 @@ def add_menu_ui_action(sub_menu: QMenu, heading: str, callback: Callable[[], Non
     def ui_callback() -> None:
         get_ui_utils().run_ui_action(callback)
 
-    checked_cast(pyqtBoundSignal, action.triggered).connect(ui_callback) # pyright: ignore[reportUnknownMemberType]
+    checked_cast(pyqtBoundSignal, action.triggered).connect(ui_callback)  # pyright: ignore[reportUnknownMemberType]
     sub_menu.addAction(action)  # pyright: ignore[reportUnknownMemberType]
 
 def build_main_menu() -> None:
@@ -103,8 +104,9 @@ def _add_csharp_main_menu(menu: QMenu) -> None:
         return text if ok and text else ""
 
     try:
-        menu_builder = JapaneseMainMenu(get_user_text_input())
-        specs = menu_builder.BuildMenuSpec()
+        menu_builder = JapaneseMainMenu()
+        clipboard_getter = Func[str](get_user_text_input)  # pyright: ignore [reportCallIssue]
+        specs = menu_builder.BuildMenuSpec(clipboard_getter)
 
         csharp_menu = non_optional(menu.addMenu(shortcutfinger.down3("🎯 C# Japanese Menu")))
         qt_menu_adapter.add_to_qt_menu(csharp_menu, specs)

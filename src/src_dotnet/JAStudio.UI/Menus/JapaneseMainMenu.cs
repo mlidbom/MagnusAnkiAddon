@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using JAStudio.Core.Batches;
 using JAStudio.UI.Anki;
@@ -13,10 +14,10 @@ namespace JAStudio.UI.Menus;
 /// </summary>
 public class JapaneseMainMenu
 {
-   public List<SpecMenuItem> BuildMenuSpec(string clipboardContent = "") =>
+   public List<SpecMenuItem> BuildMenuSpec(Func<string> getClipboardContent) =>
    [
       BuildConfigMenuSpec(),
-      BuildLookupMenuSpec(clipboardContent),
+      BuildLookupMenuSpec(getClipboardContent),
       BuildLocalActionsMenuSpec()
    ];
 
@@ -30,15 +31,15 @@ public class JapaneseMainMenu
          }
       );
 
-   SpecMenuItem BuildLookupMenuSpec(string clipboardContent)
+   SpecMenuItem BuildLookupMenuSpec(Func<string> getClipboardContent)
    {
       return SpecMenuItem.Submenu(
          ShortcutFinger.Home2("Lookup"),
          new List<SpecMenuItem>
          {
             SpecMenuItem.Command(ShortcutFinger.Home1("Open note (Ctrl+O)"), OnOpenNote),
-            OpenInAnkiMenus.BuildOpenInAnkiMenuSpec(() => clipboardContent),
-            WebSearchMenus.BuildWebSearchMenuSpec(() => clipboardContent)
+            OpenInAnkiMenus.BuildOpenInAnkiMenuSpec(getClipboardContent),
+            WebSearchMenus.BuildWebSearchMenuSpec(getClipboardContent)
          }
       );
    }

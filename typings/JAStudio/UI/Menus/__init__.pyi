@@ -1,9 +1,9 @@
 import typing, abc
 from JAStudio.UI.Menus.UIAgnosticMenuStructure import SpecMenuItem
 from System.Collections.Generic import List_1
-from Avalonia.Controls import MenuItem
-from JAStudio.Core.Note import KanjiNote, SentenceNote, VocabNote
 from System import Func_1
+from JAStudio.Core.Note import KanjiNote, SentenceNote, VocabNote
+from Avalonia.Controls import MenuItem
 
 class BrowserMenus(abc.ABC):
     @staticmethod
@@ -11,9 +11,8 @@ class BrowserMenus(abc.ABC):
 
 
 class JapaneseMainMenu:
-    def __init__(self, searchText: str = ...) -> None: ...
-    def BuildMenu(self) -> List_1[MenuItem]: ...
-    def BuildMenuSpec(self) -> List_1[SpecMenuItem]: ...
+    def __init__(self) -> None: ...
+    def BuildMenuSpec(self, getClipboardContent: Func_1[str]) -> List_1[SpecMenuItem]: ...
 
 
 class KanjiNoteMenus(abc.ABC):
