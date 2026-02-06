@@ -19,6 +19,11 @@ public class ConfigurationStore
       _readingsMappingsOverride = new Dictionary<string, string>();
    }
 
+   public static void SetReadingsMappingsForTesting(string mappings)
+   {
+      _readingsMappingsOverride = ParseMappingsFromString(mappings);
+   }
+
    public static void InitJson(string json, Action<string> updateCallback)
    {
       if(_configDict != null)
@@ -30,20 +35,7 @@ public class ConfigurationStore
       _updateCallback = updateCallback;
    }
 
-   internal static Dictionary<string, object> GetConfigDict()
-   {
-      if(TestEnvDetector.IsTesting)
-      {
-         return new Dictionary<string, object>();
-      }
-
-      if(_configDict == null)
-      {
-         throw new InvalidOperationException("Configuration dict not initialized");
-      }
-
-      return _configDict;
-   }
+   internal static Dictionary<string, object> GetConfigDict() => _configDict ?? throw new InvalidOperationException("Configuration dict not initialized");
 
    internal static void WriteConfigDict()
    {
@@ -68,11 +60,6 @@ public class ConfigurationStore
    public static Dictionary<string, string> GetReadingsMappings()
    {
       return _readingsMappingsOverride ?? ReadReadingsMappingsFromFile();
-   }
-
-   public static void SetReadingsMappingsForTesting(string mappings)
-   {
-      _readingsMappingsOverride = ParseMappingsFromString(mappings);
    }
 
    public static void SaveMappings(string mappings)

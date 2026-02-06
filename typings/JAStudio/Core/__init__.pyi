@@ -1,7 +1,7 @@
 import abc
 from System import IDisposable, Action, Action_1
 from JAStudio.Core.Note.Collection import JPCollection
-from JAStudio.Core.Configuration import JapaneseConfig, ConfigurationStore
+from JAStudio.Core.Configuration import JapaneseConfig, ConfigurationStore, Settings
 from JAStudio.Core.Note import IBackendNoteCreator, KanjiNoteMnemonicMaker
 from System.Collections.Generic import List_1
 from Compze.Utilities.DependencyInjection.Abstractions import IServiceLocator
@@ -91,6 +91,8 @@ class TemporaryServiceCollection(IDisposable):
     def SentenceKanjiListViewModel(self) -> SentenceKanjiListViewModel: ...
     @property
     def SentenceRenderer(self) -> SentenceRenderer: ...
+    @property
+    def Settings(self) -> Settings: ...
     @property
     def TaskRunner(self) -> TaskRunner: ...
     @property

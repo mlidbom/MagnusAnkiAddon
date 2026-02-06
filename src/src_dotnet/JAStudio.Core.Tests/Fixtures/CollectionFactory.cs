@@ -6,55 +6,60 @@ using JAStudio.Core.TestUtils;
 
 namespace JAStudio.Core.Tests.Fixtures;
 
+public enum DataNeeded
+{
+   Kanji = 2,
+   Vocabulary = 4,
+   Sentences = 8,
+   All = Kanji | Vocabulary | Sentences
+}
+
 public static class CollectionFactory
 {
-    public static IDisposable InjectEmptyCollection()
-    {
-        TestApp.Reset();
-        return new CollectionScope();
-    }
+   public static IDisposable InjectEmptyCollection()
+   {
+      TestApp.Reset();
+      return new CollectionScope();
+   }
 
-    public static IDisposable InjectCollectionWithSelectData(bool kanji = false, bool specialVocab = false, bool sentences = false)
-    {
-        TestApp.Reset();
-        
-        if (kanji)
-        {
-            foreach (var kanjiSpec in KanjiSpec.TestKanjiList)
-            {
-                KanjiNote.Create(kanjiSpec.Question, kanjiSpec.Answer, kanjiSpec.OnReadings, kanjiSpec.KunReading);
-            }
-        }
+   public static IDisposable InjectCollectionWithSelectData(DataNeeded data)
+   {
+      TestApp.Reset();
 
-        if (specialVocab)
-        {
-            foreach (var vocab in VocabLists.TestSpecialVocab)
-            {
-                vocab.CreateVocabNote();
-            }
-        }
+      if(data.HasFlag(DataNeeded.Kanji))
+      {
+         foreach(var kanjiSpec in KanjiSpec.TestKanjiList)
+         {
+            KanjiNote.Create(kanjiSpec.Question, kanjiSpec.Answer, kanjiSpec.OnReadings, kanjiSpec.KunReading);
+         }
+      }
 
-        if (sentences)
-        {
-            foreach (var sentence in SentenceSpec.TestSentenceList)
-            {
-                SentenceNote.CreateTestNote(sentence.Question, sentence.Answer);
-            }
-        }
+      if(data.HasFlag(DataNeeded.Vocabulary))
+      {
+         foreach(var vocab in VocabLists.TestSpecialVocab)
+         {
+            vocab.CreateVocabNote();
+         }
+      }
 
-        return new CollectionScope();
-    }
+      if(data.HasFlag(DataNeeded.Sentences))
+      {
+         foreach(var sentence in SentenceSpec.TestSentenceList)
+         {
+            SentenceNote.CreateTestNote(sentence.Question, sentence.Answer);
+         }
+      }
 
-    public static IDisposable InjectCollectionWithAllSampleData()
-    {
-        return InjectCollectionWithSelectData(kanji: true, specialVocab: true, sentences: true);
-    }
+      return new CollectionScope();
+   }
 
-    private class CollectionScope : IDisposable
-    {
-        public void Dispose()
-        {
-            // No cleanup needed - next test will call Reset()
-        }
-    }
+   public static IDisposable InjectCollectionWithAllSampleData() => InjectCollectionWithSelectData(DataNeeded.All);
+
+   private class CollectionScope : IDisposable
+   {
+      public void Dispose()
+      {
+         // No cleanup needed - next test will call Reset()
+      }
+   }
 }

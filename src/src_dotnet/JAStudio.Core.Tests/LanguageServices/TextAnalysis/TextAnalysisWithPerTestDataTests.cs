@@ -12,18 +12,18 @@ namespace JAStudio.Core.Tests.LanguageServices.TextAnalysis;
 /// Note: This test uses per-test fixture scope (function scope in Python).
 /// Each test creates and disposes its own collection.
 /// </summary>
-public class TextAnalysisWithPerTestDataTests
+public class TextAnalysisWithPerTestDataTests : CollectionUsingTest
 {
-    [Theory]
-    [InlineData("金<wbr>貸せって", "金", "貸す", "え", "って")]
-    public void InvisibleSpaceBreakup(string sentence, params string[] expectedOutput)
-    {
-        using var collectionScope = CollectionFactory.InjectCollectionWithSelectData(specialVocab: true);
-        
-        var sentenceNote = SentenceNote.CreateTestNote(sentence, "");
-        var rootWords = sentenceNote.ParsingResult.Get().ParsedWords
-            .Select(w => w.ParsedForm)
-            .ToList();
-        Assert.Equal(expectedOutput.ToList(), rootWords);
-    }
+   public TextAnalysisWithPerTestDataTests() : base(DataNeeded.Vocabulary) {}
+
+   [Theory]
+   [InlineData("金<wbr>貸せって", "金", "貸す", "え", "って")]
+   public void InvisibleSpaceBreakup(string sentence, params string[] expectedOutput)
+   {
+      var sentenceNote = SentenceNote.CreateTestNote(sentence, "");
+      var rootWords = sentenceNote.ParsingResult.Get().ParsedWords
+                                  .Select(w => w.ParsedForm)
+                                  .ToList();
+      Assert.Equal(expectedOutput.ToList(), rootWords);
+   }
 }
