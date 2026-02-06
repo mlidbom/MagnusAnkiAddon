@@ -47,8 +47,6 @@ def build_main_menu() -> None:
     build_local_menu(non_optional(my_menu.addMenu(shortcutfinger.home3("Local Actions"))))
     build_debug_menu(non_optional(my_menu.addMenu(shortcutfinger.home4("Debug"))))
 
-    my_menu.addAction(shortcutfinger.down2("About JA Studio"), avalonia_host.show_about_dialog)  # pyright: ignore[reportUnknownMemberType]
-
     # Add C# menu specs rendered as native PyQt submenu
     _add_csharp_main_menu(my_menu)
 

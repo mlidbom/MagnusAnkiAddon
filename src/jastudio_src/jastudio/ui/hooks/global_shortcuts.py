@@ -10,7 +10,6 @@ from PyQt6.QtGui import QKeySequence, QShortcut
 from PyQt6.QtWidgets import QWidget
 
 from jastudio.ankiutils import app
-from jastudio.ui import avalonia_host
 from jastudio.ui.english_dict.find_english_words_dialog import EnglishWordSearchDialog
 from jastudio.ui.hooks import history_navigator
 from jastudio.ui.open_note.open_note_dialog import NoteSearchDialog
@@ -23,7 +22,7 @@ def init() -> None:
     shortcuts: dict[str, Callable[[], None]] = {
         "Alt+Left": history_navigator.navigator.navigate_back,
         "Alt+Right": history_navigator.navigator.navigate_forward,
-        "Ctrl+o": avalonia_host.toggle_note_search_dialog,
+        "Ctrl+o": NoteSearchDialog.toggle_dialog_visibility,
         "Ctrl+Shift+o": EnglishWordSearchDialog.toggle_dialog_visibility,
         "F5": lambda: app.get_ui_utils().refresh()
     }
