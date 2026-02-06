@@ -220,8 +220,51 @@ public class NoteContextMenu
 
     private SpecMenuItem BuildMatchingNotesSubmenuSpec(string text)
     {
-        // TODO: Port from build_matching_note_menu
-        return SpecMenuItem.Submenu(ShortcutFinger.Home4("Exactly matching notes (TODO)"), new List<SpecMenuItem>());
+        // Find notes that exactly match the search text
+        var vocabs = Core.App.Col().Vocab.WithQuestionPreferDisambiguationName(text).ToList();
+        var sentences = Core.App.Col().Sentences.WithQuestion(text);
+        var kanjis = text.Length == 1 
+            ? Core.App.Col().Kanji.WithAnyKanjiIn(new List<string> { text })
+            : new List<KanjiNote>();
+
+        // Only show submenu if any notes match
+        if (!vocabs.Any() && !sentences.Any() && !kanjis.Any())
+        {
+            return SpecMenuItem.Submenu(ShortcutFinger.Home4("Exactly matching notes"), new List<SpecMenuItem>());
+        }
+
+        var items = new List<SpecMenuItem>
+        {
+            BuildUniversalNoteActionsMenuSpec(ShortcutFinger.Home1("Vocab Actions"), vocabs.FirstOrDefault()),
+            BuildUniversalNoteActionsMenuSpec(ShortcutFinger.Home2("Sentence Actions"), sentences.FirstOrDefault()),
+            BuildUniversalNoteActionsMenuSpec(ShortcutFinger.Home3("Kanji Actions"), kanjis.FirstOrDefault())
+        };
+
+        return SpecMenuItem.Submenu(ShortcutFinger.Home4("Exactly matching notes"), items);
+    }
+
+    private SpecMenuItem BuildUniversalNoteActionsMenuSpec(string label, JPNote? note)
+    {
+        if (note == null)
+        {
+            return SpecMenuItem.Submenu(label, new List<SpecMenuItem>());
+        }
+
+        var hasSuspendedCards = note.HasSuspendedCards();
+        var hasActiveCards = note.HasActiveCards();
+
+        return SpecMenuItem.Submenu(
+            label,
+            new List<SpecMenuItem>
+            {
+                SpecMenuItem.Command(ShortcutFinger.Home1("Open in previewer"), 
+                    () => OnOpenInPreviewer(note)),
+                SpecMenuItem.Command(ShortcutFinger.Home3("Unsuspend all cards"), 
+                    () => note.UnsuspendAllCards(), null, null, hasSuspendedCards),
+                SpecMenuItem.Command(ShortcutFinger.Home4("Suspend all cards"), 
+                    () => note.SuspendAllCards(), null, null, hasActiveCards)
+            }
+        );
     }
 
     private SpecMenuItem BuildCreateNoteSubmenuSpec(string text)

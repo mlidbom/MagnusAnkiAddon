@@ -238,11 +238,11 @@ When porting menus/dialogs:
 
 ## Summary Statistics
 - **Total menu items tracked**: ~200+ items
-- **COMPLETE**: ~167 items (QueryBuilder, OpenInAnkiMenus, WebSearch, Options/Readings dialogs, all Local Actions, **All 3 note type actions complete**, **All 3 note type string menus 100% complete**, **Universal actions complete**, **Create note actions complete**, **Reparse action complete**, **Open Note dialog complete**)
-- **SCAFFOLDED**: ~20 items (menu structure exists, some actions still TODO)
+- **COMPLETE**: ~170 items (QueryBuilder, OpenInAnkiMenus, WebSearch, Options/Readings dialogs, all Local Actions, **All 3 note type actions complete**, **All 3 note type string menus 100% complete**, **Universal actions complete**, **Create note actions complete**, **Reparse action complete**, **Open Note dialog complete**, **Matching notes submenu complete**)
+- **SCAFFOLDED**: ~17 items (menu structure exists, some actions still TODO)
 - **EXCLUDED**: ~7 items (Debug menu - Python runtime diagnostics not relevant to .NET)
-- **MISSING**: ~6 items (remaining scaffolded items, browser menu)
-- **Porting completion**: ~84% complete, ~10% scaffolded, ~4% excluded, ~2% not started
+- **MISSING**: ~6 items (browser menu, misc scaffolded items)
+- **Porting completion**: ~85% complete, ~8% scaffolded, ~4% excluded, ~3% not started
 
 ### Phase 1 Complete ✅
 - QueryBuilder (21 methods) - ✅ COMPLETE

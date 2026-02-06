@@ -203,10 +203,10 @@ Main menus work, note-specific actions remain to be ported.
 |----------|--------|--------------|-------------|------------|
 | Dialogs | **5/5 complete** | **849** | **849** | **100% ✅** |
 | Widgets | **3/3 complete** | **290** | **290** | **100% ✅** |
-| Menus | **Nearly done** | ~630 | 789 | **80%** |
-| **Total** | **Excellent progress** | **~1,769** | **1,928** | **~92%** |
+| Menus | **Nearly done** | ~650 | 789 | **82%** |
+| **Total** | **Excellent progress** | **~1,789** | **1,928** | **~93%** |
 
-**Key Achievement:** All dialogs and widgets complete! All note-type menus complete! Main menu complete!
+**Key Achievement:** All dialogs and widgets complete! All note-type menus complete! Main menu complete! Context menu nearly done!
 
 ---
 
