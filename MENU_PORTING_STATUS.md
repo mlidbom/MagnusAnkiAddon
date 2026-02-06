@@ -60,14 +60,16 @@ When porting menus/dialogs:
 ### Python Source (What to Port From)
 - **Main "Japanese" menu**: `src/jastudio_src/jastudio/ui/tools_menu.py`
 - **Right-click context menu**: `src/jastudio_src/jastudio/ui/menus/common.py`
-- **Kanji note menus**: `src/jastudio_src/jastudio/ui/menus/notes/kanji/main.py` and `string_menu.py`
-- **Vocab note menus**: `src/jastudio_src/jastudio/ui/menus/notes/vocab/main.py` and `string_menu.py`
-- **Sentence note menus**: `src/jastudio_src/jastudio/ui/menus/notes/sentence/main.py` and `string_menu.py`
+- **Kanji note menus**: ~~`src/jastudio_src/jastudio/ui/menus/notes/kanji/main.py`~~ ✅ and ~~`string_menu.py`~~ ✅
+- **Vocab note menus**: ~~`src/jastudio_src/jastudio/ui/menus/notes/vocab/main.py`~~ ✅ and ~~`string_menu.py`~~ ✅
+- **Sentence note menus**: ~~`src/jastudio_src/jastudio/ui/menus/notes/sentence/main.py`~~ ✅ and ~~`string_menu.py`~~ ✅
 - **Shared lookup menus**: ~~`src/jastudio_src/jastudio/ui/menus/open_in_anki.py`~~ ✅ PORTED and ~~`web_search.py`~~ ✅ PORTED
 
 ### C# Target (Where to Port To)
 - **Main menu class**: `src/src_dotnet/JAStudio.UI/Menus/JapaneseMainMenu.cs`
 - **Context menu class**: `src/src_dotnet/JAStudio.UI/Menus/NoteContextMenu.cs`
+- **Note-specific menus**: `JAStudio.UI/Menus/Notes/Kanji/` ✅, `Vocab/` ✅, `Sentence/` ✅
+- **String menus**: `KanjiStringMenus.cs` ✅, `VocabStringMenus.cs` ✅, `SentenceStringMenus.cs` ✅
 - **Shared lookup menus**: `src/src_dotnet/JAStudio.UI/Menus/OpenInAnkiMenus.cs` ✅ and `WebSearchMenus.cs` ✅
 - **Query builder**: `src/src_dotnet/JAStudio.Core/AnkiUtils/QueryBuilder.cs` ✅
 - **Menu host infrastructure**: `src/src_dotnet/JAStudio.UI/PopupMenuHost.cs`
@@ -226,19 +228,19 @@ When porting menus/dialogs:
 - ✅ COMPLETE View (Dynamic config toggles + Toggle all auto yield flags)
 
 ### Sentence String Menu Actions (notes/sentence/string_menu.py)
-- NOT STARTED Add (Highlighted Vocab, Hidden matches, Incorrect matches - conditional/dynamic)
-- NOT STARTED Remove (Highlighted vocab, Hidden matches, Incorrect matches - conditional/dynamic)
-- NOT STARTED Split with word-break tag (conditional)
+- ✅ COMPLETE Add (Highlighted Vocab, Hidden matches, Incorrect matches - conditional/dynamic)
+- ✅ COMPLETE Remove (Highlighted vocab, Hidden matches, Incorrect matches - conditional/dynamic)
+- ✅ COMPLETE Split with word-break tag (conditional)
 
 ---
 
 ## Summary Statistics
 - **Total menu items tracked**: ~200+ items
-- **COMPLETE**: ~145 items (QueryBuilder, OpenInAnkiMenus, WebSearch, Options/Readings dialogs, all Local Actions, **All 3 note type actions complete**, **Universal actions complete**, **Create note actions complete**, **Reparse action complete**, **Vocab string menu complete**, **Kanji string menu complete**)
+- **COMPLETE**: ~152 items (QueryBuilder, OpenInAnkiMenus, WebSearch, Options/Readings dialogs, all Local Actions, **All 3 note type actions complete**, **Universal actions complete**, **Create note actions complete**, **Reparse action complete**, **Vocab string menu complete**, **Kanji string menu complete**, **Sentence string menu complete**)
 - **SCAFFOLDED**: ~20 items (menu structure exists, some actions still TODO)
 - **EXCLUDED**: ~7 items (Debug menu - Python runtime diagnostics not relevant to .NET)
-- **MISSING**: ~28+ items (Sentence string menu not yet ported, vocab create combined)
-- **Porting completion**: ~72% complete, ~10% scaffolded, ~4% excluded, ~14% not started
+- **MISSING**: ~21 items (vocab create combined submenu)
+- **Porting completion**: ~76% complete, ~10% scaffolded, ~4% excluded, ~10% not started
 
 ### Phase 1 Complete ✅
 - QueryBuilder (21 methods) - ✅ COMPLETE
@@ -300,20 +302,24 @@ When porting menus/dialogs:
   - All operations properly enabled/disabled based on current state
   - Uses VocabNote.RelatedNotes, VocabNote.Forms, SentenceConfiguration
   - **Proper architecture: relationships managed by domain objects!**
+- ✅ **Sentence String Menu COMPLETE** (7 items - SentenceStringMenus.cs)
+  - Add submenu: 3 actions (highlighted vocab, hidden matches, incorrect matches)
+  - Remove submenu: 3 actions (highlighted vocab, hidden matches, incorrect matches)
+  - Split with word-break tag (1 action, conditional)
+  - Dynamic match detection based on text analysis
+  - Nested local functions mirror Python structure for readability
+  - **Uses CreateAnalysis() and WordExclusion directly from JAStudio.Core!**
 - TODO Vocab create combined submenu (prefix/postfix operations)
-- TODO Kanji string menu (~20 items)
-- TODO Sentence string menu (~25 items)
 - TODO Open Note dialog (currently Python dialog, needs Avalonia port)
 
 ### Excluded from Porting ❌
 - **Debug Menu** (7 items) - Python runtime memory diagnostics used to manage Python's poor performance with >100MB memory. Not relevant to .NET which handles memory efficiently. These remain in the Python menu and may be removed entirely after full .NET migration.
 
-### Phase 3 Not Started
-- Sentence string menus (add/remove relationships, highlights, parse operations)
-- Kanji string menus (add/remove relationships, highlighted vocab, primary readings)
-- Vocab string menus (add/remove relationships, sentence highlighting)
-- Conditional menu items based on note state (some done, more needed for string menus)
-- Dynamic menu generation based on data (some done, more needed for string menus)
+### Phase 3 - String Menus (90% COMPLETE)
+- ✅ Kanji string menu (7 items all complete)
+- ✅ Vocab string menu (20 items all complete)
+- ✅ Sentence string menu (7 items all complete)
+- TODO Vocab create combined submenu only (prefix/postfix operations - ~14 items)
 
 ### Infrastructure Complete ✅
 The C# infrastructure is in place:

@@ -191,8 +191,12 @@ public class NoteContextMenu
             return KanjiStringMenus.BuildStringMenuSpec(text, kanji);
         }
         
-        // TODO: Implement sentence string menu
-        return SpecMenuItem.Submenu(ShortcutFinger.Home1("Current note actions (TODO)"), new List<SpecMenuItem>());
+        if (noteType == "sentence" && note is SentenceNote sentence)
+        {
+            return SentenceStringMenus.BuildStringMenuSpec(sentence, text);
+        }
+        
+        return SpecMenuItem.Submenu(ShortcutFinger.Home1("Current note actions"), new List<SpecMenuItem>());
     }
 
     private SpecMenuItem BuildUniversalNoteActionsMenuSpec(JPNote note)

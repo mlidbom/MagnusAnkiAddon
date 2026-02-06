@@ -248,9 +248,4 @@ Main menus work, note-specific actions remain to be ported.
 - Context menu - Scaffolding ✅, Lookup submenus ✅
 - ~120 note-specific actions remain (Kanji, Vocab, Sentence menus)
 
-### Phase 5: Complete Avalonia Migration (Future)
-1. Replace PyQt adapter with Avalonia menu rendering
-2. Remove Python UI layer entirely
-3. Run JAStudio as standalone Avalonia app (no Anki dependency)
-
 
