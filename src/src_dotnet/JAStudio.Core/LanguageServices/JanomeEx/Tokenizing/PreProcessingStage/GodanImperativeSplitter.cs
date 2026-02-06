@@ -15,7 +15,7 @@ public static class GodanImperativeSplitter
         return null;
     }
 
-    private static bool IsGodanImperative(JNToken token)
+    static bool IsGodanImperative(JNToken token)
     {
         if (InflectionForms.ImperativeMeireikei.GodanForms.Contains(token.InflectedForm))
         {
@@ -32,7 +32,7 @@ public static class GodanImperativeSplitter
         return false;
     }
 
-    private static List<IAnalysisToken> SplitGodanImperative(JNToken token, string godanBase)
+    static List<IAnalysisToken> SplitGodanImperative(JNToken token, string godanBase)
     {
         if (Equals(token.InflectedForm, InflectionForms.ImperativeMeireikei.Yo))
         {

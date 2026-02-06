@@ -7,11 +7,11 @@ namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabCloner
 {
-    private readonly VocabNote _note;
+   readonly VocabNote _note;
 
     public VocabCloner(VocabNote note) => _note = note;
 
-    private VocabNote Note => _note;
+    VocabNote Note => _note;
 
     public VocabNote PrefixToDictionaryForm(string prefix, string speechType = POS.Expression) => CreatePostfixPrefixVersion(prefix, speechType, isPrefix: true);
 
@@ -21,14 +21,14 @@ public class VocabCloner
 
     public VocabNote CreateSuffixVersion(string suffix, string speechType = POS.Expression, bool setCompounds = true, int truncateCharacters = 0) => CreatePostfixPrefixVersion(suffix, speechType, setCompounds: setCompounds, chopOffCharacters: truncateCharacters);
 
-    private VocabNote CreatePostfixPrefixVersion(string addendum, string speechType, bool isPrefix = false, bool setCompounds = true, int chopOffCharacters = 0)
+    VocabNote CreatePostfixPrefixVersion(string addendum, string speechType, bool isPrefix = false, bool setCompounds = true, int chopOffCharacters = 0)
     {
         string AppendPrependAddendum(string baseStr)
         {
             if (!isPrefix)
             {
-                return chopOffCharacters == 0 
-                    ? baseStr + addendum 
+                return chopOffCharacters == 0
+                    ? baseStr + addendum
                     : baseStr.Substring(0, baseStr.Length - chopOffCharacters) + addendum;
             }
             return addendum + baseStr.Substring(chopOffCharacters);
@@ -37,7 +37,7 @@ public class VocabCloner
         var vocabNote = Note;
         var newQuestion = AppendPrependAddendum(Note.GetQuestion());
         var newReadings = vocabNote.GetReadings().Select(AppendPrependAddendum).ToList();
-        
+
         var newVocab = CreateNewVocabWithSomeDataCopied(newQuestion, Note.GetAnswer(), newReadings);
 
         if (setCompounds)
@@ -50,11 +50,11 @@ public class VocabCloner
 
         newVocab.PartsOfSpeech.SetRawStringValue(speechType);
         newVocab.Forms.SetList(Note.Forms.AllSet().Select(AppendPrependAddendum).ToList());
-        
+
         return newVocab;
     }
 
-    private VocabNote CreateNewVocabWithSomeDataCopied(string question, string answer, List<string> readings, bool copyVocabTags = true, bool copyMatchingRules = true)
+    VocabNote CreateNewVocabWithSomeDataCopied(string question, string answer, List<string> readings, bool copyVocabTags = true, bool copyMatchingRules = true)
     {
         var clone = VocabNoteFactory.CreateFromUserData(question, answer, readings);
         if (copyVocabTags)
@@ -68,7 +68,7 @@ public class VocabCloner
         return clone;
     }
 
-    private void CopyVocabTagsTo(VocabNote target)
+    void CopyVocabTagsTo(VocabNote target)
     {
         foreach (var tag in Note.Tags.Where(t => t.Name.StartsWith(Tags.Vocab.Root)))
         {
@@ -161,7 +161,7 @@ public class VocabCloner
         return clone;
     }
 
-    private string CreatePreviewForm(string formSuffix, Func<VocabNote, string, string> createFormRoot) => createFormRoot(Note, Note.GetQuestion()) + formSuffix;
+    string CreatePreviewForm(string formSuffix, Func<VocabNote, string, string> createFormRoot) => createFormRoot(Note, Note.GetQuestion()) + formSuffix;
 
     public VocabNote SuffixToAStem(string formSuffix) => CloneToDerivedForm(formSuffix, Conjugator.GetAStemVocab);
     public string SuffixToAStemPreview(string formSuffix) => CreatePreviewForm(formSuffix, Conjugator.GetAStemVocab);
@@ -209,7 +209,7 @@ public class VocabCloner
 
     public VocabNote CreateImperative()
     {
-        string CreateImperativeForm(string form) => 
+        string CreateImperativeForm(string form) =>
             Conjugator.GetImperative(form, Note.PartsOfSpeech.IsIchidan(), Note.PartsOfSpeech.IsGodan());
 
         var clone = CreateNewVocabWithSomeDataCopied(CreateImperativeForm(Note.GetQuestion()), Note.GetAnswer(), []);

@@ -11,7 +11,7 @@ namespace JAStudio.Core.Tests.Note.Vocabulary;
 /// </summary>
 public class PerfectSynonymsTests : IDisposable
 {
-    private readonly IDisposable _collectionScope;
+   readonly IDisposable _collectionScope;
 
     public PerfectSynonymsTests() => _collectionScope = CollectionFactory.InjectEmptyCollection();
 

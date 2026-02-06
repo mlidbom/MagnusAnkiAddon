@@ -31,9 +31,9 @@ public class InflectionForm
 
 public static class InflectionForms
 {
-    private static readonly Dictionary<string, InflectionForm> AllDict = new();
+   static readonly Dictionary<string, InflectionForm> AllDict = new();
 
-    private static InflectionForm AddForm(string name, string description)
+   static InflectionForm AddForm(string name, string description)
     {
         List<InflectionForm> unused =
         [

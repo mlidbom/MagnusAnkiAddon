@@ -32,7 +32,7 @@ public static class DictionaryFormVerbSplitter
         return null;
     }
 
-    private static List<IAnalysisToken> SplitIchidanDictionaryForm(JNToken token)
+    static List<IAnalysisToken> SplitIchidanDictionaryForm(JNToken token)
     {
         var ichidanSurface = token.Surface[..^1];
         return
@@ -42,7 +42,7 @@ public static class DictionaryFormVerbSplitter
         ];
     }
 
-    private static List<IAnalysisToken> SplitGodanDictionaryForm(JNToken token)
+    static List<IAnalysisToken> SplitGodanDictionaryForm(JNToken token)
     {
         var godanSurface = token.Surface[..^1];
         var godanDictionaryEnding = token.Surface[^1..];
@@ -53,7 +53,7 @@ public static class DictionaryFormVerbSplitter
         ];
     }
 
-    private static List<IAnalysisToken> SplitKuruVerb(JNToken token)
+    static List<IAnalysisToken> SplitKuruVerb(JNToken token)
     {
         var surface = token.Surface[..^1];
         return
@@ -63,7 +63,7 @@ public static class DictionaryFormVerbSplitter
         ];
     }
 
-    private static List<IAnalysisToken> SplitSuruVerb(JNToken token)
+    static List<IAnalysisToken> SplitSuruVerb(JNToken token)
     {
         var surface = token.Surface[..^1];
         return

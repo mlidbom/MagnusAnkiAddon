@@ -1,3 +1,4 @@
+using JAStudio.Core.Note;
 using JAStudio.Core.Note.NoteFields;
 
 namespace JAStudio.Core.Note.Sentences;
@@ -11,7 +12,7 @@ public class SentenceUserFields
         _sentence = sentence;
     }
 
-    public MutableStringField Comments => new(_sentence, NoteFieldsConstants.Sentence.UserComments);
-    public MutableStringField Answer => new(_sentence, NoteFieldsConstants.Sentence.UserAnswer);
-    public MutableStringField Question => new(_sentence, NoteFieldsConstants.Sentence.UserQuestion);
+    public MutableStringField Comments => new(_sentence, SentenceNoteFields.UserComments);
+    public MutableStringField Answer => new(_sentence, SentenceNoteFields.UserAnswer);
+    public MutableStringField Question => new(_sentence, SentenceNoteFields.UserQuestion);
 }

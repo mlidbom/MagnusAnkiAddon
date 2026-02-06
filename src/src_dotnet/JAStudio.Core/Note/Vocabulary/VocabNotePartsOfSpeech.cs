@@ -8,8 +8,8 @@ namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNotePartsOfSpeech
 {
-    private const string FieldName = "parts_of_speech"; // NoteFields.Vocab.parts_of_speech
-    private readonly VocabNote _vocab;
+   const string FieldName = "parts_of_speech"; // NoteFields.Vocab.parts_of_speech
+   readonly VocabNote _vocab;
 
     public VocabNotePartsOfSpeech(VocabNote vocab)
     {
@@ -18,7 +18,7 @@ public class VocabNotePartsOfSpeech
         SetRawStringValue(RawStringValue());
     }
 
-    private VocabNote Vocab => _vocab;
+    VocabNote Vocab => _vocab;
 
     public string RawStringValue() => Vocab.GetField(FieldName);
 
@@ -46,14 +46,14 @@ public class VocabNotePartsOfSpeech
         return question.Length > 2 && question.EndsWith("する");
     }
 
-    private static readonly HashSet<string> GaSuruNiSuruEndings = ["がする", "にする", "くする"];
-    
+    static readonly HashSet<string> GaSuruNiSuruEndings = ["がする", "にする", "くする"];
+
     public bool IsNiSuruGaSuruKuSuruCompound()
     {
         var question = Vocab.Question.WithoutNoiseCharacters;
         if (question.Length <= 3)
             return false;
-        
+
         var ending = question.Substring(question.Length - 3);
         return GaSuruNiSuruEndings.Contains(ending);
     }

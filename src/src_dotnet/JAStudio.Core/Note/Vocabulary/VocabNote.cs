@@ -32,7 +32,7 @@ public class VocabNote : JPNote
     public VocabNote(JPNoteData? data = null) : base(data)
     {
         Question = new VocabNoteQuestion(this);
-        Readings = new MutableCommaSeparatedStringsListField(this, NoteFieldsConstants.Vocab.ReadingKana);
+        Readings = new MutableCommaSeparatedStringsListField(this, NoteFieldsConstants.Vocab.Reading);
         User = new VocabNoteUserFields(this);
         Forms = new VocabNoteForms(this);
         Kanji = new VocabNoteKanji(this);

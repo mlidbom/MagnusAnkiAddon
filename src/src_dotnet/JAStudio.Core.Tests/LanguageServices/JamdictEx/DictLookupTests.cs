@@ -12,7 +12,7 @@ namespace JAStudio.Core.Tests.LanguageServices.JamdictEx;
 /// </summary>
 public class DictLookupTests : IDisposable
 {
-    private readonly IDisposable _collectionScope;
+   readonly IDisposable _collectionScope;
 
     public DictLookupTests() => _collectionScope = CollectionFactory.InjectEmptyCollection();
 
@@ -130,7 +130,7 @@ public class DictLookupTests : IDisposable
         Assert.Equal(expectedPosSet, dictEntry.PartsOfSpeech());
     }
 
-    private static DictLookupResult GetDictEntry(string word, string[] readings)
+    static DictLookupResult GetDictEntry(string word, string[] readings)
     {
         var vocab = VocabNoteFactory.Create(word, "", [..readings]);
         return DictLookup.LookupVocabWordOrName(vocab);

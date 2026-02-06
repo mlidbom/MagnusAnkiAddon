@@ -8,7 +8,7 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing.PreProcessingStage;
 
 public static class IchidanGodanPotentialOrImperativeHybridSplitter
 {
-    private static readonly HashSet<string> PotentialOrImperativeGodanLastCompoundParts = ["える", "え"];
+   static readonly HashSet<string> PotentialOrImperativeGodanLastCompoundParts = ["える", "え"];
 
     public static List<IAnalysisToken>? TrySplit(JNToken token, VocabCollection vocabs)
     {
@@ -35,7 +35,7 @@ public static class IchidanGodanPotentialOrImperativeHybridSplitter
         return null;
     }
 
-    private static List<IAnalysisToken> SplitGodanImperative(JNToken token, string godanBase)
+    static List<IAnalysisToken> SplitGodanImperative(JNToken token, string godanBase)
     {
         if (Equals(token.InflectedForm, InflectionForms.ImperativeMeireikei.Yo))
         {
@@ -62,7 +62,7 @@ public static class IchidanGodanPotentialOrImperativeHybridSplitter
         }
     }
 
-    private static List<IAnalysisToken> SplitGodanPotential(JNToken token, string godanBase)
+    static List<IAnalysisToken> SplitGodanPotential(JNToken token, string godanBase)
     {
         var isDictionaryForm = token.Surface.EndsWith("る");
 
@@ -88,7 +88,7 @@ public static class IchidanGodanPotentialOrImperativeHybridSplitter
         ];
     }
 
-    private static string? TryFindVocabBasedPotentialOrImperativeGodanCompound(JNToken token, VocabCollection vocabs)
+    static string? TryFindVocabBasedPotentialOrImperativeGodanCompound(JNToken token, VocabCollection vocabs)
     {
         foreach (var vocab in vocabs.WithQuestion(token.BaseForm))
         {
@@ -104,7 +104,7 @@ public static class IchidanGodanPotentialOrImperativeHybridSplitter
         return null;
     }
 
-    private static bool IsPotentialGodan(JNToken token, string godanBase)
+    static bool IsPotentialGodan(JNToken token, string godanBase)
     {
         if (token.Surface.EndsWith("る") || (token.Next != null && token.Next.IsValidGodanPotentialFormInflection()))
         {
@@ -125,7 +125,7 @@ public static class IchidanGodanPotentialOrImperativeHybridSplitter
         return false;
     }
 
-    private static bool IsImperativeGodan(JNToken token, string godanBase)
+    static bool IsImperativeGodan(JNToken token, string godanBase)
     {
         if (!Conjugator.GodanImperativeVerbEndings.Contains(token.Surface[^1..]) &&
             !Equals(token.InflectedForm, InflectionForms.ImperativeMeireikei.Yo))
@@ -177,7 +177,7 @@ public static class IchidanGodanPotentialOrImperativeHybridSplitter
         return Conjugator.GodanPotentialVerbEndingToDictionaryFormEndings.ContainsKey(ending);
     }
 
-    private static string? TryFindGodanHiddenInIchidanUsingDictionary(JNToken token)
+    static string? TryFindGodanHiddenInIchidanUsingDictionary(JNToken token)
     {
         if (token.BaseForm.Length >= 2 &&
             BaseFormHasGodanPotentialEnding(token.BaseForm) &&

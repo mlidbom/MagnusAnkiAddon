@@ -8,9 +8,9 @@ namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 
 public class RelatedVocab
 {
-    private readonly VocabNote _vocab;
-    private readonly MutableSerializedObjectField<RelatedVocabData> _data;
-    private readonly Lazy<HashSet<int>> _inCompoundIds;
+   readonly VocabNote _vocab;
+   readonly MutableSerializedObjectField<RelatedVocabData> _data;
+   readonly Lazy<HashSet<int>> _inCompoundIds;
 
     public RelatedVocab(VocabNote vocab)
     {
@@ -62,7 +62,7 @@ public class RelatedVocab
             .ToHashSet();
     }
 
-    private HashSet<KanjiNote> MainFormKanjiNotes => App.Col().Kanji.WithAnyKanjiIn(_vocab.Kanji.ExtractMainFormKanji()).ToHashSet();
+    HashSet<KanjiNote> MainFormKanjiNotes => App.Col().Kanji.WithAnyKanjiIn(_vocab.Kanji.ExtractMainFormKanji()).ToHashSet();
 
     public HashSet<JPNote> GetDirectDependencies()
     {

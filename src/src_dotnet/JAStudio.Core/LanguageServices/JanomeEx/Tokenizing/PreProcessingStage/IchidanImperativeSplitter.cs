@@ -14,10 +14,10 @@ public static class IchidanImperativeSplitter
         return null;
     }
 
-    private static bool IsIchidanImperative(JNToken token) =>
+    static bool IsIchidanImperative(JNToken token) =>
         InflectionForms.ImperativeMeireikei.IchidanForms.Contains(token.InflectedForm);
 
-    private static List<IAnalysisToken> SplitIchidanImperative(JNToken token)
+    static List<IAnalysisToken> SplitIchidanImperative(JNToken token)
     {
         var ichidanSurface = token.Surface[..^1];
         var ichidanImperativePart = token.Surface[^1..];

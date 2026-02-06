@@ -26,7 +26,7 @@ public static class VocabStringMenus
           }
        );
 
-    private static SpecMenuItem BuildAddMenuSpec(string text, VocabNote vocab)
+    static SpecMenuItem BuildAddMenuSpec(string text, VocabNote vocab)
     {
         var synonyms = vocab.RelatedNotes.Synonyms.Strings();
         var antonyms = vocab.RelatedNotes.Antonyms.Strings();
@@ -56,7 +56,7 @@ public static class VocabStringMenus
         return SpecMenuItem.Submenu(ShortcutFinger.Home1("Add"), items);
     }
 
-    private static SpecMenuItem BuildSetMenuSpec(string text, VocabNote vocab)
+    static SpecMenuItem BuildSetMenuSpec(string text, VocabNote vocab)
     {
         var items = new List<SpecMenuItem>
         {
@@ -69,7 +69,7 @@ public static class VocabStringMenus
         return SpecMenuItem.Submenu(ShortcutFinger.Home2("Set"), items);
     }
 
-    private static SpecMenuItem BuildRemoveMenuSpec(string text, VocabNote vocab)
+    static SpecMenuItem BuildRemoveMenuSpec(string text, VocabNote vocab)
     {
         var synonyms = vocab.RelatedNotes.Synonyms.Strings();
         var antonyms = vocab.RelatedNotes.Antonyms.Strings();
@@ -103,7 +103,7 @@ public static class VocabStringMenus
         return SpecMenuItem.Submenu(ShortcutFinger.Home3("Remove"), items);
     }
 
-    private static SpecMenuItem BuildSentenceMenuSpec(string text, VocabNote vocab)
+    static SpecMenuItem BuildSentenceMenuSpec(string text, VocabNote vocab)
     {
         var sentences = Core.App.Col().Sentences.WithQuestion(text);
         var hasSentences = sentences.Count > 0;
@@ -133,7 +133,7 @@ public static class VocabStringMenus
         return SpecMenuItem.Submenu(ShortcutFinger.Home4("Sentence"), items);
     }
 
-    private static SpecMenuItem BuildCreateCombinedMenuSpec(string text, VocabNote vocab)
+    static SpecMenuItem BuildCreateCombinedMenuSpec(string text, VocabNote vocab)
     {
         // Nested local function for suffix operations (mirroring Python structure)
         List<SpecMenuItem> BuildSuffixMenuItems()

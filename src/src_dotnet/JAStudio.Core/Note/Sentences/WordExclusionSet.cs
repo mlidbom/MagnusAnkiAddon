@@ -7,9 +7,9 @@ namespace JAStudio.Core.Note.Sentences;
 
 public class WordExclusionSet
 {
-    private readonly Action _saveCallback;
-    private readonly HashSet<WordExclusion> _exclusions;
-    private HashSet<string> _excludedWords;
+   readonly Action _saveCallback;
+   readonly HashSet<WordExclusion> _exclusions;
+   HashSet<string> _excludedWords;
 
     public WordExclusionSet(Action saveCallback, List<WordExclusion> exclusions)
     {
@@ -29,7 +29,7 @@ public class WordExclusionSet
 
     public IEnumerable<WordExclusion> Get() => _exclusions;
 
-    private HashSet<string> ExtractWords()
+    HashSet<string> ExtractWords()
     {
         return _exclusions.Select(e => e.Word).ToHashSet();
     }

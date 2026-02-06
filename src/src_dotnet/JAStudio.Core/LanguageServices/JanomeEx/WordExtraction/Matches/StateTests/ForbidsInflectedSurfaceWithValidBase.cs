@@ -6,16 +6,16 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTe
 
 public static class ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb
 {
-    private static readonly FailedMatchRequirement Failed = FailedMatchRequirement.Forbids("inflected_surface_with_valid_base");
-    private static readonly HashSet<string> PrefixesThatIndicatesVerbIfFollowedByEndOfStatement = ["を", "が"];
+   static readonly FailedMatchRequirement Failed = FailedMatchRequirement.Forbids("inflected_surface_with_valid_base");
+   static readonly HashSet<string> PrefixesThatIndicatesVerbIfFollowedByEndOfStatement = ["を", "が"];
 
     public static FailedMatchRequirement? ApplyTo(MatchInspector inspector)
     {
         if (inspector.Variant.IsSurface &&
             inspector.Word.HasBaseVariantWithValidMatch &&
-            (inspector.Word.IsInflectedWord || 
-             (inspector.Prefix != "" && 
-              PrefixesThatIndicatesVerbIfFollowedByEndOfStatement.Contains(inspector.Prefix[^1].ToString()) && 
+            (inspector.Word.IsInflectedWord ||
+             (inspector.Prefix != "" &&
+              PrefixesThatIndicatesVerbIfFollowedByEndOfStatement.Contains(inspector.Prefix[^1].ToString()) &&
               inspector.IsEndOfStatement)))
         {
             return Failed;

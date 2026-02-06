@@ -18,7 +18,7 @@ public class VocabNoteForms
     public VocabNoteForms(VocabNote vocab)
     {
         _vocab = vocab;
-        _field = new MutableCommaSeparatedStringsListFieldDeDuplicated(vocab, NoteFieldsConstants.Vocab.UserForms);
+        _field = new MutableCommaSeparatedStringsListFieldDeDuplicated(vocab, NoteFieldsConstants.Vocab.Forms);
         
         _allRawSet = new LazyCE<HashSet<string>>(() => _field.Get().ToHashSet());
         _allList = _field.LazyReader(() => _field.Get().Select(StripBrackets).ToList());

@@ -6,8 +6,8 @@ namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 
 public class Synonyms
 {
-    private readonly VocabNote _vocab;
-    private readonly MutableSerializedObjectField<RelatedVocabData> _data;
+   readonly VocabNote _vocab;
+   readonly MutableSerializedObjectField<RelatedVocabData> _data;
 
     public Synonyms(VocabNote vocab, MutableSerializedObjectField<RelatedVocabData> data)
     {
@@ -17,7 +17,7 @@ public class Synonyms
 
     public HashSet<string> Strings() => _data.Get().Synonyms;
 
-    private void Save()
+    void Save()
     {
         Strings().Remove(_vocab.GetQuestion()); // todo: this is cleanup after a bug. Remove soon
         _data.Save();

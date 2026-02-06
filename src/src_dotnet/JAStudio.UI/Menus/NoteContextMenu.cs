@@ -142,7 +142,7 @@ public class NoteContextMenu
     }
 
     // String menu builders (for selection/clipboard)
-    private SpecMenuItem BuildSelectionMenuSpec(string selection, string? noteType, JPNote? note)
+    SpecMenuItem BuildSelectionMenuSpec(string selection, string? noteType, JPNote? note)
     {
         var truncated = TruncateText(selection, 40);
         var menuItems = BuildStringMenuSpec(selection, noteType, note);
@@ -153,7 +153,7 @@ public class NoteContextMenu
         );
     }
 
-    private SpecMenuItem BuildClipboardMenuSpec(string clipboard, string? noteType, JPNote? note)
+    SpecMenuItem BuildClipboardMenuSpec(string clipboard, string? noteType, JPNote? note)
     {
         var truncated = TruncateText(clipboard, 40);
         var menuItems = BuildStringMenuSpec(clipboard, noteType, note);
@@ -164,7 +164,7 @@ public class NoteContextMenu
         );
     }
 
-    private List<SpecMenuItem> BuildStringMenuSpec(string text, string? noteType, JPNote? note)
+    List<SpecMenuItem> BuildStringMenuSpec(string text, string? noteType, JPNote? note)
     {
         return
         [
@@ -177,28 +177,28 @@ public class NoteContextMenu
         ];
     }
 
-    private SpecMenuItem BuildCurrentNoteActionsSubmenuSpec(string text, string? noteType, JPNote? note)
+    SpecMenuItem BuildCurrentNoteActionsSubmenuSpec(string text, string? noteType, JPNote? note)
     {
         // Delegate to note-type-specific string menu builders
         if (noteType == "vocab" && note is VocabNote vocab)
         {
             return VocabStringMenus.BuildStringMenuSpec(text, vocab);
         }
-        
+
         if (noteType == "kanji" && note is KanjiNote kanji)
         {
             return KanjiStringMenus.BuildStringMenuSpec(text, kanji);
         }
-        
+
         if (noteType == "sentence" && note is SentenceNote sentence)
         {
             return SentenceStringMenus.BuildStringMenuSpec(sentence, text);
         }
-        
+
         return SpecMenuItem.Submenu(ShortcutFinger.Home1("Current note actions"), new List<SpecMenuItem>());
     }
 
-    private SpecMenuItem BuildUniversalNoteActionsMenuSpec(JPNote note)
+    SpecMenuItem BuildUniversalNoteActionsMenuSpec(JPNote note)
     {
         var hasSuspendedCards = note.HasSuspendedCards();
         var hasActiveCards = note.HasActiveCards();
@@ -207,22 +207,22 @@ public class NoteContextMenu
             ShortcutFinger.Home4("Universal note actions"),
             new List<SpecMenuItem>
             {
-                SpecMenuItem.Command(ShortcutFinger.Home1("Open in previewer"), 
+                SpecMenuItem.Command(ShortcutFinger.Home1("Open in previewer"),
                     () => OnOpenInPreviewer(note)),
-                SpecMenuItem.Command(ShortcutFinger.Home3("Unsuspend all cards"), 
+                SpecMenuItem.Command(ShortcutFinger.Home3("Unsuspend all cards"),
                     () => note.UnsuspendAllCards(), null, null, hasSuspendedCards),
-                SpecMenuItem.Command(ShortcutFinger.Home4("Suspend all cards"), 
+                SpecMenuItem.Command(ShortcutFinger.Home4("Suspend all cards"),
                     () => note.SuspendAllCards(), null, null, hasActiveCards)
             }
         );
     }
 
-    private SpecMenuItem BuildMatchingNotesSubmenuSpec(string text)
+    SpecMenuItem BuildMatchingNotesSubmenuSpec(string text)
     {
         // Find notes that exactly match the search text
         var vocabs = Core.App.Col().Vocab.WithQuestionPreferDisambiguationName(text).ToList();
         var sentences = Core.App.Col().Sentences.WithQuestion(text);
-        var kanjis = text.Length == 1 
+        var kanjis = text.Length == 1
             ? Core.App.Col().Kanji.WithAnyKanjiIn([text])
             : [];
 
@@ -242,7 +242,7 @@ public class NoteContextMenu
         return SpecMenuItem.Submenu(ShortcutFinger.Home4("Exactly matching notes"), items);
     }
 
-    private SpecMenuItem BuildUniversalNoteActionsMenuSpec(string label, JPNote? note)
+    SpecMenuItem BuildUniversalNoteActionsMenuSpec(string label, JPNote? note)
     {
         if (note == null)
         {
@@ -256,17 +256,17 @@ public class NoteContextMenu
             label,
             new List<SpecMenuItem>
             {
-                SpecMenuItem.Command(ShortcutFinger.Home1("Open in previewer"), 
+                SpecMenuItem.Command(ShortcutFinger.Home1("Open in previewer"),
                     () => OnOpenInPreviewer(note)),
-                SpecMenuItem.Command(ShortcutFinger.Home3("Unsuspend all cards"), 
+                SpecMenuItem.Command(ShortcutFinger.Home3("Unsuspend all cards"),
                     () => note.UnsuspendAllCards(), null, null, hasSuspendedCards),
-                SpecMenuItem.Command(ShortcutFinger.Home4("Suspend all cards"), 
+                SpecMenuItem.Command(ShortcutFinger.Home4("Suspend all cards"),
                     () => note.SuspendAllCards(), null, null, hasActiveCards)
             }
         );
     }
 
-    private SpecMenuItem BuildCreateNoteSubmenuSpec(string text)
+    SpecMenuItem BuildCreateNoteSubmenuSpec(string text)
     {
         return SpecMenuItem.Submenu(
             ShortcutFinger.Up1($"Create: {TruncateText(text, 40)}"),
@@ -280,14 +280,14 @@ public class NoteContextMenu
     }
 
     // Utility methods
-    private static string TruncateText(string text, int maxLength)
+    static string TruncateText(string text, int maxLength)
     {
         if (text.Length <= maxLength)
             return text;
         return text.Substring(0, maxLength) + "...";
     }
 
-    private static List<Avalonia.Controls.MenuItem> ConvertToAvaloniaMenuItems(List<SpecMenuItem> specs)
+    static List<Avalonia.Controls.MenuItem> ConvertToAvaloniaMenuItems(List<SpecMenuItem> specs)
     {
         var result = new List<Avalonia.Controls.MenuItem>();
         foreach (var spec in specs)
@@ -296,13 +296,13 @@ public class NoteContextMenu
     }
 
     // Action handlers
-    private void OnOpenInPreviewer(JPNote note)
+    void OnOpenInPreviewer(JPNote note)
     {
         var query = QueryBuilder.NotesLookup([note]);
         AnkiFacade.ExecuteLookupAndShowPreviewer(query);
     }
-    
-    private void OnReparseMatchingSentences(string text)
+
+    void OnReparseMatchingSentences(string text)
     {
         try
         {
@@ -316,14 +316,14 @@ public class NoteContextMenu
             AnkiFacade.ShowTooltip($"Failed to reparse: {ex.Message}", 5000);
         }
     }
-    
-    private void OnCreateVocabNote(string text)
+
+    void OnCreateVocabNote(string text)
     {
         try
         {
             var newVocab = VocabNoteFactory.CreateWithDictionary(text);
             Core.Batches.LocalNoteUpdater.ReparseSentencesForVocab(newVocab);
-            
+
             var query = QueryBuilder.NotesLookup([newVocab]);
             AnkiFacade.ExecuteLookupAndShowPreviewer(query);
             AnkiFacade.Refresh();
@@ -334,13 +334,13 @@ public class NoteContextMenu
             AnkiFacade.ShowTooltip($"Failed to create vocab note: {ex.Message}", 5000);
         }
     }
-    
-    private void OnCreateSentenceNote(string text)
+
+    void OnCreateSentenceNote(string text)
     {
         try
         {
             var newSentence = SentenceNote.Create(text);
-            
+
             var query = QueryBuilder.NotesLookup([newSentence]);
             AnkiFacade.ExecuteLookupAndShowPreviewer(query);
             AnkiFacade.Refresh();
@@ -351,14 +351,14 @@ public class NoteContextMenu
             AnkiFacade.ShowTooltip($"Failed to create sentence note: {ex.Message}", 5000);
         }
     }
-    
-    private void OnCreateKanjiNote(string text)
+
+    void OnCreateKanjiNote(string text)
     {
         try
         {
             // Create with placeholder values - user will need to fill them in
             var newKanji = KanjiNote.Create(text, "TODO", "", "");
-            
+
             var query = QueryBuilder.NotesLookup([newKanji]);
             AnkiFacade.ExecuteLookupAndShowPreviewer(query);
             AnkiFacade.Refresh();

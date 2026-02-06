@@ -56,7 +56,7 @@ public class QueryBuilder
         var result = $"{Builtin.Note}:{NoteTypes.Sentence} ";
 
         string FormQuery(string form) =>
-            $"(({MyNoteFields.Question}:*{form}* OR {FieldContainsWord(NoteFieldsConstants.Sentence.ParsingResult, form)}))";
+            $"(({MyNoteFields.Question}:*{form}* OR {FieldContainsWord(SentenceNoteFields.ParsingResult, form)}))";
 
         if (!exact)
         {
@@ -107,7 +107,7 @@ public class QueryBuilder
     /// Search for vocab notes using wildcard matching on forms, reading, or answer.
     /// Ported from single_vocab_wildcard()
     /// </summary>
-    public static string SingleVocabWildcard(string form) => $"{Builtin.Note}:{NoteTypes.Vocab} ({NoteFieldsConstants.Vocab.UserForms}:*{form}* OR {NoteFieldsConstants.Vocab.ReadingKana}:*{form}* OR {MyNoteFields.Answer}:*{form}*)";
+    public static string SingleVocabWildcard(string form) => $"{Builtin.Note}:{NoteTypes.Vocab} ({NoteFieldsConstants.Vocab.Forms}:*{form}* OR {NoteFieldsConstants.Vocab.Reading}:*{form}* OR {MyNoteFields.Answer}:*{form}*)";
 
     /// <summary>
     /// Search for vocab notes by exact word match in forms, reading, or answer.
@@ -116,14 +116,14 @@ public class QueryBuilder
     public static string SingleVocabByQuestionReadingOrAnswerExact(string search)
     {
         var hiraganaSearch = KanaUtils.KatakanaToHiragana(search);
-        return $"{Builtin.Note}:{NoteTypes.Vocab} ({FieldContainsWord(NoteFieldsConstants.Vocab.UserForms, search)} OR {FieldContainsWord(NoteFieldsConstants.Vocab.ReadingKana, hiraganaSearch)} OR {FieldContainsWord(MyNoteFields.Answer, search)})";
+        return $"{Builtin.Note}:{NoteTypes.Vocab} ({FieldContainsWord(NoteFieldsConstants.Vocab.Forms, search)} OR {FieldContainsWord(NoteFieldsConstants.Vocab.Reading, hiraganaSearch)} OR {FieldContainsWord(MyNoteFields.Answer, search)})";
     }
 
     /// <summary>
     /// Search for vocab notes by exact form match.
     /// Ported from single_vocab_by_form_exact()
     /// </summary>
-    public static string SingleVocabByFormExact(string form) => $"{Builtin.Note}:{NoteTypes.Vocab} {FieldContainsWord(NoteFieldsConstants.Vocab.UserForms, form)}";
+    public static string SingleVocabByFormExact(string form) => $"{Builtin.Note}:{NoteTypes.Vocab} {FieldContainsWord(NoteFieldsConstants.Vocab.Forms, form)}";
 
     /// <summary>
     /// Search for vocab reading cards by exact form match.
@@ -145,7 +145,7 @@ public class QueryBuilder
     /// Search for vocab notes containing a specific kanji.
     /// Ported from vocab_with_kanji()
     /// </summary>
-    public static string VocabWithKanji(KanjiNote kanji) => $"{Builtin.Note}:{NoteTypes.Vocab} {NoteFieldsConstants.Vocab.UserForms}:*{kanji.GetQuestion()}*";
+    public static string VocabWithKanji(KanjiNote kanji) => $"{Builtin.Note}:{NoteTypes.Vocab} {NoteFieldsConstants.Vocab.Forms}:*{kanji.GetQuestion()}*";
 
     /// <summary>
     /// Search for vocab notes by dictionary forms extracted from text.
@@ -161,7 +161,7 @@ public class QueryBuilder
     /// Creates a vocab clause for a single form.
     /// Ported from vocab_clause()
     /// </summary>
-    static string VocabClause(string form) => FieldContainsWord(NoteFieldsConstants.Vocab.UserForms, form);
+    static string VocabClause(string form) => FieldContainsWord(NoteFieldsConstants.Vocab.Forms, form);
 
     /// <summary>
     /// Search for vocab notes matching any of the given dictionary forms.
@@ -181,7 +181,7 @@ public class QueryBuilder
     public static string VocabsLookupStrings(IEnumerable<string> words)
     {
         var wordList = words.ToList();
-        var clauses = wordList.Select(word => FieldContainsWord(NoteFieldsConstants.Vocab.UserForms, word));
+        var clauses = wordList.Select(word => FieldContainsWord(NoteFieldsConstants.Vocab.Forms, word));
         return $"{Builtin.Note}:{NoteTypes.Vocab} ({string.Join(" OR ", clauses)})";
     }
 
@@ -205,7 +205,7 @@ public class QueryBuilder
     /// Search for notes with exact question match or form match.
     /// Ported from exact_matches()
     /// </summary>
-    public static string ExactMatches(string question) => $"{MyNoteFields.Question}:\"{question}\" OR {FieldContainsWord(NoteFieldsConstants.Vocab.UserForms, question)}";
+    public static string ExactMatches(string question) => $"{MyNoteFields.Question}:\"{question}\" OR {FieldContainsWord(NoteFieldsConstants.Vocab.Forms, question)}";
 
     /// <summary>
     /// Search for exact matches excluding sentence notes.

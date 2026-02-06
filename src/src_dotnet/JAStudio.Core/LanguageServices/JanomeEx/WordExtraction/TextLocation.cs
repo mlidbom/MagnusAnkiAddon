@@ -7,7 +7,7 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 
 public sealed class TextAnalysisLocation
 {
-    private const int MaxLookahead = 12; // In my collection the longest so far is 9, so 12 seems a pretty good choice.
+   const int MaxLookahead = 12; // In my collection the longest so far is 9, so 12 seems a pretty good choice.
 
     public TextAnalysisLocation? Next { get; set; }
     public TextAnalysisLocation? Previous { get; set; }
@@ -138,7 +138,7 @@ TextLocation('{CharacterStartIndex}-{CharacterEndIndex}, {Token.Surface} | {Toke
         }
     }
 
-    private void ClearShadowed()
+    void ClearShadowed()
     {
         foreach (var shadowedShadowed in Shadows)
         {

@@ -16,7 +16,7 @@ public class VocabNoteUserCompoundParts
     public VocabNoteUserCompoundParts(VocabNote vocab)
     {
         _vocab = vocab;
-        _field = new MutableCommaSeparatedStringsListField(vocab, NoteFieldsConstants.Vocab.UserCompoundParts);
+        _field = new MutableCommaSeparatedStringsListField(vocab, NoteFieldsConstants.Vocab.UserCompounds);
     }
 
     private VocabNote Vocab => _vocab;

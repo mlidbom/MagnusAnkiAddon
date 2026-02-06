@@ -20,7 +20,7 @@ public class SentenceNote : JPNote
         Configuration = new CachingSentenceConfigurationField(this);
         ParsingResult = new MutableSerializedObjectField<ParsingResult>(
             this,
-            NoteFieldsConstants.Sentence.ParsingResult,
+            SentenceNoteFields.ParsingResult,
             new ParsingResultSerializer());
     }
 
@@ -30,18 +30,18 @@ public class SentenceNote : JPNote
     }
 
     // Property accessors
-    public MutableStringField Id => new(this, NoteFieldsConstants.Sentence.Id);
-    public MutableStringField Reading => new(this, NoteFieldsConstants.Sentence.Reading);
+    public MutableStringField Id => new(this, SentenceNoteFields.Id);
+    public MutableStringField Reading => new(this, SentenceNoteFields.Reading);
     public SentenceUserFields User => new(this);
-    public MutableStringField SourceQuestion => new(this, NoteFieldsConstants.Sentence.SourceQuestion);
-    public MutableStringField ActiveQuestion => new(this, NoteFieldsConstants.Sentence.ActiveQuestion);
+    public MutableStringField SourceQuestion => new(this, SentenceNoteFields.SourceQuestion);
+    public MutableStringField ActiveQuestion => new(this, SentenceNoteFields.ActiveQuestion);
     public SentenceQuestionField Question => new(User.Question, SourceQuestion);
     public StripHtmlOnReadFallbackStringField Answer => new(User.Answer, SourceAnswer);
-    private MutableStringField SourceAnswer => new(this, NoteFieldsConstants.Sentence.SourceAnswer);
-    public MutableStringField ActiveAnswer => new(this, NoteFieldsConstants.Sentence.ActiveAnswer);
-    public MutableStringField SourceComments => new(this, NoteFieldsConstants.Sentence.SourceComments);
-    private MutableStringField Screenshot => new(this, NoteFieldsConstants.Sentence.Screenshot);
-    public WritableAudioField Audio => new(this, NoteFieldsConstants.Sentence.Audio);
+    private MutableStringField SourceAnswer => new(this, SentenceNoteFields.SourceAnswer);
+    public MutableStringField ActiveAnswer => new(this, SentenceNoteFields.ActiveAnswer);
+    public MutableStringField SourceComments => new(this, SentenceNoteFields.SourceComments);
+    private MutableStringField Screenshot => new(this, SentenceNoteFields.Screenshot);
+    public WritableAudioField Audio => new(this, SentenceNoteFields.Audio);
 
     public override string GetQuestion()
     {
@@ -113,8 +113,8 @@ public class SentenceNote : JPNote
         
         UpdateParsedWords();
         
-        SetField(NoteFieldsConstants.Sentence.ActiveAnswer, GetAnswer());
-        SetField(NoteFieldsConstants.Sentence.ActiveQuestion, GetQuestion());
+        SetField(SentenceNoteFields.ActiveAnswer, GetAnswer());
+        SetField(SentenceNoteFields.ActiveQuestion, GetQuestion());
     }
 
     public void UpdateParsedWords(bool force = false)

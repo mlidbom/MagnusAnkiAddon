@@ -10,12 +10,12 @@ public class JNToken : IAnalysisToken
 {
     public const string SplitterTokenText = "removethissplittertoken";
 
-    private readonly string _baseForm;
-    private readonly string _surface;
+    readonly string _baseForm;
+    readonly string _surface;
 
     // Standard references instead of WeakRef (C# has better GC)
-    private JNToken? _previous;
-    private JNToken? _next;
+    JNToken? _previous;
+    JNToken? _next;
 
     public JNToken(
         JNPartsOfSpeech partsOfSpeech,
@@ -29,19 +29,19 @@ public class JNToken : IAnalysisToken
     {
         _baseForm = baseForm ?? string.Empty;
         _surface = surface ?? string.Empty;
-        
+
         // Python defaults to "*" when not provided
         inflectionType ??= "*";
         inflectedForm ??= "*";
-        
-        InflectionType = inflectionType is string str1 
-            ? InflectionTypes.GetByName(str1) 
+
+        InflectionType = inflectionType is string str1
+            ? InflectionTypes.GetByName(str1)
             : (InflectionType)inflectionType;
-        
-        InflectedForm = inflectedForm is string str2 
-            ? InflectionForms.GetByName(str2) 
+
+        InflectedForm = inflectedForm is string str2
+            ? InflectionForms.GetByName(str2)
             : (InflectionForm)inflectedForm;
-        
+
         Reading = reading ?? string.Empty;
         Phonetic = phonetic ?? string.Empty;
         NodeType = nodeType ?? string.Empty;
@@ -95,52 +95,52 @@ public class JNToken : IAnalysisToken
     // <IAnalysisToken implementation>
     public override bool IsPastTenseStem => Equals(InflectedForm, InflectionForms.Continuative.TaConnection);
     public override bool IsPastTenseMarker => Equals(InflectionType, InflectionTypes.Special.Ta);
-    
-    public override bool IsMasuStem => 
+
+    public override bool IsMasuStem =>
         Equals(InflectedForm, InflectionForms.Continuative.RenyoukeiMasuStem) && IsVerb;
-    
+
     public override bool IsAdverb =>
         Equals(PartsOfSpeech, JNPOS.Adverb.General) ||
         (JNPOS.Adjective.AllTypes.Contains(PartsOfSpeech) && Surface.EndsWith("く"));
-    
+
     public override string Surface => _surface;
     public override string BaseForm => _baseForm;
 
-    private static readonly HashSet<string> PseudoVerbsForInflectionPurposes = ["ます"];
-    
+    static readonly HashSet<string> PseudoVerbsForInflectionPurposes = ["ます"];
+
     public override bool IsInflectableWord =>
         IsVerb || IsAdjective || PseudoVerbsForInflectionPurposes.Contains(BaseForm);
-    
+
     public override bool IsNonWordCharacter => PartsOfSpeech.IsNonWordCharacter();
     public override bool IsIrrealis => InflectionForms.Irrealis.AllForms.Contains(InflectedForm);
     public override JNToken SourceToken => this;
     // </IAnalysisToken implementation>
 
     public bool IsVerb =>
-        JNPOS.Verb.AllTypes.Contains(PartsOfSpeech) || 
+        JNPOS.Verb.AllTypes.Contains(PartsOfSpeech) ||
         Equals(InflectionType, InflectionTypes.Special.Masu);
 
     public bool IsAdjective => JNPOS.Adjective.AllTypes.Contains(PartsOfSpeech);
 
     public override bool IsIchidanVerb => InflectionType.Base == InflectionTypes.Ichidan.Base;
 
-    private static readonly HashSet<string> ActuallySuruVerbsNotGodan = ["する", "為る"];
-    
+    static readonly HashSet<string> ActuallySuruVerbsNotGodan = ["する", "為る"];
+
     public override bool IsGodanVerb =>
-        InflectionType.Base == InflectionTypes.Godan.Base && 
+        InflectionType.Base == InflectionTypes.Godan.Base &&
         !ActuallySuruVerbsNotGodan.Contains(BaseForm);
 
     public bool IsKuruVerb => InflectionType.Base == InflectionTypes.Kahen.Base;
 
     public bool IsSuruVerb =>
-        InflectionType.Base == InflectionTypes.Sahen.Base || 
+        InflectionType.Base == InflectionTypes.Sahen.Base ||
         ActuallySuruVerbsNotGodan.Contains(BaseForm);
 
     public bool IsDictionaryForm() => Equals(InflectedForm, InflectionForms.Basic.DictionaryForm);
 
-    private static readonly HashSet<string> ProgressiveForms = ["でる", "どる", "てる", "とる", "とん"];
-    private static readonly HashSet<string> TeForms = ["て", "って", "で"];
-    private static readonly HashSet<string> PossibleHasTeFormStemTokenSurfaces;
+    static readonly HashSet<string> ProgressiveForms = ["でる", "どる", "てる", "とる", "とん"];
+    static readonly HashSet<string> TeForms = ["て", "って", "で"];
+    static readonly HashSet<string> PossibleHasTeFormStemTokenSurfaces;
 
     static JNToken()
     {
@@ -178,7 +178,7 @@ public class JNToken : IAnalysisToken
                 return true;
             }
 
-            if ((previous.IsPastTenseStem || previous.IsMasuStem) && 
+            if ((previous.IsPastTenseStem || previous.IsMasuStem) &&
                 (ProgressiveForms.Contains(BaseForm) || ProgressiveForms.Contains(Surface)))
             {
                 return true;
@@ -193,7 +193,7 @@ public class JNToken : IAnalysisToken
 
     public bool IsProgressiveForm() =>
        Surface == "てる" ||
-       (ProgressiveForms.Contains(Surface) && Previous != null && 
+       (ProgressiveForms.Contains(Surface) && Previous != null &&
         Equals(Previous.InflectedForm, InflectionForms.Continuative.TaConnection)) ||
        (Surface == "いる" && Previous != null && Previous.IsTeForm);
 
@@ -205,12 +205,12 @@ public class JNToken : IAnalysisToken
         AnalysisConstants.SentenceEndCharacters.Contains(Next.Surface) ||
         Next.IsNonWordCharacter;
 
-    private static readonly HashSet<string> InvalidIchidanInflectionSurfaces = ["っ"];
-    
+    static readonly HashSet<string> InvalidIchidanInflectionSurfaces = ["っ"];
+
     public bool CannotFollowIchidanStem() => InvalidIchidanInflectionSurfaces.Contains(Surface);
 
-    private static readonly HashSet<JNPartsOfSpeech> PosMoreLikelyToFollowImperativeThanIchidanStem = [];
-    
+    static readonly HashSet<JNPartsOfSpeech> PosMoreLikelyToFollowImperativeThanIchidanStem = [];
+
     public bool IsMoreLikelyToFollowImperativeThanIchidanStem()
     {
         if (PartsOfSpeech.IsNoun() && !Equals(PartsOfSpeech, JNPOS.Noun.Suffix.General))
@@ -220,11 +220,12 @@ public class JNToken : IAnalysisToken
         return PosMoreLikelyToFollowImperativeThanIchidanStem.Contains(PartsOfSpeech);
     }
 
-    private static readonly HashSet<string> InvalidGodanPotentialFormSurfaces = ["っ", "う"];
+    static readonly HashSet<string> InvalidGodanPotentialFormSurfaces = ["っ", "う"];
 
     // Initialized via property to defer to after JNPOS is initialized
-    private static HashSet<JNPartsOfSpeech>? _validPotentialFormInflectionsPos;
-    private static HashSet<JNPartsOfSpeech> ValidPotentialFormInflectionsPos
+    static HashSet<JNPartsOfSpeech>? _validPotentialFormInflectionsPos;
+
+    static HashSet<JNPartsOfSpeech> ValidPotentialFormInflectionsPos
     {
         get
         {
