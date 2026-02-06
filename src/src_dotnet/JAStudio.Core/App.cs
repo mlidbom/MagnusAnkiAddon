@@ -5,7 +5,6 @@ using JAStudio.Core.Configuration;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
 using JAStudio.Core.TestUtils;
-using Newtonsoft.Json;
 
 namespace JAStudio.Core;
 
@@ -35,62 +34,10 @@ public class App : IDisposable
 
    public static App Bootstrap() => AppBootstrapper.Bootstrap();
 
-   // --- Configuration store (moved from ConfigurationValue) ---
-
-   static Dictionary<string, object>? _configDict;
-   static Action<string>? _updateCallback;
-   internal static Dictionary<string, string>? StaticReadingsMappings;
-
-   public static void InitConfigForTesting()
-   {
-      if(_configDict != null) return;
-      InitConfigJson("{}", s => {});
-      StaticReadingsMappings = new Dictionary<string, string>();
-   }
-
-   public static void InitConfigJson(string json, Action<string> updateCallback)
-   {
-      if(_configDict != null)
-      {
-         throw new InvalidOperationException("Configuration dict already initialized");
-      }
-
-      _configDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-      _updateCallback = updateCallback;
-   }
-
-   internal static Dictionary<string, object> GetConfigDict()
-   {
-      if(IsTesting)
-      {
-         return new Dictionary<string, object>();
-      }
-
-      if(_configDict == null)
-      {
-         throw new InvalidOperationException("Configuration dict not initialized");
-      }
-
-      return _configDict;
-   }
-
-   internal static void WriteConfigDict()
-   {
-      if(!IsTesting && _updateCallback != null && _configDict != null)
-      {
-         var json = JsonConvert.SerializeObject(_configDict, Formatting.None);
-         _updateCallback(json);
-      }
-   }
-
-   static JapaneseConfig? _config;
-
-   public static JapaneseConfig Config()
-   {
-      return _config ??= new JapaneseConfig();
-   }
-
-   // --- End configuration store ---
+   public static void InitConfigForTesting() => ConfigurationManager.InitForTesting();
+   public static void InitConfigJson(string json, Action<string> updateCallback) => ConfigurationManager.InitJson(json, updateCallback);
+   public static JapaneseConfig Config() => ConfigurationManager.Config();
+   internal static Dictionary<string, string>? StaticReadingsMappings => ConfigurationManager.StaticReadingsMappings;
 
    public static JPCollection Col()
    {

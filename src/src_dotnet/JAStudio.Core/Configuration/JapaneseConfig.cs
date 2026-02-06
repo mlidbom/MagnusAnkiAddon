@@ -204,7 +204,7 @@ public class JapaneseConfig
          ("Developers only", DeveloperOnlyToggles)
       ];
 
-      ReadingsMappingsDict = App.StaticReadingsMappings ?? ReadReadingsMappingsFromFile();
+      ReadingsMappingsDict = ConfigurationManager.StaticReadingsMappings ?? ReadReadingsMappingsFromFile();
    }
 
    public void ToggleAllSentenceDisplayAutoYieldFlags(bool? value = null)

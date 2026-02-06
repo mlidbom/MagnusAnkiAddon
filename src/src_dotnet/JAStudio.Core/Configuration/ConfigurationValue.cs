@@ -18,7 +18,7 @@ public class ConfigurationValue<T>
       FeatureToggler = featureToggler;
       Name = name;
 
-      var configDict = App.GetConfigDict();
+      var configDict = ConfigurationManager.GetConfigDict();
 
       _value = configDict.TryGetValue(name, out var value)
                   ? converter(value)
@@ -36,11 +36,11 @@ public class ConfigurationValue<T>
    {
       _value = value;
 
-      App.GetConfigDict()[Name] = value!;
+      ConfigurationManager.GetConfigDict()[Name] = value!;
 
       ToggleFeature();
 
-      App.WriteConfigDict();
+      ConfigurationManager.WriteConfigDict();
 
       foreach(var callback in _changeCallbacks)
       {
