@@ -2,24 +2,34 @@ namespace JAStudio.Core.Configuration;
 
 public class Settings
 {
-    readonly TemporaryServiceCollection? _services;
-    internal Settings(TemporaryServiceCollection services) => _services = services;
+    readonly TemporaryServiceCollection _services;
+    bool _initialized;
 
-    private static Settings? _instance;
-    private static bool _initialized;
+    bool _hideTransparentCompounds;
+    bool _showBreakdownInEditMode;
+    bool _hideAllCompounds;
+    bool _logWhenFlushingNotes;
+    bool _showCompoundPartsInSentenceBreakdown;
+    bool _showKanjiInSentenceBreakdown;
+    bool _showKanjiMnemonicsInSentenceBreakdown;
+    bool _automaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound;
+    bool _automaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound;
+    bool _automaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound;
 
-    private readonly bool _hideTransparentCompounds;
-    private readonly bool _showBreakdownInEditMode;
-    private readonly bool _hideAllCompounds;
-    private readonly bool _logWhenFlushingNotes;
-    private readonly bool _showCompoundPartsInSentenceBreakdown;
-    private readonly bool _showKanjiInSentenceBreakdown;
-    private readonly bool _showKanjiMnemonicsInSentenceBreakdown;
-    private readonly bool _automaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound;
-    private readonly bool _automaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound;
-    private readonly bool _automaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound;
+    internal Settings(TemporaryServiceCollection services)
+    {
+        _services = services;
+    }
 
-    private Settings()
+    void EnsureInitialized()
+    {
+        if (_initialized) return;
+        _initialized = true;
+        Refresh();
+        App.Config().OnChange(Refresh);
+    }
+
+    void Refresh()
     {
         var config = App.Config();
         _hideTransparentCompounds = config.HideCompositionallyTransparentCompounds.GetValue();
@@ -32,32 +42,16 @@ public class Settings
         _automaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound = config.AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound.GetValue();
         _automaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound = config.AutomaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound.GetValue();
         _automaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound = config.AutomaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound.GetValue();
-
-        if (!_initialized)
-        {
-            config.OnChange(ReplaceInstance);
-            _initialized = true;
-        }
     }
 
-    public static bool HideTransparentCompounds() => GetInstance()._hideTransparentCompounds;
-    public static bool HideAllCompounds() => GetInstance()._hideAllCompounds;
-    public static bool ShowBreakdownInEditMode() => GetInstance()._showBreakdownInEditMode;
-    public static bool LogWhenFlushingNotes() => GetInstance()._logWhenFlushingNotes;
-    public static bool ShowCompoundPartsInSentenceBreakdown() => GetInstance()._showCompoundPartsInSentenceBreakdown;
-    public static bool ShowKanjiInSentenceBreakdown() => GetInstance()._showKanjiInSentenceBreakdown;
-    public static bool ShowKanjiMnemonicsInSentenceBreakdown() => GetInstance()._showKanjiMnemonicsInSentenceBreakdown;
-    public static bool AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound() => GetInstance()._automaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound;
-    public static bool AutomaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound() => GetInstance()._automaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound;
-    public static bool AutomaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound() => GetInstance()._automaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound;
-
-    private static Settings GetInstance()
-    {
-        return _instance ??= new Settings();
-    }
-
-    private static void ReplaceInstance()
-    {
-        _instance = new Settings();
-    }
+    public bool HideTransparentCompounds() { EnsureInitialized(); return _hideTransparentCompounds; }
+    public bool HideAllCompounds() { EnsureInitialized(); return _hideAllCompounds; }
+    public bool ShowBreakdownInEditMode() { EnsureInitialized(); return _showBreakdownInEditMode; }
+    public bool LogWhenFlushingNotes() { EnsureInitialized(); return _logWhenFlushingNotes; }
+    public bool ShowCompoundPartsInSentenceBreakdown() { EnsureInitialized(); return _showCompoundPartsInSentenceBreakdown; }
+    public bool ShowKanjiInSentenceBreakdown() { EnsureInitialized(); return _showKanjiInSentenceBreakdown; }
+    public bool ShowKanjiMnemonicsInSentenceBreakdown() { EnsureInitialized(); return _showKanjiMnemonicsInSentenceBreakdown; }
+    public bool AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound() { EnsureInitialized(); return _automaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound; }
+    public bool AutomaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound() { EnsureInitialized(); return _automaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound; }
+    public bool AutomaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound() { EnsureInitialized(); return _automaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound; }
 }

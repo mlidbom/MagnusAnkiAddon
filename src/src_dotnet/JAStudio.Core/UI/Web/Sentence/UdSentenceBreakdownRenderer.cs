@@ -22,7 +22,7 @@ public class UdSentenceBreakdownRenderer
 
     static string BuildInvalidForDisplaySpan(MatchViewModel viewModel)
     {
-        if (!Settings.ShowBreakdownInEditMode() ||
+        if (!TemporaryServiceCollection.Instance.Settings.ShowBreakdownInEditMode() ||
             (viewModel.IncorrectReasons.Count == 0 && viewModel.HidingReasons.Count == 0))
             return "";
 
@@ -200,7 +200,7 @@ public class UdSentenceBreakdownRenderer
 
     static string RenderTokens(SentenceViewModel sentenceAnalysis)
     {
-        if (!Settings.ShowBreakdownInEditMode())
+        if (!TemporaryServiceCollection.Instance.Settings.ShowBreakdownInEditMode())
             return "";
 
         var tokens = sentenceAnalysis.Analysis.Analysis.PreProcessedTokens.ToList();

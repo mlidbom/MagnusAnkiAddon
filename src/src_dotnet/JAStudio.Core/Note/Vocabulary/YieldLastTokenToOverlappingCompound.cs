@@ -1,4 +1,3 @@
-using JAStudio.Core.Configuration;
 using JAStudio.Core.Note.NoteFields;
 
 namespace JAStudio.Core.Note.Vocabulary;
@@ -23,14 +22,14 @@ public class YieldLastTokenToOverlappingCompound : RequireForbidFlagField
                     // na adjectives
                     _pos.IsCompleteNaAdjective()
                     // suru verb compounds
-                    || (Settings.AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound()
+                    || (TemporaryServiceCollection.Instance.Settings.AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound()
                         && _pos.IsSuruVerbIncluded()
                         && !_pos.IsNiSuruGaSuruKuSuruCompound())
                     // passive verb compounds
-                    || (Settings.AutomaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound()
+                    || (TemporaryServiceCollection.Instance.Settings.AutomaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound()
                         && _pos.IsPassiveVerbCompound())
                     // causative verb compounds
-                    || (Settings.AutomaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound()
+                    || (TemporaryServiceCollection.Instance.Settings.AutomaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound()
                         && _pos.IsCausativeVerbCompound())
                 ));
     }

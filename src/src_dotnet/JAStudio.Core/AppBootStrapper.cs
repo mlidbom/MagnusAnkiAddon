@@ -55,6 +55,7 @@ static class AppBootstrapper
          Singleton.For<SentenceRenderer>().CreatedBy((TemporaryServiceCollection services) => new SentenceRenderer(services))
       );
 
+      TemporaryServiceCollection.Instance = container.ServiceLocator.Resolve<TemporaryServiceCollection>();
       return container.ServiceLocator.Resolve<App>();
    }
 }

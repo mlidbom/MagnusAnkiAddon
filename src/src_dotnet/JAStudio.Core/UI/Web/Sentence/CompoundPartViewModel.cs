@@ -3,8 +3,6 @@ using System.Linq;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Sentences;
 using JAStudio.Core.Note.Vocabulary;
-using Settings = JAStudio.Core.Configuration.Settings;
-
 namespace JAStudio.Core.UI.Web.Sentence;
 
 public class CompoundPartViewModel
@@ -44,9 +42,9 @@ public class CompoundPartViewModel
         int depth = 0,
         HashSet<long>? visited = null)
     {
-        if (!Settings.HideAllCompounds())
+        if (!TemporaryServiceCollection.Instance.Settings.HideAllCompounds())
         {
-            if (!Settings.ShowCompoundPartsInSentenceBreakdown()) return [];
+            if (!TemporaryServiceCollection.Instance.Settings.ShowCompoundPartsInSentenceBreakdown()) return [];
             visited ??= [];
             if (visited.Contains(vocabNote.GetId())) return [];
 

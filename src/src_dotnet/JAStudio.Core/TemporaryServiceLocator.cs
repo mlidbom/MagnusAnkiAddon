@@ -19,6 +19,8 @@ namespace JAStudio.Core;
 //TODO: We should redesign so that we have a sane dependency graph and just use normal dependency injection, but first we need to get rid of all the static classes and this will help us do that
 public class TemporaryServiceCollection : IDisposable
 {
+   public static TemporaryServiceCollection Instance { get; internal set; } = null!;
+
    readonly IServiceLocator _serviceLocator;
    public TemporaryServiceCollection(IServiceLocator serviceLocator) => _serviceLocator = serviceLocator;
 

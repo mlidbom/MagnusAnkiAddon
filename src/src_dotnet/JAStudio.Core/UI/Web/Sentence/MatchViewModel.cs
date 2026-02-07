@@ -5,8 +5,6 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches;
 using JAStudio.Core.Note.Sentences;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.SysUtils;
-using Settings = JAStudio.Core.Configuration.Settings;
-
 namespace JAStudio.Core.UI.Web.Sentence;
 
 public class MatchViewModel
@@ -41,7 +39,7 @@ public class MatchViewModel
         IsDisplayWord = wordVariantVm.IsDisplayWord;
         ParsedForm = match.ParsedForm;
         Answer = match.Answer;
-        VocabForm = !Settings.ShowBreakdownInEditMode() ? match.MatchForm : match.ExclusionForm;
+        VocabForm = !TemporaryServiceCollection.Instance.Settings.ShowBreakdownInEditMode() ? match.MatchForm : match.ExclusionForm;
         CompoundParts = new List<CompoundPartViewModel>();
         AudioPath = string.Empty;
         IsHighlighted = _config.HighlightedWords.Contains(ParsedForm) || _config.HighlightedWords.Contains(VocabForm);
@@ -88,16 +86,16 @@ public class MatchViewModel
     {
         get
         {
-            if (Settings.ShowBreakdownInEditMode()) return true;
+            if (TemporaryServiceCollection.Instance.Settings.ShowBreakdownInEditMode()) return true;
             return IsDisplayWord && Match.IsDisplayed;
         }
     }
 
-    public bool ShowKanji => Kanji.Any() && !Settings.ShowBreakdownInEditMode() && Settings.ShowKanjiInSentenceBreakdown();
+    public bool ShowKanji => Kanji.Any() && !TemporaryServiceCollection.Instance.Settings.ShowBreakdownInEditMode() && TemporaryServiceCollection.Instance.Settings.ShowKanjiInSentenceBreakdown();
 
-    public bool ShowKanjiMnemonics => Settings.ShowKanjiMnemonicsInSentenceBreakdown();
+    public bool ShowKanjiMnemonics => TemporaryServiceCollection.Instance.Settings.ShowKanjiMnemonicsInSentenceBreakdown();
 
-    public bool ShowCompoundParts => CompoundParts.Any() && !Settings.ShowBreakdownInEditMode();
+    public bool ShowCompoundParts => CompoundParts.Any() && !TemporaryServiceCollection.Instance.Settings.ShowBreakdownInEditMode();
 
     public List<string> Kanji
     {

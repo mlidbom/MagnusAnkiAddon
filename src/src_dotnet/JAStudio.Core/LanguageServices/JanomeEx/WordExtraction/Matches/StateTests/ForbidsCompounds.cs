@@ -1,4 +1,3 @@
-using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Requirements;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.Head;
 
@@ -10,7 +9,7 @@ public static class ForbidsConfiguredToHideAllCompounds
 
     public static FailedMatchRequirement? ApplyTo(MatchInspector inspector)
     {
-        if (Settings.HideAllCompounds() &&
+        if (TemporaryServiceCollection.Instance.Settings.HideAllCompounds() &&
             inspector.Word.IsCompound &&
             inspector.Word.Analysis.ForUI &&
             inspector.CompoundLocationsAllHaveValidNonCompoundMatches &&

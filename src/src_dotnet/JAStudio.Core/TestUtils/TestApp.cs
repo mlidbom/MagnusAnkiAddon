@@ -10,6 +10,7 @@ public class TestApp
 
    public static void Reset()
    {
+      App.Bootstrap();
       App.Reset(new TestingBackendNoteCreator());
       App.InitConfigForTesting();
       App.Config().SetReadingsMappingsForTesting(TestReadingsMappings);
