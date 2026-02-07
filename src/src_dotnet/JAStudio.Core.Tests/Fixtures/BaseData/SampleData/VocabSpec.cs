@@ -109,9 +109,4 @@ public class VocabSpec : IEquatable<VocabSpec>
             vocabNote.PartsOfSpeech.Set(Tos);
         }
     }
-
-    public void CreateVocabNote()
-    {
-        TemporaryServiceCollection.Instance.VocabNoteFactory.Create(DisambiguationName, Answer, Readings, InitializeNote);
-    }
 }

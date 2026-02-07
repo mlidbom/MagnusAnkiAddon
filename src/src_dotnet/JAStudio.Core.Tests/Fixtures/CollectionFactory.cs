@@ -35,7 +35,7 @@ public static class CollectionFactory
       {
          foreach(var vocab in VocabLists.TestSpecialVocab)
          {
-            vocab.CreateVocabNote();
+            TemporaryServiceCollection.Instance.VocabNoteFactory.Create(vocab.DisambiguationName, vocab.Answer, vocab.Readings, vocab.InitializeNote);
          }
       }
 
