@@ -1,5 +1,9 @@
 import typing, abc
+from System import IDisposable
+from Microsoft.Data.Sqlite import SqliteConnection
 from System.Collections.Generic import List_1
+from JAStudio.Core.Note.Collection import CardStudyingStatus
+from JAStudio.Core.Note import NetNoteData
 
 class AnkiCardOperations:
     def SetImplementation(self, implementation: IAnkiCardOperations) -> None: ...
@@ -11,6 +15,14 @@ class AnkiCardOperationsImpl(IAnkiCardOperations):
     def __init__(self) -> None: ...
     def SuspendAllCardsForNote(self, noteId: int) -> None: ...
     def UnsuspendAllCardsForNote(self, noteId: int) -> None: ...
+
+
+class AnkiDatabase(IDisposable):
+    @property
+    def Connection(self) -> SqliteConnection: ...
+    def Dispose(self) -> None: ...
+    @staticmethod
+    def OpenReadOnly(dbFilePath: str) -> AnkiDatabase: ...
 
 
 class AnkiFacade(abc.ABC):
@@ -36,6 +48,11 @@ class AnkiFacade(abc.ABC):
 
 
 
+    class Col(abc.ABC):
+        @staticmethod
+        def DbFilePath() -> str: ...
+
+
     class NoteEx(abc.ABC):
         @staticmethod
         def SuspendAllCardsForNote(noteId: int) -> None: ...
@@ -51,9 +68,19 @@ class AnkiFacade(abc.ABC):
 
 
 
+class CardStudyingStatusLoader(abc.ABC):
+    @staticmethod
+    def FetchAll(db: AnkiDatabase) -> List_1[CardStudyingStatus]: ...
+
+
 class IAnkiCardOperations(typing.Protocol):
     @abc.abstractmethod
     def SuspendAllCardsForNote(self, noteId: int) -> None: ...
     @abc.abstractmethod
     def UnsuspendAllCardsForNote(self, noteId: int) -> None: ...
+
+
+class NoteBulkLoader(abc.ABC):
+    @staticmethod
+    def LoadAllNotesOfType(db: AnkiDatabase, noteTypeName: str) -> List_1[NetNoteData]: ...
 

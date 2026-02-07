@@ -19,6 +19,7 @@ public static class AnkiFacade
    static readonly PythonObjectWrapper QueueManager = PythonEnvironment.Import("jastudio.note.queue_manager");
    static readonly PythonObjectWrapper BrowserMain = PythonEnvironment.Import("jastudio.ui.menus.browser.main");
    static readonly PythonObjectWrapper NoteExModule = PythonEnvironment.Import("jastudio.anki_extentions.note_ex");
+   static readonly PythonObjectWrapper Aqt = PythonEnvironment.Import("aqt");
 
    public static class Browser
    {
@@ -62,7 +63,14 @@ public static class AnkiFacade
       public static void UnsuspendAllCardsForNote(long noteId) => NoteExModule.Use(it => it.NoteEx.from_id(noteId).un_suspend_all_cards());
    }
 
+   public static class Col
+   {
+      public static string DbFilePath() => Aqt.Use(it => (string)it.mw.col.path);
+   }
+
    /// <summary>Get note ID from card ID (requires Anki API).</summary>
    public static long GetNoteIdFromCardId(long cardId) => App.Use(it => (long)it.anki_collection().get_card(cardId).nid);
+
+   
 
 }
