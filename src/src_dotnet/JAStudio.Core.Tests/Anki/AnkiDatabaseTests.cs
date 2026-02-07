@@ -9,8 +9,9 @@ namespace JAStudio.Core.Tests.Anki;
 
 public class BulkLoaderTests
 {
-   static readonly string TestDbPath = Path.GetFullPath(
-      Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "tests", "collection.anki2"));
+   static readonly string TestDbPath =
+      Environment.GetEnvironmentVariable("ANKI_TEST_DB_PATH")
+      ?? Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "tests", "collection.anki2"));
 
    // ── AnkiDatabase ──
 
