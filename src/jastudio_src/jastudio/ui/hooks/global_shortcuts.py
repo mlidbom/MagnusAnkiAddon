@@ -10,9 +10,8 @@ from PyQt6.QtGui import QKeySequence, QShortcut
 from PyQt6.QtWidgets import QWidget
 
 from jastudio.ankiutils import app
-from jastudio.ui.english_dict.find_english_words_dialog import EnglishWordSearchDialog
+from jastudio.ui import dotnet_ui_root
 from jastudio.ui.hooks import history_navigator
-from jastudio.ui.open_note.open_note_dialog import NoteSearchDialog
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -22,8 +21,8 @@ def init() -> None:
     shortcuts: dict[str, Callable[[], None]] = {
         "Alt+Left": history_navigator.navigator.navigate_back,
         "Alt+Right": history_navigator.navigator.navigate_forward,
-        "Ctrl+o": NoteSearchDialog.toggle_dialog_visibility,
-        "Ctrl+Shift+o": EnglishWordSearchDialog.toggle_dialog_visibility,
+        "Ctrl+o": dotnet_ui_root.ToggleNoteSearchDialog,
+        "Ctrl+Shift+o": dotnet_ui_root.ToggleEnglishWordSearchDialog,
         "F5": lambda: app.get_ui_utils().refresh()
     }
 
@@ -41,8 +40,6 @@ def init() -> None:
     ex_assert.not_none(history_navigator.navigator, "History navigator needs to be initialized before global shortcuts are bound")
 
     bind_universal_shortcuts(checked_cast(QWidget, mw))
-    bind_universal_shortcuts(NoteSearchDialog.instance())
-    bind_universal_shortcuts(EnglishWordSearchDialog.instance())
 
     gui_hooks.previewer_did_init.append(bind_universal_shortcuts)  # pyright: ignore[reportUnknownMemberType]
     gui_hooks.previewer_did_init.append(disable_escape)  # pyright: ignore[reportUnknownMemberType]
