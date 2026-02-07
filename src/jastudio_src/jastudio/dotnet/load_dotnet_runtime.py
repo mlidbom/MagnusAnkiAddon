@@ -1,12 +1,11 @@
 from __future__ import annotations
 
+import atexit
 import os
 from pathlib import Path
 
 from jaspythonutils.sysutils.timeutil import StopWatch
 from jastudio import mylog
-import atexit
-
 from pythonnet import load, unload
 
 config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "runtimeconfig.json")

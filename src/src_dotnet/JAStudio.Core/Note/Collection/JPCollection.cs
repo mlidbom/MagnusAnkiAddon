@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Compze.Utilities.Logging;
 using JAStudio.Core.Anki;
 using JAStudio.Core.TestUtils;
 
@@ -29,7 +30,7 @@ public class JPCollection
 
    public JPCollection(IBackendNoteCreator backendNoteCreator)
    {
-      MyLog.Info("JPCollection.__init__");
+      this.Log().Info().LogMethodExecutionTime();
 
       Vocab = new VocabCollection(backendNoteCreator);
       Kanji = new KanjiCollection(backendNoteCreator);
@@ -48,6 +49,7 @@ public class JPCollection
 
    void LoadFromAnkiDatabase(NoteServices noteServices)
    {
+      using var _ = this.Log().Warning().LogMethodExecutionTime();
       var dbPath = AnkiFacade.Col.DbFilePath();
 
       // Each loader opens its own connection, so it's safe to run on any thread.

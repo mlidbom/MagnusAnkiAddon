@@ -25,15 +25,7 @@ public class App : IDisposable
 
    public void AddInitHook(Action hook) => _initHooks.Add(hook);
 
-   public void Dispose()
-   {
-      Services.Dispose();
-      if(!TestEnvDetector.IsTesting) //When running for real we have gigabytes of memory used and we want to free it immediately when restarting the app.
-      {
-         GC.Collect(2);
-         GC.WaitForPendingFinalizers();
-      }
-   }
+   public void Dispose() => Services.Dispose();
 
    public static App Bootstrap() => new App();
 

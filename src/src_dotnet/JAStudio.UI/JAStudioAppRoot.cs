@@ -48,6 +48,7 @@ public class JAStudioAppRoot
    public static JAStudioAppRoot Initialize(string configJson, Action<string> configUpdateCallback)
    {
       var app = Core.App.Bootstrap();
+      CompzeLogger.LogLevel = LogLevel.Info;
 
       // Initialize the C# configuration system with the Anki addon config
       app.Services.ConfigurationStore.InitJson(configJson, configUpdateCallback);
