@@ -7,6 +7,7 @@ using JAStudio.Core.Configuration;
 using JAStudio.Core.Batches;
 using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.TaskRunners;
 using JAStudio.Core.TestUtils;
@@ -31,8 +32,16 @@ static class AppBootstrapper
          Singleton.For<Settings>().CreatedBy((TemporaryServiceCollection services) => new Settings(services)),
          Singleton.For<QueryBuilder>().CreatedBy((TemporaryServiceCollection services) => new QueryBuilder(services)),
 
+         // Leaf types — registered so classes can inject them directly
+         Singleton.For<JapaneseConfig>().CreatedBy((ConfigurationStore store) => store.Config()),
+         Singleton.For<JPCollection>().CreatedBy((App app) => app.Col()),
+         Singleton.For<VocabCollection>().CreatedBy((JPCollection col) => col.Vocab),
+         Singleton.For<KanjiCollection>().CreatedBy((JPCollection col) => col.Kanji),
+         Singleton.For<SentenceCollection>().CreatedBy((JPCollection col) => col.Sentences),
+
          // Core services
-         Singleton.For<LocalNoteUpdater>().CreatedBy((TemporaryServiceCollection services) => new LocalNoteUpdater(services)),
+         Singleton.For<LocalNoteUpdater>().CreatedBy((TaskRunner taskRunner, VocabCollection vocab, KanjiCollection kanji, SentenceCollection sentences, JapaneseConfig config, DictLookup dictLookup, VocabNoteFactory vocabNoteFactory) =>
+            new LocalNoteUpdater(taskRunner, vocab, kanji, sentences, config, dictLookup, vocabNoteFactory)),
          Singleton.For<TaskRunner>().CreatedBy((TemporaryServiceCollection services) => new TaskRunner(services)),
          Singleton.For<AnkiCardOperations>().CreatedBy((TemporaryServiceCollection services) => new AnkiCardOperations(services)),
          Singleton.For<DictLookup>().CreatedBy((TemporaryServiceCollection services) => new DictLookup(services)),
