@@ -1,11 +1,13 @@
 using System;
 
+using JAStudio.Core.Configuration;
+
 namespace JAStudio.Core.TaskRunners;
 
 public class TaskRunner
 {
-    readonly TemporaryServiceCollection _services;
-    internal TaskRunner(TemporaryServiceCollection services) => _services = services;
+    readonly JapaneseConfig _config;
+   internal TaskRunner(JapaneseConfig config) => _config = config;
 
     private Func<string, string, bool, bool, ITaskProgressRunner>? _uiTaskRunnerFactory;
     private int _depth;
@@ -46,7 +48,7 @@ public class TaskRunner
         bool allowCancel = true,
         bool modal = false)
     {
-        return new TaskRunnerScope(this, windowTitle, labelText, forceHide, inhibitGc, forceGc, allowCancel, modal);
+        return new TaskRunnerScope(this, _config, windowTitle, labelText, forceHide, inhibitGc, forceGc, allowCancel, modal);
     }
 
     internal void EnterScope(ITaskProgressRunner runner)
@@ -78,12 +80,14 @@ public class TaskRunner
 public class TaskRunnerScope : IDisposable
 {
     private readonly TaskRunner _taskRunner;
+    private readonly JapaneseConfig _config;
     private readonly ITaskProgressRunner _runner;
     private readonly bool _forceGc;
     private readonly bool _inhibitGc;
 
     public TaskRunnerScope(
         TaskRunner taskRunner,
+        JapaneseConfig config,
         string windowTitle,
         string? labelText,
         bool forceHide,
@@ -93,6 +97,7 @@ public class TaskRunnerScope : IDisposable
         bool modal)
     {
         _taskRunner = taskRunner;
+        _config = config;
         _inhibitGc = inhibitGc;
         _forceGc = forceGc;
         
@@ -103,7 +108,7 @@ public class TaskRunnerScope : IDisposable
             _runner = _taskRunner.Create(windowTitle, labelText ?? windowTitle, visible, allowCancel, modal);
             _taskRunner.EnterScope(_runner);
             
-            if (!inhibitGc && (TemporaryServiceCollection.Instance.App.Config().EnableGarbageCollectionDuringBatches.GetValue() || forceGc))
+            if (!inhibitGc && (_config.EnableGarbageCollectionDuringBatches.GetValue() || forceGc))
             {
                 _runner.RunGc();
             }
@@ -121,7 +126,7 @@ public class TaskRunnerScope : IDisposable
     {
         if (_taskRunner.GetCurrent() == _runner)
         {
-            if (!_inhibitGc && (TemporaryServiceCollection.Instance.App.Config().EnableGarbageCollectionDuringBatches.GetValue() || _forceGc))
+            if (!_inhibitGc && (_config.EnableGarbageCollectionDuringBatches.GetValue() || _forceGc))
             {
                 _runner.RunGc();
             }

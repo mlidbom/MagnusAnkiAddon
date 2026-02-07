@@ -1,3 +1,5 @@
+using JAStudio.Core.Configuration;
+using JAStudio.Core.Note.Collection;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -10,8 +12,14 @@ namespace JAStudio.Core.LanguageServices.JamdictEx;
 
 public class DictLookup
 {
-   readonly TemporaryServiceCollection _services;
-   internal DictLookup(TemporaryServiceCollection services) => _services = services;
+   readonly VocabCollection _vocab;
+   readonly JapaneseConfig _config;
+
+   internal DictLookup(VocabCollection vocab, JapaneseConfig config)
+   {
+      _vocab = vocab;
+      _config = config;
+   }
 
    static readonly JamdictThreadingWrapper JamdictThreadingWrapper = new();
 
@@ -247,7 +255,7 @@ public class DictLookup
 
     bool IsWordInner(string word) => LookupWord(word).FoundWords();
 
-    public bool IsDictionaryOrCollectionWord(string word) => TemporaryServiceCollection.Instance.App.Col().Vocab.IsWord(word) || IsWord(word);
+    public bool IsDictionaryOrCollectionWord(string word) => _vocab.IsWord(word) || IsWord(word);
 
     public void EnsureLoadedIntoMemory()
     {

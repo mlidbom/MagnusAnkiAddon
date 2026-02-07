@@ -1,3 +1,4 @@
+using JAStudio.Core.Configuration;
 using JAStudio.Core.Note;
 using System;
 
@@ -5,15 +6,22 @@ namespace JAStudio.Core.TestUtils;
 
 public class TestApp
 {
-   readonly TemporaryServiceCollection _services;
-   internal TestApp(TemporaryServiceCollection services) => _services = services;
+   readonly App _app;
+   readonly ConfigurationStore _configurationStore;
+
+   internal TestApp(App app, ConfigurationStore configurationStore)
+   {
+      _app = app;
+      _configurationStore = configurationStore;
+   }
 
    public static void Reset()
    {
       App.Bootstrap();
-      TemporaryServiceCollection.Instance.App.Reset(new TestingBackendNoteCreator());
-      TemporaryServiceCollection.Instance.ConfigurationStore.InitForTesting();
-      TemporaryServiceCollection.Instance.App.Config().SetReadingsMappingsForTesting(TestReadingsMappings);
+      var services = TemporaryServiceCollection.Instance;
+      services.App.Reset(new TestingBackendNoteCreator());
+      services.ConfigurationStore.InitForTesting();
+      services.App.Config().SetReadingsMappingsForTesting(TestReadingsMappings);
    }
 
    const string TestReadingsMappings = """

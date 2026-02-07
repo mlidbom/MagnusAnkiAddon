@@ -12,8 +12,16 @@ namespace JAStudio.Core.UI.Web.Sentence;
 
 public class UdSentenceBreakdownRenderer
 {
-    readonly TemporaryServiceCollection _services;
-    internal UdSentenceBreakdownRenderer(TemporaryServiceCollection services) => _services = services;
+    readonly Settings _settings;
+   readonly SentenceKanjiListViewModel _sentenceKanjiListViewModel;
+   readonly JapaneseConfig _config;
+
+   internal UdSentenceBreakdownRenderer(Settings settings, SentenceKanjiListViewModel sentenceKanjiListViewModel, JapaneseConfig config)
+   {
+      _settings = settings;
+      _sentenceKanjiListViewModel = sentenceKanjiListViewModel;
+      _config = config;
+   }
 
     string FormatReason(string reason) =>
        reason.Contains("configured")
@@ -22,7 +30,7 @@ public class UdSentenceBreakdownRenderer
 
     string BuildInvalidForDisplaySpan(MatchViewModel viewModel)
     {
-        if (!TemporaryServiceCollection.Instance.Settings.ShowBreakdownInEditMode() ||
+        if (!_settings.ShowBreakdownInEditMode() ||
             (viewModel.IncorrectReasons.Count == 0 && viewModel.HidingReasons.Count == 0))
             return "";
 
@@ -39,7 +47,7 @@ public class UdSentenceBreakdownRenderer
         if (!match.ShowKanji)
             return "";
 
-        var viewmodel = TemporaryServiceCollection.Instance.SentenceKanjiListViewModel.Create(match.Kanji);
+        var viewmodel = _sentenceKanjiListViewModel.Create(match.Kanji);
 
         var kanjiItems = viewmodel.KanjiList.Select(kanji =>
         {
@@ -89,7 +97,7 @@ public class UdSentenceBreakdownRenderer
     string RenderToggleList()
     {
         return string.Join("\n",
-            TemporaryServiceCollection.Instance.App.Config().SentenceViewToggles
+            _config.SentenceViewToggles
                 .Where(toggle => toggle.GetValue())
                 .Select(RenderToggle));
     }
@@ -200,7 +208,7 @@ public class UdSentenceBreakdownRenderer
 
     string RenderTokens(SentenceViewModel sentenceAnalysis)
     {
-        if (!TemporaryServiceCollection.Instance.Settings.ShowBreakdownInEditMode())
+        if (!_settings.ShowBreakdownInEditMode())
             return "";
 
         var tokens = sentenceAnalysis.Analysis.Analysis.PreProcessedTokens.ToList();

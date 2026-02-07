@@ -29,8 +29,6 @@ static class AppBootstrapper
          Singleton.For<ConfigurationStore>().CreatedBy((TemporaryServiceCollection services) => new ConfigurationStore(services)),
          Singleton.For<TemporaryServiceCollection>().CreatedBy(() => new TemporaryServiceCollection(container.ServiceLocator)),
          Singleton.For<App>().CreatedBy((TemporaryServiceCollection services) => new App(services)),
-         Singleton.For<Settings>().CreatedBy((TemporaryServiceCollection services) => new Settings(services)),
-         Singleton.For<QueryBuilder>().CreatedBy((TemporaryServiceCollection services) => new QueryBuilder(services)),
 
          // Leaf types — registered so classes can inject them directly
          Singleton.For<JapaneseConfig>().CreatedBy((ConfigurationStore store) => store.Config()),
@@ -40,28 +38,30 @@ static class AppBootstrapper
          Singleton.For<SentenceCollection>().CreatedBy((JPCollection col) => col.Sentences),
 
          // Core services
+         Singleton.For<Settings>().CreatedBy((JapaneseConfig config) => new Settings(config)),
+         Singleton.For<QueryBuilder>().CreatedBy((VocabCollection vocab, KanjiCollection kanji) => new QueryBuilder(vocab, kanji)),
          Singleton.For<LocalNoteUpdater>().CreatedBy((TaskRunner taskRunner, VocabCollection vocab, KanjiCollection kanji, SentenceCollection sentences, JapaneseConfig config, DictLookup dictLookup, VocabNoteFactory vocabNoteFactory) =>
             new LocalNoteUpdater(taskRunner, vocab, kanji, sentences, config, dictLookup, vocabNoteFactory)),
-         Singleton.For<TaskRunner>().CreatedBy((TemporaryServiceCollection services) => new TaskRunner(services)),
-         Singleton.For<AnkiCardOperations>().CreatedBy((TemporaryServiceCollection services) => new AnkiCardOperations(services)),
-         Singleton.For<DictLookup>().CreatedBy((TemporaryServiceCollection services) => new DictLookup(services)),
-         Singleton.For<TestApp>().CreatedBy((TemporaryServiceCollection services) => new TestApp(services)),
+         Singleton.For<TaskRunner>().CreatedBy((JapaneseConfig config) => new TaskRunner(config)),
+         Singleton.For<AnkiCardOperations>().CreatedBy(() => new AnkiCardOperations()),
+         Singleton.For<DictLookup>().CreatedBy((VocabCollection vocab, JapaneseConfig config) => new DictLookup(vocab, config)),
+         Singleton.For<TestApp>().CreatedBy((App app, ConfigurationStore configurationStore) => new TestApp(app, configurationStore)),
 
          // Note services
-         Singleton.For<KanjiNoteMnemonicMaker>().CreatedBy((TemporaryServiceCollection services) => new KanjiNoteMnemonicMaker(services)),
-         Singleton.For<VocabNoteFactory>().CreatedBy((TemporaryServiceCollection services) => new VocabNoteFactory(services)),
-         Singleton.For<VocabNoteGeneratedData>().CreatedBy((TemporaryServiceCollection services) => new VocabNoteGeneratedData(services)),
+         Singleton.For<KanjiNoteMnemonicMaker>().CreatedBy((JapaneseConfig config) => new KanjiNoteMnemonicMaker(config)),
+         Singleton.For<VocabNoteFactory>().CreatedBy((DictLookup dictLookup, VocabCollection vocab) => new VocabNoteFactory(dictLookup, vocab)),
+         Singleton.For<VocabNoteGeneratedData>().CreatedBy((DictLookup dictLookup) => new VocabNoteGeneratedData(dictLookup)),
 
          // ViewModels
-         Singleton.For<SentenceKanjiListViewModel>().CreatedBy((TemporaryServiceCollection services) => new SentenceKanjiListViewModel(services)),
+         Singleton.For<SentenceKanjiListViewModel>().CreatedBy((KanjiCollection kanji) => new SentenceKanjiListViewModel(kanji)),
 
          // Renderers
-         Singleton.For<KanjiListRenderer>().CreatedBy((TemporaryServiceCollection services) => new KanjiListRenderer(services)),
-         Singleton.For<VocabKanjiListRenderer>().CreatedBy((TemporaryServiceCollection services) => new VocabKanjiListRenderer(services)),
-         Singleton.For<RelatedVocabsRenderer>().CreatedBy((TemporaryServiceCollection services) => new RelatedVocabsRenderer(services)),
-         Singleton.For<UdSentenceBreakdownRenderer>().CreatedBy((TemporaryServiceCollection services) => new UdSentenceBreakdownRenderer(services)),
-         Singleton.For<QuestionRenderer>().CreatedBy((TemporaryServiceCollection services) => new QuestionRenderer(services)),
-         Singleton.For<SentenceRenderer>().CreatedBy((TemporaryServiceCollection services) => new SentenceRenderer(services))
+         Singleton.For<KanjiListRenderer>().CreatedBy((KanjiCollection kanji) => new KanjiListRenderer(kanji)),
+         Singleton.For<VocabKanjiListRenderer>().CreatedBy((SentenceKanjiListViewModel vm) => new VocabKanjiListRenderer(vm)),
+         Singleton.For<RelatedVocabsRenderer>().CreatedBy((VocabCollection vocab) => new RelatedVocabsRenderer(vocab)),
+         Singleton.For<UdSentenceBreakdownRenderer>().CreatedBy((Settings settings, SentenceKanjiListViewModel vm, JapaneseConfig config) => new UdSentenceBreakdownRenderer(settings, vm, config)),
+         Singleton.For<QuestionRenderer>().CreatedBy((JapaneseConfig config) => new QuestionRenderer(config)),
+         Singleton.For<SentenceRenderer>().CreatedBy((JapaneseConfig config) => new SentenceRenderer(config))
       );
 
       TemporaryServiceCollection.Instance = container.ServiceLocator.Resolve<TemporaryServiceCollection>();

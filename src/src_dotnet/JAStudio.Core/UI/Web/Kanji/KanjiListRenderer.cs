@@ -1,3 +1,4 @@
+using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Note;
 using JAStudio.Core.SysUtils;
 using JAStudio.Core.ViewModels.KanjiList;
@@ -10,8 +11,8 @@ namespace JAStudio.Core.UI.Web.Kanji;
 
 public class KanjiListRenderer
 {
-    readonly TemporaryServiceCollection _services;
-    internal KanjiListRenderer(TemporaryServiceCollection services) => _services = services;
+    readonly KanjiCollection _kanji;
+   internal KanjiListRenderer(KanjiCollection kanji) => _kanji = kanji;
 
     public string RenderList(JPNote note, List<KanjiNote> kanjis, List<string> kanjiReadings)
     {
@@ -64,7 +65,7 @@ public class KanjiListRenderer
 
     public string KanjiKanjiList(KanjiNote kanji)
     {
-        var kanjis = TemporaryServiceCollection.Instance.App.Col().Kanji.WithRadical(kanji.GetQuestion());
+        var kanjis = _kanji.WithRadical(kanji.GetQuestion());
         var kanjiReadings = kanji.GetReadingsClean();
 
         return RenderList(kanji, kanjis, kanjiReadings);

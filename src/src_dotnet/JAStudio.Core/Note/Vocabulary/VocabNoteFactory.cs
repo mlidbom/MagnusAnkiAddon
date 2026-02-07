@@ -1,3 +1,4 @@
+using JAStudio.Core.Note.Collection;
 using System;
 using System.Collections.Generic;
 using JAStudio.Core.LanguageServices.JamdictEx;
@@ -6,12 +7,18 @@ namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteFactory
 {
-   readonly TemporaryServiceCollection _services;
-   internal VocabNoteFactory(TemporaryServiceCollection services) => _services = services;
+   readonly DictLookup _dictLookup;
+   readonly VocabCollection _vocab;
+
+   internal VocabNoteFactory(DictLookup dictLookup, VocabCollection vocab)
+   {
+      _dictLookup = dictLookup;
+      _vocab = vocab;
+   }
 
     public VocabNote CreateWithDictionary(string question)
     {
-        var lookupResult = TemporaryServiceCollection.Instance.DictLookup.LookupWord(question);
+        var lookupResult = _dictLookup.LookupWord(question);
         if (!lookupResult.FoundWords())
         {
             return Create(question, "", new List<string>());
@@ -35,7 +42,7 @@ public class VocabNoteFactory
             initializer(note);
         }
         
-        TemporaryServiceCollection.Instance.App.Col().Vocab.Add(note);
+        _vocab.Add(note);
         return note;
     }
 

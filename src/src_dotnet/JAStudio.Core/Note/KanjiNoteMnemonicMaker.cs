@@ -1,3 +1,4 @@
+using JAStudio.Core.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.LanguageServices;
@@ -7,12 +8,12 @@ namespace JAStudio.Core.Note;
 
 public class KanjiNoteMnemonicMaker
 {
-   readonly TemporaryServiceCollection _services;
-   internal KanjiNoteMnemonicMaker(TemporaryServiceCollection services) => _services = services;
+   readonly JapaneseConfig _config;
+   internal KanjiNoteMnemonicMaker(JapaneseConfig config) => _config = config;
 
     public string CreateDefaultMnemonic(KanjiNote kanjiNote)
     {
-        var readingsMappings = TemporaryServiceCollection.Instance.App.Config().ReadingsMappingsDict;
+        var readingsMappings = _config.ReadingsMappingsDict;
 
         string CreateReadingsTag(string kanaReading)
         {

@@ -8,8 +8,8 @@ namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteGeneratedData
 {
-   readonly TemporaryServiceCollection _services;
-   internal VocabNoteGeneratedData(TemporaryServiceCollection services) => _services = services;
+   readonly DictLookup _dictLookup;
+   internal VocabNoteGeneratedData(DictLookup dictLookup) => _dictLookup = dictLookup;
 
     public void UpdateGeneratedData(VocabNote vocab)
     {
@@ -39,7 +39,7 @@ public class VocabNoteGeneratedData
 
             if (vocab.GetReadings().Any())
             {
-                var lookup = TemporaryServiceCollection.Instance.DictLookup.LookupVocabWordOrName(vocab);
+                var lookup = _dictLookup.LookupVocabWordOrName(vocab);
                 if (lookup.IsUk() && !vocab.Tags.Contains(Tags.DisableKanaOnly))
                 {
                     vocab.Tags.Set(Tags.UsuallyKanaOnly);

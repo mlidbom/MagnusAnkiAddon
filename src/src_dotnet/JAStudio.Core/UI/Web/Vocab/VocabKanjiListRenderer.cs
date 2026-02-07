@@ -7,15 +7,15 @@ namespace JAStudio.Core.UI.Web.Vocab;
 
 public class VocabKanjiListRenderer
 {
-    readonly TemporaryServiceCollection _services;
-    internal VocabKanjiListRenderer(TemporaryServiceCollection services) => _services = services;
+    readonly SentenceKanjiListViewModel _sentenceKanjiListViewModel;
+   internal VocabKanjiListRenderer(SentenceKanjiListViewModel sentenceKanjiListViewModel) => _sentenceKanjiListViewModel = sentenceKanjiListViewModel;
 
     public string RenderKanjiListFromKanji(List<string> kanjis)
     {
         if (kanjis.Count == 0)
             return "";
 
-        var viewmodel = TemporaryServiceCollection.Instance.SentenceKanjiListViewModel.Create(kanjis);
+        var viewmodel = _sentenceKanjiListViewModel.Create(kanjis);
 
         var kanjiItems = viewmodel.KanjiList.Select(kanji => $$$"""
     <div class="kanji_item {{{string.Join(" ", kanji.Kanji.GetMetaTags())}}}">

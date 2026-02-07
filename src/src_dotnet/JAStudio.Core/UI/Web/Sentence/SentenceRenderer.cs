@@ -1,3 +1,4 @@
+using JAStudio.Core.Configuration;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.NoteFields;
 
@@ -5,12 +6,12 @@ namespace JAStudio.Core.UI.Web.Sentence;
 
 public class SentenceRenderer
 {
-    readonly TemporaryServiceCollection _services;
-    internal SentenceRenderer(TemporaryServiceCollection services) => _services = services;
+    readonly JapaneseConfig _config;
+   internal SentenceRenderer(JapaneseConfig config) => _config = config;
 
     private string RenderWbr(string question)
     {
-        if (TemporaryServiceCollection.Instance.App.Config().ShowSentenceBreakdownInEditMode.GetValue())
+        if (_config.ShowSentenceBreakdownInEditMode.GetValue())
         {
             return question.Replace(SentenceQuestionField.WordBreakTag, "<span class='wbr_tag'>&lt;wbr&gt;</span>");
         }

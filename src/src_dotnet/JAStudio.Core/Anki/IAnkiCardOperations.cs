@@ -21,8 +21,7 @@ public interface IAnkiCardOperations
 /// </summary>
 public class AnkiCardOperations
 {
-    readonly TemporaryServiceCollection _services;
-    internal AnkiCardOperations(TemporaryServiceCollection services) => _services = services;
+    internal AnkiCardOperations() {}
 
     static IAnkiCardOperations? _implementation;
 

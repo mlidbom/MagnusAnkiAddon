@@ -2,7 +2,7 @@ namespace JAStudio.Core.Configuration;
 
 public class Settings
 {
-    readonly TemporaryServiceCollection _services;
+    readonly JapaneseConfig _config;
     bool _initialized;
 
     bool _hideTransparentCompounds;
@@ -16,9 +16,9 @@ public class Settings
     bool _automaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound;
     bool _automaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound;
 
-    internal Settings(TemporaryServiceCollection services)
+    internal Settings(JapaneseConfig config)
     {
-        _services = services;
+        _config = config;
     }
 
     void EnsureInitialized()
@@ -26,12 +26,12 @@ public class Settings
         if (_initialized) return;
         _initialized = true;
         Refresh();
-        TemporaryServiceCollection.Instance.App.Config().OnChange(Refresh);
+        _config.OnChange(Refresh);
     }
 
     void Refresh()
     {
-        var config = TemporaryServiceCollection.Instance.App.Config();
+        var config = _config;
         _hideTransparentCompounds = config.HideCompositionallyTransparentCompounds.GetValue();
         _showBreakdownInEditMode = config.ShowSentenceBreakdownInEditMode.GetValue();
         _hideAllCompounds = config.HideAllCompounds.GetValue();

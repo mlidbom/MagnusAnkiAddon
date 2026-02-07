@@ -5,6 +5,7 @@ using JAStudio.Core.LanguageServices;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
+using JAStudio.Core.Note.Collection;
 using JAStudio.Core.SysUtils;
 
 namespace JAStudio.Core.AnkiUtils;
@@ -15,9 +16,14 @@ namespace JAStudio.Core.AnkiUtils;
 /// </summary>
 public class QueryBuilder
 {
-   readonly TemporaryServiceCollection _services;
+   readonly VocabCollection _vocab;
+   readonly KanjiCollection _kanji;
 
-   internal QueryBuilder(TemporaryServiceCollection services) => _services = services;
+   internal QueryBuilder(VocabCollection vocab, KanjiCollection kanji)
+   {
+      _vocab = vocab;
+      _kanji = kanji;
+   }
 
    const string ExcludedDeckSubstring = "*Excluded*";
 
@@ -60,7 +66,7 @@ public class QueryBuilder
 
         if (!exact)
         {
-            var vocabs = TemporaryServiceCollection.Instance.App.Col().Vocab.WithForm(word).ToList();
+            var vocabs = _vocab.WithForm(word).ToList();
             if (vocabs.Any())
             {
                 var forms = vocabs.SelectMany(voc => voc.Forms.AllList()).Distinct().ToList();
@@ -240,7 +246,7 @@ public class QueryBuilder
         }
 
         var matchingKanji = radicals
-            .SelectMany(radical => TemporaryServiceCollection.Instance.App.Col().Kanji.WithRadical(radical.ToString()))
+            .SelectMany(radical => _kanji.WithRadical(radical.ToString()))
             .Distinct()
             .Where(KanjiContainsAllRadicals)
             .ToList();
