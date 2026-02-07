@@ -10,17 +10,8 @@ namespace JAStudio.Core.Tests.LanguageServices.JamdictEx;
 /// <summary>
 /// Tests ported from test_dict_lookup.py
 /// </summary>
-public class DictLookupTests : IDisposable
+public class DictLookupTests : TestStartingWithEmptyCollection
 {
-   readonly IDisposable _collectionScope;
-
-    public DictLookupTests() => _collectionScope = CollectionFactory.InjectEmptyCollection();
-
-    public void Dispose()
-    {
-        _collectionScope.Dispose();
-    }
-
     [Theory]
     [InlineData("為る", new[] { "する" })]
     [InlineData("為る", new[] { "なる" })]

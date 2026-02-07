@@ -17,8 +17,6 @@ public enum DataNeeded
 
 public static class CollectionFactory
 {
-   public static IDisposable InjectEmptyCollection() => InjectCollectionWithSelectData(DataNeeded.None);
-
    public static IDisposable InjectCollectionWithSelectData(DataNeeded data)
    {
       TestApp.Reset();

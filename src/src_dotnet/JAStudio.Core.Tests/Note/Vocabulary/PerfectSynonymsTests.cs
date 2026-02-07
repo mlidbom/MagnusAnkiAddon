@@ -9,17 +9,8 @@ namespace JAStudio.Core.Tests.Note.Vocabulary;
 /// <summary>
 /// Tests ported from test_perfect_synonyms.py
 /// </summary>
-public class PerfectSynonymsTests : IDisposable
+public class PerfectSynonymsTests : TestStartingWithEmptyCollection
 {
-   readonly IDisposable _collectionScope;
-
-    public PerfectSynonymsTests() => _collectionScope = CollectionFactory.InjectEmptyCollection();
-
-    public void Dispose()
-    {
-        _collectionScope.Dispose();
-    }
-
     [Fact]
     public void AnswerSyncsToSynonymOnAdd()
     {

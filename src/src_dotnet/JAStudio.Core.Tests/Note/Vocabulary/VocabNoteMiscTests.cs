@@ -9,20 +9,8 @@ namespace JAStudio.Core.Tests.Note.Vocabulary;
 /// <summary>
 /// Tests ported from test_vocabnote_misc.py
 /// </summary>
-public class VocabNoteMiscTests : IDisposable
+public class VocabNoteMiscTests : TestStartingWithEmptyCollection
 {
-    private readonly IDisposable _collectionScope;
-
-    public VocabNoteMiscTests()
-    {
-        _collectionScope = CollectionFactory.InjectEmptyCollection();
-    }
-
-    public void Dispose()
-    {
-        _collectionScope.Dispose();
-    }
-
     [Fact]
     public void FormsExclusionRegex()
     {
