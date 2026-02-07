@@ -13,9 +13,9 @@ public static class SentenceNoteRenderer
     {
         return new PreRenderingContentRenderer<SentenceNote>(new Dictionary<string, Func<SentenceNote, string>>
         {
-            ["##USER_QUESTION##"] = SentenceRenderer.RenderUserQuestion,
-            ["##SOURCE_QUESTION##"] = SentenceRenderer.RenderSourceQuestion,
-            ["##SENTENCE_ANALYSIS##"] = UdSentenceBreakdownRenderer.RenderSentenceAnalysis,
+            ["##USER_QUESTION##"] = note => TemporaryServiceCollection.Instance.SentenceRenderer.RenderUserQuestion(note),
+            ["##SOURCE_QUESTION##"] = note => TemporaryServiceCollection.Instance.SentenceRenderer.RenderSourceQuestion(note),
+            ["##SENTENCE_ANALYSIS##"] = note => TemporaryServiceCollection.Instance.UdSentenceBreakdownRenderer.RenderSentenceAnalysis(note),
         });
     }
 }

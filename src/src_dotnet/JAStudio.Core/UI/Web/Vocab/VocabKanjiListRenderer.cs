@@ -10,12 +10,12 @@ public class VocabKanjiListRenderer
     readonly TemporaryServiceCollection _services;
     internal VocabKanjiListRenderer(TemporaryServiceCollection services) => _services = services;
 
-    public static string RenderKanjiListFromKanji(List<string> kanjis)
+    public string RenderKanjiListFromKanji(List<string> kanjis)
     {
         if (kanjis.Count == 0)
             return "";
 
-        var viewmodel = SentenceKanjiListViewModel.Create(kanjis);
+        var viewmodel = TemporaryServiceCollection.Instance.SentenceKanjiListViewModel.Create(kanjis);
 
         var kanjiItems = viewmodel.KanjiList.Select(kanji => $$$"""
     <div class="kanji_item {{{string.Join(" ", kanji.Kanji.GetMetaTags())}}}">
@@ -36,7 +36,7 @@ public class VocabKanjiListRenderer
             """;
     }
 
-    public static string RenderVocabKanjiList(VocabNote vocab)
+    public string RenderVocabKanjiList(VocabNote vocab)
     {
         return RenderKanjiListFromKanji(vocab.Kanji.ExtractMainFormKanji());
     }

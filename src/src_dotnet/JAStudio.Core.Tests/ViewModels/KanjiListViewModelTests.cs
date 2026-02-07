@@ -19,7 +19,7 @@ public class KanjiListViewModelTests : CollectionUsingTest
       foreach(var sentence in sentences)
       {
          var extractedKanji = sentence.ExtractKanji();
-         var viewModel = SentenceKanjiListViewModel.Create(extractedKanji);
+         var viewModel = TemporaryServiceCollection.Instance.SentenceKanjiListViewModel.Create(extractedKanji);
 
          var extractedKanjiSet = extractedKanji.ToHashSet();
          var foundKanjiSet = viewModel.KanjiList.Select(m => m.Question()).ToHashSet();

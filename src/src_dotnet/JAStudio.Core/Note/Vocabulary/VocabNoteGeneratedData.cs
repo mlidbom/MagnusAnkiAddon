@@ -11,7 +11,7 @@ public class VocabNoteGeneratedData
    readonly TemporaryServiceCollection _services;
    internal VocabNoteGeneratedData(TemporaryServiceCollection services) => _services = services;
 
-    public static void UpdateGeneratedData(VocabNote vocab)
+    public void UpdateGeneratedData(VocabNote vocab)
     {
         vocab.MetaData.SentenceCount.Set(vocab.Sentences.All().Count);
         vocab.SetField(NoteFieldsConstants.Vocab.ActiveAnswer, vocab.GetAnswer());

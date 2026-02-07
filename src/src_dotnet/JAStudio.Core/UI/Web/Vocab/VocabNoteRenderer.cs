@@ -36,7 +36,7 @@ public static class VocabNoteRenderer
             // Compound parts
             ["##VOCAB_COMPOUNDS##"] = CompoundPartsRenderer.GenerateCompounds,
             // Kanji list
-            ["##KANJI_LIST##"] = VocabKanjiListRenderer.RenderVocabKanjiList,
+            ["##KANJI_LIST##"] = note => TemporaryServiceCollection.Instance.VocabKanjiListRenderer.RenderVocabKanjiList(note),
         });
     }
 }

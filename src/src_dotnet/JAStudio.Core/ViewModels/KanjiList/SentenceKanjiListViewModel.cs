@@ -8,7 +8,7 @@ public class SentenceKanjiListViewModel
    readonly TemporaryServiceCollection _services;
    internal SentenceKanjiListViewModel(TemporaryServiceCollection services) => _services = services;
 
-    public static KanjiListViewModel Create(List<string> kanji)
+    public KanjiListViewModel Create(List<string> kanji)
     {
         var kanjiNotes = App.Col().Kanji.WithAnyKanjiIn(kanji);
         var kanjiViewModels = kanjiNotes.Select(note => new KanjiViewModel(note)).ToList();

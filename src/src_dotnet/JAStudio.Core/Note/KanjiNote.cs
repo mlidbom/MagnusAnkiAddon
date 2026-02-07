@@ -434,7 +434,7 @@ public class KanjiNote : JPNote
 
         if (App.Config().PreferDefaultMnemonicsToSourceMnemonics.GetValue())
         {
-            return $"# {KanjiNoteMnemonicMaker.CreateDefaultMnemonic(this)}";
+            return $"# {TemporaryServiceCollection.Instance.KanjiNoteMnemonicMaker.CreateDefaultMnemonic(this)}";
         }
 
         return GetSourceMeaningMnemonic();
@@ -475,7 +475,7 @@ public class KanjiNote : JPNote
 
     public void BootstrapMnemonicFromRadicals()
     {
-        SetUserMnemonic(KanjiNoteMnemonicMaker.CreateDefaultMnemonic(this));
+        SetUserMnemonic(TemporaryServiceCollection.Instance.KanjiNoteMnemonicMaker.CreateDefaultMnemonic(this));
     }
 
     public void PopulateRadicalsFromMnemonicTags()

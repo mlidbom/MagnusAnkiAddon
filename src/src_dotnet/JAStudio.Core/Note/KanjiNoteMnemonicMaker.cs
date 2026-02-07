@@ -10,7 +10,7 @@ public class KanjiNoteMnemonicMaker
    readonly TemporaryServiceCollection _services;
    internal KanjiNoteMnemonicMaker(TemporaryServiceCollection services) => _services = services;
 
-    public static string CreateDefaultMnemonic(KanjiNote kanjiNote)
+    public string CreateDefaultMnemonic(KanjiNote kanjiNote)
     {
         var readingsMappings = App.Config().ReadingsMappingsDict;
 

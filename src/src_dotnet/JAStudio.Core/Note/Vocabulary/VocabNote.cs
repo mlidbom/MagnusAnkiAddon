@@ -79,7 +79,7 @@ public class VocabNote : JPNote
     {
         base.UpdateGeneratedData();
         
-        VocabNoteGeneratedData.UpdateGeneratedData(this);
+        TemporaryServiceCollection.Instance.VocabNoteGeneratedData.UpdateGeneratedData(this);
     }
 
     public List<string> GetReadings()

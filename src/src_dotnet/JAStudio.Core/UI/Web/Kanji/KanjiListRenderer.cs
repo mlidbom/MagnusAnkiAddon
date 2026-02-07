@@ -13,7 +13,7 @@ public class KanjiListRenderer
     readonly TemporaryServiceCollection _services;
     internal KanjiListRenderer(TemporaryServiceCollection services) => _services = services;
 
-    public static string RenderList(JPNote note, List<KanjiNote> kanjis, List<string> kanjiReadings)
+    public string RenderList(JPNote note, List<KanjiNote> kanjis, List<string> kanjiReadings)
     {
         if (kanjis.Count == 0)
             return "";
@@ -62,7 +62,7 @@ public class KanjiListRenderer
             """;
     }
 
-    public static string KanjiKanjiList(KanjiNote kanji)
+    public string KanjiKanjiList(KanjiNote kanji)
     {
         var kanjis = App.Col().Kanji.WithRadical(kanji.GetQuestion());
         var kanjiReadings = kanji.GetReadingsClean();

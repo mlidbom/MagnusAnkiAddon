@@ -15,12 +15,12 @@ public class UdSentenceBreakdownRenderer
     readonly TemporaryServiceCollection _services;
     internal UdSentenceBreakdownRenderer(TemporaryServiceCollection services) => _services = services;
 
-    static string FormatReason(string reason) =>
+    string FormatReason(string reason) =>
        reason.Contains("configured")
           ? $"""<span class="configured">{reason}</span>"""
           : reason;
 
-    static string BuildInvalidForDisplaySpan(MatchViewModel viewModel)
+    string BuildInvalidForDisplaySpan(MatchViewModel viewModel)
     {
         if (!TemporaryServiceCollection.Instance.Settings.ShowBreakdownInEditMode() ||
             (viewModel.IncorrectReasons.Count == 0 && viewModel.HidingReasons.Count == 0))
@@ -34,12 +34,12 @@ public class UdSentenceBreakdownRenderer
         return $"""<span>{string.Join("\n", incorrectReasons.Concat(hidingReasons))}</span>""";
     }
 
-    static string RenderMatchKanji(MatchViewModel match)
+    string RenderMatchKanji(MatchViewModel match)
     {
         if (!match.ShowKanji)
             return "";
 
-        var viewmodel = SentenceKanjiListViewModel.Create(match.Kanji);
+        var viewmodel = TemporaryServiceCollection.Instance.SentenceKanjiListViewModel.Create(match.Kanji);
 
         var kanjiItems = viewmodel.KanjiList.Select(kanji =>
         {
@@ -79,14 +79,14 @@ public class UdSentenceBreakdownRenderer
                                                                         { "hide_all_compounds", "HAC" }
                                                                      };
 
-    static string GetToggleAbbreviation(string toggle) =>
+    string GetToggleAbbreviation(string toggle) =>
        ToggleAbbreviations.TryGetValue(toggle, out var abbr)
           ? abbr
           : $"MISSING_ABBREVIATION:{toggle}";
 
-    static string RenderToggle(ConfigurationValue<bool> toggle) => $"""<span class="toggle {toggle.Name}" title="{toggle.Title}">{GetToggleAbbreviation(toggle.Name)}</span>  """;
+    string RenderToggle(ConfigurationValue<bool> toggle) => $"""<span class="toggle {toggle.Name}" title="{toggle.Title}">{GetToggleAbbreviation(toggle.Name)}</span>  """;
 
-    static string RenderToggleList()
+    string RenderToggleList()
     {
         return string.Join("\n",
             App.Config().SentenceViewToggles
@@ -94,7 +94,7 @@ public class UdSentenceBreakdownRenderer
                 .Select(RenderToggle));
     }
 
-    static string RenderViewSettings() =>
+    string RenderViewSettings() =>
        $"""
         <span class="view_settings">
             <span class="view_settings_title">Settings:</span>
@@ -102,7 +102,7 @@ public class UdSentenceBreakdownRenderer
         </span>
         """;
 
-    public static string RenderSentenceAnalysis(SentenceNote note)
+    public string RenderSentenceAnalysis(SentenceNote note)
     {
         var sentenceAnalysis = new SentenceViewModel(note);
         var html = new StringBuilder();
@@ -198,7 +198,7 @@ public class UdSentenceBreakdownRenderer
        (t => t.IsGodanVerb, "五弾", "godan_verb")
     ];
 
-    static string RenderTokens(SentenceViewModel sentenceAnalysis)
+    string RenderTokens(SentenceViewModel sentenceAnalysis)
     {
         if (!TemporaryServiceCollection.Instance.Settings.ShowBreakdownInEditMode())
             return "";
@@ -214,7 +214,7 @@ public class UdSentenceBreakdownRenderer
         return html;
     }
 
-    static string RenderTokenProperties(IAnalysisToken token)
+    string RenderTokenProperties(IAnalysisToken token)
     {
         var properties = TokenBooleanFlags
             .Where(flag => flag.Predicate(token))
@@ -224,7 +224,7 @@ public class UdSentenceBreakdownRenderer
         return properties.Count > 0 ? string.Join(", ", properties) : "";
     }
 
-    static string RenderTokenList(List<IAnalysisToken> tokens, string sectionTitle)
+    string RenderTokenList(List<IAnalysisToken> tokens, string sectionTitle)
     {
         var html = new StringBuilder();
 

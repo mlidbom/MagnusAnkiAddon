@@ -17,7 +17,7 @@ public static class KanjiNoteRenderer
             ["##MNEMONIC##"] = MnemonicRenderer.RenderMnemonic,
             ["##KANJI_READINGS##"] = ReadingsRenderer.RenderKatakanaOnyomi,
             ["##VOCAB_LIST##"] = VocabListRenderer.GenerateVocabHtmlList,
-            ["##KANJI_LIST##"] = KanjiListRenderer.KanjiKanjiList,
+            ["##KANJI_LIST##"] = note => TemporaryServiceCollection.Instance.KanjiListRenderer.KanjiKanjiList(note),
         });
     }
 }
