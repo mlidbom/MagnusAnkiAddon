@@ -4,14 +4,17 @@ using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
+using JAStudio.Core.Tests.Fixtures;
 using JAStudio.Core.UI.Web.Sentence;
 using Xunit;
 
 namespace JAStudio.Core.Tests.LanguageServices.TextAnalysis;
 
-public static class SentenceAnalysisViewModelCommon
+public abstract class SentenceAnalysisViewModelCommon : CollectionUsingTest
 {
-   public static string SurfaceAndMatchForm(MatchViewModel matchVm)
+   protected SentenceAnalysisViewModelCommon(DataNeeded data = DataNeeded.All) : base(data) {}
+
+   protected static string SurfaceAndMatchForm(MatchViewModel matchVm)
    {
       var formToDisplay = matchVm.ParsedForm;
       if(matchVm.VocabMatch != null && matchVm.VocabMatch.Vocab.Question.IsDisambiguated)
@@ -25,7 +28,7 @@ public static class SentenceAnalysisViewModelCommon
                 : $"{formToDisplay}{emergency}";
    }
 
-   public static void AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(string sentence,
+   protected void AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(string sentence,
                                                                                  List<WordExclusion> incorrect,
                                                                                  List<WordExclusion> hidden,
                                                                                  List<string> expectedOutput)
@@ -35,8 +38,8 @@ public static class SentenceAnalysisViewModelCommon
       incorrect.ForEach(sentenceNote.Configuration.IncorrectMatches.Add);
 
       var sentenceViewModel = new SentenceViewModel(sentenceNote,
-         TemporaryServiceCollection.Instance.ServiceLocator.Resolve<Settings>(),
-         TemporaryServiceCollection.Instance.ServiceLocator.Resolve<VocabCollection>());
+         GetService<Settings>(),
+         GetService<VocabCollection>());
 
       void RunNoteAssertions(string message)
       {
@@ -51,21 +54,21 @@ public static class SentenceAnalysisViewModelCommon
                            : "running assertions with exclusions");
    }
 
-   public static void AssertDisplayWordsEqualWithIncorrectExclusions(string sentence, string[] incorrectStrings, params string[] expectedOutput) =>
+   protected void AssertDisplayWordsEqualWithIncorrectExclusions(string sentence, string[] incorrectStrings, params string[] expectedOutput) =>
       AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, incorrectStrings.Select(WordExclusion.FromString).ToList(), [], expectedOutput.ToList());
 
-   public static void AssertDisplayWordsEqualWithHiddenExclusions(string sentence, string[] hiddenStrings, params string[] expectedOutput) =>
+   protected void AssertDisplayWordsEqualWithHiddenExclusions(string sentence, string[] hiddenStrings, params string[] expectedOutput) =>
       AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, [], hiddenStrings.Select(WordExclusion.FromString).ToList(), expectedOutput.ToList());
 
-   public static void AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(string sentence, params string[] expectedOutput) =>
+   protected void AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(string sentence, params string[] expectedOutput) =>
       AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, [], [], expectedOutput.ToList());
 
-   public static void AssertAllWordsEqual(string sentence, List<string> expectedOutput)
+   protected void AssertAllWordsEqual(string sentence, List<string> expectedOutput)
    {
       var sentenceNote = SentenceNote.Create(sentence);
       var analysis = new SentenceViewModel(sentenceNote,
-         TemporaryServiceCollection.Instance.ServiceLocator.Resolve<Settings>(),
-         TemporaryServiceCollection.Instance.ServiceLocator.Resolve<VocabCollection>());
+         GetService<Settings>(),
+         GetService<VocabCollection>());
       var candidateWords = analysis.Analysis.CandidateWords;
       var matches = candidateWords
                    .SelectMany(it => it.Matches)
@@ -75,5 +78,5 @@ public static class SentenceAnalysisViewModelCommon
       Assert.Equal(expectedOutput, matches);
    }
 
-   public static void AssertAllWordsEqual(string sentence, params string[] expectedOutput) => AssertAllWordsEqual(sentence, expectedOutput.ToList());
+   protected void AssertAllWordsEqual(string sentence, params string[] expectedOutput) => AssertAllWordsEqual(sentence, expectedOutput.ToList());
 }

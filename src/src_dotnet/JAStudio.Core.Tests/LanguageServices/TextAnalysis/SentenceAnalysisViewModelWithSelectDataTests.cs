@@ -5,14 +5,13 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 using JAStudio.Core.Note;
 using JAStudio.Core.Tests.Fixtures;
 using Xunit;
-using static JAStudio.Core.Tests.LanguageServices.TextAnalysis.SentenceAnalysisViewModelCommon;
 
 namespace JAStudio.Core.Tests.LanguageServices.TextAnalysis;
 
 /// <summary>
 /// Tests ported from test_sentence_analysis_viewmodel_with_select_data.py
 /// </summary>
-public class SentenceAnalysisViewModelWithSelectDataTests : CollectionUsingTest
+public class SentenceAnalysisViewModelWithSelectDataTests : SentenceAnalysisViewModelCommon
 {
    public SentenceAnalysisViewModelWithSelectDataTests() : base(DataNeeded.Vocabulary) {}
 
