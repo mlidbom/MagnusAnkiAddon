@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using JAStudio.Core.Note;
 using Microsoft.Data.Sqlite;
@@ -14,23 +15,36 @@ public static class NoteBulkLoader
 
    /// <summary>
    /// Load all notes of the specified note type from the Anki database.
-   /// Queries the notetypes, fields, and notes tables directly.
+   /// Opens and closes its own connection so it's safe to call from any thread.
    /// </summary>
-   public static List<NoteData> LoadAllNotesOfType(AnkiDatabase db, string noteTypeName)
+   public static List<NoteData> LoadAllNotesOfType(string dbFilePath, string noteTypeName)
    {
+      using var db = AnkiDatabase.OpenReadOnly(dbFilePath);
       var (noteTypeId, fieldMap, fieldCount) = GetNoteTypeInfo(db.Connection, noteTypeName);
       return LoadNotes(db.Connection, noteTypeId, fieldMap, fieldCount);
    }
 
    static (long noteTypeId, Dictionary<string, int> fieldMap, int fieldCount) GetNoteTypeInfo(SqliteConnection connection, string noteTypeName)
    {
-      // Get note type ID
+      // Get note type ID.
+      // The notetypes.name column has COLLATE unicase (Anki custom). To avoid depending on that
+      // collation working correctly, we fetch all note types and match in C#.
       using var ntCmd = connection.CreateCommand();
-      ntCmd.CommandText = "SELECT id FROM notetypes WHERE name = @name";
-      ntCmd.Parameters.AddWithValue("@name", noteTypeName);
+      ntCmd.CommandText = "SELECT id, name FROM notetypes";
+      using var ntReader = ntCmd.ExecuteReader();
 
-      var noteTypeId = (long?)ntCmd.ExecuteScalar()
-                       ?? throw new KeyNotFoundException($"Note type '{noteTypeName}' not found in Anki database.");
+      long? noteTypeId = null;
+      while (ntReader.Read())
+      {
+         if (string.Equals(ntReader.GetString(1), noteTypeName, StringComparison.Ordinal))
+         {
+            noteTypeId = ntReader.GetInt64(0);
+            break;
+         }
+      }
+
+      if (noteTypeId == null)
+         throw new KeyNotFoundException($"Note type '{noteTypeName}' not found in Anki database.");
 
       // Get field name → ordinal mapping
       using var fCmd = connection.CreateCommand();
@@ -46,7 +60,7 @@ public static class NoteBulkLoader
          fieldMap[name] = ord;
       }
 
-      return (noteTypeId, fieldMap, fieldMap.Count);
+      return (noteTypeId.Value, fieldMap, fieldMap.Count);
    }
 
    static List<NoteData> LoadNotes(SqliteConnection connection, long noteTypeId, Dictionary<string, int> fieldMap, int fieldCount)

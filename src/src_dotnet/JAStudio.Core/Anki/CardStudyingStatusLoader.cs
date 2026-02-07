@@ -16,25 +16,42 @@ public static class CardStudyingStatusLoader
 
    /// <summary>
    /// Fetch studying status for all cards belonging to known note types (Kanji, Vocab, Sentence).
+   /// Opens and closes its own connection so it's safe to call from any thread.
    /// </summary>
-   public static List<CardStudyingStatus> FetchAll(AnkiDatabase db)
+   public static List<CardStudyingStatus> FetchAll(string dbFilePath)
    {
+      using var db = AnkiDatabase.OpenReadOnly(dbFilePath);
+
+      // First get the note type IDs for our known types by scanning in C# (avoids unicase collation issues)
+      var noteTypeIds = new Dictionary<long, string>();
+      using (var ntCmd = db.Connection.CreateCommand())
+      {
+         ntCmd.CommandText = "SELECT id, name FROM notetypes";
+         using var ntReader = ntCmd.ExecuteReader();
+         while (ntReader.Read())
+         {
+            var name = ntReader.GetString(1);
+            if (NoteTypes.All.Contains(name))
+               noteTypeIds[ntReader.GetInt64(0)] = name;
+         }
+      }
+
+      if (noteTypeIds.Count == 0)
+         return [];
+
+      // Build the IN clause with the numeric IDs (no collation needed)
+      var idList = string.Join(",", noteTypeIds.Keys);
       using var cmd = db.Connection.CreateCommand();
       cmd.CommandText = $"""
                          SELECT cards.nid   AS note_id,
                                 templates.name AS card_type,
                                 cards.queue AS queue,
-                                notetypes.name AS note_type
+                                notes.mid AS note_type_id
                          FROM cards
                          JOIN notes ON cards.nid = notes.id
-                         JOIN notetypes ON notetypes.id = notes.mid
                          JOIN templates ON templates.ntid = notes.mid AND templates.ord = cards.ord
-                         WHERE notetypes.name COLLATE NOCASE IN (@sentence, @vocab, @kanji)
+                         WHERE notes.mid IN ({idList})
                          """;
-
-      cmd.Parameters.AddWithValue("@sentence", NoteTypes.Sentence);
-      cmd.Parameters.AddWithValue("@vocab", NoteTypes.Vocab);
-      cmd.Parameters.AddWithValue("@kanji", NoteTypes.Kanji);
 
       using var reader = cmd.ExecuteReader();
       var results = new List<CardStudyingStatus>();
@@ -44,7 +61,8 @@ public static class CardStudyingStatusLoader
          var noteId = reader.GetInt64(0);
          var cardType = reader.GetString(1);
          var isSuspended = reader.GetInt32(2) == QueueTypeSuspended;
-         var noteTypeName = reader.GetString(3);
+         var noteTypeId = reader.GetInt64(3);
+         var noteTypeName = noteTypeIds[noteTypeId];
 
          results.Add(new CardStudyingStatus(noteId, cardType, isSuspended, noteTypeName));
       }

@@ -3,7 +3,7 @@ from System import IDisposable
 from Microsoft.Data.Sqlite import SqliteConnection
 from System.Collections.Generic import List_1
 from JAStudio.Core.Note.Collection import CardStudyingStatus
-from JAStudio.Core.Note import NetNoteData
+from JAStudio.Core.Note import NoteData
 
 class AnkiCardOperations:
     def SetImplementation(self, implementation: IAnkiCardOperations) -> None: ...
@@ -70,7 +70,7 @@ class AnkiFacade(abc.ABC):
 
 class CardStudyingStatusLoader(abc.ABC):
     @staticmethod
-    def FetchAll(db: AnkiDatabase) -> List_1[CardStudyingStatus]: ...
+    def FetchAll(dbFilePath: str) -> List_1[CardStudyingStatus]: ...
 
 
 class IAnkiCardOperations(typing.Protocol):
@@ -82,5 +82,5 @@ class IAnkiCardOperations(typing.Protocol):
 
 class NoteBulkLoader(abc.ABC):
     @staticmethod
-    def LoadAllNotesOfType(db: AnkiDatabase, noteTypeName: str) -> List_1[NetNoteData]: ...
+    def LoadAllNotesOfType(dbFilePath: str, noteTypeName: str) -> List_1[NoteData]: ...
 

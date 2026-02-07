@@ -1,9 +1,11 @@
 using System;
+using System.Diagnostics;
 using System.Threading;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
+using JAStudio.Core;
 using JAStudio.Core.Anki;
 using JAStudio.UI.Dialogs;
 using JAStudio.UI.Menus;
@@ -80,6 +82,31 @@ public class JAStudioAppRoot
       root.Services.AnkiCardOperations.SetImplementation(new AnkiCardOperationsImpl());
 
       return root;
+   }
+
+   /// <summary>
+   /// Load all notes and studying statuses from Anki's SQLite database into the .NET caches.
+   /// Must be called after Anki's collection is open (e.g. from profile_did_open hook).
+   /// Runs on a worker thread so that Anki's main thread is not blocked.
+   /// </summary>
+   public void LoadCollection()
+   {
+      new Thread(() =>
+      {
+         try
+         {
+            _ = Services.NoteServices;
+         }
+         catch (Exception ex)
+         {
+            MyLog.Error($"Failed to load collection: {ex}");
+            throw;
+         }
+      })
+      {
+         IsBackground = true,
+         Name = "JAStudio-CollectionLoader"
+      }.Start();
    }
 
    // ── Factory methods for Python-facing objects ──

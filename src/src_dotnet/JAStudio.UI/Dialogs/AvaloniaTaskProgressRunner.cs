@@ -9,32 +9,23 @@ namespace JAStudio.UI.Dialogs;
 
 public class AvaloniaTaskProgressRunner : ITaskProgressRunner
 {
-    private readonly TaskProgressDialog _dialog;
+    private TaskProgressDialog _dialog = null!;
     private readonly bool _allowCancel;
     private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 
     public AvaloniaTaskProgressRunner(string windowTitle, string labelText, bool allowCancel, bool modal)
     {
         _allowCancel = allowCancel;
-        
-        _dialog = new TaskProgressDialog();
-        _dialog.SetTitle(windowTitle);
-        _dialog.SetMessage(labelText);
-        _dialog.ShowCancelButton(allowCancel);
-        
-        // Show dialog on UI thread
-        Dispatcher.UIThread.Post(() =>
+
+        // All Avalonia control creation and interaction must happen on the UI thread.
+        // Marshal here so callers never need to know about Avalonia threading.
+        Dispatcher.UIThread.Invoke(() =>
         {
-            if (modal)
-            {
-                // For modal dialogs, we can't use ShowDialog since it's async
-                // Just show it as a regular window
-                _dialog.Show();
-            }
-            else
-            {
-                _dialog.Show();
-            }
+            _dialog = new TaskProgressDialog();
+            _dialog.SetTitle(windowTitle);
+            _dialog.SetMessage(labelText);
+            _dialog.ShowCancelButton(allowCancel);
+            _dialog.Show();
         });
     }
 
@@ -47,21 +38,28 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
 
     public TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action)
     {
-        _dialog.SetMessage(message);
-        _dialog.SetIndeterminate(true);
-        
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            _dialog.SetMessage(message);
+            _dialog.SetIndeterminate(true);
+        });
+
         var task = Task.Run(action);
-        
+
         // Wait for completion, processing UI events
         while (!task.IsCompleted)
         {
-            Dispatcher.UIThread.RunJobs();
-            System.Threading.Thread.Sleep(50);
+            if (Dispatcher.UIThread.CheckAccess())
+                Dispatcher.UIThread.RunJobs();
+            else
+                System.Threading.Thread.Sleep(50);
         }
-        
+
+        if (task.IsFaulted) throw task.Exception!.InnerException!;
+
         var result = task.Result;
         JALogger.Log($"Finished {message} in {_stopwatch.Elapsed.TotalSeconds:F2}s");
-        
+
         return result;
     }
 
@@ -75,9 +73,12 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
         var totalItems = items.Count;
         var results = new List<TOutput>(totalItems);
         
-        _dialog.SetMessage($"{message} 0 of {totalItems}");
-        _dialog.SetIndeterminate(false);
-        _dialog.SetProgress(0, totalItems);
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            _dialog.SetMessage($"{message} 0 of {totalItems}");
+            _dialog.SetIndeterminate(false);
+            _dialog.SetProgress(0, totalItems);
+        });
         
         var startTime = DateTime.Now;
         var lastRefresh = DateTime.Now;
@@ -93,30 +94,34 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
 
             // Process item
             results.Add(processItem(items[i]));
-            
+
             // Update UI periodically (every 100ms or on last item)
             var now = DateTime.Now;
             if ((now - lastRefresh).TotalMilliseconds > 100 || i == totalItems - 1)
             {
                 lastRefresh = now;
-                _dialog.SetProgress(i + 1, totalItems);
-                
-                // Calculate time estimates
-                if (i > 0)
+                var progressIndex = i + 1;
+                var elapsedForEstimate = i > 0 ? (now - startTime).TotalSeconds : 0;
+                var estimatedTotal = i > 0 ? (elapsedForEstimate / progressIndex) * totalItems : 0;
+                var estimatedRemaining = i > 0 ? estimatedTotal - elapsedForEstimate : 0;
+                var progressMessage = i > 0
+                    ? $"{message} {progressIndex} of {totalItems} Total: {FormatSeconds(estimatedTotal)} Elapsed: {FormatSeconds(elapsedForEstimate)} Remaining: {FormatSeconds(estimatedRemaining)}"
+                    : $"{message} {progressIndex} of {totalItems}";
+
+                if (Dispatcher.UIThread.CheckAccess())
                 {
-                    var elapsed = (now - startTime).TotalSeconds;
-                    var estimatedTotal = (elapsed / (i + 1)) * totalItems;
-                    var estimatedRemaining = estimatedTotal - elapsed;
-                    
-                    _dialog.SetMessage(
-                        $"{message} {i + 1} of {totalItems} " +
-                        $"Total: {FormatSeconds(estimatedTotal)} " +
-                        $"Elapsed: {FormatSeconds(elapsed)} " +
-                        $"Remaining: {FormatSeconds(estimatedRemaining)}");
+                    _dialog.SetProgress(progressIndex, totalItems);
+                    _dialog.SetMessage(progressMessage);
+                    Dispatcher.UIThread.RunJobs();
                 }
-                
-                // Process UI events
-                Dispatcher.UIThread.RunJobs();
+                else
+                {
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        _dialog.SetProgress(progressIndex, totalItems);
+                        _dialog.SetMessage(progressMessage);
+                    });
+                }
             }
         }
         
