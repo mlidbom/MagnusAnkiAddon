@@ -17,14 +17,13 @@ public class TestApp
 
    public static void Reset()
    {
-      App.Bootstrap();
-      var services = TemporaryServiceCollection.Instance;
-      services.App.Reset(new TestingBackendNoteCreator());
-      services.ConfigurationStore.InitForTesting();
-      services.App.Config().SetReadingsMappingsForTesting(TestReadingsMappings);
+      var app = App.Bootstrap();
+      app.Reset(new TestingBackendNoteCreator());
+      app.Services.ConfigurationStore.InitForTesting();
+      app.Config().SetReadingsMappingsForTesting(TestReadingsMappings);
 
       // Eagerly resolve NoteServices so caches are wired before any notes are created
-      _ = services.NoteServices;
+      _ = app.Services.NoteServices;
    }
 
    const string TestReadingsMappings = """
