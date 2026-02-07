@@ -9,68 +9,61 @@ namespace JAStudio.Core.Anki;
 /// 
 /// IMPORTANT: This should only contain operations that REQUIRE Anki's Python API.
 /// Anything that we can implement in C# and Avalonia should be.
+/// 
+/// All calls go through anki_facade_backend.py which handles Qt thread marshaling,
+/// making it safe to call from any .NET thread (including the Avalonia UI thread).
 /// </summary>
 public static class AnkiFacade
 {
-   static readonly PythonObjectWrapper SearchExecutor = PythonEnvironment.Import("jastudio.ankiutils.search_executor");
-   static readonly PythonObjectWrapper AqtUtils = PythonEnvironment.Import("aqt.utils");
-   static readonly PythonObjectWrapper App = PythonEnvironment.Import("jastudio.ankiutils.app");
-   static readonly PythonObjectWrapper LocalNoteUpdater = PythonEnvironment.Import("jastudio.batches.local_note_updater");
-   static readonly PythonObjectWrapper QueueManager = PythonEnvironment.Import("jastudio.note.queue_manager");
-   static readonly PythonObjectWrapper BrowserMain = PythonEnvironment.Import("jastudio.ui.menus.browser.main");
-   static readonly PythonObjectWrapper NoteExModule = PythonEnvironment.Import("jastudio.anki_extentions.note_ex");
-   static readonly PythonObjectWrapper Aqt = PythonEnvironment.Import("aqt");
+   static readonly PythonObjectWrapper Backend = PythonEnvironment.Import("jastudio.dotnet.anki_facade_backend");
 
    public static class Browser
    {
       /// <summary>Execute an Anki browser search query. </summary>
-      public static void ExecuteLookup(string query) => SearchExecutor.Use(it => it.do_lookup(query));
+      public static void ExecuteLookup(string query) => Backend.Use(it => it.browser_execute_lookup(query));
 
       /// <summary>Execute an Anki browser search query and show the previewer. </summary>
-      public static void ExecuteLookupAndShowPreviewer(string query) => SearchExecutor.Use(it => it.do_lookup_and_show_previewer(query));
+      public static void ExecuteLookupAndShowPreviewer(string query) => Backend.Use(it => it.browser_execute_lookup_and_show_previewer(query));
 
       public static class MenuActions
       {
          /// <summary>Prioritize selected cards (sets card.due based on note type priority).</summary>
-         public static void PrioritizeCards(System.Collections.Generic.List<long> cardIds) => QueueManager.Use(it => it.prioritize_selected_cards(PythonDotNetShim.LongList.ToPython(cardIds)));
+         public static void PrioritizeCards(System.Collections.Generic.List<long> cardIds) => Backend.Use(it => it.browser_prioritize_cards(PythonDotNetShim.LongList.ToPython(cardIds)));
 
          /// <summary>Spread selected cards over days (distributes due dates across time range).</summary>
-         public static void SpreadCardsOverDays(System.Collections.Generic.List<long> cardIds, int startDay, int daysApart) => BrowserMain.Use(it => it.spread_due_dates(PythonDotNetShim.LongList.ToPython(cardIds), startDay, daysApart));
+         public static void SpreadCardsOverDays(System.Collections.Generic.List<long> cardIds, int startDay, int daysApart) => Backend.Use(it => it.browser_spread_cards_over_days(PythonDotNetShim.LongList.ToPython(cardIds), startDay, daysApart));
       }
    }
 
    public static class UIUtils
    {
       /// <summary>Show a tooltip message in Anki. </summary>
-      public static void ShowTooltip(string message, int periodMs = 3000) => AqtUtils.Use(it => it.tooltip(message, periodMs));
+      public static void ShowTooltip(string message, int periodMs = 3000) => Backend.Use(it => it.ui_show_tooltip(message, periodMs));
 
       /// <summary>Refresh the currently displayed views in Anki. By it's nature it cannot be ported. </summary>
-      public static void Refresh() => App.Use(it => it.get_ui_utils().refresh());
+      public static void Refresh() => Backend.Use(it => it.ui_refresh());
    }
 
    public static class Batches
    {
       /// <summary>This is about converting between Anki note types. There's no way to avoid interfacing with anki for that. </summary>
-      public static void ConvertImmersionKitSentences() => LocalNoteUpdater.Use(it => it.convert_immersion_kit_sentences());
+      public static void ConvertImmersionKitSentences() => Backend.Use(it => it.batches_convert_immersion_kit_sentences());
    }
 
    public static class NoteEx
    {
       /// <summary>Suspend all cards for the given note ID.</summary>
-      public static void SuspendAllCardsForNote(long noteId) => NoteExModule.Use(it => it.NoteEx.from_id(noteId).suspend_all_cards());
+      public static void SuspendAllCardsForNote(long noteId) => Backend.Use(it => it.note_suspend_all_cards(noteId));
 
       /// <summary>Unsuspend all cards for the given note ID.</summary>
-      public static void UnsuspendAllCardsForNote(long noteId) => NoteExModule.Use(it => it.NoteEx.from_id(noteId).un_suspend_all_cards());
+      public static void UnsuspendAllCardsForNote(long noteId) => Backend.Use(it => it.note_unsuspend_all_cards(noteId));
    }
 
    public static class Col
    {
-      public static string DbFilePath() => Aqt.Use(it => (string)it.mw.col.path);
+      public static string DbFilePath() => Backend.Use(it => (string)it.col_db_file_path());
    }
 
    /// <summary>Get note ID from card ID (requires Anki API).</summary>
-   public static long GetNoteIdFromCardId(long cardId) => App.Use(it => (long)it.anki_collection().get_card(cardId).nid);
-
-   
-
+   public static long GetNoteIdFromCardId(long cardId) => Backend.Use(it => (long)it.get_note_id_from_card_id(cardId));
 }
