@@ -34,24 +34,11 @@ public class TemporaryServiceCollection : IDisposable
    public TaskRunner TaskRunner => _serviceLocator.Resolve<TaskRunner>();
    public AnkiCardOperations AnkiCardOperations => _serviceLocator.Resolve<AnkiCardOperations>();
    public DictLookup DictLookup => _serviceLocator.Resolve<DictLookup>();
-   public TestApp TestApp => _serviceLocator.Resolve<TestApp>();
 
    // Note services
    public NoteServices NoteServices => _serviceLocator.Resolve<NoteServices>();
-   public KanjiNoteMnemonicMaker KanjiNoteMnemonicMaker => _serviceLocator.Resolve<KanjiNoteMnemonicMaker>();
    public VocabNoteFactory VocabNoteFactory => _serviceLocator.Resolve<VocabNoteFactory>();
-   public VocabNoteGeneratedData VocabNoteGeneratedData => _serviceLocator.Resolve<VocabNoteGeneratedData>();
 
-   // ViewModels
-   public SentenceKanjiListViewModel SentenceKanjiListViewModel => _serviceLocator.Resolve<SentenceKanjiListViewModel>();
-
-   // Renderers
-   public KanjiListRenderer KanjiListRenderer => _serviceLocator.Resolve<KanjiListRenderer>();
-   public VocabKanjiListRenderer VocabKanjiListRenderer => _serviceLocator.Resolve<VocabKanjiListRenderer>();
-   public RelatedVocabsRenderer RelatedVocabsRenderer => _serviceLocator.Resolve<RelatedVocabsRenderer>();
-   public UdSentenceBreakdownRenderer UdSentenceBreakdownRenderer => _serviceLocator.Resolve<UdSentenceBreakdownRenderer>();
-   public QuestionRenderer QuestionRenderer => _serviceLocator.Resolve<QuestionRenderer>();
-   public SentenceRenderer SentenceRenderer => _serviceLocator.Resolve<SentenceRenderer>();
    public IServiceLocator ServiceLocator => _serviceLocator;
 
    public void Dispose() => _serviceLocator.Dispose();
