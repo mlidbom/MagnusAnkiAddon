@@ -6,11 +6,11 @@ from typing import TYPE_CHECKING
 from anki import hooks
 from anki.models import ModelManager
 from autoslot import Slots
-from jaslib.note.note_constants import NoteTypes
 from jaspythonutils.sysutils import ex_assert
 from jaspythonutils.sysutils.typed import checked_cast, non_optional
 from jastudio.anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from jastudio.ankiutils import app
+from JAStudio.Core.Note import NoteTypes
 from jastudio.sysutils import app_thread_pool, ex_thread
 from typed_linq_collections.collections.q_list import QList
 
@@ -36,8 +36,8 @@ class AnkiCollectionSyncRunner(Slots):
 
         model_manager: ModelManager = anki_collection.models
         all_note_types: list[NoteTypeEx] = [NoteTypeEx.from_dict(model) for model in model_manager.all()]
-        self._note_types: list[NoteTypeEx] = [note_type for note_type in all_note_types if note_type.name in NoteTypes.ALL]
-        ex_assert.equal(len(self._note_types), len(NoteTypes.ALL))
+        self._note_types: list[NoteTypeEx] = [note_type for note_type in all_note_types if note_type.name in NoteTypes.AllList]
+        ex_assert.equal(len(self._note_types), NoteTypes.AllList.Count)
 
         hooks.notes_will_be_deleted.append(self._on_will_be_removed)  # pyright: ignore[reportUnknownMemberType]
         hooks.note_will_be_added.append(self._on_will_be_added)  # pyright: ignore[reportUnknownMemberType]
