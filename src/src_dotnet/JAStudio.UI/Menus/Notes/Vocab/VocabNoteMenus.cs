@@ -51,18 +51,18 @@ public static class VocabNoteMenus
         var items = new List<SpecMenuItem>
         {
             SpecMenuItem.Command(ShortcutFinger.Home1("Forms"),
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(vocab.Forms.AllListNotes()))),
+                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup(vocab.Forms.AllListNotes()))),
             SpecMenuItem.Command(ShortcutFinger.Home2("Compound parts"),
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.VocabsLookupStrings(vocab.CompoundParts.All()))),
+                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.VocabsLookupStrings(vocab.CompoundParts.All()))),
             SpecMenuItem.Command(ShortcutFinger.Home3("In compounds"),
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(vocab.RelatedNotes.InCompounds()))),
+                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup(vocab.RelatedNotes.InCompounds()))),
             SpecMenuItem.Command(ShortcutFinger.Home4("Synonyms"),
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(vocab.RelatedNotes.Synonyms.Notes()))),
+                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup(vocab.RelatedNotes.Synonyms.Notes()))),
             SpecMenuItem.Command(ShortcutFinger.Home5("See also"),
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(vocab.RelatedNotes.SeeAlso.Notes()))),
+                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup(vocab.RelatedNotes.SeeAlso.Notes()))),
             BuildOpenHomonymsMenuSpec(vocab),
             SpecMenuItem.Command(ShortcutFinger.Up2("Dependencies"),
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.VocabDependenciesLookupQuery(vocab)))
+                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.VocabDependenciesLookupQuery(vocab)))
         };
 
         return SpecMenuItem.Submenu(ShortcutFinger.Home1("Vocab"), items);
@@ -78,7 +78,7 @@ public static class VocabNoteMenus
             var reading = readings[i];
             items.Add(SpecMenuItem.Command(
                 ShortcutFinger.FingerByPriorityOrder(i, $"Homonyms: {reading}"),
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(Core.App.Col().Vocab.WithReading(reading)))));
+                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup(Core.App.Col().Vocab.WithReading(reading)))));
         }
 
         return SpecMenuItem.Submenu(ShortcutFinger.Up1("Homonyms"), items);
@@ -89,17 +89,17 @@ public static class VocabNoteMenus
         var items = new List<SpecMenuItem>
         {
             SpecMenuItem.Command(ShortcutFinger.Home1("Sentences I'm Studying"),
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(vocab.Sentences.Studying()))),
+                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup(vocab.Sentences.Studying()))),
             SpecMenuItem.Command(ShortcutFinger.Home2("Sentences"),
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(vocab.Sentences.All()))),
+                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup(vocab.Sentences.All()))),
             SpecMenuItem.Command(ShortcutFinger.Home3("Sentences with primary form"),
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(vocab.Sentences.WithPrimaryForm()))),
+                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup(vocab.Sentences.WithPrimaryForm()))),
             SpecMenuItem.Command(ShortcutFinger.Home4("Sentences with this word highlighted"),
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(vocab.Sentences.UserHighlighted()))),
+                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup(vocab.Sentences.UserHighlighted()))),
             SpecMenuItem.Command(ShortcutFinger.Home5("Potentially matching sentences"),
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.PotentiallyMatchingSentencesForVocab(vocab))),
+                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.PotentiallyMatchingSentencesForVocab(vocab))),
             SpecMenuItem.Command(ShortcutFinger.Up1("Marked invalid in sentences"),
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(vocab.Sentences.InvalidIn())))
+                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup(vocab.Sentences.InvalidIn())))
         };
 
         return SpecMenuItem.Submenu(ShortcutFinger.Home2("Sentences"), items);
@@ -107,7 +107,7 @@ public static class VocabNoteMenus
 
     static SpecMenuItem BuildOpenKanjiMenuSpec(VocabNote vocab)
     {
-        var query = QueryBuilder.KanjiInString(vocab.GetQuestion());
+        var query = Core.TemporaryServiceCollection.Instance.QueryBuilder.KanjiInString(vocab.GetQuestion());
         return SpecMenuItem.Command(ShortcutFinger.Home3("Kanji"),
             () => AnkiFacade.ExecuteLookup(query));
     }
@@ -123,7 +123,7 @@ public static class VocabNoteMenus
             return null;
 
         return SpecMenuItem.Command(ShortcutFinger.Home4("Ergative twin"),
-            () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(ergativeTwinNotes)));
+            () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup(ergativeTwinNotes)));
     }
 
     static SpecMenuItem BuildCreateMenuSpec(VocabNote vocab)

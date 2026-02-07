@@ -87,7 +87,7 @@ public class JapaneseConfig
 
    public JapaneseConfig()
    {
-      var configDict = ConfigurationStore.GetConfigDict();
+      var configDict = TemporaryServiceCollection.Instance.ConfigurationStore.GetConfigDict();
 
       ConfigurationValue<T> New<T>(string name, string title, T defaultValue, Func<object, T> converter, Action<T>? featureToggler = null)
          => new(name, title, defaultValue, converter, configDict, featureToggler);
@@ -96,7 +96,7 @@ public class JapaneseConfig
       {
          value.OnChange(_ =>
          {
-            ConfigurationStore.WriteConfigDict();
+            TemporaryServiceCollection.Instance.ConfigurationStore.WriteConfigDict();
             PublishChange();
          });
          return value;
@@ -211,7 +211,7 @@ public class JapaneseConfig
          ("Developers only", DeveloperOnlyToggles)
       ];
 
-      ReadingsMappingsDict = ConfigurationStore.GetReadingsMappings();
+      ReadingsMappingsDict = TemporaryServiceCollection.Instance.ConfigurationStore.GetReadingsMappings();
    }
 
    public void ToggleAllSentenceDisplayAutoYieldFlags(bool? value = null)
@@ -224,17 +224,17 @@ public class JapaneseConfig
 
    public void SaveMappings(string mappings)
    {
-      ConfigurationStore.SaveMappings(mappings);
-      ReadingsMappingsDict = ConfigurationStore.GetReadingsMappings();
+      TemporaryServiceCollection.Instance.ConfigurationStore.SaveMappings(mappings);
+      ReadingsMappingsDict = TemporaryServiceCollection.Instance.ConfigurationStore.GetReadingsMappings();
    }
 
    public void SetReadingsMappingsForTesting(string mappings)
    {
-      ConfigurationStore.SetReadingsMappingsForTesting(mappings);
-      ReadingsMappingsDict = ConfigurationStore.GetReadingsMappings();
+      TemporaryServiceCollection.Instance.ConfigurationStore.SetReadingsMappingsForTesting(mappings);
+      ReadingsMappingsDict = TemporaryServiceCollection.Instance.ConfigurationStore.GetReadingsMappings();
    }
 
-   public static string ReadReadingsMappingsFile() => ConfigurationStore.ReadReadingsMappingsFile();
+   public static string ReadReadingsMappingsFile() => TemporaryServiceCollection.Instance.ConfigurationStore.ReadReadingsMappingsFile();
 
    void PublishChange()
    {

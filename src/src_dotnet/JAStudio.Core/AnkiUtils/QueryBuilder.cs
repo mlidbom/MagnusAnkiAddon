@@ -24,7 +24,7 @@ public class QueryBuilder
     /// <summary>
     /// Combines clauses with OR, wrapping in parentheses if multiple clauses.
     /// </summary>
-    static string OrClauses(IEnumerable<string> clauses)
+    string OrClauses(IEnumerable<string> clauses)
     {
         var clauseList = clauses.ToList();
         return clauseList.Count == 1 ? clauseList[0] : $"({string.Join(" OR ", clauseList)})";
@@ -33,7 +33,7 @@ public class QueryBuilder
     /// <summary>
     /// Creates a field search for whole word matches using regex word boundaries.
     /// </summary>
-    static string FieldContainsWord(string field, params string[] words)
+    string FieldContainsWord(string field, params string[] words)
     {
         return OrClauses(words.Select(word => $"\"{field}:re:\\\\b{word}\\\\b\""));
     }
@@ -41,7 +41,7 @@ public class QueryBuilder
     /// <summary>
     /// Creates a field search for substring matches using wildcards.
     /// </summary>
-    static string FieldContainsString(string field, params string[] words)
+    string FieldContainsString(string field, params string[] words)
     {
         return OrClauses(words.Select(word => $"\"{field}:*{word}*\""));
     }
@@ -51,7 +51,7 @@ public class QueryBuilder
     /// If exact=false, searches for all forms of vocab notes matching the word.
     /// Ported from sentence_search()
     /// </summary>
-    public static string SentenceSearch(string word, bool exact = false)
+    public string SentenceSearch(string word, bool exact = false)
     {
         var result = $"{Builtin.Note}:{NoteTypes.Sentence} ";
 
@@ -75,7 +75,7 @@ public class QueryBuilder
     /// Search for sentences that potentially match a vocab word.
     /// Ported from potentially_matching_sentences_for_vocab()
     /// </summary>
-    public static string PotentiallyMatchingSentencesForVocab(VocabNote vocab)
+    public string PotentiallyMatchingSentencesForVocab(VocabNote vocab)
     {
         var searchStrings = vocab.MatchingConfiguration.RequiresForbids.Surface.IsRequired
             ? vocab.Forms.AllList().ToList()
@@ -88,7 +88,7 @@ public class QueryBuilder
     /// Creates a query to find notes by their JPNote instances.
     /// Ported from notes_lookup()
     /// </summary>
-    public static string NotesLookup(IEnumerable<JPNote> notes)
+    public string NotesLookup(IEnumerable<JPNote> notes)
     {
         return NotesByIds(notes.Select(n => (long)n.GetId()));
     }
@@ -97,7 +97,7 @@ public class QueryBuilder
     /// Creates a query to find notes by their IDs.
     /// Ported from notes_by_id()
     /// </summary>
-    public static string NotesByIds(IEnumerable<long> noteIds)
+    public string NotesByIds(IEnumerable<long> noteIds)
     {
         var ids = noteIds.ToList();
         return ids.Count > 0 ? $"{NoteFieldsConstants.NoteId}:{string.Join(",", ids)}" : "";
@@ -107,13 +107,13 @@ public class QueryBuilder
     /// Search for vocab notes using wildcard matching on forms, reading, or answer.
     /// Ported from single_vocab_wildcard()
     /// </summary>
-    public static string SingleVocabWildcard(string form) => $"{Builtin.Note}:{NoteTypes.Vocab} ({NoteFieldsConstants.Vocab.Forms}:*{form}* OR {NoteFieldsConstants.Vocab.Reading}:*{form}* OR {MyNoteFields.Answer}:*{form}*)";
+    public string SingleVocabWildcard(string form) => $"{Builtin.Note}:{NoteTypes.Vocab} ({NoteFieldsConstants.Vocab.Forms}:*{form}* OR {NoteFieldsConstants.Vocab.Reading}:*{form}* OR {MyNoteFields.Answer}:*{form}*)";
 
     /// <summary>
     /// Search for vocab notes by exact word match in forms, reading, or answer.
     /// Ported from single_vocab_by_question_reading_or_answer_exact()
     /// </summary>
-    public static string SingleVocabByQuestionReadingOrAnswerExact(string search)
+    public string SingleVocabByQuestionReadingOrAnswerExact(string search)
     {
         var hiraganaSearch = KanaUtils.KatakanaToHiragana(search);
         return $"{Builtin.Note}:{NoteTypes.Vocab} ({FieldContainsWord(NoteFieldsConstants.Vocab.Forms, search)} OR {FieldContainsWord(NoteFieldsConstants.Vocab.Reading, hiraganaSearch)} OR {FieldContainsWord(MyNoteFields.Answer, search)})";
@@ -123,19 +123,19 @@ public class QueryBuilder
     /// Search for vocab notes by exact form match.
     /// Ported from single_vocab_by_form_exact()
     /// </summary>
-    public static string SingleVocabByFormExact(string form) => $"{Builtin.Note}:{NoteTypes.Vocab} {FieldContainsWord(NoteFieldsConstants.Vocab.Forms, form)}";
+    public string SingleVocabByFormExact(string form) => $"{Builtin.Note}:{NoteTypes.Vocab} {FieldContainsWord(NoteFieldsConstants.Vocab.Forms, form)}";
 
     /// <summary>
     /// Search for vocab reading cards by exact form match.
     /// Ported from single_vocab_by_form_exact_read_card_only()
     /// </summary>
-    public static string SingleVocabByFormExactReadCardOnly(string form) => $"({SingleVocabByFormExact(form)}) {Builtin.Card}:{NoteFieldsConstants.VocabNoteType.Card.Reading}";
+    public string SingleVocabByFormExactReadCardOnly(string form) => $"({SingleVocabByFormExact(form)}) {Builtin.Card}:{NoteFieldsConstants.VocabNoteType.Card.Reading}";
 
     /// <summary>
     /// Search for kanji notes for all kanji characters in the string.
     /// Ported from kanji_in_string()
     /// </summary>
-    public static string KanjiInString(string text)
+    public string KanjiInString(string text)
     {
         var kanjiClauses = text.Select(c => $"{MyNoteFields.Question}:{c}");
         return $"{Builtin.Note}:{NoteTypes.Kanji} ( {string.Join(" OR ", kanjiClauses)} )";
@@ -145,13 +145,13 @@ public class QueryBuilder
     /// Search for vocab notes containing a specific kanji.
     /// Ported from vocab_with_kanji()
     /// </summary>
-    public static string VocabWithKanji(KanjiNote kanji) => $"{Builtin.Note}:{NoteTypes.Vocab} {NoteFieldsConstants.Vocab.Forms}:*{kanji.GetQuestion()}*";
+    public string VocabWithKanji(KanjiNote kanji) => $"{Builtin.Note}:{NoteTypes.Vocab} {NoteFieldsConstants.Vocab.Forms}:*{kanji.GetQuestion()}*";
 
     /// <summary>
     /// Search for vocab notes by dictionary forms extracted from text.
     /// Ported from text_vocab_lookup()
     /// </summary>
-    public static string TextVocabLookup(string text)
+    public string TextVocabLookup(string text)
     {
         var dictionaryForms = TextAnalysis.FromText(text).AllWordsStrings();
         return VocabsLookup(dictionaryForms);
@@ -161,13 +161,13 @@ public class QueryBuilder
     /// Creates a vocab clause for a single form.
     /// Ported from vocab_clause()
     /// </summary>
-    static string VocabClause(string form) => FieldContainsWord(NoteFieldsConstants.Vocab.Forms, form);
+    string VocabClause(string form) => FieldContainsWord(NoteFieldsConstants.Vocab.Forms, form);
 
     /// <summary>
     /// Search for vocab notes matching any of the given dictionary forms.
     /// Ported from vocabs_lookup()
     /// </summary>
-    public static string VocabsLookup(IEnumerable<string> dictionaryForms)
+    public string VocabsLookup(IEnumerable<string> dictionaryForms)
     {
         var forms = dictionaryForms.ToList();
         var clauses = forms.Select(VocabClause);
@@ -178,7 +178,7 @@ public class QueryBuilder
     /// Search for vocab notes matching any of the given words (exact word match).
     /// Ported from vocabs_lookup_strings()
     /// </summary>
-    public static string VocabsLookupStrings(IEnumerable<string> words)
+    public string VocabsLookupStrings(IEnumerable<string> words)
     {
         var wordList = words.ToList();
         var clauses = wordList.Select(word => FieldContainsWord(NoteFieldsConstants.Vocab.Forms, word));
@@ -189,13 +189,13 @@ public class QueryBuilder
     /// Search for vocab reading cards matching any of the given words.
     /// Ported from vocabs_lookup_strings_read_card()
     /// </summary>
-    public static string VocabsLookupStringsReadCard(IEnumerable<string> words) => $"{VocabsLookupStrings(words)} {Builtin.Card}:{NoteFieldsConstants.VocabNoteType.Card.Reading}";
+    public string VocabsLookupStringsReadCard(IEnumerable<string> words) => $"{VocabsLookupStrings(words)} {Builtin.Card}:{NoteFieldsConstants.VocabNoteType.Card.Reading}";
 
     /// <summary>
     /// Search for kanji notes whose readings contain the given reading part.
     /// Ported from kanji_with_reading_part()
     /// </summary>
-    public static string KanjiWithReadingPart(string readingPart)
+    public string KanjiWithReadingPart(string readingPart)
     {
         var hiraganaReading = KanaUtils.AnythingToHiragana(readingPart);
         return $"{Builtin.Note}:{NoteTypes.Kanji} ({NoteFieldsConstants.Kanji.ReadingOn}:*{hiraganaReading}* OR {NoteFieldsConstants.Kanji.ReadingKun}:*{hiraganaReading}*)";
@@ -205,31 +205,31 @@ public class QueryBuilder
     /// Search for notes with exact question match or form match.
     /// Ported from exact_matches()
     /// </summary>
-    public static string ExactMatches(string question) => $"{MyNoteFields.Question}:\"{question}\" OR {FieldContainsWord(NoteFieldsConstants.Vocab.Forms, question)}";
+    public string ExactMatches(string question) => $"{MyNoteFields.Question}:\"{question}\" OR {FieldContainsWord(NoteFieldsConstants.Vocab.Forms, question)}";
 
     /// <summary>
     /// Search for exact matches excluding sentence notes.
     /// Ported from exact_matches_no_sentences()
     /// </summary>
-    public static string ExactMatchesNoSentences(string question) => $"({ExactMatches(question)}) -{Builtin.Note}:{NoteTypes.Sentence}";
+    public string ExactMatchesNoSentences(string question) => $"({ExactMatches(question)}) -{Builtin.Note}:{NoteTypes.Sentence}";
 
     /// <summary>
     /// Search for exact matches on reading cards, excluding sentences and excluded decks.
     /// Ported from exact_matches_no_sentences_reading_cards()
     /// </summary>
-    public static string ExactMatchesNoSentencesReadingCards(string question) => $"({ExactMatchesNoSentences(question)}) {Builtin.Card}:{NoteFieldsConstants.VocabNoteType.Card.Reading} -{Builtin.Deck}:{ExcludedDeckSubstring}";
+    public string ExactMatchesNoSentencesReadingCards(string question) => $"({ExactMatchesNoSentences(question)}) {Builtin.Card}:{NoteFieldsConstants.VocabNoteType.Card.Reading} -{Builtin.Deck}:{ExcludedDeckSubstring}";
 
     /// <summary>
     /// Search for Immersion Kit sentence notes.
     /// Ported from immersion_kit_sentences()
     /// </summary>
-    public static string ImmersionKitSentences() => $"\"{Builtin.Note}:{NoteTypes.ImmersionKit}\"";
+    public string ImmersionKitSentences() => $"\"{Builtin.Note}:{NoteTypes.ImmersionKit}\"";
 
     /// <summary>
     /// Search for kanji notes containing all specified radicals.
     /// Ported from kanji_with_radicals_in_string()
     /// </summary>
-    public static string KanjiWithRadicalsInString(string search)
+    public string KanjiWithRadicalsInString(string search)
     {
         var radicals = search.Trim().Replace(",", "").Replace(" ", "").ToCharArray().ToHashSet();
 
@@ -252,19 +252,19 @@ public class QueryBuilder
     /// Search for a card by its ID.
     /// Ported from open_card_by_id()
     /// </summary>
-    public static string OpenCardById(long cardId) => $"cid:{cardId}";
+    public string OpenCardById(long cardId) => $"cid:{cardId}";
 
     /// <summary>
     /// Search for kanji notes whose meaning contains the search string.
     /// Ported from kanji_with_meaning()
     /// </summary>
-    public static string KanjiWithMeaning(string search) => $"{Builtin.Note}:{NoteTypes.Kanji} ({MyNoteFields.Answer}:*{search}*)";
+    public string KanjiWithMeaning(string search) => $"{Builtin.Note}:{NoteTypes.Kanji} ({MyNoteFields.Answer}:*{search}*)";
 
     /// <summary>
     /// Search for vocab dependencies (vocab and kanji that a word depends on).
     /// Ported from vocab_dependencies_lookup_query()
     /// </summary>
-    public static string VocabDependenciesLookupQuery(VocabNote vocab)
+    public string VocabDependenciesLookupQuery(VocabNote vocab)
     {
         string CreateVocabClause(string text)
         {

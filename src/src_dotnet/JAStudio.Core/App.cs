@@ -34,9 +34,9 @@ public class App : IDisposable
 
    public static App Bootstrap() => AppBootstrapper.Bootstrap();
 
-   public static void InitConfigForTesting() => ConfigurationStore.InitForTesting();
-   public static void InitConfigJson(string json, Action<string> updateCallback) => ConfigurationStore.InitJson(json, updateCallback);
-   public static JapaneseConfig Config() => ConfigurationStore.Config();
+   public static void InitConfigForTesting() => TemporaryServiceCollection.Instance.ConfigurationStore.InitForTesting();
+   public static void InitConfigJson(string json, Action<string> updateCallback) => TemporaryServiceCollection.Instance.ConfigurationStore.InitJson(json, updateCallback);
+   public static JapaneseConfig Config() => TemporaryServiceCollection.Instance.ConfigurationStore.Config();
 
    public static JPCollection Col()
    {

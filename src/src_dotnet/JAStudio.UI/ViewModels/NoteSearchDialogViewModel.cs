@@ -283,7 +283,7 @@ public partial class NoteSearchDialogViewModel : ObservableObject
             return;
 
         var noteId = SelectedResult.NoteId;
-        var query = Core.AnkiUtils.QueryBuilder.NotesByIds(new[] { (long)noteId });
+        var query = Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesByIds(new[] { (long)noteId });
         AnkiFacade.ExecuteLookup(query);
     }
 }

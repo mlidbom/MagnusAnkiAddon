@@ -9,22 +9,25 @@ namespace JAStudio.Core.Configuration;
 
 public class ConfigurationStore
 {
-   static Dictionary<string, object>? _configDict;
-   static Action<string>? _updateCallback;
+   readonly TemporaryServiceCollection _services;
+   internal ConfigurationStore(TemporaryServiceCollection services) => _services = services;
 
-   public static void InitForTesting()
+   Dictionary<string, object>? _configDict;
+   Action<string>? _updateCallback;
+
+   public void InitForTesting()
    {
       if(_configDict != null) return;
       InitJson("{}", s => {});
       _readingsMappingsOverride = new Dictionary<string, string>();
    }
 
-   public static void SetReadingsMappingsForTesting(string mappings)
+   public void SetReadingsMappingsForTesting(string mappings)
    {
       _readingsMappingsOverride = ParseMappingsFromString(mappings);
    }
 
-   public static void InitJson(string json, Action<string> updateCallback)
+   public void InitJson(string json, Action<string> updateCallback)
    {
       if(_configDict != null)
       {
@@ -35,9 +38,9 @@ public class ConfigurationStore
       _updateCallback = updateCallback;
    }
 
-   internal static Dictionary<string, object> GetConfigDict() => _configDict ?? throw new InvalidOperationException("Configuration dict not initialized");
+   internal Dictionary<string, object> GetConfigDict() => _configDict ?? throw new InvalidOperationException("Configuration dict not initialized");
 
-   internal static void WriteConfigDict()
+   internal void WriteConfigDict()
    {
       if(!TestEnvDetector.IsTesting && _updateCallback != null && _configDict != null)
       {
@@ -46,30 +49,30 @@ public class ConfigurationStore
       }
    }
 
-   static JapaneseConfig? _config;
+   JapaneseConfig? _config;
 
-   public static JapaneseConfig Config()
+   public JapaneseConfig Config()
    {
       return _config ??= new JapaneseConfig();
    }
 
    // --- Readings mappings ---
 
-   static Dictionary<string, string>? _readingsMappingsOverride;
+   Dictionary<string, string>? _readingsMappingsOverride;
 
-   public static Dictionary<string, string> GetReadingsMappings() => _readingsMappingsOverride ?? ReadReadingsMappingsFromFile();
+   public Dictionary<string, string> GetReadingsMappings() => _readingsMappingsOverride ?? ReadReadingsMappingsFromFile();
 
-   public static void SaveMappings(string mappings)
+   public void SaveMappings(string mappings)
    {
       File.WriteAllText(MappingsFilePath(), mappings);
       _readingsMappingsOverride = null;
    }
 
-   public static string ReadReadingsMappingsFile() => File.ReadAllText(MappingsFilePath());
+   public string ReadReadingsMappingsFile() => File.ReadAllText(MappingsFilePath());
 
-   static Dictionary<string, string> ReadReadingsMappingsFromFile() => ParseMappingsFromString(ReadReadingsMappingsFile());
+   Dictionary<string, string> ReadReadingsMappingsFromFile() => ParseMappingsFromString(ReadReadingsMappingsFile());
 
-   static Dictionary<string, string> ParseMappingsFromString(string mappingsString)
+   Dictionary<string, string> ParseMappingsFromString(string mappingsString)
    {
       string ParseValuePart(string valuePart)
       {
@@ -96,5 +99,5 @@ public class ConfigurationStore
                             );
    }
 
-   static string MappingsFilePath() => Path.Combine(App.UserFilesDir, "readings_mappings.txt");
+   string MappingsFilePath() => Path.Combine(App.UserFilesDir, "readings_mappings.txt");
 }

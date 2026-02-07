@@ -298,7 +298,7 @@ public class NoteContextMenu
     // Action handlers
     void OnOpenInPreviewer(JPNote note)
     {
-        var query = QueryBuilder.NotesLookup([note]);
+        var query = Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup([note]);
         AnkiFacade.ExecuteLookupAndShowPreviewer(query);
     }
 
@@ -324,7 +324,7 @@ public class NoteContextMenu
             var newVocab = Core.TemporaryServiceCollection.Instance.VocabNoteFactory.CreateWithDictionary(text);
             Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.ReparseSentencesForVocab(newVocab);
 
-            var query = QueryBuilder.NotesLookup([newVocab]);
+            var query = Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup([newVocab]);
             AnkiFacade.ExecuteLookupAndShowPreviewer(query);
             AnkiFacade.Refresh();
         }
@@ -341,7 +341,7 @@ public class NoteContextMenu
         {
             var newSentence = SentenceNote.Create(text);
 
-            var query = QueryBuilder.NotesLookup([newSentence]);
+            var query = Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup([newSentence]);
             AnkiFacade.ExecuteLookupAndShowPreviewer(query);
             AnkiFacade.Refresh();
         }
@@ -359,7 +359,7 @@ public class NoteContextMenu
             // Create with placeholder values - user will need to fill them in
             var newKanji = KanjiNote.Create(text, "TODO", "", "");
 
-            var query = QueryBuilder.NotesLookup([newKanji]);
+            var query = Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup([newKanji]);
             AnkiFacade.ExecuteLookupAndShowPreviewer(query);
             AnkiFacade.Refresh();
         }

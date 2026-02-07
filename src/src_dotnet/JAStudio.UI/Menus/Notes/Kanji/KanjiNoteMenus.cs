@@ -45,16 +45,16 @@ public static class KanjiNoteMenus
         var items = new List<SpecMenuItem>
         {
             SpecMenuItem.Command(ShortcutFinger.Home1("Primary Vocabs"), 
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.VocabsLookupStrings(kanji.GetPrimaryVocab()))),
+                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.VocabsLookupStrings(kanji.GetPrimaryVocab()))),
             SpecMenuItem.Command(ShortcutFinger.Home2("Vocabs"), 
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.VocabWithKanji(kanji))),
+                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.VocabWithKanji(kanji))),
             SpecMenuItem.Command(ShortcutFinger.Home3("Radicals"), 
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(kanji.GetRadicalsNotes()))),
+                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup(kanji.GetRadicalsNotes()))),
             SpecMenuItem.Command(ShortcutFinger.Home4("Kanji"), 
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesLookup(
+                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup(
                     Core.App.Col().Kanji.WithRadical(kanji.GetQuestion())))),
             SpecMenuItem.Command(ShortcutFinger.Home5("Sentences"), 
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.SentenceSearch(kanji.GetQuestion(), exact: true)))
+                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.SentenceSearch(kanji.GetQuestion(), exact: true)))
         };
 
         return SpecMenuItem.Submenu(ShortcutFinger.Home1("Open"), items);
