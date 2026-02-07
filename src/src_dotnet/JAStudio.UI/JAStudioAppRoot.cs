@@ -78,16 +78,10 @@ public class JAStudioAppRoot
 
    // ── Factory methods for Python-facing objects ──
 
-   /// <summary>
-   /// Create a NoteContextMenu wired with all required services.
-   /// Called from Python to build right-click context menus.
-   /// </summary>
+   /// <summary>Called from Python to build right-click context menus.</summary>
    public NoteContextMenu CreateNoteContextMenu() => new(Services);
 
-   /// <summary>
-   /// Create a JapaneseMainMenu wired with all required services.
-   /// Called from Python to build the main "Japanese" tools menu.
-   /// </summary>
+   /// <summary>Called from Python to build the main "Japanese" tools menu.</summary>
    public JapaneseMainMenu CreateJapaneseMainMenu() => new(this);
 
    // ── UI thread helpers ──

@@ -8,28 +8,19 @@ namespace JAStudio.UI;
 
 public class App : Application
 {
-    static readonly ManualResetEventSlim _initialized = new();
+    static readonly ManualResetEventSlim Initialized = new();
 
     public override void Initialize() => AvaloniaXamlLoader.Load(this);
 
     public override void OnFrameworkInitializationCompleted()
     {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            // No main window - we're hosted by Anki/Python
-            // Windows are shown on-demand via JAStudioAppRoot
-        }
-
         base.OnFrameworkInitializationCompleted();
-        _initialized.Set();
+        Initialized.Set();
     }
 
-    /// <summary>
-    /// Block until Avalonia framework initialization has completed.
-    /// </summary>
-    public static void WaitForInitialization(TimeSpan timeout)
+    internal static void WaitForInitialization(TimeSpan timeout)
     {
-        if (!_initialized.Wait(timeout))
+        if (!Initialized.Wait(timeout))
         {
             throw new TimeoutException(
                 $"Avalonia did not initialize within {timeout.TotalSeconds}s.");
