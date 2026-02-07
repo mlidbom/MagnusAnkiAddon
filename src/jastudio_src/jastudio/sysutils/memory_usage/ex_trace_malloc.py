@@ -4,7 +4,7 @@ import os
 import tracemalloc
 
 from autoslot import Slots
-from jaslib import mylog
+from jastudio import mylog
 from jastudio.ankiutils import app
 from jastudio.sysutils import ex_gc
 

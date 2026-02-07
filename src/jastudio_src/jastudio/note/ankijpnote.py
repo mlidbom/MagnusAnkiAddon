@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from jaspythonutils.sysutils.weak_ref import WeakRefable
 from jastudio.ui import dotnet_ui_root
 
 if TYPE_CHECKING:
@@ -11,7 +10,7 @@ if TYPE_CHECKING:
     from anki.notes import Note
     from JAStudio.Core.Note import JPNote
 
-class AnkiJPNote(WeakRefable, Slots):
+class AnkiJPNote(Slots):
     @classmethod
     def note_from_card(cls, card: Card) -> JPNote:
         return dotnet_ui_root.Services.App.Collection.NoteFromNoteId(card.nid if card.nid else card.note().id)

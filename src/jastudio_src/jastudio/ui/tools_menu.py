@@ -10,9 +10,8 @@ from jastudio.ui.menus.menu_utils import shortcutfinger
 
 def build_main_menu() -> None:
     menu = non_optional(main_window().form.menubar.addMenu(shortcutfinger.home1("Japanese")))
-    from jas_dotnet.qt_adapters import qt_menu_adapter
-    from jaslib import mylog
-
+    from jastudio import mylog
+    from jastudio.qt_adapters import qt_menu_adapter
     from jastudio.ui import dotnet_ui_root
 
     def get_user_text_input() -> str:

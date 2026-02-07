@@ -80,7 +80,7 @@ def add_hover_avalonia_menu(
             # Show the Avalonia menu
             show_avalonia_menu(physical_x, physical_y)
         except Exception as e:
-            from jaslib import mylog
+            from jastudio import mylog
 
             mylog.error(f"Failed to show Avalonia menu: {e}")
 

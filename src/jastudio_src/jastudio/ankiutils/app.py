@@ -3,7 +3,7 @@ from __future__ import annotations  # noqa: I001
 import os
 from typing import TYPE_CHECKING
 
-from jaslib import mylog
+from jastudio import mylog
 from jaspythonutils.sysutils.typed import checked_cast, non_optional
 # noinspection PyUnusedImports, Annotator
 import jastudio.mylog  # pyright: ignore [reportUnusedImport]  # noqa: F401
@@ -12,7 +12,6 @@ from typed_linq_collections.collections.q_set import QSet
 
 # noinspection Annotator
 from jastudio.dotnet import load_dotnet_runtime  # pyright: ignore [reportUnusedImport]  # noqa: F401
-from jastudio.ui import dotnet_ui_root
 
 is_testing = ex_pytest.is_testing
 
@@ -41,6 +40,7 @@ def _call_init_hooks() -> None:
     for hook in init_hooks: hook()
 
 def config() -> JapaneseConfig:
+    from jastudio.ui import dotnet_ui_root
     return dotnet_ui_root.Services.ConfigurationStore.Config()
 
 def _init(delay_seconds: float = 1.0) -> None:

@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from jaspythonutils.sysutils.weak_ref import WeakRefable
 from JAStudio.Core.Note import JPNote, NoteData
 
 if TYPE_CHECKING:
@@ -12,7 +11,7 @@ if TYPE_CHECKING:
     from JAStudio.Core.Note.Collection import CardStudyingStatus, NoteCacheBase_1
     from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner
 
-class AnkiSingleCollectionSyncer[TNote: JPNote](WeakRefable, Slots):
+class AnkiSingleCollectionSyncer[TNote: JPNote](Slots):
     def __init__(self, cached_note_type: type[TNote], note_constructor: Callable[[NoteData], TNote], note_cache: NoteCacheBase_1[TNote], cache_runner: AnkiCollectionSyncRunner) -> None:
         pass
         # self._note_type: type[TNote] = cached_note_type

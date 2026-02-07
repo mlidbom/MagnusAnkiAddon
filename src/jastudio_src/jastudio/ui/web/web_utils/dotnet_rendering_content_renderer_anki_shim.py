@@ -5,13 +5,8 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from JAStudio.Core.Note import JPNote, Mine
-from JAStudio.Core.UI.Web import PreRenderingContentRenderer_1
-
-from jastudio.ankiutils import app
-from jastudio.ui import dotnet_ui_root
 
 if TYPE_CHECKING:
-
     from anki.cards import Card
     from JAStudio.Core.UI.Web import PreRenderingContentRenderer_1
 
@@ -22,6 +17,8 @@ class DotNetPrerenderingContentRendererAnkiShim[TNote: JPNote](Slots):
         self._renderer: PreRenderingContentRenderer_1[TNote] = renderer
 
     def render(self, html: str, card: Card, type_of_display: str) -> str:
+        from jastudio.ankiutils import app
+        from jastudio.ui import dotnet_ui_root
         if not app.is_initialized():
             return Mine.AppStillLoadingMessage
 

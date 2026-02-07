@@ -3,7 +3,12 @@ Tests for Python to .NET interoperability.
 
 These tests verify that Python can successfully load and call the C# JAStudio libraries.
 """
-from __future__ import annotations
+from __future__ import annotations  # noqa: I001
+
+
+from jastudio.dotnet import load_dotnet_runtime
+
+load_dotnet_runtime.mylog.debug("Loading dotnet runtime")
 
 #from typing import override
 from JAStudio.Core.InteropExperiments import CustomTypeReceiver  # noqa: E402

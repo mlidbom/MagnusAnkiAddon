@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from jaslib.task_runners.task_progress_runner import TaskRunner
 from jaspythonutils.sysutils.typed import non_optional
 
-from jastudio.qt_utils.qt_task_progress_runner import QtTaskProgressRunner
+from jastudio.task_runners.task_progress_runner import TaskRunner
 
 # The JAStudioAppRoot composition root instance, set during init().
 # Other modules import this to access C# UI services.
@@ -11,15 +10,15 @@ dotnet_ui_root = None
 
 
 def init() -> None:
-
-    from jastudio.ui import garbage_collection_fixes, hooks, menus, timing_hacks, tools_menu, web
     _init_dot_net_app()
+    from jastudio.ui import garbage_collection_fixes, hooks, menus, timing_hacks, tools_menu, web
     hooks.init()
     timing_hacks.init()
     tools_menu.init()
     web.init()
     menus.init()
     garbage_collection_fixes.init()
+    from jastudio.qt_utils.qt_task_progress_runner import QtTaskProgressRunner
     TaskRunner.set_ui_task_runner_factory(QtTaskProgressRunner)
 
 def _init_dot_net_app() -> None:

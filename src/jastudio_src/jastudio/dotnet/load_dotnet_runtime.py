@@ -3,8 +3,8 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from jaslib import mylog
 from jaspythonutils.sysutils.timeutil import StopWatch
+from jastudio import mylog
 from pythonnet import load
 
 config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "runtimeconfig.json")

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from jaslib.note.jpnote_data import JPNoteData
 from JAStudio.Core.Note import NoteData
 
 if TYPE_CHECKING:
@@ -20,10 +19,15 @@ class JPNoteDataShim:
 
         return NoteData.FromPythonNoteData(jp_note_data)
 
-
     @classmethod
     def sync_note_to_anki_note(cls, jp_note: JPNote, note: Note) -> None:
         data = jp_note.GetData()
         note.tags = list(data.Tags)
         for key_value_pair in data.Fields:
             note[key_value_pair.Key] = key_value_pair.Value
+
+class JPNoteData:
+    def __init__(self, id: int, fields: dict[str, str], tags: list[str]) -> None:
+        self.id: int = id
+        self.fields: dict[str, str] = fields
+        self.tags: list[str] = tags

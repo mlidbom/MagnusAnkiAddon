@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import gc
 
-from jaslib import mylog
+from jastudio import mylog
 from jastudio.ankiutils import app
 from jastudio.sysutils import app_thread_pool
 

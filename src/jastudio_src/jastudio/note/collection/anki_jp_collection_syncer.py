@@ -4,17 +4,16 @@ import threading
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from jaslib import mylog
-from jaslib.task_runners.task_progress_runner import TaskRunner
 from jaspythonutils.sysutils.memory_usage import string_auto_interner
 from jaspythonutils.sysutils.timeutil import StopWatch
 from jaspythonutils.sysutils.typed import non_optional
-from jaspythonutils.sysutils.weak_ref import WeakRefable
+from jastudio import mylog
 from jastudio.ankiutils import app
 from JAStudio.Core.Note import Mine
 from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner
 from jastudio.sysutils import app_thread_pool
 from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
+from jastudio.task_runners.task_progress_runner import TaskRunner
 from jastudio.ui import dotnet_ui_root
 
 if TYPE_CHECKING:
@@ -23,7 +22,7 @@ if TYPE_CHECKING:
     from JAStudio.Core.Note import JPNote, KanjiNote, SentenceNote, VocabNote
     from jastudio.note.collection.anki_single_collection_syncer import AnkiSingleCollectionSyncer
 
-class AnkiJPCollectionSyncer(WeakRefable, Slots):
+class AnkiJPCollectionSyncer(Slots):
     _is_inital_load: bool = True  # running the GC on initial load slows startup a lot but does not decrease memory usage in any significant way.
 
     def __init__(self, anki_collection: Collection, delay_seconds: float | None = None) -> None:

@@ -7,7 +7,6 @@ from aqt import gui_hooks
 from jaspythonutils.sysutils.typed import non_optional
 from JAStudio.Core.Note import KanjiNote, Mine, SentenceNote, VocabNote
 
-from jastudio.ankiutils import ui_utils
 from jastudio.qt_utils.ex_qmenu import ExQmenu
 
 if typing.TYPE_CHECKING:
@@ -21,6 +20,7 @@ def build_browser_right_click_menu(root_menu: QMenu, note: JPNote) -> None:
 def build_right_click_menu_webview_hook(view: AnkiWebView, root_menu: QMenu) -> None:
     selection = non_optional(view.page()).selectedText().strip()
     clipboard = pyperclip.paste().strip()
+    from jastudio.ankiutils import ui_utils
     note = ui_utils.get_note_from_web_view(view)
     build_right_click_menu(root_menu, note, selection, clipboard)
 
@@ -31,8 +31,7 @@ def build_right_click_menu(right_click_menu: QMenu, note: JPNote | None, selecti
         right_click_menu.addAction(Mine.AppStillLoadingMessage)  # pyright: ignore[reportUnknownMemberType]
         return
 
-    from jas_dotnet.qt_adapters import qt_menu_adapter
-
+    from jastudio.qt_adapters import qt_menu_adapter
     from jastudio.ui import dotnet_ui_root
     menu_builder = dotnet_ui_root.CreateNoteContextMenu()
 
@@ -52,7 +51,7 @@ def build_right_click_menu(right_click_menu: QMenu, note: JPNote | None, selecti
 
         qt_menu_adapter.add_to_qt_menu(right_click_menu, specs)
     except Exception as e:
-        from jaslib import mylog
+        from jastudio import mylog
         mylog.error(f"Failed to build C# menus: {e}")
         import traceback
         mylog.error(traceback.format_exc())
