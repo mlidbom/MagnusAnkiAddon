@@ -5,13 +5,13 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from jaslib import mylog
-from jaslib.note.note_constants import Mine
 from jaslib.task_runners.task_progress_runner import TaskRunner
 from jaspythonutils.sysutils.memory_usage import string_auto_interner
 from jaspythonutils.sysutils.timeutil import StopWatch
 from jaspythonutils.sysutils.typed import non_optional
 from jaspythonutils.sysutils.weak_ref import WeakRefable
 from jastudio.ankiutils import app
+from JAStudio.Core.Note import Mine
 from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner
 from jastudio.sysutils import app_thread_pool
 from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
@@ -74,12 +74,12 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
         ex_trace_malloc_instance.ensure_initialized()
         stopwatch = StopWatch()
         with StopWatch.log_warning_if_slower_than(5, "Full collection setup"):  # noqa: SIM117
-            with TaskRunner.current(f"Loading {Mine.app_name}", "reading notes from anki",
+            with TaskRunner.current(f"Loading {Mine.AppName}", "reading notes from anki",
                                     force_hide=not app.config().LoadStudioInForeground.GetValue(),
                                     force_gc=not AnkiJPCollectionSyncer._is_inital_load,
                                     allow_cancel=False) as task_runner:
                 if task_runner.is_hidden():
-                    app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
+                    app.get_ui_utils().tool_tip(f"{Mine.AppName} loading", 60000)
 
                 with StopWatch.log_warning_if_slower_than(5, "Core collection setup - no gc"):
                     self._cache_runner = AnkiCollectionSyncRunner(self.anki_collection)
@@ -98,7 +98,7 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
                 self._is_initialized = True
                 AnkiJPCollectionSyncer._is_inital_load = False
 
-            app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading in {str(stopwatch.elapsed_seconds())[0:4]} seconds.", milliseconds=6000)
+            app.get_ui_utils().tool_tip(f"{Mine.AppName} done loading in {str(stopwatch.elapsed_seconds())[0:4]} seconds.", milliseconds=6000)
 
     @property
     def cache_runner(self) -> AnkiCollectionSyncRunner: return non_optional(self._initialized_self()._cache_runner)
