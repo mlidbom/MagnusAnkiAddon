@@ -10,96 +10,89 @@ namespace JAStudio.UI.ViewModels;
 
 public partial class EnglishWordSearchDialogViewModel : ObservableObject
 {
-    private const int MaxResults = 100;
+   private const int MaxResults = 100;
 
-    [ObservableProperty]
-    private string _searchText = string.Empty;
+   [ObservableProperty]
+   private string _searchText = string.Empty;
 
-    [ObservableProperty]
-    private EnglishWordResultViewModel? _selectedResult;
+   [ObservableProperty]
+   private EnglishWordResultViewModel? _selectedResult;
 
-    public ObservableCollection<EnglishWordResultViewModel> Results { get; } = new();
+   public ObservableCollection<EnglishWordResultViewModel> Results { get; } = new();
 
-    partial void OnSearchTextChanged(string value)
-    {
-        PerformSearch();
-    }
+   partial void OnSearchTextChanged(string value)
+   {
+      PerformSearch();
+   }
 
-    private void PerformSearch()
-    {
-        var searchText = SearchText.Trim();
-        Results.Clear();
+   private void PerformSearch()
+   {
+      var searchText = SearchText.Trim();
+      Results.Clear();
 
-        if (string.IsNullOrWhiteSpace(searchText))
-        {
-            return;
-        }
+      if(string.IsNullOrWhiteSpace(searchText))
+      {
+         return;
+      }
 
-        try
-        {
-            var results = SearchEnglishWords(searchText);
-            foreach (var result in results)
-            {
-                Results.Add(result);
-            }
-        }
-        catch (Exception ex)
-        {
-            JALogger.Log($"English word search error: {ex.Message}");
-        }
-    }
+      var results = SearchEnglishWords(searchText);
+      foreach(var result in results)
+      {
+         Results.Add(result);
+      }
+   }
 
-    private List<EnglishWordResultViewModel> SearchEnglishWords(string searchText)
-    {
-        var dictionary = EnglishDictionary.Instance;
-        var matchingWords = dictionary.WordsContainingStartingWithFirstThenByShortestFirst(searchText);
+   private List<EnglishWordResultViewModel> SearchEnglishWords(string searchText)
+   {
+      var dictionary = EnglishDictionary.Instance;
+      var matchingWords = dictionary.WordsContainingStartingWithFirstThenByShortestFirst(searchText);
 
-        return matchingWords
+      return matchingWords
             .Take(MaxResults)
             .Select(word =>
-            {
+             {
                 var definition = word.Senses.Count > 0 ? word.Senses[0].Definition : "no definition";
                 return new EnglishWordResultViewModel(word.Word, definition);
-            })
+             })
             .ToList();
-    }
+   }
 
-    public void OpenInMerriamWebster()
-    {
-        if (SelectedResult == null)
-            return;
+   public void OpenInMerriamWebster()
+   {
+      if(SelectedResult == null)
+         return;
 
-        var url = $"https://www.merriam-webster.com/dictionary/{SelectedResult.Word}";
-        BrowserLauncher.OpenUrl(url);
-    }
+      var url = $"https://www.merriam-webster.com/dictionary/{SelectedResult.Word}";
+      BrowserLauncher.OpenUrl(url);
+   }
 
-    public void OpenInGoogle()
-    {
-        if (SelectedResult == null)
-            return;
+   public void OpenInGoogle()
+   {
+      if(SelectedResult == null)
+         return;
 
-        var url = $"https://www.google.com/search?q=define+{SelectedResult.Word}";
-        BrowserLauncher.OpenUrl(url);
-    }
+      var url = $"https://www.google.com/search?q=define+{SelectedResult.Word}";
+      BrowserLauncher.OpenUrl(url);
+   }
 
-    public void OpenInOED()
-    {
-        if (SelectedResult == null)
-            return;
+   public void OpenInOED()
+   {
+      if(SelectedResult == null)
+         return;
 
-        var url = $"https://www.oed.com/search/dictionary/?scope=Entries&q={SelectedResult.Word}";
-        BrowserLauncher.OpenUrl(url);
-    }
+      var url = $"https://www.oed.com/search/dictionary/?scope=Entries&q={SelectedResult.Word}";
+      BrowserLauncher.OpenUrl(url);
+   }
 }
 
 public class EnglishWordResultViewModel
 {
-    public string Word { get; }
-    public string Definition { get; }
+   public string Word { get; }
+   public string Definition { get; }
 
-    public EnglishWordResultViewModel(string word, string definition)
-    {
-        Word = word;
-        Definition = definition;
-    }
+   public EnglishWordResultViewModel(string word, string definition)
+   {
+      Word = word;
+      Definition = definition;
+   }
 }

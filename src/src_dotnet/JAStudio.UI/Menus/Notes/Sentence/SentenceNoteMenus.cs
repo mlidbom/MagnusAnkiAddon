@@ -38,13 +38,13 @@ public class SentenceNoteMenus
         var items = new List<SpecMenuItem>
         {
             SpecMenuItem.Command(ShortcutFinger.Home1("Highlighted Vocab"), 
-                () => AnkiFacade.ExecuteLookup(_services.QueryBuilder.VocabsLookupStrings(sentence.Configuration.HighlightedWords))),
+                () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder.VocabsLookupStrings(sentence.Configuration.HighlightedWords))),
             SpecMenuItem.Command(ShortcutFinger.Home2("Highlighted Vocab Read Card"), 
-                () => AnkiFacade.ExecuteLookup(_services.QueryBuilder.VocabsLookupStringsReadCard(sentence.Configuration.HighlightedWords))),
+                () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder.VocabsLookupStringsReadCard(sentence.Configuration.HighlightedWords))),
             SpecMenuItem.Command(ShortcutFinger.Home3("Kanji"), 
-                () => AnkiFacade.ExecuteLookup(_services.QueryBuilder.KanjiInString(string.Join("", sentence.ExtractKanji())))),
+                () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder.KanjiInString(string.Join("", sentence.ExtractKanji())))),
             SpecMenuItem.Command(ShortcutFinger.Home4("Parsed words"), 
-                () => AnkiFacade.ExecuteLookup(_services.QueryBuilder.NotesByIds(GetParsedWordsNoteIds(sentence))))
+                () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder.NotesByIds(GetParsedWordsNoteIds(sentence))))
         };
 
         return SpecMenuItem.Submenu(ShortcutFinger.Home1("Open"), items);

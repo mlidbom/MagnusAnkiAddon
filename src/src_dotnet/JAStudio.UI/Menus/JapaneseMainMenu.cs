@@ -97,7 +97,7 @@ public class JapaneseMainMenu
    void OnOpenNote() => _appRoot.ToggleNoteSearchDialog();
 
    // Local Actions menu actions
-   void OnConvertImmersionKitSentences() => AnkiFacade.ConvertImmersionKitSentences();
+   void OnConvertImmersionKitSentences() => AnkiFacade.Batches.ConvertImmersionKitSentences();
    void OnCreateMissingVocab() => _services.LocalNoteUpdater.CreateMissingVocabWithDictionaryEntries();
    void OnRegenerateVocabAnswers() => _services.LocalNoteUpdater.RegenerateJamdictVocabAnswers();
 

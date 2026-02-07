@@ -18,16 +18,6 @@ public class JNTokenizedText
         RawTokens = rawTokens ?? new object(); // Placeholder - not used in C# but maintained for API compatibility
     }
 
-    public List<IAnalysisToken> PreProcess(VocabCollection vocab, DictLookup dictLookup)
-    {
-        try
-        {
-            return new PreProcessingStage.PreProcessingStage(vocab, dictLookup).PreProcess(Tokens);
-        }
-        catch (Exception)
-        {
-            MyLog.Error($"Failed to pre-process text: {Text}");
-            throw;
-        }
-    }
+    public List<IAnalysisToken> PreProcess(VocabCollection vocab, DictLookup dictLookup) => 
+       new PreProcessingStage.PreProcessingStage(vocab, dictLookup).PreProcess(Tokens);
 }

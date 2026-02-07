@@ -15,76 +15,56 @@ public static class AnkiFacade
 {
    static readonly PythonObjectWrapper SearchExecutor = PythonEnvironment.Import("jastudio.ankiutils.search_executor");
    static readonly PythonObjectWrapper AqtUtils = PythonEnvironment.Import("aqt.utils");
+   static readonly PythonObjectWrapper App = PythonEnvironment.Import("jastudio.ankiutils.app");
+   static readonly PythonObjectWrapper LocalNoteUpdater = PythonEnvironment.Import("jastudio.batches.local_note_updater");
+   static readonly PythonObjectWrapper QueueManager = PythonEnvironment.Import("jastudio.note.queue_manager");
+   static readonly PythonObjectWrapper BrowserMain = PythonEnvironment.Import("jastudio.ui.menus.browser.main");
+   static readonly PythonObjectWrapper NoteExModule = PythonEnvironment.Import("jastudio.anki_extentions.note_ex");
 
-   /// <summary>Execute an Anki browser search query. </summary>
-   public static void ExecuteLookup(string query) => SearchExecutor.Use(it => it.do_lookup(query));
-
-   /// <summary>Execute an Anki browser search query and show the previewer. </summary>
-   public static void ExecuteLookupAndShowPreviewer(string query) => PythonEnvironment.Use(() =>
+   public static class Browser
    {
-      dynamic searchExecutor = Py.Import("jastudio.ankiutils.search_executor");
-      searchExecutor.do_lookup_and_show_previewer(query);
-   });
+      /// <summary>Execute an Anki browser search query. </summary>
+      public static void ExecuteLookup(string query) => SearchExecutor.Use(it => it.do_lookup(query));
 
-   /// <summary>Show a tooltip message in Anki. </summary>
-   public static void ShowTooltip(string message, int periodMs = 3000) => AqtUtils.Use(it => it.tooltip(message, periodMs));
+      /// <summary>Execute an Anki browser search query and show the previewer. </summary>
+      public static void ExecuteLookupAndShowPreviewer(string query) => SearchExecutor.Use(it => it.do_lookup_and_show_previewer(query));
 
-   /// <summary>Refresh the currently displayed views in Anki. By it's nature it cannot be ported. </summary>
-   public static void Refresh() => PythonEnvironment.Use(() =>
+      public static class MenuActions
+      {
+         /// <summary>Prioritize selected cards (sets card.due based on note type priority).</summary>
+         public static void PrioritizeCards(System.Collections.Generic.List<long> cardIds) => QueueManager.Use(it => it.prioritize_selected_cards(ToPythonList(cardIds)));
+
+         /// <summary>Spread selected cards over days (distributes due dates across time range).</summary>
+         public static void SpreadCardsOverDays(System.Collections.Generic.List<long> cardIds, int startDay, int daysApart) => BrowserMain.Use(it => it.spread_due_dates(ToPythonList(cardIds), startDay, daysApart));
+      }
+   }
+
+   public static class UIUtils
    {
-      dynamic app = Py.Import("jastudio.ankiutils.app");
-      dynamic uiUtils = app.get_ui_utils();
-      uiUtils.refresh();
-   });
+      /// <summary>Show a tooltip message in Anki. </summary>
+      public static void ShowTooltip(string message, int periodMs = 3000) => AqtUtils.Use(it => it.tooltip(message, periodMs));
 
-   /// <summary>This is about converting between Anki note types. There's no way to avoid interfacing with anki for that. </summary>
-   public static void ConvertImmersionKitSentences() => PythonEnvironment.Use(() =>
-   {
-      dynamic updater = Py.Import("jastudio.batches.local_note_updater");
-      updater.convert_immersion_kit_sentences();
-   });
+      /// <summary>Refresh the currently displayed views in Anki. By it's nature it cannot be ported. </summary>
+      public static void Refresh() => App.Use(it => it.get_ui_utils().refresh());
+   }
 
-   /// <summary>Prioritize selected cards (sets card.due based on note type priority).</summary>
-   public static void PrioritizeCards(System.Collections.Generic.List<long> cardIds) => PythonEnvironment.Use(() =>
+   public static class Batches
    {
-      dynamic queueManager = Py.Import("jastudio.note.queue_manager");
-      dynamic pyCardIds = ToPythonList(cardIds);
-      queueManager.prioritize_selected_cards(pyCardIds);
-   });
+      /// <summary>This is about converting between Anki note types. There's no way to avoid interfacing with anki for that. </summary>
+      public static void ConvertImmersionKitSentences() => LocalNoteUpdater.Use(it => it.convert_immersion_kit_sentences());
+   }
 
-   /// <summary>Spread selected cards over days (distributes due dates across time range).</summary>
-   public static void SpreadCardsOverDays(System.Collections.Generic.List<long> cardIds, int startDay, int daysApart) => PythonEnvironment.Use(() =>
+   public static class NoteEx
    {
-      // Import the spread_due_dates function from browser.main
-      dynamic browserMain = Py.Import("jastudio.ui.menus.browser.main");
-      dynamic pyCardIds = ToPythonList(cardIds);
-      browserMain.spread_due_dates(pyCardIds, startDay, daysApart);
-   });
+      /// <summary>Suspend all cards for the given note ID.</summary>
+      public static void SuspendAllCardsForNote(int noteId) => NoteExModule.Use(it => it.NoteEx.from_id(noteId).suspend_all_cards());
+
+      /// <summary>Unsuspend all cards for the given note ID.</summary>
+      public static void UnsuspendAllCardsForNote(int noteId) => NoteExModule.Use(it => it.NoteEx.from_id(noteId).un_suspend_all_cards());
+   }
 
    /// <summary>Get note ID from card ID (requires Anki API).</summary>
-   public static long GetNoteIdFromCardId(long cardId) => PythonEnvironment.Use(() =>
-   {
-      dynamic app = Py.Import("jastudio.ankiutils.app");
-      dynamic ankiCol = app.anki_collection();
-      dynamic card = ankiCol.get_card(cardId);
-      return (long)card.nid;
-   });
-
-   /// <summary>Suspend all cards for the given note ID.</summary>
-   public static void SuspendAllCardsForNote(int noteId) => PythonEnvironment.Use(() =>
-   {
-      dynamic noteEx = Py.Import("jastudio.anki_extentions.note_ex");
-      dynamic note = noteEx.NoteEx.from_id(noteId);
-      note.suspend_all_cards();
-   });
-
-   /// <summary>Unsuspend all cards for the given note ID.</summary>
-   public static void UnsuspendAllCardsForNote(int noteId) => PythonEnvironment.Use(() =>
-   {
-      dynamic noteEx = Py.Import("jastudio.anki_extentions.note_ex");
-      dynamic note = noteEx.NoteEx.from_id(noteId);
-      note.un_suspend_all_cards();
-   });
+   public static long GetNoteIdFromCardId(long cardId) => App.Use(it => (long)it.anki_collection().get_card(cardId).nid);
 
    /// <summary>Helper to convert C# list to Python list.</summary>
    private static dynamic ToPythonList(System.Collections.Generic.List<long> items)

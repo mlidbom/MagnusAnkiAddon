@@ -9,7 +9,7 @@ namespace JAStudio.PythonInterop.Utilities;
 
 public static class PythonEnvironment
 {
-   public static dynamic Import(string module) => Use(() => Py.Import(module));
+   public static PythonObjectWrapper Import(string module) => Use(() => new PythonObjectWrapper(Py.Import(module)));
 
    public static TResult Use<TResult>(Func<TResult> func)
    {

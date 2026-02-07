@@ -124,7 +124,7 @@ public class OpenInAnkiMenus
             () =>
             {
                 var query = getQuery();
-                AnkiFacade.ExecuteLookup(query);
+                AnkiFacade.Browser.ExecuteLookup(query);
             }
         );
     }

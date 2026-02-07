@@ -7,11 +7,11 @@ public class AnkiCardOperationsImpl : IAnkiCardOperations
 {
     public void SuspendAllCardsForNote(int noteId)
     {
-        AnkiFacade.SuspendAllCardsForNote(noteId);
+        AnkiFacade.NoteEx.SuspendAllCardsForNote(noteId);
     }
 
     public void UnsuspendAllCardsForNote(int noteId)
     {
-        AnkiFacade.UnsuspendAllCardsForNote(noteId);
+        AnkiFacade.NoteEx.UnsuspendAllCardsForNote(noteId);
     }
 }
