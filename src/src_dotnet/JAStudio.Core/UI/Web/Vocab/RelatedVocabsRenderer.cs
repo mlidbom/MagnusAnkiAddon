@@ -1,3 +1,4 @@
+using JAStudio.Core.Note.Collection;
 using JAStudio.Core.LanguageServices;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Vocabulary;
@@ -6,8 +7,11 @@ using System.Linq;
 
 namespace JAStudio.Core.UI.Web.Vocab;
 
-public static class RelatedVocabsRenderer
+public class RelatedVocabsRenderer
 {
+    readonly VocabCollection _vocab;
+   internal RelatedVocabsRenderer(VocabCollection vocab) => _vocab = vocab;
+
     public static string CreateClasses(VocabNote vocab)
     {
         return string.Join(" ", vocab.GetMetaTags());
@@ -92,25 +96,25 @@ public static class RelatedVocabsRenderer
         return RenderVocabList(seeAlso, "see also", cssClass: "similar");
     }
 
-    public static string GenerateConfusedWithHtmlList(VocabNote vocabNote)
+    public string GenerateConfusedWithHtmlList(VocabNote vocabNote)
     {
         var vocabs = vocabNote.RelatedNotes.ConfusedWith.Get();
-        var confusedWith = App.Col().Vocab.WithAnyFormInPreferDisambiguationNameOrExactMatch(vocabs.ToList());
+        var confusedWith = _vocab.WithAnyFormInPreferDisambiguationNameOrExactMatch(vocabs.ToList());
         confusedWith = VocabNoteSorting.SortVocabListByStudyingStatus(confusedWith);
 
         return RenderVocabList(confusedWith, "confused with", cssClass: "confused_with");
     }
 
-    public static string GenerateErgativeTwinHtml(VocabNote vocabNote)
+    public string GenerateErgativeTwinHtml(VocabNote vocabNote)
     {
-        var ergativeTwin = App.Col().Vocab.WithFormPreferDisambiguationNameOrExactMatch(vocabNote.RelatedNotes.ErgativeTwin.Get());
+        var ergativeTwin = _vocab.WithFormPreferDisambiguationNameOrExactMatch(vocabNote.RelatedNotes.ErgativeTwin.Get());
         return RenderVocabList(ergativeTwin, "ergative twin", cssClass: "ergative_twin");
     }
 
-    public static string GenerateDerivedFrom(VocabNote vocabNote)
+    public string GenerateDerivedFrom(VocabNote vocabNote)
     {
         var part = vocabNote.RelatedNotes.DerivedFrom.Get();
-        var derivedFrom = App.Col().Vocab.WithFormPreferDisambiguationNameOrExactMatch(part);
+        var derivedFrom = _vocab.WithFormPreferDisambiguationNameOrExactMatch(part);
         return RenderVocabList(derivedFrom, "derived from", cssClass: "derived_from");
     }
 
@@ -133,19 +137,19 @@ public static class RelatedVocabsRenderer
         return RenderVocabList(inCompounds, "part of compound", cssClass: "in_compound_words");
     }
 
-    public static string GenerateStemInCompoundsList(VocabNote vocabNote)
+    public string GenerateStemInCompoundsList(VocabNote vocabNote)
     {
         var masuStem = vocabNote.Question.Stems().MasuStem();
         if (masuStem == null)
             return "";
         
-        var masuStemInCompounds = App.Col().Vocab.WithCompoundPart(masuStem).Take(30).ToList();
+        var masuStemInCompounds = _vocab.WithCompoundPart(masuStem).Take(30).ToList();
         return RenderVocabList(masuStemInCompounds, "masu stem is part of compound", cssClass: "in_compound_words");
     }
 
-    public static string GenerateDerivedList(VocabNote vocabNote)
+    public string GenerateDerivedList(VocabNote vocabNote)
     {
-        var derivedVocabs = App.Col().Vocab.DerivedFrom(vocabNote.GetQuestion());
+        var derivedVocabs = _vocab.DerivedFrom(vocabNote.GetQuestion());
         return RenderVocabList(derivedVocabs, "derived vocabulaty", cssClass: "derived_vocabulary");
     }
 
@@ -154,9 +158,9 @@ public static class RelatedVocabsRenderer
         return RenderVocabList(vocabNote.RelatedNotes.StemsNotes().ToList(), "conjugation forms", cssClass: "stem_vocabulary");
     }
 
-    public static string GenerateStemOfVocabs(VocabNote vocabNote)
+    public string GenerateStemOfVocabs(VocabNote vocabNote)
     {
-        return RenderVocabList(App.Col().Vocab.WithStem(vocabNote.GetQuestion()), "dictionary form", cssClass: "is_stem_of");
+        return RenderVocabList(_vocab.WithStem(vocabNote.GetQuestion()), "dictionary form", cssClass: "is_stem_of");
     }
 
     public static string GenerateFormsList(VocabNote vocabNote)

@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using JAStudio.Core;
-using JAStudio.Core.Batches;
+using JAStudio.Core.Anki;
 using JAStudio.Core.Note;
-using JAStudio.UI.Anki;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
 
@@ -14,14 +11,27 @@ namespace JAStudio.UI.Menus;
 /// Builds browser context menu for Anki's card browser.
 /// Corresponds to ui/menus/browser/main.py in Python.
 /// </summary>
-public static class BrowserMenus
+public class BrowserMenus
 {
+    readonly Core.TemporaryServiceCollection _services;
+    readonly VocabNoteMenus _vocabNoteMenus;
+    readonly KanjiNoteMenus _kanjiNoteMenus;
+    readonly SentenceNoteMenus _sentenceNoteMenus;
+
+    public BrowserMenus(Core.TemporaryServiceCollection services)
+    {
+        _services = services;
+        _vocabNoteMenus = new VocabNoteMenus(services);
+        _kanjiNoteMenus = new KanjiNoteMenus(services);
+        _sentenceNoteMenus = new SentenceNoteMenus(services);
+    }
+
     /// <summary>
     /// Build the complete browser context menu structure as UI-agnostic specifications.
     /// </summary>
     /// <param name="selectedCardIds">List of selected card IDs (from Python/Anki)</param>
     /// <param name="selectedNoteIds">List of selected note IDs (from Python/Anki)</param>
-    public static SpecMenuItem BuildBrowserMenuSpec(dynamic selectedCardIds, dynamic selectedNoteIds)
+    public SpecMenuItem BuildBrowserMenuSpec(dynamic selectedCardIds, dynamic selectedNoteIds)
     {
         var cardIds = ConvertToLongList(selectedCardIds);
         var noteIds = ConvertToLongList(selectedNoteIds);
@@ -59,21 +69,21 @@ public static class BrowserMenus
         return SpecMenuItem.Submenu("&Magnus", items);
     }
 
-    private static SpecMenuItem BuildNoteActionsSubmenu(JPNote note)
+    private SpecMenuItem BuildNoteActionsSubmenu(JPNote note)
     {
         // Build note-specific context menu using existing infrastructure
         // Just return their note actions submenu for the specific note type
         if (note is VocabNote vocab)
         {
-            return VocabNoteMenus.BuildNoteActionsMenuSpec(vocab);
+            return _vocabNoteMenus.BuildNoteActionsMenuSpec(vocab);
         }
         else if (note is KanjiNote kanji)
         {
-            return KanjiNoteMenus.BuildNoteActionsMenuSpec(kanji);
+            return _kanjiNoteMenus.BuildNoteActionsMenuSpec(kanji);
         }
         else if (note is SentenceNote sentence)
         {
-            return SentenceNoteMenus.BuildNoteActionsMenuSpec(sentence);
+            return _sentenceNoteMenus.BuildNoteActionsMenuSpec(sentence);
         }
         
         // Fallback: empty submenu
@@ -130,11 +140,11 @@ public static class BrowserMenus
         }
     }
 
-    private static void OnReparseSentences(List<SentenceNote> sentences)
+    private void OnReparseSentences(List<SentenceNote> sentences)
     {
         try
         {
-            LocalNoteUpdater.ReparseSentences(sentences, runGcDuringBatch: true);
+            _services.LocalNoteUpdater.ReparseSentences(sentences, runGcDuringBatch: true);
             AnkiFacade.Refresh();
             AnkiFacade.ShowTooltip($"Reparsed {sentences.Count} sentence(s)", 3000);
         }
@@ -165,7 +175,7 @@ public static class BrowserMenus
         }
     }
 
-    private static JPNote? GetNoteFromCardId(long cardId)
+    private JPNote? GetNoteFromCardId(long cardId)
     {
         try
         {
@@ -173,13 +183,13 @@ public static class BrowserMenus
             var noteId = AnkiFacade.GetNoteIdFromCardId(cardId);
             
             // Try each note type collection
-            var vocab = Core.App.Col().Vocab.WithIdOrNone((int)noteId);
+            var vocab = _services.App.Col().Vocab.WithIdOrNone((int)noteId);
             if (vocab != null) return vocab;
             
-            var sentence = Core.App.Col().Sentences.WithIdOrNone((int)noteId);
+            var sentence = _services.App.Col().Sentences.WithIdOrNone((int)noteId);
             if (sentence != null) return sentence;
             
-            var kanji = Core.App.Col().Kanji.WithIdOrNone((int)noteId);
+            var kanji = _services.App.Col().Kanji.WithIdOrNone((int)noteId);
             return kanji;
         }
         catch (Exception ex)
@@ -189,7 +199,7 @@ public static class BrowserMenus
         }
     }
 
-    private static List<SentenceNote> GetSentenceNotes(List<long> noteIds)
+    private List<SentenceNote> GetSentenceNotes(List<long> noteIds)
     {
         var sentences = new List<SentenceNote>();
         
@@ -197,7 +207,7 @@ public static class BrowserMenus
         {
             try
             {
-                var note = Core.App.Col().Sentences.WithIdOrNone((int)noteId);
+                var note = _services.App.Col().Sentences.WithIdOrNone((int)noteId);
                 if (note != null)
                 {
                     sentences.Add(note);

@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using JAStudio.Core.LanguageServices;
 using JAStudio.Core.Note;
-using JAStudio.Core.SysUtils;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
 

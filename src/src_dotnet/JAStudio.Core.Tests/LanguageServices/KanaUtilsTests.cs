@@ -1,8 +1,8 @@
-using JAStudio.Core.SysUtils;
+using JAStudio.Core.LanguageServices;
 using JAStudio.PythonInterop.Utilities;
 using Xunit;
 
-namespace JAStudio.Core.Tests;
+namespace JAStudio.Core.Tests.LanguageServices;
 
 public class KanaUtilsTests
 {

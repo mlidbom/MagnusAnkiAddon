@@ -1,5 +1,3 @@
-using System;
-
 namespace JAStudio.Core.Note.NoteFields;
 
 public class RequireForbidFlagField

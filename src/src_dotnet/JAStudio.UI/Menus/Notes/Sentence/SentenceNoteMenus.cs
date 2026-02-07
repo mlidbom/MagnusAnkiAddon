@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using JAStudio.Core.AnkiUtils;
+using JAStudio.Core.Anki;
 using JAStudio.Core.Note;
-using JAStudio.Core.Note.Sentences;
-using JAStudio.UI.Anki;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
 
@@ -13,9 +11,16 @@ namespace JAStudio.UI.Menus;
 /// Sentence note-specific menu builders.
 /// Corresponds to notes/sentence/main.py in Python.
 /// </summary>
-public static class SentenceNoteMenus
+public class SentenceNoteMenus
 {
-    public static SpecMenuItem BuildNoteActionsMenuSpec(SentenceNote sentence)
+    readonly Core.TemporaryServiceCollection _services;
+
+    public SentenceNoteMenus(Core.TemporaryServiceCollection services)
+    {
+        _services = services;
+    }
+
+    public SpecMenuItem BuildNoteActionsMenuSpec(SentenceNote sentence)
     {
         return SpecMenuItem.Submenu(
             ShortcutFinger.Home3("Note actions"),
@@ -28,18 +33,18 @@ public static class SentenceNoteMenus
         );
     }
 
-    private static SpecMenuItem BuildOpenMenuSpec(SentenceNote sentence)
+    private SpecMenuItem BuildOpenMenuSpec(SentenceNote sentence)
     {
         var items = new List<SpecMenuItem>
         {
             SpecMenuItem.Command(ShortcutFinger.Home1("Highlighted Vocab"), 
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.VocabsLookupStrings(sentence.Configuration.HighlightedWords))),
+                () => AnkiFacade.ExecuteLookup(_services.QueryBuilder.VocabsLookupStrings(sentence.Configuration.HighlightedWords))),
             SpecMenuItem.Command(ShortcutFinger.Home2("Highlighted Vocab Read Card"), 
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.VocabsLookupStringsReadCard(sentence.Configuration.HighlightedWords))),
+                () => AnkiFacade.ExecuteLookup(_services.QueryBuilder.VocabsLookupStringsReadCard(sentence.Configuration.HighlightedWords))),
             SpecMenuItem.Command(ShortcutFinger.Home3("Kanji"), 
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.KanjiInString(string.Join("", sentence.ExtractKanji())))),
+                () => AnkiFacade.ExecuteLookup(_services.QueryBuilder.KanjiInString(string.Join("", sentence.ExtractKanji())))),
             SpecMenuItem.Command(ShortcutFinger.Home4("Parsed words"), 
-                () => AnkiFacade.ExecuteLookup(QueryBuilder.NotesByIds(GetParsedWordsNoteIds(sentence))))
+                () => AnkiFacade.ExecuteLookup(_services.QueryBuilder.NotesByIds(GetParsedWordsNoteIds(sentence))))
         };
 
         return SpecMenuItem.Submenu(ShortcutFinger.Home1("Open"), items);
@@ -86,10 +91,10 @@ public static class SentenceNoteMenus
         return SpecMenuItem.Submenu(ShortcutFinger.Home3("Remove User"), items);
     }
 
-    public static SpecMenuItem BuildViewMenuSpec()
+    public SpecMenuItem BuildViewMenuSpec()
     {
         // View menu with config toggles
-        var config = Core.App.Config();
+        var config = _services.App.Config();
         var items = new List<SpecMenuItem>();
 
         // Add toggles for sentence view configuration

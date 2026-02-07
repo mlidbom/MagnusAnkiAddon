@@ -1,8 +1,8 @@
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using JAStudio.UI.ViewModels;
+using System;
 
 namespace JAStudio.UI.Views;
 
@@ -10,25 +10,19 @@ public partial class NoteSearchDialog : Window
 {
     private static NoteSearchDialog? _instance;
 
-    /// <summary>
-    /// Get the singleton instance of the dialog.
-    /// </summary>
-    public static NoteSearchDialog Instance
+    [Obsolete("For XAML designer/previever only")]
+    public NoteSearchDialog() {}
+
+    static NoteSearchDialog GetInstance(Core.TemporaryServiceCollection services)
     {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = new NoteSearchDialog();
-            }
-            return _instance;
-        }
+        _instance ??= new NoteSearchDialog(services);
+        return _instance;
     }
 
-    public NoteSearchDialog()
+    public NoteSearchDialog(Core.TemporaryServiceCollection services)
     {
         InitializeComponent();
-        DataContext = new NoteSearchDialogViewModel();
+        DataContext = new NoteSearchDialogViewModel(services);
         
         // Focus search input when dialog is shown
         Opened += (_, _) =>
@@ -52,17 +46,18 @@ public partial class NoteSearchDialog : Window
     /// <summary>
     /// Toggle the visibility of the dialog (show if hidden, hide if shown).
     /// </summary>
-    public static void ToggleVisibility()
+    public static void ToggleVisibility(Core.TemporaryServiceCollection services)
     {
-        if (Instance.IsVisible)
+        var instance = GetInstance(services);
+        if (instance.IsVisible)
         {
-            Instance.Hide();
+            instance.Hide();
         }
         else
         {
-            Instance.Show();
-            Instance.Activate();
-            var searchInput = Instance.FindControl<TextBox>("SearchInput");
+            instance.Show();
+            instance.Activate();
+            var searchInput = instance.FindControl<TextBox>("SearchInput");
             searchInput?.Focus();
         }
     }

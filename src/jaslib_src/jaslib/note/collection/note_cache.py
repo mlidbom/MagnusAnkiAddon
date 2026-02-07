@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, override
 from autoslot import Slots
 from jaspythonutils.sysutils.abstract_method_called_error import AbstractMethodCalledError
 from typed_linq_collections.collections.q_list import QList
-from typed_linq_collections.collections.q_set import QSet
 
 from jaslib.note.jpnote import JPNote, JPNoteId
 from jaslib.task_runners.task_progress_runner import TaskRunner
@@ -73,10 +72,6 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](NoteCacheBase[TNote], Slot
         # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
         self._by_question: defaultdict[str, QList[TNote]] = defaultdict[str, QList[TNote]](QList[TNote])
         self._snapshot_by_id: dict[JPNoteId, TSnapshot] = {}
-
-        self._deleted: QSet[JPNoteId] = QSet()
-
-        self._flushing: bool = False
 
     def all(self) -> QList[TNote]:
         return QList(self._by_id.values())

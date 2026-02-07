@@ -1,6 +1,6 @@
 using JAStudio.Core.Note;
-using JAStudio.Core.SysUtils;
 using System.Linq;
+using JAStudio.Core.LanguageServices;
 
 namespace JAStudio.Core.UI.Web.Kanji;
 

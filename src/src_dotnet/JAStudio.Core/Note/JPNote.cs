@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JAStudio.Core.Anki;
 using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.Note;
@@ -9,6 +8,7 @@ namespace JAStudio.Core.Note;
 public abstract class JPNote
 {
    public NoteFlushGuard RecursiveFlushGuard { get; }
+   public NoteServices Services { get; }
    int _hashValue;
 
    // Dictionary tracks card suspend status: true = active/unsuspended, false = suspended
@@ -18,8 +18,9 @@ public abstract class JPNote
    readonly Dictionary<string, string> _fields;
    int _idCache;
 
-   protected JPNote(JPNoteData? data = null)
+   protected JPNote(NoteServices services, JPNoteData? data = null)
    {
+      Services = services;
       RecursiveFlushGuard = new NoteFlushGuard(this);
       _hashValue = 0;
 
@@ -69,8 +70,7 @@ public abstract class JPNote
 
    public void SuspendAllCards()
    {
-      // Suspend all cards in Anki via service locator
-      AnkiCardOperations.SuspendAllCardsForNote(GetId());
+      Services.AnkiCardOperations.SuspendAllCardsForNote(GetId());
       
       // Update local status for all known card types
       var cardTypes = _cardStatus.Keys.ToList();
@@ -84,8 +84,7 @@ public abstract class JPNote
 
    public void UnsuspendAllCards()
    {
-      // Unsuspend all cards in Anki via service locator
-      AnkiCardOperations.UnsuspendAllCardsForNote(GetId());
+      Services.AnkiCardOperations.UnsuspendAllCardsForNote(GetId());
       
       // Update local status for all known card types
       var cardTypes = _cardStatus.Keys.ToList();
@@ -121,7 +120,7 @@ public abstract class JPNote
 
    public override string ToString() => $"{GetQuestion()}: {GetAnswer()}";
 
-   public JPCollection Collection => App.Col();
+   public JPCollection Collection => Services.Collection;
 
    public virtual string GetQuestion()
    {

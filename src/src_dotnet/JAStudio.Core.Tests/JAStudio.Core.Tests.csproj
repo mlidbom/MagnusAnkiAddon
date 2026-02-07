@@ -23,4 +23,10 @@
     <ProjectReference Include="..\JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Compze.Utilities">
+      <HintPath>..\manual_libs\Compze.Utilities.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

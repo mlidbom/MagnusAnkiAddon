@@ -1,7 +1,5 @@
-using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.Vocabulary;
-using JAStudio.Core.Note.Vocabulary.RelatedVocab;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,10 +27,10 @@ public class VocabNote : JPNote
     public MutableStringField SourceAnswer => new(this, NoteFieldsConstants.Vocab.SourceAnswer);
     public MutableStringField ActiveAnswer => new(this, NoteFieldsConstants.Vocab.ActiveAnswer);
 
-    public VocabNote(JPNoteData? data = null) : base(data)
+    public VocabNote(NoteServices services, JPNoteData? data = null) : base(services, data)
     {
         Question = new VocabNoteQuestion(this);
-        Readings = new MutableCommaSeparatedStringsListField(this, NoteFieldsConstants.Vocab.ReadingKana);
+        Readings = new MutableCommaSeparatedStringsListField(this, NoteFieldsConstants.Vocab.Reading);
         User = new VocabNoteUserFields(this);
         Forms = new VocabNoteForms(this);
         Kanji = new VocabNoteKanji(this);
@@ -50,7 +48,7 @@ public class VocabNote : JPNote
 
     public override void UpdateInCache()
     {
-        App.Col().Vocab.Cache.JpNoteUpdated(this);
+        Services.Collection.Vocab.Cache.JpNoteUpdated(this);
     }
 
     public override string GetQuestion()
@@ -79,7 +77,7 @@ public class VocabNote : JPNote
     {
         base.UpdateGeneratedData();
         
-        VocabNoteGeneratedData.UpdateGeneratedData(this);
+        Services.VocabNoteGeneratedData.UpdateGeneratedData(this);
     }
 
     public List<string> GetReadings()
@@ -94,7 +92,7 @@ public class VocabNote : JPNote
 
     public void GenerateAndSetAnswer()
     {
-        var dictLookup = DictLookup.LookupVocabWordOrName(this);
+        var dictLookup = Services.DictLookup.LookupVocabWordOrName(this);
         if (dictLookup.FoundWords())
         {
             var generated = dictLookup.FormatAnswer();
@@ -104,9 +102,9 @@ public class VocabNote : JPNote
         UpdateGeneratedData();
     }
 
-    public static VocabNote Create(string question, string answer, List<string> readings, List<string> forms)
+    public static VocabNote Create(NoteServices services, string question, string answer, List<string> readings, List<string> forms)
     {
-        var note = new VocabNote();
+        var note = new VocabNote(services);
         note.Question.Set(question);
         note.User.Answer.Set(answer);
         note.SetReadings(readings);
@@ -117,12 +115,12 @@ public class VocabNote : JPNote
         }
         
         note.UpdateGeneratedData();
-        App.Col().Vocab.Add(note);
+        services.Collection.Vocab.Add(note);
         return note;
     }
 
-    public static VocabNote Create(string question, string answer, params string[] readings)
+    public static VocabNote Create(NoteServices services, string question, string answer, params string[] readings)
     {
-        return Create(question, answer, readings.ToList(), new List<string>());
+        return Create(services, question, answer, readings.ToList(), new List<string>());
     }
 }

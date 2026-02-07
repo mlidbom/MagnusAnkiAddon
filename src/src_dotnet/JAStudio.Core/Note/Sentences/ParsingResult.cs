@@ -1,5 +1,4 @@
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
-using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches;
 using JAStudio.Core.Note.Sentences.Serialization;
 using System.Collections.Generic;
 using System.Linq;

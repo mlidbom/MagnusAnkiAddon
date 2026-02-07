@@ -1,6 +1,3 @@
-using JAStudio.Core.Note.Sentences;
-using System.Linq;
-
 namespace JAStudio.Core.Note.Sentences.Serialization;
 
 public class ParsedWordSerializer

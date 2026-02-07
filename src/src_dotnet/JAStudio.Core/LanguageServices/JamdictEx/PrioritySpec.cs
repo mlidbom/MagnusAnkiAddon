@@ -5,14 +5,14 @@ namespace JAStudio.Core.LanguageServices.JamdictEx;
 
 public class PrioritySpec
 {
-    private static readonly HashSet<string> FrequencyMaximum;
-    private static readonly HashSet<string> FrequencyHigh;
-    private static readonly HashSet<string> FrequencyMedium;
-    private static readonly HashSet<string> FrequencyLow;
+   static readonly HashSet<string> FrequencyMaximum;
+   static readonly HashSet<string> FrequencyHigh;
+   static readonly HashSet<string> FrequencyMedium;
+   static readonly HashSet<string> FrequencyLow;
 
-    private static readonly HashSet<string> TagsMaximum = new() { "ichi1" };
-    private static readonly HashSet<string> TagsHigh = new() { "news1", "spec1" };
-    private static readonly HashSet<string> TagsMedium = new() { "news2", "spec2" };
+   static readonly HashSet<string> TagsMaximum = ["ichi1"];
+   static readonly HashSet<string> TagsHigh = ["news1", "spec1"];
+   static readonly HashSet<string> TagsMedium = ["news2", "spec2"];
 
     static PrioritySpec()
     {

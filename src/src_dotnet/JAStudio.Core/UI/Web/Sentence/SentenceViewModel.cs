@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using JAStudio.Core.Configuration;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.UI.Web.Sentence;
 
@@ -9,10 +11,10 @@ public class SentenceViewModel
     public TextAnalysisViewModel Analysis { get; }
     public List<MatchViewModel> DisplayedMatches { get; }
 
-    public SentenceViewModel(SentenceNote sentence)
+    public SentenceViewModel(SentenceNote sentence, Settings settings, VocabCollection vocab)
     {
         Sentence = sentence;
-        Analysis = new TextAnalysisViewModel(sentence.CreateAnalysis(forUI: true));
+        Analysis = new TextAnalysisViewModel(sentence.CreateAnalysis(forUI: true), settings, vocab);
         DisplayedMatches = Analysis.DisplayedMatches;
     }
 }

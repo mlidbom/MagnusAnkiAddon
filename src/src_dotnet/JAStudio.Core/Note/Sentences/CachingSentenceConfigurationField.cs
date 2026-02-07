@@ -1,5 +1,4 @@
 using System;
-using JAStudio.Core.Note;
 using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.Sentences.Serialization;
 using System.Collections.Generic;
@@ -31,7 +30,7 @@ public class CachingSentenceConfigurationField
     public HashSet<VocabNote> HighlightedVocab()
     {
         var highlightedWordsList = HighlightedWords.ToList();
-        var vocabWithForms = App.Col().Vocab.WithAnyFormIn(highlightedWordsList);
+        var vocabWithForms = _sentence.Services.Collection.Vocab.WithAnyFormIn(highlightedWordsList);
         var matchedVocabIds = _sentence.ParsingResult.Get().MatchedVocabIds;
         
         return vocabWithForms

@@ -56,7 +56,6 @@ class Match(WeakRefable, Slots):
         self._start_index_cache: int | None = None
         self._static_display_requirements_fulfilled_cache: bool | None = None
 
-        self._is_interdepentently_valid_cache: bool | None = None
         self._display_requirements_cache: list[MatchRequirement] | None = None
 
     @property

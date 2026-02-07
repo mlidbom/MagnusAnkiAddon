@@ -1,6 +1,6 @@
 import typing, abc
 from JAStudio.Core.Note.NoteFields import TagFlagField, RequireForbidFlagField, WritableAudioField, IObjectSerializer_1, IntegerField, CachingMutableStringField, MutableStringField
-from JAStudio.Core.Note import VocabNote, Tag, SentenceNote
+from JAStudio.Core.Note import VocabNote, Tag, NoteServices, SentenceNote
 from System.Collections.Generic import HashSet_1, List_1, IEnumerable_1
 from System.Collections.Frozen import FrozenSet_1
 from System import Func_1, Func_3, Action_1
@@ -59,7 +59,8 @@ class POS(abc.ABC):
     ZuruVerb : str
 
 
-class POSSetManager(abc.ABC):
+class POSSetManager:
+    def __init__(self) -> None: ...
     @staticmethod
     def Get(pos: str) -> FrozenSet_1[str]: ...
     @staticmethod
@@ -221,13 +222,11 @@ class VocabNoteConjugator:
     def GetStemsForPrimaryForm(self) -> List_1[str]: ...
 
 
-class VocabNoteFactory(abc.ABC):
-    @staticmethod
-    def Create(question: str, answer: str, readings: List_1[str], initializer: Action_1[VocabNote] = ...) -> VocabNote: ...
-    @staticmethod
-    def CreateFromUserData(question: str, answer: str, readings: List_1[str], initializer: Action_1[VocabNote] = ...) -> VocabNote: ...
-    @staticmethod
-    def CreateWithDictionary(question: str) -> VocabNote: ...
+class VocabNoteFactory:
+    def Create(self, question: str, answer: str, readings: List_1[str], initializer: Action_1[VocabNote] = ...) -> VocabNote: ...
+    def CreateFromUserData(self, question: str, answer: str, readings: List_1[str], initializer: Action_1[VocabNote] = ...) -> VocabNote: ...
+    def CreateWithDictionary(self, question: str) -> VocabNote: ...
+    def SetNoteServices(self, noteServices: NoteServices) -> None: ...
 
 
 class VocabNoteForms:
@@ -248,9 +247,8 @@ class VocabNoteForms:
     def WithoutNoiseCharacters(self) -> List_1[str]: ...
 
 
-class VocabNoteGeneratedData(abc.ABC):
-    @staticmethod
-    def UpdateGeneratedData(vocab: VocabNote) -> None: ...
+class VocabNoteGeneratedData:
+    def UpdateGeneratedData(self, vocab: VocabNote) -> None: ...
 
 
 class VocabNoteKanji:

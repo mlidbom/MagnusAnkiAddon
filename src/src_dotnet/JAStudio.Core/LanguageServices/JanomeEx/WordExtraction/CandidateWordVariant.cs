@@ -10,12 +10,11 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 
 public sealed class CandidateWordVariant
 {
-    private readonly LazyCE<DictLookupResult> _dictLookup;
-    private bool _completedValidityAnalysis;
-    private bool _completedVisibilityAnalysis;
-    private bool _isValid;
-    private IEnumerable<Match> _validMatches;
-    private List<Match> _displayMatches;
+   readonly LazyCE<DictLookupResult> _dictLookup;
+   bool _completedValidityAnalysis;
+   bool _isValid;
+   IEnumerable<Match> _validMatches;
+   List<Match> _displayMatches;
 
     public CandidateWord Word { get; }
     public string Form { get; }
@@ -27,8 +26,9 @@ public sealed class CandidateWordVariant
         Word = word;
         Form = form;
 
-        _dictLookup = new LazyCE<DictLookupResult>(() => DictLookup.LookupWord(form));
-        VocabMatches = App.Col().Vocab.WithForm(form)
+        var services = word.Analysis.Services;
+        _dictLookup = new LazyCE<DictLookupResult>(() => services.DictLookup.LookupWord(form));
+        VocabMatches = services.Vocab.WithForm(form)
             .Select(vocab => new VocabMatch(this, vocab))
             .ToList();
 
@@ -38,7 +38,7 @@ public sealed class CandidateWordVariant
     }
 
     public bool IsSurface => Form == Word.SurfaceForm;
-    
+
     public bool VocabsControlMatchStatus =>
         FormOwningVocabMatches.Any() ||
         (VocabMatches.Any() && !_dictLookup.Value.FoundWords() && Word.IsCompound);
@@ -78,23 +78,22 @@ public sealed class CandidateWordVariant
     public void RunVisibilityAnalysis()
     {
         _displayMatches = OnceValidityAnalyzed.Matches.Where(match => match.IsDisplayed).ToList();
-        _completedVisibilityAnalysis = true;
     }
 
     public int StartIndex => Word.StartLocation.CharacterStartIndex;
     public SentenceConfiguration Configuration => Word.Analysis.Configuration;
     public bool IsKnownWord => VocabMatches.Count > 0 || _dictLookup.Value.FoundWords();
-    
-    private List<VocabMatch> FormOwningVocabMatches => 
+
+    List<VocabMatch> FormOwningVocabMatches =>
         VocabMatches.Where(vm => vm.Vocab.Forms.IsOwnedForm(Form)).ToList();
-    
+
     public bool HasValidMatch => OnceValidityAnalyzed._isValid;
     public IEnumerable<Match> ValidMatches => OnceValidityAnalyzed._validMatches;
     public List<Match> DisplayMatches => OnceVisibilityAnalyzed._displayMatches;
 
-    private List<VocabMatch> ValidVocabMatches { get; set; } = new();
+    List<VocabMatch> ValidVocabMatches { get; set; } = new();
 
-    private CandidateWordVariant OnceValidityAnalyzed
+    CandidateWordVariant OnceValidityAnalyzed
     {
         get
         {
@@ -104,7 +103,7 @@ public sealed class CandidateWordVariant
         }
     }
 
-    private CandidateWordVariant OnceVisibilityAnalyzed
+    CandidateWordVariant OnceVisibilityAnalyzed
     {
         get
         {
@@ -114,13 +113,7 @@ public sealed class CandidateWordVariant
         }
     }
 
-    public WordExclusion ToExclusion()
-    {
-        return WordExclusion.AtIndex(Form, StartIndex);
-    }
+    public WordExclusion ToExclusion() => WordExclusion.AtIndex(Form, StartIndex);
 
-    public override string ToString()
-    {
-        return $"{Form}, is_valid_candidate:{HasValidMatch}";
-    }
+    public override string ToString() => $"{Form}, is_valid_candidate:{HasValidMatch}";
 }

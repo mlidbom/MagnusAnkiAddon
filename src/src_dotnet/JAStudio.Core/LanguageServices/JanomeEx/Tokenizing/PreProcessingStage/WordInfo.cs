@@ -6,23 +6,23 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing.PreProcessingStage;
 
 public static class WordInfo
 {
-    public static WordInfoEntry? Lookup(string word)
+    public static WordInfoEntry? Lookup(VocabCollection vocab, DictLookup dictLookup, string word)
     {
-        var vocabEntries = App.Col().Vocab.WithForm(word);
+        var vocabEntries = vocab.WithForm(word);
         if (vocabEntries.Any())
         {
             // Try to find exact question match first
-            foreach (var vocab in vocabEntries)
+            foreach (var v in vocabEntries)
             {
-                if (vocab.GetQuestion() == word)
+                if (v.GetQuestion() == word)
                 {
-                    return new VocabWordInfoEntry(word, vocab);
+                    return new VocabWordInfoEntry(word, v);
                 }
             }
             return new VocabWordInfoEntry(word, vocabEntries.First());
         }
 
-        var dictLookupResult = DictLookup.LookupWord(word);
+        var dictLookupResult = dictLookup.LookupWord(word);
         if (dictLookupResult.FoundWords())
         {
             return new DictWordInfoEntry(word, dictLookupResult);
@@ -31,19 +31,19 @@ public static class WordInfo
         return null;
     }
 
-    public static WordInfoEntry? LookupGodan(string word)
+    public static WordInfoEntry? LookupGodan(VocabCollection vocab, DictLookup dictLookup, string word)
     {
-        var wordInfo = Lookup(word);
+        var wordInfo = Lookup(vocab, dictLookup, word);
         return wordInfo != null && wordInfo.IsGodan ? wordInfo : null;
     }
 
-    public static WordInfoEntry? LookupIchidan(string word)
+    public static WordInfoEntry? LookupIchidan(VocabCollection vocab, DictLookup dictLookup, string word)
     {
-        var wordInfo = Lookup(word);
+        var wordInfo = Lookup(vocab, dictLookup, word);
         return wordInfo != null && wordInfo.IsIchidan ? wordInfo : null;
     }
 
-    public static bool IsGodan(string word) => LookupGodan(word) != null;
+    public static bool IsGodan(VocabCollection vocab, DictLookup dictLookup, string word) => LookupGodan(vocab, dictLookup, word) != null;
 
-    public static bool IsIchidan(string word) => LookupIchidan(word) != null;
+    public static bool IsIchidan(VocabCollection vocab, DictLookup dictLookup, string word) => LookupIchidan(vocab, dictLookup, word) != null;
 }

@@ -1,7 +1,6 @@
 using Avalonia.Controls;
 using JAStudio.Core.Note;
 using JAStudio.UI.ViewModels;
-using System.Threading.Tasks;
 
 namespace JAStudio.UI.Views;
 
@@ -12,9 +11,9 @@ public partial class VocabFlagsDialog : Window
         InitializeComponent();
     }
 
-    public VocabFlagsDialog(VocabNote vocab) : this()
+    public VocabFlagsDialog(VocabNote vocab, Core.TemporaryServiceCollection services) : this()
     {
-        var viewModel = new VocabFlagsViewModel(vocab, this);
+        var viewModel = new VocabFlagsViewModel(vocab, services, this);
         DataContext = viewModel;
 
         // Wire up commands to close the dialog

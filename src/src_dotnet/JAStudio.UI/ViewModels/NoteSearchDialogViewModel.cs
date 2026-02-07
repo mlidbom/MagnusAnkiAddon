@@ -5,18 +5,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using JAStudio.Core;
+using JAStudio.Core.Anki;
+using JAStudio.Core.LanguageServices;
 using JAStudio.Core.Note;
-using JAStudio.Core.Note.Sentences;
-using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.SysUtils;
-using JAStudio.UI.Anki;
 
 namespace JAStudio.UI.ViewModels;
 
 public partial class NoteSearchDialogViewModel : ObservableObject
 {
     private const int MaxResults = 100;
+    private readonly Core.TemporaryServiceCollection _services;
 
     [ObservableProperty]
     private string _searchText = string.Empty;
@@ -34,8 +33,9 @@ public partial class NoteSearchDialogViewModel : ObservableObject
 
     public AsyncRelayCommand SearchCommand { get; }
 
-    public NoteSearchDialogViewModel()
+    public NoteSearchDialogViewModel(Core.TemporaryServiceCollection services)
     {
+        _services = services;
         SearchCommand = new AsyncRelayCommand(PerformSearchAsync);
     }
 
@@ -99,7 +99,7 @@ public partial class NoteSearchDialogViewModel : ObservableObject
 
         try
         {
-            var col = Core.App.Col();
+            var col = _services.App.Col();
 
             // Search in kanji notes
             results.AddRange(SearchInNotes(
@@ -282,7 +282,7 @@ public partial class NoteSearchDialogViewModel : ObservableObject
             return;
 
         var noteId = SelectedResult.NoteId;
-        var query = Core.AnkiUtils.QueryBuilder.NotesByIds(new[] { (long)noteId });
+        var query = _services.QueryBuilder.NotesByIds(new[] { (long)noteId });
         AnkiFacade.ExecuteLookup(query);
     }
 }

@@ -4,12 +4,14 @@ using System.Linq;
 
 namespace JAStudio.Core.LanguageServices;
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable InconsistentNaming
 public static class Conjugator
 {
-    private static readonly List<string> IchidanEndings = new() { "", "ろ", "な" };
+   static readonly List<string> IchidanEndings = ["", "ろ", "な"];
 
-    private static readonly List<string> GodanRuEndings = new() { "り", "ら", "れ", "っ" };
-    private static readonly List<string> GodanRuOrIchidanEndings;
+   static readonly List<string> GodanRuEndings = ["り", "ら", "れ", "っ"];
+   static readonly List<string> GodanRuOrIchidanEndings;
 
     public static readonly Dictionary<string, string> GodanPotentialVerbEndingToDictionaryFormEndings = new()
     {
@@ -24,53 +26,47 @@ public static class Conjugator
         { "れる", "る" }
     };
 
-    public static readonly HashSet<string> GodanImperativeVerbEndings = new()
-    {
-        "え", "け", "げ", "せ", "て", "ね", "べ", "め", "れ"
-    };
+    public static readonly HashSet<string> GodanImperativeVerbEndings = ["え", "け", "げ", "せ", "て", "ね", "べ", "め", "れ"];
 
-    private const int IStemIndex = 0;
-    private const int AStemIndex = 1;
-    private const int EStemIndex = 2;
-    private const int TeStemIndex = 3;
+    const int IStemIndex = 0;
+    const int AStemIndex = 1;
+    const int EStemIndex = 2;
+    const int TeStemIndex = 3;
 
-    private static readonly Dictionary<string, List<string>> OneCharacterMappings = new()
-    {
-        { "う", new List<string> { "い", "わ", "え", "っ" } },
-        { "く", new List<string> { "き", "か", "け", "い" } },
-        { "ぐ", new List<string> { "ぎ", "が", "げ", "い" } },
-        { "す", new List<string> { "し", "さ", "せ", "し" } },
-        { "つ", new List<string> { "ち", "た", "て", "っ" } },
-        { "ぬ", new List<string> { "に", "な", "ね", "ん" } },
-        { "ぶ", new List<string> { "び", "ば", "べ", "ん" } },
-        { "む", new List<string> { "み", "ま", "め", "ん" } },
-        { "る", GodanRuEndings },
-        { "い", new List<string> { "く", "け", "か" } } // I adjective stems
-    };
+    static readonly Dictionary<string, List<string>> OneCharacterMappings = new()
+                                                                            {
+                                                                               { "う", ["い", "わ", "え", "っ"] },
+                                                                               { "く", ["き", "か", "け", "い"] },
+                                                                               { "ぐ", ["ぎ", "が", "げ", "い"] },
+                                                                               { "す", ["し", "さ", "せ", "し"] },
+                                                                               { "つ", ["ち", "た", "て", "っ"] },
+                                                                               { "ぬ", ["に", "な", "ね", "ん"] },
+                                                                               { "ぶ", ["び", "ば", "べ", "ん"] },
+                                                                               { "む", ["み", "ま", "め", "ん"] },
+                                                                               { "る", GodanRuEndings },
+                                                                               { "い", ["く", "け", "か"] } // I adjective stems
+                                                                            };
 
-    private static readonly Dictionary<string, List<string>> TwoCharacterMappings = new()
-    {
-        { "する", new List<string> { "し", "さ", "すれ", "し", "せ" } },
-        { "くる", new List<string> { "き", "こ", "くれ", "き" } },
-        { "いく", new List<string> { "いき", "いか", "いけ", "いっ", "いこ" } },
-        { "行く", new List<string> { "行き", "行か", "行け", "行っ", "行こ" } },
-        { "ます", new List<string> { "まし", "ませ" } },
-        { "いい", new List<string> { "よく", "よけ", "よか", "よかっ" } }
-    };
+    static readonly Dictionary<string, List<string>> TwoCharacterMappings = new()
+                                                                            {
+                                                                               { "する", ["し", "さ", "すれ", "し", "せ"] },
+                                                                               { "くる", ["き", "こ", "くれ", "き"] },
+                                                                               { "いく", ["いき", "いか", "いけ", "いっ", "いこ"] },
+                                                                               { "行く", ["行き", "行か", "行け", "行っ", "行こ"] },
+                                                                               { "ます", ["まし", "ませ"] },
+                                                                               { "いい", ["よく", "よけ", "よか", "よかっ"] }
+                                                                            };
 
-    private static readonly List<string> MasuFormsByIndex = new() { "まし", "ませ", "まし", "まし" };
+    static readonly List<string> MasuFormsByIndex = ["まし", "ませ", "まし", "まし"];
 
-    private static readonly HashSet<string> AruVerbs = new()
-    {
-        "なさる", "くださる", "おっしゃる", "ござる", "らっしゃる", "下さる", "為さる"
-    };
+    static readonly HashSet<string> AruVerbs = ["なさる", "くださる", "おっしゃる", "ござる", "らっしゃる", "下さる", "為さる"];
 
-    private static readonly Dictionary<string, List<string>> AruMappings = new()
-    {
-        { "さる", new List<string> { "さい", "さら", "され", "さっ" } },
-        { "ざる", new List<string> { "ざい", "ざら", "ざれ", "ざっ" } },
-        { "ゃる", new List<string> { "ゃい", "ゃら", "れば", "ゃっ" } }
-    };
+    static readonly Dictionary<string, List<string>> AruMappings = new()
+                                                                   {
+                                                                      { "さる", ["さい", "さら", "され", "さっ"] },
+                                                                      { "ざる", ["ざい", "ざら", "ざれ", "ざっ"] },
+                                                                      { "ゃる", ["ゃい", "ゃら", "れば", "ゃっ"] }
+                                                                   };
 
     static Conjugator()
     {
@@ -81,14 +77,11 @@ public static class Conjugator
     public static string ConstructRootVerbForPossiblyPotentialGodanVerbDictionaryForm(string potentialVerbForm)
     {
         var ending = potentialVerbForm.Substring(potentialVerbForm.Length - 2);
-        return potentialVerbForm.Substring(0, potentialVerbForm.Length - 2) + 
+        return potentialVerbForm.Substring(0, potentialVerbForm.Length - 2) +
                GodanPotentialVerbEndingToDictionaryFormEndings[ending];
     }
 
-    private static bool IsAruVerb(string word)
-    {
-        return AruVerbs.Any(aruEnding => word.EndsWith(aruEnding));
-    }
+    static bool IsAruVerb(string word) => AruVerbs.Any(word.EndsWith);
 
     public static List<string> GetWordStems(string word, bool isIchidanVerb = false, bool isGodan = false)
     {
@@ -136,10 +129,10 @@ public static class Conjugator
             MyLog.Warning($"GetWordStems failed to handle {word}, returning empty list");
         }
 
-        return new List<string> { word };
+        return [word];
     }
 
-    private static string GetStem(string word, int stemIndex, bool isIchidanVerb = false, bool isGodan = false)
+    static string GetStem(string word, int stemIndex, bool isIchidanVerb = false, bool isGodan = false)
     {
         try
         {
@@ -193,20 +186,11 @@ public static class Conjugator
         return word;
     }
 
-    public static List<string> GetVocabStems(VocabNote vocab)
-    {
-        return GetWordStems(vocab.GetQuestion(), vocab.PartsOfSpeech.IsIchidan(), vocab.PartsOfSpeech.IsGodan());
-    }
+    public static List<string> GetVocabStems(VocabNote vocab) => GetWordStems(vocab.GetQuestion(), vocab.PartsOfSpeech.IsIchidan(), vocab.PartsOfSpeech.IsGodan());
 
-    public static string GetIStem(string word, bool isIchidan = false, bool isGodan = false)
-    {
-        return GetStem(word, IStemIndex, isIchidan, isGodan);
-    }
+    public static string GetIStem(string word, bool isIchidan = false, bool isGodan = false) => GetStem(word, IStemIndex, isIchidan, isGodan);
 
-    public static string GetAStem(string word, bool isIchidan = false, bool isGodan = false)
-    {
-        return GetStem(word, AStemIndex, isIchidan, isGodan);
-    }
+    public static string GetAStem(string word, bool isIchidan = false, bool isGodan = false) => GetStem(word, AStemIndex, isIchidan, isGodan);
 
     public static string GetEStem(string word, bool isIchidan = false, bool isGodan = false)
     {
@@ -217,10 +201,7 @@ public static class Conjugator
         return GetStem(word, EStemIndex, isIchidan, isGodan);
     }
 
-    public static string GetTeStem(string word, bool isIchidan = false, bool isGodan = false)
-    {
-        return GetStem(word, TeStemIndex, isIchidan, isGodan);
-    }
+    public static string GetTeStem(string word, bool isIchidan = false, bool isGodan = false) => GetStem(word, TeStemIndex, isIchidan, isGodan);
 
     public static string GetIStemVocab(VocabNote vocab, string form = "")
     {

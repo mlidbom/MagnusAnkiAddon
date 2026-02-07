@@ -1,5 +1,5 @@
 using System.Linq;
-using JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;
+using JAStudio.Core.Configuration;
 using JAStudio.Core.Note.Sentences;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Requirements;
@@ -21,6 +21,7 @@ public class MatchInspector
     public Match Match => _match;
     public CandidateWordVariant Variant => Match.Variant;
     public CandidateWord Word => Variant.Word;
+    public Settings Settings => Word.Analysis.Services.Settings;
     public CandidateWordVariant SurfaceVariant => Word.SurfaceVariant;
     public bool IsBase => !Variant.IsSurface;
     public TextAnalysisLocation StartLocation => Word.StartLocation;

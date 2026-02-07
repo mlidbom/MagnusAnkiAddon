@@ -19,14 +19,14 @@ public class SeeAlso
 
     public List<VocabNote> Notes()
     {
-        return App.Col().Vocab.WithAnyFormInPreferDisambiguationNameOrExactMatch(Strings().ToList());
+        return _vocab.Services.Collection.Vocab.WithAnyFormInPreferDisambiguationNameOrExactMatch(Strings().ToList());
     }
 
     public void Add(string toAdd)
     {
         Strings().Add(toAdd);
 
-        foreach (var addedNote in App.Col().Vocab.WithQuestion(toAdd))
+        foreach (var addedNote in _vocab.Services.Collection.Vocab.WithQuestion(toAdd))
         {
             if (!addedNote.RelatedNotes.SeeAlso.Strings().Contains(_vocab.GetQuestion()))
             {
@@ -41,7 +41,7 @@ public class SeeAlso
     {
         Strings().Remove(toRemove);
 
-        foreach (var removedNote in App.Col().Vocab.WithQuestion(toRemove))
+        foreach (var removedNote in _vocab.Services.Collection.Vocab.WithQuestion(toRemove))
         {
             if (removedNote.RelatedNotes.SeeAlso.Strings().Contains(_vocab.GetQuestion()))
             {

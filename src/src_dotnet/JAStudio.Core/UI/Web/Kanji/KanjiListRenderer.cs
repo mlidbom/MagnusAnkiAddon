@@ -1,15 +1,19 @@
+using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Note;
-using JAStudio.Core.SysUtils;
 using JAStudio.Core.ViewModels.KanjiList;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using JAStudio.Core.LanguageServices;
 
 namespace JAStudio.Core.UI.Web.Kanji;
 
-public static class KanjiListRenderer
+public class KanjiListRenderer
 {
-    public static string RenderList(JPNote note, List<KanjiNote> kanjis, List<string> kanjiReadings)
+    readonly KanjiCollection _kanji;
+   internal KanjiListRenderer(KanjiCollection kanji) => _kanji = kanji;
+
+    public string RenderList(JPNote note, List<KanjiNote> kanjis, List<string> kanjiReadings)
     {
         if (kanjis.Count == 0)
             return "";
@@ -58,9 +62,9 @@ public static class KanjiListRenderer
             """;
     }
 
-    public static string KanjiKanjiList(KanjiNote kanji)
+    public string KanjiKanjiList(KanjiNote kanji)
     {
-        var kanjis = App.Col().Kanji.WithRadical(kanji.GetQuestion());
+        var kanjis = _kanji.WithRadical(kanji.GetQuestion());
         var kanjiReadings = kanji.GetReadingsClean();
 
         return RenderList(kanji, kanjis, kanjiReadings);

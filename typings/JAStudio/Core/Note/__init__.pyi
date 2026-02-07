@@ -2,10 +2,15 @@ import typing, abc
 from System import Action, IDisposable, Array_1
 from JAStudio.Core.Note.Collection import JPCollection, CardStudyingStatus
 from System.Collections.Generic import HashSet_1, Dictionary_2, List_1, IEnumerable_1, IEnumerator_1
+from JAStudio.Core.Anki import AnkiCardOperations
+from JAStudio.Core.Configuration import JapaneseConfig, Settings
+from JAStudio.Core.LanguageServices.JamdictEx import DictLookup
+from JAStudio.Core.TaskRunners import TaskRunner
+from JAStudio.Core.Note.Vocabulary import VocabNoteFactory, VocabNoteGeneratedData, VocabNoteAudio, VocabCloner, VocabNoteUserCompoundParts, VocabNoteConjugator, VocabNoteForms, VocabNoteKanji, VocabNoteMatchingConfiguration, VocabNoteMetaData, VocabNotePartsOfSpeech, VocabNoteQuestion, VocabNoteRegister, VocabNoteSentences, VocabNoteUserFields
 from JAStudio.Core.Note.NoteFields import MutableStringField, StripHtmlOnReadFallbackStringField, WritableAudioField, MutableSerializedObjectField_1, SentenceQuestionField, MutableCommaSeparatedStringsListField
+from JAStudio.Core.LanguageServices.JanomeEx import AnalysisServices
 from JAStudio.Core.Note.Sentences import CachingSentenceConfigurationField, ParsingResult, SentenceUserFields
 from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction import TextAnalysis
-from JAStudio.Core.Note.Vocabulary import VocabNoteAudio, VocabCloner, VocabNoteUserCompoundParts, VocabNoteConjugator, VocabNoteForms, VocabNoteKanji, VocabNoteMatchingConfiguration, VocabNoteMetaData, VocabNotePartsOfSpeech, VocabNoteQuestion, VocabNoteRegister, VocabNoteSentences, VocabNoteUserFields
 from JAStudio.Core.Note.Vocabulary.RelatedVocab import RelatedVocab
 
 class Builtin(abc.ABC):
@@ -52,6 +57,8 @@ class JPNote(abc.ABC):
     def IsFlushing(self) -> bool: ...
     @property
     def RecursiveFlushGuard(self) -> NoteFlushGuard: ...
+    @property
+    def Services(self) -> NoteServices: ...
     @property
     def Tags(self) -> NoteTags: ...
     def Equals(self, obj: typing.Any) -> bool: ...
@@ -101,13 +108,15 @@ class JPNoteData:
 
 
 class KanjiNote(JPNote):
-    def __init__(self, data: JPNoteData = ...) -> None: ...
+    def __init__(self, services: NoteServices, data: JPNoteData = ...) -> None: ...
     @property
     def Collection(self) -> JPCollection: ...
     @property
     def IsFlushing(self) -> bool: ...
     @property
     def RecursiveFlushGuard(self) -> NoteFlushGuard: ...
+    @property
+    def Services(self) -> NoteServices: ...
     @property
     def Tags(self) -> NoteTags: ...
     def AddPrimaryKunReading(self, reading: str) -> None: ...
@@ -116,7 +125,7 @@ class KanjiNote(JPNote):
     def AddUserSimilarMeaning(self, newSynonymQuestion: str, isRecursiveCall: bool = ...) -> None: ...
     def BootstrapMnemonicFromRadicals(self) -> None: ...
     @staticmethod
-    def Create(question: str, answer: str, onReadings: str, kunReading: str) -> KanjiNote: ...
+    def Create(services: NoteServices, question: str, answer: str, onReadings: str, kunReading: str) -> KanjiNote: ...
     def GenerateDefaultPrimaryVocab(self) -> List_1[str]: ...
     def GetActiveMnemonic(self) -> str: ...
     def GetAnswer(self) -> str: ...
@@ -167,9 +176,8 @@ class KanjiNote(JPNote):
     def UpdateInCache(self) -> None: ...
 
 
-class KanjiNoteMnemonicMaker(abc.ABC):
-    @staticmethod
-    def CreateDefaultMnemonic(kanjiNote: KanjiNote) -> str: ...
+class KanjiNoteMnemonicMaker:
+    def CreateDefaultMnemonic(self, kanjiNote: KanjiNote) -> str: ...
 
 
 class Mine(abc.ABC):
@@ -206,23 +214,6 @@ class NoteFieldsConstants(abc.ABC):
         UserSimilarMeaning : str
 
 
-    class Sentence(abc.ABC):
-        ActiveAnswer : str
-        ActiveQuestion : str
-        Audio : str
-        Configuration : str
-        Id : str
-        ParsingResult : str
-        Reading : str
-        Screenshot : str
-        SourceAnswer : str
-        SourceComments : str
-        SourceQuestion : str
-        UserAnswer : str
-        UserComments : str
-        UserQuestion : str
-
-
     class SentencesNoteType(abc.ABC):
 
         class Card(abc.ABC):
@@ -233,28 +224,26 @@ class NoteFieldsConstants(abc.ABC):
 
     class Vocab(abc.ABC):
         ActiveAnswer : str
-        Audio : str
         AudioB : str
         AudioG : str
         AudioTTS : str
-        GeneratedData : str
+        Forms : str
+        Homophones : str
         Kanji : str
         MatchingRules : str
-        Metadata : str
-        MetaTags : str
+        ParsedTypeOfSpeech : str
         PartsOfSpeech : str
         Question : str
-        ReadingKana : str
-        ReadingRomaji : str
-        Register : str
+        Reading : str
         RelatedVocab : str
         SentenceCount : str
         SourceAnswer : str
+        SourceMnemonic : str
+        SourceReadingMnemonic : str
         UserAnswer : str
-        UserCompoundParts : str
+        UserCompounds : str
         UserExplanation : str
         UserExplanationLong : str
-        UserForms : str
         UserMnemonic : str
 
 
@@ -273,6 +262,27 @@ class NoteFlushGuard:
     def IsFlushing(self) -> bool: ...
     def Flush(self) -> None: ...
     def PauseFlushing(self) -> IDisposable: ...
+
+
+class NoteServices:
+    @property
+    def AnkiCardOperations(self) -> AnkiCardOperations: ...
+    @property
+    def Collection(self) -> JPCollection: ...
+    @property
+    def Config(self) -> JapaneseConfig: ...
+    @property
+    def DictLookup(self) -> DictLookup: ...
+    @property
+    def KanjiNoteMnemonicMaker(self) -> KanjiNoteMnemonicMaker: ...
+    @property
+    def Settings(self) -> Settings: ...
+    @property
+    def TaskRunner(self) -> TaskRunner: ...
+    @property
+    def VocabNoteFactory(self) -> VocabNoteFactory: ...
+    @property
+    def VocabNoteGeneratedData(self) -> VocabNoteGeneratedData: ...
 
 
 class NoteTags(IEnumerable_1[Tag]):
@@ -294,11 +304,13 @@ class NoteTypes(abc.ABC):
 
 
 class SentenceNote(JPNote):
-    def __init__(self, data: JPNoteData = ...) -> None: ...
+    def __init__(self, services: NoteServices, data: JPNoteData = ...) -> None: ...
     @property
     def ActiveAnswer(self) -> MutableStringField: ...
     @property
     def ActiveQuestion(self) -> MutableStringField: ...
+    @property
+    def AnalysisServices(self) -> AnalysisServices: ...
     @property
     def Answer(self) -> StripHtmlOnReadFallbackStringField: ...
     @property
@@ -322,6 +334,8 @@ class SentenceNote(JPNote):
     @property
     def RecursiveFlushGuard(self) -> NoteFlushGuard: ...
     @property
+    def Services(self) -> NoteServices: ...
+    @property
     def SourceComments(self) -> MutableStringField: ...
     @property
     def SourceQuestion(self) -> MutableStringField: ...
@@ -330,12 +344,12 @@ class SentenceNote(JPNote):
     @property
     def User(self) -> SentenceUserFields: ...
     @staticmethod
-    def AddSentence(question: str, answer: str, audio: str = ..., screenshot: str = ..., highlightedVocab: HashSet_1[str] = ..., tags: HashSet_1[Tag] = ...) -> SentenceNote: ...
+    def AddSentence(services: NoteServices, question: str, answer: str, audio: str = ..., screenshot: str = ..., highlightedVocab: HashSet_1[str] = ..., tags: HashSet_1[Tag] = ...) -> SentenceNote: ...
     @staticmethod
-    def Create(question: str) -> SentenceNote: ...
+    def Create(services: NoteServices, question: str) -> SentenceNote: ...
     def CreateAnalysis(self, forUI: bool = ...) -> TextAnalysis: ...
     @staticmethod
-    def CreateTestNote(question: str, answer: str) -> SentenceNote: ...
+    def CreateTestNote(services: NoteServices, question: str, answer: str) -> SentenceNote: ...
     def ExtractKanji(self) -> List_1[str]: ...
     def GetAnswer(self) -> str: ...
     def GetDirectDependencies(self) -> HashSet_1[JPNote]: ...
@@ -423,7 +437,6 @@ class Tags(abc.ABC):
         IsIchidanHidingGodanPotential : Tag
         QuestionOverridesForm : Tag
         Root : str
-        UsuallyKanaOnly : Tag
 
         class Matching(abc.ABC):
             IsInflectingWord : Tag
@@ -513,7 +526,7 @@ class TestingBackendNoteCreator(IBackendNoteCreator):
 
 
 class VocabNote(JPNote):
-    def __init__(self, data: JPNoteData = ...) -> None: ...
+    def __init__(self, services: NoteServices, data: JPNoteData = ...) -> None: ...
     @property
     def ActiveAnswer(self) -> MutableStringField: ...
     @property
@@ -555,6 +568,8 @@ class VocabNote(JPNote):
     @property
     def Sentences(self) -> VocabNoteSentences: ...
     @property
+    def Services(self) -> NoteServices: ...
+    @property
     def SourceAnswer(self) -> MutableStringField: ...
     @property
     def Tags(self) -> NoteTags: ...
@@ -574,8 +589,8 @@ class VocabNote(JPNote):
     Create : Create_MethodGroup
     class Create_MethodGroup:
         @typing.overload
-        def __call__(self, question: str, answer: str, readings: Array_1[str]) -> VocabNote:...
+        def __call__(self, services: NoteServices, question: str, answer: str, readings: Array_1[str]) -> VocabNote:...
         @typing.overload
-        def __call__(self, question: str, answer: str, readings: List_1[str], forms: List_1[str]) -> VocabNote:...
+        def __call__(self, services: NoteServices, question: str, answer: str, readings: List_1[str], forms: List_1[str]) -> VocabNote:...
 
 

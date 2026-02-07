@@ -1,4 +1,3 @@
-using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Requirements;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.Head;
 
@@ -11,7 +10,7 @@ public static class ForbidsCompositionallyTransparentCompound
     public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
     {
         var match = inspector.Match;
-        if (Settings.HideTransparentCompounds() &&
+        if (inspector.Settings.HideTransparentCompounds() &&
             match.Word.Analysis.ForUI &&
             match.Word.IsCompound &&
             inspector.CompoundLocationsAllHaveValidNonCompoundMatches &&

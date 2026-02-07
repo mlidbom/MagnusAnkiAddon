@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.PythonInterop.Utilities;
@@ -8,10 +7,10 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;
 
 public sealed class JNTokenizer
 {
-    private static readonly HashSet<string> CharactersThatMayConfuseJanomeSoWeReplaceThemWithOrdinaryFullWidthSpaces = 
-        new() { "!", "！", "|", "（", "）" };
+   static readonly HashSet<string> CharactersThatMayConfuseJanomeSoWeReplaceThemWithOrdinaryFullWidthSpaces =
+       ["!", "！", "|", "（", "）"];
 
-    private readonly dynamic _tokenizer;
+   readonly dynamic _tokenizer;
 
     public JNTokenizer()
     {
@@ -29,7 +28,7 @@ public sealed class JNTokenizer
             // Apparently janome does not fully understand that invisible spaces are word separators,
             // so we replace them with ordinary spaces since they are not anything that should need to be parsed
             var sanitizedText = text.Replace(StringExtensions.InvisibleSpace, JNToken.SplitterTokenText);
-            
+
             foreach (var character in CharactersThatMayConfuseJanomeSoWeReplaceThemWithOrdinaryFullWidthSpaces)
             {
                 sanitizedText = sanitizedText.Replace(character, " ");
@@ -46,7 +45,7 @@ public sealed class JNTokenizer
             var jnTokens = tokens.Select(token =>
             {
                 var partsOfSpeech = JNPartsOfSpeech.Fetch((string)token.part_of_speech);
-                
+
                 return new JNToken(
                     partsOfSpeech,
                     baseForm: (string)token.base_form ?? string.Empty,

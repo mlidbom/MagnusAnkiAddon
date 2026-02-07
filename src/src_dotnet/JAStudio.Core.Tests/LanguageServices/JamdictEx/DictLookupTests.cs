@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.Note.Vocabulary;
-using JAStudio.Core.Tests.Fixtures;
 using Xunit;
 
 namespace JAStudio.Core.Tests.LanguageServices.JamdictEx;
@@ -10,20 +8,8 @@ namespace JAStudio.Core.Tests.LanguageServices.JamdictEx;
 /// <summary>
 /// Tests ported from test_dict_lookup.py
 /// </summary>
-public class DictLookupTests : IDisposable
+public class DictLookupTests : TestStartingWithEmptyCollection
 {
-    private readonly IDisposable _collectionScope;
-
-    public DictLookupTests()
-    {
-        _collectionScope = CollectionFactory.InjectEmptyCollection();
-    }
-
-    public void Dispose()
-    {
-        _collectionScope.Dispose();
-    }
-
     [Theory]
     [InlineData("為る", new[] { "する" })]
     [InlineData("為る", new[] { "なる" })]
@@ -70,7 +56,7 @@ public class DictLookupTests : IDisposable
     [InlineData("しない")]
     public void ShouldBeMissing(string word)
     {
-        var result = DictLookup.LookupWord(word);
+        var result = GetService<DictLookup>().LookupWord(word);
         Assert.Empty(result.Entries);
     }
 
@@ -133,9 +119,9 @@ public class DictLookupTests : IDisposable
         Assert.Equal(expectedPosSet, dictEntry.PartsOfSpeech());
     }
 
-    private static DictLookupResult GetDictEntry(string word, string[] readings)
+    DictLookupResult GetDictEntry(string word, string[] readings)
     {
-        var vocab = VocabNoteFactory.Create(word, "", new List<string>(readings));
-        return DictLookup.LookupVocabWordOrName(vocab);
+        var vocab = GetService<VocabNoteFactory>().Create(word, "", [..readings]);
+        return GetService<DictLookup>().LookupVocabWordOrName(vocab);
     }
 }

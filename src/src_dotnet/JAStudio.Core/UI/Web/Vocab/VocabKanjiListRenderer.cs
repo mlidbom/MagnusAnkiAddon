@@ -5,14 +5,17 @@ using System.Linq;
 
 namespace JAStudio.Core.UI.Web.Vocab;
 
-public static class VocabKanjiListRenderer
+public class VocabKanjiListRenderer
 {
-    public static string RenderKanjiListFromKanji(List<string> kanjis)
+    readonly SentenceKanjiListViewModel _sentenceKanjiListViewModel;
+   internal VocabKanjiListRenderer(SentenceKanjiListViewModel sentenceKanjiListViewModel) => _sentenceKanjiListViewModel = sentenceKanjiListViewModel;
+
+    public string RenderKanjiListFromKanji(List<string> kanjis)
     {
         if (kanjis.Count == 0)
             return "";
 
-        var viewmodel = SentenceKanjiListViewModel.Create(kanjis);
+        var viewmodel = _sentenceKanjiListViewModel.Create(kanjis);
 
         var kanjiItems = viewmodel.KanjiList.Select(kanji => $$$"""
     <div class="kanji_item {{{string.Join(" ", kanji.Kanji.GetMetaTags())}}}">
@@ -33,7 +36,7 @@ public static class VocabKanjiListRenderer
             """;
     }
 
-    public static string RenderVocabKanjiList(VocabNote vocab)
+    public string RenderVocabKanjiList(VocabNote vocab)
     {
         return RenderKanjiListFromKanji(vocab.Kanji.ExtractMainFormKanji());
     }

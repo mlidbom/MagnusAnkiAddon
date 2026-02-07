@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using JAStudio.PythonInterop.Kana;
 
-namespace JAStudio.Core.SysUtils;
+namespace JAStudio.Core.LanguageServices;
 
 public static class KanaUtils
 {

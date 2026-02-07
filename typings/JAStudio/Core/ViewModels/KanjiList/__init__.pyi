@@ -1,4 +1,3 @@
-import abc
 from System.Collections.Generic import List_1
 from JAStudio.Core.Note import KanjiNote
 
@@ -20,7 +19,6 @@ class KanjiViewModel:
     def ToString(self) -> str: ...
 
 
-class SentenceKanjiListViewModel(abc.ABC):
-    @staticmethod
-    def Create(kanji: List_1[str]) -> KanjiListViewModel: ...
+class SentenceKanjiListViewModel:
+    def Create(self, kanji: List_1[str]) -> KanjiListViewModel: ...
 

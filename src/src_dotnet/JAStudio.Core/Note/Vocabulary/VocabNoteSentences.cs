@@ -79,26 +79,26 @@ public class VocabNoteSentences
 
     public List<SentenceNote> All()
     {
-        return App.Col().Sentences.WithVocab(Vocab);
+        return Vocab.Services.Collection.Sentences.WithVocab(Vocab);
     }
 
     public List<SentenceNote> InvalidIn()
     {
-        return App.Col().Sentences.WithVocabMarkedInvalid(Vocab);
+        return Vocab.Services.Collection.Sentences.WithVocabMarkedInvalid(Vocab);
     }
 
     public List<SentenceNote> WithOwnedForm()
     {
-        return App.Col().Sentences.WithVocabOwnedForm(Vocab);
+        return Vocab.Services.Collection.Sentences.WithVocabOwnedForm(Vocab);
     }
 
     public List<SentenceNote> WithPrimaryForm()
     {
-        return App.Col().Sentences.WithForm(Vocab.GetQuestion());
+        return Vocab.Services.Collection.Sentences.WithForm(Vocab.GetQuestion());
     }
 
     public List<SentenceNote> UserHighlighted()
     {
-        return App.Col().Sentences.WithUserHighlightedVocab(Vocab.GetQuestion());
+        return Vocab.Services.Collection.Sentences.WithUserHighlightedVocab(Vocab.GetQuestion());
     }
 }

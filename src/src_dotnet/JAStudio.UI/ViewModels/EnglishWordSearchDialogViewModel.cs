@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
-using JAStudio.Core;
 using JAStudio.Core.LanguageServices.EnglishDictionary;
 using JAStudio.UI.Utils;
 

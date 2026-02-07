@@ -1,0 +1,13 @@
+from JAStudio.Core.Note.Collection import VocabCollection
+from JAStudio.Core.LanguageServices.JamdictEx import DictLookup
+from JAStudio.Core.Configuration import Settings
+
+class AnalysisServices:
+    def __init__(self, vocab: VocabCollection, dictLookup: DictLookup, settings: Settings) -> None: ...
+    @property
+    def DictLookup(self) -> DictLookup: ...
+    @property
+    def Settings(self) -> Settings: ...
+    @property
+    def Vocab(self) -> VocabCollection: ...
+

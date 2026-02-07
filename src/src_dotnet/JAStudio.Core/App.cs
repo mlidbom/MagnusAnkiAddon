@@ -1,58 +1,55 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
 using JAStudio.Core.TestUtils;
-using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace JAStudio.Core;
 
-public class App
+public class App : IDisposable
 {
-    public static bool IsTesting => ExPytest.IsTesting;
+   public TemporaryServiceCollection Services { get; }
 
-    private static JPCollection? _collection;
-    private static IBackendNoteCreator? _backendNoteCreator;
+   internal App()
+   {
 
-    private static readonly List<Action> _initHooks = new();
+      Services = AppBootstrapper.Bootstrap(this).Resolve<TemporaryServiceCollection>();
+      _collection = Services.ServiceLocator.Resolve<JPCollection>();
+   }
 
-    public static void AddInitHook(Action hook)
-    {
-        _initHooks.Add(hook);
-    }
+   public static bool IsTesting => TestEnvDetector.IsTesting;
 
-    public static JapaneseConfig Config()
-    {
-        return ConfigurationValue.Config();
-    }
+   JPCollection _collection;
 
-    public static JPCollection Col()
-    {
-        if (_collection == null)
-        {
-            if (_backendNoteCreator == null)
-            {
-                throw new Exception("Backend note creator not initialized");
-            }
-            _collection = new JPCollection(_backendNoteCreator);
-        }
-        return _collection;
-    }
+   readonly List<Action> _initHooks = new();
 
-    public static void Reset(IBackendNoteCreator backendNoteCreator)
-    {
-        _collection = null;
-        _backendNoteCreator = backendNoteCreator;
-    }
+   public void AddInitHook(Action hook) => _initHooks.Add(hook);
 
-    public static string UserFilesDir
-    {
-        get
-        {
-            var assemblyLocation = typeof(App).Assembly.Location;
-            var assemblyDir = Path.GetDirectoryName(Path.GetDirectoryName(assemblyLocation)) ?? string.Empty;
-            return Path.Combine(assemblyDir, "user_files");
-        }
-    }
+   public void Dispose()
+   {
+      Services.Dispose();
+      if(!TestEnvDetector.IsTesting) //When running for real we have gigabytes of memory used and we want to free it immediately when restarting the app.
+      {
+         GC.Collect(2);
+         GC.WaitForPendingFinalizers();
+      }
+   }
+
+   public static App Bootstrap() => new App();
+
+   public JapaneseConfig Config() => Services.ConfigurationStore.Config();
+
+   public JPCollection Col() => _collection;
+
+   internal static string UserFilesDir
+   {
+      get
+      {
+         var assemblyLocation = typeof(App).Assembly.Location;
+         var assemblyDir = Path.GetDirectoryName(Path.GetDirectoryName(assemblyLocation)) ?? string.Empty;
+         return Path.Combine(assemblyDir, "user_files");
+      }
+   }
 }

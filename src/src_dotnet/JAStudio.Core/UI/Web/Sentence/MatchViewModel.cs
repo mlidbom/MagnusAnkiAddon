@@ -1,16 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.Configuration;
+using JAStudio.Core.LanguageServices;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches;
+using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Note.Sentences;
-using JAStudio.Core.Note.Vocabulary;
-using JAStudio.Core.SysUtils;
-using Settings = JAStudio.Core.Configuration.Settings;
 
 namespace JAStudio.Core.UI.Web.Sentence;
 
 public class MatchViewModel
 {
     private readonly SentenceConfiguration _config;
+    private readonly Settings _settings;
     private readonly List<string> _metaTags;
 
     public Match Match { get; }
@@ -30,9 +31,10 @@ public class MatchViewModel
     public bool MatchOwnsForm { get; }
     public bool DisplayReadings { get; }
 
-    public MatchViewModel(CandidateWordVariantViewModel wordVariantVm, Match match)
+    public MatchViewModel(CandidateWordVariantViewModel wordVariantVm, Match match, Settings settings, VocabCollection vocab)
     {
         Match = match;
+        _settings = settings;
         MatchIsDisplayed = match.IsDisplayed;
         VocabMatch = match as VocabMatch;
         _config = wordVariantVm.CandidateWord.Word.Analysis.Configuration;
@@ -40,7 +42,7 @@ public class MatchViewModel
         IsDisplayWord = wordVariantVm.IsDisplayWord;
         ParsedForm = match.ParsedForm;
         Answer = match.Answer;
-        VocabForm = !Settings.ShowBreakdownInEditMode() ? match.MatchForm : match.ExclusionForm;
+        VocabForm = !settings.ShowBreakdownInEditMode() ? match.MatchForm : match.ExclusionForm;
         CompoundParts = new List<CompoundPartViewModel>();
         AudioPath = string.Empty;
         IsHighlighted = _config.HighlightedWords.Contains(ParsedForm) || _config.HighlightedWords.Contains(VocabForm);
@@ -53,7 +55,7 @@ public class MatchViewModel
 
         if (VocabMatch != null)
         {
-            CompoundParts = CompoundPartViewModel.GetCompoundPartsRecursive(this, VocabMatch.Vocab, _config);
+            CompoundParts = CompoundPartViewModel.GetCompoundPartsRecursive(this, VocabMatch.Vocab, _config, settings, vocab);
             AudioPath = VocabMatch.Vocab.Audio.GetPrimaryAudioPath();
             _metaTags = VocabMatch.Vocab.GetMetaTags().ToList();
             MetaTagsHtml = VocabMatch.Vocab.MetaData.MetaTagsHtml(displayExtendedSentenceStatistics: false);
@@ -87,16 +89,16 @@ public class MatchViewModel
     {
         get
         {
-            if (Settings.ShowBreakdownInEditMode()) return true;
+            if (_settings.ShowBreakdownInEditMode()) return true;
             return IsDisplayWord && Match.IsDisplayed;
         }
     }
 
-    public bool ShowKanji => Kanji.Any() && !Settings.ShowBreakdownInEditMode() && Settings.ShowKanjiInSentenceBreakdown();
+    public bool ShowKanji => Kanji.Any() && !_settings.ShowBreakdownInEditMode() && _settings.ShowKanjiInSentenceBreakdown();
 
-    public bool ShowKanjiMnemonics => Settings.ShowKanjiMnemonicsInSentenceBreakdown();
+    public bool ShowKanjiMnemonics => _settings.ShowKanjiMnemonicsInSentenceBreakdown();
 
-    public bool ShowCompoundParts => CompoundParts.Any() && !Settings.ShowBreakdownInEditMode();
+    public bool ShowCompoundParts => CompoundParts.Any() && !_settings.ShowBreakdownInEditMode();
 
     public List<string> Kanji
     {

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using JAStudio.Core.Batches;
-using JAStudio.UI.Anki;
+using JAStudio.Core.Anki;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
 
@@ -14,6 +13,17 @@ namespace JAStudio.UI.Menus;
 /// </summary>
 public class JapaneseMainMenu
 {
+   readonly Core.TemporaryServiceCollection _services;
+   readonly JAStudioAppRoot _appRoot;
+   readonly OpenInAnkiMenus _openInAnkiMenus;
+
+   public JapaneseMainMenu(JAStudioAppRoot appRoot)
+   {
+      _appRoot = appRoot;
+      _services = appRoot.Services;
+      _openInAnkiMenus = new OpenInAnkiMenus(_services);
+   }
+
    public List<SpecMenuItem> BuildMenuSpec(Func<string> getClipboardContent) =>
    [
       BuildConfigMenuSpec(),
@@ -38,7 +48,7 @@ public class JapaneseMainMenu
          new List<SpecMenuItem>
          {
             SpecMenuItem.Command(ShortcutFinger.Home1("Open note (Ctrl+O)"), OnOpenNote),
-            OpenInAnkiMenus.BuildOpenInAnkiMenuSpec(getClipboardContent),
+            _openInAnkiMenus.BuildOpenInAnkiMenuSpec(getClipboardContent),
             WebSearchMenus.BuildWebSearchMenuSpec(getClipboardContent)
          }
       );
@@ -76,27 +86,27 @@ public class JapaneseMainMenu
    void OnOptions()
    {
       JALogger.Log("OnOptions() called!");
-      JALogger.Log("Calling DialogHost.ShowOptionsDialog()...");
-      DialogHost.ShowOptionsDialog();
-      JALogger.Log("DialogHost.ShowOptionsDialog() completed");
+      JALogger.Log("Calling ShowOptionsDialog()...");
+      _appRoot.ShowOptionsDialog();
+      JALogger.Log("ShowOptionsDialog() completed");
    }
 
-   void OnReadingsMappings() => DialogHost.ShowReadingsMappingsDialog();
+   void OnReadingsMappings() => _appRoot.ShowReadingsMappingsDialog();
 
    // Lookup menu actions
-   void OnOpenNote() => DialogHost.ToggleNoteSearchDialog();
+   void OnOpenNote() => _appRoot.ToggleNoteSearchDialog();
 
    // Local Actions menu actions
    void OnConvertImmersionKitSentences() => AnkiFacade.ConvertImmersionKitSentences();
-   void OnCreateMissingVocab() => LocalNoteUpdater.CreateMissingVocabWithDictionaryEntries();
-   void OnRegenerateVocabAnswers() => LocalNoteUpdater.RegenerateJamdictVocabAnswers();
+   void OnCreateMissingVocab() => _services.LocalNoteUpdater.CreateMissingVocabWithDictionaryEntries();
+   void OnRegenerateVocabAnswers() => _services.LocalNoteUpdater.RegenerateJamdictVocabAnswers();
 
    // Update submenu actions
-   void OnUpdateVocab() => LocalNoteUpdater.UpdateVocab();
-   void OnUpdateKanji() => LocalNoteUpdater.UpdateKanji();
-   void OnUpdateSentences() => LocalNoteUpdater.UpdateSentences();
-   void OnTagNoteMetadata() => LocalNoteUpdater.TagNoteMetadata();
-   void OnUpdateAll() => LocalNoteUpdater.UpdateAll();
-   void OnReparseSentences() => LocalNoteUpdater.ReparseAllSentences();
-   void OnFullRebuild() => LocalNoteUpdater.FullRebuild();
+   void OnUpdateVocab() => _services.LocalNoteUpdater.UpdateVocab();
+   void OnUpdateKanji() => _services.LocalNoteUpdater.UpdateKanji();
+   void OnUpdateSentences() => _services.LocalNoteUpdater.UpdateSentences();
+   void OnTagNoteMetadata() => _services.LocalNoteUpdater.TagNoteMetadata();
+   void OnUpdateAll() => _services.LocalNoteUpdater.UpdateAll();
+   void OnReparseSentences() => _services.LocalNoteUpdater.ReparseAllSentences();
+   void OnFullRebuild() => _services.LocalNoteUpdater.FullRebuild();
 }

@@ -4,7 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
-using JAStudio.Core.TaskRunners;
+using JAStudio.Core.Anki;
 using JAStudio.UI.Dialogs;
 using JAStudio.UI.Menus;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
@@ -13,25 +13,43 @@ using JAStudio.UI.Views;
 namespace JAStudio.UI;
 
 /// <summary>
-/// Entry point for Python to interact with Avalonia UI.
-/// Call Initialize() once at startup, then use Show*Dialog() methods.
+/// Composition root for the Anki addon.
+/// Bootstraps Core.App, initializes Avalonia, and provides factory methods
+/// for creating menus and showing dialogs.
+/// Python calls Initialize() once at startup, then uses the returned instance.
 /// </summary>
-public static class DialogHost
+public class JAStudioAppRoot
 {
-   static bool _initialized;
-   static Thread? _uiThread;
-   static AutoResetEvent? _initEvent;
+   readonly Core.App _app;
+   // Stored to keep the UI thread rooted (prevent GC). Not accessed directly.
+#pragma warning disable CS0414
+   Thread? _uiThread;
+#pragma warning restore CS0414
 
    /// <summary>
-   /// Initialize Avalonia. Call once at addon startup.
+   /// The resolved service collection, derived from the bootstrapped Core.App.
+   /// Used by dialog code-behinds to pass services to their ViewModels.
    /// </summary>
-   public static void Initialize()
+   public Core.TemporaryServiceCollection Services => _app.Services;
+
+   JAStudioAppRoot(Core.App app) => _app = app;
+
+   /// <summary>
+   /// Bootstrap Core.App, initialize Avalonia, and return the composition root.
+   /// Call once at addon startup.
+   /// </summary>
+   /// <param name="configJson">JSON-serialized configuration dictionary from the Anki addon.</param>
+   /// <param name="configUpdateCallback">Callback that receives updated config JSON to persist back to Anki.</param>
+   public static JAStudioAppRoot Initialize(string configJson, Action<string> configUpdateCallback)
    {
-      if(_initialized) return;
+      var app = Core.App.Bootstrap();
 
-      _initEvent = new AutoResetEvent(false);
+      // Initialize the C# configuration system with the Anki addon config
+      app.Services.ConfigurationStore.InitJson(configJson, configUpdateCallback);
 
-      _uiThread = new Thread(() =>
+      var initEvent = new AutoResetEvent(false);
+
+      var uiThread = new Thread(() =>
                   {
                      AppBuilder.Configure<App>()
                                .UsePlatformDetect()
@@ -44,40 +62,49 @@ public static class DialogHost
 
       if(OperatingSystem.IsWindows())
       {
-         _uiThread.SetApartmentState(ApartmentState.STA);
+         uiThread.SetApartmentState(ApartmentState.STA);
       }
 
-      _uiThread.Start();
+      uiThread.Start();
 
-      // Wait for Avalonia to initialize
-      // TODO: Add proper synchronization with App.OnFrameworkInitializationCompleted
-      Thread.Sleep(500);
+      // Wait for Avalonia to finish framework initialization
+      App.WaitForInitialization(TimeSpan.FromSeconds(30));
+
+      var root = new JAStudioAppRoot(app) { _uiThread = uiThread };
 
       // Set up task runner factory
-      TaskRunner.SetUiTaskRunnerFactory((windowTitle, labelText, allowCancel, modal) =>
+      root.Services.TaskRunner.SetUiTaskRunnerFactory((windowTitle, labelText, allowCancel, modal) =>
                                            new AvaloniaTaskProgressRunner(windowTitle, labelText, allowCancel, modal));
 
       // Register Anki card operations so Core can suspend/unsuspend cards via Anki API
-      Core.Anki.AnkiCardOperations.SetImplementation(new Anki.AnkiCardOperationsImpl());
+      root.Services.AnkiCardOperations.SetImplementation(new AnkiCardOperationsImpl());
 
-      _initialized = true;
+      return root;
    }
+
+   // ── Factory methods for Python-facing objects ──
+
+   /// <summary>Called from Python to build right-click context menus.</summary>
+   public NoteContextMenu CreateNoteContextMenu() => new(Services);
+
+   /// <summary>Called from Python to build the main "Japanese" tools menu.</summary>
+   public JapaneseMainMenu CreateJapaneseMainMenu() => new(this);
+
+   // ── UI thread helpers ──
 
    /// <summary>
    /// Run an action on the Avalonia UI thread.
    /// </summary>
-   public static void RunOnUIThread(Action action)
+   public void RunOnUIThread(Action action)
    {
-      EnsureInitialized();
       Dispatcher.UIThread.Post(action);
    }
 
    /// <summary>
    /// Show a dialog and wait for it to close.
    /// </summary>
-   public static void ShowDialog<T>() where T : Window, new()
+   public void ShowDialog<T>() where T : Window, new()
    {
-      EnsureInitialized();
       Dispatcher.UIThread.Invoke(() =>
       {
          var window = new T();
@@ -85,15 +112,16 @@ public static class DialogHost
       });
    }
 
+   // ── Dialog show methods (called from Python and C# menus) ──
+
    /// <summary>
    /// Show the VocabFlagsDialog for editing a vocab note's flags.
    /// </summary>
-   public static void ShowVocabFlagsDialog(int vocabId)
+   public void ShowVocabFlagsDialog(int vocabId)
    {
-      EnsureInitialized();
       Dispatcher.UIThread.Invoke(() =>
       {
-         var vocabCache = Core.App.Col().Vocab;
+         var vocabCache = _app.Col().Vocab;
          var vocab = vocabCache.WithIdOrNone(vocabId);
          if(vocab == null)
          {
@@ -101,7 +129,7 @@ public static class DialogHost
             return;
          }
 
-         var window = new VocabFlagsDialog(vocab);
+         var window = new VocabFlagsDialog(vocab, Services);
          window.Show();
       });
    }
@@ -109,9 +137,8 @@ public static class DialogHost
    /// <summary>
    /// Show the About dialog.
    /// </summary>
-   public static void ShowAboutDialog()
+   public void ShowAboutDialog()
    {
-      EnsureInitialized();
       Dispatcher.UIThread.Invoke(() =>
       {
          var window = new AboutDialog();
@@ -122,13 +149,12 @@ public static class DialogHost
    /// <summary>
    /// Show the Options dialog for Japanese configuration settings.
    /// </summary>
-   public static void ShowOptionsDialog()
+   public void ShowOptionsDialog()
    {
-      EnsureInitialized();
       Dispatcher.UIThread.Invoke(() =>
       {
          JALogger.Log("Creating OptionsDialog window...");
-         var window = new OptionsDialog();
+         var window = new OptionsDialog(Services);
          JALogger.Log("OptionsDialog created, calling Show()...");
          window.Show();
          JALogger.Log("OptionsDialog.Show() completed");
@@ -138,13 +164,12 @@ public static class DialogHost
    /// <summary>
    /// Show the Readings Mappings dialog for editing readings mappings.
    /// </summary>
-   public static void ShowReadingsMappingsDialog()
+   public void ShowReadingsMappingsDialog()
    {
       JALogger.Log("ShowReadingsMappingsDialog() called");
-      EnsureInitialized();
       Dispatcher.UIThread.Invoke(() =>
       {
-         var window = new ReadingsMappingsDialog();
+         var window = new ReadingsMappingsDialog(Services);
          window.Show();
       });
    }
@@ -153,13 +178,12 @@ public static class DialogHost
    /// Toggle the Note Search dialog visibility.
    /// Shows the dialog if hidden, hides it if visible.
    /// </summary>
-   public static void ToggleNoteSearchDialog()
+   public void ToggleNoteSearchDialog()
    {
       JALogger.Log("ToggleNoteSearchDialog() called");
-      EnsureInitialized();
       Dispatcher.UIThread.Invoke(() =>
       {
-         NoteSearchDialog.ToggleVisibility();
+         NoteSearchDialog.ToggleVisibility(Services);
       });
    }
 
@@ -167,10 +191,9 @@ public static class DialogHost
    /// Toggle the English Word Search dialog visibility.
    /// Shows the dialog if hidden, hides it if visible.
    /// </summary>
-   public static void ToggleEnglishWordSearchDialog()
+   public void ToggleEnglishWordSearchDialog()
    {
       JALogger.Log("ToggleEnglishWordSearchDialog() called");
-      EnsureInitialized();
       Dispatcher.UIThread.Invoke(() =>
       {
          EnglishWordSearchDialog.ToggleVisibility();
@@ -180,13 +203,8 @@ public static class DialogHost
    /// <summary>
    /// Show the context menu popup at the current cursor position.
    /// </summary>
-   /// <param name="clipboardContent">Content from clipboard</param>
-   /// <param name="selectionContent">Currently selected text</param>
-   /// <param name="x">X coordinate for popup position (screen coordinates)</param>
-   /// <param name="y">Y coordinate for popup position (screen coordinates)</param>
-   public static void ShowContextMenuPopup(string clipboardContent, string selectionContent, int x, int y)
+   public void ShowContextMenuPopup(string clipboardContent, string selectionContent, int x, int y)
    {
-      EnsureInitialized();
       Dispatcher.UIThread.Invoke(() =>
       {
          var menuControl = new ContextMenuPopup(clipboardContent ?? "", selectionContent ?? "");
@@ -198,23 +216,18 @@ public static class DialogHost
    /// Build browser context menu specification.
    /// Returns UI-agnostic menu specs that Python can convert to PyQt menus.
    /// </summary>
-   /// <param name="selectedCardIds">List of selected card IDs (dynamic from Python)</param>
-   /// <param name="selectedNoteIds">List of selected note IDs (dynamic from Python)</param>
-   public static SpecMenuItem BuildBrowserMenuSpec(
+   public SpecMenuItem BuildBrowserMenuSpec(
       dynamic selectedCardIds,
       dynamic selectedNoteIds)
    {
-      EnsureInitialized();
-      return BrowserMenus.BuildBrowserMenuSpec(selectedCardIds, selectedNoteIds);
+      return new BrowserMenus(Services).BuildBrowserMenuSpec(selectedCardIds, selectedNoteIds);
    }
 
    /// <summary>
    /// Shutdown Avalonia. Call at addon unload.
    /// </summary>
-   public static void Shutdown()
+   public void Shutdown()
    {
-      if(!_initialized) return;
-
       Dispatcher.UIThread.Invoke(() =>
       {
          if(Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
@@ -222,13 +235,5 @@ public static class DialogHost
             lifetime.Shutdown();
          }
       });
-
-      _initialized = false;
-   }
-
-   static void EnsureInitialized()
-   {
-      if(!_initialized)
-         throw new InvalidOperationException("DialogHost.Initialize() must be called before showing dialogs.");
    }
 }

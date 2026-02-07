@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;
-using JAStudio.Core.Note.Sentences;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 
 public sealed class TextAnalysisLocation
 {
-    private const int MaxLookahead = 12; // In my collection the longest so far is 9, so 12 seems a pretty good choice.
+   const int MaxLookahead = 12; // In my collection the longest so far is 9, so 12 seems a pretty good choice.
 
     public TextAnalysisLocation? Next { get; set; }
     public TextAnalysisLocation? Previous { get; set; }
@@ -27,17 +26,17 @@ public sealed class TextAnalysisLocation
     public TextAnalysisLocation(TextAnalysis analysis, IAnalysisToken token, int characterStartIndex, int tokenIndex)
     {
         Token = token;
-        IsShadowedBy = new List<TextAnalysisLocation>();
-        Shadows = new List<TextAnalysisLocation>();
+        IsShadowedBy = [];
+        Shadows = [];
         Analysis = analysis;
         TokenIndex = tokenIndex;
         CharacterStartIndex = characterStartIndex;
         CharacterEndIndex = characterStartIndex + token.Surface.Length - 1;
 
-        DisplayVariants = new List<CandidateWordVariant>();
-        IndexingVariants = new List<CandidateWordVariant>();
-        CandidateWords = new List<CandidateWord>();
-        DisplayWords = new List<CandidateWord>();
+        DisplayVariants = [];
+        IndexingVariants = [];
+        CandidateWords = [];
+        DisplayWords = [];
     }
 
     public override string ToString()
@@ -138,7 +137,7 @@ TextLocation('{CharacterStartIndex}-{CharacterEndIndex}, {Token.Surface} | {Toke
         }
     }
 
-    private void ClearShadowed()
+    void ClearShadowed()
     {
         foreach (var shadowedShadowed in Shadows)
         {
@@ -147,15 +146,12 @@ TextLocation('{CharacterStartIndex}-{CharacterEndIndex}, {Token.Surface} | {Toke
         Shadows.Clear();
     }
 
-    public bool IsNextLocationInflectingWord()
-    {
-        return Next != null && Next.IsInflectingWord();
-    }
+    public bool IsNextLocationInflectingWord() => Next != null && Next.IsInflectingWord();
 
     // todo: having this check here only means that marking a compound as an inflecting word has no effect, and figuring out why things are not working can be quite a pain
     public bool IsInflectingWord()
     {
-        var vocab = App.Col().Vocab.WithAnyFormIn(new List<string> { Token.BaseForm, Token.Surface });
+        var vocab = Analysis.Services.Vocab.WithAnyFormIn([Token.BaseForm, Token.Surface]);
         return vocab.Any(voc => voc.MatchingConfiguration.BoolFlags.IsInflectingWord.IsActive);
     }
 }
