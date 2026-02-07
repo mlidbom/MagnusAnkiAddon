@@ -49,18 +49,18 @@ def _add_csharp_menu_entry(right_click_menu: QMenu, note: JPNote | None, selecti
     try:
         if note:
             if isinstance(note, VocabNote):
-                specs = menu_builder.BuildVocabContextMenuSpec(note.get_id(), selection, clipboard)  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
+                specs = menu_builder.BuildVocabContextMenuSpec(note.get_id(), selection, clipboard)
             elif isinstance(note, KanjiNote):
-                specs = menu_builder.BuildKanjiContextMenuSpec(note.get_id(), selection, clipboard)  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
+                specs = menu_builder.BuildKanjiContextMenuSpec(note.get_id(), selection, clipboard)
             elif isinstance(note, SentenceNote):
-                specs = menu_builder.BuildSentenceContextMenuSpec(note.get_id(), selection, clipboard)  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
+                specs = menu_builder.BuildSentenceContextMenuSpec(note.get_id(), selection, clipboard)
             else:
-                specs = menu_builder.BuildGenericContextMenuSpec(selection, clipboard)  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
+                specs = menu_builder.BuildGenericContextMenuSpec(selection, clipboard)
         else:
-            specs = menu_builder.BuildGenericContextMenuSpec(selection, clipboard)  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
+            specs = menu_builder.BuildGenericContextMenuSpec(selection, clipboard)
 
 
-        qt_menu_adapter.add_to_qt_menu(right_click_menu, specs)  # pyright: ignore[reportUnknownArgumentType]
+        qt_menu_adapter.add_to_qt_menu(right_click_menu, specs)
     except Exception as e:
         from jaslib import mylog
         mylog.error(f"Failed to build C# menus: {e}")
