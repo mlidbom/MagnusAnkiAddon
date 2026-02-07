@@ -8,7 +8,7 @@ from __future__ import annotations  # noqa: I001
 
 from jastudio.dotnet import load_dotnet_runtime
 
-load_dotnet_runtime.mylog.debug("Loading dotnet runtime")
+print(load_dotnet_runtime.config_file)
 
 #from typing import override
 from JAStudio.Core.InteropExperiments import CustomTypeReceiver  # noqa: E402

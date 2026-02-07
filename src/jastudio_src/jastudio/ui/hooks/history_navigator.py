@@ -8,11 +8,12 @@ from aqt import gui_hooks, mw
 from autoslot import Slots
 from jaspythonutils.sysutils import typed
 from jaspythonutils.sysutils.typed import non_optional
+from jaspythonutils.sysutils.weak_ref import WeakRefable
 
 from jastudio.ankiutils import app, query_builder, search_executor, ui_utils
 
 
-class CardHistoryNavigator(Slots):
+class CardHistoryNavigator(WeakRefable, Slots):
     def __init__(self) -> None:
         self.card_history: list[CardId] = []  # Stores card IDs
         self.current_position: int = -1
