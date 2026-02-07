@@ -27,20 +27,12 @@ def build_right_click_menu_webview_hook(view: AnkiWebView, root_menu: QMenu) -> 
     note = ui_utils.get_note_from_web_view(view)
     build_right_click_menu(root_menu, note, selection, clipboard)
 
-# noinspection PyPep8
 def build_right_click_menu(right_click_menu: QMenu, note: JPNote | None, selection: str, clipboard: str) -> None:
     import jastudio.ankiutils.app
     if not jastudio.ankiutils.app.is_initialized():
         right_click_menu.addAction(Mine.app_still_loading_message)  # pyright: ignore[reportUnknownMemberType]
         return
 
-    _add_csharp_menu_entry(right_click_menu, note, selection, clipboard)
-
-    ExQmenu.disable_empty_submenus(right_click_menu)
-
-
-
-def _add_csharp_menu_entry(right_click_menu: QMenu, note: JPNote | None, selection: str, clipboard: str) -> None:
     from jas_dotnet.qt_adapters import qt_menu_adapter
 
     from jastudio.ui import app_root
@@ -68,6 +60,8 @@ def _add_csharp_menu_entry(right_click_menu: QMenu, note: JPNote | None, selecti
         mylog.error(traceback.format_exc())
         # Add fallback menu item
         right_click_menu.addAction("⚠️ C# Menu Error (check console)")  # pyright: ignore[reportUnknownMemberType]
+
+    ExQmenu.disable_empty_submenus(right_click_menu)
 
 
 def init() -> None:
