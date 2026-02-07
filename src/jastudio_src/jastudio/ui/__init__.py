@@ -10,15 +10,19 @@ app_root = None
 
 
 def init() -> None:
-    global app_root
+
     from jastudio.ui import garbage_collection_fixes, hooks, menus, timing_hacks, tools_menu, web
+    _init_dot_net_app()
     hooks.init()
     timing_hacks.init()
     tools_menu.init()
     web.init()
     menus.init()
     garbage_collection_fixes.init()
+    TaskRunner.set_ui_task_runner_factory(QtTaskProgressRunner)
 
+def _init_dot_net_app() -> None:
+    global app_root
     from JAStudio.UI import JAStudioAppRoot
     from System import Action
 
@@ -27,5 +31,3 @@ def init() -> None:
     config_json = get_config_json()
     config_update_callback = Action[str](write_config_dict_json)  # pyright: ignore [reportCallIssue]
     app_root = JAStudioAppRoot.Initialize(config_json, config_update_callback)
-
-    TaskRunner.set_ui_task_runner_factory(QtTaskProgressRunner)
