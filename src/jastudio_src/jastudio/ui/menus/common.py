@@ -4,11 +4,8 @@ import typing
 
 import pyperclip
 from aqt import gui_hooks
-from jaslib.note.kanjinote import KanjiNote
-from jaslib.note.note_constants import Mine
-from jaslib.note.sentences.sentencenote import SentenceNote
-from jaslib.note.vocabulary.vocabnote import VocabNote
 from jaspythonutils.sysutils.typed import non_optional
+from JAStudio.Core.Note import KanjiNote, Mine, SentenceNote, VocabNote
 
 from jastudio.ankiutils import ui_utils
 from jastudio.qt_utils.ex_qmenu import ExQmenu
@@ -27,10 +24,11 @@ def build_right_click_menu_webview_hook(view: AnkiWebView, root_menu: QMenu) -> 
     note = ui_utils.get_note_from_web_view(view)
     build_right_click_menu(root_menu, note, selection, clipboard)
 
+# noinspection PyTypeHints
 def build_right_click_menu(right_click_menu: QMenu, note: JPNote | None, selection: str, clipboard: str) -> None:
     import jastudio.ankiutils.app
     if not jastudio.ankiutils.app.is_initialized():
-        right_click_menu.addAction(Mine.app_still_loading_message)  # pyright: ignore[reportUnknownMemberType]
+        right_click_menu.addAction(Mine.AppStillLoadingMessage)  # pyright: ignore[reportUnknownMemberType]
         return
 
     from jas_dotnet.qt_adapters import qt_menu_adapter
@@ -41,11 +39,11 @@ def build_right_click_menu(right_click_menu: QMenu, note: JPNote | None, selecti
     try:
         if note:
             if isinstance(note, VocabNote):
-                specs = menu_builder.BuildVocabContextMenuSpec(note.get_id(), selection, clipboard)
+                specs = menu_builder.BuildVocabContextMenuSpec(note.GetId(), selection, clipboard)
             elif isinstance(note, KanjiNote):
-                specs = menu_builder.BuildKanjiContextMenuSpec(note.get_id(), selection, clipboard)
+                specs = menu_builder.BuildKanjiContextMenuSpec(note.GetId(), selection, clipboard)
             elif isinstance(note, SentenceNote):
-                specs = menu_builder.BuildSentenceContextMenuSpec(note.get_id(), selection, clipboard)
+                specs = menu_builder.BuildSentenceContextMenuSpec(note.GetId(), selection, clipboard)
             else:
                 specs = menu_builder.BuildGenericContextMenuSpec(selection, clipboard)
         else:
