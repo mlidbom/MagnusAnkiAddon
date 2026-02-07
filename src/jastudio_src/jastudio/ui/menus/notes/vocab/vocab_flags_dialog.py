@@ -284,9 +284,8 @@ class VocabFlagsDialog(QDialog):
 
 def show_vocab_flags_dialog(vocab: VocabNote) -> None:
     """Show the Vocab Flags dialog (now using Avalonia C# UI)."""
-    from jastudio.ui import app_root
-
     from jastudio.ankiutils import app
+    from jastudio.ui import app_root
 
     app_root.ShowVocabFlagsDialog(vocab.get_id())
 

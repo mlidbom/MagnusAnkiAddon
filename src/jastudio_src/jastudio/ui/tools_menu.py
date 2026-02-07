@@ -97,6 +97,7 @@ def build_local_menu(local_menu: QMenu) -> None:
 def _add_csharp_main_menu(menu: QMenu) -> None:
     from jas_dotnet.qt_adapters import qt_menu_adapter
     from jaslib import mylog
+
     from jastudio.ui import app_root
 
     def get_user_text_input() -> str:

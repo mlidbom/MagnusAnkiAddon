@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, override
 from autoslot import Slots
 from jaspythonutils.sysutils.abstract_method_called_error import AbstractMethodCalledError
 from typed_linq_collections.collections.q_list import QList
-from typed_linq_collections.collections.q_set import QSet
 
 from jaslib.note.jpnote import JPNote, JPNoteId
 from jaslib.task_runners.task_progress_runner import TaskRunner
