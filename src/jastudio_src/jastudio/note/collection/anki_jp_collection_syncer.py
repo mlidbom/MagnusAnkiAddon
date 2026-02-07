@@ -63,6 +63,8 @@ class AnkiJPCollectionSyncer(Slots):
     def _initialize(self) -> None:
         if self._initialization_started:
             return
+
+        dotnet_ui_root.Start()
         self._initialization_started = True
         #todo migration
         #jaslibapp.reset(AnkiBackendNoteCreator())
@@ -113,6 +115,7 @@ class AnkiJPCollectionSyncer(Slots):
         if self._pending_init_timer is not None: self._pending_init_timer.cancel()
         if self._is_initialized:
             self.cache_runner.destruct()
+            dotnet_ui_root.ShutDown()
             self._is_initialized = False
 
     def flush_cache_updates(self) -> None: self.cache_runner.flush_updates()

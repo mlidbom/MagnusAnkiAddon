@@ -26,12 +26,8 @@ def _init_dot_net_app() -> None:
     from JAStudio.UI import JAStudioAppRoot
     from System import Action
 
-    from jastudio.ankiutils import app as ja_app
     from jastudio.configuration.configuration_value import get_config_json, write_config_dict_json
 
     config_json = get_config_json()
     config_update_callback = Action[str](write_config_dict_json)  # pyright: ignore [reportCallIssue]
     dotnet_ui_root = JAStudioAppRoot.Initialize(config_json, config_update_callback)
-
-    # Load collection data once Anki's profile/collection is ready
-    ja_app.init_hooks.add(lambda: non_optional(dotnet_ui_root).LoadCollection())

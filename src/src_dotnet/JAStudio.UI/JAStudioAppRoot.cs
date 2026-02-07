@@ -1,10 +1,11 @@
 using System;
-using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
+using Compze.Utilities.Logging;
 using JAStudio.Core;
 using JAStudio.Core.Anki;
 using JAStudio.UI.Dialogs;
@@ -28,11 +29,13 @@ public class JAStudioAppRoot
    Thread? _uiThread;
 #pragma warning restore CS0414
 
+   static readonly ILogger Logger = CompzeLogger.For<JAStudioAppRoot>();
+
    /// <summary>
    /// The resolved service collection, derived from the bootstrapped Core.App.
    /// Used by dialog code-behinds to pass services to their ViewModels.
    /// </summary>
-   public Core.TemporaryServiceCollection Services => _app.Services;
+   public TemporaryServiceCollection Services => _app.Services;
 
    JAStudioAppRoot(Core.App app) => _app = app;
 
@@ -49,18 +52,16 @@ public class JAStudioAppRoot
       // Initialize the C# configuration system with the Anki addon config
       app.Services.ConfigurationStore.InitJson(configJson, configUpdateCallback);
 
-      var initEvent = new AutoResetEvent(false);
-
       var uiThread = new Thread(() =>
-                  {
-                     AppBuilder.Configure<App>()
-                               .UsePlatformDetect()
-                               .StartWithClassicDesktopLifetime(Array.Empty<string>(), ShutdownMode.OnExplicitShutdown);
-                  })
-                  {
-                     IsBackground = true,
-                     Name = "AvaloniaUIThread"
-                  };
+                     {
+                        AppBuilder.Configure<App>()
+                                  .UsePlatformDetect()
+                                  .StartWithClassicDesktopLifetime(Array.Empty<string>(), ShutdownMode.OnExplicitShutdown);
+                     })
+                     {
+                        IsBackground = true,
+                        Name = "AvaloniaUIThread"
+                     };
 
       if(OperatingSystem.IsWindows())
       {
@@ -76,7 +77,7 @@ public class JAStudioAppRoot
 
       // Set up task runner factory
       root.Services.TaskRunner.SetUiTaskRunnerFactory((windowTitle, labelText, allowCancel, modal) =>
-                                           new AvaloniaTaskProgressRunner(windowTitle, labelText, allowCancel, modal));
+                                                         new AvaloniaTaskProgressRunner(windowTitle, labelText, allowCancel, modal));
 
       // Register Anki card operations so Core can suspend/unsuspend cards via Anki API
       root.Services.AnkiCardOperations.SetImplementation(new AnkiCardOperationsImpl());
@@ -89,24 +90,16 @@ public class JAStudioAppRoot
    /// Must be called after Anki's collection is open (e.g. from profile_did_open hook).
    /// Runs on a worker thread so that Anki's main thread is not blocked.
    /// </summary>
-   public void LoadCollection()
+   public void Start()
    {
-      new Thread(() =>
-      {
-         try
-         {
-            _ = Services.NoteServices;
-         }
-         catch (Exception ex)
-         {
-            MyLog.Error($"Failed to load collection: {ex}");
-            throw;
-         }
-      })
-      {
-         IsBackground = true,
-         Name = "JAStudio-CollectionLoader"
-      }.Start();
+      Task.Run(() => _ = Services.NoteServices);
+   }
+
+   public void ShutDown()
+   {
+      using var _ = Logger.Info().LogMethodExecutionTime();
+      _app.Dispose();
+      Dispatcher.UIThread.InvokeShutdown();
    }
 
    // ── Factory methods for Python-facing objects ──
@@ -245,10 +238,8 @@ public class JAStudioAppRoot
    /// </summary>
    public SpecMenuItem BuildBrowserMenuSpec(
       dynamic selectedCardIds,
-      dynamic selectedNoteIds)
-   {
-      return new BrowserMenus(Services).BuildBrowserMenuSpec(selectedCardIds, selectedNoteIds);
-   }
+      dynamic selectedNoteIds) =>
+      new BrowserMenus(Services).BuildBrowserMenuSpec(selectedCardIds, selectedNoteIds);
 
    /// <summary>
    /// Shutdown Avalonia. Call at addon unload.
