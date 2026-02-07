@@ -18,7 +18,7 @@ public class PerfectSynonyms
 
     public List<VocabNote> Notes()
     {
-        return App.Col().Vocab.WithAnyDisambiguationNameIn(_value.Get()).ToList();
+        return TemporaryServiceCollection.Instance.App.Col().Vocab.WithAnyDisambiguationNameIn(_value.Get()).ToList();
     }
 
     public void PushAnswerToOtherSynonyms()
@@ -92,7 +92,7 @@ public class PerfectSynonyms
 
     public void Remove(string synonymToRemove)
     {
-        foreach (var toRemove in App.Col().Vocab.WithQuestion(synonymToRemove))
+        foreach (var toRemove in TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion(synonymToRemove))
         {
             toRemove.RelatedNotes.PerfectSynonyms._value.Clear();
         }

@@ -22,7 +22,7 @@ public class NoteContextMenu
     /// </summary>
     public List<SpecMenuItem> BuildVocabContextMenuSpec(int vocabId, string selection, string clipboard)
     {
-        var vocab = Core.App.Col().Vocab.WithIdOrNone(vocabId);
+        var vocab = Core.TemporaryServiceCollection.Instance.App.Col().Vocab.WithIdOrNone(vocabId);
         if (vocab == null)
             return [];
 
@@ -46,7 +46,7 @@ public class NoteContextMenu
     /// </summary>
     public List<SpecMenuItem> BuildKanjiContextMenuSpec(int kanjiId, string selection, string clipboard)
     {
-        var kanji = Core.App.Col().Kanji.WithIdOrNone(kanjiId);
+        var kanji = Core.TemporaryServiceCollection.Instance.App.Col().Kanji.WithIdOrNone(kanjiId);
         if (kanji == null)
             return [];
 
@@ -70,7 +70,7 @@ public class NoteContextMenu
     /// </summary>
     public List<SpecMenuItem> BuildSentenceContextMenuSpec(int sentenceId, string selection, string clipboard)
     {
-        var sentence = Core.App.Col().Sentences.WithIdOrNone(sentenceId);
+        var sentence = Core.TemporaryServiceCollection.Instance.App.Col().Sentences.WithIdOrNone(sentenceId);
         if (sentence == null)
             return [];
 
@@ -220,10 +220,10 @@ public class NoteContextMenu
     SpecMenuItem BuildMatchingNotesSubmenuSpec(string text)
     {
         // Find notes that exactly match the search text
-        var vocabs = Core.App.Col().Vocab.WithQuestionPreferDisambiguationName(text).ToList();
-        var sentences = Core.App.Col().Sentences.WithQuestion(text);
+        var vocabs = Core.TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestionPreferDisambiguationName(text).ToList();
+        var sentences = Core.TemporaryServiceCollection.Instance.App.Col().Sentences.WithQuestion(text);
         var kanjis = text.Length == 1
-            ? Core.App.Col().Kanji.WithAnyKanjiIn([text])
+            ? Core.TemporaryServiceCollection.Instance.App.Col().Kanji.WithAnyKanjiIn([text])
             : [];
 
         // Only show submenu if any notes match

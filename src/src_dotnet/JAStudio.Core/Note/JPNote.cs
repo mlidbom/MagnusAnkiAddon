@@ -121,7 +121,7 @@ public abstract class JPNote
 
    public override string ToString() => $"{GetQuestion()}: {GetAnswer()}";
 
-   public JPCollection Collection => App.Col();
+   public JPCollection Collection => TemporaryServiceCollection.Instance.App.Col();
 
    public virtual string GetQuestion()
    {

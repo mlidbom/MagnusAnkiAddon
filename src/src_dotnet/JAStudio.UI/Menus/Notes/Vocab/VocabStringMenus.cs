@@ -105,7 +105,7 @@ public static class VocabStringMenus
 
     static SpecMenuItem BuildSentenceMenuSpec(string text, VocabNote vocab)
     {
-        var sentences = Core.App.Col().Sentences.WithQuestion(text);
+        var sentences = Core.TemporaryServiceCollection.Instance.App.Col().Sentences.WithQuestion(text);
         var hasSentences = sentences.Count > 0;
         var disambiguationName = vocab.Question.DisambiguationName;
 

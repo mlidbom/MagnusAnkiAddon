@@ -26,7 +26,7 @@ public class ConfigurationValue<T>
 
       if(FeatureToggler != null)
       {
-         App.AddInitHook(ToggleFeature);
+         TemporaryServiceCollection.Instance.App.AddInitHook(ToggleFeature);
       }
    }
 

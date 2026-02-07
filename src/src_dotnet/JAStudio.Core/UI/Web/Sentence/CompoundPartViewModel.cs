@@ -68,8 +68,8 @@ public class CompoundPartViewModel
         {
             var godanBase = match.Word.StartLocation.Token.BaseForm;
             var godanPotentialPartBase = match.Word.EndLocation.Token.BaseForm;
-            var godan = App.Col().Vocab.WithFormPreferDisambiguationNameOrExactMatch(godanBase);
-            var godanPotential = App.Col().Vocab.WithFormPreferDisambiguationNameOrExactMatch(godanPotentialPartBase);
+            var godan = TemporaryServiceCollection.Instance.App.Col().Vocab.WithFormPreferDisambiguationNameOrExactMatch(godanBase);
+            var godanPotential = TemporaryServiceCollection.Instance.App.Col().Vocab.WithFormPreferDisambiguationNameOrExactMatch(godanPotentialPartBase);
             if (godan.Any() && godanPotential.Any())
             {
                 return

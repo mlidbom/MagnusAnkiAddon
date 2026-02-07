@@ -103,7 +103,7 @@ public class TaskRunnerScope : IDisposable
             _runner = _taskRunner.Create(windowTitle, labelText ?? windowTitle, visible, allowCancel, modal);
             _taskRunner.EnterScope(_runner);
             
-            if (!inhibitGc && (App.Config().EnableGarbageCollectionDuringBatches.GetValue() || forceGc))
+            if (!inhibitGc && (TemporaryServiceCollection.Instance.App.Config().EnableGarbageCollectionDuringBatches.GetValue() || forceGc))
             {
                 _runner.RunGc();
             }
@@ -121,7 +121,7 @@ public class TaskRunnerScope : IDisposable
     {
         if (_taskRunner.GetCurrent() == _runner)
         {
-            if (!_inhibitGc && (App.Config().EnableGarbageCollectionDuringBatches.GetValue() || _forceGc))
+            if (!_inhibitGc && (TemporaryServiceCollection.Instance.App.Config().EnableGarbageCollectionDuringBatches.GetValue() || _forceGc))
             {
                 _runner.RunGc();
             }

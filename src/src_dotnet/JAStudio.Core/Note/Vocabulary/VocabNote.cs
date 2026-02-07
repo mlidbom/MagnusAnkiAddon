@@ -50,7 +50,7 @@ public class VocabNote : JPNote
 
     public override void UpdateInCache()
     {
-        App.Col().Vocab.Cache.JpNoteUpdated(this);
+        TemporaryServiceCollection.Instance.App.Col().Vocab.Cache.JpNoteUpdated(this);
     }
 
     public override string GetQuestion()
@@ -117,7 +117,7 @@ public class VocabNote : JPNote
         }
         
         note.UpdateGeneratedData();
-        App.Col().Vocab.Add(note);
+        TemporaryServiceCollection.Instance.App.Col().Vocab.Add(note);
         return note;
     }
 

@@ -51,7 +51,7 @@ public partial class ReadingsMappingsDialogViewModel : ObservableObject
             var sorted = SortedValueLinesWithoutDuplicatesOrBlankLines();
             
             // Save to file
-            Core.App.Config().SaveMappings(sorted);
+            Core.TemporaryServiceCollection.Instance.App.Config().SaveMappings(sorted);
             
             JALogger.Log("Readings mappings saved");
             _window.Close(true);

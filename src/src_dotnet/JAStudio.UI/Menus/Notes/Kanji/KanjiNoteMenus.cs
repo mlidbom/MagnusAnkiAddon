@@ -52,7 +52,7 @@ public static class KanjiNoteMenus
                 () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup(kanji.GetRadicalsNotes()))),
             SpecMenuItem.Command(ShortcutFinger.Home4("Kanji"), 
                 () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup(
-                    Core.App.Col().Kanji.WithRadical(kanji.GetQuestion())))),
+                    Core.TemporaryServiceCollection.Instance.App.Col().Kanji.WithRadical(kanji.GetQuestion())))),
             SpecMenuItem.Command(ShortcutFinger.Home5("Sentences"), 
                 () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.SentenceSearch(kanji.GetQuestion(), exact: true)))
         };

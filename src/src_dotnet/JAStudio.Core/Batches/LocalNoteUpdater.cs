@@ -47,7 +47,7 @@ public class LocalNoteUpdater
         using var scope = TemporaryServiceCollection.Instance.TaskRunner.Current("Updating sentences");
         var runner = TemporaryServiceCollection.Instance.TaskRunner.GetCurrent()!;
         runner.ProcessWithProgress(
-            App.Col().Sentences.All().ToList(),
+            TemporaryServiceCollection.Instance.App.Col().Sentences.All().ToList(),
             s => { UpdateSentence(s); return 0; },
             "Updating sentences");
     }
@@ -62,7 +62,7 @@ public class LocalNoteUpdater
         using var scope = TemporaryServiceCollection.Instance.TaskRunner.Current("Updating kanji");
         var runner = TemporaryServiceCollection.Instance.TaskRunner.GetCurrent()!;
         runner.ProcessWithProgress(
-            App.Col().Kanji.All().ToList(),
+            TemporaryServiceCollection.Instance.App.Col().Kanji.All().ToList(),
             k => { UpdateKanji(k); return 0; },
             "Updating kanji");
     }
@@ -77,7 +77,7 @@ public class LocalNoteUpdater
         using var scope = TemporaryServiceCollection.Instance.TaskRunner.Current("Updating vocab");
         var runner = TemporaryServiceCollection.Instance.TaskRunner.GetCurrent()!;
         runner.ProcessWithProgress(
-            App.Col().Vocab.All().ToList(),
+            TemporaryServiceCollection.Instance.App.Col().Vocab.All().ToList(),
             v => { UpdateVocab(v); return 0; },
             "Updating vocab");
     }
@@ -103,7 +103,7 @@ public class LocalNoteUpdater
         using var scope = TemporaryServiceCollection.Instance.TaskRunner.Current("Tagging sentence notes");
         var runner = TemporaryServiceCollection.Instance.TaskRunner.GetCurrent()!;
         runner.ProcessWithProgress(
-            App.Col().Sentences.All().ToList(),
+            TemporaryServiceCollection.Instance.App.Col().Sentences.All().ToList(),
             s => { TagSentence(s); return 0; },
             "Tagging sentence notes");
     }
@@ -122,7 +122,7 @@ public class LocalNoteUpdater
         using var scope = TemporaryServiceCollection.Instance.TaskRunner.Current("Tagging vocab");
         var runner = TemporaryServiceCollection.Instance.TaskRunner.GetCurrent()!;
         runner.ProcessWithProgress(
-            App.Col().Vocab.All().ToList(),
+            TemporaryServiceCollection.Instance.App.Col().Vocab.All().ToList(),
             v => { TagNote(v); return 0; },
             "Tag vocab notes");
     }
@@ -130,17 +130,17 @@ public class LocalNoteUpdater
     public void TagKanjiMetadata()
     {
         var primaryReadingPattern = new Regex(@"<primary>(.*?)</primary>", RegexOptions.Compiled);
-        var knownKanji = App.Col().Kanji.All()
+        var knownKanji = TemporaryServiceCollection.Instance.App.Col().Kanji.All()
             .Where(kanji => kanji.IsStudying())
             .Select(kanji => kanji.GetQuestion())
             .ToHashSet();
 
         void TagKanji(KanjiNote kanji)
         {
-            var vocabWithKanjiInMainForm = App.Col().Vocab.WithKanjiInMainForm(kanji);
-            var vocabWithKanjiInAnyForm = App.Col().Vocab.WithKanjiInAnyForm(kanji);
+            var vocabWithKanjiInMainForm = TemporaryServiceCollection.Instance.App.Col().Vocab.WithKanjiInMainForm(kanji);
+            var vocabWithKanjiInAnyForm = TemporaryServiceCollection.Instance.App.Col().Vocab.WithKanjiInAnyForm(kanji);
 
-            var isRadical = App.Col().Kanji.WithRadical(kanji.GetQuestion()).Any();
+            var isRadical = TemporaryServiceCollection.Instance.App.Col().Kanji.WithRadical(kanji.GetQuestion()).Any();
             kanji.Tags.Toggle(Tags.Kanji.InVocabMainForm, vocabWithKanjiInMainForm.Any());
             kanji.Tags.Toggle(Tags.Kanji.InAnyVocabForm, vocabWithKanjiInAnyForm.Any());
 
@@ -235,7 +235,7 @@ public class LocalNoteUpdater
 
         void TagHasSingleKanjiVocabWithReadingDifferentFromKanjiPrimaryReading(KanjiNote kanji)
         {
-            var vocabs = App.Col().Vocab.WithKanjiInMainForm(kanji);
+            var vocabs = TemporaryServiceCollection.Instance.App.Col().Vocab.WithKanjiInMainForm(kanji);
             var singleKanjiVocab = vocabs.Where(v => v.GetQuestion() == kanji.GetQuestion()).ToList();
             kanji.Tags.Toggle(Tags.Kanji.WithSingleKanjiVocab, singleKanjiVocab.Any());
 
@@ -264,7 +264,7 @@ public class LocalNoteUpdater
 
         using var scope = TemporaryServiceCollection.Instance.TaskRunner.Current("Tagging kanji");
         var runner = TemporaryServiceCollection.Instance.TaskRunner.GetCurrent()!;
-        var allKanji = App.Col().Kanji.All().ToList();
+        var allKanji = TemporaryServiceCollection.Instance.App.Col().Kanji.All().ToList();
         runner.ProcessWithProgress(allKanji, k => { TagKanji(k); return 0; }, "Tagging kanji with studying metadata");
         runner.ProcessWithProgress(allKanji, k => { TagHasSingleKanjiVocabWithReadingDifferentFromKanjiPrimaryReading(k); return 0; }, "Tagging kanji with single kanji vocab");
     }
@@ -273,7 +273,7 @@ public class LocalNoteUpdater
     {
         using (TemporaryServiceCollection.Instance.TaskRunner.Current("Reparse all sentences"))
         {
-            ReparseSentences(App.Col().Sentences.All().ToList());
+            ReparseSentences(TemporaryServiceCollection.Instance.App.Col().Sentences.All().ToList());
         }
     }
 
@@ -300,7 +300,7 @@ public class LocalNoteUpdater
             sentence.UpdateParsedWords(force: true);
         }
 
-        runGcDuringBatch = runGcDuringBatch && App.Config().EnableGarbageCollectionDuringBatches.GetValue();
+        runGcDuringBatch = runGcDuringBatch && TemporaryServiceCollection.Instance.App.Config().EnableGarbageCollectionDuringBatches.GetValue();
         
         // Shuffle to get accurate time estimations
         var random = new Random();
@@ -324,7 +324,7 @@ public class LocalNoteUpdater
         
         var sentences = runner.RunOnBackgroundThreadWithSpinningProgressDialog(
             "Fetching sentences to reparse",
-            () => App.Col().Sentences.PotentiallyMatchingVocab(vocab).ToHashSet());
+            () => TemporaryServiceCollection.Instance.App.Col().Sentences.PotentiallyMatchingVocab(vocab).ToHashSet());
         
         sentences.UnionWith(vocab.Sentences.All());
         ReparseSentences(sentences.ToList(), runGcDuringBatch: true);
@@ -332,7 +332,7 @@ public class LocalNoteUpdater
 
     public void ReparseMatchingSentences(string questionSubstring)
     {
-        var sentencesToUpdate = App.Col().Sentences.SentencesWithSubstring(questionSubstring);
+        var sentencesToUpdate = TemporaryServiceCollection.Instance.App.Col().Sentences.SentencesWithSubstring(questionSubstring);
         ReparseSentences(sentencesToUpdate.ToList(), runGcDuringBatch: true);
     }
 
@@ -343,7 +343,7 @@ public class LocalNoteUpdater
 
         var dictionaryWordsWithNoVocab = runner.RunOnBackgroundThreadWithSpinningProgressDialog(
             "Fetching parsed words with no vocab notes from parsing results",
-            () => App.Col().Sentences.All()
+            () => TemporaryServiceCollection.Instance.App.Col().Sentences.All()
                 .SelectMany(sentence => sentence.ParsingResult.Get().ParsedWords
                     .Where(word => word.VocabId == ParsedMatch.MissingNoteId)
                     .Select(word => word.ParsedForm))
@@ -356,7 +356,7 @@ public class LocalNoteUpdater
         void CreateVocabIfNotAlreadyCreated(DictLookupResult result)
         {
             // We may well have created a vocab that provides this form already...
-            if (!App.Col().Vocab.WithForm(result.Word).Any())
+            if (!TemporaryServiceCollection.Instance.App.Col().Vocab.WithForm(result.Word).Any())
             {
                 TemporaryServiceCollection.Instance.VocabNoteFactory.CreateWithDictionary(result.Word);
             }
@@ -372,7 +372,7 @@ public class LocalNoteUpdater
     {
         using var scope = TemporaryServiceCollection.Instance.TaskRunner.Current("Regenerating vocab source answers from jamdict");
         var runner = TemporaryServiceCollection.Instance.TaskRunner.GetCurrent()!;
-        var vocabNotes = App.Col().Vocab.All().ToList();
+        var vocabNotes = TemporaryServiceCollection.Instance.App.Col().Vocab.All().ToList();
         runner.ProcessWithProgress(
             vocabNotes,
             vocab => { vocab.GenerateAndSetAnswer(); return 0; },

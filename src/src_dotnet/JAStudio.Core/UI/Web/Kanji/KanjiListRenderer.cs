@@ -64,7 +64,7 @@ public class KanjiListRenderer
 
     public string KanjiKanjiList(KanjiNote kanji)
     {
-        var kanjis = App.Col().Kanji.WithRadical(kanji.GetQuestion());
+        var kanjis = TemporaryServiceCollection.Instance.App.Col().Kanji.WithRadical(kanji.GetQuestion());
         var kanjiReadings = kanji.GetReadingsClean();
 
         return RenderList(kanji, kanjis, kanjiReadings);

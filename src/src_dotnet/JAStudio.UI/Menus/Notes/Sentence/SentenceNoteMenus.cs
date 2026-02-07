@@ -89,7 +89,7 @@ public static class SentenceNoteMenus
     public static SpecMenuItem BuildViewMenuSpec()
     {
         // View menu with config toggles
-        var config = Core.App.Config();
+        var config = Core.TemporaryServiceCollection.Instance.App.Config();
         var items = new List<SpecMenuItem>();
 
         // Add toggles for sentence view configuration

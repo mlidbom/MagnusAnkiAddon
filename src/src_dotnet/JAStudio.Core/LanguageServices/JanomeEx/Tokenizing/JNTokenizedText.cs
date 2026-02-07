@@ -21,7 +21,7 @@ public class JNTokenizedText
     {
         try
         {
-            return new PreProcessingStage.PreProcessingStage(App.Col().Vocab).PreProcess(Tokens);
+            return new PreProcessingStage.PreProcessingStage(TemporaryServiceCollection.Instance.App.Col().Vocab).PreProcess(Tokens);
         }
         catch (Exception)
         {

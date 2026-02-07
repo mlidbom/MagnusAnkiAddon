@@ -35,7 +35,7 @@ public class VocabNoteFactory
             initializer(note);
         }
         
-        App.Col().Vocab.Add(note);
+        TemporaryServiceCollection.Instance.App.Col().Vocab.Add(note);
         return note;
     }
 

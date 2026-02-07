@@ -18,11 +18,11 @@ public class CacheInvalidationTests : TestStartingWithEmptyCollection, IAIGenera
         vocab.UpdateGeneratedData(); // Trigger cache update
 
         // Assert - Old question should not find it
-        var oldResults = App.Col().Vocab.WithQuestion("食べる");
+        var oldResults = TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion("食べる");
         Assert.Empty(oldResults);
 
         // New question should find it
-        var newResults = App.Col().Vocab.WithQuestion("飲む");
+        var newResults = TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion("飲む");
         Assert.Single(newResults);
         Assert.Equal(vocab, newResults[0]);
     }
@@ -37,11 +37,11 @@ public class CacheInvalidationTests : TestStartingWithEmptyCollection, IAIGenera
         vocab.Forms.Add("taberu-form");
 
         // Assert - Forms are not questions, so WithQuestion should NOT find it
-        var results = App.Col().Vocab.WithQuestion("taberu-form");
+        var results = TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion("taberu-form");
         Assert.Empty(results);
 
         // But it should still be findable by its actual question
-        var byQuestion = App.Col().Vocab.WithQuestion("\u98df\u3079\u308b");
+        var byQuestion = TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion("\u98df\u3079\u308b");
         Assert.Single(byQuestion);
     }
 
@@ -62,7 +62,7 @@ public class CacheInvalidationTests : TestStartingWithEmptyCollection, IAIGenera
         Assert.DoesNotContain("食う", vocab.Forms.AllSet());
 
         // But still findable by its question
-        var results = App.Col().Vocab.WithQuestion("食べる");
+        var results = TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion("食べる");
         Assert.Single(results);
     }
 
@@ -77,9 +77,9 @@ public class CacheInvalidationTests : TestStartingWithEmptyCollection, IAIGenera
         kanji.UpdateGeneratedData();
 
         // Assert
-        Assert.Null(App.Col().Kanji.WithKanji("食"));
-        Assert.NotNull(App.Col().Kanji.WithKanji("飲"));
-        Assert.Equal(kanji, App.Col().Kanji.WithKanji("飲"));
+        Assert.Null(TemporaryServiceCollection.Instance.App.Col().Kanji.WithKanji("食"));
+        Assert.NotNull(TemporaryServiceCollection.Instance.App.Col().Kanji.WithKanji("飲"));
+        Assert.Equal(kanji, TemporaryServiceCollection.Instance.App.Col().Kanji.WithKanji("飲"));
     }
 
     [Fact]
@@ -96,11 +96,11 @@ public class CacheInvalidationTests : TestStartingWithEmptyCollection, IAIGenera
         vocab.Forms.Remove("駆ける");
 
         // Assert - Cache should reflect final state
-        var byNewQuestion = App.Col().Vocab.WithQuestion("疾走する");
+        var byNewQuestion = TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion("疾走する");
         Assert.Single(byNewQuestion);
 
         // Old question should not find it
-        var byOldQuestion = App.Col().Vocab.WithQuestion("走る");
+        var byOldQuestion = TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion("走る");
         Assert.Empty(byOldQuestion);
 
         // Forms should be stored correctly

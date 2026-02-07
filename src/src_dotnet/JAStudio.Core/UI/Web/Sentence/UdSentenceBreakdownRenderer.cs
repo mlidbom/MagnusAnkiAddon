@@ -89,7 +89,7 @@ public class UdSentenceBreakdownRenderer
     string RenderToggleList()
     {
         return string.Join("\n",
-            App.Config().SentenceViewToggles
+            TemporaryServiceCollection.Instance.App.Config().SentenceViewToggles
                 .Where(toggle => toggle.GetValue())
                 .Select(RenderToggle));
     }

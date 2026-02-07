@@ -11,9 +11,9 @@ public class TestApp
    public static void Reset()
    {
       App.Bootstrap();
-      App.Reset(new TestingBackendNoteCreator());
-      App.InitConfigForTesting();
-      App.Config().SetReadingsMappingsForTesting(TestReadingsMappings);
+      TemporaryServiceCollection.Instance.App.Reset(new TestingBackendNoteCreator());
+      TemporaryServiceCollection.Instance.ConfigurationStore.InitForTesting();
+      TemporaryServiceCollection.Instance.App.Config().SetReadingsMappingsForTesting(TestReadingsMappings);
    }
 
    const string TestReadingsMappings = """

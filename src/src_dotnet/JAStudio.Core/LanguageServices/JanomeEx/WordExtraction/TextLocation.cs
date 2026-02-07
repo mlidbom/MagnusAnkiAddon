@@ -152,7 +152,7 @@ TextLocation('{CharacterStartIndex}-{CharacterEndIndex}, {Token.Surface} | {Toke
     // todo: having this check here only means that marking a compound as an inflecting word has no effect, and figuring out why things are not working can be quite a pain
     public bool IsInflectingWord()
     {
-        var vocab = App.Col().Vocab.WithAnyFormIn([Token.BaseForm, Token.Surface]);
+        var vocab = TemporaryServiceCollection.Instance.App.Col().Vocab.WithAnyFormIn([Token.BaseForm, Token.Surface]);
         return vocab.Any(voc => voc.MatchingConfiguration.BoolFlags.IsInflectingWord.IsActive);
     }
 }

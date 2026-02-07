@@ -15,7 +15,7 @@ public class CollectionFactoryTests : CollectionUsingTest
    [Fact]
    public void KanjiAddedCorrectly()
    {
-      var kanjiAll = App.Col().Kanji.All();
+      var kanjiAll = TemporaryServiceCollection.Instance.App.Col().Kanji.All();
       var savedKanji = kanjiAll.Select(kanji =>
                                           new KanjiSpec(
                                              kanji.GetQuestion(),
@@ -32,7 +32,7 @@ public class CollectionFactoryTests : CollectionUsingTest
    public void VocabAddedCorrectly()
    {
       var expectedVocab = VocabLists.TestSpecialVocab.OrderBy(x => x.Question).ToList();
-      var vocabAll = App.Col().Vocab.All();
+      var vocabAll = TemporaryServiceCollection.Instance.App.Col().Vocab.All();
       var savedVocab = vocabAll
                       .Select(vocab => new VocabSpec(vocab.GetQuestion(), vocab.GetAnswer(), vocab.Readings.Get()))
                       .OrderBy(x => x.Question)
@@ -45,7 +45,7 @@ public class CollectionFactoryTests : CollectionUsingTest
    public void SentencesAddedCorrectly()
    {
       var expectedSentences = SentenceSpec.TestSentenceList.OrderBy(x => x.Question).ToList();
-      var sentencesAll = App.Col().Sentences.All()
+      var sentencesAll = TemporaryServiceCollection.Instance.App.Col().Sentences.All()
                             .OrderBy(x => x.Question.WithoutInvisibleSpace())
                             .ToList();
       var savedSentences = sentencesAll

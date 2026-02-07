@@ -19,14 +19,14 @@ public class Antonyms
 
     public List<VocabNote> Notes()
     {
-        return App.Col().Vocab.WithAnyFormInPreferDisambiguationNameOrExactMatch(Strings().ToList());
+        return TemporaryServiceCollection.Instance.App.Col().Vocab.WithAnyFormInPreferDisambiguationNameOrExactMatch(Strings().ToList());
     }
 
     public void Add(string antonym)
     {
         Strings().Add(antonym);
 
-        foreach (var similar in App.Col().Vocab.WithQuestion(antonym))
+        foreach (var similar in TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion(antonym))
         {
             if (!similar.RelatedNotes.Antonyms.Strings().Contains(_vocab.GetQuestion()))
             {
@@ -41,7 +41,7 @@ public class Antonyms
     {
         Strings().Remove(toRemove);
 
-        foreach (var similar in App.Col().Vocab.WithQuestion(toRemove))
+        foreach (var similar in TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion(toRemove))
         {
             if (similar.RelatedNotes.Antonyms.Strings().Contains(_vocab.GetQuestion()))
             {

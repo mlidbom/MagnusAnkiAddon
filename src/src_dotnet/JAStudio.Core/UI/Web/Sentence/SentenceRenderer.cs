@@ -10,7 +10,7 @@ public class SentenceRenderer
 
     private string RenderWbr(string question)
     {
-        if (App.Config().ShowSentenceBreakdownInEditMode.GetValue())
+        if (TemporaryServiceCollection.Instance.App.Config().ShowSentenceBreakdownInEditMode.GetValue())
         {
             return question.Replace(SentenceQuestionField.WordBreakTag, "<span class='wbr_tag'>&lt;wbr&gt;</span>");
         }

@@ -93,7 +93,7 @@ public static class DialogHost
       EnsureInitialized();
       Dispatcher.UIThread.Invoke(() =>
       {
-         var vocabCache = Core.App.Col().Vocab;
+         var vocabCache = Core.TemporaryServiceCollection.Instance.App.Col().Vocab;
          var vocab = vocabCache.WithIdOrNone(vocabId);
          if(vocab == null)
          {

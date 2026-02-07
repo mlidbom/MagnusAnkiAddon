@@ -100,12 +100,12 @@ public class SentenceAnalysisViewModelWithSelectDataTests : CollectionUsingTest
    {
       try
       {
-         App.Config().HideAllCompounds.SetValue(true);
+         TemporaryServiceCollection.Instance.App.Config().HideAllCompounds.SetValue(true);
          AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, expectedOutput);
       }
       finally
       {
-         App.Config().HideAllCompounds.SetValue(false);
+         TemporaryServiceCollection.Instance.App.Config().HideAllCompounds.SetValue(false);
       }
    }
 

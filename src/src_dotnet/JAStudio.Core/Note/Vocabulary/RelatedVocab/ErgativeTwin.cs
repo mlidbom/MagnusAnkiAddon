@@ -20,7 +20,7 @@ public class ErgativeTwin
     {
         _data.Get().ErgativeTwin = value;
 
-        foreach (var twin in App.Col().Vocab.WithQuestion(value))
+        foreach (var twin in TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion(value))
         {
             if (twin.RelatedNotes.ErgativeTwin.Get() != _vocab.GetQuestion())
             {
@@ -33,7 +33,7 @@ public class ErgativeTwin
 
     public void Remove()
     {
-        foreach (var twin in App.Col().Vocab.WithQuestion(_vocab.GetQuestion()))
+        foreach (var twin in TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion(_vocab.GetQuestion()))
         {
             if (twin.RelatedNotes.ErgativeTwin.Get() == _vocab.GetQuestion())
             {

@@ -12,7 +12,7 @@ public class KanjiNoteMnemonicMaker
 
     public string CreateDefaultMnemonic(KanjiNote kanjiNote)
     {
-        var readingsMappings = App.Config().ReadingsMappingsDict;
+        var readingsMappings = TemporaryServiceCollection.Instance.App.Config().ReadingsMappingsDict;
 
         string CreateReadingsTag(string kanaReading)
         {

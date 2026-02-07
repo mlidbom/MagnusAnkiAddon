@@ -8,7 +8,7 @@ public static class WordInfo
 {
     public static WordInfoEntry? Lookup(string word)
     {
-        var vocabEntries = App.Col().Vocab.WithForm(word);
+        var vocabEntries = TemporaryServiceCollection.Instance.App.Col().Vocab.WithForm(word);
         if (vocabEntries.Any())
         {
             // Try to find exact question match first

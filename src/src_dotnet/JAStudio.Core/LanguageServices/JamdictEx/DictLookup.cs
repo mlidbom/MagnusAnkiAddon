@@ -247,7 +247,7 @@ public class DictLookup
 
     bool IsWordInner(string word) => LookupWord(word).FoundWords();
 
-    public bool IsDictionaryOrCollectionWord(string word) => App.Col().Vocab.IsWord(word) || IsWord(word);
+    public bool IsDictionaryOrCollectionWord(string word) => TemporaryServiceCollection.Instance.App.Col().Vocab.IsWord(word) || IsWord(word);
 
     public void EnsureLoadedIntoMemory()
     {

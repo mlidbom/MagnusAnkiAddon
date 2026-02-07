@@ -16,7 +16,7 @@ public class CollectionQueryTests : TestStartingWithEmptyCollection, IAIGenerate
         var vocab3 = VocabNote.Create("走る", "to run", "はしる");
 
         // Act
-        var results = App.Col().Vocab.WithQuestion("\u672c");
+        var results = TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion("\u672c");
 
         // Assert
         Assert.Single(results);
@@ -31,7 +31,7 @@ public class CollectionQueryTests : TestStartingWithEmptyCollection, IAIGenerate
         vocab.Forms.Add("食う");
 
         // Act - Forms are not questions, so this should not find the vocab
-        var results = App.Col().Vocab.WithQuestion("食う");
+        var results = TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion("食う");
 
         // Assert - Should be empty because "食う" is a form, not the question
         Assert.Empty(results);
@@ -44,7 +44,7 @@ public class CollectionQueryTests : TestStartingWithEmptyCollection, IAIGenerate
         var vocab = VocabNote.Create("食べる", "to eat", "たべる");
 
         // Act
-        var results = App.Col().Vocab.WithQuestion("存在しない");
+        var results = TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion("存在しない");
 
         // Assert
         Assert.Empty(results);
@@ -58,7 +58,7 @@ public class CollectionQueryTests : TestStartingWithEmptyCollection, IAIGenerate
         var kanji2 = KanjiNote.Create("本", "book", "ホン", "もと");
 
         // Act
-        var result = App.Col().Kanji.WithKanji("食");
+        var result = TemporaryServiceCollection.Instance.App.Col().Kanji.WithKanji("食");
 
         // Assert
         Assert.NotNull(result);
@@ -72,7 +72,7 @@ public class CollectionQueryTests : TestStartingWithEmptyCollection, IAIGenerate
         var kanji = KanjiNote.Create("食", "eat", "ショク", "た");
 
         // Act
-        var result = App.Col().Kanji.WithKanji("存");
+        var result = TemporaryServiceCollection.Instance.App.Col().Kanji.WithKanji("存");
 
         // Assert
         Assert.Null(result);
@@ -85,7 +85,7 @@ public class CollectionQueryTests : TestStartingWithEmptyCollection, IAIGenerate
         var sentence = SentenceNote.CreateTestNote("これは本です。", "This is a book.");
 
         // Act - Note is automatically added in CreateTestNote
-        var allSentences = App.Col().Sentences.All();
+        var allSentences = TemporaryServiceCollection.Instance.App.Col().Sentences.All();
 
         // Assert
         Assert.Contains(sentence, allSentences);
@@ -100,9 +100,9 @@ public class CollectionQueryTests : TestStartingWithEmptyCollection, IAIGenerate
         var sentence = SentenceNote.CreateTestNote("食べる", "to eat");
 
         // Act
-        var kanjiCount = App.Col().Kanji.All().Count;
-        var vocabCount = App.Col().Vocab.All().Count;
-        var sentenceCount = App.Col().Sentences.All().Count;
+        var kanjiCount = TemporaryServiceCollection.Instance.App.Col().Kanji.All().Count;
+        var vocabCount = TemporaryServiceCollection.Instance.App.Col().Vocab.All().Count;
+        var sentenceCount = TemporaryServiceCollection.Instance.App.Col().Sentences.All().Count;
 
         // Assert
         Assert.Equal(1, kanjiCount);
@@ -119,7 +119,7 @@ public class CollectionQueryTests : TestStartingWithEmptyCollection, IAIGenerate
         var id1 = vocab1.GetId();
 
         // Act
-        var result = App.Col().Vocab.WithIdOrNone(id1);
+        var result = TemporaryServiceCollection.Instance.App.Col().Vocab.WithIdOrNone(id1);
 
         // Assert
         Assert.NotNull(result);

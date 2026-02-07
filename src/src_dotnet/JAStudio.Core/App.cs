@@ -15,12 +15,12 @@ public class App : IDisposable
 
    public static bool IsTesting => TestEnvDetector.IsTesting;
 
-   static JPCollection? _collection;
-   static IBackendNoteCreator? _backendNoteCreator;
+   JPCollection? _collection;
+   IBackendNoteCreator? _backendNoteCreator;
 
-   static readonly List<Action> _initHooks = new();
+   readonly List<Action> _initHooks = new();
 
-   public static void AddInitHook(Action hook) => _initHooks.Add(hook);
+   public void AddInitHook(Action hook) => _initHooks.Add(hook);
 
    public void Dispose()
    {
@@ -34,11 +34,9 @@ public class App : IDisposable
 
    public static App Bootstrap() => AppBootstrapper.Bootstrap();
 
-   public static void InitConfigForTesting() => TemporaryServiceCollection.Instance.ConfigurationStore.InitForTesting();
-   public static void InitConfigJson(string json, Action<string> updateCallback) => TemporaryServiceCollection.Instance.ConfigurationStore.InitJson(json, updateCallback);
-   public static JapaneseConfig Config() => TemporaryServiceCollection.Instance.ConfigurationStore.Config();
+   public JapaneseConfig Config() => TemporaryServiceCollection.Instance.ConfigurationStore.Config();
 
-   public static JPCollection Col()
+   public JPCollection Col()
    {
       if(_collection == null)
       {
@@ -53,7 +51,7 @@ public class App : IDisposable
       return _collection;
    }
 
-   public static void Reset(IBackendNoteCreator backendNoteCreator)
+   public void Reset(IBackendNoteCreator backendNoteCreator)
    {
       _collection = null;
       _backendNoteCreator = backendNoteCreator;

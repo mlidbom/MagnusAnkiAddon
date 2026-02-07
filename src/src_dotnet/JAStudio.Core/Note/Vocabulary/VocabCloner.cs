@@ -90,7 +90,7 @@ public class VocabCloner
             clone.RelatedNotes.Synonyms.Add(related);
         }
 
-        App.Col().Vocab.Add(clone);
+        TemporaryServiceCollection.Instance.App.Col().Vocab.Add(clone);
         return clone;
     }
 

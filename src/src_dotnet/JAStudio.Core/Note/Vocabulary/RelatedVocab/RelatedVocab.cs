@@ -45,12 +45,12 @@ public class RelatedVocab
 
     public HashSet<int> InCompoundIds => _inCompoundIds.Value;
 
-    public List<VocabNote> InCompounds() => App.Col().Vocab.WithCompoundPart(_vocab.Question.DisambiguationName);
+    public List<VocabNote> InCompounds() => TemporaryServiceCollection.Instance.App.Col().Vocab.WithCompoundPart(_vocab.Question.DisambiguationName);
 
     public HashSet<VocabNote> HomophonesNotes()
     {
         return _vocab.GetReadings()
-            .SelectMany(reading => App.Col().Vocab.WithReading(reading))
+            .SelectMany(reading => TemporaryServiceCollection.Instance.App.Col().Vocab.WithReading(reading))
             .Where(homophone => homophone != _vocab)
             .ToHashSet();
     }
@@ -58,11 +58,11 @@ public class RelatedVocab
     public HashSet<VocabNote> StemsNotes()
     {
         return _vocab.Conjugator.GetStemsForPrimaryForm()
-            .SelectMany(stem => App.Col().Vocab.WithQuestion(stem))
+            .SelectMany(stem => TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion(stem))
             .ToHashSet();
     }
 
-    HashSet<KanjiNote> MainFormKanjiNotes => App.Col().Kanji.WithAnyKanjiIn(_vocab.Kanji.ExtractMainFormKanji()).ToHashSet();
+    HashSet<KanjiNote> MainFormKanjiNotes => TemporaryServiceCollection.Instance.App.Col().Kanji.WithAnyKanjiIn(_vocab.Kanji.ExtractMainFormKanji()).ToHashSet();
 
     public HashSet<JPNote> GetDirectDependencies()
     {

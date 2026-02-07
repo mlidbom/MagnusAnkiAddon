@@ -44,14 +44,14 @@ public class VocabNoteUserCompoundParts
     public HashSet<VocabNote> AllNotes()
     {
         return All()
-            .SelectMany(part => App.Col().Vocab.WithQuestion(part))
+            .SelectMany(part => TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion(part))
             .ToHashSet();
     }
 
     public List<VocabNote> PrimaryPartsNotes()
     {
         return Primary()
-            .SelectMany(part => App.Col().Vocab.WithFormPreferDisambiguationNameOrExactMatch(part))
+            .SelectMany(part => TemporaryServiceCollection.Instance.App.Col().Vocab.WithFormPreferDisambiguationNameOrExactMatch(part))
             .ToList();
     }
 

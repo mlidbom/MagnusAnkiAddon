@@ -100,7 +100,7 @@ public partial class NoteSearchDialogViewModel : ObservableObject
 
         try
         {
-            var col = Core.App.Col();
+            var col = Core.TemporaryServiceCollection.Instance.App.Col();
 
             // Search in kanji notes
             results.AddRange(SearchInNotes(

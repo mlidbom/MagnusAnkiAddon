@@ -60,7 +60,7 @@ public class QueryBuilder
 
         if (!exact)
         {
-            var vocabs = App.Col().Vocab.WithForm(word).ToList();
+            var vocabs = TemporaryServiceCollection.Instance.App.Col().Vocab.WithForm(word).ToList();
             if (vocabs.Any())
             {
                 var forms = vocabs.SelectMany(voc => voc.Forms.AllList()).Distinct().ToList();
@@ -240,7 +240,7 @@ public class QueryBuilder
         }
 
         var matchingKanji = radicals
-            .SelectMany(radical => App.Col().Kanji.WithRadical(radical.ToString()))
+            .SelectMany(radical => TemporaryServiceCollection.Instance.App.Col().Kanji.WithRadical(radical.ToString()))
             .Distinct()
             .Where(KanjiContainsAllRadicals)
             .ToList();

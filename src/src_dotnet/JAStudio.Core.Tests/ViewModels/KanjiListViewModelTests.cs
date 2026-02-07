@@ -15,7 +15,7 @@ public class KanjiListViewModelTests : CollectionUsingTest
    [Fact]
    public void KanjiListViewModel()
    {
-      var sentences = App.Col().Sentences.All();
+      var sentences = TemporaryServiceCollection.Instance.App.Col().Sentences.All();
       foreach(var sentence in sentences)
       {
          var extractedKanji = sentence.ExtractKanji();

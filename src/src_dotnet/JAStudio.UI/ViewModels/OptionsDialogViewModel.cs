@@ -28,10 +28,10 @@ public partial class OptionsDialogViewModel : ObservableObject
       _window = window;
       if(Design.IsDesignMode)
       {
-         CoreApp.InitConfigForTesting();
+         Core.TemporaryServiceCollection.Instance.ConfigurationStore.InitForTesting();
       }
 
-      _config = CoreApp.Config();
+      _config = Core.TemporaryServiceCollection.Instance.App.Config();
       JALogger.Log("OptionsDialogViewModel constructor: calling LoadFromConfig()...");
       LoadFromConfig();
       JALogger.Log("OptionsDialogViewModel constructor: completed");

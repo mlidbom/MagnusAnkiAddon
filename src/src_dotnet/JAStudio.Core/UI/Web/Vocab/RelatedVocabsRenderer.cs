@@ -98,7 +98,7 @@ public class RelatedVocabsRenderer
     public static string GenerateConfusedWithHtmlList(VocabNote vocabNote)
     {
         var vocabs = vocabNote.RelatedNotes.ConfusedWith.Get();
-        var confusedWith = App.Col().Vocab.WithAnyFormInPreferDisambiguationNameOrExactMatch(vocabs.ToList());
+        var confusedWith = TemporaryServiceCollection.Instance.App.Col().Vocab.WithAnyFormInPreferDisambiguationNameOrExactMatch(vocabs.ToList());
         confusedWith = VocabNoteSorting.SortVocabListByStudyingStatus(confusedWith);
 
         return RenderVocabList(confusedWith, "confused with", cssClass: "confused_with");
@@ -106,14 +106,14 @@ public class RelatedVocabsRenderer
 
     public static string GenerateErgativeTwinHtml(VocabNote vocabNote)
     {
-        var ergativeTwin = App.Col().Vocab.WithFormPreferDisambiguationNameOrExactMatch(vocabNote.RelatedNotes.ErgativeTwin.Get());
+        var ergativeTwin = TemporaryServiceCollection.Instance.App.Col().Vocab.WithFormPreferDisambiguationNameOrExactMatch(vocabNote.RelatedNotes.ErgativeTwin.Get());
         return RenderVocabList(ergativeTwin, "ergative twin", cssClass: "ergative_twin");
     }
 
     public static string GenerateDerivedFrom(VocabNote vocabNote)
     {
         var part = vocabNote.RelatedNotes.DerivedFrom.Get();
-        var derivedFrom = App.Col().Vocab.WithFormPreferDisambiguationNameOrExactMatch(part);
+        var derivedFrom = TemporaryServiceCollection.Instance.App.Col().Vocab.WithFormPreferDisambiguationNameOrExactMatch(part);
         return RenderVocabList(derivedFrom, "derived from", cssClass: "derived_from");
     }
 
@@ -142,13 +142,13 @@ public class RelatedVocabsRenderer
         if (masuStem == null)
             return "";
         
-        var masuStemInCompounds = App.Col().Vocab.WithCompoundPart(masuStem).Take(30).ToList();
+        var masuStemInCompounds = TemporaryServiceCollection.Instance.App.Col().Vocab.WithCompoundPart(masuStem).Take(30).ToList();
         return RenderVocabList(masuStemInCompounds, "masu stem is part of compound", cssClass: "in_compound_words");
     }
 
     public static string GenerateDerivedList(VocabNote vocabNote)
     {
-        var derivedVocabs = App.Col().Vocab.DerivedFrom(vocabNote.GetQuestion());
+        var derivedVocabs = TemporaryServiceCollection.Instance.App.Col().Vocab.DerivedFrom(vocabNote.GetQuestion());
         return RenderVocabList(derivedVocabs, "derived vocabulaty", cssClass: "derived_vocabulary");
     }
 
@@ -159,7 +159,7 @@ public class RelatedVocabsRenderer
 
     public static string GenerateStemOfVocabs(VocabNote vocabNote)
     {
-        return RenderVocabList(App.Col().Vocab.WithStem(vocabNote.GetQuestion()), "dictionary form", cssClass: "is_stem_of");
+        return RenderVocabList(TemporaryServiceCollection.Instance.App.Col().Vocab.WithStem(vocabNote.GetQuestion()), "dictionary form", cssClass: "is_stem_of");
     }
 
     public static string GenerateFormsList(VocabNote vocabNote)

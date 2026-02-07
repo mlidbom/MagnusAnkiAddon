@@ -26,7 +26,7 @@ public class SentenceNote : JPNote
 
     public override void UpdateInCache()
     {
-        App.Col().Sentences.Cache.JpNoteUpdated(this);
+        TemporaryServiceCollection.Instance.App.Col().Sentences.Cache.JpNoteUpdated(this);
     }
 
     // Property accessors
@@ -88,7 +88,7 @@ public class SentenceNote : JPNote
         {
             foreach (var match in parsingResult.ParsedWords.Where(p => p.IsDisplayed && p.VocabId != -1))
             {
-                var vocab = App.Col().Vocab.WithIdOrNone(match.VocabId);
+                var vocab = TemporaryServiceCollection.Instance.App.Col().Vocab.WithIdOrNone(match.VocabId);
                 if (vocab != null)
                 {
                     dependencies.Add(vocab);
@@ -98,7 +98,7 @@ public class SentenceNote : JPNote
 
         // Add kanji
         var kanjiList = ExtractKanji();
-        var kanjiNotes = App.Col().Kanji.WithAnyKanjiIn(kanjiList);
+        var kanjiNotes = TemporaryServiceCollection.Instance.App.Col().Kanji.WithAnyKanjiIn(kanjiList);
         foreach (var kanjiNote in kanjiNotes)
         {
             dependencies.Add(kanjiNote);
@@ -147,7 +147,7 @@ public class SentenceNote : JPNote
         note.SourceQuestion.Set(question);
         note.User.Answer.Set(answer);
         note.UpdateGeneratedData();
-        App.Col().Sentences.Add(note);
+        TemporaryServiceCollection.Instance.App.Col().Sentences.Add(note);
         return note;
     }
 
@@ -190,7 +190,7 @@ public class SentenceNote : JPNote
             }
         }
 
-        App.Col().Sentences.Add(note);
+        TemporaryServiceCollection.Instance.App.Col().Sentences.Add(note);
         return note;
     }
 
@@ -199,7 +199,7 @@ public class SentenceNote : JPNote
         var note = new SentenceNote();
         note.SourceQuestion.Set(question);
         note.UpdateGeneratedData();
-        App.Col().Sentences.Add(note);
+        TemporaryServiceCollection.Instance.App.Col().Sentences.Add(note);
         return note;
     }
 }

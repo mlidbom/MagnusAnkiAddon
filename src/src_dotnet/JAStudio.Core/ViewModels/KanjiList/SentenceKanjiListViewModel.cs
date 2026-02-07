@@ -10,7 +10,7 @@ public class SentenceKanjiListViewModel
 
     public KanjiListViewModel Create(List<string> kanji)
     {
-        var kanjiNotes = App.Col().Kanji.WithAnyKanjiIn(kanji);
+        var kanjiNotes = TemporaryServiceCollection.Instance.App.Col().Kanji.WithAnyKanjiIn(kanji);
         var kanjiViewModels = kanjiNotes.Select(note => new KanjiViewModel(note)).ToList();
         return new KanjiListViewModel(kanjiViewModels);
     }

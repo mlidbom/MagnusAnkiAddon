@@ -26,12 +26,12 @@ public class Settings
         if (_initialized) return;
         _initialized = true;
         Refresh();
-        App.Config().OnChange(Refresh);
+        TemporaryServiceCollection.Instance.App.Config().OnChange(Refresh);
     }
 
     void Refresh()
     {
-        var config = App.Config();
+        var config = TemporaryServiceCollection.Instance.App.Config();
         _hideTransparentCompounds = config.HideCompositionallyTransparentCompounds.GetValue();
         _showBreakdownInEditMode = config.ShowSentenceBreakdownInEditMode.GetValue();
         _hideAllCompounds = config.HideAllCompounds.GetValue();

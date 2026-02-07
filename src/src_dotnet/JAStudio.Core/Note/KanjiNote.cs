@@ -24,7 +24,7 @@ public class KanjiNote : JPNote
 
     public override void UpdateInCache()
     {
-        App.Col().Kanji.Cache.JpNoteUpdated(this);
+        TemporaryServiceCollection.Instance.App.Col().Kanji.Cache.JpNoteUpdated(this);
     }
 
     public override string GetQuestion()
@@ -68,7 +68,7 @@ public class KanjiNote : JPNote
         void UpdatePrimaryAudios()
         {
             var vocabWeShouldPlay = GetPrimaryVocab()
-                .SelectMany(question => App.Col().Vocab.WithQuestion(question))
+                .SelectMany(question => TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion(question))
                 .ToList();
             
             var audioString = vocabWeShouldPlay.Count > 0
@@ -254,7 +254,7 @@ public class KanjiNote : JPNote
         // Reciprocal relationship
         if (!isRecursiveCall)
         {
-            var newSynonym = App.Col().Kanji.WithKanji(newSynonymQuestion);
+            var newSynonym = TemporaryServiceCollection.Instance.App.Col().Kanji.WithKanji(newSynonymQuestion);
             if (newSynonym != null)
             {
                 newSynonym.AddUserSimilarMeaning(GetQuestion(), isRecursiveCall: true);
@@ -340,7 +340,7 @@ public class KanjiNote : JPNote
     public List<KanjiNote> GetRadicalsNotes()
     {
         return GetRadicals()
-            .Select(radical => App.Col().Kanji.WithKanji(radical))
+            .Select(radical => TemporaryServiceCollection.Instance.App.Col().Kanji.WithKanji(radical))
             .Where(k => k != null)
             .Cast<KanjiNote>()
             .ToList();
@@ -432,7 +432,7 @@ public class KanjiNote : JPNote
             return userMnemonic;
         }
 
-        if (App.Config().PreferDefaultMnemonicsToSourceMnemonics.GetValue())
+        if (TemporaryServiceCollection.Instance.App.Config().PreferDefaultMnemonicsToSourceMnemonics.GetValue())
         {
             return $"# {TemporaryServiceCollection.Instance.KanjiNoteMnemonicMaker.CreateDefaultMnemonic(this)}";
         }
@@ -462,7 +462,7 @@ public class KanjiNote : JPNote
 
     public List<VocabNote> GetVocabNotes()
     {
-        return App.Col().Vocab.WithKanjiInAnyForm(this);
+        return TemporaryServiceCollection.Instance.App.Col().Vocab.WithKanjiInAnyForm(this);
     }
 
     public List<VocabNote> GetVocabNotesSorted()
@@ -497,7 +497,7 @@ public class KanjiNote : JPNote
                 return radicalNames.Any(name => KanjiAnswerContainsRadicalNameAsASeparateWord(name, kanji));
             }
 
-            return App.Col().Kanji.All()
+            return TemporaryServiceCollection.Instance.App.Col().Kanji.All()
                 .Where(KanjiAnswerContainsAnyRadicalNameAsASeparateWord)
                 .Select(kanji => kanji.GetQuestion())
                 .ToList();
@@ -522,7 +522,7 @@ public class KanjiNote : JPNote
         note.SetUserAnswer(answer);
         note.SetReadingOn(onReadings);
         note.SetReadingKun(kunReading);
-        App.Col().Kanji.Add(note);
+        TemporaryServiceCollection.Instance.App.Col().Kanji.Add(note);
         return note;
     }
 }
