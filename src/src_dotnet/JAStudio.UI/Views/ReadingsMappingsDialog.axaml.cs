@@ -6,10 +6,10 @@ namespace JAStudio.UI.Views;
 
 public partial class ReadingsMappingsDialog : Window
 {
-    public ReadingsMappingsDialog()
+    public ReadingsMappingsDialog(Core.TemporaryServiceCollection services)
     {
         InitializeComponent();
-        DataContext = new ReadingsMappingsDialogViewModel(this, Core.TemporaryServiceCollection.Instance);
+        DataContext = new ReadingsMappingsDialogViewModel(this, services);
     }
 
     private void InitializeComponent()

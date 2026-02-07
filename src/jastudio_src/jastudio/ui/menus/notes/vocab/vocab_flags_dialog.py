@@ -284,11 +284,11 @@ class VocabFlagsDialog(QDialog):
 
 def show_vocab_flags_dialog(vocab: VocabNote) -> None:
     """Show the Vocab Flags dialog (now using Avalonia C# UI)."""
-    from JAStudio.UI import DialogHost
+    from JAStudio.UI import JAStudioAppRoot
 
     from jastudio.ankiutils import app
 
-    DialogHost.ShowVocabFlagsDialog(vocab.get_id())
+    JAStudioAppRoot.ShowVocabFlagsDialog(vocab.get_id())
 
     # Refresh Anki UI after dialog closes (handled centrally here, not in C# UI code)
     app.get_ui_utils().refresh()

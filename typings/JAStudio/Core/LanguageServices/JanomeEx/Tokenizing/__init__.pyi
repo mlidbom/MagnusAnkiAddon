@@ -1,5 +1,7 @@
 import typing, abc
 from System.Collections.Generic import HashSet_1, List_1
+from JAStudio.Core.Note.Collection import VocabCollection
+from JAStudio.Core.LanguageServices.JamdictEx import DictLookup
 
 class DictionaryFormInflection(DictionaryFormsTokenBase):
     def __init__(self, source: JNToken, surface: str, baseForm: str) -> None: ...
@@ -958,7 +960,7 @@ class JNTokenizedText:
     def Text(self) -> str: ...
     @property
     def Tokens(self) -> List_1[JNToken]: ...
-    def PreProcess(self) -> List_1[IAnalysisToken]: ...
+    def PreProcess(self, vocab: VocabCollection, dictLookup: DictLookup) -> List_1[IAnalysisToken]: ...
 
 
 class JNTokenizer:

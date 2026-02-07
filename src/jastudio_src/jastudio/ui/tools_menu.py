@@ -97,14 +97,14 @@ def build_local_menu(local_menu: QMenu) -> None:
 def _add_csharp_main_menu(menu: QMenu) -> None:
     from jas_dotnet.qt_adapters import qt_menu_adapter
     from jaslib import mylog
-    from JAStudio.UI.Menus import JapaneseMainMenu
+    from JAStudio.UI import JAStudioAppRoot
 
     def get_user_text_input() -> str:
         text, ok = QInputDialog.getText(None, "input", "enter text", QLineEdit.EchoMode.Normal, "")
         return text if ok and text else ""
 
     try:
-        menu_builder = JapaneseMainMenu()
+        menu_builder = JAStudioAppRoot.CreateJapaneseMainMenu()
         clipboard_getter = Func[str](get_user_text_input)  # pyright: ignore [reportCallIssue]
         specs = menu_builder.BuildMenuSpec(clipboard_getter)
 

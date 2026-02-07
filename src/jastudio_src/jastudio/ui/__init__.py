@@ -14,7 +14,7 @@ def init() -> None:
     menus.init()
     garbage_collection_fixes.init()
 
-    from JAStudio.UI import DialogHost
-    DialogHost.Initialize()
+    from JAStudio.UI import JAStudioAppRoot
+    JAStudioAppRoot.Initialize()
 
     TaskRunner.set_ui_task_runner_factory(QtTaskProgressRunner)

@@ -8,6 +8,7 @@ from JAStudio.Core.LanguageServices.JamdictEx import DictLookup
 from JAStudio.Core.TaskRunners import TaskRunner
 from JAStudio.Core.Note.Vocabulary import VocabNoteFactory, VocabNoteGeneratedData, VocabNoteAudio, VocabCloner, VocabNoteUserCompoundParts, VocabNoteConjugator, VocabNoteForms, VocabNoteKanji, VocabNoteMatchingConfiguration, VocabNoteMetaData, VocabNotePartsOfSpeech, VocabNoteQuestion, VocabNoteRegister, VocabNoteSentences, VocabNoteUserFields
 from JAStudio.Core.Note.NoteFields import MutableStringField, StripHtmlOnReadFallbackStringField, WritableAudioField, MutableSerializedObjectField_1, SentenceQuestionField, MutableCommaSeparatedStringsListField
+from JAStudio.Core.LanguageServices.JanomeEx import AnalysisServices
 from JAStudio.Core.Note.Sentences import CachingSentenceConfigurationField, ParsingResult, SentenceUserFields
 from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction import TextAnalysis
 from JAStudio.Core.Note.Vocabulary.RelatedVocab import RelatedVocab
@@ -308,6 +309,8 @@ class SentenceNote(JPNote):
     def ActiveAnswer(self) -> MutableStringField: ...
     @property
     def ActiveQuestion(self) -> MutableStringField: ...
+    @property
+    def AnalysisServices(self) -> AnalysisServices: ...
     @property
     def Answer(self) -> StripHtmlOnReadFallbackStringField: ...
     @property

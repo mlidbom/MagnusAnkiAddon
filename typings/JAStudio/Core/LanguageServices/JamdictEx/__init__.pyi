@@ -1,6 +1,7 @@
 import typing
 from System.Collections.Generic import List_1, IEnumerable_1, HashSet_1
 from JAStudio.Core.Note import VocabNote
+from JAStudio.Core.Configuration import JapaneseConfig
 from System.Collections.Frozen import FrozenSet_1
 
 class DictEntry:
@@ -69,7 +70,7 @@ class JamdictLookupResult:
 
 
 class JamdictThreadingWrapper:
-    def __init__(self) -> None: ...
+    def __init__(self, config: JapaneseConfig) -> None: ...
     def Lookup(self, word: str, includeNames: bool) -> JamdictLookupResult: ...
     def RunStringQuery(self, sqlQuery: str) -> List_1[str]: ...
 

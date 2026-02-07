@@ -138,10 +138,10 @@ def _add_csharp_menu_entry(menu: QMenu, note: JPNote | None, selection: str, cli
     This just converts the UI-agnostic specifications to PyQt QMenus.
     """
     from jas_dotnet.qt_adapters import qt_menu_adapter
-    from JAStudio.UI.Menus import NoteContextMenu  # pyright: ignore[reportMissingImports]
+    from JAStudio.UI import JAStudioAppRoot  # pyright: ignore[reportMissingImports]
 
     # Get menu specs from C#  - no callbacks needed, AnkiFacade handles it all
-    menu_builder = NoteContextMenu()
+    menu_builder = JAStudioAppRoot.CreateNoteContextMenu()
 
     try:
         if note:

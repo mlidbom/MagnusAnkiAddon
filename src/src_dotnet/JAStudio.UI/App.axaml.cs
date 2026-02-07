@@ -13,7 +13,7 @@ public class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // No main window - we're hosted by Anki/Python
-            // Windows are shown on-demand via DialogHost
+            // Windows are shown on-demand via JAStudioAppRoot
         }
 
         base.OnFrameworkInitializationCompleted();

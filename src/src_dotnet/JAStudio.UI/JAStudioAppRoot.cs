@@ -12,15 +12,22 @@ using JAStudio.UI.Views;
 namespace JAStudio.UI;
 
 /// <summary>
-/// Entry point for Python to interact with Avalonia UI.
-/// Call Initialize() once at startup, then use Show*Dialog() methods.
+/// Composition root for the Anki addon.
+/// Bootstraps the domain App, initializes Avalonia, and provides factory methods
+/// for creating menus and showing dialogs.
+/// Python calls Initialize() once at startup, then uses the factory/show methods.
 /// </summary>
-public static class DialogHost
+public static class JAStudioAppRoot
 {
    static bool _initialized;
    static Thread? _uiThread;
    static AutoResetEvent? _initEvent;
-   static Core.TemporaryServiceCollection _services = null!;
+
+   /// <summary>
+   /// The resolved service collection. Available after Initialize() has been called.
+   /// Used by dialog code-behinds to pass services to their ViewModels.
+   /// </summary>
+   public static Core.TemporaryServiceCollection Services { get; private set; } = null!;
 
    /// <summary>
    /// Initialize Avalonia. Call once at addon startup.
@@ -53,17 +60,33 @@ public static class DialogHost
       // TODO: Add proper synchronization with App.OnFrameworkInitializationCompleted
       Thread.Sleep(500);
 
-      _services = Core.TemporaryServiceCollection.Instance;
+      Services = Core.TemporaryServiceCollection.Instance;
 
       // Set up task runner factory
-      _services.TaskRunner.SetUiTaskRunnerFactory((windowTitle, labelText, allowCancel, modal) =>
+      Services.TaskRunner.SetUiTaskRunnerFactory((windowTitle, labelText, allowCancel, modal) =>
                                            new AvaloniaTaskProgressRunner(windowTitle, labelText, allowCancel, modal));
 
       // Register Anki card operations so Core can suspend/unsuspend cards via Anki API
-      _services.AnkiCardOperations.SetImplementation(new Anki.AnkiCardOperationsImpl());
+      Services.AnkiCardOperations.SetImplementation(new Anki.AnkiCardOperationsImpl());
 
       _initialized = true;
    }
+
+   // ── Factory methods for Python-facing objects ──
+
+   /// <summary>
+   /// Create a NoteContextMenu wired with all required services.
+   /// Called from Python to build right-click context menus.
+   /// </summary>
+   public static NoteContextMenu CreateNoteContextMenu() => new(Services);
+
+   /// <summary>
+   /// Create a JapaneseMainMenu wired with all required services.
+   /// Called from Python to build the main "Japanese" tools menu.
+   /// </summary>
+   public static JapaneseMainMenu CreateJapaneseMainMenu() => new(Services);
+
+   // ── UI thread helpers ──
 
    /// <summary>
    /// Run an action on the Avalonia UI thread.
@@ -87,6 +110,8 @@ public static class DialogHost
       });
    }
 
+   // ── Dialog show methods (called from Python and C# menus) ──
+
    /// <summary>
    /// Show the VocabFlagsDialog for editing a vocab note's flags.
    /// </summary>
@@ -95,7 +120,7 @@ public static class DialogHost
       EnsureInitialized();
       Dispatcher.UIThread.Invoke(() =>
       {
-         var vocabCache = _services.App.Col().Vocab;
+         var vocabCache = Services.App.Col().Vocab;
          var vocab = vocabCache.WithIdOrNone(vocabId);
          if(vocab == null)
          {
@@ -103,7 +128,7 @@ public static class DialogHost
             return;
          }
 
-         var window = new VocabFlagsDialog(vocab);
+         var window = new VocabFlagsDialog(vocab, Services);
          window.Show();
       });
    }
@@ -130,7 +155,7 @@ public static class DialogHost
       Dispatcher.UIThread.Invoke(() =>
       {
          JALogger.Log("Creating OptionsDialog window...");
-         var window = new OptionsDialog();
+         var window = new OptionsDialog(Services);
          JALogger.Log("OptionsDialog created, calling Show()...");
          window.Show();
          JALogger.Log("OptionsDialog.Show() completed");
@@ -146,7 +171,7 @@ public static class DialogHost
       EnsureInitialized();
       Dispatcher.UIThread.Invoke(() =>
       {
-         var window = new ReadingsMappingsDialog();
+         var window = new ReadingsMappingsDialog(Services);
          window.Show();
       });
    }
@@ -161,7 +186,7 @@ public static class DialogHost
       EnsureInitialized();
       Dispatcher.UIThread.Invoke(() =>
       {
-         NoteSearchDialog.ToggleVisibility();
+         NoteSearchDialog.ToggleVisibility(Services);
       });
    }
 
@@ -182,10 +207,6 @@ public static class DialogHost
    /// <summary>
    /// Show the context menu popup at the current cursor position.
    /// </summary>
-   /// <param name="clipboardContent">Content from clipboard</param>
-   /// <param name="selectionContent">Currently selected text</param>
-   /// <param name="x">X coordinate for popup position (screen coordinates)</param>
-   /// <param name="y">Y coordinate for popup position (screen coordinates)</param>
    public static void ShowContextMenuPopup(string clipboardContent, string selectionContent, int x, int y)
    {
       EnsureInitialized();
@@ -200,14 +221,12 @@ public static class DialogHost
    /// Build browser context menu specification.
    /// Returns UI-agnostic menu specs that Python can convert to PyQt menus.
    /// </summary>
-   /// <param name="selectedCardIds">List of selected card IDs (dynamic from Python)</param>
-   /// <param name="selectedNoteIds">List of selected note IDs (dynamic from Python)</param>
    public static SpecMenuItem BuildBrowserMenuSpec(
       dynamic selectedCardIds,
       dynamic selectedNoteIds)
    {
       EnsureInitialized();
-      return new BrowserMenus(_services).BuildBrowserMenuSpec(selectedCardIds, selectedNoteIds);
+      return new BrowserMenus(Services).BuildBrowserMenuSpec(selectedCardIds, selectedNoteIds);
    }
 
    /// <summary>
@@ -231,6 +250,6 @@ public static class DialogHost
    static void EnsureInitialized()
    {
       if(!_initialized)
-         throw new InvalidOperationException("DialogHost.Initialize() must be called before showing dialogs.");
+         throw new InvalidOperationException("JAStudioAppRoot.Initialize() must be called before showing dialogs.");
    }
 }

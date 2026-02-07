@@ -279,7 +279,7 @@ public class VocabNoteMenus
     // Action handlers
     void OnEditVocabFlags(VocabNote vocab)
     {
-        var dialog = new VocabFlagsDialog(vocab);
+        var dialog = new VocabFlagsDialog(vocab, _services);
         dialog.Show();
     }
 

@@ -6,7 +6,9 @@ from Avalonia.Controls.Templates import DataTemplates
 from Avalonia.Platform import IPlatformSettings
 from Avalonia.Controls import IResourceDictionary, MenuItem
 from Avalonia.Data import IndexerDescriptor, IBinding
+from JAStudio.Core import TemporaryServiceCollection
 from JAStudio.UI.Menus.UIAgnosticMenuStructure import SpecMenuItem
+from JAStudio.UI.Menus import JapaneseMainMenu, NoteContextMenu
 from System import Action
 from System.Collections.Generic import IEnumerable_1
 
@@ -48,9 +50,24 @@ class App(Application):
     def __setitem__(self, binding: IndexerDescriptor, value: IBinding) -> None: ...
 
 
-class DialogHost(abc.ABC):
+class JALogger(abc.ABC):
+    @staticmethod
+    def Log(message: str) -> None: ...
+
+
+class JAStudioAppRoot(abc.ABC):
+    @classmethod
+    @property
+    def Services(cls) -> TemporaryServiceCollection: ...
+    @classmethod
+    @Services.setter
+    def Services(cls, value: TemporaryServiceCollection) -> TemporaryServiceCollection: ...
     @staticmethod
     def BuildBrowserMenuSpec(selectedCardIds: typing.Any, selectedNoteIds: typing.Any) -> SpecMenuItem: ...
+    @staticmethod
+    def CreateJapaneseMainMenu() -> JapaneseMainMenu: ...
+    @staticmethod
+    def CreateNoteContextMenu() -> NoteContextMenu: ...
     @staticmethod
     def Initialize() -> None: ...
     @staticmethod
@@ -79,15 +96,10 @@ class DialogHost(abc.ABC):
 
         ShowDialog_1_T1 = typing.TypeVar('ShowDialog_1_T1')
         class ShowDialog_1(typing.Generic[ShowDialog_1_T1]):
-            ShowDialog_1_T = DialogHost.ShowDialog_MethodGroup.ShowDialog_1_T1
+            ShowDialog_1_T = JAStudioAppRoot.ShowDialog_MethodGroup.ShowDialog_1_T1
             def __call__(self) -> None:...
 
 
-
-
-class JALogger(abc.ABC):
-    @staticmethod
-    def Log(message: str) -> None: ...
 
 
 class PopupMenuHost(abc.ABC):

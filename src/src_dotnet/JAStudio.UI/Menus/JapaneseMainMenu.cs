@@ -84,15 +84,15 @@ public class JapaneseMainMenu
    void OnOptions()
    {
       JALogger.Log("OnOptions() called!");
-      JALogger.Log("Calling DialogHost.ShowOptionsDialog()...");
-      DialogHost.ShowOptionsDialog();
-      JALogger.Log("DialogHost.ShowOptionsDialog() completed");
+      JALogger.Log("Calling JAStudioAppRoot.ShowOptionsDialog()...");
+      JAStudioAppRoot.ShowOptionsDialog();
+      JALogger.Log("JAStudioAppRoot.ShowOptionsDialog() completed");
    }
 
-   void OnReadingsMappings() => DialogHost.ShowReadingsMappingsDialog();
+   void OnReadingsMappings() => JAStudioAppRoot.ShowReadingsMappingsDialog();
 
    // Lookup menu actions
-   void OnOpenNote() => DialogHost.ToggleNoteSearchDialog();
+   void OnOpenNote() => JAStudioAppRoot.ToggleNoteSearchDialog();
 
    // Local Actions menu actions
    void OnConvertImmersionKitSentences() => AnkiFacade.ConvertImmersionKitSentences();
