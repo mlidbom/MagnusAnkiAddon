@@ -14,31 +14,22 @@ public interface IBackendNoteCreator
 
 internal class AnkiBackendNoteCreator : IBackendNoteCreator
 {
-   readonly dynamic _pythonNoteCreator;
+   readonly PythonObjectWrapper _noteCreator;
 
    public AnkiBackendNoteCreator()
    {
       using(PythonEnvironment.LockGil())
       {
          dynamic noteCreatorModule = Py.Import("jastudio.note.anki_backend_note_creator");
-         _pythonNoteCreator = noteCreatorModule.AnkiBackendNoteCreator();
+         _noteCreator = new PythonObjectWrapper(noteCreatorModule.AnkiBackendNoteCreator());
       }
    }
 
-   public void CreateKanji(KanjiNote note, Action callback) => PythonEnvironment.Use(() =>
-   {
-      _pythonNoteCreator.create_kanji(note);
-   });
+   public void CreateKanji(KanjiNote note, Action callback) => _noteCreator.Use(it => it.create_kanji(note));
 
-   public void CreateVocab(VocabNote note, Action callback) => PythonEnvironment.Use(() =>
-   {
-      _pythonNoteCreator.create_vocab(note);
-   });
+   public void CreateVocab(VocabNote note, Action callback) => _noteCreator.Use(it => it.create_vocab(note));
 
-   public void CreateSentence(SentenceNote note, Action callback) => PythonEnvironment.Use(() =>
-   {
-      _pythonNoteCreator.create_sentence(note);
-   });
+   public void CreateSentence(SentenceNote note, Action callback) => _noteCreator.Use(it => it.create_sentence(note));
 }
 
 public class TestingBackendNoteCreator : IBackendNoteCreator
