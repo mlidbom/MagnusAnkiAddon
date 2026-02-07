@@ -2,13 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from anki.notes import NoteId as AnkiNoteId
+from anki.notes import NoteId
 
 from jastudio.ankiutils import app
 
 if TYPE_CHECKING:
     from anki.notes import Note
-    from jaslib.note.jpnote import JPNoteId
 
     from jastudio.anki_extentions.card_ex import CardEx
 
@@ -17,7 +16,7 @@ class NoteEx:
         self.note: Note = note
 
     @property
-    def id(self) -> AnkiNoteId: return self.note.id
+    def id(self) -> NoteId: return self.note.id
 
     def cards(self) -> list[CardEx]:
         from jastudio.anki_extentions.card_ex import CardEx
@@ -30,5 +29,5 @@ class NoteEx:
         for card in self.cards(): card.un_suspend()
 
     @classmethod
-    def from_id(cls, note_id: JPNoteId) -> NoteEx:
-        return NoteEx(app.anki_collection().get_note(AnkiNoteId(note_id)))
+    def from_id(cls, note_id: int) -> NoteEx:
+        return NoteEx(app.anki_collection().get_note(NoteId(note_id)))
