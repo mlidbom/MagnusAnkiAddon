@@ -4,6 +4,7 @@ import re
 from typing import TYPE_CHECKING, cast, override
 
 from autoslot import Slots
+from typed_linq_collections.q_iterable import query
 from jaspythonutils.sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_list import QList
 
@@ -21,7 +22,7 @@ if TYPE_CHECKING:
 from jaspythonutils.sysutils import ex_str, typed
 
 from jaslib.note.jpnote import JPNote
-from jaslib.note.note_constants import NoteFields
+from jaslib.note.note_constants import CardTypes, NoteFields
 
 
 class KanjiNote(JPNote, Slots):
@@ -262,7 +263,22 @@ class KanjiNote(JPNote, Slots):
         return kanji_reading in vocab_reading[1:-1]
 
     def generate_default_primary_vocab(self) -> list[str]:
-        raise NotImplementedError()
+        result: list[str] = []
+
+        def sort_key(_vocab: VocabNote) -> tuple[int, int]:
+            return -len(_vocab.sentences.studying()), len(_vocab.get_question())
+
+        studying_reading_vocab_in_descending_studying_sentences_order = sorted((voc for voc in self.get_vocab_notes() if voc.is_studying(CardTypes.reading)), key=sort_key)
+
+        sequence = self.get_primary_readings()
+        primary_readings = query(sequence).distinct().to_list()
+        for primary_reading in primary_readings:
+            for vocab in studying_reading_vocab_in_descending_studying_sentences_order:
+                if any(vocab.readings.get()) and self.reading_in_vocab_reading(primary_reading, vocab.readings.get()[0], vocab.get_question()):
+                    result.append(vocab.get_question())
+                    break
+
+        return result
 
     # noinspection PyUnusedFunction
     def position_primary_vocab(self, vocab: str, new_index: int = -1) -> None:
