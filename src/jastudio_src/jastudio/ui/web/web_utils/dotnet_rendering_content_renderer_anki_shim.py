@@ -4,8 +4,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from jaslib.note.note_constants import Mine
-from JAStudio.Core.Note import JPNote
+from JAStudio.Core.Note import JPNote, Mine
 from JAStudio.Core.UI.Web import PreRenderingContentRenderer_1
 
 from jastudio.ankiutils import app
@@ -24,7 +23,7 @@ class DotNetPrerenderingContentRendererAnkiShim[TNote: JPNote](Slots):
 
     def render(self, html: str, card: Card, type_of_display: str) -> str:
         if not app.is_initialized():
-            return Mine.app_still_loading_message
+            return Mine.AppStillLoadingMessage
 
         note = dotnet_ui_root.Services.App.Collection.NoteFromNoteId(card.nid if card.nid else card.note().id)
 
