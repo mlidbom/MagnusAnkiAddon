@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
 
@@ -8,23 +9,23 @@ public static class IchidanGodanPotentialOrImperativeHybridSplitter
 {
    static readonly HashSet<string> PotentialOrImperativeGodanLastCompoundParts = ["える", "え"];
 
-    public static List<IAnalysisToken>? TrySplit(JNToken token, VocabCollection vocabs)
+    public static List<IAnalysisToken>? TrySplit(JNToken token, VocabCollection vocabs, DictLookup dictLookup)
     {
         if (Equals(token.InflectedForm, InflectionForms.ImperativeMeireikei.Ro))
         {
             return null;
         }
 
-        var hiddenGodan = TryFindGodanHiddenInIchidanUsingDictionary(token) ??
-                          TryFindVocabBasedPotentialOrImperativeGodanCompound(token, vocabs);
+        var hiddenGodan = TryFindGodanHiddenInIchidanUsingDictionary(vocabs, dictLookup, token) ??
+                          TryFindVocabBasedPotentialOrImperativeGodanCompound(token, vocabs, dictLookup);
 
         if (hiddenGodan != null)
         {
-            if (IsPotentialGodan(token, hiddenGodan))
+            if (IsPotentialGodan(vocabs, dictLookup, token, hiddenGodan))
             {
                 return SplitGodanPotential(token, hiddenGodan);
             }
-            if (IsImperativeGodan(token, hiddenGodan))
+            if (IsImperativeGodan(vocabs, dictLookup, token, hiddenGodan))
             {
                 return SplitGodanImperative(token, hiddenGodan);
             }
@@ -86,14 +87,14 @@ public static class IchidanGodanPotentialOrImperativeHybridSplitter
         ];
     }
 
-    static string? TryFindVocabBasedPotentialOrImperativeGodanCompound(JNToken token, VocabCollection vocabs)
+    static string? TryFindVocabBasedPotentialOrImperativeGodanCompound(JNToken token, VocabCollection vocabs, DictLookup dictLookup)
     {
         foreach (var vocab in vocabs.WithQuestion(token.BaseForm))
         {
             var compoundParts = vocab.CompoundParts.All();
             if (compoundParts.Count == 2 && PotentialOrImperativeGodanLastCompoundParts.Contains(compoundParts[1]))
             {
-                if (WordInfo.IsGodan(compoundParts[0]))
+                if (WordInfo.IsGodan(vocabs, dictLookup, compoundParts[0]))
                 {
                     return compoundParts[0];
                 }
@@ -102,11 +103,11 @@ public static class IchidanGodanPotentialOrImperativeHybridSplitter
         return null;
     }
 
-    static bool IsPotentialGodan(JNToken token, string godanBase)
+    static bool IsPotentialGodan(VocabCollection vocabs, DictLookup dictLookup, JNToken token, string godanBase)
     {
         if (token.Surface.EndsWith("る") || (token.Next != null && token.Next.IsValidGodanPotentialFormInflection()))
         {
-            var godanDictEntry = WordInfo.LookupGodan(godanBase);
+            var godanDictEntry = WordInfo.LookupGodan(vocabs, dictLookup, godanBase);
             if (godanDictEntry == null)
             {
                 return false;
@@ -114,7 +115,7 @@ public static class IchidanGodanPotentialOrImperativeHybridSplitter
 
             // Intransitive verbs don't take を so this is most likely actually the ichidan verb
             if (godanDictEntry.IsIntransitive && token.Previous != null && token.Previous.Surface == "を" &&
-                WordInfo.IsIchidan(token.BaseForm))
+                WordInfo.IsIchidan(vocabs, dictLookup, token.BaseForm))
             {
                 return false;
             }
@@ -123,7 +124,7 @@ public static class IchidanGodanPotentialOrImperativeHybridSplitter
         return false;
     }
 
-    static bool IsImperativeGodan(JNToken token, string godanBase)
+    static bool IsImperativeGodan(VocabCollection vocabs, DictLookup dictLookup, JNToken token, string godanBase)
     {
         if (!Conjugator.GodanImperativeVerbEndings.Contains(token.Surface[^1..]) &&
             !Equals(token.InflectedForm, InflectionForms.ImperativeMeireikei.Yo))
@@ -131,8 +132,8 @@ public static class IchidanGodanPotentialOrImperativeHybridSplitter
             return false;
         }
 
-        var godanWordInfo = WordInfo.Lookup(godanBase);
-        if (WordInfo.Lookup(token.BaseForm) == null)
+        var godanWordInfo = WordInfo.Lookup(vocabs, dictLookup, godanBase);
+        if (WordInfo.Lookup(vocabs, dictLookup, token.BaseForm) == null)
         {
             // We check for potential godan before this, so if there is no ichidan verb in the dictionary,
             // the only thing left is an imperative godan
@@ -175,14 +176,14 @@ public static class IchidanGodanPotentialOrImperativeHybridSplitter
         return Conjugator.GodanPotentialVerbEndingToDictionaryFormEndings.ContainsKey(ending);
     }
 
-    static string? TryFindGodanHiddenInIchidanUsingDictionary(JNToken token)
+    static string? TryFindGodanHiddenInIchidanUsingDictionary(VocabCollection vocabs, DictLookup dictLookup, JNToken token)
     {
         if (token.BaseForm.Length >= 2 &&
             BaseFormHasGodanPotentialEnding(token.BaseForm) &&
             token.IsIchidanVerb)
         {
             var possibleGodanForm = Conjugator.ConstructRootVerbForPossiblyPotentialGodanVerbDictionaryForm(token.BaseForm);
-            if (WordInfo.IsGodan(possibleGodanForm))
+            if (WordInfo.IsGodan(vocabs, dictLookup, possibleGodanForm))
             {
                 return possibleGodanForm;
             }
@@ -194,11 +195,12 @@ public static class IchidanGodanPotentialOrImperativeHybridSplitter
 
     public static WordInfoEntry? TryGetGodanHiddenByIchidan(VocabNote vocab)
     {
+        var services = vocab.Services;
         var question = vocab.GetQuestion();
         if (BaseFormHasGodanPotentialEnding(question))
         {
             var possibleGodanForm = Conjugator.ConstructRootVerbForPossiblyPotentialGodanVerbDictionaryForm(question);
-            var godanDictEntry = WordInfo.LookupGodan(possibleGodanForm);
+            var godanDictEntry = WordInfo.LookupGodan(services.Collection.Vocab, services.DictLookup, possibleGodanForm);
             if (godanDictEntry != null && godanDictEntry.IsGodan)
             {
                 return godanDictEntry;

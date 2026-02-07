@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.LanguageServices;
+using JAStudio.Core.LanguageServices.JanomeEx;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
@@ -15,11 +16,13 @@ public class QueryBuilder
 {
    readonly VocabCollection _vocab;
    readonly KanjiCollection _kanji;
+   readonly AnalysisServices _analysisServices;
 
-   internal QueryBuilder(VocabCollection vocab, KanjiCollection kanji)
+   internal QueryBuilder(VocabCollection vocab, KanjiCollection kanji, AnalysisServices analysisServices)
    {
       _vocab = vocab;
       _kanji = kanji;
+      _analysisServices = analysisServices;
    }
 
    const string ExcludedDeckSubstring = "*Excluded*";
@@ -156,7 +159,7 @@ public class QueryBuilder
     /// </summary>
     public string TextVocabLookup(string text)
     {
-        var dictionaryForms = TextAnalysis.FromText(text).AllWordsStrings();
+        var dictionaryForms = TextAnalysis.FromText(_analysisServices, text).AllWordsStrings();
         return VocabsLookup(dictionaryForms);
     }
 
@@ -271,7 +274,7 @@ public class QueryBuilder
     {
         string CreateVocabClause(string text)
         {
-            var dictionaryForms = TextAnalysis.FromText(text).AllWordsStrings();
+            var dictionaryForms = TextAnalysis.FromText(_analysisServices, text).AllWordsStrings();
             if (!dictionaryForms.Any())
                 return "";
 

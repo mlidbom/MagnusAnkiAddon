@@ -10,7 +10,7 @@ public static class ForbidsCompositionallyTransparentCompound
     public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
     {
         var match = inspector.Match;
-        if (TemporaryServiceCollection.Instance.Settings.HideTransparentCompounds() &&
+        if (inspector.Settings.HideTransparentCompounds() &&
             match.Word.Analysis.ForUI &&
             match.Word.IsCompound &&
             inspector.CompoundLocationsAllHaveValidNonCompoundMatches &&

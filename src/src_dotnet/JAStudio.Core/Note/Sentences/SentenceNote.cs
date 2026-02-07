@@ -1,3 +1,4 @@
+using JAStudio.Core.LanguageServices.JanomeEx;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.Sentences;
@@ -51,9 +52,11 @@ public class SentenceNote : JPNote
         return Answer.Get();
     }
 
+    public AnalysisServices AnalysisServices => new(Services.Collection.Vocab, Services.DictLookup, Services.Settings);
+
     public TextAnalysis CreateAnalysis(bool forUI = false)
     {
-        return new TextAnalysis(Question.WithInvisibleSpace(), Configuration.Configuration, forUI);
+        return new TextAnalysis(AnalysisServices, Question.WithInvisibleSpace(), Configuration.Configuration, forUI);
     }
 
     public List<string> GetWords()

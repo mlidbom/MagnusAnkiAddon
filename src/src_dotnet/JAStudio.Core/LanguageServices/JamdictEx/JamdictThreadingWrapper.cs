@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using JAStudio.Core.Configuration;
 using JAStudio.PythonInterop.Utilities;
 using Python.Runtime;
 
@@ -40,21 +41,23 @@ public class JamdictThreadingWrapper
    readonly Thread _thread;
    dynamic? _jamdict;
    readonly bool _running = false;
+   readonly JapaneseConfig _config;
 
-   public JamdictThreadingWrapper()
+   public JamdictThreadingWrapper(JapaneseConfig config)
    {
+      _config = config;
       _running = true;
       _queue = new BlockingCollection<object>();
       _thread = new Thread(Worker) { IsBackground = true };
       _thread.Start();
    }
 
-   static dynamic CreateJamdict()
+   dynamic CreateJamdict()
    {
       // NOTE: Caller must already hold the GIL
       dynamic jamdictModule = Py.Import("jamdict");
 
-      bool memoryMode = TemporaryServiceCollection.Instance.App.Config().LoadJamdictDbIntoMemory.GetValue() && !App.IsTesting;
+      bool memoryMode = _config.LoadJamdictDbIntoMemory.GetValue() && !App.IsTesting;
 
       if(memoryMode)
       {

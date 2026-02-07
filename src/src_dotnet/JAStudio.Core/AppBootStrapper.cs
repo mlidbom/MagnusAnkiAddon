@@ -5,6 +5,7 @@ using JAStudio.Core.AnkiUtils;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.Batches;
 using JAStudio.Core.LanguageServices.JamdictEx;
+using JAStudio.Core.LanguageServices.JanomeEx;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Note.Vocabulary;
@@ -38,7 +39,8 @@ static class AppBootstrapper
 
          // Core services
          Singleton.For<Settings>().CreatedBy((JapaneseConfig config) => new Settings(config)),
-         Singleton.For<QueryBuilder>().CreatedBy((VocabCollection vocab, KanjiCollection kanji) => new QueryBuilder(vocab, kanji)),
+         Singleton.For<AnalysisServices>().CreatedBy((VocabCollection vocab, DictLookup dictLookup, Settings settings) => new AnalysisServices(vocab, dictLookup, settings)),
+         Singleton.For<QueryBuilder>().CreatedBy((VocabCollection vocab, KanjiCollection kanji, AnalysisServices analysisServices) => new QueryBuilder(vocab, kanji, analysisServices)),
          Singleton.For<LocalNoteUpdater>().CreatedBy((TaskRunner taskRunner, VocabCollection vocab, KanjiCollection kanji, SentenceCollection sentences, JapaneseConfig config, DictLookup dictLookup, VocabNoteFactory vocabNoteFactory) =>
             new LocalNoteUpdater(taskRunner, vocab, kanji, sentences, config, dictLookup, vocabNoteFactory)),
          Singleton.For<TaskRunner>().CreatedBy((JapaneseConfig config) => new TaskRunner(config)),

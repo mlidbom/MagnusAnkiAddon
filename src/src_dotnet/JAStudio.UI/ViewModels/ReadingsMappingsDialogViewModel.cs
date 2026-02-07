@@ -12,6 +12,7 @@ namespace JAStudio.UI.ViewModels;
 public partial class ReadingsMappingsDialogViewModel : ObservableObject
 {
     private readonly Window _window;
+    private readonly Core.TemporaryServiceCollection _services;
     
     [ObservableProperty]
     private string _mappingsText = string.Empty;
@@ -22,14 +23,15 @@ public partial class ReadingsMappingsDialogViewModel : ObservableObject
     public RelayCommand SaveCommand { get; }
     public RelayCommand CancelCommand { get; }
 
-    public ReadingsMappingsDialogViewModel(Window window)
+    public ReadingsMappingsDialogViewModel(Window window, Core.TemporaryServiceCollection services)
     {
         _window = window;
+        _services = services;
         
         // Load mappings from file
         try
         {
-            _mappingsText = "\n" + JapaneseConfig.ReadReadingsMappingsFile();
+            _mappingsText = "\n" + _services.App.Config().ReadReadingsMappingsFile();
         }
         catch (Exception ex)
         {
@@ -49,7 +51,7 @@ public partial class ReadingsMappingsDialogViewModel : ObservableObject
             var sorted = SortedValueLinesWithoutDuplicatesOrBlankLines();
             
             // Save to file
-            Core.TemporaryServiceCollection.Instance.App.Config().SaveMappings(sorted);
+            _services.App.Config().SaveMappings(sorted);
             
             JALogger.Log("Readings mappings saved");
             _window.Close(true);

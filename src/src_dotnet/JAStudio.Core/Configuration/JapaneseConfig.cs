@@ -236,7 +236,7 @@ public class JapaneseConfig
       ReadingsMappingsDict = _store.GetReadingsMappings();
    }
 
-   public static string ReadReadingsMappingsFile() => TemporaryServiceCollection.Instance.ConfigurationStore.ReadReadingsMappingsFile();
+   public string ReadReadingsMappingsFile() => _store.ReadReadingsMappingsFile();
 
    void PublishChange()
    {

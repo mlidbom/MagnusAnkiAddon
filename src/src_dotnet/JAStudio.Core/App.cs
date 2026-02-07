@@ -34,7 +34,7 @@ public class App : IDisposable
 
    public static App Bootstrap() => AppBootstrapper.Bootstrap();
 
-   public JapaneseConfig Config() => TemporaryServiceCollection.Instance.ConfigurationStore.Config();
+   public JapaneseConfig Config() => Services.ConfigurationStore.Config();
 
    public JPCollection Col()
    {

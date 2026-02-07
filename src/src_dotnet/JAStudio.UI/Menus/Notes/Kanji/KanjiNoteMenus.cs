@@ -10,9 +10,16 @@ namespace JAStudio.UI.Menus;
 /// Kanji note-specific menu builders.
 /// Corresponds to notes/kanji/main.py in Python.
 /// </summary>
-public static class KanjiNoteMenus
+public class KanjiNoteMenus
 {
-    public static SpecMenuItem BuildNoteActionsMenuSpec(KanjiNote kanji)
+    readonly Core.TemporaryServiceCollection _services;
+
+    public KanjiNoteMenus(Core.TemporaryServiceCollection services)
+    {
+        _services = services;
+    }
+
+    public SpecMenuItem BuildNoteActionsMenuSpec(KanjiNote kanji)
     {
         var items = new List<SpecMenuItem>
         {
@@ -38,27 +45,27 @@ public static class KanjiNoteMenus
         return SpecMenuItem.Submenu(ShortcutFinger.Home3("Note actions"), items);
     }
 
-    private static SpecMenuItem BuildOpenMenuSpec(KanjiNote kanji)
+    private SpecMenuItem BuildOpenMenuSpec(KanjiNote kanji)
     {
         var items = new List<SpecMenuItem>
         {
             SpecMenuItem.Command(ShortcutFinger.Home1("Primary Vocabs"), 
-                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.VocabsLookupStrings(kanji.GetPrimaryVocab()))),
+                () => AnkiFacade.ExecuteLookup(_services.QueryBuilder.VocabsLookupStrings(kanji.GetPrimaryVocab()))),
             SpecMenuItem.Command(ShortcutFinger.Home2("Vocabs"), 
-                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.VocabWithKanji(kanji))),
+                () => AnkiFacade.ExecuteLookup(_services.QueryBuilder.VocabWithKanji(kanji))),
             SpecMenuItem.Command(ShortcutFinger.Home3("Radicals"), 
-                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup(kanji.GetRadicalsNotes()))),
+                () => AnkiFacade.ExecuteLookup(_services.QueryBuilder.NotesLookup(kanji.GetRadicalsNotes()))),
             SpecMenuItem.Command(ShortcutFinger.Home4("Kanji"), 
-                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup(
-                    Core.TemporaryServiceCollection.Instance.App.Col().Kanji.WithRadical(kanji.GetQuestion())))),
+                () => AnkiFacade.ExecuteLookup(_services.QueryBuilder.NotesLookup(
+                    _services.App.Col().Kanji.WithRadical(kanji.GetQuestion())))),
             SpecMenuItem.Command(ShortcutFinger.Home5("Sentences"), 
-                () => AnkiFacade.ExecuteLookup(Core.TemporaryServiceCollection.Instance.QueryBuilder.SentenceSearch(kanji.GetQuestion(), exact: true)))
+                () => AnkiFacade.ExecuteLookup(_services.QueryBuilder.SentenceSearch(kanji.GetQuestion(), exact: true)))
         };
 
         return SpecMenuItem.Submenu(ShortcutFinger.Home1("Open"), items);
     }
 
-    public static SpecMenuItem BuildViewMenuSpec()
+    public SpecMenuItem BuildViewMenuSpec()
     {
         return SpecMenuItem.Submenu(
             ShortcutFinger.Home5("View"),

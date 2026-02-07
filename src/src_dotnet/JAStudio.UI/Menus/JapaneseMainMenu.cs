@@ -13,6 +13,15 @@ namespace JAStudio.UI.Menus;
 /// </summary>
 public class JapaneseMainMenu
 {
+   readonly Core.TemporaryServiceCollection _services;
+   readonly OpenInAnkiMenus _openInAnkiMenus;
+
+   public JapaneseMainMenu(Core.TemporaryServiceCollection services)
+   {
+      _services = services;
+      _openInAnkiMenus = new OpenInAnkiMenus(services);
+   }
+
    public List<SpecMenuItem> BuildMenuSpec(Func<string> getClipboardContent) =>
    [
       BuildConfigMenuSpec(),
@@ -37,7 +46,7 @@ public class JapaneseMainMenu
          new List<SpecMenuItem>
          {
             SpecMenuItem.Command(ShortcutFinger.Home1("Open note (Ctrl+O)"), OnOpenNote),
-            OpenInAnkiMenus.BuildOpenInAnkiMenuSpec(getClipboardContent),
+            _openInAnkiMenus.BuildOpenInAnkiMenuSpec(getClipboardContent),
             WebSearchMenus.BuildWebSearchMenuSpec(getClipboardContent)
          }
       );
@@ -87,15 +96,15 @@ public class JapaneseMainMenu
 
    // Local Actions menu actions
    void OnConvertImmersionKitSentences() => AnkiFacade.ConvertImmersionKitSentences();
-   void OnCreateMissingVocab() => Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.CreateMissingVocabWithDictionaryEntries();
-   void OnRegenerateVocabAnswers() => Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.RegenerateJamdictVocabAnswers();
+   void OnCreateMissingVocab() => _services.LocalNoteUpdater.CreateMissingVocabWithDictionaryEntries();
+   void OnRegenerateVocabAnswers() => _services.LocalNoteUpdater.RegenerateJamdictVocabAnswers();
 
    // Update submenu actions
-   void OnUpdateVocab() => Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.UpdateVocab();
-   void OnUpdateKanji() => Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.UpdateKanji();
-   void OnUpdateSentences() => Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.UpdateSentences();
-   void OnTagNoteMetadata() => Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.TagNoteMetadata();
-   void OnUpdateAll() => Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.UpdateAll();
-   void OnReparseSentences() => Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.ReparseAllSentences();
-   void OnFullRebuild() => Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.FullRebuild();
+   void OnUpdateVocab() => _services.LocalNoteUpdater.UpdateVocab();
+   void OnUpdateKanji() => _services.LocalNoteUpdater.UpdateKanji();
+   void OnUpdateSentences() => _services.LocalNoteUpdater.UpdateSentences();
+   void OnTagNoteMetadata() => _services.LocalNoteUpdater.TagNoteMetadata();
+   void OnUpdateAll() => _services.LocalNoteUpdater.UpdateAll();
+   void OnReparseSentences() => _services.LocalNoteUpdater.ReparseAllSentences();
+   void OnFullRebuild() => _services.LocalNoteUpdater.FullRebuild();
 }

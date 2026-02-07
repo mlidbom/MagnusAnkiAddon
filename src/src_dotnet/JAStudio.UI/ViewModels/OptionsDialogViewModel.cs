@@ -15,22 +15,24 @@ public partial class OptionsDialogViewModel : ObservableObject
 {
    readonly Window _window;
    readonly JapaneseConfig _config;
+   readonly Core.TemporaryServiceCollection _services;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
    [Obsolete("Parameterless constructor is only for XAML designer support and should not be used directly.")]
    public OptionsDialogViewModel() {}
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
-   public OptionsDialogViewModel(Window window)
+   public OptionsDialogViewModel(Window window, Core.TemporaryServiceCollection services)
    {
       JALogger.Log("OptionsDialogViewModel constructor: starting...");
       _window = window;
+      _services = services;
       if(Design.IsDesignMode)
       {
-         Core.TemporaryServiceCollection.Instance.ConfigurationStore.InitForTesting();
+         _services.ConfigurationStore.InitForTesting();
       }
 
-      _config = Core.TemporaryServiceCollection.Instance.App.Config();
+      _config = _services.App.Config();
       JALogger.Log("OptionsDialogViewModel constructor: calling LoadFromConfig()...");
       LoadFromConfig();
       JALogger.Log("OptionsDialogViewModel constructor: completed");

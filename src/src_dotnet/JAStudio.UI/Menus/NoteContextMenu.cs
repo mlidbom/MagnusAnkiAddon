@@ -14,12 +14,29 @@ namespace JAStudio.UI.Menus;
 /// </summary>
 public class NoteContextMenu
 {
+    readonly Core.TemporaryServiceCollection _services;
+    readonly VocabNoteMenus _vocabNoteMenus;
+    readonly KanjiNoteMenus _kanjiNoteMenus;
+    readonly SentenceNoteMenus _sentenceNoteMenus;
+    readonly OpenInAnkiMenus _openInAnkiMenus;
+    readonly VocabStringMenus _vocabStringMenus;
+
+    public NoteContextMenu(Core.TemporaryServiceCollection services)
+    {
+        _services = services;
+        _vocabNoteMenus = new VocabNoteMenus(services);
+        _kanjiNoteMenus = new KanjiNoteMenus(services);
+        _sentenceNoteMenus = new SentenceNoteMenus(services);
+        _openInAnkiMenus = new OpenInAnkiMenus(services);
+        _vocabStringMenus = new VocabStringMenus(services);
+    }
+
     /// <summary>
     /// Build context menu for a vocab note as UI-agnostic specifications.
     /// </summary>
     public List<SpecMenuItem> BuildVocabContextMenuSpec(int vocabId, string selection, string clipboard)
     {
-        var vocab = Core.TemporaryServiceCollection.Instance.App.Col().Vocab.WithIdOrNone(vocabId);
+        var vocab = _services.App.Col().Vocab.WithIdOrNone(vocabId);
         if (vocab == null)
             return [];
 
@@ -31,9 +48,9 @@ public class NoteContextMenu
         if (!string.IsNullOrEmpty(clipboard))
             menuItems.Add(BuildClipboardMenuSpec(clipboard, "vocab", vocab));
 
-        menuItems.Add(VocabNoteMenus.BuildNoteActionsMenuSpec(vocab));
+        menuItems.Add(_vocabNoteMenus.BuildNoteActionsMenuSpec(vocab));
         menuItems.Add(BuildUniversalNoteActionsMenuSpec(vocab));
-        menuItems.Add(VocabNoteMenus.BuildViewMenuSpec());
+        menuItems.Add(_vocabNoteMenus.BuildViewMenuSpec());
 
         return menuItems;
     }
@@ -43,7 +60,7 @@ public class NoteContextMenu
     /// </summary>
     public List<SpecMenuItem> BuildKanjiContextMenuSpec(int kanjiId, string selection, string clipboard)
     {
-        var kanji = Core.TemporaryServiceCollection.Instance.App.Col().Kanji.WithIdOrNone(kanjiId);
+        var kanji = _services.App.Col().Kanji.WithIdOrNone(kanjiId);
         if (kanji == null)
             return [];
 
@@ -55,9 +72,9 @@ public class NoteContextMenu
         if (!string.IsNullOrEmpty(clipboard))
             menuItems.Add(BuildClipboardMenuSpec(clipboard, "kanji", kanji));
 
-        menuItems.Add(KanjiNoteMenus.BuildNoteActionsMenuSpec(kanji));
+        menuItems.Add(_kanjiNoteMenus.BuildNoteActionsMenuSpec(kanji));
         menuItems.Add(BuildUniversalNoteActionsMenuSpec(kanji));
-        menuItems.Add(KanjiNoteMenus.BuildViewMenuSpec());
+        menuItems.Add(_kanjiNoteMenus.BuildViewMenuSpec());
 
         return menuItems;
     }
@@ -67,7 +84,7 @@ public class NoteContextMenu
     /// </summary>
     public List<SpecMenuItem> BuildSentenceContextMenuSpec(int sentenceId, string selection, string clipboard)
     {
-        var sentence = Core.TemporaryServiceCollection.Instance.App.Col().Sentences.WithIdOrNone(sentenceId);
+        var sentence = _services.App.Col().Sentences.WithIdOrNone(sentenceId);
         if (sentence == null)
             return [];
 
@@ -79,9 +96,9 @@ public class NoteContextMenu
         if (!string.IsNullOrEmpty(clipboard))
             menuItems.Add(BuildClipboardMenuSpec(clipboard, "sentence", sentence));
 
-        menuItems.Add(SentenceNoteMenus.BuildNoteActionsMenuSpec(sentence));
+        menuItems.Add(_sentenceNoteMenus.BuildNoteActionsMenuSpec(sentence));
         menuItems.Add(BuildUniversalNoteActionsMenuSpec(sentence));
-        menuItems.Add(SentenceNoteMenus.BuildViewMenuSpec());
+        menuItems.Add(_sentenceNoteMenus.BuildViewMenuSpec());
 
         return menuItems;
     }
@@ -166,7 +183,7 @@ public class NoteContextMenu
         return
         [
            BuildCurrentNoteActionsSubmenuSpec(text, noteType, note),
-           OpenInAnkiMenus.BuildOpenInAnkiMenuSpec(() => text),
+           _openInAnkiMenus.BuildOpenInAnkiMenuSpec(() => text),
            WebSearchMenus.BuildWebSearchMenuSpec(() => text),
            BuildMatchingNotesSubmenuSpec(text),
            BuildCreateNoteSubmenuSpec(text),
@@ -179,7 +196,7 @@ public class NoteContextMenu
         // Delegate to note-type-specific string menu builders
         if (noteType == "vocab" && note is VocabNote vocab)
         {
-            return VocabStringMenus.BuildStringMenuSpec(text, vocab);
+            return _vocabStringMenus.BuildStringMenuSpec(text, vocab);
         }
 
         if (noteType == "kanji" && note is KanjiNote kanji)
@@ -217,10 +234,10 @@ public class NoteContextMenu
     SpecMenuItem BuildMatchingNotesSubmenuSpec(string text)
     {
         // Find notes that exactly match the search text
-        var vocabs = Core.TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestionPreferDisambiguationName(text).ToList();
-        var sentences = Core.TemporaryServiceCollection.Instance.App.Col().Sentences.WithQuestion(text);
+        var vocabs = _services.App.Col().Vocab.WithQuestionPreferDisambiguationName(text).ToList();
+        var sentences = _services.App.Col().Sentences.WithQuestion(text);
         var kanjis = text.Length == 1
-            ? Core.TemporaryServiceCollection.Instance.App.Col().Kanji.WithAnyKanjiIn([text])
+            ? _services.App.Col().Kanji.WithAnyKanjiIn([text])
             : [];
 
         // Only show submenu if any notes match
@@ -295,7 +312,7 @@ public class NoteContextMenu
     // Action handlers
     void OnOpenInPreviewer(JPNote note)
     {
-        var query = Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup([note]);
+        var query = _services.QueryBuilder.NotesLookup([note]);
         AnkiFacade.ExecuteLookupAndShowPreviewer(query);
     }
 
@@ -303,7 +320,7 @@ public class NoteContextMenu
     {
         try
         {
-            Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.ReparseMatchingSentences(text);
+            _services.LocalNoteUpdater.ReparseMatchingSentences(text);
             AnkiFacade.Refresh();
             AnkiFacade.ShowTooltip($"Reparsed sentences matching: {text}", 3000);
         }
@@ -318,10 +335,10 @@ public class NoteContextMenu
     {
         try
         {
-            var newVocab = Core.TemporaryServiceCollection.Instance.VocabNoteFactory.CreateWithDictionary(text);
-            Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.ReparseSentencesForVocab(newVocab);
+            var newVocab = _services.VocabNoteFactory.CreateWithDictionary(text);
+            _services.LocalNoteUpdater.ReparseSentencesForVocab(newVocab);
 
-            var query = Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup([newVocab]);
+            var query = _services.QueryBuilder.NotesLookup([newVocab]);
             AnkiFacade.ExecuteLookupAndShowPreviewer(query);
             AnkiFacade.Refresh();
         }
@@ -336,10 +353,10 @@ public class NoteContextMenu
     {
         try
         {
-            var noteServices = Core.TemporaryServiceCollection.Instance.NoteServices;
+            var noteServices = _services.NoteServices;
             var newSentence = SentenceNote.Create(noteServices, text);
 
-            var query = Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup([newSentence]);
+            var query = _services.QueryBuilder.NotesLookup([newSentence]);
             AnkiFacade.ExecuteLookupAndShowPreviewer(query);
             AnkiFacade.Refresh();
         }
@@ -354,11 +371,11 @@ public class NoteContextMenu
     {
         try
         {
-            var noteServices = Core.TemporaryServiceCollection.Instance.NoteServices;
+            var noteServices = _services.NoteServices;
             // Create with placeholder values - user will need to fill them in
             var newKanji = KanjiNote.Create(noteServices, text, "TODO", "", "");
 
-            var query = Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup([newKanji]);
+            var query = _services.QueryBuilder.NotesLookup([newKanji]);
             AnkiFacade.ExecuteLookupAndShowPreviewer(query);
             AnkiFacade.Refresh();
         }

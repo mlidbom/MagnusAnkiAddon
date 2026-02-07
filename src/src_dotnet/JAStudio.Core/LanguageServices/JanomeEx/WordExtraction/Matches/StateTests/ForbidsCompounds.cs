@@ -9,7 +9,7 @@ public static class ForbidsConfiguredToHideAllCompounds
 
     public static FailedMatchRequirement? ApplyTo(MatchInspector inspector)
     {
-        if (TemporaryServiceCollection.Instance.Settings.HideAllCompounds() &&
+        if (inspector.Settings.HideAllCompounds() &&
             inspector.Word.IsCompound &&
             inspector.Word.Analysis.ForUI &&
             inspector.CompoundLocationsAllHaveValidNonCompoundMatches &&

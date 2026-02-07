@@ -13,7 +13,7 @@ public partial class VocabFlagsDialog : Window
 
     public VocabFlagsDialog(VocabNote vocab) : this()
     {
-        var viewModel = new VocabFlagsViewModel(vocab, this);
+        var viewModel = new VocabFlagsViewModel(vocab, Core.TemporaryServiceCollection.Instance, this);
         DataContext = viewModel;
 
         // Wire up commands to close the dialog

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.LanguageServices.JanomeEx;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Note.NoteFields;
@@ -60,7 +61,8 @@ public class VocabNoteUserCompoundParts
             .Select(form => WordExclusion.Global(form))
             .ToList();
         var config = SentenceConfiguration.FromIncorrectMatches(exclusions);
-        var analysis = new TextAnalysis(Vocab.GetQuestion(), config);
+        var analysisServices = new AnalysisServices(Vocab.Services.Collection.Vocab, Vocab.Services.DictLookup, Vocab.Services.Settings);
+        var analysis = new TextAnalysis(analysisServices, Vocab.GetQuestion(), config);
         var compoundParts = analysis.DisplayWordVariants
             .Where(a => !Vocab.Forms.AllSet().Contains(a.Form))
             .Select(a => a.Form)

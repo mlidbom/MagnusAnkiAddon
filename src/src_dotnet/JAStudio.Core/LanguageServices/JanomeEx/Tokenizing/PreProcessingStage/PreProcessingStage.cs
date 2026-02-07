@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing.PreProcessingStage;
@@ -7,8 +8,13 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing.PreProcessingStage;
 public class PreProcessingStage
 {
    readonly VocabCollection _vocabs;
+   readonly DictLookup _dictLookup;
 
-    public PreProcessingStage(VocabCollection vocabs) => _vocabs = vocabs;
+    public PreProcessingStage(VocabCollection vocabs, DictLookup dictLookup)
+    {
+        _vocabs = vocabs;
+        _dictLookup = dictLookup;
+    }
 
     public List<IAnalysisToken> PreProcess(List<JNToken> tokens) => tokens.SelectMany(PreProcessToken).ToList();
 
@@ -27,7 +33,7 @@ public class PreProcessingStage
             return splitGodanImperative;
         }
 
-        var splitHybrid = IchidanGodanPotentialOrImperativeHybridSplitter.TrySplit(token, _vocabs);
+        var splitHybrid = IchidanGodanPotentialOrImperativeHybridSplitter.TrySplit(token, _vocabs, _dictLookup);
         if (splitHybrid != null)
         {
             return splitHybrid;

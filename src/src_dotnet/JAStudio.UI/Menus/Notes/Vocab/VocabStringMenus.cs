@@ -9,9 +9,16 @@ namespace JAStudio.UI.Menus;
 /// Vocab string menu builders (selection/clipboard context menus).
 /// Corresponds to notes/vocab/string_menu.py in Python.
 /// </summary>
-public static class VocabStringMenus
+public class VocabStringMenus
 {
-    public static SpecMenuItem BuildStringMenuSpec(string text, VocabNote vocab) =>
+    readonly Core.TemporaryServiceCollection _services;
+
+    public VocabStringMenus(Core.TemporaryServiceCollection services)
+    {
+        _services = services;
+    }
+
+    public SpecMenuItem BuildStringMenuSpec(string text, VocabNote vocab) =>
        SpecMenuItem.Submenu(
           ShortcutFinger.Home1("Current note actions"),
           new List<SpecMenuItem>
@@ -101,9 +108,9 @@ public static class VocabStringMenus
         return SpecMenuItem.Submenu(ShortcutFinger.Home3("Remove"), items);
     }
 
-    static SpecMenuItem BuildSentenceMenuSpec(string text, VocabNote vocab)
+    SpecMenuItem BuildSentenceMenuSpec(string text, VocabNote vocab)
     {
-        var sentences = Core.TemporaryServiceCollection.Instance.App.Col().Sentences.WithQuestion(text);
+        var sentences = _services.App.Col().Sentences.WithQuestion(text);
         var hasSentences = sentences.Count > 0;
         var disambiguationName = vocab.Question.DisambiguationName;
 

@@ -27,7 +27,7 @@ public partial class NoteSearchDialog : Window
     public NoteSearchDialog()
     {
         InitializeComponent();
-        DataContext = new NoteSearchDialogViewModel();
+        DataContext = new NoteSearchDialogViewModel(Core.TemporaryServiceCollection.Instance);
         
         // Focus search input when dialog is shown
         Opened += (_, _) =>

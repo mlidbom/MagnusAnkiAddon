@@ -18,9 +18,10 @@ public class DictLookup
    {
       _vocab = vocab;
       _config = config;
+      _jamdictThreadingWrapper = new JamdictThreadingWrapper(config);
    }
 
-   static readonly JamdictThreadingWrapper JamdictThreadingWrapper = new();
+   readonly JamdictThreadingWrapper _jamdictThreadingWrapper;
 
    static HashSet<string>? _allWordForms;
    static HashSet<string>? _allNameForms;
@@ -39,8 +40,8 @@ public class DictLookup
         var kanjiFormsQuery = "SELECT distinct text FROM Kanji";
         var kanaFormsQuery = "SELECT distinct text FROM Kana";
 
-        var kanjiForms = JamdictThreadingWrapper.RunStringQuery(kanjiFormsQuery);
-        var kanaForms = JamdictThreadingWrapper.RunStringQuery(kanaFormsQuery);
+        var kanjiForms = _jamdictThreadingWrapper.RunStringQuery(kanjiFormsQuery);
+        var kanaForms = _jamdictThreadingWrapper.RunStringQuery(kanaFormsQuery);
 
         var result = new HashSet<string>(kanjiForms);
         result.UnionWith(kanaForms);
@@ -59,8 +60,8 @@ public class DictLookup
         var kanjiFormsQuery = "SELECT distinct text FROM NEKanji";
         var kanaFormsQuery = "SELECT distinct text FROM NEKana";
 
-        var kanjiForms = JamdictThreadingWrapper.RunStringQuery(kanjiFormsQuery);
-        var kanaForms = JamdictThreadingWrapper.RunStringQuery(kanaFormsQuery);
+        var kanjiForms = _jamdictThreadingWrapper.RunStringQuery(kanjiFormsQuery);
+        var kanaForms = _jamdictThreadingWrapper.RunStringQuery(kanaFormsQuery);
 
         var result = new HashSet<string>(kanjiForms);
         result.UnionWith(kanaForms);
@@ -209,7 +210,7 @@ public class DictLookup
 
     List<DictEntry> LookupWordRawInner(string word)
     {
-        var lookupResult = JamdictThreadingWrapper.Lookup(word, includeNames: false);
+        var lookupResult = _jamdictThreadingWrapper.Lookup(word, includeNames: false);
         var entries = lookupResult.Entries;
 
         if (!KanaUtils.IsOnlyKana(word))
@@ -232,7 +233,7 @@ public class DictLookup
 
     List<DictEntry> LookupNameRawInner(string word)
     {
-        var lookupResult = JamdictThreadingWrapper.Lookup(word, includeNames: true);
+        var lookupResult = _jamdictThreadingWrapper.Lookup(word, includeNames: true);
         return lookupResult.Names;
     }
 

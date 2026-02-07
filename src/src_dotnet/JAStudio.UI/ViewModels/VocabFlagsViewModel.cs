@@ -19,15 +19,17 @@ public partial class VocabFlagsViewModel : ObservableObject
 {
    readonly VocabNote _vocab;
    readonly Window? _parentWindow;
+   readonly Core.TemporaryServiceCollection _services;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
    [Obsolete("Parameterless constructor is only for XAML designer support and should not be used directly.")]
    public VocabFlagsViewModel() {}
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
-   public VocabFlagsViewModel(VocabNote vocab, Window? parentWindow = null)
+   public VocabFlagsViewModel(VocabNote vocab, Core.TemporaryServiceCollection services, Window? parentWindow = null)
    {
       _vocab = vocab;
+      _services = services;
       _parentWindow = parentWindow;
       Title = $"Edit Flags: {vocab.GetQuestion()}";
       LoadFromNote();
@@ -203,7 +205,7 @@ public partial class VocabFlagsViewModel : ObservableObject
             // Trigger reparse using C# batch updater
             await Task.Run(() =>
             {
-               Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.ReparseSentencesForVocab(_vocab);
+               _services.LocalNoteUpdater.ReparseSentencesForVocab(_vocab);
             });
          }
       }

@@ -10,7 +10,7 @@ public partial class OptionsDialog : Window
         JALogger.Log("OptionsDialog constructor: calling InitializeComponent()...");
         InitializeComponent();
         JALogger.Log("OptionsDialog constructor: creating ViewModel...");
-        DataContext = new OptionsDialogViewModel(this);
+        DataContext = new OptionsDialogViewModel(this, Core.TemporaryServiceCollection.Instance);
         JALogger.Log("OptionsDialog constructor: completed");
     }
 }

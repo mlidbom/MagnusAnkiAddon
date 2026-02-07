@@ -20,6 +20,7 @@ public static class DialogHost
    static bool _initialized;
    static Thread? _uiThread;
    static AutoResetEvent? _initEvent;
+   static Core.TemporaryServiceCollection _services = null!;
 
    /// <summary>
    /// Initialize Avalonia. Call once at addon startup.
@@ -52,12 +53,14 @@ public static class DialogHost
       // TODO: Add proper synchronization with App.OnFrameworkInitializationCompleted
       Thread.Sleep(500);
 
+      _services = Core.TemporaryServiceCollection.Instance;
+
       // Set up task runner factory
-      Core.TemporaryServiceCollection.Instance.TaskRunner.SetUiTaskRunnerFactory((windowTitle, labelText, allowCancel, modal) =>
+      _services.TaskRunner.SetUiTaskRunnerFactory((windowTitle, labelText, allowCancel, modal) =>
                                            new AvaloniaTaskProgressRunner(windowTitle, labelText, allowCancel, modal));
 
       // Register Anki card operations so Core can suspend/unsuspend cards via Anki API
-      Core.TemporaryServiceCollection.Instance.AnkiCardOperations.SetImplementation(new Anki.AnkiCardOperationsImpl());
+      _services.AnkiCardOperations.SetImplementation(new Anki.AnkiCardOperationsImpl());
 
       _initialized = true;
    }
@@ -92,7 +95,7 @@ public static class DialogHost
       EnsureInitialized();
       Dispatcher.UIThread.Invoke(() =>
       {
-         var vocabCache = Core.TemporaryServiceCollection.Instance.App.Col().Vocab;
+         var vocabCache = _services.App.Col().Vocab;
          var vocab = vocabCache.WithIdOrNone(vocabId);
          if(vocab == null)
          {
@@ -204,7 +207,7 @@ public static class DialogHost
       dynamic selectedNoteIds)
    {
       EnsureInitialized();
-      return BrowserMenus.BuildBrowserMenuSpec(selectedCardIds, selectedNoteIds);
+      return new BrowserMenus(_services).BuildBrowserMenuSpec(selectedCardIds, selectedNoteIds);
    }
 
    /// <summary>

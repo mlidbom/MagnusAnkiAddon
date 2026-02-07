@@ -26,8 +26,9 @@ public sealed class CandidateWordVariant
         Word = word;
         Form = form;
 
-        _dictLookup = new LazyCE<DictLookupResult>(() => TemporaryServiceCollection.Instance.DictLookup.LookupWord(form));
-        VocabMatches = TemporaryServiceCollection.Instance.App.Col().Vocab.WithForm(form)
+        var services = word.Analysis.Services;
+        _dictLookup = new LazyCE<DictLookupResult>(() => services.DictLookup.LookupWord(form));
+        VocabMatches = services.Vocab.WithForm(form)
             .Select(vocab => new VocabMatch(this, vocab))
             .ToList();
 

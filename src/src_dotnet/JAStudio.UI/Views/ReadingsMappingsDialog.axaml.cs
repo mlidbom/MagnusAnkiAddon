@@ -9,7 +9,7 @@ public partial class ReadingsMappingsDialog : Window
     public ReadingsMappingsDialog()
     {
         InitializeComponent();
-        DataContext = new ReadingsMappingsDialogViewModel(this);
+        DataContext = new ReadingsMappingsDialogViewModel(this, Core.TemporaryServiceCollection.Instance);
     }
 
     private void InitializeComponent()
