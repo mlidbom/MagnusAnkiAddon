@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.Configuration;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Note.Sentences;
 using JAStudio.Core.Note.Vocabulary;
 namespace JAStudio.Core.UI.Web.Sentence;
@@ -39,12 +41,14 @@ public class CompoundPartViewModel
         MatchViewModel matchViewModel,
         VocabNote vocabNote,
         SentenceConfiguration config,
+        Settings settings,
+        VocabCollection vocab,
         int depth = 0,
         HashSet<long>? visited = null)
     {
-        if (!TemporaryServiceCollection.Instance.Settings.HideAllCompounds())
+        if (!settings.HideAllCompounds())
         {
-            if (!TemporaryServiceCollection.Instance.Settings.ShowCompoundPartsInSentenceBreakdown()) return [];
+            if (!settings.ShowCompoundPartsInSentenceBreakdown()) return [];
             visited ??= [];
             if (visited.Contains(vocabNote.GetId())) return [];
 
@@ -56,7 +60,7 @@ public class CompoundPartViewModel
             {
                 var wrapper = new CompoundPartViewModel(part, depth, config);
                 result.Add(wrapper);
-                var nestedParts = GetCompoundPartsRecursive(matchViewModel, part, config, depth + 1, visited);
+                var nestedParts = GetCompoundPartsRecursive(matchViewModel, part, config, settings, vocab, depth + 1, visited);
                 result.AddRange(nestedParts);
             }
 
@@ -68,8 +72,8 @@ public class CompoundPartViewModel
         {
             var godanBase = match.Word.StartLocation.Token.BaseForm;
             var godanPotentialPartBase = match.Word.EndLocation.Token.BaseForm;
-            var godan = TemporaryServiceCollection.Instance.App.Col().Vocab.WithFormPreferDisambiguationNameOrExactMatch(godanBase);
-            var godanPotential = TemporaryServiceCollection.Instance.App.Col().Vocab.WithFormPreferDisambiguationNameOrExactMatch(godanPotentialPartBase);
+            var godan = vocab.WithFormPreferDisambiguationNameOrExactMatch(godanBase);
+            var godanPotential = vocab.WithFormPreferDisambiguationNameOrExactMatch(godanPotentialPartBase);
             if (godan.Any() && godanPotential.Any())
             {
                 return

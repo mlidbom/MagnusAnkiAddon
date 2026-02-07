@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.Collection;
 using JAStudio.Core.UI.Web.Sentence;
 using Xunit;
 
@@ -32,7 +34,9 @@ public static class SentenceAnalysisViewModelCommon
       hidden.ForEach(sentenceNote.Configuration.HiddenMatches.Add);
       incorrect.ForEach(sentenceNote.Configuration.IncorrectMatches.Add);
 
-      var sentenceViewModel = new SentenceViewModel(sentenceNote);
+      var sentenceViewModel = new SentenceViewModel(sentenceNote,
+         TemporaryServiceCollection.Instance.ServiceLocator.Resolve<Settings>(),
+         TemporaryServiceCollection.Instance.ServiceLocator.Resolve<VocabCollection>());
 
       void RunNoteAssertions(string message)
       {
@@ -59,7 +63,9 @@ public static class SentenceAnalysisViewModelCommon
    public static void AssertAllWordsEqual(string sentence, List<string> expectedOutput)
    {
       var sentenceNote = SentenceNote.Create(sentence);
-      var analysis = new SentenceViewModel(sentenceNote);
+      var analysis = new SentenceViewModel(sentenceNote,
+         TemporaryServiceCollection.Instance.ServiceLocator.Resolve<Settings>(),
+         TemporaryServiceCollection.Instance.ServiceLocator.Resolve<VocabCollection>());
       var candidateWords = analysis.Analysis.CandidateWords;
       var matches = candidateWords
                    .SelectMany(it => it.Matches)

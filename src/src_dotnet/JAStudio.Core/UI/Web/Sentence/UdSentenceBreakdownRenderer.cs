@@ -1,6 +1,7 @@
 using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.Collection;
 using JAStudio.Core.UI.Web.Sentence;
 using JAStudio.Core.ViewModels.KanjiList;
 using System;
@@ -15,12 +16,14 @@ public class UdSentenceBreakdownRenderer
     readonly Settings _settings;
    readonly SentenceKanjiListViewModel _sentenceKanjiListViewModel;
    readonly JapaneseConfig _config;
+   readonly VocabCollection _vocab;
 
-   internal UdSentenceBreakdownRenderer(Settings settings, SentenceKanjiListViewModel sentenceKanjiListViewModel, JapaneseConfig config)
+   internal UdSentenceBreakdownRenderer(Settings settings, SentenceKanjiListViewModel sentenceKanjiListViewModel, JapaneseConfig config, VocabCollection vocab)
    {
       _settings = settings;
       _sentenceKanjiListViewModel = sentenceKanjiListViewModel;
       _config = config;
+      _vocab = vocab;
    }
 
     string FormatReason(string reason) =>
@@ -112,7 +115,7 @@ public class UdSentenceBreakdownRenderer
 
     public string RenderSentenceAnalysis(SentenceNote note)
     {
-        var sentenceAnalysis = new SentenceViewModel(note);
+        var sentenceAnalysis = new SentenceViewModel(note, _settings, _vocab);
         var html = new StringBuilder();
 
         html.AppendLine($"""

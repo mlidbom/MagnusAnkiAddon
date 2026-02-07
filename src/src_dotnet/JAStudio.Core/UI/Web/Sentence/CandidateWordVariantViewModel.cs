@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
+using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.UI.Web.Sentence;
 
@@ -13,11 +15,11 @@ public class CandidateWordVariantViewModel
     public bool HasPerfectMatch { get; }
     public List<MatchViewModel> PrimaryDisplayForms { get; }
 
-    public CandidateWordVariantViewModel(CandidateWordVariant variant)
+    public CandidateWordVariantViewModel(CandidateWordVariant variant, Settings settings, VocabCollection vocab)
     {
         CandidateWord = variant;
         IsDisplayWord = variant.Word.Analysis.DisplayWordVariants.Contains(variant);
-        Matches = variant.Matches.Select(match => new MatchViewModel(this, match)).ToList();
+        Matches = variant.Matches.Select(match => new MatchViewModel(this, match, settings, vocab)).ToList();
         DisplayMatches = Matches.Where(match => match.MatchIsDisplayed).ToList();
         HasPerfectMatch = Matches.Any(match => match.MatchOwnsForm && match.MatchIsDisplayed);
 
