@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+
 #pragma warning disable IDE0051 //unused members
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;

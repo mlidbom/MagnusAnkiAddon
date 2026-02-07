@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using JAStudio.Core.Note.Vocabulary;
-using JAStudio.Core.Tests.Fixtures;
 using Xunit;
 
 namespace JAStudio.Core.Tests.Note.Vocabulary;

@@ -1,5 +1,6 @@
-import abc
 from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction import CandidateWordVariant, TextAnalysis
+from JAStudio.Core.Configuration import Settings
+from JAStudio.Core.Note.Collection import VocabCollection
 from System.Collections.Generic import List_1, HashSet_1
 from JAStudio.Core.Note import VocabNote, SentenceNote
 from JAStudio.Core.Note.Sentences import SentenceConfiguration
@@ -7,7 +8,7 @@ from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches import Match
 from JAStudio.Core.UI.Web import PreRenderingContentRenderer_1
 
 class CandidateWordVariantViewModel:
-    def __init__(self, variant: CandidateWordVariant) -> None: ...
+    def __init__(self, variant: CandidateWordVariant, settings: Settings, vocab: VocabCollection) -> None: ...
     @property
     def CandidateWord(self) -> CandidateWordVariant: ...
     @property
@@ -46,11 +47,11 @@ class CompoundPartViewModel:
     @property
     def VocabNote(self) -> VocabNote: ...
     @staticmethod
-    def GetCompoundPartsRecursive(matchViewModel: MatchViewModel, vocabNote: VocabNote, config: SentenceConfiguration, depth: int = ..., visited: HashSet_1[int] = ...) -> List_1[CompoundPartViewModel]: ...
+    def GetCompoundPartsRecursive(matchViewModel: MatchViewModel, vocabNote: VocabNote, config: SentenceConfiguration, settings: Settings, vocab: VocabCollection, depth: int = ..., visited: HashSet_1[int] = ...) -> List_1[CompoundPartViewModel]: ...
 
 
 class MatchViewModel:
-    def __init__(self, wordVariantVm: CandidateWordVariantViewModel, match: Match) -> None: ...
+    def __init__(self, wordVariantVm: CandidateWordVariantViewModel, match: Match, settings: Settings, vocab: VocabCollection) -> None: ...
     @property
     def Answer(self) -> str: ...
     @property
@@ -110,9 +111,8 @@ class QuestionRenderer:
     def RenderWbr(self, question: str) -> str: ...
 
 
-class SentenceNoteRenderer(abc.ABC):
-    @staticmethod
-    def CreateRenderer() -> PreRenderingContentRenderer_1[SentenceNote]: ...
+class SentenceNoteRenderer:
+    def CreateRenderer(self) -> PreRenderingContentRenderer_1[SentenceNote]: ...
 
 
 class SentenceRenderer:
@@ -121,7 +121,7 @@ class SentenceRenderer:
 
 
 class SentenceViewModel:
-    def __init__(self, sentence: SentenceNote) -> None: ...
+    def __init__(self, sentence: SentenceNote, settings: Settings, vocab: VocabCollection) -> None: ...
     @property
     def Analysis(self) -> TextAnalysisViewModel: ...
     @property
@@ -131,7 +131,7 @@ class SentenceViewModel:
 
 
 class TextAnalysisViewModel:
-    def __init__(self, textAnalysis: TextAnalysis) -> None: ...
+    def __init__(self, textAnalysis: TextAnalysis, settings: Settings, vocab: VocabCollection) -> None: ...
     @property
     def Analysis(self) -> TextAnalysis: ...
     @property

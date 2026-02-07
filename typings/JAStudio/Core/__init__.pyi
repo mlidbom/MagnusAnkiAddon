@@ -2,20 +2,15 @@ import abc
 from System import IDisposable, Action
 from JAStudio.Core.Note.Collection import JPCollection
 from JAStudio.Core.Configuration import JapaneseConfig, ConfigurationStore, Settings
-from JAStudio.Core.Note import IBackendNoteCreator, KanjiNoteMnemonicMaker
+from JAStudio.Core.Note import IBackendNoteCreator, NoteServices
 from System.Collections.Generic import List_1
 from Compze.Utilities.DependencyInjection.Abstractions import IServiceLocator
 from JAStudio.Core.Anki import AnkiCardOperations
 from JAStudio.Core.LanguageServices.JamdictEx import DictLookup
-from JAStudio.Core.UI.Web.Kanji import KanjiListRenderer
 from JAStudio.Core.Batches import LocalNoteUpdater
 from JAStudio.Core.AnkiUtils import QueryBuilder
-from JAStudio.Core.UI.Web.Sentence import QuestionRenderer, SentenceRenderer, UdSentenceBreakdownRenderer
-from JAStudio.Core.UI.Web.Vocab import RelatedVocabsRenderer, VocabKanjiListRenderer
-from JAStudio.Core.ViewModels.KanjiList import SentenceKanjiListViewModel
 from JAStudio.Core.TaskRunners import TaskRunner
-from JAStudio.Core.TestUtils import TestApp
-from JAStudio.Core.Note.Vocabulary import VocabNoteFactory, VocabNoteGeneratedData
+from JAStudio.Core.Note.Vocabulary import VocabNoteFactory
 
 class App(IDisposable):
     @classmethod
@@ -74,21 +69,11 @@ class TemporaryServiceCollection(IDisposable):
     @Instance.setter
     def Instance(cls, value: TemporaryServiceCollection) -> TemporaryServiceCollection: ...
     @property
-    def KanjiListRenderer(self) -> KanjiListRenderer: ...
-    @property
-    def KanjiNoteMnemonicMaker(self) -> KanjiNoteMnemonicMaker: ...
-    @property
     def LocalNoteUpdater(self) -> LocalNoteUpdater: ...
     @property
+    def NoteServices(self) -> NoteServices: ...
+    @property
     def QueryBuilder(self) -> QueryBuilder: ...
-    @property
-    def QuestionRenderer(self) -> QuestionRenderer: ...
-    @property
-    def RelatedVocabsRenderer(self) -> RelatedVocabsRenderer: ...
-    @property
-    def SentenceKanjiListViewModel(self) -> SentenceKanjiListViewModel: ...
-    @property
-    def SentenceRenderer(self) -> SentenceRenderer: ...
     @property
     def ServiceLocator(self) -> IServiceLocator: ...
     @property
@@ -96,14 +81,6 @@ class TemporaryServiceCollection(IDisposable):
     @property
     def TaskRunner(self) -> TaskRunner: ...
     @property
-    def TestApp(self) -> TestApp: ...
-    @property
-    def UdSentenceBreakdownRenderer(self) -> UdSentenceBreakdownRenderer: ...
-    @property
-    def VocabKanjiListRenderer(self) -> VocabKanjiListRenderer: ...
-    @property
     def VocabNoteFactory(self) -> VocabNoteFactory: ...
-    @property
-    def VocabNoteGeneratedData(self) -> VocabNoteGeneratedData: ...
     def Dispose(self) -> None: ...
 

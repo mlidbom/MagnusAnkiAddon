@@ -1,9 +1,6 @@
 using System;
 using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
 using JAStudio.Core.TestUtils;
-using JAStudio.UI;
-using JAStudio.UI.Views;
 
 namespace JAStudio.UI.DesktopHost;
 

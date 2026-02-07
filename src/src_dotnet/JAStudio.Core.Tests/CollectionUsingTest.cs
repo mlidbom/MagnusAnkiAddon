@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Compze.Utilities.DependencyInjection.Abstractions;
 using JAStudio.Core.Note;
 using JAStudio.Core.Tests.Fixtures;
 

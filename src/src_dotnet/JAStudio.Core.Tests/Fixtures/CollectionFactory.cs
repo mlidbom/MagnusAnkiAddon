@@ -1,6 +1,5 @@
 using System;
 using JAStudio.Core.Note;
-using JAStudio.Core.Note.Sentences;
 using JAStudio.Core.Tests.Fixtures.BaseData.SampleData;
 using JAStudio.Core.TestUtils;
 

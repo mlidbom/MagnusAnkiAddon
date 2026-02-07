@@ -1,7 +1,3 @@
-using System;
-using JAStudio.Core;
-using JAStudio.Core.Note;
-using JAStudio.Core.Tests.Fixtures;
 using Xunit;
 
 namespace JAStudio.Core.Tests.Note;

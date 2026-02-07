@@ -1,7 +1,6 @@
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using JAStudio.Core.Batches;
 using JAStudio.Core.Note;
 using JAStudio.UI.Controls;
 using MsBox.Avalonia;

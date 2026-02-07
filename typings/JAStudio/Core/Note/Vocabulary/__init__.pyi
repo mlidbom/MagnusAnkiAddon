@@ -1,6 +1,6 @@
 import typing, abc
 from JAStudio.Core.Note.NoteFields import TagFlagField, RequireForbidFlagField, WritableAudioField, IObjectSerializer_1, IntegerField, CachingMutableStringField, MutableStringField
-from JAStudio.Core.Note import VocabNote, Tag, SentenceNote
+from JAStudio.Core.Note import VocabNote, Tag, NoteServices, SentenceNote
 from System.Collections.Generic import HashSet_1, List_1, IEnumerable_1
 from System.Collections.Frozen import FrozenSet_1
 from System import Func_1, Func_3, Action_1
@@ -226,6 +226,7 @@ class VocabNoteFactory:
     def Create(self, question: str, answer: str, readings: List_1[str], initializer: Action_1[VocabNote] = ...) -> VocabNote: ...
     def CreateFromUserData(self, question: str, answer: str, readings: List_1[str], initializer: Action_1[VocabNote] = ...) -> VocabNote: ...
     def CreateWithDictionary(self, question: str) -> VocabNote: ...
+    def SetNoteServices(self, noteServices: NoteServices) -> None: ...
 
 
 class VocabNoteForms:

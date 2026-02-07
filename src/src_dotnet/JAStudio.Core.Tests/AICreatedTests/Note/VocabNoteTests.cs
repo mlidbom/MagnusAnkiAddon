@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using JAStudio.Core.Note;
-using JAStudio.Core.TestUtils;
 using Xunit;
 
 namespace JAStudio.Core.Tests.AICreatedTests.Note;

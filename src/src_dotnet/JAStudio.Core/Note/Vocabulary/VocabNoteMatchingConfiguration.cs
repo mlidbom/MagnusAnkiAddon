@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteMatchingConfiguration

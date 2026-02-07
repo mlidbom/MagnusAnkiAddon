@@ -1,4 +1,3 @@
-using System.Linq;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Requirements;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.Tail;

@@ -5,11 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using JAStudio.Core;
 using JAStudio.Core.LanguageServices;
 using JAStudio.Core.Note;
-using JAStudio.Core.Note.Sentences;
-using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.SysUtils;
 using JAStudio.UI.Anki;
 

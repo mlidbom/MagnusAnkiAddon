@@ -8,11 +8,6 @@ using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.TaskRunners;
-using JAStudio.Core.TestUtils;
-using JAStudio.Core.UI.Web.Kanji;
-using JAStudio.Core.UI.Web.Sentence;
-using JAStudio.Core.UI.Web.Vocab;
-using JAStudio.Core.ViewModels.KanjiList;
 
 namespace JAStudio.Core;
 

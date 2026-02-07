@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using JAStudio.Core;
-using JAStudio.Core.Batches;
 using JAStudio.Core.Note;
 using JAStudio.UI.Anki;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;

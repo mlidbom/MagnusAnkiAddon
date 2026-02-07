@@ -1,6 +1,5 @@
 using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Note;
-using JAStudio.Core.SysUtils;
 using JAStudio.Core.ViewModels.KanjiList;
 using System.Collections.Generic;
 using System.Linq;

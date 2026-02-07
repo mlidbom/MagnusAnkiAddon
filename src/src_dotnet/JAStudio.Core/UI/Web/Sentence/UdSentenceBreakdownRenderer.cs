@@ -2,7 +2,6 @@ using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
-using JAStudio.Core.UI.Web.Sentence;
 using JAStudio.Core.ViewModels.KanjiList;
 using System;
 using System.Collections.Generic;

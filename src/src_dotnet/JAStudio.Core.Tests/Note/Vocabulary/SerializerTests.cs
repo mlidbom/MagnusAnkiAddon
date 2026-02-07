@@ -1,8 +1,6 @@
-using System.Collections.Generic;
 using JAStudio.Core.Note.NoteFields.AutoSaveWrappers;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.Note.Vocabulary.RelatedVocab;
-using JAStudio.Core.TestUtils;
 using Xunit;
 
 namespace JAStudio.Core.Tests.Note.Vocabulary;

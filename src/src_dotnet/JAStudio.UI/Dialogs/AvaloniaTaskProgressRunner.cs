@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Avalonia.Threading;
-using JAStudio.Core;
 using JAStudio.Core.TaskRunners;
 
 namespace JAStudio.UI.Dialogs;

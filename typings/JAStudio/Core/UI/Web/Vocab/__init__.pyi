@@ -55,9 +55,8 @@ class VocabKanjiListRenderer:
     def RenderVocabKanjiList(self, vocab: VocabNote) -> str: ...
 
 
-class VocabNoteRenderer(abc.ABC):
-    @staticmethod
-    def CreateRenderer() -> PreRenderingContentRenderer_1[VocabNote]: ...
+class VocabNoteRenderer:
+    def CreateRenderer(self) -> PreRenderingContentRenderer_1[VocabNote]: ...
 
 
 class VocabSentenceMatchViewModel:

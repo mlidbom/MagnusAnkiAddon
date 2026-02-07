@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
 using JAStudio.Core.Configuration;
-using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
-using JAStudio.Core.Note;
 using JAStudio.Core.Tests.Fixtures;
 using Xunit;
 

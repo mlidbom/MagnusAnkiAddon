@@ -1,5 +1,4 @@
 using System.Linq;
-using JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;
 using JAStudio.Core.Note.Sentences;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Requirements;

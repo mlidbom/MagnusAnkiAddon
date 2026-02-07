@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using JAStudio.Core.Note;
 using JAStudio.Core.Note.Vocabulary;
 using V = JAStudio.Core.Note.Tags.Vocab;
 using VM = JAStudio.Core.Note.Tags.Vocab.Matching;

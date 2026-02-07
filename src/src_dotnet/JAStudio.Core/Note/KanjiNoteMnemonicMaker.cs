@@ -2,7 +2,6 @@ using JAStudio.Core.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.LanguageServices;
-using JAStudio.Core.SysUtils;
 
 namespace JAStudio.Core.Note;
 

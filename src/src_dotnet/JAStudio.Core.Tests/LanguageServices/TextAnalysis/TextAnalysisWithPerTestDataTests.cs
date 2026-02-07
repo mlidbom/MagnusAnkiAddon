@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using JAStudio.Core.Note;
 using JAStudio.Core.Tests.Fixtures;
 using Xunit;
 

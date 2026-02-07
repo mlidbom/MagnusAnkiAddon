@@ -91,8 +91,8 @@ public class JapaneseConfig
       _store = store;
       var configDict = _store.GetConfigDict();
 
-      ConfigurationValue<T> New<T>(string name, string title, T defaultValue, Func<object, T> converter, Action<T>? featureToggler = null)
-         => new(name, title, defaultValue, converter, configDict, featureToggler);
+      ConfigurationValue<T> New<T>(string name, string title, T defaultValue, Func<object, T> converter)
+         => new(name, title, defaultValue, converter, configDict);
 
       ConfigurationValue<T> Add<T>(ConfigurationValue<T> value)
       {

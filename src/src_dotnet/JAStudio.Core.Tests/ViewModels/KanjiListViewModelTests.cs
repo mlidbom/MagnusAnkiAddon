@@ -1,7 +1,4 @@
-using System;
 using System.Linq;
-using JAStudio.Core.Note;
-using JAStudio.Core.Tests.Fixtures;
 using JAStudio.Core.ViewModels.KanjiList;
 using Xunit;
 using JAStudio.Core.Note.Collection;

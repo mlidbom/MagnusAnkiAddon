@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using JAStudio.Core.SysUtils;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 

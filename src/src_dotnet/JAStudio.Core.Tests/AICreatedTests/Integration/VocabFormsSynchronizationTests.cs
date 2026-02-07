@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using JAStudio.Core.TestUtils;
 using Xunit;
 
 namespace JAStudio.Core.Tests.AICreatedTests.Integration;

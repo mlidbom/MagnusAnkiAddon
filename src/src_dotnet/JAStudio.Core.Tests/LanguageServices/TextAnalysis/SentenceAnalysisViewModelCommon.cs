@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
-using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Tests.Fixtures;
 using JAStudio.Core.UI.Web.Sentence;

@@ -1,6 +1,4 @@
-using System;
 using JAStudio.Core.Batches;
-using JAStudio.Core.Tests.Fixtures;
 using Xunit;
 
 namespace JAStudio.Core.Tests.Batches;

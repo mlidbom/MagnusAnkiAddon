@@ -1,6 +1,5 @@
 using JAStudio.Core.LanguageServices;
 using JAStudio.Core.Note;
-using JAStudio.Core.SysUtils;
 
 namespace JAStudio.Core.ViewModels.KanjiList;
 

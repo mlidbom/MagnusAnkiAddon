@@ -1,4 +1,3 @@
-using JAStudio.Core.TestUtils;
 using Xunit;
 using JAStudio.Core.Note.Collection;
 

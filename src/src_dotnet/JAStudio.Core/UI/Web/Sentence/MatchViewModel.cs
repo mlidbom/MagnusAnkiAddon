@@ -5,8 +5,7 @@ using JAStudio.Core.LanguageServices;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches;
 using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Note.Sentences;
-using JAStudio.Core.Note.Vocabulary;
-using JAStudio.Core.SysUtils;
+
 namespace JAStudio.Core.UI.Web.Sentence;
 
 public class MatchViewModel

@@ -1,7 +1,6 @@
 using Avalonia.Controls;
 using JAStudio.Core.Note;
 using JAStudio.UI.ViewModels;
-using System.Threading.Tasks;
 
 namespace JAStudio.UI.Views;
 

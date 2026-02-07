@@ -13,9 +13,8 @@ class KanjiListRenderer:
     def RenderList(self, note: JPNote, kanjis: List_1[KanjiNote], kanjiReadings: List_1[str]) -> str: ...
 
 
-class KanjiNoteRenderer(abc.ABC):
-    @staticmethod
-    def CreateRenderer() -> PreRenderingContentRenderer_1[KanjiNote]: ...
+class KanjiNoteRenderer:
+    def CreateRenderer(self) -> PreRenderingContentRenderer_1[KanjiNote]: ...
 
 
 class MnemonicRenderer(abc.ABC):

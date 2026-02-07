@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.Note.Vocabulary;
-using JAStudio.Core.Tests.Fixtures;
 using Xunit;
 
 namespace JAStudio.Core.Tests.LanguageServices.JamdictEx;

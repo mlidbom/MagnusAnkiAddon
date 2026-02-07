@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JAStudio.Core.Configuration;
 using System;
-using CoreApp = JAStudio.Core.App;
 
 namespace JAStudio.UI.ViewModels;
 

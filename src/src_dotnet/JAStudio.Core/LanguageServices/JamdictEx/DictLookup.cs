@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JAStudio.Core.Note;
-using JAStudio.Core.SysUtils;
 
 namespace JAStudio.Core.LanguageServices.JamdictEx;
 
