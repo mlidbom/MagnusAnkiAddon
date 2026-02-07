@@ -111,7 +111,6 @@ public static class NoteFieldsConstants
         public const string Reading = "Reading";
         public const string PartsOfSpeech = "TOS";
         public const string SourceMnemonic = "source_mnemonic";
-        public const string Audio = "__audio";
         public const string AudioB = "Audio_b";
         public const string AudioG = "Audio_g";
         public const string AudioTTS = "Audio_TTS";
