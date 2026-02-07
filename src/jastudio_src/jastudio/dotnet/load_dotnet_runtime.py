@@ -5,7 +5,9 @@ from pathlib import Path
 
 from jaspythonutils.sysutils.timeutil import StopWatch
 from jastudio import mylog
-from pythonnet import load
+import atexit
+
+from pythonnet import load, unload
 
 config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "runtimeconfig.json")
 
@@ -15,6 +17,11 @@ def _get_workspace_root() -> Path:
 try:
     with StopWatch.log_execution_time("Loading .NET runtime"):
         load("coreclr", runtime_config=config_file)
+        # pythonnet registers atexit.register(unload) during load(). That unload triggers
+        # Runtime.Shutdown() which runs ~86 rounds of GC.Collect()+WaitForPendingFinalizers().
+        # With our multi-GB managed heap this takes 8-30+ seconds on process exit.
+        # coreclr cannot be unloaded from a process anyway — the OS reclaims all memory on exit.
+        atexit.unregister(unload)
         mylog.info("Loaded .NET runtime")
         import clr
 
