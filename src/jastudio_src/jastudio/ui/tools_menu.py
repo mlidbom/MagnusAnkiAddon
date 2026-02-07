@@ -13,14 +13,14 @@ def build_main_menu() -> None:
     from jas_dotnet.qt_adapters import qt_menu_adapter
     from jaslib import mylog
 
-    from jastudio.ui import app_root
+    from jastudio.ui import dotnet_ui_root
 
     def get_user_text_input() -> str:
         text, ok = QInputDialog.getText(None, "input", "enter text", QLineEdit.EchoMode.Normal, "")
         return text if ok and text else ""
 
     try:
-        menu_builder = app_root.CreateJapaneseMainMenu()
+        menu_builder = dotnet_ui_root.CreateJapaneseMainMenu()
         clipboard_getter = Func[str](get_user_text_input)  # pyright: ignore [reportCallIssue]
         specs = menu_builder.BuildMenuSpec(clipboard_getter)
 

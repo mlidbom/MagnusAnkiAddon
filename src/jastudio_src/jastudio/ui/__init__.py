@@ -7,7 +7,7 @@ from jastudio.qt_utils.qt_task_progress_runner import QtTaskProgressRunner
 
 # The JAStudioAppRoot composition root instance, set during init().
 # Other modules import this to access C# UI services.
-app_root = None
+dotnet_ui_root = None
 
 
 def init() -> None:
@@ -23,7 +23,7 @@ def init() -> None:
     TaskRunner.set_ui_task_runner_factory(QtTaskProgressRunner)
 
 def _init_dot_net_app() -> None:
-    global app_root
+    global dotnet_ui_root
     from JAStudio.UI import JAStudioAppRoot
     from System import Action
 
@@ -32,7 +32,7 @@ def _init_dot_net_app() -> None:
 
     config_json = get_config_json()
     config_update_callback = Action[str](write_config_dict_json)  # pyright: ignore [reportCallIssue]
-    app_root = JAStudioAppRoot.Initialize(config_json, config_update_callback)
+    dotnet_ui_root = JAStudioAppRoot.Initialize(config_json, config_update_callback)
 
     # Load collection data once Anki's profile/collection is ready
-    ja_app.init_hooks.add(lambda: non_optional(app_root).LoadCollection())
+    ja_app.init_hooks.add(lambda: non_optional(dotnet_ui_root).LoadCollection())
