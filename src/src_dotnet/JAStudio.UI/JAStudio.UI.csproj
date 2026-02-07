@@ -25,6 +25,10 @@
     <ProjectReference Include="..\JAStudio.Core\JAStudio.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="PythonInterop\" />
+  </ItemGroup>
+
   <Target Name="RegenerateStubs" AfterTargets="Build" Condition="'$(NCrunch)' != '1'">
     <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\regenerate-stubs.ps1&quot; -OnlyTargetTypes" />
   </Target>

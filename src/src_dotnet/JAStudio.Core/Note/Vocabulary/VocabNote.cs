@@ -27,7 +27,7 @@ public class VocabNote : JPNote
     public MutableStringField SourceAnswer => new(this, NoteFieldsConstants.Vocab.SourceAnswer);
     public MutableStringField ActiveAnswer => new(this, NoteFieldsConstants.Vocab.ActiveAnswer);
 
-    public VocabNote(NoteServices services, JPNoteData? data = null) : base(services, data)
+    public VocabNote(NoteServices services, NetNoteData? data = null) : base(services, data)
     {
         Question = new VocabNoteQuestion(this);
         Readings = new MutableCommaSeparatedStringsListField(this, NoteFieldsConstants.Vocab.Reading);

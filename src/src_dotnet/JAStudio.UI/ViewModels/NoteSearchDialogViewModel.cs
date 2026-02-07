@@ -271,7 +271,7 @@ public partial class NoteSearchDialogViewModel : ObservableObject
 
 public class NoteSearchResultViewModel
 {
-   public int NoteId { get; }
+   public long NoteId { get; }
    public string NoteType { get; }
    public string Question { get; }
    public string Answer { get; }

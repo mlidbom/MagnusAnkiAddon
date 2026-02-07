@@ -9,10 +9,10 @@ namespace JAStudio.Core.Anki;
 public interface IAnkiCardOperations
 {
     /// <summary>Suspend all cards for the given note ID.</summary>
-    void SuspendAllCardsForNote(int noteId);
+    void SuspendAllCardsForNote(long noteId);
 
     /// <summary>Unsuspend all cards for the given note ID.</summary>
-    void UnsuspendAllCardsForNote(int noteId);
+    void UnsuspendAllCardsForNote(long noteId);
 }
 
 /// <summary>
@@ -34,7 +34,7 @@ public class AnkiCardOperations
     }
 
     /// <summary>Suspend all cards for the given note ID.</summary>
-    public void SuspendAllCardsForNote(int noteId)
+    public void SuspendAllCardsForNote(long noteId)
     {
         if (_implementation == null)
         {
@@ -46,7 +46,7 @@ public class AnkiCardOperations
     }
 
     /// <summary>Unsuspend all cards for the given note ID.</summary>
-    public void UnsuspendAllCardsForNote(int noteId)
+    public void UnsuspendAllCardsForNote(long noteId)
     {
         if (_implementation == null)
         {

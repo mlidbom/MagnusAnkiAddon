@@ -69,7 +69,7 @@ public class VocabSentenceViewModel
     public List<VocabSentenceMatchViewModel> DisplayedMatches { get; }
     public HashSet<SentenceNote> HighlightedSentences { get; }
     public List<VocabSentenceMatchViewModel> ShadedMatches { get; }
-    public HashSet<int> MatchedVocabIds { get; }
+    public HashSet<long> MatchedVocabIds { get; }
 
     public VocabSentenceViewModel(VocabNote vocabNote, SentenceNote sentenceNote)
     {

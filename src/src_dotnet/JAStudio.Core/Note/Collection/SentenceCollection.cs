@@ -101,7 +101,7 @@ public class SentenceCollection
 public class SentenceSnapshot : CachedNote
 {
     public string[] Words { get; }
-    public int[] DetectedVocab { get; }
+    public long[] DetectedVocab { get; }
     public string[] UserHighlightedVocab { get; }
     public string[] MarkedIncorrectVocab { get; }
 
@@ -119,7 +119,7 @@ public class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
     private readonly Dictionary<string, HashSet<SentenceNote>> _byVocabForm = new();
     private readonly Dictionary<string, List<SentenceNote>> _byUserHighlightedVocab = new();
     private readonly Dictionary<string, List<SentenceNote>> _byUserMarkedInvalidVocab = new();
-    private readonly Dictionary<int, HashSet<SentenceNote>> _byVocabId = new();
+    private readonly Dictionary<long, HashSet<SentenceNote>> _byVocabId = new();
 
     public SentenceCache() : base(typeof(SentenceNote), (services, data) => new SentenceNote(services, data))
     {
@@ -150,7 +150,7 @@ public class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
         return _byUserMarkedInvalidVocab.TryGetValue(form, out var notes) ? notes : new List<SentenceNote>();
     }
 
-    private static void RemoveFirstNoteWithId(List<SentenceNote> noteList, int id)
+    private static void RemoveFirstNoteWithId(List<SentenceNote> noteList, long id)
     {
         for (var i = 0; i < noteList.Count; i++)
         {

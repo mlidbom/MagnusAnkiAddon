@@ -5,12 +5,12 @@ namespace JAStudio.Core.Anki;
 /// </summary>
 public class AnkiCardOperationsImpl : IAnkiCardOperations
 {
-    public void SuspendAllCardsForNote(int noteId)
+    public void SuspendAllCardsForNote(long noteId)
     {
         AnkiFacade.NoteEx.SuspendAllCardsForNote(noteId);
     }
 
-    public void UnsuspendAllCardsForNote(int noteId)
+    public void UnsuspendAllCardsForNote(long noteId)
     {
         AnkiFacade.NoteEx.UnsuspendAllCardsForNote(noteId);
     }

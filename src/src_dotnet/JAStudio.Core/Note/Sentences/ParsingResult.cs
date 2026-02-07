@@ -20,7 +20,7 @@ public class ParsingResult
         ParserVersion = parserVersion ?? string.Empty;
     }
 
-    public HashSet<int> MatchedVocabIds
+    public HashSet<long> MatchedVocabIds
     {
         get
         {

@@ -18,7 +18,7 @@ public class VocabCollection
 
     public bool IsWord(string form) => Cache.WithForm(form).Any();
     public List<VocabNote> All() => Cache.All();
-    public VocabNote? WithIdOrNone(int noteId) => Cache.WithIdOrNone(noteId);
+    public VocabNote? WithIdOrNone(long noteId) => Cache.WithIdOrNone(noteId);
     public IEnumerable<VocabNote> WithDisambiguationName(string name) => Cache.WithDisambiguationName(name);
     public IEnumerable<VocabNote> WithForm(string form) => Cache.WithForm(form);
     public List<VocabNote> WithCompoundPart(string disambiguationName) => Cache.WithCompoundPart(disambiguationName);
@@ -181,7 +181,7 @@ public class VocabCache : NoteCache<VocabNote, VocabSnapshot>
         return new VocabSnapshot(note);
     }
 
-    private static void RemoveFirstNoteWithId(List<VocabNote> noteList, int id)
+    private static void RemoveFirstNoteWithId(List<VocabNote> noteList, long id)
     {
         for (var i = 0; i < noteList.Count; i++)
         {

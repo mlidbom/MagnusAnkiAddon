@@ -6,7 +6,7 @@ namespace JAStudio.Core.Note.Collection;
 
 public class CachedNote
 {
-    public int Id { get; }
+    public long Id { get; }
     public string Question { get; }
 
     public CachedNote(JPNote note)
@@ -16,15 +16,15 @@ public class CachedNote
     }
 }
 
-public abstract class NoteCacheBase<TNote> where TNote : JPNote
+public abstract class NetNoteCacheBase<TNote> where TNote : JPNote
 {
-   readonly Func<NoteServices, JPNoteData, TNote> _noteConstructor;
+   readonly Func<NoteServices, NetNoteData, TNote> _noteConstructor;
    readonly Type _noteType;
-    protected readonly Dictionary<int, TNote> _byId = new();
+    protected readonly Dictionary<long, TNote> _byId = new();
     readonly List<Action<TNote>> _updateListeners = new();
     NoteServices? _noteServices;
 
-    protected NoteCacheBase(Type cachedNoteType, Func<NoteServices, JPNoteData, TNote> noteConstructor)
+    protected NetNoteCacheBase(Type cachedNoteType, Func<NoteServices, NetNoteData, TNote> noteConstructor)
     {
         _noteConstructor = noteConstructor;
         _noteType = cachedNoteType;
@@ -42,7 +42,7 @@ public abstract class NoteCacheBase<TNote> where TNote : JPNote
         _updateListeners.Add(listener);
     }
 
-    public TNote? WithIdOrNone(int noteId) => _byId.TryGetValue(noteId, out var note) ? note : null;
+    public TNote? WithIdOrNone(long noteId) => _byId.TryGetValue(noteId, out var note) ? note : null;
 
     public void AnkiNoteUpdated(TNote note)
     {
@@ -69,7 +69,7 @@ public abstract class NoteCacheBase<TNote> where TNote : JPNote
         AddToCache(note);
     }
 
-    public void InitFromList(List<JPNoteData> allNotes)
+    public void InitFromList(List<NetNoteData> allNotes)
     {
         if (allNotes.Count > 0)
         {
@@ -83,7 +83,7 @@ public abstract class NoteCacheBase<TNote> where TNote : JPNote
         }
     }
 
-    void AddToCacheFromData(JPNoteData noteData)
+    void AddToCacheFromData(NetNoteData noteData)
     {
         AddToCache(_noteConstructor(RequireServices(), noteData));
     }
@@ -101,14 +101,14 @@ public abstract class NoteCacheBase<TNote> where TNote : JPNote
     }
 }
 
-public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
+public abstract class NoteCache<TNote, TSnapshot> : NetNoteCacheBase<TNote>
     where TNote : JPNote
     where TSnapshot : CachedNote
 {
    readonly Dictionary<string, List<TNote>> _byQuestion = new();
-   readonly Dictionary<int, TSnapshot> _snapshotById = new();
+   readonly Dictionary<long, TSnapshot> _snapshotById = new();
 
-    protected NoteCache(Type cachedNoteType, Func<NoteServices, JPNoteData, TNote> noteConstructor)
+    protected NoteCache(Type cachedNoteType, Func<NoteServices, NetNoteData, TNote> noteConstructor)
         : base(cachedNoteType, noteConstructor)
     {
     }

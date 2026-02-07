@@ -16,9 +16,9 @@ public abstract class JPNote
    public NoteTags Tags { get; }
 
    readonly Dictionary<string, string> _fields;
-   int _idCache;
+   long _idCache;
 
-   protected JPNote(NoteServices services, JPNoteData? data = null)
+   protected JPNote(NoteServices services, NetNoteData? data = null)
    {
       Services = services;
       RecursiveFlushGuard = new NoteFlushGuard(this);
@@ -38,7 +38,7 @@ public abstract class JPNote
       _cardStatus[status.CardType] = !status.IsSuspended;
    }
 
-   public JPNoteData GetData() => new(GetId(), _fields, Tags.ToInternedStringList());
+   public NetNoteData GetData() => new(GetId(), _fields, Tags.ToInternedStringList());
 
    public override bool Equals(object? obj)
    {
@@ -108,7 +108,7 @@ public abstract class JPNote
    {
       if(_hashValue == 0)
       {
-         _hashValue = GetId();
+         _hashValue = (int)GetId();
          if(_hashValue == 0)
          {
             throw new InvalidOperationException("You cannot compare or hash a note that has not been saved yet since it has no id");
@@ -156,7 +156,7 @@ public abstract class JPNote
 
    public HashSet<JPNote> GetDependenciesRecursive() => GetDependenciesRecursive(new HashSet<JPNote>());
 
-   public int GetId() => _idCache;
+   public long GetId() => _idCache;
 
    public void SetId(int id)
    {

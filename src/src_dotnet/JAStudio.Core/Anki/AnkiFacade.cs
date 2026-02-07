@@ -1,6 +1,5 @@
-using System;
+using JAStudio.PythonInterop;
 using JAStudio.PythonInterop.Utilities;
-using Python.Runtime;
 
 namespace JAStudio.Core.Anki;
 
@@ -32,10 +31,10 @@ public static class AnkiFacade
       public static class MenuActions
       {
          /// <summary>Prioritize selected cards (sets card.due based on note type priority).</summary>
-         public static void PrioritizeCards(System.Collections.Generic.List<long> cardIds) => QueueManager.Use(it => it.prioritize_selected_cards(ToPythonList(cardIds)));
+         public static void PrioritizeCards(System.Collections.Generic.List<long> cardIds) => QueueManager.Use(it => it.prioritize_selected_cards(PythonDotNetShim.LongList.ToPython(cardIds)));
 
          /// <summary>Spread selected cards over days (distributes due dates across time range).</summary>
-         public static void SpreadCardsOverDays(System.Collections.Generic.List<long> cardIds, int startDay, int daysApart) => BrowserMain.Use(it => it.spread_due_dates(ToPythonList(cardIds), startDay, daysApart));
+         public static void SpreadCardsOverDays(System.Collections.Generic.List<long> cardIds, int startDay, int daysApart) => BrowserMain.Use(it => it.spread_due_dates(PythonDotNetShim.LongList.ToPython(cardIds), startDay, daysApart));
       }
    }
 
@@ -57,27 +56,13 @@ public static class AnkiFacade
    public static class NoteEx
    {
       /// <summary>Suspend all cards for the given note ID.</summary>
-      public static void SuspendAllCardsForNote(int noteId) => NoteExModule.Use(it => it.NoteEx.from_id(noteId).suspend_all_cards());
+      public static void SuspendAllCardsForNote(long noteId) => NoteExModule.Use(it => it.NoteEx.from_id(noteId).suspend_all_cards());
 
       /// <summary>Unsuspend all cards for the given note ID.</summary>
-      public static void UnsuspendAllCardsForNote(int noteId) => NoteExModule.Use(it => it.NoteEx.from_id(noteId).un_suspend_all_cards());
+      public static void UnsuspendAllCardsForNote(long noteId) => NoteExModule.Use(it => it.NoteEx.from_id(noteId).un_suspend_all_cards());
    }
 
    /// <summary>Get note ID from card ID (requires Anki API).</summary>
    public static long GetNoteIdFromCardId(long cardId) => App.Use(it => (long)it.anki_collection().get_card(cardId).nid);
 
-   /// <summary>Helper to convert C# list to Python list.</summary>
-   private static dynamic ToPythonList(System.Collections.Generic.List<long> items)
-   {
-      using(Py.GIL())
-      {
-         dynamic pyList = new Python.Runtime.PyList();
-         foreach(var item in items)
-         {
-            pyList.append(item);
-         }
-
-         return pyList;
-      }
-   }
 }

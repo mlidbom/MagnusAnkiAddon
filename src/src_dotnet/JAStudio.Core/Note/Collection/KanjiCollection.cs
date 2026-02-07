@@ -73,7 +73,7 @@ public class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
         return new KanjiSnapshot(note);
     }
 
-    private static void RemoveFirstNoteWithId(List<KanjiNote> noteList, int id)
+    private static void RemoveFirstNoteWithId(List<KanjiNote> noteList, long id)
     {
         for (var i = 0; i < noteList.Count; i++)
         {

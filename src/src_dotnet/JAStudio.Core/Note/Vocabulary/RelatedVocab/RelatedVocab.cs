@@ -10,7 +10,7 @@ public class RelatedVocab
 {
    readonly VocabNote _vocab;
    readonly MutableSerializedObjectField<RelatedVocabData> _data;
-   readonly Lazy<HashSet<int>> _inCompoundIds;
+   readonly Lazy<HashSet<long>> _inCompoundIds;
 
     public RelatedVocab(VocabNote vocab)
     {
@@ -31,7 +31,7 @@ public class RelatedVocab
         DerivedFrom = new FieldWrapper<string, RelatedVocabData>(_data, _data.Get().DerivedFrom);
         ConfusedWith = FieldSetWrapper<string>.ForJsonObjectField(_data, _data.Get().ConfusedWith);
 
-        _inCompoundIds = new Lazy<HashSet<int>>(() =>
+        _inCompoundIds = new Lazy<HashSet<long>>(() =>
             InCompounds().Select(voc => voc.GetId()).ToHashSet());
     }
 
@@ -43,7 +43,7 @@ public class RelatedVocab
     public FieldWrapper<string, RelatedVocabData> DerivedFrom { get; }
     public FieldSetWrapper<string> ConfusedWith { get; }
 
-    public HashSet<int> InCompoundIds => _inCompoundIds.Value;
+    public HashSet<long> InCompoundIds => _inCompoundIds.Value;
 
     public List<VocabNote> InCompounds() => _vocab.Services.Collection.Vocab.WithCompoundPart(_vocab.Question.DisambiguationName);
 
