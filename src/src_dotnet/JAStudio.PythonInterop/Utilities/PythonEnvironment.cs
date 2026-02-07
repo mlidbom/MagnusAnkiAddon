@@ -9,6 +9,8 @@ namespace JAStudio.PythonInterop.Utilities;
 
 public static class PythonEnvironment
 {
+   public static dynamic Import(string module) => Use(() => Py.Import(module));
+
    public static TResult Use<TResult>(Func<TResult> func)
    {
       using(LockGil())

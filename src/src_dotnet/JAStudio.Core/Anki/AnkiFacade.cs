@@ -13,12 +13,11 @@ namespace JAStudio.Core.Anki;
 /// </summary>
 public static class AnkiFacade
 {
+   static readonly PythonObjectWrapper SearchExecutor = PythonEnvironment.Import("jastudio.ankiutils.search_executor");
+   static readonly PythonObjectWrapper AqtUtils = PythonEnvironment.Import("aqt.utils");
+
    /// <summary>Execute an Anki browser search query. </summary>
-   public static void ExecuteLookup(string query) => PythonEnvironment.Use(() =>
-   {
-      dynamic searchExecutor = Py.Import("jastudio.ankiutils.search_executor");
-      searchExecutor.do_lookup(query);
-   });
+   public static void ExecuteLookup(string query) => SearchExecutor.Use(it => it.do_lookup(query));
 
    /// <summary>Execute an Anki browser search query and show the previewer. </summary>
    public static void ExecuteLookupAndShowPreviewer(string query) => PythonEnvironment.Use(() =>
@@ -28,11 +27,7 @@ public static class AnkiFacade
    });
 
    /// <summary>Show a tooltip message in Anki. </summary>
-   public static void ShowTooltip(string message, int periodMs = 3000) => PythonEnvironment.Use(() =>
-   {
-      dynamic aqtUtils = Py.Import("aqt.utils");
-      aqtUtils.tooltip(message, periodMs);
-   });
+   public static void ShowTooltip(string message, int periodMs = 3000) => AqtUtils.Use(it => it.tooltip(message, periodMs));
 
    /// <summary>Refresh the currently displayed views in Anki. By it's nature it cannot be ported. </summary>
    public static void Refresh() => PythonEnvironment.Use(() =>
