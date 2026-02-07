@@ -15,7 +15,7 @@ public class TestApp
       _configurationStore = configurationStore;
    }
 
-   public static void Reset()
+   public static App Reset()
    {
       var app = App.Bootstrap();
       app.Reset(new TestingBackendNoteCreator());
@@ -24,6 +24,7 @@ public class TestApp
 
       // Eagerly resolve NoteServices so caches are wired before any notes are created
       _ = app.Services.NoteServices;
+      return app;
    }
 
    const string TestReadingsMappings = """

@@ -17,13 +17,13 @@ public enum DataNeeded
 
 public static class CollectionFactory
 {
-   public static IDisposable InjectCollectionWithSelectData(DataNeeded data)
+   public static AppScope InjectCollectionWithSelectData(DataNeeded data)
    {
-      TestApp.Reset();
+      var app = TestApp.Reset();
       if(data == DataNeeded.None)
-         return new CollectionScope();
+         return new AppScope(app);
 
-      var noteServices = TemporaryServiceCollection.Instance.NoteServices;
+      var noteServices = app.Services.NoteServices;
 
       if(data.HasFlag(DataNeeded.Kanji))
       {
@@ -37,7 +37,7 @@ public static class CollectionFactory
       {
          foreach(var vocab in VocabLists.TestSpecialVocab)
          {
-            TemporaryServiceCollection.Instance.VocabNoteFactory.Create(vocab.DisambiguationName, vocab.Answer, vocab.Readings, vocab.InitializeNote);
+            app.Services.VocabNoteFactory.Create(vocab.DisambiguationName, vocab.Answer, vocab.Readings, vocab.InitializeNote);
          }
       }
 
@@ -49,14 +49,16 @@ public static class CollectionFactory
          }
       }
 
-      return new CollectionScope();
+      return new AppScope(app);
    }
 
-   class CollectionScope : IDisposable
+   public class AppScope(App app) : IDisposable
    {
+      public App App { get; } = app;
+
       public void Dispose()
       {
-         // No cleanup needed - next test will call Reset()
+         App.Dispose();
       }
    }
 }
