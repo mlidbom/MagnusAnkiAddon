@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using JAStudio.PythonInterop.Utilities;
 using Python.Runtime;
@@ -54,6 +55,14 @@ public static class PythonDotNetShim
          }
          return pythonList;
       });
+   }
+
+   public static class Action
+   {
+      public static Action<T> ToDotNet<T>(dynamic action)
+      {
+         return it => PythonEnvironment.Use(() => action(it));
+      }
    }
 
    public static class LongList

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class AnkiSentenceNote(AnkiJPNote, Slots):
     @classmethod
-    def import_immersion_kit_sentence(cls, immersion_kit_note: Note) -> SentenceNote:
+    def import_immersion_kit_sentence(cls, immersion_kit_note: Note) -> SentenceNote:  # pyright: ignore
         raise NotImplementedError()
         #todo migration
         # created = SentenceNote.AddSentence(dotnet_ui_root.Services.NoteServices,

@@ -4,7 +4,6 @@ import threading
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from jaslib import app as jaslibapp
 from jaslib import mylog
 from jaslib.note.note_constants import Mine
 from jaslib.task_runners.task_progress_runner import TaskRunner
@@ -13,7 +12,6 @@ from jaspythonutils.sysutils.timeutil import StopWatch
 from jaspythonutils.sysutils.typed import non_optional
 from jaspythonutils.sysutils.weak_ref import WeakRefable
 from jastudio.ankiutils import app
-from jastudio.note.anki_backend_note_creator import AnkiBackendNoteCreator
 from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner
 from jastudio.sysutils import app_thread_pool
 from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
@@ -22,10 +20,7 @@ from jastudio.ui import dotnet_ui_root
 if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import NoteId
-    from jaslib.note.kanjinote import KanjiNote
-    from jaslib.note.sentences.sentencenote import SentenceNote
-    from jaslib.note.vocabulary.vocabnote import VocabNote
-    from JAStudio.Core.Note import JPNote
+    from JAStudio.Core.Note import JPNote, KanjiNote, SentenceNote, VocabNote
     from jastudio.note.collection.anki_single_collection_syncer import AnkiSingleCollectionSyncer
 
 class AnkiJPCollectionSyncer(WeakRefable, Slots):
@@ -70,7 +65,8 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
         if self._initialization_started:
             return
         self._initialization_started = True
-        jaslibapp.reset(AnkiBackendNoteCreator())
+        #todo migration
+        #jaslibapp.reset(AnkiBackendNoteCreator())
         string_auto_interner.try_enable()
         mylog.info("AnkiJPCollection.__init__")
         if self._pending_init_timer is not None:
@@ -90,9 +86,9 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
 
 
                     #todo migration hook in note syncing here
-                    #self._vocab = AnkiSingleCollectionSyncer[VocabNote](all_vocab, VocabNote, VocabNote, jaslibapp.col().vocab.cache, self._cache_runner)
-                    #self._sentences = AnkiSingleCollectionSyncer[SentenceNote](all_kanji, SentenceNote, SentenceNote, jaslibapp.col().sentences.cache, self._cache_runner)
-                    #self._kanji = AnkiSingleCollectionSyncer[KanjiNote](all_sentences, KanjiNote, KanjiNote, jaslibapp.col().kanji.cache, self._cache_runner)
+                    # self._vocab = AnkiSingleCollectionSyncer[VocabNote](VocabNote, VocabNote, jaslibapp.col().vocab.cache, self._cache_runner)
+                    # self._sentences = AnkiSingleCollectionSyncer[SentenceNote](SentenceNote, SentenceNote, jaslibapp.col().sentences.cache, self._cache_runner)
+                    # self._kanji = AnkiSingleCollectionSyncer[KanjiNote](KanjiNote, KanjiNote, jaslibapp.col().kanji.cache, self._cache_runner)
 
                 self._cache_runner.start()
 

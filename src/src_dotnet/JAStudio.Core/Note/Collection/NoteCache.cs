@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.PythonInterop;
 
 namespace JAStudio.Core.Note.Collection;
 
@@ -37,9 +38,10 @@ public abstract class NoteCacheBase<TNote> where TNote : JPNote
 
    NoteServices RequireServices() => _noteServices ?? throw new InvalidOperationException($"NoteServices not set on {_noteType.Name} cache. Call SetNoteServices first.");
 
-   public void OnNoteUpdated(Action<TNote> listener)
+   public void OnNoteUpdated(dynamic listener)
    {
-      _updateListeners.Add(listener);
+      Action<TNote> callback = PythonDotNetShim.Action.ToDotNet<TNote>(listener);
+      _updateListeners.Add(callback);
    }
 
    public TNote? WithIdOrNone(long noteId) => _byId.TryGetValue(noteId, out var note) ? note : null;

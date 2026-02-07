@@ -23,7 +23,7 @@ def spread_due_dates(cards: Sequence[CardId], start_day: int, days: int) -> None
 
     app.get_ui_utils().refresh()
 
-def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
+def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:  # pyright: ignore
     pass
     #todo migration hook in new menu
     # magnus_menu: QMenu = non_optional(menu.addMenu("&Magnus"))
