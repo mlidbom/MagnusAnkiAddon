@@ -53,7 +53,7 @@ public class ConfigurationStore
 
    public JapaneseConfig Config()
    {
-      return _config ??= new JapaneseConfig();
+      return _config ??= new JapaneseConfig(this);
    }
 
    // --- Readings mappings ---
