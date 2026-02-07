@@ -9,13 +9,12 @@ from jaspythonutils.sysutils.typed import non_optional
 from typed_linq_collections.collections.q_list import QList
 
 from jastudio.anki_extentions.deck_ex import DeckEx
-from jastudio.anki_extentions.note_ex import NoteEx
 
 if TYPE_CHECKING:
     from anki.dbproxy import Row
     from anki.decks import DeckManager
     from anki.scheduler.v3 import Scheduler  # pyright: ignore[reportMissingTypeStubs]
-    from jaslib.note.jpnote import JPNote
+    from JAStudio.Core.Note import JPNote
 
     from jastudio.anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
 
@@ -44,9 +43,6 @@ class CardEx(Slots):
     def _scheduler(cls) -> Scheduler:
         return app.anki_scheduler()
 
-    @property
-    def card_type(self) -> str:
-        return self.type().name
 
     def is_suspended(self) -> bool:
         return self.card.queue == consts.QUEUE_TYPE_SUSPENDED
@@ -70,9 +66,6 @@ class CardEx(Slots):
     def note(self) -> JPNote:
         from jastudio.note.ankijpnote import AnkiJPNote
         return AnkiJPNote.note_from_card(self.card)
-
-    def note_ex(self) -> NoteEx:
-        return NoteEx.from_note(self.note())
 
     @classmethod
     def _deck_manager(cls) -> DeckManager:

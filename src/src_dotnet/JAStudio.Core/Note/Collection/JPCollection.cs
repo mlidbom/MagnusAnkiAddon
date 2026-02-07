@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using JAStudio.Core.Anki;
 using JAStudio.Core.TestUtils;
@@ -19,6 +20,11 @@ public class JPCollection
       if(note != null) return note;
 
       return Sentences.WithIdOrNone(noteId);
+   }
+
+   public void UpdateCardStudyingStatus(long cardId)
+   {
+      throw new NotImplementedException();
    }
 
    public JPCollection(IBackendNoteCreator backendNoteCreator)

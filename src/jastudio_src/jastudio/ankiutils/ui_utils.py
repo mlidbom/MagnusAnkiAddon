@@ -7,12 +7,13 @@ from PyQt6.QtWidgets import QApplication
 from typed_linq_collections.q_iterable import query
 
 from jastudio.ankiutils import app
+from jastudio.ui import dotnet_ui_root
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
     from anki.notes import Note
-    from jaslib.note.jpnote import JPNote
+    from JAStudio.Core.Note import JPNote
 
 import aqt
 from aqt import AnkiQt  # type: ignore[attr-defined]  # pyright: ignore[reportPrivateImportUsage]
@@ -69,8 +70,7 @@ def get_note_from_web_view(view: AnkiWebView) -> JPNote | None:
     else:
         return None
 
-    from jastudio.note.ankijpnote import AnkiJPNote
-    return AnkiJPNote.note_from_note(inner_note)
+    return dotnet_ui_root.Services.App.Collection.NoteFromNoteId(inner_note.id)
 
 class UIUtils(IUIUtils, Slots):
     def __init__(self, mw: AnkiQt) -> None:
@@ -144,5 +144,6 @@ class UIUtils(IUIUtils, Slots):
         app_thread_pool.run_on_ui_thread_fire_and_forget(show_tooltip)
 
 def try_get_review_note() -> JPNote | None:
-    from jastudio.note.ankijpnote import AnkiJPNote
-    return AnkiJPNote.note_from_card(non_optional(main_window().reviewer.card)) if main_window().reviewer.card else None
+    card = main_window().reviewer.card
+    if not card: return None
+    return dotnet_ui_root.Services.App.Collection.NoteFromNoteId(card.nid if card.nid else card.note().id)

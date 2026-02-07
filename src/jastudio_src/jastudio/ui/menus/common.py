@@ -15,7 +15,7 @@ from jastudio.qt_utils.ex_qmenu import ExQmenu
 
 if typing.TYPE_CHECKING:
     from aqt.webview import AnkiWebView
-    from jaslib.note.jpnote import JPNote
+    from JAStudio.Core.Note import JPNote
     from PyQt6.QtWidgets import QMenu
 
 def build_browser_right_click_menu(root_menu: QMenu, note: JPNote) -> None:
