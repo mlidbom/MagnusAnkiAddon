@@ -41,7 +41,8 @@ def add_to_qt_menu(target_qt_menu: QMenu, specs: Iterable[SpecMenuItem]) -> None
             target_qt_menu.addAction(action)  # pyright: ignore [reportUnknownMemberType]
         else:
             mylog.error(f"Unknown menu spec type: {spec.Name}")
-            raise Exception(f"Unknown menu spec type: {spec.Name}")
+            #target_qt_menu.addAction(f"Unknown menu-spec named: {spec.Name}")  # pyright: ignore [reportUnknownMemberType]
+            #raise Exception(f"Unknown menu spec type: {spec.Name}")
 
 def _add_acceleratator_key_to_name(name: str, accelerator: str) -> str:
     if accelerator == "": return name
