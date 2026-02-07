@@ -51,6 +51,7 @@ public class TemporaryServiceCollection : IDisposable
    public UdSentenceBreakdownRenderer UdSentenceBreakdownRenderer => _serviceLocator.Resolve<UdSentenceBreakdownRenderer>();
    public QuestionRenderer QuestionRenderer => _serviceLocator.Resolve<QuestionRenderer>();
    public SentenceRenderer SentenceRenderer => _serviceLocator.Resolve<SentenceRenderer>();
+   public IServiceLocator ServiceLocator => _serviceLocator;
 
    public void Dispose() => _serviceLocator.Dispose();
 }
