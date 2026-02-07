@@ -2,12 +2,16 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using JAStudio.UI.ViewModels;
+using System;
 
 namespace JAStudio.UI.Views;
 
 public partial class NoteSearchDialog : Window
 {
     private static NoteSearchDialog? _instance;
+
+    [Obsolete("For XAML designer/previever only")]
+    public NoteSearchDialog() {}
 
     static NoteSearchDialog GetInstance(Core.TemporaryServiceCollection services)
     {

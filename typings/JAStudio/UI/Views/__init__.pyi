@@ -1104,6 +1104,9 @@ class EnglishWordSearchDialog(Window):
 
 
 class NoteSearchDialog(Window):
+    @typing.overload
+    def __init__(self) -> None: ...
+    @typing.overload
     def __init__(self, services: TemporaryServiceCollection) -> None: ...
     @property
     def ActualThemeVariant(self) -> ThemeVariant: ...
@@ -1505,6 +1508,9 @@ class NoteSearchDialog(Window):
 
 
 class OptionsDialog(Window):
+    @typing.overload
+    def __init__(self) -> None: ...
+    @typing.overload
     def __init__(self, services: TemporaryServiceCollection) -> None: ...
     @property
     def ActualThemeVariant(self) -> ThemeVariant: ...
@@ -1904,6 +1910,9 @@ class OptionsDialog(Window):
 
 
 class ReadingsMappingsDialog(Window):
+    @typing.overload
+    def __init__(self) -> None: ...
+    @typing.overload
     def __init__(self, services: TemporaryServiceCollection) -> None: ...
     @property
     def ActualThemeVariant(self) -> ThemeVariant: ...

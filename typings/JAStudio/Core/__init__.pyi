@@ -1,13 +1,12 @@
 import abc
 from System import IDisposable, Action
 from JAStudio.Core.Note.Collection import JPCollection
-from JAStudio.Core.Configuration import JapaneseConfig, ConfigurationStore, Settings
-from JAStudio.Core.Note import IBackendNoteCreator, NoteServices
+from JAStudio.Core.Configuration import JapaneseConfig, ConfigurationStore
 from System.Collections.Generic import List_1
 from Compze.Utilities.DependencyInjection.Abstractions import IServiceLocator
 from JAStudio.Core.Anki import AnkiCardOperations
-from JAStudio.Core.LanguageServices.JamdictEx import DictLookup
 from JAStudio.Core.Batches import LocalNoteUpdater
+from JAStudio.Core.Note import NoteServices
 from JAStudio.Core.AnkiUtils import QueryBuilder
 from JAStudio.Core.TaskRunners import TaskRunner
 from JAStudio.Core.Note.Vocabulary import VocabNoteFactory
@@ -24,7 +23,6 @@ class App(IDisposable):
     def Col(self) -> JPCollection: ...
     def Config(self) -> JapaneseConfig: ...
     def Dispose(self) -> None: ...
-    def Reset(self, backendNoteCreator: IBackendNoteCreator) -> None: ...
 
 
 class MyLog(abc.ABC):
@@ -60,8 +58,6 @@ class TemporaryServiceCollection(IDisposable):
     def App(self) -> App: ...
     @property
     def ConfigurationStore(self) -> ConfigurationStore: ...
-    @property
-    def DictLookup(self) -> DictLookup: ...
     @classmethod
     @property
     def Instance(cls) -> TemporaryServiceCollection: ...
@@ -76,8 +72,6 @@ class TemporaryServiceCollection(IDisposable):
     def QueryBuilder(self) -> QueryBuilder: ...
     @property
     def ServiceLocator(self) -> IServiceLocator: ...
-    @property
-    def Settings(self) -> Settings: ...
     @property
     def TaskRunner(self) -> TaskRunner: ...
     @property
