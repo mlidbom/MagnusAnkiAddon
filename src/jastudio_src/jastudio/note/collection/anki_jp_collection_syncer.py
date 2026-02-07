@@ -3,11 +3,9 @@ from __future__ import annotations
 import threading
 from typing import TYPE_CHECKING
 
-import jaslib.app
 from autoslot import Slots
 from jaslib import app as jaslibapp
 from jaslib import mylog
-from jaslib.note.jpnote import JPNote
 from jaslib.note.note_constants import Mine
 from jaslib.task_runners.task_progress_runner import TaskRunner
 from jaspythonutils.sysutils.memory_usage import string_auto_interner
@@ -17,9 +15,9 @@ from jaspythonutils.sysutils.weak_ref import WeakRefable
 from jastudio.ankiutils import app
 from jastudio.note.anki_backend_note_creator import AnkiBackendNoteCreator
 from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner
-from jastudio.note.jpnotedata_shim import JPNoteDataShim
 from jastudio.sysutils import app_thread_pool
 from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
+from jastudio.ui import dotnet_ui_root
 
 if TYPE_CHECKING:
     from anki.collection import Collection
@@ -27,6 +25,7 @@ if TYPE_CHECKING:
     from jaslib.note.kanjinote import KanjiNote
     from jaslib.note.sentences.sentencenote import SentenceNote
     from jaslib.note.vocabulary.vocabnote import VocabNote
+    from JAStudio.Core.Note import JPNote
     from jastudio.note.collection.anki_single_collection_syncer import AnkiSingleCollectionSyncer
 
 class AnkiJPCollectionSyncer(WeakRefable, Slots):
@@ -110,13 +109,10 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
     @property
     def is_initialized(self) -> bool: return self._is_initialized
 
+    # noinspection PyTypeHints
     @classmethod
-    def note_from_note_id(cls, note_id: NoteId) -> JPNote:
-        col = jaslib.app.col()
-        return (col.kanji.with_id_or_none(note_id)
-                or col.vocab.with_id_or_none(note_id)
-                or col.sentences.with_id_or_none(note_id)
-                or JPNote(JPNoteDataShim.from_note(app.anki_collection().get_note(note_id))))
+    def note_from_note_id(cls, note_id: NoteId) -> JPNote | None:
+        dotnet_ui_root.Services.App.Collection.NoteFromNoteId(note_id)
 
     def destruct_sync(self) -> None:
         if self._pending_init_timer is not None: self._pending_init_timer.cancel()
