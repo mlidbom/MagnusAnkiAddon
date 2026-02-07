@@ -28,7 +28,7 @@ public partial class ReadingsMappingsDialogViewModel : ObservableObject
       _window = window;
       _services = services;
 
-      _mappingsText = "\n" + _services.App.Config().ReadReadingsMappingsFile();
+      _mappingsText = "\n" + _services.App.Config.ReadReadingsMappingsFile();
 
       SaveCommand = new RelayCommand(Save);
       CancelCommand = new RelayCommand(Cancel);
@@ -40,7 +40,7 @@ public partial class ReadingsMappingsDialogViewModel : ObservableObject
       var sorted = SortedValueLinesWithoutDuplicatesOrBlankLines();
 
       // Save to file
-      _services.App.Config().SaveMappings(sorted);
+      _services.App.Config.SaveMappings(sorted);
 
       JALogger.Log("Readings mappings saved");
       _window.Close(true);

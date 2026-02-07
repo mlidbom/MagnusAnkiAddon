@@ -48,7 +48,7 @@ public class SentenceCollection
 
     public List<SentenceNote> All() => Cache.All();
 
-    public SentenceNote? WithIdOrNone(int noteId) => Cache.WithIdOrNone(noteId);
+    public SentenceNote? WithIdOrNone(long noteId) => Cache.WithIdOrNone(noteId);
 
     public List<SentenceNote> WithQuestion(string question) => Cache.WithQuestion(question);
 

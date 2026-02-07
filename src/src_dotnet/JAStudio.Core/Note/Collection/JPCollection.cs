@@ -10,6 +10,17 @@ public class JPCollection
    public KanjiCollection Kanji { get; }
    public SentenceCollection Sentences { get; }
 
+   public JPNote? NoteFromNoteId(long noteId)
+   {
+      JPNote? note = Vocab.WithIdOrNone(noteId);
+      if(note != null) return note;
+
+      note = Kanji.WithIdOrNone(noteId);
+      if(note != null) return note;
+
+      return Sentences.WithIdOrNone(noteId);
+   }
+
    public JPCollection(IBackendNoteCreator backendNoteCreator)
    {
       MyLog.Info("JPCollection.__init__");

@@ -148,7 +148,7 @@ public class JAStudioAppRoot
    {
       Dispatcher.UIThread.Invoke(() =>
       {
-         var vocabCache = _app.Col().Vocab;
+         var vocabCache = _app.Collection.Vocab;
          var vocab = vocabCache.WithIdOrNone(vocabId);
          if(vocab == null)
          {

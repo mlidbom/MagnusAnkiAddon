@@ -110,7 +110,7 @@ public class VocabStringMenus
 
     SpecMenuItem BuildSentenceMenuSpec(string text, VocabNote vocab)
     {
-        var sentences = _services.App.Col().Sentences.WithQuestion(text);
+        var sentences = _services.App.Collection.Sentences.WithQuestion(text);
         var hasSentences = sentences.Count > 0;
         var disambiguationName = vocab.Question.DisambiguationName;
 

@@ -18,7 +18,7 @@ public class KanjiCollection
 
     public List<KanjiNote> All() => Cache.All();
 
-    public KanjiNote? WithIdOrNone(int noteId) => Cache.WithIdOrNone(noteId);
+    public KanjiNote? WithIdOrNone(long noteId) => Cache.WithIdOrNone(noteId);
 
     public List<KanjiNote> WithAnyKanjiIn(List<string> kanjiList)
     {

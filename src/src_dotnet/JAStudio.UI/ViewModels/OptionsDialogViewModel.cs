@@ -32,7 +32,7 @@ public partial class OptionsDialogViewModel : ObservableObject
          _services.ConfigurationStore.InitForTesting();
       }
 
-      _config = _services.App.Config();
+      _config = _services.App.Config;
       JALogger.Log("OptionsDialogViewModel constructor: calling LoadFromConfig()...");
       LoadFromConfig();
       JALogger.Log("OptionsDialogViewModel constructor: completed");

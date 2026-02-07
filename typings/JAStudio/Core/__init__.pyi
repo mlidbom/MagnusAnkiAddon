@@ -2,16 +2,23 @@ import abc
 from System import IDisposable, Action
 from JAStudio.Core.Note.Collection import JPCollection
 from JAStudio.Core.Configuration import JapaneseConfig, ConfigurationStore
+from JAStudio.Core.UI.Web.Kanji import KanjiNoteRenderer
+from JAStudio.Core.UI.Web.Sentence import SentenceNoteRenderer
+from JAStudio.Core.UI.Web.Vocab import VocabNoteRenderer
 from System.Collections.Generic import List_1
-from Compze.Utilities.DependencyInjection.Abstractions import IServiceLocator
 from JAStudio.Core.Anki import AnkiCardOperations
 from JAStudio.Core.Batches import LocalNoteUpdater
 from JAStudio.Core.Note import NoteServices
 from JAStudio.Core.AnkiUtils import QueryBuilder
+from Compze.Utilities.DependencyInjection.Abstractions import IServiceLocator
 from JAStudio.Core.TaskRunners import TaskRunner
 from JAStudio.Core.Note.Vocabulary import VocabNoteFactory
 
 class App(IDisposable):
+    @property
+    def Collection(self) -> JPCollection: ...
+    @property
+    def Config(self) -> JapaneseConfig: ...
     @classmethod
     @property
     def IsTesting(cls) -> bool: ...
@@ -20,8 +27,6 @@ class App(IDisposable):
     def AddInitHook(self, hook: Action) -> None: ...
     @staticmethod
     def Bootstrap() -> App: ...
-    def Col(self) -> JPCollection: ...
-    def Config(self) -> JapaneseConfig: ...
     def Dispose(self) -> None: ...
 
 
@@ -34,6 +39,15 @@ class MyLog(abc.ABC):
     def Info(message: str) -> None: ...
     @staticmethod
     def Warning(message: str) -> None: ...
+
+
+class Renderers:
+    @property
+    def KanjiNoteRenderer(self) -> KanjiNoteRenderer: ...
+    @property
+    def SentenceNoteRenderer(self) -> SentenceNoteRenderer: ...
+    @property
+    def VocabNoteRenderer(self) -> VocabNoteRenderer: ...
 
 
 class StringExtensions(abc.ABC):
@@ -51,7 +65,6 @@ class StringExtensions(abc.ABC):
 
 
 class TemporaryServiceCollection(IDisposable):
-    def __init__(self, serviceLocator: IServiceLocator) -> None: ...
     @property
     def AnkiCardOperations(self) -> AnkiCardOperations: ...
     @property
@@ -70,6 +83,8 @@ class TemporaryServiceCollection(IDisposable):
     def NoteServices(self) -> NoteServices: ...
     @property
     def QueryBuilder(self) -> QueryBuilder: ...
+    @property
+    def Renderers(self) -> Renderers: ...
     @property
     def ServiceLocator(self) -> IServiceLocator: ...
     @property

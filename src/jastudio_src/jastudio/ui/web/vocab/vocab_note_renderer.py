@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 from aqt import gui_hooks
-from jaslib.note.vocabulary.vocabnote import VocabNote
-from jaslib.ui.web.vocab import vocab_note_renderer
+from JAStudio.Core.Note import VocabNote
 
-from jastudio.sysutils import app_thread_pool
-from jastudio.ui.web.web_utils.pre_rendering_content_renderer_anki_shim import PrerenderingContentRendererAnkiShim
+from jastudio.ui import dotnet_ui_root
+from jastudio.ui.web.web_utils.dotnet_rendering_content_renderer_anki_shim import DotNetPrerenderingContentRendererAnkiShim
 
 
 def init() -> None:
-    renderer = vocab_note_renderer.create_renderer(app_thread_pool.pool.submit)
-    gui_hooks.card_will_show.append(PrerenderingContentRendererAnkiShim(VocabNote, renderer).render)
+    net_renderer = dotnet_ui_root.Services.Renderers.VocabNoteRenderer
+    renderer = DotNetPrerenderingContentRendererAnkiShim(VocabNote, net_renderer.CreateRenderer())
+    gui_hooks.card_will_show.append(renderer.render)
+

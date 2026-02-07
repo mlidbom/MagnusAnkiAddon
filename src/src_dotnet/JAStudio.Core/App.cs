@@ -16,12 +16,10 @@ public class App : IDisposable
    {
 
       Services = AppBootstrapper.Bootstrap(this).Resolve<TemporaryServiceCollection>();
-      _collection = Services.ServiceLocator.Resolve<JPCollection>();
+      Collection = Services.ServiceLocator.Resolve<JPCollection>();
    }
 
    public static bool IsTesting => TestEnvDetector.IsTesting;
-
-   JPCollection _collection;
 
    readonly List<Action> _initHooks = new();
 
@@ -39,9 +37,8 @@ public class App : IDisposable
 
    public static App Bootstrap() => new App();
 
-   public JapaneseConfig Config() => Services.ConfigurationStore.Config();
-
-   public JPCollection Col() => _collection;
+   public JapaneseConfig Config => Services.ConfigurationStore.Config();
+   public JPCollection Collection { get; }
 
    internal static string UserFilesDir
    {

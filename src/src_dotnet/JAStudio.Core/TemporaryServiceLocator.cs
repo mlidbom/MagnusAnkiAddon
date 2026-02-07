@@ -2,11 +2,14 @@
 using Compze.Utilities.DependencyInjection.Abstractions;
 using JAStudio.Core.Anki;
 using JAStudio.Core.AnkiUtils;
-using JAStudio.Core.Configuration;
 using JAStudio.Core.Batches;
+using JAStudio.Core.Configuration;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.TaskRunners;
+using JAStudio.Core.UI.Web.Kanji;
+using JAStudio.Core.UI.Web.Sentence;
+using JAStudio.Core.UI.Web.Vocab;
 
 namespace JAStudio.Core;
 
@@ -16,7 +19,7 @@ public class TemporaryServiceCollection : IDisposable
    public static TemporaryServiceCollection Instance { get; internal set; } = null!;
 
    readonly IServiceLocator _serviceLocator;
-   public TemporaryServiceCollection(IServiceLocator serviceLocator) => _serviceLocator = serviceLocator;
+   internal TemporaryServiceCollection(IServiceLocator serviceLocator) => _serviceLocator = serviceLocator;
 
    public App App => _serviceLocator.Resolve<App>();
    public ConfigurationStore ConfigurationStore => _serviceLocator.Resolve<ConfigurationStore>();
@@ -33,5 +36,17 @@ public class TemporaryServiceCollection : IDisposable
 
    public IServiceLocator ServiceLocator => _serviceLocator;
 
+   public Renderers Renderers => new Renderers(_serviceLocator);
+
    public void Dispose() => _serviceLocator.Dispose();
+}
+
+public class Renderers
+{
+   readonly IServiceLocator _serviceLocator;
+   internal Renderers(IServiceLocator serviceLocator) => _serviceLocator = serviceLocator;
+
+   public VocabNoteRenderer VocabNoteRenderer => _serviceLocator.Resolve<VocabNoteRenderer>();
+   public SentenceNoteRenderer SentenceNoteRenderer => _serviceLocator.Resolve<SentenceNoteRenderer>();
+   public KanjiNoteRenderer KanjiNoteRenderer => _serviceLocator.Resolve<KanjiNoteRenderer>();
 }

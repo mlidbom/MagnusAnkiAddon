@@ -90,7 +90,7 @@ public partial class NoteSearchDialogViewModel : ObservableObject
    {
       var results = new List<NoteSearchResultViewModel>();
 
-      var col = _services.App.Col();
+      var col = _services.App.Collection;
 
       // Search in kanji notes
       results.AddRange(SearchInNotes(

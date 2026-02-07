@@ -36,7 +36,7 @@ public class NoteContextMenu
    /// </summary>
    public List<SpecMenuItem> BuildVocabContextMenuSpec(int vocabId, string selection, string clipboard)
    {
-      var vocab = _services.App.Col().Vocab.WithIdOrNone(vocabId);
+      var vocab = _services.App.Collection.Vocab.WithIdOrNone(vocabId);
       if(vocab == null)
          return [];
 
@@ -60,7 +60,7 @@ public class NoteContextMenu
    /// </summary>
    public List<SpecMenuItem> BuildKanjiContextMenuSpec(int kanjiId, string selection, string clipboard)
    {
-      var kanji = _services.App.Col().Kanji.WithIdOrNone(kanjiId);
+      var kanji = _services.App.Collection.Kanji.WithIdOrNone(kanjiId);
       if(kanji == null)
          return [];
 
@@ -84,7 +84,7 @@ public class NoteContextMenu
    /// </summary>
    public List<SpecMenuItem> BuildSentenceContextMenuSpec(int sentenceId, string selection, string clipboard)
    {
-      var sentence = _services.App.Col().Sentences.WithIdOrNone(sentenceId);
+      var sentence = _services.App.Collection.Sentences.WithIdOrNone(sentenceId);
       if(sentence == null)
          return [];
 
@@ -240,10 +240,10 @@ public class NoteContextMenu
    SpecMenuItem BuildMatchingNotesSubmenuSpec(string text)
    {
       // Find notes that exactly match the search text
-      var vocabs = _services.App.Col().Vocab.WithQuestionPreferDisambiguationName(text).ToList();
-      var sentences = _services.App.Col().Sentences.WithQuestion(text);
+      var vocabs = _services.App.Collection.Vocab.WithQuestionPreferDisambiguationName(text).ToList();
+      var sentences = _services.App.Collection.Sentences.WithQuestion(text);
       var kanjis = text.Length == 1
-                      ? _services.App.Col().Kanji.WithAnyKanjiIn([text])
+                      ? _services.App.Collection.Kanji.WithAnyKanjiIn([text])
                       : [];
 
       // Only show submenu if any notes match
