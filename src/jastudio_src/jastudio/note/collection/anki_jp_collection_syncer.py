@@ -62,7 +62,7 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
         return self
 
     def _initialize_wrapper(self) -> None:
-        if app.config().load_studio_in_foreground.get_value():
+        if app.config().LoadStudioInForeground.GetValue():
             app_thread_pool.run_on_ui_thread_synchronously(self._initialize)
         else:
             self._initialize()
@@ -80,7 +80,7 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
         stopwatch = StopWatch()
         with StopWatch.log_warning_if_slower_than(5, "Full collection setup"):  # noqa: SIM117
             with TaskRunner.current(f"Loading {Mine.app_name}", "reading notes from anki",
-                                    force_hide=not app.config().load_studio_in_foreground.get_value(),
+                                    force_hide=not app.config().LoadStudioInForeground.GetValue(),
                                     force_gc=not AnkiJPCollectionSyncer._is_inital_load,
                                     allow_cancel=False) as task_runner:
                 if task_runner.is_hidden():

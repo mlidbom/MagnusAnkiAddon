@@ -12,6 +12,7 @@ from typed_linq_collections.collections.q_set import QSet
 
 # noinspection Annotator
 from jastudio.dotnet import load_dotnet_runtime  # pyright: ignore [reportUnusedImport]  # noqa: F401
+from jastudio.ui import dotnet_ui_root
 
 is_testing = ex_pytest.is_testing
 
@@ -22,7 +23,7 @@ if TYPE_CHECKING:
     from anki.dbproxy import DBProxy
     from anki.scheduler.v3 import Scheduler  # pyright: ignore[reportMissingTypeStubs]
     from aqt import AnkiQt  # type: ignore[attr-defined]  # pyright: ignore[reportPrivateImportUsage]
-    from jaslib.configuration.configuration_value import JapaneseConfig
+    from JAStudio.Core.Configuration import JapaneseConfig
 
     from jastudio.anki_extentions.config_manager_ex import ConfigManagerEx
     from jastudio.ankiutils.ui_utils_interface import IUIUtils
@@ -40,8 +41,7 @@ def _call_init_hooks() -> None:
     for hook in init_hooks: hook()
 
 def config() -> JapaneseConfig:
-    from jastudio.configuration import configuration_value
-    return configuration_value.config()
+    return dotnet_ui_root.Services.ConfigurationStore.Config()
 
 def _init(delay_seconds: float = 1.0) -> None:
     mylog.info(f"_init delay= {delay_seconds}")

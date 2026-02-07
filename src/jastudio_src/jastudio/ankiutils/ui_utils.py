@@ -48,6 +48,7 @@ def is_displaytype_displaying_review_answer(display_type: str) -> bool:
 def is_reviewer_display_type(display_type: str) -> bool:
     return display_type.startswith("review")
 
+# noinspection PyTypeHints
 def get_note_from_web_view(view: AnkiWebView) -> JPNote | None:
     inner_note: Note | None
 
@@ -143,6 +144,7 @@ class UIUtils(IUIUtils, Slots):
 
         app_thread_pool.run_on_ui_thread_fire_and_forget(show_tooltip)
 
+# noinspection PyTypeHints
 def try_get_review_note() -> JPNote | None:
     card = main_window().reviewer.card
     if not card: return None

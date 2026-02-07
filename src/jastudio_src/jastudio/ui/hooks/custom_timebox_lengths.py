@@ -28,13 +28,13 @@ def adjust_timebox(_web_content: WebContent, context: object) -> None:
             notetype = card.type()
 
             card_notetype_timebox_minutes: dict[tuple[str, str], int] = {
-                (NoteTypes.Sentence, CardTypes.reading): app.config().timebox_sentence_read.get_value(),
-                (NoteTypes.Sentence, CardTypes.listening): app.config().timebox_sentence_listen.get_value(),
+                (NoteTypes.Sentence, CardTypes.reading): app.config().TimeboxSentenceRead.GetValue(),
+                (NoteTypes.Sentence, CardTypes.listening): app.config().TimeboxSentenceListen.GetValue(),
 
-                (NoteTypes.Vocab, CardTypes.reading): app.config().timebox_vocab_read.get_value(),
-                (NoteTypes.Vocab, CardTypes.listening): app.config().timebox_vocab_listen.get_value(),
+                (NoteTypes.Vocab, CardTypes.reading): app.config().TimeboxVocabRead.GetValue(),
+                (NoteTypes.Vocab, CardTypes.listening): app.config().TimeboxVocabListen.GetValue(),
 
-                (NoteTypes.Kanji, CardTypes.reading): app.config().timebox_kanji_read.get_value(),
+                (NoteTypes.Kanji, CardTypes.reading): app.config().TimeboxKanjiRead.GetValue(),
             }
 
             key = (notetype.name, typed.str_(card.type().name))

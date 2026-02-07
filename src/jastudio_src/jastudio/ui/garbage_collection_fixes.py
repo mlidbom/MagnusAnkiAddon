@@ -25,15 +25,15 @@ def noop_gc_now(_self: AnkiQt) -> None:
 
 # noinspection Annotator
 def visible_garbage_collection(_self: AnkiQt) -> None:
-    if (not app.config().enable_automatic_garbage_collection.get_value()
+    if (not app.config().EnableAutomaticGarbageCollection.GetValue()
             and app.is_initialized()):
         ex_gc.collect_on_ui_thread_and_display_message("Garbage collection triggered by anki internal code")
 
 def init() -> None:
-    if app.config().prevent_anki_from_garbage_collecting_every_time_a_window_closes.get_value():
+    if app.config().PreventAnkiFromGarbageCollectingEveryTimeAWindowCloses.GetValue():
         aqt.main.AnkiQt.garbage_collect_on_dialog_finish = noop_gc_on_dialog_finish  # type: ignore  # pyright: ignore[reportAttributeAccessIssue, reportUnknownMemberType]
 
-    if app.config().disable_all_automatic_garbage_collection.get_value():
+    if app.config().DisableAllAutomaticGarbageCollection.GetValue():
         aqt.main.AnkiQt.garbage_collect_now = noop_gc_now  # type: ignore  # pyright: ignore[reportAttributeAccessIssue, reportUnknownMemberType]
     else:
         aqt.main.AnkiQt.garbage_collect_now = visible_garbage_collection  # type: ignore  # pyright: ignore[reportAttributeAccessIssue, reportUnknownMemberType]

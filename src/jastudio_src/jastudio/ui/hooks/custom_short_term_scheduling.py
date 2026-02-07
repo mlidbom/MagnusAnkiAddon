@@ -17,11 +17,11 @@ def set_again_time_for_previously_failed_today_cards(queue:QueuedCards) -> V3Car
     with StopWatch.log_warning_if_slower_than(0.01):
         info = _oldMethod(queue)
 
-        if app.is_initialized() and app.config().decrease_failed_card_intervals.get_value():
+        if app.is_initialized() and app.config().DecreaseFailedCardIntervals.GetValue():
             card = Card2Ex(info.top_card().card)
 
             if card.last_answer_today_was_fail_db_call():
-                SchedulingStatesEx(info.states).again.set_seconds(app.config().decrease_failed_card_intervals_interval.get_value())
+                SchedulingStatesEx(info.states).again.set_seconds(app.config().DecreaseFailedCardIntervalsInterval.GetValue())
 
         return info
 

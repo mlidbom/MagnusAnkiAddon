@@ -29,24 +29,24 @@ def seconds_to_show_question(card: CardEx) -> float:
 
     def default_time_allowed() -> float:
         if isinstance(note, SentenceNote):
-            return DifficultyCalculator(starting_seconds=app.config().autoadvance_sentence_starting_seconds.get_value(),
-                                        hiragana_seconds=app.config().autoadvance_sentence_hiragana_seconds.get_value(),
-                                        katakata_seconds=app.config().autoadvance_sentence_katakana_seconds.get_value(),
-                                        kanji_seconds=app.config().autoadvance_sentence_kanji_seconds.get_value()).allowed_seconds(note.Question.WithoutInvisibleSpace())
+            return DifficultyCalculator(starting_seconds=app.config().AutoadvanceSentenceStartingSeconds.GetValue(),
+                                        hiragana_seconds=app.config().AutoadvanceSentenceHiraganaSeconds.GetValue(),
+                                        katakata_seconds=app.config().AutoadvanceSentenceKatakanaSeconds.GetValue(),
+                                        kanji_seconds=app.config().AutoadvanceSentenceKanjiSeconds.GetValue()).allowed_seconds(note.Question.WithoutInvisibleSpace())
         if isinstance(note, VocabNote):
-            return DifficultyCalculator(starting_seconds=app.config().autoadvance_vocab_starting_seconds.get_value(),
-                                        hiragana_seconds=app.config().autoadvance_vocab_hiragana_seconds.get_value(),
-                                        katakata_seconds=app.config().autoadvance_vocab_katakana_seconds.get_value(),
-                                        kanji_seconds=app.config().autoadvance_vocab_kanji_seconds.get_value()).allowed_seconds(note.GetQuestion())
+            return DifficultyCalculator(starting_seconds=app.config().AutoadvanceVocabStartingSeconds.GetValue(),
+                                        hiragana_seconds=app.config().AutoadvanceVocabHiraganaSeconds.GetValue(),
+                                        katakata_seconds=app.config().AutoadvanceVocabKatakanaSeconds.GetValue(),
+                                        kanji_seconds=app.config().AutoadvanceVocabKanjiSeconds.GetValue()).allowed_seconds(note.GetQuestion())
         if isinstance(note, KanjiNote):
             return card.get_deck().get_config().get_seconds_to_show_question()
         raise Exception("We should never get here")
 
     time_allowed = default_time_allowed()
-    if app.config().boost_failed_card_allowed_time.get_value():
+    if app.config().BoostFailedCardAllowedTime.GetValue():
         sequential_failures = card.sequential_again_answers_today()
         if sequential_failures > 0:
-            config_bostfactor = app.config().boost_failed_card_allowed_time_by_factor.get_value()
+            config_bostfactor = app.config().BoostFailedCardAllowedTimeByFactor.GetValue()
             multiplier = config_bostfactor ** sequential_failures
 
             time_allowed *= multiplier
