@@ -8,21 +8,15 @@ from autoslot import Slots
 from jaslib import app as jaslibapp
 from jaslib import mylog
 from jaslib.note.jpnote import JPNote
-from jaslib.note.kanjinote import KanjiNote
-from jaslib.note.note_constants import Mine, NoteTypes
-from jaslib.note.sentences.sentencenote import SentenceNote
-from jaslib.note.vocabulary.vocabnote import VocabNote
+from jaslib.note.note_constants import Mine
 from jaslib.task_runners.task_progress_runner import TaskRunner
 from jaspythonutils.sysutils.memory_usage import string_auto_interner
 from jaspythonutils.sysutils.timeutil import StopWatch
 from jaspythonutils.sysutils.typed import non_optional
 from jaspythonutils.sysutils.weak_ref import WeakRefable
-from jastudio.anki_extentions.note_bulk_loader import NoteBulkLoader
 from jastudio.ankiutils import app
-from jastudio.note import studing_status_helper
 from jastudio.note.anki_backend_note_creator import AnkiBackendNoteCreator
 from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner
-from jastudio.note.collection.anki_single_collection_syncer import AnkiSingleCollectionSyncer
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
 from jastudio.sysutils import app_thread_pool
 from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
@@ -30,6 +24,10 @@ from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_insta
 if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import NoteId
+    from jaslib.note.kanjinote import KanjiNote
+    from jaslib.note.sentences.sentencenote import SentenceNote
+    from jaslib.note.vocabulary.vocabnote import VocabNote
+    from jastudio.note.collection.anki_single_collection_syncer import AnkiSingleCollectionSyncer
 
 class AnkiJPCollectionSyncer(WeakRefable, Slots):
     _is_inital_load: bool = True  # running the GC on initial load slows startup a lot but does not decrease memory usage in any significant way.
@@ -91,25 +89,13 @@ class AnkiJPCollectionSyncer(WeakRefable, Slots):
                 with StopWatch.log_warning_if_slower_than(5, "Core collection setup - no gc"):
                     self._cache_runner = AnkiCollectionSyncRunner(self.anki_collection)
 
-                    all_vocab = NoteBulkLoader.load_all_notes_of_type(self.anki_collection, NoteTypes.Vocab)
-                    self._vocab = AnkiSingleCollectionSyncer[VocabNote](all_vocab, VocabNote, VocabNote, jaslibapp.col().vocab.cache, self._cache_runner)
 
-                    all_kanji = NoteBulkLoader.load_all_notes_of_type(self.anki_collection, NoteTypes.Sentence)
-                    self._sentences = AnkiSingleCollectionSyncer[SentenceNote](all_kanji, SentenceNote, SentenceNote, jaslibapp.col().sentences.cache, self._cache_runner)
-
-                    all_sentences = NoteBulkLoader.load_all_notes_of_type(self.anki_collection, NoteTypes.Kanji)
-                    self._kanji = AnkiSingleCollectionSyncer[KanjiNote](all_sentences, KanjiNote, KanjiNote, jaslibapp.col().kanji.cache, self._cache_runner)
+                    #todo migration hook in note syncing here
+                    #self._vocab = AnkiSingleCollectionSyncer[VocabNote](all_vocab, VocabNote, VocabNote, jaslibapp.col().vocab.cache, self._cache_runner)
+                    #self._sentences = AnkiSingleCollectionSyncer[SentenceNote](all_kanji, SentenceNote, SentenceNote, jaslibapp.col().sentences.cache, self._cache_runner)
+                    #self._kanji = AnkiSingleCollectionSyncer[KanjiNote](all_sentences, KanjiNote, KanjiNote, jaslibapp.col().kanji.cache, self._cache_runner)
 
                 self._cache_runner.start()
-
-                if app.config().load_jamdict_db_into_memory.get_value():
-                    from jaslib.language_services.jamdict_ex.dict_lookup import DictLookup
-                    task_runner.run_on_background_thread_with_spinning_progress_dialog("Loading Jamdict db into memory", DictLookup.ensure_loaded_into_memory)
-
-                studying_statuses = studing_status_helper.fetch_card_studying_statuses(self.anki_collection)
-                self._vocab.set_studying_statuses([it for it in studying_statuses if it.note_type_name == NoteTypes.Vocab])
-                self._sentences.set_studying_statuses([it for it in studying_statuses if it.note_type_name == NoteTypes.Sentence])
-                self._kanji.set_studying_statuses([it for it in studying_statuses if it.note_type_name == NoteTypes.Kanji])
 
                 ex_trace_malloc_instance.log_memory_delta("Done loading add-on")
                 ex_trace_malloc_instance.stop()
