@@ -37,9 +37,14 @@ public class JAStudioAppRoot
    /// Bootstrap Core.App, initialize Avalonia, and return the composition root.
    /// Call once at addon startup.
    /// </summary>
-   public static JAStudioAppRoot Initialize()
+   /// <param name="configJson">JSON-serialized configuration dictionary from the Anki addon.</param>
+   /// <param name="configUpdateCallback">Callback that receives updated config JSON to persist back to Anki.</param>
+   public static JAStudioAppRoot Initialize(string configJson, Action<string> configUpdateCallback)
    {
       var app = Core.App.Bootstrap();
+
+      // Initialize the C# configuration system with the Anki addon config
+      app.Services.ConfigurationStore.InitJson(configJson, configUpdateCallback);
 
       var initEvent = new AutoResetEvent(false);
 

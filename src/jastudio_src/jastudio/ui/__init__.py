@@ -20,6 +20,12 @@ def init() -> None:
     garbage_collection_fixes.init()
 
     from JAStudio.UI import JAStudioAppRoot
-    app_root = JAStudioAppRoot.Initialize()
+    from System import Action
+
+    from jastudio.configuration.configuration_value import get_config_json, write_config_dict_json
+
+    config_json = get_config_json()
+    config_update_callback = Action[str](write_config_dict_json)  # pyright: ignore [reportCallIssue]
+    app_root = JAStudioAppRoot.Initialize(config_json, config_update_callback)
 
     TaskRunner.set_ui_task_runner_factory(QtTaskProgressRunner)
