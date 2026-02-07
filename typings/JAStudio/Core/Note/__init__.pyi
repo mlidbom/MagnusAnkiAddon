@@ -168,8 +168,7 @@ class KanjiNote(JPNote):
 
 
 class KanjiNoteMnemonicMaker:
-    @staticmethod
-    def CreateDefaultMnemonic(kanjiNote: KanjiNote) -> str: ...
+    def CreateDefaultMnemonic(self, kanjiNote: KanjiNote) -> str: ...
 
 
 class Mine(abc.ABC):
@@ -206,23 +205,6 @@ class NoteFieldsConstants(abc.ABC):
         UserSimilarMeaning : str
 
 
-    class Sentence(abc.ABC):
-        ActiveAnswer : str
-        ActiveQuestion : str
-        Audio : str
-        Configuration : str
-        Id : str
-        ParsingResult : str
-        Reading : str
-        Screenshot : str
-        SourceAnswer : str
-        SourceComments : str
-        SourceQuestion : str
-        UserAnswer : str
-        UserComments : str
-        UserQuestion : str
-
-
     class SentencesNoteType(abc.ABC):
 
         class Card(abc.ABC):
@@ -233,28 +215,26 @@ class NoteFieldsConstants(abc.ABC):
 
     class Vocab(abc.ABC):
         ActiveAnswer : str
-        Audio : str
         AudioB : str
         AudioG : str
         AudioTTS : str
-        GeneratedData : str
+        Forms : str
+        Homophones : str
         Kanji : str
         MatchingRules : str
-        Metadata : str
-        MetaTags : str
+        ParsedTypeOfSpeech : str
         PartsOfSpeech : str
         Question : str
-        ReadingKana : str
-        ReadingRomaji : str
-        Register : str
+        Reading : str
         RelatedVocab : str
         SentenceCount : str
         SourceAnswer : str
+        SourceMnemonic : str
+        SourceReadingMnemonic : str
         UserAnswer : str
-        UserCompoundParts : str
+        UserCompounds : str
         UserExplanation : str
         UserExplanationLong : str
-        UserForms : str
         UserMnemonic : str
 
 
@@ -423,7 +403,6 @@ class Tags(abc.ABC):
         IsIchidanHidingGodanPotential : Tag
         QuestionOverridesForm : Tag
         Root : str
-        UsuallyKanaOnly : Tag
 
         class Matching(abc.ABC):
             IsInflectingWord : Tag

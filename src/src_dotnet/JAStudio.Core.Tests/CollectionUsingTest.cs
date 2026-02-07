@@ -13,10 +13,5 @@ public abstract class CollectionUsingTest : IDisposable
 
    readonly IDisposable _collectionScope;
 
-   protected IServiceLocator ServiceLocator => TemporaryServiceCollection.Instance.ServiceLocator;
-}
-
-public abstract class TestStartingWithEmptyCollection : CollectionUsingTest
-{
-       protected TestStartingWithEmptyCollection() : base(DataNeeded.None) { }
+   protected TService GetService<TService>() where TService : class => TemporaryServiceCollection.Instance.ServiceLocator.Resolve<TService>();
 }

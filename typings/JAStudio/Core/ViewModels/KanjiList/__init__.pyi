@@ -20,6 +20,5 @@ class KanjiViewModel:
 
 
 class SentenceKanjiListViewModel:
-    @staticmethod
-    def Create(kanji: List_1[str]) -> KanjiListViewModel: ...
+    def Create(self, kanji: List_1[str]) -> KanjiListViewModel: ...
 
