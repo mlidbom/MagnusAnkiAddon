@@ -23,11 +23,13 @@ public static class CollectionFactory
       if(data == DataNeeded.None)
          return new CollectionScope();
 
+      var noteServices = TemporaryServiceCollection.Instance.NoteServices;
+
       if(data.HasFlag(DataNeeded.Kanji))
       {
          foreach(var kanjiSpec in KanjiSpec.TestKanjiList)
          {
-            KanjiNote.Create(kanjiSpec.Question, kanjiSpec.Answer, kanjiSpec.OnReadings, kanjiSpec.KunReading);
+            KanjiNote.Create(noteServices, kanjiSpec.Question, kanjiSpec.Answer, kanjiSpec.OnReadings, kanjiSpec.KunReading);
          }
       }
 
@@ -43,7 +45,7 @@ public static class CollectionFactory
       {
          foreach(var sentence in SentenceSpec.TestSentenceList)
          {
-            SentenceNote.CreateTestNote(sentence.Question, sentence.Answer);
+            SentenceNote.CreateTestNote(noteServices, sentence.Question, sentence.Answer);
          }
       }
 

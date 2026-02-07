@@ -9,12 +9,16 @@ public class VocabNoteFactory
 {
    readonly DictLookup _dictLookup;
    readonly VocabCollection _vocab;
+   NoteServices? _noteServices;
 
    internal VocabNoteFactory(DictLookup dictLookup, VocabCollection vocab)
    {
       _dictLookup = dictLookup;
       _vocab = vocab;
    }
+
+   public void SetNoteServices(NoteServices noteServices) => _noteServices = noteServices;
+   NoteServices RequireServices() => _noteServices ?? throw new InvalidOperationException("NoteServices not set on VocabNoteFactory. Call SetNoteServices first.");
 
     public VocabNote CreateWithDictionary(string question)
     {
@@ -32,7 +36,7 @@ public class VocabNoteFactory
 
     public VocabNote Create(string question, string answer, List<string> readings, Action<VocabNote>? initializer = null)
     {
-        var note = new VocabNote();
+        var note = new VocabNote(RequireServices());
         note.Question.Set(question);
         note.SetField(NoteFieldsConstants.Vocab.SourceAnswer, answer);
         note.SetReadings(readings);

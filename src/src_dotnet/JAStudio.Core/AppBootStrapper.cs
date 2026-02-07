@@ -48,6 +48,13 @@ static class AppBootstrapper
          Singleton.For<TestApp>().CreatedBy((App app, ConfigurationStore configurationStore) => new TestApp(app, configurationStore)),
 
          // Note services
+         Singleton.For<NoteServices>().CreatedBy((JPCollection collection, AnkiCardOperations ankiCardOps, Settings settings, DictLookup dictLookup, VocabNoteFactory vocabNoteFactory, VocabNoteGeneratedData vocabNoteGeneratedData, KanjiNoteMnemonicMaker kanjiMnemonicMaker, JapaneseConfig config, TaskRunner taskRunner) =>
+         {
+            var noteServices = new NoteServices(collection, ankiCardOps, settings, dictLookup, vocabNoteFactory, vocabNoteGeneratedData, kanjiMnemonicMaker, config, taskRunner);
+            collection.SetNoteServices(noteServices);
+            vocabNoteFactory.SetNoteServices(noteServices);
+            return noteServices;
+         }),
          Singleton.For<KanjiNoteMnemonicMaker>().CreatedBy((JapaneseConfig config) => new KanjiNoteMnemonicMaker(config)),
          Singleton.For<VocabNoteFactory>().CreatedBy((DictLookup dictLookup, VocabCollection vocab) => new VocabNoteFactory(dictLookup, vocab)),
          Singleton.For<VocabNoteGeneratedData>().CreatedBy((DictLookup dictLookup) => new VocabNoteGeneratedData(dictLookup)),

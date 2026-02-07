@@ -19,16 +19,24 @@ public class CachedNote
 
 public abstract class NoteCacheBase<TNote> where TNote : JPNote
 {
-   readonly Func<JPNoteData, TNote> _noteConstructor;
+   readonly Func<NoteServices, JPNoteData, TNote> _noteConstructor;
    readonly Type _noteType;
     protected readonly Dictionary<int, TNote> _byId = new();
     readonly List<Action<TNote>> _updateListeners = new();
+    NoteServices? _noteServices;
 
-    protected NoteCacheBase(Type cachedNoteType, Func<JPNoteData, TNote> noteConstructor)
+    protected NoteCacheBase(Type cachedNoteType, Func<NoteServices, JPNoteData, TNote> noteConstructor)
     {
         _noteConstructor = noteConstructor;
         _noteType = cachedNoteType;
     }
+
+    public void SetNoteServices(NoteServices noteServices)
+    {
+        _noteServices = noteServices;
+    }
+
+    NoteServices RequireServices() => _noteServices ?? throw new InvalidOperationException($"NoteServices not set on {_noteType.Name} cache. Call SetNoteServices first.");
 
     public void OnNoteUpdated(Action<TNote> listener)
     {
@@ -66,8 +74,9 @@ public abstract class NoteCacheBase<TNote> where TNote : JPNote
     {
         if (allNotes.Count > 0)
         {
-            using var scope = TemporaryServiceCollection.Instance.TaskRunner.Current($"Pushing {_noteType.Name} notes into cache");
-            var runner = TemporaryServiceCollection.Instance.TaskRunner.GetCurrent()!;
+            var services = RequireServices();
+            using var scope = services.TaskRunner.Current($"Pushing {_noteType.Name} notes into cache");
+            var runner = services.TaskRunner.GetCurrent()!;
             runner.ProcessWithProgress(
                 allNotes,
                 noteData => { AddToCacheFromData(noteData); return 0; },
@@ -77,7 +86,7 @@ public abstract class NoteCacheBase<TNote> where TNote : JPNote
 
     void AddToCacheFromData(JPNoteData noteData)
     {
-        AddToCache(_noteConstructor(noteData));
+        AddToCache(_noteConstructor(RequireServices(), noteData));
     }
 
     public abstract void RemoveFromCache(TNote note);
@@ -100,7 +109,7 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
    readonly Dictionary<string, List<TNote>> _byQuestion = new();
    readonly Dictionary<int, TSnapshot> _snapshotById = new();
 
-    protected NoteCache(Type cachedNoteType, Func<JPNoteData, TNote> noteConstructor)
+    protected NoteCache(Type cachedNoteType, Func<NoteServices, JPNoteData, TNote> noteConstructor)
         : base(cachedNoteType, noteConstructor)
     {
     }

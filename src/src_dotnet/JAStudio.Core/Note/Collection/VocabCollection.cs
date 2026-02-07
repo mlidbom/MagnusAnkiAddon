@@ -113,7 +113,7 @@ public class VocabCache : NoteCache<VocabNote, VocabSnapshot>
     private readonly Dictionary<string, List<VocabNote>> _byReading = new();
     private readonly Dictionary<string, List<VocabNote>> _byStem = new();
 
-    public VocabCache() : base(typeof(VocabNote), data => new VocabNote(data))
+    public VocabCache() : base(typeof(VocabNote), (services, data) => new VocabNote(services, data))
     {
     }
 

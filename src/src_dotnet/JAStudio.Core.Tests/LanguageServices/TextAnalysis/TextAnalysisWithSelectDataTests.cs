@@ -41,7 +41,7 @@ public class TextAnalysisWithSelectDataTests : CollectionUsingTest
    [InlineData("そうよ　あんたの言うとおりよ！", "そう", "よ", "あんた", "の", "言うとおり", "言う", "う", "とおり", "よ")]
    public void IdentifyWords(string sentence, params string[] expectedOutput)
    {
-      var sentenceNote = SentenceNote.CreateTestNote(sentence, "");
+      var sentenceNote = CreateTestSentence(sentence, "");
       var words = sentenceNote.ParsingResult.Get().ParsedWords
                               .Select(w => w.ParsedForm)
                               .ToHashSet()
@@ -58,7 +58,7 @@ public class TextAnalysisWithSelectDataTests : CollectionUsingTest
    [InlineData("私が頼んだの", "私", "が", "頼む", "んだ", "の")]
    public void ExcludedSurfaces(string sentence, params string[] expectedOutput)
    {
-      var sentenceNote = SentenceNote.CreateTestNote(sentence, "");
+      var sentenceNote = CreateTestSentence(sentence, "");
       var words = sentenceNote.ParsingResult.Get().ParsedWords
                               .Select(w => w.ParsedForm)
                               .ToList();
@@ -69,7 +69,7 @@ public class TextAnalysisWithSelectDataTests : CollectionUsingTest
    [InlineData("うわ こわっ", "うわ", "こい", "わっ")]
    public void StrictlySuffix(string sentence, params string[] expectedOutput)
    {
-      var sentenceNote = SentenceNote.CreateTestNote(sentence, "");
+      var sentenceNote = CreateTestSentence(sentence, "");
       var words = sentenceNote.ParsingResult.Get().ParsedWords
                               .Select(w => w.ParsedForm)
                               .ToList();
@@ -81,7 +81,7 @@ public class TextAnalysisWithSelectDataTests : CollectionUsingTest
    [InlineData("お金貸せって", "お金", "貸す", "え", "って")]
    public void RequiresAStem(string sentence, params string[] expectedOutput)
    {
-      var sentenceNote = SentenceNote.CreateTestNote(sentence, "");
+      var sentenceNote = CreateTestSentence(sentence, "");
       var rootWords = sentenceNote.ParsingResult.Get().ParsedWords
                                   .Select(w => w.ParsedForm)
                                   .ToList();
@@ -94,7 +94,7 @@ public class TextAnalysisWithSelectDataTests : CollectionUsingTest
       var sentence = ". , : ; / | 。 、ー ? !";
       var expected = new HashSet<string> { "ー" };
 
-      var sentenceNote = SentenceNote.CreateTestNote(sentence, "");
+      var sentenceNote = CreateTestSentence(sentence, "");
       var words = sentenceNote.ParsingResult.Get().ParsedWords
                               .Select(w => w.ParsedForm)
                               .ToHashSet();
@@ -104,7 +104,7 @@ public class TextAnalysisWithSelectDataTests : CollectionUsingTest
    [Fact]
    public void ThatVocabIsNotIndexedEvenIfFormIsHighlightedIfInvalidAndThereIsAnotherValidVocabWithTheForm()
    {
-      var sentence = SentenceNote.CreateTestNote("勝つんだ", "");
+      var sentence = CreateTestSentence("勝つんだ", "");
       sentence.Configuration.AddHighlightedWord("んだ");
       sentence.UpdateParsedWords(force: true);
       var parsingResult = sentence.ParsingResult.Get();

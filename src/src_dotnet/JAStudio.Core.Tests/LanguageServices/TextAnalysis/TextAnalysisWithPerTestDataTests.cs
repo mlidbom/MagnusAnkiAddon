@@ -20,7 +20,7 @@ public class TextAnalysisWithPerTestDataTests : CollectionUsingTest
    [InlineData("金<wbr>貸せって", "金", "貸す", "え", "って")]
    public void InvisibleSpaceBreakup(string sentence, params string[] expectedOutput)
    {
-      var sentenceNote = SentenceNote.CreateTestNote(sentence, "");
+      var sentenceNote = CreateTestSentence(sentence, "");
       var rootWords = sentenceNote.ParsingResult.Get().ParsedWords
                                   .Select(w => w.ParsedForm)
                                   .ToList();

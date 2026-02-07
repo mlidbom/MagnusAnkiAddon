@@ -34,7 +34,7 @@ public class NoteFlushGuard
         {
             using (PauseFlushing())
             {
-                if (TemporaryServiceCollection.Instance.Settings.LogWhenFlushingNotes())
+                if (_note.Services.Settings.LogWhenFlushingNotes())
                 {
                     MyLog.Info($"Flushing {_note.GetType().Name}: {_note.GetQuestion()}");
                 }

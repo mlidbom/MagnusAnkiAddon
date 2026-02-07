@@ -65,7 +65,7 @@ public class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
     private readonly Dictionary<string, List<KanjiNote>> _byRadical = new();
     public readonly Dictionary<string, List<KanjiNote>> ByReading = new();
 
-    public KanjiCache() : base(typeof(KanjiNote), data => new KanjiNote(data))
+    public KanjiCache() : base(typeof(KanjiNote), (services, data) => new KanjiNote(services, data))
     {
     }
 

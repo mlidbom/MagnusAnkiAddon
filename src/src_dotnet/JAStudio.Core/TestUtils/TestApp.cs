@@ -22,6 +22,9 @@ public class TestApp
       services.App.Reset(new TestingBackendNoteCreator());
       services.ConfigurationStore.InitForTesting();
       services.App.Config().SetReadingsMappingsForTesting(TestReadingsMappings);
+
+      // Eagerly resolve NoteServices so caches are wired before any notes are created
+      _ = services.NoteServices;
    }
 
    const string TestReadingsMappings = """

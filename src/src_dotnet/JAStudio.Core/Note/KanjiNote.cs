@@ -13,7 +13,7 @@ public class KanjiNote : JPNote
 {
     private static readonly Regex PrimaryReadingPattern = new(@"<primary>(.*?)</primary>", RegexOptions.Compiled);
 
-    public KanjiNote(JPNoteData? data = null) : base(data)
+    public KanjiNote(NoteServices services, JPNoteData? data = null) : base(services, data)
     {
     }
 
@@ -24,7 +24,7 @@ public class KanjiNote : JPNote
 
     public override void UpdateInCache()
     {
-        TemporaryServiceCollection.Instance.App.Col().Kanji.Cache.JpNoteUpdated(this);
+        Services.Collection.Kanji.Cache.JpNoteUpdated(this);
     }
 
     public override string GetQuestion()
@@ -68,7 +68,7 @@ public class KanjiNote : JPNote
         void UpdatePrimaryAudios()
         {
             var vocabWeShouldPlay = GetPrimaryVocab()
-                .SelectMany(question => TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion(question))
+                .SelectMany(question => Services.Collection.Vocab.WithQuestion(question))
                 .ToList();
             
             var audioString = vocabWeShouldPlay.Count > 0
@@ -254,7 +254,7 @@ public class KanjiNote : JPNote
         // Reciprocal relationship
         if (!isRecursiveCall)
         {
-            var newSynonym = TemporaryServiceCollection.Instance.App.Col().Kanji.WithKanji(newSynonymQuestion);
+            var newSynonym = Services.Collection.Kanji.WithKanji(newSynonymQuestion);
             if (newSynonym != null)
             {
                 newSynonym.AddUserSimilarMeaning(GetQuestion(), isRecursiveCall: true);
@@ -340,7 +340,7 @@ public class KanjiNote : JPNote
     public List<KanjiNote> GetRadicalsNotes()
     {
         return GetRadicals()
-            .Select(radical => TemporaryServiceCollection.Instance.App.Col().Kanji.WithKanji(radical))
+            .Select(radical => Services.Collection.Kanji.WithKanji(radical))
             .Where(k => k != null)
             .Cast<KanjiNote>()
             .ToList();
@@ -432,9 +432,9 @@ public class KanjiNote : JPNote
             return userMnemonic;
         }
 
-        if (TemporaryServiceCollection.Instance.App.Config().PreferDefaultMnemonicsToSourceMnemonics.GetValue())
+        if (Services.Config.PreferDefaultMnemonicsToSourceMnemonics.GetValue())
         {
-            return $"# {TemporaryServiceCollection.Instance.KanjiNoteMnemonicMaker.CreateDefaultMnemonic(this)}";
+            return $"# {Services.KanjiNoteMnemonicMaker.CreateDefaultMnemonic(this)}";
         }
 
         return GetSourceMeaningMnemonic();
@@ -462,7 +462,7 @@ public class KanjiNote : JPNote
 
     public List<VocabNote> GetVocabNotes()
     {
-        return TemporaryServiceCollection.Instance.App.Col().Vocab.WithKanjiInAnyForm(this);
+        return Services.Collection.Vocab.WithKanjiInAnyForm(this);
     }
 
     public List<VocabNote> GetVocabNotesSorted()
@@ -475,7 +475,7 @@ public class KanjiNote : JPNote
 
     public void BootstrapMnemonicFromRadicals()
     {
-        SetUserMnemonic(TemporaryServiceCollection.Instance.KanjiNoteMnemonicMaker.CreateDefaultMnemonic(this));
+        SetUserMnemonic(Services.KanjiNoteMnemonicMaker.CreateDefaultMnemonic(this));
     }
 
     public void PopulateRadicalsFromMnemonicTags()
@@ -497,7 +497,7 @@ public class KanjiNote : JPNote
                 return radicalNames.Any(name => KanjiAnswerContainsRadicalNameAsASeparateWord(name, kanji));
             }
 
-            return TemporaryServiceCollection.Instance.App.Col().Kanji.All()
+            return Services.Collection.Kanji.All()
                 .Where(KanjiAnswerContainsAnyRadicalNameAsASeparateWord)
                 .Select(kanji => kanji.GetQuestion())
                 .ToList();
@@ -515,14 +515,14 @@ public class KanjiNote : JPNote
         SetRadicals(string.Join(", ", radicals));
     }
 
-    public static KanjiNote Create(string question, string answer, string onReadings, string kunReading)
+    public static KanjiNote Create(NoteServices services, string question, string answer, string onReadings, string kunReading)
     {
-        var note = new KanjiNote();
+        var note = new KanjiNote(services);
         note.SetQuestion(question);
         note.SetUserAnswer(answer);
         note.SetReadingOn(onReadings);
         note.SetReadingKun(kunReading);
-        TemporaryServiceCollection.Instance.App.Col().Kanji.Add(note);
+        services.Collection.Kanji.Add(note);
         return note;
     }
 }

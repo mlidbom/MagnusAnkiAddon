@@ -37,6 +37,7 @@ public class TemporaryServiceCollection : IDisposable
    public TestApp TestApp => _serviceLocator.Resolve<TestApp>();
 
    // Note services
+   public NoteServices NoteServices => _serviceLocator.Resolve<NoteServices>();
    public KanjiNoteMnemonicMaker KanjiNoteMnemonicMaker => _serviceLocator.Resolve<KanjiNoteMnemonicMaker>();
    public VocabNoteFactory VocabNoteFactory => _serviceLocator.Resolve<VocabNoteFactory>();
    public VocabNoteGeneratedData VocabNoteGeneratedData => _serviceLocator.Resolve<VocabNoteGeneratedData>();

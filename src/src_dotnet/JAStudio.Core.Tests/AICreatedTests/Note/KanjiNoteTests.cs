@@ -10,7 +10,7 @@ public class KanjiNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void KanjiNote_Create_SetsBasicProperties()
    {
       // Arrange & Act
-      var kanji = KanjiNote.Create("漢", "Chinese character", "カン、かん", "");
+      var kanji = CreateKanji("漢", "Chinese character", "カン、かん", "");
 
       // Assert
       Assert.NotNull(kanji);
@@ -23,7 +23,7 @@ public class KanjiNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void KanjiNote_GetReadingsOn_ReturnsCorrectReadings()
    {
       // Arrange
-      var kanji = KanjiNote.Create("漢", "Chinese character", "カン、かん", "");
+      var kanji = CreateKanji("漢", "Chinese character", "カン、かん", "");
 
       // Act
       var readings = kanji.GetReadingsOn();
@@ -37,7 +37,7 @@ public class KanjiNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void KanjiNote_GetRadicals_ExcludesOwnKanji()
    {
       // Arrange
-      var kanji = new KanjiNote();
+      var kanji = new KanjiNote(NoteServices);
       kanji.SetQuestion("漢");
       kanji.SetField(NoteFieldsConstants.Kanji.Radicals, "漢, 水, 口");
 
@@ -54,7 +54,7 @@ public class KanjiNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void KanjiNote_GetPrimaryReadings_ExtractsMarkedReadings()
    {
       // Arrange
-      var kanji = new KanjiNote();
+      var kanji = new KanjiNote(NoteServices);
       kanji.SetReadingOn("<primary>カン</primary>, ケン");
 
       // Act
@@ -69,7 +69,7 @@ public class KanjiNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void KanjiNote_AddPrimaryReading_MarksReading()
    {
       // Arrange
-      var kanji = new KanjiNote();
+      var kanji = new KanjiNote(NoteServices);
       kanji.SetReadingOn("カン, ケン");
 
       // Act
@@ -83,7 +83,7 @@ public class KanjiNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void KanjiNote_RemovePrimaryReading_UnmarksReading()
    {
       // Arrange
-      var kanji = new KanjiNote();
+      var kanji = new KanjiNote(NoteServices);
       kanji.SetReadingOn("<primary>カン</primary>, ケン");
 
       // Act

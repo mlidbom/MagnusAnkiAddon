@@ -14,4 +14,11 @@ public class JPCollection
       Kanji = new KanjiCollection(backendNoteCreator);
       Sentences = new SentenceCollection(backendNoteCreator);
    }
+
+   public void SetNoteServices(NoteServices noteServices)
+   {
+      Vocab.Cache.SetNoteServices(noteServices);
+      Kanji.Cache.SetNoteServices(noteServices);
+      Sentences.Cache.SetNoteServices(noteServices);
+   }
 }

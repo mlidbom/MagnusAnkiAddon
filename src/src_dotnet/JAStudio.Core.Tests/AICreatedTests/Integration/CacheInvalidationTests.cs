@@ -1,4 +1,3 @@
-using JAStudio.Core.Note;
 using JAStudio.Core.TestUtils;
 using Xunit;
 using JAStudio.Core.Note.Collection;
@@ -11,7 +10,7 @@ public class CacheInvalidationTests : TestStartingWithEmptyCollection, IAIGenera
     public void UpdatingVocabQuestion_UpdatesCache()
     {
         // Arrange
-        var vocab = VocabNote.Create("食べる", "to eat", "たべる");
+        var vocab = CreateVocab("食べる", "to eat", "たべる");
         var originalQuestion = vocab.GetQuestion();
 
         // Act
@@ -32,7 +31,7 @@ public class CacheInvalidationTests : TestStartingWithEmptyCollection, IAIGenera
     public void AddingVocabForm_DoesNotMakeItFindableByWithQuestion()
     {
         // Arrange
-        var vocab = VocabNote.Create("食べる", "to eat", "たべる");
+        var vocab = CreateVocab("食べる", "to eat", "たべる");
 
         // Act - Add a form that doesn't exist as another vocab's question
         vocab.Forms.Add("taberu-form");
@@ -50,7 +49,7 @@ public class CacheInvalidationTests : TestStartingWithEmptyCollection, IAIGenera
     public void RemovingVocabForm_StillFindableByQuestion()
     {
         // Arrange
-        var vocab = VocabNote.Create("食べる", "to eat", "たべる");
+        var vocab = CreateVocab("食べる", "to eat", "たべる");
         vocab.Forms.Add("食う");
 
         // Verify forms are stored
@@ -71,7 +70,7 @@ public class CacheInvalidationTests : TestStartingWithEmptyCollection, IAIGenera
     public void UpdatingKanjiQuestion_UpdatesCache()
     {
         // Arrange
-        var kanji = KanjiNote.Create("食", "eat", "ショク", "た");
+        var kanji = CreateKanji("食", "eat", "ショク", "た");
 
         // Act
         kanji.SetQuestion("飲");
@@ -87,7 +86,7 @@ public class CacheInvalidationTests : TestStartingWithEmptyCollection, IAIGenera
     public void MultipleUpdates_MaintainCacheConsistency()
     {
         // Arrange
-        var vocab = VocabNote.Create("走る", "to run", "はしる");
+        var vocab = CreateVocab("走る", "to run", "はしる");
 
         // Act - Multiple updates
         vocab.Forms.Add("駆ける");

@@ -31,7 +31,7 @@ public class CachingSentenceConfigurationField
     public HashSet<VocabNote> HighlightedVocab()
     {
         var highlightedWordsList = HighlightedWords.ToList();
-        var vocabWithForms = TemporaryServiceCollection.Instance.App.Col().Vocab.WithAnyFormIn(highlightedWordsList);
+        var vocabWithForms = _sentence.Services.Collection.Vocab.WithAnyFormIn(highlightedWordsList);
         var matchedVocabIds = _sentence.ParsingResult.Get().MatchedVocabIds;
         
         return vocabWithForms

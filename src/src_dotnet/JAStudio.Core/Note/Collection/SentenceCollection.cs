@@ -122,7 +122,7 @@ public class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
     private readonly Dictionary<string, List<SentenceNote>> _byUserMarkedInvalidVocab = new();
     private readonly Dictionary<int, HashSet<SentenceNote>> _byVocabId = new();
 
-    public SentenceCache() : base(typeof(SentenceNote), data => new SentenceNote(data))
+    public SentenceCache() : base(typeof(SentenceNote), (services, data) => new SentenceNote(services, data))
     {
     }
 

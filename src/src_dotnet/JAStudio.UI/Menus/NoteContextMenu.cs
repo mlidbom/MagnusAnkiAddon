@@ -339,7 +339,8 @@ public class NoteContextMenu
     {
         try
         {
-            var newSentence = SentenceNote.Create(text);
+            var noteServices = Core.TemporaryServiceCollection.Instance.NoteServices;
+            var newSentence = SentenceNote.Create(noteServices, text);
 
             var query = Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup([newSentence]);
             AnkiFacade.ExecuteLookupAndShowPreviewer(query);
@@ -356,8 +357,9 @@ public class NoteContextMenu
     {
         try
         {
+            var noteServices = Core.TemporaryServiceCollection.Instance.NoteServices;
             // Create with placeholder values - user will need to fill them in
-            var newKanji = KanjiNote.Create(text, "TODO", "", "");
+            var newKanji = KanjiNote.Create(noteServices, text, "TODO", "", "");
 
             var query = Core.TemporaryServiceCollection.Instance.QueryBuilder.NotesLookup([newKanji]);
             AnkiFacade.ExecuteLookupAndShowPreviewer(query);

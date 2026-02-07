@@ -11,7 +11,7 @@ public class VocabNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void VocabNote_Create_SetsBasicProperties()
    {
       // Arrange & Act
-      var vocab = VocabNote.Create("食べる", "to eat", "たべる");
+      var vocab = CreateVocab("食べる", "to eat", "たべる");
 
       // Assert
       Assert.NotNull(vocab);
@@ -24,7 +24,7 @@ public class VocabNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void VocabNote_GetReadings_ReturnsCorrectReadings()
    {
       // Arrange
-      var vocab = VocabNote.Create("食べる", "to eat", "たべる", "くう");
+      var vocab = CreateVocab("食べる", "to eat", "たべる", "くう");
 
       // Act
       var readings = vocab.GetReadings();
@@ -39,7 +39,7 @@ public class VocabNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void VocabNote_SetReadings_UpdatesReadings()
    {
       // Arrange
-      var vocab = VocabNote.Create("本", "book", "ほん");
+      var vocab = CreateVocab("本", "book", "ほん");
 
       // Act
       vocab.SetReadings(["ほん", "もと"]);
@@ -55,7 +55,7 @@ public class VocabNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void VocabNote_Question_HandlesDisambiguation()
    {
       // Arrange
-      var vocab = new VocabNote();
+      var vocab = new VocabNote(NoteServices);
 
       // Act
       vocab.Question.Set("取る:to take");
@@ -70,7 +70,7 @@ public class VocabNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void VocabNote_Question_RejectsInvalidDisambiguation()
    {
       // Arrange
-      var vocab = new VocabNote();
+      var vocab = new VocabNote(NoteServices);
 
       // Act
       vocab.Question.Set("a:b:c");
@@ -84,7 +84,7 @@ public class VocabNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void VocabNote_Forms_AddsAndRemovesForms()
    {
       // Arrange
-      var vocab = VocabNote.Create("走る", "to run", "はしる");
+      var vocab = CreateVocab("走る", "to run", "はしる");
 
       // Act - Add form
       vocab.Forms.Add("駆ける");
@@ -105,7 +105,7 @@ public class VocabNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void VocabNote_Forms_IncludesQuestionAsOwnedForm()
    {
       // Arrange
-      var vocab = VocabNote.Create("走る", "to run", "はしる");
+      var vocab = CreateVocab("走る", "to run", "はしる");
 
       // Act
       var ownedForms = vocab.Forms.OwnedForms();
@@ -118,7 +118,7 @@ public class VocabNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void VocabNote_Forms_IdentifiesOwnedForms()
    {
       // Arrange
-      var vocab = new VocabNote();
+      var vocab = new VocabNote(NoteServices);
       vocab.Question.Set("走る");
       vocab.Forms.SetList(["[駆ける]", "はしる"]);
 
@@ -137,7 +137,7 @@ public class VocabNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void VocabNote_UserFields_StoresUserData()
    {
       // Arrange
-      var vocab = VocabNote.Create("食べる", "to eat", "たべる");
+      var vocab = CreateVocab("食べる", "to eat", "たべる");
 
       // Act
       vocab.User.Answer.Set("to consume");
@@ -154,7 +154,7 @@ public class VocabNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void VocabNote_GetAnswer_PreferesUserAnswer()
    {
       // Arrange
-      var vocab = VocabNote.Create("本", "book", "ほん");
+      var vocab = CreateVocab("本", "book", "ほん");
 
       // Act - Initially uses source answer
       var initialAnswer = vocab.GetAnswer();
@@ -172,7 +172,7 @@ public class VocabNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void VocabNote_Question_AddsQuestionToFormsAutomatically()
    {
       // Arrange
-      var vocab = new VocabNote();
+      var vocab = new VocabNote(NoteServices);
 
       // Act
       vocab.Question.Set("新しい");
@@ -185,10 +185,10 @@ public class VocabNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void VocabNote_CreateWithForms_SetsForms()
    {
       // Arrange & Act
-      var vocab = VocabNote.Create("食べる",
-                                   "to eat",
-                                   ["たべる"],
-                                   ["食う", "召し上がる"]);
+      var vocab = CreateVocab("食べる",
+                              "to eat",
+                              ["たべる"],
+                              ["食う", "召し上がる"]);
 
       // Assert
       var forms = vocab.Forms.AllSet();

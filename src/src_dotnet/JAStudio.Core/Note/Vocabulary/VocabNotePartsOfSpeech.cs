@@ -62,7 +62,7 @@ public class VocabNotePartsOfSpeech
 
     public void SetAutomaticallyFromDictionary()
     {
-        var lookup = TemporaryServiceCollection.Instance.DictLookup.LookupVocabWordOrName(Vocab);
+        var lookup = Vocab.Services.DictLookup.LookupVocabWordOrName(Vocab);
         if (lookup.FoundWords())
         {
             var value = string.Join(", ", lookup.PartsOfSpeech());
@@ -73,7 +73,7 @@ public class VocabNotePartsOfSpeech
             var question = Vocab.Question.WithoutNoiseCharacters;
             question = question.Substring(0, question.Length - 2);
             var readings = Vocab.GetReadings().Select(r => r.Substring(0, r.Length - 2)).ToList();
-            lookup = TemporaryServiceCollection.Instance.DictLookup.LookupWordOrNameWithMatchingReading(question, readings);
+            lookup = Vocab.Services.DictLookup.LookupWordOrNameWithMatchingReading(question, readings);
             var pos = lookup.PartsOfSpeech().Intersect([POS.Transitive, POS.Intransitive]).ToList();
             var value = POS.SuruVerb + ", " + string.Join(", ", pos);
             SetRawStringValue(value);

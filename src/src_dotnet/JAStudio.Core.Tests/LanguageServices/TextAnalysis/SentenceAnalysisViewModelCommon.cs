@@ -33,7 +33,7 @@ public abstract class SentenceAnalysisViewModelCommon : CollectionUsingTest
                                                                                  List<WordExclusion> hidden,
                                                                                  List<string> expectedOutput)
    {
-      var sentenceNote = SentenceNote.Create(sentence);
+      var sentenceNote = CreateSentence(sentence);
       hidden.ForEach(sentenceNote.Configuration.HiddenMatches.Add);
       incorrect.ForEach(sentenceNote.Configuration.IncorrectMatches.Add);
 
@@ -65,7 +65,7 @@ public abstract class SentenceAnalysisViewModelCommon : CollectionUsingTest
 
    protected void AssertAllWordsEqual(string sentence, List<string> expectedOutput)
    {
-      var sentenceNote = SentenceNote.Create(sentence);
+      var sentenceNote = CreateSentence(sentence);
       var analysis = new SentenceViewModel(sentenceNote,
          GetService<Settings>(),
          GetService<VocabCollection>());

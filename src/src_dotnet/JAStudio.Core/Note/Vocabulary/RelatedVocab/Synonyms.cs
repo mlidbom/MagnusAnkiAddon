@@ -23,14 +23,14 @@ public class Synonyms
         _data.Save();
     }
 
-    public List<VocabNote> Notes() => TemporaryServiceCollection.Instance.App.Col().Vocab.WithAnyFormInPreferDisambiguationNameOrExactMatch(Strings().ToList());
+    public List<VocabNote> Notes() => _vocab.Services.Collection.Vocab.WithAnyFormInPreferDisambiguationNameOrExactMatch(Strings().ToList());
 
     public void Add(string synonym)
     {
         if (synonym == _vocab.GetQuestion()) return;
         Strings().Add(synonym);
 
-        foreach (var similar in TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion(synonym).ToList())
+        foreach (var similar in _vocab.Services.Collection.Vocab.WithQuestion(synonym).ToList())
         {
             if (!similar.RelatedNotes.Synonyms.Strings().Contains(_vocab.GetQuestion()))
             {
@@ -43,7 +43,7 @@ public class Synonyms
 
     public void AddTransitivelyOneLevel(string synonym)
     {
-        var newSynonymNotes = TemporaryServiceCollection.Instance.App.Col().Vocab.WithAnyFormInPreferDisambiguationNameOrExactMatch([synonym]);
+        var newSynonymNotes = _vocab.Services.Collection.Vocab.WithAnyFormInPreferDisambiguationNameOrExactMatch([synonym]);
 
         foreach (var synonymNote in newSynonymNotes)
         {
@@ -68,7 +68,7 @@ public class Synonyms
     {
         Strings().Remove(toRemove);
 
-        foreach (var similar in TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion(toRemove))
+        foreach (var similar in _vocab.Services.Collection.Vocab.WithQuestion(toRemove))
         {
             if (similar.RelatedNotes.Synonyms.Strings().Contains(_vocab.GetQuestion()))
             {

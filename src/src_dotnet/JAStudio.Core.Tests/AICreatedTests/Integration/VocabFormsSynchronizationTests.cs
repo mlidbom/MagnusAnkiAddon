@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using JAStudio.Core.Note;
 using JAStudio.Core.TestUtils;
 using Xunit;
 
@@ -11,8 +10,8 @@ public class VocabFormsSynchronizationTests : TestStartingWithEmptyCollection, I
    public void AddingFormToVocabA_UpdatesVocabB_WhenVocabBHasThatFormAsQuestion()
    {
       // Arrange
-      var vocabA = VocabNote.Create("食べる", "to eat", "たべる");
-      var vocabB = VocabNote.Create("食う", "to eat (casual)", "くう");
+      var vocabA = CreateVocab("食べる", "to eat", "たべる");
+      var vocabB = CreateVocab("食う", "to eat (casual)", "くう");
 
       // Act - Add vocabB's question as a form of vocabA
       vocabA.Forms.Add("食う");
@@ -25,8 +24,8 @@ public class VocabFormsSynchronizationTests : TestStartingWithEmptyCollection, I
    public void RemovingFormFromVocabA_UpdatesVocabB()
    {
       // Arrange
-      var vocabA = VocabNote.Create("走る", "to run", "はしる");
-      var vocabB = VocabNote.Create("駆ける", "to run, to dash", "かける");
+      var vocabA = CreateVocab("走る", "to run", "はしる");
+      var vocabB = CreateVocab("駆ける", "to run, to dash", "かける");
 
       vocabA.Forms.Add("駆ける");
       Assert.Contains("走る", vocabB.Forms.AllSet()); // Verify it was added
@@ -42,7 +41,7 @@ public class VocabFormsSynchronizationTests : TestStartingWithEmptyCollection, I
    public void OwnedForms_IdentifiedByBrackets()
    {
       // Arrange
-      var vocab = VocabNote.Create("走る", "to run", "はしる");
+      var vocab = CreateVocab("走る", "to run", "はしる");
 
       // Act - Set forms with bracketed (owned) and non-bracketed (borrowed) forms
       vocab.Forms.SetList(["[駆ける]", "ダッシュする"]);
@@ -57,7 +56,7 @@ public class VocabFormsSynchronizationTests : TestStartingWithEmptyCollection, I
    public void QuestionAlwaysIncludedInOwnedForms()
    {
       // Arrange & Act
-      var vocab = VocabNote.Create("本", "book", "ほん");
+      var vocab = CreateVocab("本", "book", "ほん");
 
       // Assert
       var ownedForms = vocab.Forms.OwnedForms();
@@ -68,9 +67,9 @@ public class VocabFormsSynchronizationTests : TestStartingWithEmptyCollection, I
    public void AllListNotes_ReturnsNotesForAllForms()
    {
       // Arrange
-      var vocab1 = VocabNote.Create("食べる", "to eat", "たべる");
-      var vocab2 = VocabNote.Create("食う", "to eat (casual)", "くう");
-      var vocab3 = VocabNote.Create("召し上がる", "to eat (honorific)", "めしあがる");
+      var vocab1 = CreateVocab("食べる", "to eat", "たべる");
+      var vocab2 = CreateVocab("食う", "to eat (casual)", "くう");
+      var vocab3 = CreateVocab("召し上がる", "to eat (honorific)", "めしあがる");
 
       vocab1.Forms.SetList(["食う", "召し上がる"]);
 

@@ -1,5 +1,4 @@
 using System.Linq;
-using JAStudio.Core.Note;
 using JAStudio.Core.TestUtils;
 using Xunit;
 using JAStudio.Core.Note.Collection;
@@ -12,9 +11,9 @@ public class CollectionQueryTests : TestStartingWithEmptyCollection, IAIGenerate
     public void VocabCollection_WithQuestion_FindsVocabByQuestion()
     {
         // Arrange
-        var vocab1 = VocabNote.Create("食べる", "to eat", "たべる");
-        var vocab2 = VocabNote.Create("本", "book", "ほん");
-        var vocab3 = VocabNote.Create("走る", "to run", "はしる");
+        var vocab1 = CreateVocab("食べる", "to eat", "たべる");
+        var vocab2 = CreateVocab("本", "book", "ほん");
+        var vocab3 = CreateVocab("走る", "to run", "はしる");
 
         // Act
         var results = GetService<VocabCollection>().WithQuestion("\u672c");
@@ -28,7 +27,7 @@ public class CollectionQueryTests : TestStartingWithEmptyCollection, IAIGenerate
     public void VocabCollection_WithQuestion_DoesNotFindByForm()
     {
         // Arrange
-        var vocab = VocabNote.Create("食べる", "to eat", "たべる");
+        var vocab = CreateVocab("食べる", "to eat", "たべる");
         vocab.Forms.Add("食う");
 
         // Act - Forms are not questions, so this should not find the vocab
@@ -42,7 +41,7 @@ public class CollectionQueryTests : TestStartingWithEmptyCollection, IAIGenerate
     public void VocabCollection_WithQuestion_ReturnsEmptyWhenNotFound()
     {
         // Arrange
-        var vocab = VocabNote.Create("食べる", "to eat", "たべる");
+        var vocab = CreateVocab("食べる", "to eat", "たべる");
 
         // Act
         var results = GetService<VocabCollection>().WithQuestion("存在しない");
@@ -55,8 +54,8 @@ public class CollectionQueryTests : TestStartingWithEmptyCollection, IAIGenerate
     public void KanjiCollection_WithKanji_FindsKanjiByQuestion()
     {
         // Arrange
-        var kanji1 = KanjiNote.Create("食", "eat", "ショク", "た");
-        var kanji2 = KanjiNote.Create("本", "book", "ホン", "もと");
+        var kanji1 = CreateKanji("食", "eat", "ショク", "た");
+        var kanji2 = CreateKanji("本", "book", "ホン", "もと");
 
         // Act
         var result = GetService<KanjiCollection>().WithKanji("食");
@@ -70,7 +69,7 @@ public class CollectionQueryTests : TestStartingWithEmptyCollection, IAIGenerate
     public void KanjiCollection_WithKanji_ReturnsNullWhenNotFound()
     {
         // Arrange
-        var kanji = KanjiNote.Create("食", "eat", "ショク", "た");
+        var kanji = CreateKanji("食", "eat", "ショク", "た");
 
         // Act
         var result = GetService<KanjiCollection>().WithKanji("存");
@@ -83,7 +82,7 @@ public class CollectionQueryTests : TestStartingWithEmptyCollection, IAIGenerate
     public void SentenceCollection_Add_MakesNoteQueryable()
     {
         // Arrange
-        var sentence = SentenceNote.CreateTestNote("これは本です。", "This is a book.");
+        var sentence = CreateTestSentence("これは本です。", "This is a book.");
 
         // Act - Note is automatically added in CreateTestNote
         var allSentences = GetService<SentenceCollection>().All();
@@ -96,9 +95,9 @@ public class CollectionQueryTests : TestStartingWithEmptyCollection, IAIGenerate
     public void MultipleCollections_IndependentlyManageNotes()
     {
         // Arrange
-        var kanji = KanjiNote.Create("食", "eat", "ショク", "た");
-        var vocab = VocabNote.Create("食べる", "to eat", "たべる");
-        var sentence = SentenceNote.CreateTestNote("食べる", "to eat");
+        var kanji = CreateKanji("食", "eat", "ショク", "た");
+        var vocab = CreateVocab("食べる", "to eat", "たべる");
+        var sentence = CreateTestSentence("食べる", "to eat");
 
         // Act
         var kanjiCount = GetService<KanjiCollection>().All().Count;
@@ -115,8 +114,8 @@ public class CollectionQueryTests : TestStartingWithEmptyCollection, IAIGenerate
     public void VocabCollection_ById_ReturnsCorrectNote()
     {
         // Arrange
-        var vocab1 = VocabNote.Create("食べる", "to eat", "たべる");
-        var vocab2 = VocabNote.Create("本", "book", "ほん");
+        var vocab1 = CreateVocab("食べる", "to eat", "たべる");
+        var vocab2 = CreateVocab("本", "book", "ほん");
         var id1 = vocab1.GetId();
 
         // Act

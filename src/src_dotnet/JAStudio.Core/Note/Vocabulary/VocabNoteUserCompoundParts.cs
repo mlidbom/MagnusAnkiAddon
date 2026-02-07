@@ -44,14 +44,14 @@ public class VocabNoteUserCompoundParts
     public HashSet<VocabNote> AllNotes()
     {
         return All()
-            .SelectMany(part => TemporaryServiceCollection.Instance.App.Col().Vocab.WithQuestion(part))
+            .SelectMany(part => Vocab.Services.Collection.Vocab.WithQuestion(part))
             .ToHashSet();
     }
 
     public List<VocabNote> PrimaryPartsNotes()
     {
         return Primary()
-            .SelectMany(part => TemporaryServiceCollection.Instance.App.Col().Vocab.WithFormPreferDisambiguationNameOrExactMatch(part))
+            .SelectMany(part => Vocab.Services.Collection.Vocab.WithFormPreferDisambiguationNameOrExactMatch(part))
             .ToList();
     }
 
@@ -84,7 +84,7 @@ public class VocabNoteUserCompoundParts
             }
 
             var allWordSubstrings = allSubstrings
-                .Where(w => TemporaryServiceCollection.Instance.DictLookup.IsDictionaryOrCollectionWord(w))
+                .Where(w => Vocab.Services.DictLookup.IsDictionaryOrCollectionWord(w))
                 .ToList();
 
             compoundParts = allWordSubstrings
@@ -98,7 +98,7 @@ public class VocabNoteUserCompoundParts
 
         foreach (var missing in segmentsMissingVocab)
         {
-            TemporaryServiceCollection.Instance.VocabNoteFactory.CreateWithDictionary(missing);
+            Vocab.Services.VocabNoteFactory.CreateWithDictionary(missing);
         }
 
         Set(compoundParts);

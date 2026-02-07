@@ -10,7 +10,7 @@ public class SentenceNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTe
    public void SentenceNote_CreateTestNote_SetsQuestionAndAnswer()
    {
       // Arrange & Act
-      var sentence = SentenceNote.CreateTestNote("これは本です。", "This is a book.");
+      var sentence = CreateTestSentence("これは本です。", "This is a book.");
 
       // Assert
       Assert.NotNull(sentence);
@@ -23,7 +23,7 @@ public class SentenceNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTe
    public void SentenceNote_GetAnswer_StripsHtml()
    {
       // Arrange
-      var sentence = new SentenceNote();
+      var sentence = new SentenceNote(NoteServices);
       sentence.SetField(SentenceNoteFields.SourceAnswer, "<b>This</b> is a <i>book</i>.");
 
       // Act
@@ -39,7 +39,7 @@ public class SentenceNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTe
    public void SentenceNote_Configuration_DefaultsToEmpty()
    {
       // Arrange
-      var sentence = new SentenceNote();
+      var sentence = new SentenceNote(NoteServices);
 
       // Act & Assert
       Assert.NotNull(sentence.Configuration);

@@ -56,7 +56,7 @@ public class VocabCloner
 
     VocabNote CreateNewVocabWithSomeDataCopied(string question, string answer, List<string> readings, bool copyVocabTags = true, bool copyMatchingRules = true)
     {
-        var clone = TemporaryServiceCollection.Instance.VocabNoteFactory.CreateFromUserData(question, answer, readings);
+        var clone = Note.Services.VocabNoteFactory.CreateFromUserData(question, answer, readings);
         if (copyVocabTags)
         {
             CopyVocabTagsTo(clone);
@@ -81,7 +81,7 @@ public class VocabCloner
         var data = Note.GetData();
         data.Id = 0;
         data.Tags = [];
-        var clone = new VocabNote(data);
+        var clone = new VocabNote(Note.Services, data);
 
         CopyVocabTagsTo(clone);
 
@@ -90,7 +90,7 @@ public class VocabCloner
             clone.RelatedNotes.Synonyms.Add(related);
         }
 
-        TemporaryServiceCollection.Instance.App.Col().Vocab.Add(clone);
+        Note.Services.Collection.Vocab.Add(clone);
         return clone;
     }
 

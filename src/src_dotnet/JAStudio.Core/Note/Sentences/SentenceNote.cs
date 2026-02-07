@@ -15,7 +15,7 @@ public class SentenceNote : JPNote
     public CachingSentenceConfigurationField Configuration { get; private set; }
     public MutableSerializedObjectField<ParsingResult> ParsingResult { get; }
 
-    public SentenceNote(JPNoteData? data = null) : base(data)
+    public SentenceNote(NoteServices services, JPNoteData? data = null) : base(services, data)
     {
         Configuration = new CachingSentenceConfigurationField(this);
         ParsingResult = new MutableSerializedObjectField<ParsingResult>(
@@ -26,7 +26,7 @@ public class SentenceNote : JPNote
 
     public override void UpdateInCache()
     {
-        TemporaryServiceCollection.Instance.App.Col().Sentences.Cache.JpNoteUpdated(this);
+        Services.Collection.Sentences.Cache.JpNoteUpdated(this);
     }
 
     // Property accessors
@@ -88,7 +88,7 @@ public class SentenceNote : JPNote
         {
             foreach (var match in parsingResult.ParsedWords.Where(p => p.IsDisplayed && p.VocabId != -1))
             {
-                var vocab = TemporaryServiceCollection.Instance.App.Col().Vocab.WithIdOrNone(match.VocabId);
+                var vocab = Services.Collection.Vocab.WithIdOrNone(match.VocabId);
                 if (vocab != null)
                 {
                     dependencies.Add(vocab);
@@ -98,7 +98,7 @@ public class SentenceNote : JPNote
 
         // Add kanji
         var kanjiList = ExtractKanji();
-        var kanjiNotes = TemporaryServiceCollection.Instance.App.Col().Kanji.WithAnyKanjiIn(kanjiList);
+        var kanjiNotes = Services.Collection.Kanji.WithAnyKanjiIn(kanjiList);
         foreach (var kanjiNote in kanjiNotes)
         {
             dependencies.Add(kanjiNote);
@@ -141,17 +141,18 @@ public class SentenceNote : JPNote
             .ToList();
     }
 
-    public static SentenceNote CreateTestNote(string question, string answer)
+    public static SentenceNote CreateTestNote(NoteServices services, string question, string answer)
     {
-        var note = new SentenceNote();
+        var note = new SentenceNote(services);
         note.SourceQuestion.Set(question);
         note.User.Answer.Set(answer);
         note.UpdateGeneratedData();
-        TemporaryServiceCollection.Instance.App.Col().Sentences.Add(note);
+        services.Collection.Sentences.Add(note);
         return note;
     }
 
     public static SentenceNote AddSentence(
+        NoteServices services,
         string question,
         string answer,
         string audio = "",
@@ -159,7 +160,7 @@ public class SentenceNote : JPNote
         HashSet<string>? highlightedVocab = null,
         HashSet<Tag>? tags = null)
     {
-        var note = new SentenceNote();
+        var note = new SentenceNote(services);
         note.SourceQuestion.Set(question);
         note.SourceAnswer.Set(answer);
         note.Screenshot.Set(screenshot);
@@ -190,16 +191,16 @@ public class SentenceNote : JPNote
             }
         }
 
-        TemporaryServiceCollection.Instance.App.Col().Sentences.Add(note);
+        services.Collection.Sentences.Add(note);
         return note;
     }
 
-    public static SentenceNote Create(string question)
+    public static SentenceNote Create(NoteServices services, string question)
     {
-        var note = new SentenceNote();
+        var note = new SentenceNote(services);
         note.SourceQuestion.Set(question);
         note.UpdateGeneratedData();
-        TemporaryServiceCollection.Instance.App.Col().Sentences.Add(note);
+        services.Collection.Sentences.Add(note);
         return note;
     }
 }

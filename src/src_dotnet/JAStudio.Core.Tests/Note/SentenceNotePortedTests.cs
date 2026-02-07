@@ -16,7 +16,7 @@ public class SentenceNotePortedTests : TestStartingWithEmptyCollection
    {
       var sentence = "だったら普通に金貸せって言えよ";
 
-      var sentenceNote = SentenceNote.Create(sentence);
+      var sentenceNote = CreateSentence(sentence);
       sentenceNote.Question.SplitTokenWithWordBreakTag("金貸");
 
       Assert.Equal($"だったら普通に金{StringExtensions.InvisibleSpace}貸せって言えよ", sentenceNote.Question.WithInvisibleSpace());
