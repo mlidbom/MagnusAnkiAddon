@@ -134,7 +134,7 @@ public static class BrowserMenus
     {
         try
         {
-            LocalNoteUpdater.ReparseSentences(sentences, runGcDuringBatch: true);
+            Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.ReparseSentences(sentences, runGcDuringBatch: true);
             AnkiFacade.Refresh();
             AnkiFacade.ShowTooltip($"Reparsed {sentences.Count} sentence(s)", 3000);
         }

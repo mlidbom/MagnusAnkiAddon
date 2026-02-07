@@ -306,7 +306,7 @@ public class NoteContextMenu
     {
         try
         {
-            Core.Batches.LocalNoteUpdater.ReparseMatchingSentences(text);
+            Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.ReparseMatchingSentences(text);
             AnkiFacade.Refresh();
             AnkiFacade.ShowTooltip($"Reparsed sentences matching: {text}", 3000);
         }
@@ -322,7 +322,7 @@ public class NoteContextMenu
         try
         {
             var newVocab = Core.TemporaryServiceCollection.Instance.VocabNoteFactory.CreateWithDictionary(text);
-            Core.Batches.LocalNoteUpdater.ReparseSentencesForVocab(newVocab);
+            Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.ReparseSentencesForVocab(newVocab);
 
             var query = QueryBuilder.NotesLookup([newVocab]);
             AnkiFacade.ExecuteLookupAndShowPreviewer(query);

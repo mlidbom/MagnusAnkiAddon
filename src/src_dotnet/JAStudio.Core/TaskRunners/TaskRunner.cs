@@ -7,11 +7,11 @@ public class TaskRunner
     readonly TemporaryServiceCollection _services;
     internal TaskRunner(TemporaryServiceCollection services) => _services = services;
 
-    private static Func<string, string, bool, bool, ITaskProgressRunner>? _uiTaskRunnerFactory;
-    private static int _depth;
-    private static ITaskProgressRunner? _current;
+    private Func<string, string, bool, bool, ITaskProgressRunner>? _uiTaskRunnerFactory;
+    private int _depth;
+    private ITaskProgressRunner? _current;
 
-    public static void SetUiTaskRunnerFactory(Func<string, string, bool, bool, ITaskProgressRunner> factory)
+    public void SetUiTaskRunnerFactory(Func<string, string, bool, bool, ITaskProgressRunner> factory)
     {
         if (_uiTaskRunnerFactory != null)
         {
@@ -20,7 +20,7 @@ public class TaskRunner
         _uiTaskRunnerFactory = factory;
     }
 
-    public static ITaskProgressRunner Create(string windowTitle, string labelText, bool? visible = null, bool allowCancel = true, bool modal = false)
+    public ITaskProgressRunner Create(string windowTitle, string labelText, bool? visible = null, bool allowCancel = true, bool modal = false)
     {
         visible ??= !App.IsTesting;
         
@@ -37,7 +37,7 @@ public class TaskRunner
         return _uiTaskRunnerFactory(windowTitle, labelText, allowCancel, modal);
     }
 
-    public static TaskRunnerScope Current(
+    public TaskRunnerScope Current(
         string windowTitle,
         string? labelText = null,
         bool forceHide = false,
@@ -46,10 +46,10 @@ public class TaskRunner
         bool allowCancel = true,
         bool modal = false)
     {
-        return new TaskRunnerScope(windowTitle, labelText, forceHide, inhibitGc, forceGc, allowCancel, modal);
+        return new TaskRunnerScope(this, windowTitle, labelText, forceHide, inhibitGc, forceGc, allowCancel, modal);
     }
 
-    internal static void EnterScope(ITaskProgressRunner runner)
+    internal void EnterScope(ITaskProgressRunner runner)
     {
         _depth++;
         if (_depth == 1)
@@ -58,7 +58,7 @@ public class TaskRunner
         }
     }
 
-    internal static void ExitScope(ITaskProgressRunner runner, bool forceGc)
+    internal void ExitScope(ITaskProgressRunner runner, bool forceGc)
     {
         _depth--;
         if (_depth == 0)
@@ -72,16 +72,18 @@ public class TaskRunner
         }
     }
 
-    internal static ITaskProgressRunner? GetCurrent() => _current;
+    internal ITaskProgressRunner? GetCurrent() => _current;
 }
 
 public class TaskRunnerScope : IDisposable
 {
+    private readonly TaskRunner _taskRunner;
     private readonly ITaskProgressRunner _runner;
     private readonly bool _forceGc;
     private readonly bool _inhibitGc;
 
     public TaskRunnerScope(
+        TaskRunner taskRunner,
         string windowTitle,
         string? labelText,
         bool forceHide,
@@ -90,15 +92,16 @@ public class TaskRunnerScope : IDisposable
         bool allowCancel,
         bool modal)
     {
+        _taskRunner = taskRunner;
         _inhibitGc = inhibitGc;
         _forceGc = forceGc;
         
         var visible = !App.IsTesting && !forceHide;
         
-        if (TaskRunner.GetCurrent() == null)
+        if (_taskRunner.GetCurrent() == null)
         {
-            _runner = TaskRunner.Create(windowTitle, labelText ?? windowTitle, visible, allowCancel, modal);
-            TaskRunner.EnterScope(_runner);
+            _runner = _taskRunner.Create(windowTitle, labelText ?? windowTitle, visible, allowCancel, modal);
+            _taskRunner.EnterScope(_runner);
             
             if (!inhibitGc && (App.Config().EnableGarbageCollectionDuringBatches.GetValue() || forceGc))
             {
@@ -107,7 +110,7 @@ public class TaskRunnerScope : IDisposable
         }
         else
         {
-            _runner = TaskRunner.GetCurrent()!;
+            _runner = _taskRunner.GetCurrent()!;
             _runner.SetLabelText(labelText ?? windowTitle);
         }
     }
@@ -116,13 +119,13 @@ public class TaskRunnerScope : IDisposable
 
     public void Dispose()
     {
-        if (TaskRunner.GetCurrent() == _runner)
+        if (_taskRunner.GetCurrent() == _runner)
         {
             if (!_inhibitGc && (App.Config().EnableGarbageCollectionDuringBatches.GetValue() || _forceGc))
             {
                 _runner.RunGc();
             }
         }
-        TaskRunner.ExitScope(_runner, _forceGc);
+        _taskRunner.ExitScope(_runner, _forceGc);
     }
 }

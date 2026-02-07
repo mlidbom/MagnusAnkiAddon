@@ -204,7 +204,7 @@ public partial class VocabFlagsViewModel : ObservableObject
             // Trigger reparse using C# batch updater
             await Task.Run(() =>
             {
-               LocalNoteUpdater.ReparseSentencesForVocab(_vocab);
+               Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.ReparseSentencesForVocab(_vocab);
             });
          }
       }

@@ -54,7 +54,7 @@ public static class DialogHost
       Thread.Sleep(500);
 
       // Set up task runner factory
-      TaskRunner.SetUiTaskRunnerFactory((windowTitle, labelText, allowCancel, modal) =>
+      Core.TemporaryServiceCollection.Instance.TaskRunner.SetUiTaskRunnerFactory((windowTitle, labelText, allowCancel, modal) =>
                                            new AvaloniaTaskProgressRunner(windowTitle, labelText, allowCancel, modal));
 
       // Register Anki card operations so Core can suspend/unsuspend cards via Anki API

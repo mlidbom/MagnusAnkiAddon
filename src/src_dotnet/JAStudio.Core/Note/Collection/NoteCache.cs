@@ -66,8 +66,8 @@ public abstract class NoteCacheBase<TNote> where TNote : JPNote
     {
         if (allNotes.Count > 0)
         {
-            using var scope = TaskRunner.Current($"Pushing {_noteType.Name} notes into cache");
-            var runner = TaskRunner.GetCurrent()!;
+            using var scope = TemporaryServiceCollection.Instance.TaskRunner.Current($"Pushing {_noteType.Name} notes into cache");
+            var runner = TemporaryServiceCollection.Instance.TaskRunner.GetCurrent()!;
             runner.ProcessWithProgress(
                 allNotes,
                 noteData => { AddToCacheFromData(noteData); return 0; },

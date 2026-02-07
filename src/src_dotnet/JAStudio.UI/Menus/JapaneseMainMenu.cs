@@ -88,15 +88,15 @@ public class JapaneseMainMenu
 
    // Local Actions menu actions
    void OnConvertImmersionKitSentences() => AnkiFacade.ConvertImmersionKitSentences();
-   void OnCreateMissingVocab() => LocalNoteUpdater.CreateMissingVocabWithDictionaryEntries();
-   void OnRegenerateVocabAnswers() => LocalNoteUpdater.RegenerateJamdictVocabAnswers();
+   void OnCreateMissingVocab() => Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.CreateMissingVocabWithDictionaryEntries();
+   void OnRegenerateVocabAnswers() => Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.RegenerateJamdictVocabAnswers();
 
    // Update submenu actions
-   void OnUpdateVocab() => LocalNoteUpdater.UpdateVocab();
-   void OnUpdateKanji() => LocalNoteUpdater.UpdateKanji();
-   void OnUpdateSentences() => LocalNoteUpdater.UpdateSentences();
-   void OnTagNoteMetadata() => LocalNoteUpdater.TagNoteMetadata();
-   void OnUpdateAll() => LocalNoteUpdater.UpdateAll();
-   void OnReparseSentences() => LocalNoteUpdater.ReparseAllSentences();
-   void OnFullRebuild() => LocalNoteUpdater.FullRebuild();
+   void OnUpdateVocab() => Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.UpdateVocab();
+   void OnUpdateKanji() => Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.UpdateKanji();
+   void OnUpdateSentences() => Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.UpdateSentences();
+   void OnTagNoteMetadata() => Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.TagNoteMetadata();
+   void OnUpdateAll() => Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.UpdateAll();
+   void OnReparseSentences() => Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.ReparseAllSentences();
+   void OnFullRebuild() => Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.FullRebuild();
 }

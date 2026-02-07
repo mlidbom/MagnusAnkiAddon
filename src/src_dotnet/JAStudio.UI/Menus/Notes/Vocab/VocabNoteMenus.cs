@@ -234,7 +234,7 @@ public static class VocabNoteMenus
             SpecMenuItem.Command(ShortcutFinger.Home2("Generate answer"),
                 () => vocab.GenerateAndSetAnswer()),
             SpecMenuItem.Command(ShortcutFinger.Home3("Reparse potentially matching sentences: (Only reparse all sentences is sure to catch everything)"),
-                () => Core.Batches.LocalNoteUpdater.ReparseSentencesForVocab(vocab)),
+                () => Core.TemporaryServiceCollection.Instance.LocalNoteUpdater.ReparseSentencesForVocab(vocab)),
             SpecMenuItem.Command(ShortcutFinger.Home4("Repopulate TOS"),
                 () => vocab.PartsOfSpeech.SetAutomaticallyFromDictionary()),
             SpecMenuItem.Command(ShortcutFinger.Home5("Autogenerate compounds"),
