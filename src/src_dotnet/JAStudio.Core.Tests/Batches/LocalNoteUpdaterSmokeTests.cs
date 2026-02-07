@@ -13,6 +13,6 @@ public class LocalNoteUpdaterSmokeTests : CollectionUsingTest
     [Fact]
     public void SmokeFullRebuild()
     {
-        TemporaryServiceCollection.Instance.LocalNoteUpdater.FullRebuild();
+        GetService<LocalNoteUpdater>().FullRebuild();
     }
 }

@@ -21,7 +21,7 @@ public class VocabNoteMiscTests : TestStartingWithEmptyCollection
     [Fact]
     public void GenerateFromDictionary()
     {
-        var vocab = TemporaryServiceCollection.Instance.VocabNoteFactory.CreateWithDictionary("やる気満々");
+        var vocab = GetService<VocabNoteFactory>().CreateWithDictionary("やる気満々");
         Assert.Equal("やる気満々", vocab.GetQuestion());
         Assert.Equal("totally-willing/fully-motivated", vocab.GetAnswer());
         Assert.Equal(["やるきまんまん"], vocab.Readings.Get());

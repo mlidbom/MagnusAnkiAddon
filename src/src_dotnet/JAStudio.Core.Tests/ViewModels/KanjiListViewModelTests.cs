@@ -4,6 +4,7 @@ using JAStudio.Core.Note;
 using JAStudio.Core.Tests.Fixtures;
 using JAStudio.Core.ViewModels.KanjiList;
 using Xunit;
+using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.Tests.ViewModels;
 
@@ -15,11 +16,11 @@ public class KanjiListViewModelTests : CollectionUsingTest
    [Fact]
    public void KanjiListViewModel()
    {
-      var sentences = TemporaryServiceCollection.Instance.App.Col().Sentences.All();
+      var sentences = GetService<SentenceCollection>().All();
       foreach(var sentence in sentences)
       {
          var extractedKanji = sentence.ExtractKanji();
-         var viewModel = TemporaryServiceCollection.Instance.SentenceKanjiListViewModel.Create(extractedKanji);
+         var viewModel = GetService<SentenceKanjiListViewModel>().Create(extractedKanji);
 
          var extractedKanjiSet = extractedKanji.ToHashSet();
          var foundKanjiSet = viewModel.KanjiList.Select(m => m.Question()).ToHashSet();

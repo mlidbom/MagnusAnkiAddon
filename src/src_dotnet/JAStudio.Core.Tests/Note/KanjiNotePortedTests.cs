@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using JAStudio.Core.Note;
 using JAStudio.Core.Tests.Fixtures;
 using Xunit;
+using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.Tests.Note;
 
@@ -16,7 +17,7 @@ public class KanjiNotePortedTests : CollectionUsingTest
    [Fact]
    public void InsideRadicalPopulation()
    {
-      var inside = TemporaryServiceCollection.Instance.App.Col().Kanji.WithKanji("内")!;
+      var inside = GetService<KanjiCollection>().WithKanji("内")!;
       inside.SetUserMnemonic("<rad>head</rad> <rad>person</rad>");
 
       inside.PopulateRadicalsFromMnemonicTags();
@@ -31,7 +32,7 @@ public class KanjiNotePortedTests : CollectionUsingTest
    [InlineData("塚", "", "<kan>a-mound</kan> <read>Tsuka</read> ...")]
    public void BootstrapMnemonic(string kanji, string radicals, string expectedMnemonic)
    {
-      var kanjiNote = TemporaryServiceCollection.Instance.App.Col().Kanji.WithKanji(kanji)!;
+      var kanjiNote = GetService<KanjiCollection>().WithKanji(kanji)!;
       kanjiNote.SetRadicals(radicals);
 
       kanjiNote.BootstrapMnemonicFromRadicals();
@@ -42,10 +43,10 @@ public class KanjiNotePortedTests : CollectionUsingTest
    [Fact]
    public void GetPrimaryMeaning()
    {
-      var one = TemporaryServiceCollection.Instance.App.Col().Kanji.WithKanji("一")!;
+      var one = GetService<KanjiCollection>().WithKanji("一")!;
       Assert.Equal("ground", one.GetPrimaryRadicalMeaning());
 
-      var hon = TemporaryServiceCollection.Instance.App.Col().Kanji.WithKanji("本")!;
+      var hon = GetService<KanjiCollection>().WithKanji("本")!;
       Assert.Equal("true", hon.GetPrimaryRadicalMeaning());
    }
 }

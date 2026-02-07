@@ -4,6 +4,7 @@ using JAStudio.Core.Note;
 using JAStudio.Core.Tests.Fixtures;
 using JAStudio.Core.Tests.Fixtures.BaseData.SampleData;
 using Xunit;
+using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.Tests.Fixtures;
 
@@ -15,7 +16,7 @@ public class CollectionFactoryTests : CollectionUsingTest
    [Fact]
    public void KanjiAddedCorrectly()
    {
-      var kanjiAll = TemporaryServiceCollection.Instance.App.Col().Kanji.All();
+      var kanjiAll = GetService<KanjiCollection>().All();
       var savedKanji = kanjiAll.Select(kanji =>
                                           new KanjiSpec(
                                              kanji.GetQuestion(),
@@ -32,7 +33,7 @@ public class CollectionFactoryTests : CollectionUsingTest
    public void VocabAddedCorrectly()
    {
       var expectedVocab = VocabLists.TestSpecialVocab.OrderBy(x => x.Question).ToList();
-      var vocabAll = TemporaryServiceCollection.Instance.App.Col().Vocab.All();
+      var vocabAll = GetService<VocabCollection>().All();
       var savedVocab = vocabAll
                       .Select(vocab => new VocabSpec(vocab.GetQuestion(), vocab.GetAnswer(), vocab.Readings.Get()))
                       .OrderBy(x => x.Question)
@@ -45,7 +46,7 @@ public class CollectionFactoryTests : CollectionUsingTest
    public void SentencesAddedCorrectly()
    {
       var expectedSentences = SentenceSpec.TestSentenceList.OrderBy(x => x.Question).ToList();
-      var sentencesAll = TemporaryServiceCollection.Instance.App.Col().Sentences.All()
+      var sentencesAll = GetService<SentenceCollection>().All()
                             .OrderBy(x => x.Question.WithoutInvisibleSpace())
                             .ToList();
       var savedSentences = sentencesAll

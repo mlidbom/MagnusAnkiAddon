@@ -58,7 +58,7 @@ public class DictLookupTests : TestStartingWithEmptyCollection
     [InlineData("しない")]
     public void ShouldBeMissing(string word)
     {
-        var result = TemporaryServiceCollection.Instance.DictLookup.LookupWord(word);
+        var result = GetService<DictLookup>().LookupWord(word);
         Assert.Empty(result.Entries);
     }
 
@@ -121,9 +121,9 @@ public class DictLookupTests : TestStartingWithEmptyCollection
         Assert.Equal(expectedPosSet, dictEntry.PartsOfSpeech());
     }
 
-    static DictLookupResult GetDictEntry(string word, string[] readings)
+    DictLookupResult GetDictEntry(string word, string[] readings)
     {
-        var vocab = TemporaryServiceCollection.Instance.VocabNoteFactory.Create(word, "", [..readings]);
-        return TemporaryServiceCollection.Instance.DictLookup.LookupVocabWordOrName(vocab);
+        var vocab = GetService<VocabNoteFactory>().Create(word, "", [..readings]);
+        return GetService<DictLookup>().LookupVocabWordOrName(vocab);
     }
 }
