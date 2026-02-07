@@ -294,22 +294,31 @@ public class KanjiNote : JPNote
 
     public List<string> GenerateDefaultPrimaryVocab()
     {
-        // When no explicit primary vocab is set, derive defaults from vocab notes
-        // that contain this kanji. Prioritize studying vocab, then take by form.
-        var vocabNotes = GetVocabNotes();
-        
-        // Prefer studying vocab first, then all others
-        var studying = vocabNotes.Where(v => v.IsStudying()).ToList();
-        var notStudying = vocabNotes.Where(v => !v.IsStudying()).ToList();
-        
-        var ordered = studying.Concat(notStudying);
-        
-        return ordered
-            .Select(v => v.GetQuestion())
-            .Where(q => !string.IsNullOrEmpty(q))
-            .Distinct()
-            .Take(5)
+        var result = new List<string>();
+
+        // Sort by descending count of studying sentences, then by ascending question length
+        var studyingReadingVocabInDescendingStudyingSentencesOrder = GetVocabNotes()
+            .Where(v => v.IsStudying(CardTypes.Reading))
+            .OrderByDescending(v => v.Sentences.Studying().Count)
+            .ThenBy(v => v.GetQuestion().Length)
             .ToList();
+
+        var primaryReadings = GetPrimaryReadings().Distinct().ToList();
+
+        foreach (var primaryReading in primaryReadings)
+        {
+            foreach (var vocab in studyingReadingVocabInDescendingStudyingSentencesOrder)
+            {
+                var readings = vocab.Readings.Get();
+                if (readings.Count > 0 && ReadingInVocabReading(primaryReading, readings[0], vocab.GetQuestion()))
+                {
+                    result.Add(vocab.GetQuestion());
+                    break;
+                }
+            }
+        }
+
+        return result;
     }
 
     private static readonly Regex AnyWordPattern = new(@"\b[-\w]+\b", RegexOptions.Compiled);
