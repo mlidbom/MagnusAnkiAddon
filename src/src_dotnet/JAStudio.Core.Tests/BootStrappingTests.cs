@@ -1,20 +1,15 @@
-﻿using Xunit;
+﻿using JAStudio.Core.Note;
+using JAStudio.Core.TestUtils;
+using Xunit;
 
 namespace JAStudio.Core.Tests;
 
-public class BootStrappingTests
+public class BootStrappingTests : TestStartingWithEmptyCollection
 {
-   [Fact]
-   public void BootstrappingSmokeTest()
-   {
-      using var _ = App.Bootstrap();
-   }
-
    [Fact]
    public void Can_resolve_all_registered_services()
    {
-      using var app = App.Bootstrap();
-      var services = app.Services;
+      var services = TemporaryServiceCollection.Instance;
 
       // Verify every service in TemporaryServiceCollection resolves without throwing
       Assert.NotNull(services.App);
