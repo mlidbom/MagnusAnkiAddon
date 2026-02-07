@@ -4,7 +4,6 @@ using JAStudio.Core.Anki;
 using JAStudio.Core.AnkiUtils;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.Batches;
-using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.TaskRunners;
@@ -21,14 +20,12 @@ public class TemporaryServiceCollection : IDisposable
 
    public App App => _serviceLocator.Resolve<App>();
    public ConfigurationStore ConfigurationStore => _serviceLocator.Resolve<ConfigurationStore>();
-   public Settings Settings => _serviceLocator.Resolve<Settings>();
    public QueryBuilder QueryBuilder => _serviceLocator.Resolve<QueryBuilder>();
 
    // Core services
    public LocalNoteUpdater LocalNoteUpdater => _serviceLocator.Resolve<LocalNoteUpdater>();
    public TaskRunner TaskRunner => _serviceLocator.Resolve<TaskRunner>();
    public AnkiCardOperations AnkiCardOperations => _serviceLocator.Resolve<AnkiCardOperations>();
-   public DictLookup DictLookup => _serviceLocator.Resolve<DictLookup>();
 
    // Note services
    public NoteServices NoteServices => _serviceLocator.Resolve<NoteServices>();
