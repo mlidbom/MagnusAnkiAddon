@@ -4,9 +4,8 @@ from typing import TYPE_CHECKING
 
 from aqt import gui_hooks, mw
 from aqt.reviewer import Reviewer
-from jaslib.note.difficulty_calculator import DifficultyCalculator
 from jaspythonutils.sysutils.typed import non_optional
-from JAStudio.Core.Note import CardTypes, KanjiNote, SentenceNote, VocabNote
+from JAStudio.Core.Note import CardTypes, DifficultyCalculator, KanjiNote, SentenceNote, VocabNote
 
 from jastudio.anki_extentions.card_ex import CardEx
 from jastudio.ankiutils import app, ui_utils
@@ -29,15 +28,15 @@ def seconds_to_show_question(card: CardEx) -> float:
 
     def default_time_allowed() -> float:
         if isinstance(note, SentenceNote):
-            return DifficultyCalculator(starting_seconds=app.config().AutoadvanceSentenceStartingSeconds.GetValue(),
-                                        hiragana_seconds=app.config().AutoadvanceSentenceHiraganaSeconds.GetValue(),
-                                        katakata_seconds=app.config().AutoadvanceSentenceKatakanaSeconds.GetValue(),
-                                        kanji_seconds=app.config().AutoadvanceSentenceKanjiSeconds.GetValue()).allowed_seconds(note.Question.WithoutInvisibleSpace())
+            return DifficultyCalculator(startingSeconds=app.config().AutoadvanceSentenceStartingSeconds.GetValue(),
+                                        hiraganaSeconds=app.config().AutoadvanceSentenceHiraganaSeconds.GetValue(),
+                                        katakataSeconds=app.config().AutoadvanceSentenceKatakanaSeconds.GetValue(),
+                                        kanjiSeconds=app.config().AutoadvanceSentenceKanjiSeconds.GetValue()).AllowedSeconds(note.Question.WithoutInvisibleSpace())
         if isinstance(note, VocabNote):
-            return DifficultyCalculator(starting_seconds=app.config().AutoadvanceVocabStartingSeconds.GetValue(),
-                                        hiragana_seconds=app.config().AutoadvanceVocabHiraganaSeconds.GetValue(),
-                                        katakata_seconds=app.config().AutoadvanceVocabKatakanaSeconds.GetValue(),
-                                        kanji_seconds=app.config().AutoadvanceVocabKanjiSeconds.GetValue()).allowed_seconds(note.GetQuestion())
+            return DifficultyCalculator(startingSeconds=app.config().AutoadvanceVocabStartingSeconds.GetValue(),
+                                        hiraganaSeconds=app.config().AutoadvanceVocabHiraganaSeconds.GetValue(),
+                                        katakataSeconds=app.config().AutoadvanceVocabKatakanaSeconds.GetValue(),
+                                        kanjiSeconds=app.config().AutoadvanceVocabKanjiSeconds.GetValue()).AllowedSeconds(note.GetQuestion())
         if isinstance(note, KanjiNote):
             return card.get_deck().get_config().get_seconds_to_show_question()
         raise Exception("We should never get here")
