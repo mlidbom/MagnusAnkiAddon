@@ -1,6 +1,7 @@
 import typing, abc
 from JAStudio.Core import TemporaryServiceCollection
 from JAStudio.UI.Menus.UIAgnosticMenuStructure import SpecMenuItem
+from JAStudio.UI import JAStudioAppRoot
 from System.Collections.Generic import List_1
 from System import Func_1
 from JAStudio.Core.Note import KanjiNote, SentenceNote, VocabNote
@@ -12,7 +13,7 @@ class BrowserMenus:
 
 
 class JapaneseMainMenu:
-    def __init__(self, services: TemporaryServiceCollection) -> None: ...
+    def __init__(self, appRoot: JAStudioAppRoot) -> None: ...
     def BuildMenuSpec(self, getClipboardContent: Func_1[str]) -> List_1[SpecMenuItem]: ...
 
 

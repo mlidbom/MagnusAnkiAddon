@@ -14,12 +14,14 @@ namespace JAStudio.UI.Menus;
 public class JapaneseMainMenu
 {
    readonly Core.TemporaryServiceCollection _services;
+   readonly JAStudioAppRoot _appRoot;
    readonly OpenInAnkiMenus _openInAnkiMenus;
 
-   public JapaneseMainMenu(Core.TemporaryServiceCollection services)
+   public JapaneseMainMenu(JAStudioAppRoot appRoot)
    {
-      _services = services;
-      _openInAnkiMenus = new OpenInAnkiMenus(services);
+      _appRoot = appRoot;
+      _services = appRoot.Services;
+      _openInAnkiMenus = new OpenInAnkiMenus(_services);
    }
 
    public List<SpecMenuItem> BuildMenuSpec(Func<string> getClipboardContent) =>
@@ -84,15 +86,15 @@ public class JapaneseMainMenu
    void OnOptions()
    {
       JALogger.Log("OnOptions() called!");
-      JALogger.Log("Calling JAStudioAppRoot.ShowOptionsDialog()...");
-      JAStudioAppRoot.ShowOptionsDialog();
-      JALogger.Log("JAStudioAppRoot.ShowOptionsDialog() completed");
+      JALogger.Log("Calling ShowOptionsDialog()...");
+      _appRoot.ShowOptionsDialog();
+      JALogger.Log("ShowOptionsDialog() completed");
    }
 
-   void OnReadingsMappings() => JAStudioAppRoot.ShowReadingsMappingsDialog();
+   void OnReadingsMappings() => _appRoot.ShowReadingsMappingsDialog();
 
    // Lookup menu actions
-   void OnOpenNote() => JAStudioAppRoot.ToggleNoteSearchDialog();
+   void OnOpenNote() => _appRoot.ToggleNoteSearchDialog();
 
    // Local Actions menu actions
    void OnConvertImmersionKitSentences() => AnkiFacade.ConvertImmersionKitSentences();

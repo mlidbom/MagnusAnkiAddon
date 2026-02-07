@@ -41,9 +41,9 @@ def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
 
     # Build C# menu specs
     try:
-        from JAStudio.UI import JAStudioAppRoot
+        from jastudio.ui import app_root
 
-        menu_spec:SpecMenuItem = JAStudioAppRoot.BuildBrowserMenuSpec(selected_cards, selected_notes)
+        menu_spec:SpecMenuItem = app_root.BuildBrowserMenuSpec(selected_cards, selected_notes)
 
         qt_menu_adapter.add_to_qt_menu(menu, [menu_spec])
     except Exception as e:

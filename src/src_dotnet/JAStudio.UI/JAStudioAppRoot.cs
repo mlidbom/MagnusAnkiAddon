@@ -13,32 +13,37 @@ namespace JAStudio.UI;
 
 /// <summary>
 /// Composition root for the Anki addon.
-/// Bootstraps the domain App, initializes Avalonia, and provides factory methods
+/// Bootstraps Core.App, initializes Avalonia, and provides factory methods
 /// for creating menus and showing dialogs.
-/// Python calls Initialize() once at startup, then uses the factory/show methods.
+/// Python calls Initialize() once at startup, then uses the returned instance.
 /// </summary>
-public static class JAStudioAppRoot
+public class JAStudioAppRoot
 {
-   static bool _initialized;
-   static Thread? _uiThread;
-   static AutoResetEvent? _initEvent;
+   readonly Core.App _app;
+   // Stored to keep the UI thread rooted (prevent GC). Not accessed directly.
+#pragma warning disable CS0414
+   Thread? _uiThread;
+#pragma warning restore CS0414
 
    /// <summary>
-   /// The resolved service collection. Available after Initialize() has been called.
+   /// The resolved service collection, derived from the bootstrapped Core.App.
    /// Used by dialog code-behinds to pass services to their ViewModels.
    /// </summary>
-   public static Core.TemporaryServiceCollection Services { get; private set; } = null!;
+   public Core.TemporaryServiceCollection Services => _app.Services;
+
+   JAStudioAppRoot(Core.App app) => _app = app;
 
    /// <summary>
-   /// Initialize Avalonia. Call once at addon startup.
+   /// Bootstrap Core.App, initialize Avalonia, and return the composition root.
+   /// Call once at addon startup.
    /// </summary>
-   public static void Initialize()
+   public static JAStudioAppRoot Initialize()
    {
-      if(_initialized) return;
+      var app = Core.App.Bootstrap();
 
-      _initEvent = new AutoResetEvent(false);
+      var initEvent = new AutoResetEvent(false);
 
-      _uiThread = new Thread(() =>
+      var uiThread = new Thread(() =>
                   {
                      AppBuilder.Configure<App>()
                                .UsePlatformDetect()
@@ -51,25 +56,25 @@ public static class JAStudioAppRoot
 
       if(OperatingSystem.IsWindows())
       {
-         _uiThread.SetApartmentState(ApartmentState.STA);
+         uiThread.SetApartmentState(ApartmentState.STA);
       }
 
-      _uiThread.Start();
+      uiThread.Start();
 
       // Wait for Avalonia to initialize
       // TODO: Add proper synchronization with App.OnFrameworkInitializationCompleted
       Thread.Sleep(500);
 
-      Services = Core.TemporaryServiceCollection.Instance;
+      var root = new JAStudioAppRoot(app) { _uiThread = uiThread };
 
       // Set up task runner factory
-      Services.TaskRunner.SetUiTaskRunnerFactory((windowTitle, labelText, allowCancel, modal) =>
+      root.Services.TaskRunner.SetUiTaskRunnerFactory((windowTitle, labelText, allowCancel, modal) =>
                                            new AvaloniaTaskProgressRunner(windowTitle, labelText, allowCancel, modal));
 
       // Register Anki card operations so Core can suspend/unsuspend cards via Anki API
-      Services.AnkiCardOperations.SetImplementation(new Anki.AnkiCardOperationsImpl());
+      root.Services.AnkiCardOperations.SetImplementation(new Anki.AnkiCardOperationsImpl());
 
-      _initialized = true;
+      return root;
    }
 
    // ── Factory methods for Python-facing objects ──
@@ -78,31 +83,29 @@ public static class JAStudioAppRoot
    /// Create a NoteContextMenu wired with all required services.
    /// Called from Python to build right-click context menus.
    /// </summary>
-   public static NoteContextMenu CreateNoteContextMenu() => new(Services);
+   public NoteContextMenu CreateNoteContextMenu() => new(Services);
 
    /// <summary>
    /// Create a JapaneseMainMenu wired with all required services.
    /// Called from Python to build the main "Japanese" tools menu.
    /// </summary>
-   public static JapaneseMainMenu CreateJapaneseMainMenu() => new(Services);
+   public JapaneseMainMenu CreateJapaneseMainMenu() => new(this);
 
    // ── UI thread helpers ──
 
    /// <summary>
    /// Run an action on the Avalonia UI thread.
    /// </summary>
-   public static void RunOnUIThread(Action action)
+   public void RunOnUIThread(Action action)
    {
-      EnsureInitialized();
       Dispatcher.UIThread.Post(action);
    }
 
    /// <summary>
    /// Show a dialog and wait for it to close.
    /// </summary>
-   public static void ShowDialog<T>() where T : Window, new()
+   public void ShowDialog<T>() where T : Window, new()
    {
-      EnsureInitialized();
       Dispatcher.UIThread.Invoke(() =>
       {
          var window = new T();
@@ -115,12 +118,11 @@ public static class JAStudioAppRoot
    /// <summary>
    /// Show the VocabFlagsDialog for editing a vocab note's flags.
    /// </summary>
-   public static void ShowVocabFlagsDialog(int vocabId)
+   public void ShowVocabFlagsDialog(int vocabId)
    {
-      EnsureInitialized();
       Dispatcher.UIThread.Invoke(() =>
       {
-         var vocabCache = Services.App.Col().Vocab;
+         var vocabCache = _app.Col().Vocab;
          var vocab = vocabCache.WithIdOrNone(vocabId);
          if(vocab == null)
          {
@@ -136,9 +138,8 @@ public static class JAStudioAppRoot
    /// <summary>
    /// Show the About dialog.
    /// </summary>
-   public static void ShowAboutDialog()
+   public void ShowAboutDialog()
    {
-      EnsureInitialized();
       Dispatcher.UIThread.Invoke(() =>
       {
          var window = new AboutDialog();
@@ -149,9 +150,8 @@ public static class JAStudioAppRoot
    /// <summary>
    /// Show the Options dialog for Japanese configuration settings.
    /// </summary>
-   public static void ShowOptionsDialog()
+   public void ShowOptionsDialog()
    {
-      EnsureInitialized();
       Dispatcher.UIThread.Invoke(() =>
       {
          JALogger.Log("Creating OptionsDialog window...");
@@ -165,10 +165,9 @@ public static class JAStudioAppRoot
    /// <summary>
    /// Show the Readings Mappings dialog for editing readings mappings.
    /// </summary>
-   public static void ShowReadingsMappingsDialog()
+   public void ShowReadingsMappingsDialog()
    {
       JALogger.Log("ShowReadingsMappingsDialog() called");
-      EnsureInitialized();
       Dispatcher.UIThread.Invoke(() =>
       {
          var window = new ReadingsMappingsDialog(Services);
@@ -180,10 +179,9 @@ public static class JAStudioAppRoot
    /// Toggle the Note Search dialog visibility.
    /// Shows the dialog if hidden, hides it if visible.
    /// </summary>
-   public static void ToggleNoteSearchDialog()
+   public void ToggleNoteSearchDialog()
    {
       JALogger.Log("ToggleNoteSearchDialog() called");
-      EnsureInitialized();
       Dispatcher.UIThread.Invoke(() =>
       {
          NoteSearchDialog.ToggleVisibility(Services);
@@ -194,10 +192,9 @@ public static class JAStudioAppRoot
    /// Toggle the English Word Search dialog visibility.
    /// Shows the dialog if hidden, hides it if visible.
    /// </summary>
-   public static void ToggleEnglishWordSearchDialog()
+   public void ToggleEnglishWordSearchDialog()
    {
       JALogger.Log("ToggleEnglishWordSearchDialog() called");
-      EnsureInitialized();
       Dispatcher.UIThread.Invoke(() =>
       {
          EnglishWordSearchDialog.ToggleVisibility();
@@ -207,9 +204,8 @@ public static class JAStudioAppRoot
    /// <summary>
    /// Show the context menu popup at the current cursor position.
    /// </summary>
-   public static void ShowContextMenuPopup(string clipboardContent, string selectionContent, int x, int y)
+   public void ShowContextMenuPopup(string clipboardContent, string selectionContent, int x, int y)
    {
-      EnsureInitialized();
       Dispatcher.UIThread.Invoke(() =>
       {
          var menuControl = new ContextMenuPopup(clipboardContent ?? "", selectionContent ?? "");
@@ -221,21 +217,18 @@ public static class JAStudioAppRoot
    /// Build browser context menu specification.
    /// Returns UI-agnostic menu specs that Python can convert to PyQt menus.
    /// </summary>
-   public static SpecMenuItem BuildBrowserMenuSpec(
+   public SpecMenuItem BuildBrowserMenuSpec(
       dynamic selectedCardIds,
       dynamic selectedNoteIds)
    {
-      EnsureInitialized();
       return new BrowserMenus(Services).BuildBrowserMenuSpec(selectedCardIds, selectedNoteIds);
    }
 
    /// <summary>
    /// Shutdown Avalonia. Call at addon unload.
    /// </summary>
-   public static void Shutdown()
+   public void Shutdown()
    {
-      if(!_initialized) return;
-
       Dispatcher.UIThread.Invoke(() =>
       {
          if(Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
@@ -243,13 +236,5 @@ public static class JAStudioAppRoot
             lifetime.Shutdown();
          }
       });
-
-      _initialized = false;
-   }
-
-   static void EnsureInitialized()
-   {
-      if(!_initialized)
-         throw new InvalidOperationException("JAStudioAppRoot.Initialize() must be called before showing dialogs.");
    }
 }
