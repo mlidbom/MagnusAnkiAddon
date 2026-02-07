@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from aqt import gui_hooks
 from JAStudio.Core.Note import KanjiNote
+
 from jastudio.ui import dotnet_ui_root
 from jastudio.ui.web.web_utils.dotnet_rendering_content_renderer_anki_shim import DotNetPrerenderingContentRendererAnkiShim
 
