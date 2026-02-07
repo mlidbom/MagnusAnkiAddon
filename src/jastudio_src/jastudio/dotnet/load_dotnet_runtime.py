@@ -16,11 +16,7 @@ def _get_workspace_root() -> Path:
 try:
     with StopWatch.log_execution_time("Loading .NET runtime"):
         load("coreclr", runtime_config=config_file)
-        # pythonnet registers atexit.register(unload) during load(). That unload triggers
-        # Runtime.Shutdown() which runs ~86 rounds of GC.Collect()+WaitForPendingFinalizers().
-        # With our multi-GB managed heap this takes 8-30+ seconds on process exit.
-        # coreclr cannot be unloaded from a process anyway — the OS reclaims all memory on exit.
-        atexit.unregister(unload)
+        atexit.unregister(unload) # without this line shutdown takse forever, and we make sure to clean everything we need up elsewhere.
         mylog.info("Loaded .NET runtime")
         import clr
 
