@@ -9,9 +9,9 @@ public class VocabNoteFactory
    readonly TemporaryServiceCollection _services;
    internal VocabNoteFactory(TemporaryServiceCollection services) => _services = services;
 
-    public static VocabNote CreateWithDictionary(string question)
+    public VocabNote CreateWithDictionary(string question)
     {
-        var lookupResult = DictLookup.LookupWord(question);
+        var lookupResult = TemporaryServiceCollection.Instance.DictLookup.LookupWord(question);
         if (!lookupResult.FoundWords())
         {
             return Create(question, "", new List<string>());
@@ -23,7 +23,7 @@ public class VocabNoteFactory
         return created;
     }
 
-    public static VocabNote Create(string question, string answer, List<string> readings, Action<VocabNote>? initializer = null)
+    public VocabNote Create(string question, string answer, List<string> readings, Action<VocabNote>? initializer = null)
     {
         var note = new VocabNote();
         note.Question.Set(question);
@@ -39,7 +39,7 @@ public class VocabNoteFactory
         return note;
     }
 
-    public static VocabNote CreateFromUserData(string question, string answer, List<string> readings, Action<VocabNote>? initializer = null)
+    public VocabNote CreateFromUserData(string question, string answer, List<string> readings, Action<VocabNote>? initializer = null)
     {
         var note = Create(question, answer, readings, initializer);
         note.User.Answer.Set(note.GetField(NoteFieldsConstants.Vocab.SourceAnswer));

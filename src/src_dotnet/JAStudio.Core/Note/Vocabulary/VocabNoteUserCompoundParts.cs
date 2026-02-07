@@ -84,7 +84,7 @@ public class VocabNoteUserCompoundParts
             }
 
             var allWordSubstrings = allSubstrings
-                .Where(w => DictLookup.IsDictionaryOrCollectionWord(w))
+                .Where(w => TemporaryServiceCollection.Instance.DictLookup.IsDictionaryOrCollectionWord(w))
                 .ToList();
 
             compoundParts = allWordSubstrings
@@ -98,7 +98,7 @@ public class VocabNoteUserCompoundParts
 
         foreach (var missing in segmentsMissingVocab)
         {
-            VocabNoteFactory.CreateWithDictionary(missing);
+            TemporaryServiceCollection.Instance.VocabNoteFactory.CreateWithDictionary(missing);
         }
 
         Set(compoundParts);

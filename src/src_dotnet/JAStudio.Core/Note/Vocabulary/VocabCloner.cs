@@ -56,7 +56,7 @@ public class VocabCloner
 
     VocabNote CreateNewVocabWithSomeDataCopied(string question, string answer, List<string> readings, bool copyVocabTags = true, bool copyMatchingRules = true)
     {
-        var clone = VocabNoteFactory.CreateFromUserData(question, answer, readings);
+        var clone = TemporaryServiceCollection.Instance.VocabNoteFactory.CreateFromUserData(question, answer, readings);
         if (copyVocabTags)
         {
             CopyVocabTagsTo(clone);

@@ -94,7 +94,7 @@ public class VocabNote : JPNote
 
     public void GenerateAndSetAnswer()
     {
-        var dictLookup = DictLookup.LookupVocabWordOrName(this);
+        var dictLookup = TemporaryServiceCollection.Instance.DictLookup.LookupVocabWordOrName(this);
         if (dictLookup.FoundWords())
         {
             var generated = dictLookup.FormatAnswer();

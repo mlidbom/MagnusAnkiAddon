@@ -22,7 +22,7 @@ public static class WordInfo
             return new VocabWordInfoEntry(word, vocabEntries.First());
         }
 
-        var dictLookupResult = DictLookup.LookupWord(word);
+        var dictLookupResult = TemporaryServiceCollection.Instance.DictLookup.LookupWord(word);
         if (dictLookupResult.FoundWords())
         {
             return new DictWordInfoEntry(word, dictLookupResult);

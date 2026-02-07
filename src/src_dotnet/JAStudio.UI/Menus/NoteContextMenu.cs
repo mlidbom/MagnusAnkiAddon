@@ -321,7 +321,7 @@ public class NoteContextMenu
     {
         try
         {
-            var newVocab = VocabNoteFactory.CreateWithDictionary(text);
+            var newVocab = Core.TemporaryServiceCollection.Instance.VocabNoteFactory.CreateWithDictionary(text);
             Core.Batches.LocalNoteUpdater.ReparseSentencesForVocab(newVocab);
 
             var query = QueryBuilder.NotesLookup([newVocab]);

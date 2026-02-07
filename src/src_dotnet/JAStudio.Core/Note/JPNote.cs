@@ -70,7 +70,7 @@ public abstract class JPNote
    public void SuspendAllCards()
    {
       // Suspend all cards in Anki via service locator
-      AnkiCardOperations.SuspendAllCardsForNote(GetId());
+      TemporaryServiceCollection.Instance.AnkiCardOperations.SuspendAllCardsForNote(GetId());
       
       // Update local status for all known card types
       var cardTypes = _cardStatus.Keys.ToList();
@@ -85,7 +85,7 @@ public abstract class JPNote
    public void UnsuspendAllCards()
    {
       // Unsuspend all cards in Anki via service locator
-      AnkiCardOperations.UnsuspendAllCardsForNote(GetId());
+      TemporaryServiceCollection.Instance.AnkiCardOperations.UnsuspendAllCardsForNote(GetId());
       
       // Update local status for all known card types
       var cardTypes = _cardStatus.Keys.ToList();

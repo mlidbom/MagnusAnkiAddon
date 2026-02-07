@@ -39,7 +39,7 @@ public class VocabNoteGeneratedData
 
             if (vocab.GetReadings().Any())
             {
-                var lookup = DictLookup.LookupVocabWordOrName(vocab);
+                var lookup = TemporaryServiceCollection.Instance.DictLookup.LookupVocabWordOrName(vocab);
                 if (lookup.IsUk() && !vocab.Tags.Contains(Tags.DisableKanaOnly))
                 {
                     vocab.Tags.Set(Tags.UsuallyKanaOnly);

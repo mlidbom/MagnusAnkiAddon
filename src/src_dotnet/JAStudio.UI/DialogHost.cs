@@ -58,7 +58,7 @@ public static class DialogHost
                                            new AvaloniaTaskProgressRunner(windowTitle, labelText, allowCancel, modal));
 
       // Register Anki card operations so Core can suspend/unsuspend cards via Anki API
-      Core.Anki.AnkiCardOperations.SetImplementation(new Anki.AnkiCardOperationsImpl());
+      Core.TemporaryServiceCollection.Instance.AnkiCardOperations.SetImplementation(new Anki.AnkiCardOperationsImpl());
 
       _initialized = true;
    }

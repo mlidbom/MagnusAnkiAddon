@@ -14,8 +14,8 @@ public class PerfectSynonymsTests : TestStartingWithEmptyCollection
     [Fact]
     public void AnswerSyncsToSynonymOnAdd()
     {
-        var first = VocabNoteFactory.Create("first", "first_answer", []);
-        var second = VocabNoteFactory.Create("second", "second_answer", []);
+        var first = TemporaryServiceCollection.Instance.VocabNoteFactory.Create("first", "first_answer", []);
+        var second = TemporaryServiceCollection.Instance.VocabNoteFactory.Create("second", "second_answer", []);
 
         first.RelatedNotes.PerfectSynonyms.AddOverwritingTheAnswerOfTheAddedSynonym(second.GetQuestion());
         Assert.Equal("first_answer", second.GetAnswer());
@@ -24,15 +24,15 @@ public class PerfectSynonymsTests : TestStartingWithEmptyCollection
     [Fact]
     public void AnswerSyncsToAddedSynonymOnUpdate()
     {
-        var first = VocabNoteFactory.Create("first", "first_answer", []);
-        var second = VocabNoteFactory.Create("second", "second_answer", []);
+        var first = TemporaryServiceCollection.Instance.VocabNoteFactory.Create("first", "first_answer", []);
+        var second = TemporaryServiceCollection.Instance.VocabNoteFactory.Create("second", "second_answer", []);
 
         first.RelatedNotes.PerfectSynonyms.AddOverwritingTheAnswerOfTheAddedSynonym(second.GetQuestion());
 
         first.User.Answer.Set("new answer");
         Assert.Equal("new answer", second.GetAnswer());
 
-        var third = VocabNoteFactory.Create("third", "third_answer", []);
+        var third = TemporaryServiceCollection.Instance.VocabNoteFactory.Create("third", "third_answer", []);
         third.RelatedNotes.PerfectSynonyms.AddOverwritingTheAnswerOfTheAddedSynonym(first.GetQuestion());
         Assert.Equal("third_answer", first.GetAnswer());
         Assert.Equal("third_answer", second.GetAnswer());
@@ -59,15 +59,15 @@ public class PerfectSynonymsTests : TestStartingWithEmptyCollection
     [Fact]
     public void PerfectSynonymsAreKeptInSyncOnAdd()
     {
-        var first = VocabNoteFactory.Create("first", "", []);
-        var second = VocabNoteFactory.Create("second", "", []);
+        var first = TemporaryServiceCollection.Instance.VocabNoteFactory.Create("first", "", []);
+        var second = TemporaryServiceCollection.Instance.VocabNoteFactory.Create("second", "", []);
         first.RelatedNotes.PerfectSynonyms.AddOverwritingTheAnswerOfTheAddedSynonym(second.GetQuestion());
 
         Assert.Equal(["second"], first.RelatedNotes.PerfectSynonyms.Get());
         Assert.Equal(["first"], second.RelatedNotes.PerfectSynonyms.Get());
 
-        var third = VocabNoteFactory.Create("third", "", []);
-        var fourth = VocabNoteFactory.Create("fourth", "", []);
+        var third = TemporaryServiceCollection.Instance.VocabNoteFactory.Create("third", "", []);
+        var fourth = TemporaryServiceCollection.Instance.VocabNoteFactory.Create("fourth", "", []);
         second.RelatedNotes.PerfectSynonyms.AddOverwritingTheAnswerOfTheAddedSynonym(third.GetQuestion());
         second.RelatedNotes.PerfectSynonyms.AddOverwritingTheAnswerOfTheAddedSynonym(fourth.GetQuestion());
 

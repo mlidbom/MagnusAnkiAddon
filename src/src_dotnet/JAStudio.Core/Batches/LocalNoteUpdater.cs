@@ -348,7 +348,7 @@ public class LocalNoteUpdater
                     .Where(word => word.VocabId == ParsedMatch.MissingNoteId)
                     .Select(word => word.ParsedForm))
                 .Distinct()
-                .Select(form => DictLookup.LookupWord(form))
+                .Select(form => TemporaryServiceCollection.Instance.DictLookup.LookupWord(form))
                 .Where(result => result.FoundWords())
                 .OrderBy(result => result.PrioritySpec().Priority)
                 .ToList());
@@ -358,7 +358,7 @@ public class LocalNoteUpdater
             // We may well have created a vocab that provides this form already...
             if (!App.Col().Vocab.WithForm(result.Word).Any())
             {
-                VocabNoteFactory.CreateWithDictionary(result.Word);
+                TemporaryServiceCollection.Instance.VocabNoteFactory.CreateWithDictionary(result.Word);
             }
         }
 

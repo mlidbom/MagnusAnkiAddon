@@ -29,13 +29,13 @@ public class AnkiCardOperations
     /// <summary>
     /// Set the implementation of card operations (called by JAStudio.UI during initialization).
     /// </summary>
-    public static void SetImplementation(IAnkiCardOperations implementation)
+    public void SetImplementation(IAnkiCardOperations implementation)
     {
         _implementation = implementation;
     }
 
     /// <summary>Suspend all cards for the given note ID.</summary>
-    public static void SuspendAllCardsForNote(int noteId)
+    public void SuspendAllCardsForNote(int noteId)
     {
         if (_implementation == null)
         {
@@ -47,7 +47,7 @@ public class AnkiCardOperations
     }
 
     /// <summary>Unsuspend all cards for the given note ID.</summary>
-    public static void UnsuspendAllCardsForNote(int noteId)
+    public void UnsuspendAllCardsForNote(int noteId)
     {
         if (_implementation == null)
         {

@@ -24,7 +24,7 @@ public class DictLookup
     static readonly ConcurrentDictionary<string, List<DictEntry>> LookupNameRawCache = new();
     static readonly ConcurrentDictionary<string, bool> IsWordCache = new();
 
-    static HashSet<string> FindAllWords()
+    HashSet<string> FindAllWords()
     {
         var stopwatch = Stopwatch.StartNew();
         MyLog.Info("Prepopulating all word forms from jamdict.");
@@ -44,7 +44,7 @@ public class DictLookup
         return result;
     }
 
-    static HashSet<string> FindAllNames()
+    HashSet<string> FindAllNames()
     {
         var stopwatch = Stopwatch.StartNew();
         MyLog.Info("Prepopulating all name forms from jamdict.");
@@ -64,7 +64,7 @@ public class DictLookup
         return result;
     }
 
-    static HashSet<string> AllWordForms()
+    HashSet<string> AllWordForms()
     {
         if (_allWordForms == null)
         {
@@ -73,7 +73,7 @@ public class DictLookup
         return _allWordForms;
     }
 
-    static HashSet<string> AllNameForms()
+    HashSet<string> AllNameForms()
     {
         if (_allNameForms == null)
         {
@@ -82,7 +82,7 @@ public class DictLookup
         return _allNameForms;
     }
 
-    public static DictLookupResult LookupVocabWordOrName(VocabNote vocab)
+    public DictLookupResult LookupVocabWordOrName(VocabNote vocab)
     {
         if (vocab.Readings.Get().Any())
         {
@@ -95,7 +95,7 @@ public class DictLookup
         return LookupWordOrName(vocab.Question.WithoutNoiseCharacters);
     }
 
-    public static DictLookupResult LookupWordOrNameWithMatchingReading(string word, List<string> readings)
+    public DictLookupResult LookupWordOrNameWithMatchingReading(string word, List<string> readings)
     {
         if (readings.Count == 0)
         {
@@ -105,7 +105,7 @@ public class DictLookup
         return TryLookupWordOrNameWithMatchingReading(word, readings);
     }
 
-    static DictLookupResult TryLookupWordOrNameWithMatchingReading(string word, List<string> readings)
+    DictLookupResult TryLookupWordOrNameWithMatchingReading(string word, List<string> readings)
     {
         if (!MightBeEntry(word))
         {
@@ -120,7 +120,7 @@ public class DictLookup
             TryLookupWordOrNameWithMatchingReadingInner(word, readings));
     }
 
-    static DictLookupResult TryLookupWordOrNameWithMatchingReadingInner(string word, List<string> readings)
+    DictLookupResult TryLookupWordOrNameWithMatchingReadingInner(string word, List<string> readings)
     {
         List<DictEntry> KanjiFormMatches(List<DictEntry> lookup)
         {
@@ -152,7 +152,7 @@ public class DictLookup
         return new DictLookupResult(matching, word, readings);
     }
 
-    public static DictLookupResult LookupWordOrName(string word)
+    public DictLookupResult LookupWordOrName(string word)
     {
         if (!MightBeEntry(word))
         {
@@ -168,7 +168,7 @@ public class DictLookup
         return LookupName(word);
     }
 
-    public static DictLookupResult LookupWord(string word)
+    public DictLookupResult LookupWord(string word)
     {
         if (!MightBeWord(word))
         {
@@ -179,7 +179,7 @@ public class DictLookup
         return new DictLookupResult(entries, word, new List<string>());
     }
 
-    public static DictLookupResult LookupName(string word)
+    public DictLookupResult LookupName(string word)
     {
         if (!MightBeWord(word))
         {
@@ -190,7 +190,7 @@ public class DictLookup
         return new DictLookupResult(entries, word, new List<string>());
     }
 
-    static List<DictEntry> LookupWordRaw(string word)
+    List<DictEntry> LookupWordRaw(string word)
     {
         if (!MightBeWord(word))
         {
@@ -200,7 +200,7 @@ public class DictLookup
         return LookupWordRawCache.GetOrAdd(word, LookupWordRawInner);
     }
 
-    static List<DictEntry> LookupWordRawInner(string word)
+    List<DictEntry> LookupWordRawInner(string word)
     {
         var lookupResult = JamdictThreadingWrapper.Lookup(word, includeNames: false);
         var entries = lookupResult.Entries;
@@ -213,7 +213,7 @@ public class DictLookup
         return entries.Where(ent => ent.IsKanaOnly()).ToList();
     }
 
-    static List<DictEntry> LookupNameRaw(string word)
+    List<DictEntry> LookupNameRaw(string word)
     {
         if (!MightBeName(word))
         {
@@ -223,19 +223,19 @@ public class DictLookup
         return LookupNameRawCache.GetOrAdd(word, LookupNameRawInner);
     }
 
-    static List<DictEntry> LookupNameRawInner(string word)
+    List<DictEntry> LookupNameRawInner(string word)
     {
         var lookupResult = JamdictThreadingWrapper.Lookup(word, includeNames: true);
         return lookupResult.Names;
     }
 
-    public static bool MightBeWord(string word) => App.IsTesting || AllWordForms().Contains(word);
+    public bool MightBeWord(string word) => App.IsTesting || AllWordForms().Contains(word);
 
-    public static bool MightBeName(string word) => App.IsTesting || AllNameForms().Contains(word);
+    public bool MightBeName(string word) => App.IsTesting || AllNameForms().Contains(word);
 
-    public static bool MightBeEntry(string word) => MightBeWord(word) || MightBeName(word);
+    public bool MightBeEntry(string word) => MightBeWord(word) || MightBeName(word);
 
-    public static bool IsWord(string word)
+    public bool IsWord(string word)
     {
         if (!MightBeWord(word))
         {
@@ -245,11 +245,11 @@ public class DictLookup
         return IsWordCache.GetOrAdd(word, IsWordInner);
     }
 
-    static bool IsWordInner(string word) => LookupWord(word).FoundWords();
+    bool IsWordInner(string word) => LookupWord(word).FoundWords();
 
-    public static bool IsDictionaryOrCollectionWord(string word) => App.Col().Vocab.IsWord(word) || IsWord(word);
+    public bool IsDictionaryOrCollectionWord(string word) => App.Col().Vocab.IsWord(word) || IsWord(word);
 
-    public static void EnsureLoadedIntoMemory()
+    public void EnsureLoadedIntoMemory()
     {
         LookupNameRaw("桜");
         LookupWordRaw("俺");

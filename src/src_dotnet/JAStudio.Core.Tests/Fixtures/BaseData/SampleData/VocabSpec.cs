@@ -112,6 +112,6 @@ public class VocabSpec : IEquatable<VocabSpec>
 
     public void CreateVocabNote()
     {
-        VocabNoteFactory.Create(DisambiguationName, Answer, Readings, InitializeNote);
+        TemporaryServiceCollection.Instance.VocabNoteFactory.Create(DisambiguationName, Answer, Readings, InitializeNote);
     }
 }
