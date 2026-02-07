@@ -61,9 +61,8 @@ public class JAStudioAppRoot
 
       uiThread.Start();
 
-      // Wait for Avalonia to initialize
-      // TODO: Add proper synchronization with App.OnFrameworkInitializationCompleted
-      Thread.Sleep(500);
+      // Wait for Avalonia to finish framework initialization
+      App.WaitForInitialization(TimeSpan.FromSeconds(30));
 
       var root = new JAStudioAppRoot(app) { _uiThread = uiThread };
 
