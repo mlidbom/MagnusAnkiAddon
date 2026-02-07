@@ -14,7 +14,7 @@ public class SentenceNote : JPNote
     public CachingSentenceConfigurationField Configuration { get; private set; }
     public MutableSerializedObjectField<ParsingResult> ParsingResult { get; }
 
-    public SentenceNote(NoteServices services, NetNoteData? data = null) : base(services, data)
+    public SentenceNote(NoteServices services, NoteData? data = null) : base(services, data)
     {
         Configuration = new CachingSentenceConfigurationField(this);
         ParsingResult = new MutableSerializedObjectField<ParsingResult>(

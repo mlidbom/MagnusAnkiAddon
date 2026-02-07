@@ -16,7 +16,7 @@ public static class NoteBulkLoader
    /// Load all notes of the specified note type from the Anki database.
    /// Queries the notetypes, fields, and notes tables directly.
    /// </summary>
-   public static List<NetNoteData> LoadAllNotesOfType(AnkiDatabase db, string noteTypeName)
+   public static List<NoteData> LoadAllNotesOfType(AnkiDatabase db, string noteTypeName)
    {
       var (noteTypeId, fieldMap, fieldCount) = GetNoteTypeInfo(db.Connection, noteTypeName);
       return LoadNotes(db.Connection, noteTypeId, fieldMap, fieldCount);
@@ -49,7 +49,7 @@ public static class NoteBulkLoader
       return (noteTypeId, fieldMap, fieldMap.Count);
    }
 
-   static List<NetNoteData> LoadNotes(SqliteConnection connection, long noteTypeId, Dictionary<string, int> fieldMap, int fieldCount)
+   static List<NoteData> LoadNotes(SqliteConnection connection, long noteTypeId, Dictionary<string, int> fieldMap, int fieldCount)
    {
       using var cmd = connection.CreateCommand();
       cmd.CommandText = """
@@ -62,7 +62,7 @@ public static class NoteBulkLoader
       cmd.Parameters.AddWithValue("@mid", noteTypeId);
 
       using var reader = cmd.ExecuteReader();
-      var results = new List<NetNoteData>();
+      var results = new List<NoteData>();
 
       while (reader.Read())
       {
@@ -84,7 +84,7 @@ public static class NoteBulkLoader
             fields[name] = ordinal < fieldValues.Length ? fieldValues[ordinal] : "";
          }
 
-         results.Add(new NetNoteData(id, fields, tags));
+         results.Add(new NoteData(id, fields, tags));
       }
 
       return results;

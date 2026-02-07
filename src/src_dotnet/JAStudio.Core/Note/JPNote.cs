@@ -18,7 +18,7 @@ public abstract class JPNote
    readonly Dictionary<string, string> _fields;
    long _idCache;
 
-   protected JPNote(NoteServices services, NetNoteData? data = null)
+   protected JPNote(NoteServices services, NoteData? data = null)
    {
       Services = services;
       RecursiveFlushGuard = new NoteFlushGuard(this);
@@ -38,7 +38,7 @@ public abstract class JPNote
       _cardStatus[status.CardType] = !status.IsSuspended;
    }
 
-   public NetNoteData GetData() => new(GetId(), _fields, Tags.ToInternedStringList());
+   public NoteData GetData() => new(GetId(), _fields, Tags.ToInternedStringList());
 
    public override bool Equals(object? obj)
    {

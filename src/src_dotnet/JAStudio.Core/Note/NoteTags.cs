@@ -10,7 +10,7 @@ public class NoteTags : IEnumerable<Tag>
     private readonly HashSet<Tag> _tags = new();
     private static readonly Dictionary<HashSet<Tag>, List<string>> _internedStringLists = new();
 
-    public NoteTags(JPNote note, NetNoteData? data = null)
+    public NoteTags(JPNote note, NoteData? data = null)
     {
         _note = note;
 

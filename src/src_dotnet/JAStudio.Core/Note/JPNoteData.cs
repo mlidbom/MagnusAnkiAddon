@@ -3,22 +3,22 @@ using JAStudio.PythonInterop;
 
 namespace JAStudio.Core.Note;
 
-public class NetNoteData
+public class NoteData
 {
     public long Id { get; set; }
     public Dictionary<string, string> Fields { get; set; }
     public List<string> Tags { get; set; }
 
-    public NetNoteData(long id, Dictionary<string, string> fields, List<string> tags)
+    public NoteData(long id, Dictionary<string, string> fields, List<string> tags)
     {
         Id = id;
         Fields = fields;
         Tags = tags;
     }
 
-    public static IReadOnlyList<NetNoteData> FromPythonListOfNoteData(dynamic pythonList)
+    public static IReadOnlyList<NoteData> FromPythonListOfNoteData(dynamic pythonList)
     {
-       var result = new List<NetNoteData>();
+       var result = new List<NoteData>();
        foreach(var item in pythonList)
        {
           result.Add(ToDotNet(item));
@@ -26,12 +26,12 @@ public class NetNoteData
        return result;
     }
 
-    static NetNoteData ToDotNet(dynamic item)
+    static NoteData ToDotNet(dynamic item)
     {
        var id = (long)item.id;
        var fields = PythonDotNetShim.StringStringDict.ToDotNet(item.fields);
        var tags = PythonDotNetShim.StringList.ToDotNet(item.tags);
-       return new NetNoteData(id, fields, tags);
+       return new NoteData(id, fields, tags);
     }
 
     //class JPNoteData:

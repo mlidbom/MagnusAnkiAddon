@@ -16,15 +16,15 @@ public class CachedNote
     }
 }
 
-public abstract class NetNoteCacheBase<TNote> where TNote : JPNote
+public abstract class NoteCacheBase<TNote> where TNote : JPNote
 {
-   readonly Func<NoteServices, NetNoteData, TNote> _noteConstructor;
+   readonly Func<NoteServices, NoteData, TNote> _noteConstructor;
    readonly Type _noteType;
     protected readonly Dictionary<long, TNote> _byId = new();
     readonly List<Action<TNote>> _updateListeners = new();
     NoteServices? _noteServices;
 
-    protected NetNoteCacheBase(Type cachedNoteType, Func<NoteServices, NetNoteData, TNote> noteConstructor)
+    protected NoteCacheBase(Type cachedNoteType, Func<NoteServices, NoteData, TNote> noteConstructor)
     {
         _noteConstructor = noteConstructor;
         _noteType = cachedNoteType;
@@ -69,7 +69,7 @@ public abstract class NetNoteCacheBase<TNote> where TNote : JPNote
         AddToCache(note);
     }
 
-    public void InitFromList(List<NetNoteData> allNotes)
+    public void InitFromList(List<NoteData> allNotes)
     {
         if (allNotes.Count > 0)
         {
@@ -83,7 +83,7 @@ public abstract class NetNoteCacheBase<TNote> where TNote : JPNote
         }
     }
 
-    void AddToCacheFromData(NetNoteData noteData)
+    void AddToCacheFromData(NoteData noteData)
     {
         AddToCache(_noteConstructor(RequireServices(), noteData));
     }
@@ -101,14 +101,14 @@ public abstract class NetNoteCacheBase<TNote> where TNote : JPNote
     }
 }
 
-public abstract class NoteCache<TNote, TSnapshot> : NetNoteCacheBase<TNote>
+public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
     where TNote : JPNote
     where TSnapshot : CachedNote
 {
    readonly Dictionary<string, List<TNote>> _byQuestion = new();
    readonly Dictionary<long, TSnapshot> _snapshotById = new();
 
-    protected NoteCache(Type cachedNoteType, Func<NoteServices, NetNoteData, TNote> noteConstructor)
+    protected NoteCache(Type cachedNoteType, Func<NoteServices, NoteData, TNote> noteConstructor)
         : base(cachedNoteType, noteConstructor)
     {
     }
