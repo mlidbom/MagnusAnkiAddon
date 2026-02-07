@@ -6,6 +6,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt.qt import QAction, QKeySequence, QMenu
+from jaslib import mylog
 from jaspythonutils.sysutils.typed import non_optional
 
 if TYPE_CHECKING:
@@ -35,11 +36,11 @@ def add_to_qt_menu(target_qt_menu: QMenu, specs: Iterable[SpecMenuItem]) -> None
             if spec.KeyboardShortcut:
                 action.setShortcut(QKeySequence(spec.KeyboardShortcut))
 
-            if spec.IsCommand:
-                action.triggered.connect(lambda checked, a=spec.Action: a.Invoke())  # pyright: ignore [reportUnknownMemberType, reportUnknownLambdaType]
+            action.triggered.connect(lambda urdu, a=spec.Action: a.Invoke())  # pyright: ignore [reportUnknownMemberType, reportUnknownLambdaType]
             target_qt_menu.addAction(action)  # pyright: ignore [reportUnknownMemberType]
         else:
-            raise Exception(f"Unknown menu spec type: {spec}")
+            mylog.error(f"Unknown menu spec type: {spec.Name}")
+            raise Exception(f"Unknown menu spec type: {spec.Name}")
 
 def _add_acceleratator_key_to_name(name: str, accelerator: str) -> str:
     if accelerator == "": return name

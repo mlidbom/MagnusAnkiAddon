@@ -20,7 +20,7 @@ internal class AnkiBackendNoteCreator : IBackendNoteCreator
    {
       using(PythonEnvironment.LockGil())
       {
-         dynamic noteCreatorModule = Py.Import("jaslib.note.backend_note_creator");
+         dynamic noteCreatorModule = Py.Import("jastudio.note.anki_backend_note_creator");
          _pythonNoteCreator = noteCreatorModule.AnkiBackendNoteCreator();
       }
    }
