@@ -17,7 +17,6 @@ public class TestApp
    public static App Reset()
    {
       var app = App.Bootstrap();
-      app.Reset(new TestingBackendNoteCreator());
       app.Services.ConfigurationStore.InitForTesting();
       app.Config().SetReadingsMappingsForTesting(TestReadingsMappings);
 

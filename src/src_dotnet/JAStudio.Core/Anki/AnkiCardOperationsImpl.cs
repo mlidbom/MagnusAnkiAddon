@@ -1,11 +1,9 @@
-using JAStudio.Core.Anki;
-
-namespace JAStudio.UI.Anki;
+namespace JAStudio.Core.Anki;
 
 /// <summary>
 /// Implementation of IAnkiCardOperations that uses AnkiFacade to call Python/Anki APIs.
 /// </summary>
-internal class AnkiCardOperationsImpl : IAnkiCardOperations
+public class AnkiCardOperationsImpl : IAnkiCardOperations
 {
     public void SuspendAllCardsForNote(int noteId)
     {

@@ -1,4 +1,5 @@
 ﻿using Compze.Utilities.DependencyInjection;
+using Compze.Utilities.DependencyInjection.Abstractions;
 using Compze.Utilities.DependencyInjection.SimpleInjector;
 using JAStudio.Core.Anki;
 using JAStudio.Core.AnkiUtils;
@@ -20,19 +21,20 @@ namespace JAStudio.Core;
 
 static class AppBootstrapper
 {
-   public static App Bootstrap()
+   internal static IServiceLocator Bootstrap(App app)
    {
+      IBackendNoteCreator backendNoteCreator = TestEnvDetector.IsTesting ? new TestingBackendNoteCreator() : new AnkiBackendNoteCreator();
+
       var container = new SimpleInjectorDependencyInjectionContainer();
       var registrar = container.Register();
 
       registrar.Register(
+         Singleton.For<IBackendNoteCreator>().Instance(backendNoteCreator),
+         Singleton.For<App>().Instance(app),
          Singleton.For<ConfigurationStore>().CreatedBy((TemporaryServiceCollection services) => new ConfigurationStore(services)),
          Singleton.For<TemporaryServiceCollection>().CreatedBy(() => new TemporaryServiceCollection(container.ServiceLocator)),
-         Singleton.For<App>().CreatedBy((TemporaryServiceCollection services) => new App(services)),
-
-         // Leaf types — registered so classes can inject them directly
          Singleton.For<JapaneseConfig>().CreatedBy((ConfigurationStore store) => store.Config()),
-         Singleton.For<JPCollection>().CreatedBy((App app) => app.Col()),
+         Singleton.For<JPCollection>().CreatedBy(() => new JPCollection(backendNoteCreator)),
          Singleton.For<VocabCollection>().CreatedBy((JPCollection col) => col.Vocab),
          Singleton.For<KanjiCollection>().CreatedBy((JPCollection col) => col.Kanji),
          Singleton.For<SentenceCollection>().CreatedBy((JPCollection col) => col.Sentences),
@@ -42,11 +44,11 @@ static class AppBootstrapper
          Singleton.For<AnalysisServices>().CreatedBy((VocabCollection vocab, DictLookup dictLookup, Settings settings) => new AnalysisServices(vocab, dictLookup, settings)),
          Singleton.For<QueryBuilder>().CreatedBy((VocabCollection vocab, KanjiCollection kanji, AnalysisServices analysisServices) => new QueryBuilder(vocab, kanji, analysisServices)),
          Singleton.For<LocalNoteUpdater>().CreatedBy((TaskRunner taskRunner, VocabCollection vocab, KanjiCollection kanji, SentenceCollection sentences, JapaneseConfig config, DictLookup dictLookup, VocabNoteFactory vocabNoteFactory) =>
-            new LocalNoteUpdater(taskRunner, vocab, kanji, sentences, config, dictLookup, vocabNoteFactory)),
+                                                        new LocalNoteUpdater(taskRunner, vocab, kanji, sentences, config, dictLookup, vocabNoteFactory)),
          Singleton.For<TaskRunner>().CreatedBy((JapaneseConfig config) => new TaskRunner(config)),
          Singleton.For<AnkiCardOperations>().CreatedBy(() => new AnkiCardOperations()),
          Singleton.For<DictLookup>().CreatedBy((VocabCollection vocab, JapaneseConfig config) => new DictLookup(vocab, config)),
-         Singleton.For<TestApp>().CreatedBy((App app, ConfigurationStore configurationStore) => new TestApp(app, configurationStore)),
+         Singleton.For<TestApp>().CreatedBy((ConfigurationStore configurationStore) => new TestApp(app, configurationStore)),
 
          // Note services
          Singleton.For<NoteServices>().CreatedBy((JPCollection collection, AnkiCardOperations ankiCardOps, Settings settings, DictLookup dictLookup, VocabNoteFactory vocabNoteFactory, VocabNoteGeneratedData vocabNoteGeneratedData, KanjiNoteMnemonicMaker kanjiMnemonicMaker, JapaneseConfig config, TaskRunner taskRunner) =>
@@ -78,6 +80,6 @@ static class AppBootstrapper
       );
 
       TemporaryServiceCollection.Instance = container.ServiceLocator.Resolve<TemporaryServiceCollection>();
-      return container.ServiceLocator.Resolve<App>();
+      return container.ServiceLocator;
    }
 }

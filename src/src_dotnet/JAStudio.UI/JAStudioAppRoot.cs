@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
+using JAStudio.Core.Anki;
 using JAStudio.UI.Dialogs;
 using JAStudio.UI.Menus;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
@@ -76,7 +77,7 @@ public class JAStudioAppRoot
                                            new AvaloniaTaskProgressRunner(windowTitle, labelText, allowCancel, modal));
 
       // Register Anki card operations so Core can suspend/unsuspend cards via Anki API
-      root.Services.AnkiCardOperations.SetImplementation(new Anki.AnkiCardOperationsImpl());
+      root.Services.AnkiCardOperations.SetImplementation(new AnkiCardOperationsImpl());
 
       return root;
    }

@@ -11,12 +11,17 @@ namespace JAStudio.Core;
 public class App : IDisposable
 {
    public TemporaryServiceCollection Services { get; }
-   internal App(TemporaryServiceCollection services) => Services = services;
+
+   internal App()
+   {
+
+      Services = AppBootstrapper.Bootstrap(this).Resolve<TemporaryServiceCollection>();
+      _collection = Services.ServiceLocator.Resolve<JPCollection>();
+   }
 
    public static bool IsTesting => TestEnvDetector.IsTesting;
 
-   JPCollection? _collection;
-   IBackendNoteCreator? _backendNoteCreator;
+   JPCollection _collection;
 
    readonly List<Action> _initHooks = new();
 
@@ -32,30 +37,11 @@ public class App : IDisposable
       }
    }
 
-   public static App Bootstrap() => AppBootstrapper.Bootstrap();
+   public static App Bootstrap() => new App();
 
    public JapaneseConfig Config() => Services.ConfigurationStore.Config();
 
-   public JPCollection Col()
-   {
-      if(_collection == null)
-      {
-         if(_backendNoteCreator == null)
-         {
-            throw new Exception("Backend note creator not initialized");
-         }
-
-         _collection = new JPCollection(_backendNoteCreator);
-      }
-
-      return _collection;
-   }
-
-   public void Reset(IBackendNoteCreator backendNoteCreator)
-   {
-      _collection = null;
-      _backendNoteCreator = backendNoteCreator;
-   }
+   public JPCollection Col() => _collection;
 
    internal static string UserFilesDir
    {
