@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
+from jaslib.configuration.configuration_value import JapaneseConfig
 from jaslib.note.kanjinote import KanjiNote
 from jaslib.note.sentences.sentencenote import SentenceNote
 from jaslib.note.vocabulary.vocabnote import VocabNote
@@ -55,10 +56,13 @@ def init() -> None:
             sentence.source_comments.empty()
             refresh_shallow()
 
+    def _config() -> JapaneseConfig:
+        return app.config() # todo migration hook in dotnet config here
+
     def toggle_show_compound_parts_in_sentence_breakdown() -> None:
-        app.config().show_compound_parts_in_sentence_breakdown.set_value(not app.config().show_compound_parts_in_sentence_breakdown.get_value())
-        if app.config().show_compound_parts_in_sentence_breakdown.get_value():
-            app.config().show_sentence_breakdown_in_edit_mode.set_value(False)
+        _config().show_compound_parts_in_sentence_breakdown.set_value(not _config().show_compound_parts_in_sentence_breakdown.get_value())
+        if _config().show_compound_parts_in_sentence_breakdown.get_value():
+            _config().show_sentence_breakdown_in_edit_mode.set_value(False)
         refresh_shallow()
 
     def toggle_expando_flag(flag: ConfigurationValueBool) -> None:
@@ -66,31 +70,31 @@ def init() -> None:
         refresh_shallow()
 
     def toggle_hide_transparent_compounds__in_sentence_breakdown() -> None:
-        toggle_expando_flag(app.config().hide_compositionally_transparent_compounds)
+        toggle_expando_flag(_config().hide_compositionally_transparent_compounds)
 
     def toggle_hide_all_compounds_in_sentence_breakdown() -> None:
-        toggle_expando_flag(app.config().hide_all_compounds)
+        toggle_expando_flag(_config().hide_all_compounds)
 
     def toggle_show_kanji_in_sentence_breakdown() -> None:
-        toggle_expando_flag(app.config().show_kanji_in_sentence_breakdown)
+        toggle_expando_flag(_config().show_kanji_in_sentence_breakdown)
 
     def toggle_show_kanji_mnemonics_in_sentence_breakdown() -> None:
-        toggle_expando_flag(app.config().show_kanji_mnemonics_in_sentence_breakdown)
+        toggle_expando_flag(_config().show_kanji_mnemonics_in_sentence_breakdown)
 
     def toggle_show_sentence_breakdown_in_edit_mode() -> None:
-        toggle_expando_flag(app.config().show_sentence_breakdown_in_edit_mode)
+        toggle_expando_flag(_config().show_sentence_breakdown_in_edit_mode)
 
     def toggle_yield_last_token_in_suru_verb_compounds_to_overlapping_compound() -> None:
-        toggle_expando_flag(app.config().automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound)
+        toggle_expando_flag(_config().automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound)
 
     def toggle_yield_last_token_in_passive_verb_compounds_to_overlapping_compound() -> None:
-        toggle_expando_flag(app.config().automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound)
+        toggle_expando_flag(_config().automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound)
 
     def toggle_yield_last_token_in_causative_verb_compounds_to_overlapping_compound() -> None:
-        toggle_expando_flag(app.config().automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound)
+        toggle_expando_flag(_config().automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound)
 
     def toggle_all_yield_last_token_flags() -> None:
-        app.config().toggle_all_sentence_display_auto_yield_flags()
+        _config().toggle_all_sentence_display_auto_yield_flags()
         refresh_shallow()
 
     # noinspection DuplicatedCode
