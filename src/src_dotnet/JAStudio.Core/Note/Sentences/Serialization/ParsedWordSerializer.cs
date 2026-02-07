@@ -25,7 +25,7 @@ public class ParsedWordSerializer
             int.Parse(values[1]),
             values[2] != "0",
             values[3],
-            int.Parse(values[4])
+            long.Parse(values[4])
         );
     }
 }
