@@ -6,8 +6,11 @@ making them safe to call from any .NET thread (including the Avalonia UI thread)
 """
 from __future__ import annotations
 
+from anki.cards import CardId
+from anki.notes import NoteId
+from jaspythonutils.sysutils.typed import non_optional
 from jastudio.sysutils.app_thread_pool import run_on_ui_thread_fire_and_forget, run_on_ui_thread_synchronously
-
+from typed_linq_collections.q_iterable import query
 
 # ── Browser ──
 
@@ -31,7 +34,7 @@ def browser_prioritize_cards(card_ids: list[int]) -> None:
     """Prioritize selected cards (sets card.due based on note type priority)."""
     def do_it() -> None:
         from jastudio.note import queue_manager
-        queue_manager.prioritize_selected_cards(card_ids)
+        queue_manager.prioritize_selected_cards(query(card_ids).select(NoteId).to_list())
     run_on_ui_thread_fire_and_forget(do_it)
 
 
@@ -39,7 +42,7 @@ def browser_spread_cards_over_days(card_ids: list[int], start_day: int, days_apa
     """Spread selected cards over days (distributes due dates across time range)."""
     def do_it() -> None:
         from jastudio.ui.menus.browser import main as browser_main
-        browser_main.spread_due_dates(card_ids, start_day, days_apart)
+        browser_main.spread_due_dates(query(card_ids).select(NoteId).to_list(), start_day, days_apart)
     run_on_ui_thread_fire_and_forget(do_it)
 
 
@@ -95,7 +98,7 @@ def col_db_file_path() -> str:
     """Get the path to the Anki collection database file."""
     def do_it() -> str:
         from aqt import mw
-        return str(mw.col.path)  # type: ignore[union-attr]
+        return non_optional(mw.col).path
     return run_on_ui_thread_synchronously(do_it)
 
 
@@ -105,5 +108,5 @@ def get_note_id_from_card_id(card_id: int) -> int:
     """Get note ID from card ID."""
     def do_it() -> int:
         from jastudio.ankiutils import app
-        return int(app.anki_collection().get_card(card_id).nid)
+        return int(app.anki_collection().get_card(CardId(card_id)).nid)
     return run_on_ui_thread_synchronously(do_it)

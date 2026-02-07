@@ -4,9 +4,9 @@ import re
 from typing import TYPE_CHECKING, cast, override
 
 from autoslot import Slots
-from typed_linq_collections.q_iterable import query
 from jaspythonutils.sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_list import QList
+from typed_linq_collections.q_iterable import query
 
 from jaslib import app
 from jaslib.language_services import kana_utils

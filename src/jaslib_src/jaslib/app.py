@@ -20,10 +20,10 @@ if TYPE_CHECKING:
 _collection: JPCollection | None = None
 _backend_note_creator: IBackendNoteCreator | None = None
 
-_init_hooks: QSet[Callable[[], None]] = QSet()
+init_hooks: QSet[Callable[[], None]] = QSet()
 
 def add_init_hook(hook: Callable[[], None]) -> None:
-    _init_hooks.add(hook)  # todo migration
+    init_hooks.add(hook)  # todo migration
 
 def config() -> JapaneseConfig:
     from jaslib.configuration import configuration_value

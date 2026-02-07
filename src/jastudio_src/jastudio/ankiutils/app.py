@@ -30,14 +30,14 @@ if TYPE_CHECKING:
 
 _collection: AnkiJPCollectionSyncer | None = None
 
-_init_hooks: QSet[Callable[[], None]] = QSet()
+init_hooks: QSet[Callable[[], None]] = QSet()
 _collection_closed_hooks: QSet[Callable[[], None]] = QSet()
 
 addon_name: str = "should_be_replaced_by_init"
 
 def _call_init_hooks() -> None:
-    global _init_hooks
-    for hook in _init_hooks: hook()
+    global init_hooks
+    for hook in init_hooks: hook()
 
 def config() -> JapaneseConfig:
     from jastudio.configuration import configuration_value
