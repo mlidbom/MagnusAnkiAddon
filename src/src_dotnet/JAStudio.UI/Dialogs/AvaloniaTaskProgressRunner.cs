@@ -18,53 +18,76 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
       Dispatcher.UIThread.Invoke(() => _panel = MultiTaskProgressDialog.CreatePanel(windowTitle, labelText, allowCancel));
    }
 
+   // --- Public API (same order as ITaskProgressRunner) ---
+
+   public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads) => Dispatcher.UIThread.Invoke(() =>
+   {
+      using var _ = this.Log().Info().LogMethodExecutionTime($"{message} handled {items.Count} items ({threads.Threads} threads)");
+      InitListProcessingProgress(items, message);
+      return ProcessItems(items, processItem, message, threads);
+   });
+
+   public TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action) => Dispatcher.UIThread.Invoke(() =>
+   {
+      SetPanelToProgressSpinnerMode(message);
+      return RunActionOnBackgroundThread(message, action);
+   });
+
+   public Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
+   {
+      using var _ = this.Log().Info().LogMethodExecutionTime($"{message} handled {items.Count} items ({threads.Threads} threads)");
+      Dispatcher.UIThread.Post(() => InitListProcessingProgress(items, message));
+      return Task.Run(() => ProcessItems(items, processItem, message, threads));
+   }
+
+   public async Task<TResult> RunOnBackgroundThreadWithSpinningProgressDialogAsync<TResult>(string message, Func<TResult> action)
+   {
+      using var _ = this.Log().Info().LogMethodExecutionTime(message);
+      Dispatcher.UIThread.Post(() => SetPanelToProgressSpinnerMode(message));
+      return await Task.Run(action);
+   }
+
+   public void Close() => Dispatcher.UIThread.Post(() => MultiTaskProgressDialog.RemovePanel(_panel));
+
+   public void Dispose() => Close();
+
+   // --- Implementation details ---
+
    static void KeepUIThreadAliveWhileWaitingForTaskToComplete(Task task)
    {
       while(!task.IsCompleted) Dispatcher.UIThread.RunJobs();
    }
 
-   public TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action) => Dispatcher.UIThread.Invoke(() =>
+   void SetPanelToProgressSpinnerMode(string message)
    {
-      using var _ = this.Log().Info().LogMethodExecutionTime(message);
-
       _panel.SetMessage(message);
       _panel.SetIndeterminate(true);
-
-      var task = Task.Run(action);
-
-      KeepUIThreadAliveWhileWaitingForTaskToComplete(task);
-
-      return task.Result;
-   });
-
-   public async Task<TResult> RunOnBackgroundThreadWithSpinningProgressDialogAsync<TResult>(string message, Func<TResult> action)
-   {
-      using var _ = this.Log().Info().LogMethodExecutionTime(message);
-
-      Dispatcher.UIThread.Post(() =>
-      {
-         _panel.SetMessage(message);
-         _panel.SetIndeterminate(true);
-      });
-
-      return await Task.Run(action);
    }
 
-   public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads) => Dispatcher.UIThread.Invoke(() =>
+   void InitListProcessingProgress<TInput>(List<TInput> items, string message)
+   {
+      _panel.SetMessage($"{message} 0 of {items.Count}");
+      _panel.SetIndeterminate(false);
+      _panel.SetProgress(0, items.Count);
+   }
+
+   TResult RunActionOnBackgroundThread<TResult>(string message, Func<TResult> action)
+   {
+      using var _ = this.Log().Info().LogMethodExecutionTime(message);
+      var task = Task.Run(action);
+      KeepUIThreadAliveWhileWaitingForTaskToComplete(task);
+      return task.Result;
+   }
+
+   List<TOutput> ProcessItems<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
    {
       var totalItems = items.Count;
       var results = new TOutput[totalItems];
-      using var _ = this.Log().Info().LogMethodExecutionTime($"{message} handled {items.Count} items ({threads.Threads} threads)");
-
-      _panel.SetMessage($"{message} 0 of {totalItems}");
-      _panel.SetIndeterminate(false);
-      _panel.SetProgress(0, totalItems);
-
       int completed = 0;
       var startTime = DateTime.Now;
       var lastRefresh = DateTime.Now;
 
-      void UpdateProgressFromAnyThread()
+      void UpdateProgress()
       {
          var now = DateTime.Now;
          var current = System.Threading.Interlocked.Increment(ref completed);
@@ -99,8 +122,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
             }
 
             results[i] = processItem(items[i]);
-            UpdateProgressFromAnyThread();
-            Dispatcher.UIThread.RunJobs();
+            UpdateProgress();
          }
       } else
       {
@@ -111,84 +133,11 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
                       {
                          if(_allowCancel && _panel.WasCanceled) return;
                          results[i] = processItem(items[i]);
-                         UpdateProgressFromAnyThread();
+                         UpdateProgress();
                       });
       }
 
       return new List<TOutput>(results);
-   });
-
-   public Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
-   {
-      var totalItems = items.Count;
-      using var _ = this.Log().Info().LogMethodExecutionTime($"{message} handled {items.Count} items ({threads.Threads} threads)");
-
-      Dispatcher.UIThread.Post(() =>
-      {
-         _panel.SetMessage($"{message} 0 of {totalItems}");
-         _panel.SetIndeterminate(false);
-         _panel.SetProgress(0, totalItems);
-      });
-
-      return Task.Run(() =>
-      {
-         var results = new TOutput[totalItems];
-         int completed = 0;
-         var startTime = DateTime.Now;
-         var lastRefresh = DateTime.Now;
-
-         void UpdateProgress(int justCompleted)
-         {
-            var now = DateTime.Now;
-            var current = System.Threading.Interlocked.Add(ref completed, justCompleted);
-            if((now - lastRefresh).TotalMilliseconds > 100 || current == totalItems)
-            {
-               lastRefresh = now;
-               var elapsed = current > 0 ? (now - startTime).TotalSeconds : 0;
-               var estimatedTotal = current > 0 ? (elapsed / current) * totalItems : 0;
-               var estimatedRemaining = current > 0 ? estimatedTotal - elapsed : 0;
-               var progressMessage = current > 0
-                                        ? $"{message} {current} of {totalItems} Total: {FormatSeconds(estimatedTotal)} Elapsed: {FormatSeconds(elapsed)} Remaining: {FormatSeconds(estimatedRemaining)}"
-                                        : $"{message} {current} of {totalItems}";
-
-               var capturedCurrent = current;
-               var capturedMsg = progressMessage;
-               Dispatcher.UIThread.Post(() =>
-               {
-                  _panel.SetProgress(capturedCurrent, totalItems);
-                  _panel.SetMessage(capturedMsg);
-               });
-            }
-         }
-
-         if(threads.IsSequential)
-         {
-            for(int i = 0; i < totalItems; i++)
-            {
-               if(_allowCancel && _panel.WasCanceled)
-               {
-                  JALogger.Log($"Operation canceled by user after {completed} of {totalItems} items");
-                  break;
-               }
-
-               results[i] = processItem(items[i]);
-               UpdateProgress(1);
-            }
-         } else
-         {
-            Parallel.For(0,
-                         totalItems,
-                         threads.ParallelOptions,
-                         i =>
-                         {
-                            if(_allowCancel && _panel.WasCanceled) return;
-                            results[i] = processItem(items[i]);
-                            UpdateProgress(1);
-                         });
-         }
-
-         return new List<TOutput>(results);
-      });
    }
 
    static string FormatSeconds(double seconds)
@@ -196,8 +145,4 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
       var timeSpan = TimeSpan.FromSeconds(seconds);
       return $"{timeSpan.Hours:D2}:{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
    }
-
-   public void Close() => Dispatcher.UIThread.Post(() => MultiTaskProgressDialog.RemovePanel(_panel));
-
-   public void Dispose() => Close();
 }
