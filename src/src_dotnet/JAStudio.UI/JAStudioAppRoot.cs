@@ -145,7 +145,7 @@ public class JAStudioAppRoot
    /// <summary>
    /// Show the VocabFlagsDialog for editing a vocab note's flags.
    /// </summary>
-   public void ShowVocabFlagsDialog(int vocabId)
+   public void ShowVocabFlagsDialog(long vocabId)
    {
       Dispatcher.UIThread.Invoke(() =>
       {

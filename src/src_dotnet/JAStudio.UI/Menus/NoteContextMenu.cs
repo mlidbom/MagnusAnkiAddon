@@ -34,7 +34,7 @@ public class NoteContextMenu
    /// <summary>
    /// Build context menu for a vocab note as UI-agnostic specifications.
    /// </summary>
-   public List<SpecMenuItem> BuildVocabContextMenuSpec(int vocabId, string selection, string clipboard)
+   public List<SpecMenuItem> BuildVocabContextMenuSpec(long vocabId, string selection, string clipboard)
    {
       var vocab = _services.App.Collection.Vocab.WithIdOrNone(vocabId);
       if(vocab == null)
@@ -58,7 +58,7 @@ public class NoteContextMenu
    /// <summary>
    /// Build context menu for a kanji note as UI-agnostic specifications.
    /// </summary>
-   public List<SpecMenuItem> BuildKanjiContextMenuSpec(int kanjiId, string selection, string clipboard)
+   public List<SpecMenuItem> BuildKanjiContextMenuSpec(long kanjiId, string selection, string clipboard)
    {
       var kanji = _services.App.Collection.Kanji.WithIdOrNone(kanjiId);
       if(kanji == null)
@@ -82,7 +82,7 @@ public class NoteContextMenu
    /// <summary>
    /// Build context menu for a sentence note as UI-agnostic specifications.
    /// </summary>
-   public List<SpecMenuItem> BuildSentenceContextMenuSpec(int sentenceId, string selection, string clipboard)
+   public List<SpecMenuItem> BuildSentenceContextMenuSpec(long sentenceId, string selection, string clipboard)
    {
       var sentence = _services.App.Collection.Sentences.WithIdOrNone(sentenceId);
       if(sentence == null)
@@ -122,7 +122,7 @@ public class NoteContextMenu
    /// <summary>
    /// Build context menu for a vocab note and convert to Avalonia MenuItems.
    /// </summary>
-   public List<Avalonia.Controls.MenuItem> BuildVocabContextMenu(int vocabId, string selection, string clipboard)
+   public List<Avalonia.Controls.MenuItem> BuildVocabContextMenu(long vocabId, string selection, string clipboard)
    {
       var specs = BuildVocabContextMenuSpec(vocabId, selection, clipboard);
       return ConvertToAvaloniaMenuItems(specs);
@@ -131,7 +131,7 @@ public class NoteContextMenu
    /// <summary>
    /// Build context menu for a kanji note and convert to Avalonia MenuItems.
    /// </summary>
-   public List<Avalonia.Controls.MenuItem> BuildKanjiContextMenu(int kanjiId, string selection, string clipboard)
+   public List<Avalonia.Controls.MenuItem> BuildKanjiContextMenu(long kanjiId, string selection, string clipboard)
    {
       var specs = BuildKanjiContextMenuSpec(kanjiId, selection, clipboard);
       return ConvertToAvaloniaMenuItems(specs);
@@ -140,7 +140,7 @@ public class NoteContextMenu
    /// <summary>
    /// Build context menu for a sentence note and convert to Avalonia MenuItems.
    /// </summary>
-   public List<Avalonia.Controls.MenuItem> BuildSentenceContextMenu(int sentenceId, string selection, string clipboard)
+   public List<Avalonia.Controls.MenuItem> BuildSentenceContextMenu(long sentenceId, string selection, string clipboard)
    {
       var specs = BuildSentenceContextMenuSpec(sentenceId, selection, clipboard);
       return ConvertToAvaloniaMenuItems(specs);

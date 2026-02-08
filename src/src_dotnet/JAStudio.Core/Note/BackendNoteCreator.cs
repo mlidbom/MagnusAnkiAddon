@@ -34,9 +34,9 @@ internal class AnkiBackendNoteCreator : IBackendNoteCreator
 
 public class TestingBackendNoteCreator : IBackendNoteCreator
 {
-   private int _currentId;
+   private long _currentId;
 
-   private int GetNextId()
+   private long GetNextId()
    {
       _currentId++;
       return _currentId;

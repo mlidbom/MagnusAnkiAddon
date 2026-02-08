@@ -145,13 +145,13 @@ public class BrowserMenus
          var noteId = AnkiFacade.GetNoteIdFromCardId(cardId);
 
          // Try each note type collection
-         var vocab = _services.App.Collection.Vocab.WithIdOrNone((int)noteId);
+         var vocab = _services.App.Collection.Vocab.WithIdOrNone(noteId);
          if(vocab != null) return vocab;
 
-         var sentence = _services.App.Collection.Sentences.WithIdOrNone((int)noteId);
+         var sentence = _services.App.Collection.Sentences.WithIdOrNone(noteId);
          if(sentence != null) return sentence;
 
-         var kanji = _services.App.Collection.Kanji.WithIdOrNone((int)noteId);
+         var kanji = _services.App.Collection.Kanji.WithIdOrNone(noteId);
          return kanji;
       }
       catch(Exception ex)
@@ -169,7 +169,7 @@ public class BrowserMenus
       {
          try
          {
-            var note = _services.App.Collection.Sentences.WithIdOrNone((int)noteId);
+            var note = _services.App.Collection.Sentences.WithIdOrNone(noteId);
             if(note != null)
             {
                sentences.Add(note);

@@ -173,7 +173,7 @@ public class VocabCloner
         return CloneToDerivedForm(formSuffix, (it, form) => form.Substring(0, form.Length - chopCharacters));
     }
 
-    public string SuffixToChoppedPreview(string formSuffix, int chopCharacters) => Note.GetQuestion().Substring(0, Note.GetQuestion().Length - chopCharacters) + formSuffix;
+    public string SuffixToChoppedPreview(string formSuffix, int chopCharacters) => Note.GetQuestion().Substring(0, Math.Max(0, Note.GetQuestion().Length - chopCharacters)) + formSuffix;
 
     public VocabNote SuffixToIStem(string formSuffix) => CloneToDerivedForm(formSuffix, Conjugator.GetIStemVocab);
     public string SuffixToIStemPreview(string formSuffix) => CreatePreviewForm(formSuffix, Conjugator.GetIStemVocab);

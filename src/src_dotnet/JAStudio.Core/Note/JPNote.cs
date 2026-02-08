@@ -158,7 +158,7 @@ public abstract class JPNote
 
    public long GetId() => _idCache;
 
-   public void SetId(int id)
+   public void SetId(long id)
    {
       if(_idCache != 0)
       {

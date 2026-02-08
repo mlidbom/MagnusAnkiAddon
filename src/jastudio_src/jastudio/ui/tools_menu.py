@@ -22,9 +22,7 @@ def build_main_menu() -> None:
         menu_builder = dotnet_ui_root.CreateJapaneseMainMenu()
         clipboard_getter = Func[str](get_user_text_input)  # pyright: ignore [reportCallIssue]
         specs = menu_builder.BuildMenuSpec(clipboard_getter)
-
-        csharp_menu = non_optional(menu.addMenu(shortcutfinger.down3("🎯 C# Japanese Menu")))
-        qt_menu_adapter.add_to_qt_menu(csharp_menu, specs)
+        qt_menu_adapter.add_to_qt_menu(menu, specs)
     except Exception as e:
         mylog.error(f"Failed to build C# main menu: {e}")
         import traceback
