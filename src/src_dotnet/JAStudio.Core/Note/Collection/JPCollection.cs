@@ -57,16 +57,16 @@ public class JPCollection
 
       var vocabData = Task.Run(() =>
       {
-         //this should get it's own panel
+         //this should get its own panel
          var vocabData = runner.RunOnBackgroundThreadWithSpinningProgressDialog("Fetching Vocabs from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Vocab));
          return Vocab.Cache.InitFromListAsync(vocabData);
       });
 
-      //this should get it's own panel
+      //this should get its own panel
       var kanjiData = runner.RunOnBackgroundThreadAsync("Fetching Kanji from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Kanji));
-      //this should get it's own panel
+      //this should get its own panel
       var sentenceData = runner.RunOnBackgroundThreadAsync("Fetching Sentences from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Sentence));
-      //this should get it's own panel
+      //this should get its own panel
       var studyingStatuses = runner.RunOnBackgroundThreadAsync("Fetching Studying Statuses from anki db", () => CardStudyingStatusLoader.FetchAll(dbPath));
 
       //What actually happens, I see only "Fetching Studying Statuses from anki db", none of the others
