@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using JAStudio.PythonInterop.Utilities;
 using Python.Runtime;
 
@@ -10,69 +10,110 @@ public sealed class JNTokenizer
    static readonly HashSet<string> CharactersThatMayConfuseJanomeSoWeReplaceThemWithOrdinaryFullWidthSpaces =
       ["!", "！", "|", "（", "）"];
 
-   readonly PythonObjectWrapper _tokenizer;
+   /// <summary>The invisible space character (U+200B) used as field separator in the serialized token string from Python.</summary>
+   const string FieldSeparator = "\u200B";
+
+   const string WrapperPythonCode =
+      """
+      from janome.tokenizer import Tokenizer
+
+      _FIELD_SEPARATOR = "\u200B"
+      _tokenizer = Tokenizer()
+
+      def _sanitize(value):
+          if value is None:
+              return ""
+          return str(value).replace("\n", " ").replace("\r", " ")
+
+      def tokenize_to_string(text):
+          lines = []
+          for token in _tokenizer.tokenize(text):
+              fields = _FIELD_SEPARATOR.join([
+                  _sanitize(token.part_of_speech),
+                  _sanitize(token.base_form),
+                  _sanitize(token.surface),
+                  _sanitize(token.infl_type),
+                  _sanitize(token.infl_form),
+                  _sanitize(token.reading),
+                  _sanitize(token.phonetic),
+                  _sanitize(token.node_type),
+              ])
+              lines.append(fields)
+          return "\n".join(lines)
+      """;
+
+   readonly PythonObjectWrapper _wrapper;
 
    public JNTokenizer()
    {
-      using(PythonEnvironment.LockGil())
+      _wrapper = PythonEnvironment.Use(() =>
       {
-         dynamic janome = Py.Import("janome.tokenizer");
-         _tokenizer = new PythonObjectWrapper(janome.Tokenizer());
-      }
+         var module = PyModule.FromString("janome_tokenizer_wrapper", WrapperPythonCode);
+         return new PythonObjectWrapper(module);
+      });
    }
 
    public JNTokenizedText Tokenize(string text)
    {
-      return _tokenizer.Use(it =>
+      // Apparently janome does not fully understand that invisible spaces are word separators,
+      // so we replace them with ordinary spaces since they are not anything that should need to be parsed
+      var sanitizedText = text.Replace(StringExtensions.InvisibleSpace, JNToken.SplitterTokenText);
+
+      foreach(var character in CharactersThatMayConfuseJanomeSoWeReplaceThemWithOrdinaryFullWidthSpaces)
       {
-         // Apparently janome does not fully understand that invisible spaces are word separators,
-         // so we replace them with ordinary spaces since they are not anything that should need to be parsed
-         var sanitizedText = text.Replace(StringExtensions.InvisibleSpace, JNToken.SplitterTokenText);
+         sanitizedText = sanitizedText.Replace(character, " ");
+      }
 
-         foreach(var character in CharactersThatMayConfuseJanomeSoWeReplaceThemWithOrdinaryFullWidthSpaces)
+      // Single interop call: Python tokenizes and serializes everything into one string
+      var serialized = _wrapper.Use(module => (string)module.tokenize_to_string(sanitizedText));
+
+      var jnTokens = ParseSerializedTokens(serialized);
+
+      // Link tokens with previous/next pointers
+      for(var i = 0; i < jnTokens.Count; i++)
+      {
+         if(i > 0)
          {
-            sanitizedText = sanitizedText.Replace(character, " ");
+            jnTokens[i].Previous = jnTokens[i - 1];
          }
 
-         // It seems that janome is sometimes confused and changes its parsing if there is no whitespace after the text, so let's add one
-         var tokens = new List<dynamic>();
-         foreach(var token in Dyn.Enumerate(it.tokenize(sanitizedText)))
+         if(i < jnTokens.Count - 1)
          {
-            tokens.Add(token);
+            jnTokens[i].Next = jnTokens[i + 1];
          }
+      }
 
-         // Create JNToken objects - extract all data from Python immediately
-         var jnTokens = tokens.Select(token =>
-         {
-            var partsOfSpeech = JNPartsOfSpeech.Fetch((string)token.part_of_speech);
+      return new JNTokenizedText(text, jnTokens);
+   }
 
-            return new JNToken(
-               partsOfSpeech,
-               baseForm: (string)token.base_form ?? string.Empty,
-               surface: (string)token.surface ?? string.Empty,
-               inflectionType: (string)token.infl_type ?? "*",
-               inflectedForm: (string)token.infl_form ?? "*",
-               reading: (string)token.reading ?? string.Empty,
-               phonetic: (string)token.phonetic ?? string.Empty,
-               nodeType: (string)token.node_type ?? string.Empty
-            );
-         }).ToList();
+   static List<JNToken> ParseSerializedTokens(string serialized)
+   {
+      if(string.IsNullOrEmpty(serialized))
+         return [];
 
-         // Link tokens with previous/next pointers
-         for(var i = 0; i < jnTokens.Count; i++)
-         {
-            if(i > 0)
-            {
-               jnTokens[i].Previous = jnTokens[i - 1];
-            }
+      var lines = serialized.Split('\n');
+      var result = new List<JNToken>(lines.Length);
 
-            if(i < jnTokens.Count - 1)
-            {
-               jnTokens[i].Next = jnTokens[i + 1];
-            }
-         }
+      foreach(var line in lines)
+      {
+         if(line.Length == 0) continue;
 
-         return new JNTokenizedText(text, jnTokens);
-      });
+         var fields = line.Split(FieldSeparator, StringSplitOptions.None);
+         // Fields: 0=part_of_speech, 1=base_form, 2=surface, 3=infl_type, 4=infl_form, 5=reading, 6=phonetic, 7=node_type
+         var partsOfSpeech = JNPartsOfSpeech.Fetch(fields[0]);
+
+         result.Add(new JNToken(
+            partsOfSpeech,
+            baseForm: fields[1],
+            surface: fields[2],
+            inflectionType: fields[3],
+            inflectedForm: fields[4],
+            reading: fields[5],
+            phonetic: fields[6],
+            nodeType: fields[7]
+         ));
+      }
+
+      return result;
    }
 }
