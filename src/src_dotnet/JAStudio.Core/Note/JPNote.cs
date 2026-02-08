@@ -13,6 +13,14 @@ public abstract class JPNote
 
    // Dictionary tracks card suspend status: true = active/unsuspended, false = suspended
    readonly Dictionary<string, bool> _cardStatus = new();
+
+   public void CopyStudyingStatusFrom(JPNote other)
+   {
+      foreach(var kvp in other._cardStatus)
+      {
+         _cardStatus[kvp.Key] = kvp.Value;
+      }
+   }
    public NoteTags Tags { get; }
 
    readonly Dictionary<string, string> _fields;

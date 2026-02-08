@@ -9,7 +9,7 @@ from jaspythonutils.sysutils.timeutil import StopWatch
 from jaspythonutils.sysutils.typed import non_optional
 from jastudio import mylog
 from jastudio.ankiutils import app
-from JAStudio.Core.Note import Mine
+from JAStudio.Core.Note import KanjiNote, Mine, NoteTypes, SentenceNote, VocabNote
 from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner
 from jastudio.sysutils import app_thread_pool
 from jastudio.sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
@@ -19,7 +19,7 @@ from jastudio.ui import dotnet_ui_root
 if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import NoteId
-    from JAStudio.Core.Note import JPNote, KanjiNote, SentenceNote, VocabNote
+    from JAStudio.Core.Note import JPNote
     from jastudio.note.collection.anki_single_collection_syncer import AnkiSingleCollectionSyncer
 
 class AnkiJPCollectionSyncer(Slots):
@@ -85,11 +85,11 @@ class AnkiJPCollectionSyncer(Slots):
                 with StopWatch.log_warning_if_slower_than(5, "Core collection setup - no gc"):
                     self._cache_runner = AnkiCollectionSyncRunner(self.anki_collection)
 
-
-                    #todo migration hook in note syncing here
-                    # self._vocab = AnkiSingleCollectionSyncer[VocabNote](VocabNote, VocabNote, jaslibapp.col().vocab.cache, self._cache_runner)
-                    # self._sentences = AnkiSingleCollectionSyncer[SentenceNote](SentenceNote, SentenceNote, jaslibapp.col().sentences.cache, self._cache_runner)
-                    # self._kanji = AnkiSingleCollectionSyncer[KanjiNote](KanjiNote, KanjiNote, jaslibapp.col().kanji.cache, self._cache_runner)
+                    from jastudio.note.collection.anki_single_collection_syncer import AnkiSingleCollectionSyncer
+                    collection = dotnet_ui_root.Services.App.Collection
+                    self._vocab = AnkiSingleCollectionSyncer(VocabNote, collection.Vocab.Cache, self._cache_runner, NoteTypes.Vocab)
+                    self._sentences = AnkiSingleCollectionSyncer(SentenceNote, collection.Sentences.Cache, self._cache_runner, NoteTypes.Sentence)
+                    self._kanji = AnkiSingleCollectionSyncer(KanjiNote, collection.Kanji.Cache, self._cache_runner, NoteTypes.Kanji)
 
                 self._cache_runner.start()
 

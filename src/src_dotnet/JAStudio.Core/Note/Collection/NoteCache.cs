@@ -49,7 +49,40 @@ public abstract class NoteCacheBase<TNote> where TNote : JPNote
 
    public TNote? WithIdOrNone(long noteId) => _byId.TryGetValue(noteId, out var note) ? note : null;
 
-   public void AnkiNoteUpdated(NoteData data) => throw new NotImplementedException();
+   public void AnkiNoteAdded(NoteData data)
+   {
+      var note = _noteConstructor(RequireServices(), data);
+      using(note.RecursiveFlushGuard.PauseFlushing())
+      {
+         note.UpdateGeneratedData();
+      }
+      AddToCache(note);
+   }
+
+   public void AnkiNoteWillFlush(NoteData data)
+   {
+      var existing = WithIdOrNone(data.Id);
+      if(existing == null) return;
+      if(existing.IsFlushing) return; // Our code initiated this flush, nothing to do
+
+      var note = _noteConstructor(RequireServices(), data);
+      note.CopyStudyingStatusFrom(existing);
+      using(note.RecursiveFlushGuard.PauseFlushing())
+      {
+         note.UpdateGeneratedData();
+      }
+      RefreshInCache(note);
+      NotifyUpdateListeners(note);
+   }
+
+   public void AnkiNoteRemoved(long noteId)
+   {
+      var existing = WithIdOrNone(noteId);
+      if(existing != null)
+      {
+         RemoveFromCache(existing);
+      }
+   }
 
    public void JpNoteUpdated(TNote note)
    {

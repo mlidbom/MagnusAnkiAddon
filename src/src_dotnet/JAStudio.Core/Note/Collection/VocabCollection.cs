@@ -8,7 +8,7 @@ namespace JAStudio.Core.Note.Collection;
 public class VocabCollection
 {
     private readonly IBackendNoteCreator _backendNoteCreator;
-    internal readonly VocabCache Cache;
+    public readonly VocabCache Cache;
 
     public VocabCollection(IBackendNoteCreator backendNoteCreator)
     {

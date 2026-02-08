@@ -8,8 +8,6 @@ from typing import TYPE_CHECKING
 from aqt.qt import QAction, QKeySequence, QMenu
 from jaspythonutils.sysutils.typed import non_optional
 
-from jastudio import mylog
-
 if TYPE_CHECKING:
     from collections.abc import Iterable
 

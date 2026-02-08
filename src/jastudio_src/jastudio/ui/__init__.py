@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from jaspythonutils.sysutils.typed import non_optional
-
 from jastudio.task_runners.task_progress_runner import TaskRunner
 
 # The JAStudioAppRoot composition root instance, set during init().
