@@ -93,22 +93,28 @@ public abstract class NoteCacheBase<TNote> where TNote : JPNote
 
    /// <summary>
    /// Async version of <see cref="InitFromList"/> for parallel loading.
-   /// The caller provides a dedicated <see cref="ITaskProgressRunner"/> so that
-   /// multiple caches can load concurrently, each with its own progress panel.
+   /// Each call runs on its own thread via <see cref="Task.Run"/> so that
+   /// <see cref="TaskRunner.Current"/> creates an independent scope and progress panel.
+   /// Multiple concurrent calls display stacked progress rows automatically.
    /// </summary>
-   public async Task InitFromListAsync(List<NoteData> allNotes, ITaskProgressRunner runner)
+   public Task InitFromListAsync(List<NoteData> allNotes)
    {
-      if(allNotes.Count > 0)
+      if(allNotes.Count == 0) return Task.CompletedTask;
+
+      var services = RequireServices();
+      var message = $"Pushing {_noteType.Name} notes into cache";
+      return Task.Run(() =>
       {
-         await runner.ProcessWithProgressAsync(
+         using var scope = services.TaskRunner.Current(message);
+         scope.ProcessWithProgress(
             allNotes,
             noteData =>
             {
                AddToCacheFromData(noteData);
                return 0;
             },
-            $"Pushing {_noteType.Name} notes into cache");
-      }
+            message);
+      });
    }
 
    void AddToCacheFromData(NoteData noteData)
