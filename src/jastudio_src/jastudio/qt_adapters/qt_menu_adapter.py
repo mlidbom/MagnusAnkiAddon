@@ -13,7 +13,9 @@ from jastudio import mylog
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from JAStudio.UI.Menus.UIAgnosticMenuStructure import SpecMenuItem
+    from JAStudio.UI.Menus.UIAgnosticMenuStructure import SpecMenuItem, SpecMenuItemKind
+else:
+    from JAStudio.UI.Menus.UIAgnosticMenuStructure import SpecMenuItemKind
 
 def add_to_qt_menu(target_qt_menu: QMenu, specs: Iterable[SpecMenuItem]) -> None:
     """
@@ -25,12 +27,15 @@ def add_to_qt_menu(target_qt_menu: QMenu, specs: Iterable[SpecMenuItem]) -> None
 
         name_with_accelerator = _add_acceleratator_key_to_name(spec.Name, spec.KeyboardShortcut)
 
-        if spec.IsSubmenu:
+        if not spec.IsEnabled:
+            non_optional(target_qt_menu.addAction(name_with_accelerator)).setEnabled(False)  # pyright: ignore [reportUnknownMemberType]
+
+        if spec.Kind == SpecMenuItemKind.Submenu:
             qt_sub_menu = non_optional(target_qt_menu.addMenu(name_with_accelerator))
             add_to_qt_menu(qt_sub_menu, spec.Children)
-        elif spec.IsSeparator:
+        elif spec.Kind == SpecMenuItemKind.Separator:
             target_qt_menu.addSeparator()
-        elif spec.IsCommand:
+        elif spec.Kind == SpecMenuItemKind.Command:
             action = QAction(name_with_accelerator, target_qt_menu)
             action.setEnabled(spec.IsEnabled)
 
@@ -41,9 +46,10 @@ def add_to_qt_menu(target_qt_menu: QMenu, specs: Iterable[SpecMenuItem]) -> None
             target_qt_menu.addAction(action)  # pyright: ignore [reportUnknownMemberType]
         else:
             mylog.error(f"Unknown menu spec type: {spec.Name}")
-            #target_qt_menu.addAction(f"Unknown menu-spec named: {spec.Name}")  # pyright: ignore [reportUnknownMemberType]
+            target_qt_menu.addAction(f"Invalid: {spec.Name}")  # pyright: ignore [reportUnknownMemberType]
             #raise Exception(f"Unknown menu spec type: {spec.Name}")
 
 def _add_acceleratator_key_to_name(name: str, accelerator: str) -> str:
-    if accelerator == "": return name
-    return f"&{accelerator} {name}"
+    name = name.replace("_","&")
+    if not accelerator: return name
+    return f"&{accelerator.replace} {name}"

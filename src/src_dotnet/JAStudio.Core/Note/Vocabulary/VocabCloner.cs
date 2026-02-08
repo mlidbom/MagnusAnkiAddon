@@ -17,7 +17,9 @@ public class VocabCloner
 
     public VocabNote PrefixToChopped(string prefix, int chopCharacters) => CreatePostfixPrefixVersion(prefix, POS.Expression, isPrefix: true, chopOffCharacters: chopCharacters);
 
-    public string PrefixToChoppedPreview(string formPrefix, int chopCharacters) => formPrefix + Note.GetQuestion().Substring(chopCharacters);
+    public string PrefixToChoppedPreview(string formPrefix, int chopCharacters) => Note.GetQuestion().Length > chopCharacters ?
+                                                                                      formPrefix + Note.GetQuestion().Substring(chopCharacters)
+                                                                                      : "Vocab to short";
 
     public VocabNote CreateSuffixVersion(string suffix, string speechType = POS.Expression, bool setCompounds = true, int truncateCharacters = 0) => CreatePostfixPrefixVersion(suffix, speechType, setCompounds: setCompounds, chopOffCharacters: truncateCharacters);
 

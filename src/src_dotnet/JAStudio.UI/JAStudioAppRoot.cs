@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
@@ -6,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Compze.Utilities.Logging;
+using Compze.Utilities.SystemCE;
 using JAStudio.Core;
 using JAStudio.Core.Anki;
 using JAStudio.UI.Dialogs;
@@ -47,6 +49,11 @@ public class JAStudioAppRoot
    /// <param name="configUpdateCallback">Callback that receives updated config JSON to persist back to Anki.</param>
    public static JAStudioAppRoot Initialize(string configJson, Action<string> configUpdateCallback)
    {
+      if(!Environment.GetEnvironmentVariable("DEBUG_JASTUDIO").IsNullEmptyOrWhiteSpace())
+      {
+         Debugger.Launch();
+      }
+
       var app = Core.App.Bootstrap();
       CompzeLogger.LogLevel = LogLevel.Info;
 

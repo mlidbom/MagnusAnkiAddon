@@ -15,10 +15,10 @@ public static class AvaloniaMenuAdapter
    /// </summary>
    public static Avalonia.Controls.MenuItem ToAvalonia(SpecMenuItem spec)
    {
-      if(spec.IsSeparator)
+      if(spec.Kind == SpecMenuItemKind.Separator)
       {
          // Avalonia uses a special Separator control, not a MenuItem
-         // Caller should check IsSeparator and use new Separator() instead
+         // Caller should check Kind and use new Separator() instead
          JALogger.Log("Warning: ToAvalonia called on separator - caller should handle separators directly");
          return new Avalonia.Controls.MenuItem { Header = "-", IsEnabled = false };
       }
@@ -36,31 +36,24 @@ public static class AvaloniaMenuAdapter
          avaloniaItem.InputGesture = KeyGestureParser.Parse(spec.KeyboardShortcut);
       }
 
-      // Wire up command action
-      if(spec.Action != null)
+      switch(spec.Kind)
       {
-         avaloniaItem.Click += (sender, args) =>
-         {
-            spec.Action();
-         };
-      }
+         case SpecMenuItemKind.Command:
+            avaloniaItem.Click += (sender, args) => { spec.Action(); };
+            break;
 
-      // Recursively build submenu children
-      if(spec.Children != null && spec.Children.Count > 0)
-      {
-         foreach(var childSpec in spec.Children)
-         {
-            if(!childSpec.IsVisible)
-               continue; // Skip invisible items
+         case SpecMenuItemKind.Submenu:
+            foreach(var childSpec in spec.Children)
+            {
+               if(!childSpec.IsVisible)
+                  continue;
 
-            if(childSpec.IsSeparator)
-            {
-               avaloniaItem.Items.Add(new Separator());
-            } else
-            {
-               avaloniaItem.Items.Add(ToAvalonia(childSpec));
+               if(childSpec.Kind == SpecMenuItemKind.Separator)
+                  avaloniaItem.Items.Add(new Separator());
+               else
+                  avaloniaItem.Items.Add(ToAvalonia(childSpec));
             }
-         }
+            break;
       }
 
       return avaloniaItem;
@@ -78,13 +71,10 @@ public static class AvaloniaMenuAdapter
          if(!spec.IsVisible)
             continue;
 
-         if(spec.IsSeparator)
-         {
+         if(spec.Kind == SpecMenuItemKind.Separator)
             result.Add(new Separator());
-         } else
-         {
+         else
             result.Add(ToAvalonia(spec));
-         }
       }
 
       return result;

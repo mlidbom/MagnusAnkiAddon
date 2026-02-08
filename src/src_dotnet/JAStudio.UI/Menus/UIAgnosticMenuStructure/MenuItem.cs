@@ -1,104 +1,121 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace JAStudio.UI.Menus.UIAgnosticMenuStructure;
+
+/// <summary>
+/// The kind of menu item: Command (leaf action), Submenu (container), or Separator (divider line).
+/// </summary>
+public enum SpecMenuItemKind
+{
+   Command,
+   Submenu,
+   Separator
+}
 
 /// <summary>
 /// UI-agnostic menu item specification. Represents either a leaf command, a submenu container, or a separator.
 /// This specification is independent of any UI framework (Avalonia, WPF, Qt, etc.) and can be passed to
 /// framework-specific adapters that recursively build the actual UI menu structure.
 /// Can also be passed to Python via pythonnet for building menus in PyQt.
+///
+/// Create instances via the static factory methods: Command(), Submenu(), Separator().
 /// </summary>
-public class SpecMenuItem
+public abstract class SpecMenuItem
 {
-    /// <summary>
-    /// Display name of the menu item (e.g., "Open in Browser", "Lookup").
-    /// For separators, this should be null or empty.
-    /// </summary>
-    public string Name { get; private set; } = string.Empty;
+   /// <summary>The kind of menu item this instance represents.</summary>
+   public abstract SpecMenuItemKind Kind { get; }
 
-    /// <summary>
-    /// Keyboard accelerator character for Alt+Key navigation (e.g., 'K' for Alt+K).
-    /// Used by ShortcutFinger to generate underlined accelerator text in Name.
-    /// </summary>
-    public char? AcceleratorKey { get; private set; }
+   /// <summary>
+   /// Display name of the menu item (e.g., "Open in Browser", "Lookup").
+   /// Empty for separators.
+   /// </summary>
+   public string Name { get; }
 
-    /// <summary>
-    /// Action to execute when this menu item is clicked.
-    /// Null for submenus and separators.
-    /// </summary>
-    public Action? Action { get; private set; }
+   /// <summary>
+   /// Keyboard accelerator character for Alt+Key navigation (e.g., 'K' for Alt+K).
+   /// Used by ShortcutFinger to generate underlined accelerator text in Name.
+   /// </summary>
+   public char? AcceleratorKey { get; }
 
-    /// <summary>
-    /// Child menu items for submenus.
-    /// Null or empty for leaf commands and separators.
-    /// </summary>
-    public IReadOnlyList<SpecMenuItem>? Children { get; private set; }
+   /// <summary>
+   /// Whether the menu item is visible in the menu.
+   /// Use this for conditional menu items that should be completely hidden.
+   /// </summary>
+   public bool IsVisible { get; set; } = true;
 
-    /// <summary>
-    /// If true, this item is a visual separator (horizontal line) between menu groups.
-    /// When true, Name and Action should be null/empty.
-    /// </summary>
-    public bool IsSeparator { get; private set; }
+   /// <summary>Action to execute when clicked. Only valid for Command items.</summary>
+   public virtual Action Action => throw new InvalidOperationException($"Action is not available on a {Kind} menu item");
 
-    /// <summary>
-    /// Keyboard shortcut display text (e.g., "Ctrl+O", "Ctrl+Shift+S").
-    /// This is for display only - actual keyboard handling happens elsewhere.
-    /// </summary>
-    public string? KeyboardShortcut { get; private set; }
+   /// <summary>Child menu items. Only valid for Submenu items.</summary>
+   public virtual IReadOnlyList<SpecMenuItem> Children => throw new InvalidOperationException($"Children is not available on a {Kind} menu item");
 
-    /// <summary>
-    /// Whether the menu item is enabled (clickable).
-    /// Disabled items appear grayed out but remain visible.
-    /// </summary>
-    public bool IsEnabled { get; private set; } = true;
+   /// <summary>Keyboard shortcut display text (e.g., "Ctrl+O"). Display only.</summary>
+   public virtual string? KeyboardShortcut => null;
 
-    /// <summary>
-    /// Whether the menu item is visible in the menu.
-    /// Use this for conditional menu items that should be completely hidden.
-    /// </summary>
-    public bool IsVisible { get; set; } = true;
+   /// <summary>Whether the menu item is enabled (clickable). Disabled items appear grayed out.</summary>
+   public virtual bool IsEnabled => true;
 
-    /// <summary>
-    /// Create a separator menu item (horizontal divider line).
-    /// </summary>
-    public static SpecMenuItem Separator() => new SpecMenuItem { IsSeparator = true };
+   /// <summary>Does this submenu have at least one visible, non-separator child? Only valid for Submenu items.</summary>
+   public virtual bool HasVisibleChildren => throw new InvalidOperationException($"HasVisibleChildren is not available on a {Kind} menu item");
 
-    /// <summary>
-    /// Create a leaf command menu item.
-    /// </summary>
-    public static SpecMenuItem Command(string name, Action action, char? acceleratorKey = null, string? shortcut = null, bool enabled = true)
-    {
-        return new SpecMenuItem
-        {
-            Name = name,
-            Action = action,
-            AcceleratorKey = acceleratorKey,
-            KeyboardShortcut = shortcut,
-            IsEnabled = enabled
-        };
-    }
+   private protected SpecMenuItem(string name = "", char? acceleratorKey = null)
+   {
+      Name = name;
+      AcceleratorKey = acceleratorKey;
+   }
 
-    /// <summary>
-    /// Create a submenu container.
-    /// </summary>
-    public static SpecMenuItem Submenu(string name, IReadOnlyList<SpecMenuItem> children, char? acceleratorKey = null)
-    {
-        return new SpecMenuItem
-        {
-            Name = name,
-            Children = children,
-            AcceleratorKey = acceleratorKey
-        };
-    }
+   // ── Factory methods ────────────────────────────────────────────────
 
-    /// <summary>
-    /// Is this a leaf command (has an action to execute)?
-    /// </summary>
-    public bool IsCommand => Action != null;
+   /// <summary>Create a separator menu item (horizontal divider line).</summary>
+   public static SpecMenuItem Separator() => new SeparatorSpec();
 
-    /// <summary>
-    /// Is this a submenu (has children)?
-    /// </summary>
-    public bool IsSubmenu => Children != null && Children.Count > 0;
+   /// <summary>Create a leaf command menu item.</summary>
+   public static SpecMenuItem Command(string name, Action action, char? acceleratorKey = null, string? shortcut = null, bool enabled = true)
+      => new CommandSpec(name, action, acceleratorKey, shortcut, enabled);
+
+   /// <summary>Create a submenu container.</summary>
+   public static SpecMenuItem Submenu(string name, IReadOnlyList<SpecMenuItem> children, char? acceleratorKey = null)
+      => new SubmenuSpec(name, children, acceleratorKey);
+
+   // ── Private subclasses ─────────────────────────────────────────────
+
+   sealed class SeparatorSpec : SpecMenuItem
+   {
+      public override SpecMenuItemKind Kind => SpecMenuItemKind.Separator;
+   }
+
+   sealed class CommandSpec : SpecMenuItem
+   {
+      readonly bool _isEnabled;
+
+      public override SpecMenuItemKind Kind => SpecMenuItemKind.Command;
+      public override Action Action { get; }
+      public override string? KeyboardShortcut { get; }
+      public override bool IsEnabled => _isEnabled;
+
+      internal CommandSpec(string name, Action action, char? acceleratorKey, string? shortcut, bool enabled)
+         : base(name, acceleratorKey)
+      {
+         Action = action;
+         KeyboardShortcut = shortcut;
+         _isEnabled = enabled;
+      }
+   }
+
+   sealed class SubmenuSpec : SpecMenuItem
+   {
+      public override SpecMenuItemKind Kind => SpecMenuItemKind.Submenu;
+      public override IReadOnlyList<SpecMenuItem> Children { get; }
+
+      /// <summary>Auto-disabled when there are no visible, non-separator children.</summary>
+      public override bool IsEnabled => HasVisibleChildren;
+
+      public override bool HasVisibleChildren => Children.Any(c => c.IsVisible && c.Kind != SpecMenuItemKind.Separator);
+
+      internal SubmenuSpec(string name, IReadOnlyList<SpecMenuItem> children, char? acceleratorKey)
+         : base(name, acceleratorKey) =>
+         Children = children;
+   }
 }
