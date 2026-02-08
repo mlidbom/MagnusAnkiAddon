@@ -32,6 +32,7 @@ public static class SentenceNoteFields
     public const string SourceAnswer = "source_answer";
     public const string UserAnswer = "__answer";
     public const string ParsingResult = "__parsing_result";
+    public const string JanomeTokens = "__janome_tokens";
     public const string Audio = "Audio Sentence";
     public const string Screenshot = "Screenshot";
     public const string Configuration = "__configuration";

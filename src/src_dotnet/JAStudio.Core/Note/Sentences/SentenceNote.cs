@@ -41,6 +41,7 @@ public class SentenceNote : JPNote
     public MutableStringField SourceComments => new(this, SentenceNoteFields.SourceComments);
     private MutableStringField Screenshot => new(this, SentenceNoteFields.Screenshot);
     public WritableAudioField Audio => new(this, SentenceNoteFields.Audio);
+    public MutableStringField JanomeTokens => new(this, SentenceNoteFields.JanomeTokens);
 
     public override string GetQuestion()
     {
@@ -56,7 +57,8 @@ public class SentenceNote : JPNote
 
     public TextAnalysis CreateAnalysis(bool forUI = false)
     {
-        return new TextAnalysis(AnalysisServices, Question.WithInvisibleSpace(), Configuration.Configuration, forUI);
+        var cachedTokens = JanomeTokens.HasValue() ? JanomeTokens.Value : null;
+        return new TextAnalysis(AnalysisServices, Question.WithInvisibleSpace(), Configuration.Configuration, forUI, cachedTokens);
     }
 
     public List<string> GetWords()
@@ -130,7 +132,14 @@ public class SentenceNote : JPNote
             return;
         }
 
+        // Invalidate cached janome tokens if the sentence text has changed
+        if (parsingResult == null || parsingResult.Sentence != questionText)
+        {
+            JanomeTokens.Empty();
+        }
+
         var analysis = CreateAnalysis();
+        JanomeTokens.Set(analysis.SerializedJanomeTokens);
         ParsingResult.Set(Sentences.ParsingResult.FromAnalysis(analysis));
     }
 

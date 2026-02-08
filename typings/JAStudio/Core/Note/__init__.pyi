@@ -333,6 +333,8 @@ class SentenceNote(JPNote):
     @property
     def IsFlushing(self) -> bool: ...
     @property
+    def JanomeTokens(self) -> MutableStringField: ...
+    @property
     def ParsingResult(self) -> MutableSerializedObjectField_1[ParsingResult]: ...
     @property
     def Question(self) -> SentenceQuestionField: ...
@@ -373,6 +375,7 @@ class SentenceNoteFields(abc.ABC):
     Audio : str
     Configuration : str
     Id : str
+    JanomeTokens : str
     ParsingResult : str
     Reading : str
     Screenshot : str

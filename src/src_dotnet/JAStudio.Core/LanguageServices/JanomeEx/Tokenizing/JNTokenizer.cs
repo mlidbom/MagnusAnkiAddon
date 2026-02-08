@@ -53,7 +53,7 @@ public sealed class JNTokenizer
       });
    }
 
-   public JNTokenizedText Tokenize(string text)
+   public JNTokenizeResult Tokenize(string text, string? cachedSerializedTokens = null)
    {
       // Apparently janome does not fully understand that invisible spaces are word separators,
       // so we replace them with ordinary spaces since they are not anything that should need to be parsed
@@ -64,8 +64,9 @@ public sealed class JNTokenizer
          sanitizedText = sanitizedText.Replace(character, " ");
       }
 
-      // Single interop call: Python tokenizes and serializes everything into one string
-      var serialized = _wrapper.Use(module => (string)module.tokenize_to_string(sanitizedText));
+      // Use cached serialized tokens if available, otherwise call Python (the expensive part)
+      var serialized = cachedSerializedTokens
+                       ?? _wrapper.Use(module => (string)module.tokenize_to_string(sanitizedText));
 
       var jnTokens = ParseSerializedTokens(serialized);
 
@@ -83,7 +84,7 @@ public sealed class JNTokenizer
          }
       }
 
-      return new JNTokenizedText(text, jnTokens);
+      return new JNTokenizeResult(new JNTokenizedText(text, jnTokens), serialized);
    }
 
    static List<JNToken> ParseSerializedTokens(string serialized)
