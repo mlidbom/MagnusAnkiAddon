@@ -86,10 +86,10 @@ public class TaskRunnerScope : ITaskProgressRunner
       return runner.RunOnBackgroundThreadWithSpinningProgressDialog(message, action);
    }
 
-   public async Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message)
+   public async Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, Parallelism? parallelism = null)
    {
       using var runner = CreateRunner(message);
-      return await runner.ProcessWithProgressAsync(items, processItem, message);
+      return await runner.ProcessWithProgressAsync(items, processItem, message, parallelism);
    }
 
    public async Task<TResult> RunOnBackgroundThreadAsync<TResult>(string message, Func<TResult> action)

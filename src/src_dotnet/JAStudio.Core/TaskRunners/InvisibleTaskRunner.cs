@@ -34,9 +34,24 @@ public class InvisibleTaskRunner : ITaskProgressRunner
    public Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(
       List<TInput> items,
       Func<TInput, TOutput> processItem,
-      string message)
+      string message,
+      Parallelism? parallelism = null)
    {
-      return Task.Run(() => ProcessWithProgress(items, processItem, message));
+      var threads = (parallelism ?? Parallelism.Sequential).Threads;
+      return Task.Run(() =>
+      {
+         if(threads <= 1)
+            return ProcessWithProgress(items, processItem, message);
+
+         var watch = Stopwatch.StartNew();
+         var results = new TOutput[items.Count];
+         System.Threading.Tasks.Parallel.For(0, items.Count,
+            new System.Threading.Tasks.ParallelOptions { MaxDegreeOfParallelism = threads },
+            i => results[i] = processItem(items[i]));
+         watch.Stop();
+         MyLog.Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g} handled {items.Count} items ({threads} threads)");
+         return new List<TOutput>(results);
+      });
    }
 
    public void SetLabelText(string labelText)
