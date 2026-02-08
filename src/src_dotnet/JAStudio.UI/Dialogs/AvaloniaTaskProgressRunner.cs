@@ -7,7 +7,7 @@ using JAStudio.Core.TaskRunners;
 
 namespace JAStudio.UI.Dialogs;
 
-public class AvaloniaTaskProgressRunner : ITaskProgressRunner
+class AvaloniaTaskProgressRunner : ITaskProgressRunner
 {
    TaskProgressPanel _panel = null!;
    readonly bool _allowCancel;
@@ -18,31 +18,30 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
       Dispatcher.UIThread.Invoke(() => _panel = MultiTaskProgressDialog.CreatePanel(windowTitle, labelText, allowCancel));
    }
 
-   // --- Public API (same order as ITaskProgressRunner) ---
-
    public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads) => Dispatcher.UIThread.Invoke(() =>
    {
-      using var _ = this.Log().Info().LogMethodExecutionTime($"{message} handled {items.Count} items ({threads.Threads} threads)");
+      using var _ = this.Log().Info().LogMethodExecutionTime($"{nameof(ProcessWithProgress)}: executed {message}: handling {items.Count} items using ({threads.Threads} threads)");
       InitListProcessingProgress(items, message);
       return ProcessItems(items, processItem, message, threads);
    });
 
    public TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action) => Dispatcher.UIThread.Invoke(() =>
    {
+      using var _ = this.Log().Info().LogMethodExecutionTime($"{nameof(ProcessWithProgress)}{message}: executed {message}");
       SetPanelToProgressSpinnerMode(message);
       return RunActionOnBackgroundThread(message, action);
    });
 
    public Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
    {
-      using var _ = this.Log().Info().LogMethodExecutionTime($"{message} handled {items.Count} items ({threads.Threads} threads)");
+      using var _ = this.Log().Info().LogMethodExecutionTime($"{nameof(ProcessWithProgress)}: executed {message}: handling {items.Count} items using ({threads.Threads} threads)");
       Dispatcher.UIThread.Post(() => InitListProcessingProgress(items, message));
       return Task.Run(() => ProcessItems(items, processItem, message, threads));
    }
 
    public async Task<TResult> RunOnBackgroundThreadWithSpinningProgressDialogAsync<TResult>(string message, Func<TResult> action)
    {
-      using var _ = this.Log().Info().LogMethodExecutionTime(message);
+      using var _ = this.Log().Info().LogMethodExecutionTime($"{nameof(ProcessWithProgress)}{message}: executed {message}");
       Dispatcher.UIThread.Post(() => SetPanelToProgressSpinnerMode(message));
       return await Task.Run(action);
    }
@@ -51,8 +50,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
 
    public void Dispose() => Close();
 
-   // --- Implementation details ---
-
+   //Private helpers
    static void KeepUIThreadAliveWhileWaitingForTaskToComplete(Task task)
    {
       while(!task.IsCompleted) Dispatcher.UIThread.RunJobs();

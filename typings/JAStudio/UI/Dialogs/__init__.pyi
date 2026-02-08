@@ -1,8 +1,4 @@
 import typing
-from JAStudio.Core.TaskRunners import ITaskProgressRunner, ThreadCount
-from System.Collections.Generic import List_1, IReadOnlyList_1
-from System import Func_2, Func_1
-from System.Threading.Tasks import Task_1
 from Avalonia.Controls import Window, WindowTransparencyLevel, Classes, WindowClosingBehavior, ContextMenu, ITemplate_1, Control, WindowIcon, WindowBase, IResourceDictionary, Screens, SizeToContent, SystemDecorations, WindowStartupLocation, WindowState, UserControl
 from Avalonia.Styling import ThemeVariant, Styles, ControlTheme
 from Avalonia.Media import IBrush, BackgroundSizing, Geometry, IEffect, FlowDirection, FontFamily, FontFeatureCollection, FontStretch, FontStyle, FontWeight, ITransform
@@ -15,69 +11,12 @@ from Avalonia.Platform import ExtendClientAreaChromeHints, IWindowImpl, IWindowB
 from Avalonia.Input.GestureRecognizers import GestureRecognizerCollection
 from Avalonia.Layout import HorizontalAlignment, VerticalAlignment
 from Avalonia.Controls.Platform import IInputPane, IInsetsManager
+from System.Collections.Generic import List_1, IReadOnlyList_1
 from Avalonia.Platform.Storage import ILauncher, IStorageProvider
 from Avalonia.Controls.Presenters import ContentPresenter
 from Avalonia.Rendering import RendererDiagnostics
 from Avalonia.Animation import Transitions
 from Avalonia.Data import IndexerDescriptor, IBinding
-
-class AvaloniaTaskProgressRunner(ITaskProgressRunner):
-    def __init__(self, windowTitle: str, labelText: str, allowCancel: bool) -> None: ...
-    def Close(self) -> None: ...
-    def Dispose(self) -> None: ...
-    # Skipped ProcessWithProgress due to it being static, abstract and generic.
-
-    ProcessWithProgress : ProcessWithProgress_MethodGroup
-    class ProcessWithProgress_MethodGroup:
-        def __getitem__(self, t:typing.Tuple[typing.Type[ProcessWithProgress_2_T1], typing.Type[ProcessWithProgress_2_T2]]) -> ProcessWithProgress_2[ProcessWithProgress_2_T1, ProcessWithProgress_2_T2]: ...
-
-        ProcessWithProgress_2_T1 = typing.TypeVar('ProcessWithProgress_2_T1')
-        ProcessWithProgress_2_T2 = typing.TypeVar('ProcessWithProgress_2_T2')
-        class ProcessWithProgress_2(typing.Generic[ProcessWithProgress_2_T1, ProcessWithProgress_2_T2]):
-            ProcessWithProgress_2_TInput = AvaloniaTaskProgressRunner.ProcessWithProgress_MethodGroup.ProcessWithProgress_2_T1
-            ProcessWithProgress_2_TOutput = AvaloniaTaskProgressRunner.ProcessWithProgress_MethodGroup.ProcessWithProgress_2_T2
-            def __call__(self, items: List_1[ProcessWithProgress_2_TInput], processItem: Func_2[ProcessWithProgress_2_TInput, ProcessWithProgress_2_TOutput], message: str, threads: ThreadCount) -> List_1[ProcessWithProgress_2_TOutput]:...
-
-
-    # Skipped ProcessWithProgressAsync due to it being static, abstract and generic.
-
-    ProcessWithProgressAsync : ProcessWithProgressAsync_MethodGroup
-    class ProcessWithProgressAsync_MethodGroup:
-        def __getitem__(self, t:typing.Tuple[typing.Type[ProcessWithProgressAsync_2_T1], typing.Type[ProcessWithProgressAsync_2_T2]]) -> ProcessWithProgressAsync_2[ProcessWithProgressAsync_2_T1, ProcessWithProgressAsync_2_T2]: ...
-
-        ProcessWithProgressAsync_2_T1 = typing.TypeVar('ProcessWithProgressAsync_2_T1')
-        ProcessWithProgressAsync_2_T2 = typing.TypeVar('ProcessWithProgressAsync_2_T2')
-        class ProcessWithProgressAsync_2(typing.Generic[ProcessWithProgressAsync_2_T1, ProcessWithProgressAsync_2_T2]):
-            ProcessWithProgressAsync_2_TInput = AvaloniaTaskProgressRunner.ProcessWithProgressAsync_MethodGroup.ProcessWithProgressAsync_2_T1
-            ProcessWithProgressAsync_2_TOutput = AvaloniaTaskProgressRunner.ProcessWithProgressAsync_MethodGroup.ProcessWithProgressAsync_2_T2
-            def __call__(self, items: List_1[ProcessWithProgressAsync_2_TInput], processItem: Func_2[ProcessWithProgressAsync_2_TInput, ProcessWithProgressAsync_2_TOutput], message: str, threads: ThreadCount) -> Task_1[List_1[ProcessWithProgressAsync_2_TOutput]]:...
-
-
-    # Skipped RunOnBackgroundThreadWithSpinningProgressDialog due to it being static, abstract and generic.
-
-    RunOnBackgroundThreadWithSpinningProgressDialog : RunOnBackgroundThreadWithSpinningProgressDialog_MethodGroup
-    class RunOnBackgroundThreadWithSpinningProgressDialog_MethodGroup:
-        def __getitem__(self, t:typing.Type[RunOnBackgroundThreadWithSpinningProgressDialog_1_T1]) -> RunOnBackgroundThreadWithSpinningProgressDialog_1[RunOnBackgroundThreadWithSpinningProgressDialog_1_T1]: ...
-
-        RunOnBackgroundThreadWithSpinningProgressDialog_1_T1 = typing.TypeVar('RunOnBackgroundThreadWithSpinningProgressDialog_1_T1')
-        class RunOnBackgroundThreadWithSpinningProgressDialog_1(typing.Generic[RunOnBackgroundThreadWithSpinningProgressDialog_1_T1]):
-            RunOnBackgroundThreadWithSpinningProgressDialog_1_TResult = AvaloniaTaskProgressRunner.RunOnBackgroundThreadWithSpinningProgressDialog_MethodGroup.RunOnBackgroundThreadWithSpinningProgressDialog_1_T1
-            def __call__(self, message: str, action: Func_1[RunOnBackgroundThreadWithSpinningProgressDialog_1_TResult]) -> RunOnBackgroundThreadWithSpinningProgressDialog_1_TResult:...
-
-
-    # Skipped RunOnBackgroundThreadWithSpinningProgressDialogAsync due to it being static, abstract and generic.
-
-    RunOnBackgroundThreadWithSpinningProgressDialogAsync : RunOnBackgroundThreadWithSpinningProgressDialogAsync_MethodGroup
-    class RunOnBackgroundThreadWithSpinningProgressDialogAsync_MethodGroup:
-        def __getitem__(self, t:typing.Type[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1]) -> RunOnBackgroundThreadWithSpinningProgressDialogAsync_1[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1]: ...
-
-        RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1 = typing.TypeVar('RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1')
-        class RunOnBackgroundThreadWithSpinningProgressDialogAsync_1(typing.Generic[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1]):
-            RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_TResult = AvaloniaTaskProgressRunner.RunOnBackgroundThreadWithSpinningProgressDialogAsync_MethodGroup.RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1
-            def __call__(self, message: str, action: Func_1[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_TResult]) -> Task_1[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_TResult]:...
-
-
-
 
 class MultiTaskProgressDialog(Window):
     def __init__(self) -> None: ...
