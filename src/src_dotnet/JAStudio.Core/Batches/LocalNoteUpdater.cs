@@ -305,24 +305,19 @@ public class LocalNoteUpdater
             : kanjiReading == "";
     }
 
-    public void ReparseSentences(List<SentenceNote> sentences, bool runGcDuringBatch = false)
+    public void ReparseSentences(List<SentenceNote> sentences)
     {
         void ReparseSentence(SentenceNote sentence)
         {
             sentence.UpdateParsedWords(force: true);
         }
 
-        runGcDuringBatch = runGcDuringBatch && _config.EnableGarbageCollectionDuringBatches.GetValue();
-        
         // Shuffle to get accurate time estimations
         var random = new Random();
         sentences = sentences.OrderBy(_ => random.Next()).ToList();
 
-        using var scope = _taskRunner.Current("Reparse Sentences");
-        scope.ProcessWithProgress(
-            sentences,
-            s => { ReparseSentence(s); return 0; },
-            "Reparsing sentences.");
+        using var runner = _taskRunner.Current("Reparse Sentences");
+        runner.ProcessWithProgress(sentences, s => { ReparseSentence(s); return 0; }, "Reparsing sentences.");
     }
 
     public void ReparseSentencesForVocab(VocabNote vocab)
@@ -335,13 +330,13 @@ public class LocalNoteUpdater
             () => _sentences.PotentiallyMatchingVocab(vocab).ToHashSet());
         
         sentences.UnionWith(vocab.Sentences.All());
-        ReparseSentences(sentences.ToList(), runGcDuringBatch: true);
+        ReparseSentences(sentences.ToList());
     }
 
     public void ReparseMatchingSentences(string questionSubstring)
     {
         var sentencesToUpdate = _sentences.SentencesWithSubstring(questionSubstring);
-        ReparseSentences(sentencesToUpdate.ToList(), runGcDuringBatch: true);
+        ReparseSentences(sentencesToUpdate.ToList());
     }
 
     public void CreateMissingVocabWithDictionaryEntries()
