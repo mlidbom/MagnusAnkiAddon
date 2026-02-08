@@ -317,7 +317,7 @@ public class LocalNoteUpdater
         sentences = sentences.OrderBy(_ => random.Next()).ToList();
 
         using var runner = _taskRunner.Current("Reparse Sentences");
-        runner.ProcessWithProgress(sentences, s => { ReparseSentence(s); return 0; }, "Reparsing sentences.", parallelism:Parallelism.Cores(4));
+        runner.ProcessWithProgress(sentences, s => { ReparseSentence(s); return 0; }, "Reparsing sentences.", parallelism:Parallelism.WithThreads((int)_config.ReanalysisThreads.GetValue()));
     }
 
     public void ReparseSentencesForVocab(VocabNote vocab)

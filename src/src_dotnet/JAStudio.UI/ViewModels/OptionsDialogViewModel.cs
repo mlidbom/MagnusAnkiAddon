@@ -246,6 +246,11 @@ public partial class OptionsDialogViewModel : ObservableObject
    partial void OnEnableAutoStringInterningChanged(bool value) =>
       _config.EnableAutoStringInterning.SetValue(value);
 
+   [ObservableProperty] long _reanalysisThreads;
+
+   partial void OnReanalysisThreadsChanged(long value) =>
+      _config.ReanalysisThreads.SetValue(value);
+
    // --- Developer Only Toggles ---
 
    [ObservableProperty] bool _enableTraceMalloc;
@@ -325,6 +330,7 @@ public partial class OptionsDialogViewModel : ObservableObject
       EnableGarbageCollectionDuringBatches = _config.EnableGarbageCollectionDuringBatches.GetValue();
       EnableAutomaticGarbageCollection = _config.EnableAutomaticGarbageCollection.GetValue();
       EnableAutoStringInterning = _config.EnableAutoStringInterning.GetValue();
+      ReanalysisThreads = _config.ReanalysisThreads.GetValue();
 
       // Developer Only
       EnableTraceMalloc = _config.EnableTraceMalloc.GetValue();

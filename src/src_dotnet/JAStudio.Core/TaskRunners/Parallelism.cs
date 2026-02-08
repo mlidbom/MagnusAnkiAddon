@@ -14,7 +14,7 @@ public record Parallelism
    public static Parallelism FractionOfLogicalCores(double fraction) =>
       new(Math.Max(1, (int)(Environment.ProcessorCount * fraction)));
 
-   public static Parallelism Cores(int count) => new(Math.Max(1, count));
+   public static Parallelism WithThreads(int count) => new(Math.Max(1, count));
 
    public int Threads { get; }
 

@@ -209,6 +209,11 @@
                                     IsChecked="{Binding EnableAutomaticGarbageCollection}" />
                             <CheckBox Content="Enable automatic string interning. Reduces memory usage at the cost of some CPU overhead and slowdown. [Requires restart]" 
                                     IsChecked="{Binding EnableAutoStringInterning}" />
+                            <Grid ColumnDefinitions="*,Auto" Margin="0,5,0,0">
+                                <TextBlock Grid.Column="0" Text="Reanalysis threads (threads to use when reparsing sentences). 1 = sequential." VerticalAlignment="Center" TextWrapping="Wrap" />
+                                <NumericUpDown Grid.Column="1" Value="{Binding ReanalysisThreads}" 
+                                             Minimum="1" Maximum="64" Increment="1" FormatString="F0" Width="100" />
+                            </Grid>
                         </StackPanel>
                     </Border>
 

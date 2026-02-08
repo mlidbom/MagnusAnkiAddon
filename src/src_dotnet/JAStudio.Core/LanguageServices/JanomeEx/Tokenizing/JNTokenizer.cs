@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Compze.Utilities.SystemCE.ThreadingCE.ResourceAccess;
 using JAStudio.PythonInterop.Utilities;
 using Python.Runtime;
 
@@ -7,6 +8,8 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;
 
 public sealed class JNTokenizer
 {
+   readonly IMonitorCE _monitor = IMonitorCE.WithDefaultTimeout();
+
    static readonly HashSet<string> CharactersThatMayConfuseJanomeSoWeReplaceThemWithOrdinaryFullWidthSpaces =
       ["!", "！", "|", "（", "）"];
 
@@ -65,8 +68,7 @@ public sealed class JNTokenizer
       }
 
       // Use cached serialized tokens if available, otherwise call Python (the expensive part)
-      var serialized = cachedSerializedTokens
-                       ?? _wrapper.Use(module => (string)module.tokenize_to_string(sanitizedText));
+      var serialized = cachedSerializedTokens ?? _monitor.Read(() => _wrapper.Use(module => (string)module.tokenize_to_string(sanitizedText)));
 
       var jnTokens = ParseSerializedTokens(serialized);
 
@@ -104,15 +106,15 @@ public sealed class JNTokenizer
          var partsOfSpeech = JNPartsOfSpeech.Fetch(fields[0]);
 
          result.Add(new JNToken(
-            partsOfSpeech,
-            baseForm: fields[1],
-            surface: fields[2],
-            inflectionType: fields[3],
-            inflectedForm: fields[4],
-            reading: fields[5],
-            phonetic: fields[6],
-            nodeType: fields[7]
-         ));
+                       partsOfSpeech,
+                       baseForm: fields[1],
+                       surface: fields[2],
+                       inflectionType: fields[3],
+                       inflectedForm: fields[4],
+                       reading: fields[5],
+                       phonetic: fields[6],
+                       nodeType: fields[7]
+                    ));
       }
 
       return result;
