@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Compze.Utilities.Logging;
 using JAStudio.Core.Anki;
 using JAStudio.Core.TestUtils;
@@ -58,10 +59,18 @@ public class JPCollection
       var sentenceData = NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Sentence);
       var studyingStatuses = CardStudyingStatusLoader.FetchAll(dbPath);
 
-      // Push into caches (this shows progress dialogs via the task runner)
-      Vocab.Cache.InitFromList(vocabData);
-      Kanji.Cache.InitFromList(kanjiData);
-      Sentences.Cache.InitFromList(sentenceData);
+      // Push into caches in parallel — each note type has its own cache with no shared
+      // mutable state, so concurrent writes are safe. Each runner gets its own progress
+      // panel in the shared MultiTaskProgressDialog.
+      using var vocabRunner = noteServices.TaskRunner.Create("Loading notes", "Loading vocab...");
+      using var kanjiRunner = noteServices.TaskRunner.Create("Loading notes", "Loading kanji...");
+      using var sentenceRunner = noteServices.TaskRunner.Create("Loading notes", "Loading sentences...");
+
+      Task.WhenAll(
+         Vocab.Cache.InitFromListAsync(vocabData, vocabRunner),
+         Kanji.Cache.InitFromListAsync(kanjiData, kanjiRunner),
+         Sentences.Cache.InitFromListAsync(sentenceData, sentenceRunner)
+      ).GetAwaiter().GetResult();
 
       Vocab.Cache.SetStudyingStatuses(studyingStatuses.Where(s => s.NoteTypeName == NoteTypes.Vocab).ToList());
       Kanji.Cache.SetStudyingStatuses(studyingStatuses.Where(s => s.NoteTypeName == NoteTypes.Kanji).ToList());

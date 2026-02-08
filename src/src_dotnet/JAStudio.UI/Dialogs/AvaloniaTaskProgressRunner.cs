@@ -9,7 +9,7 @@ namespace JAStudio.UI.Dialogs;
 
 public class AvaloniaTaskProgressRunner : ITaskProgressRunner
 {
-    private TaskProgressDialog _dialog = null!;
+    private TaskProgressPanel _panel = null!;
     private readonly bool _allowCancel;
     private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 
@@ -21,11 +21,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
         // Marshal here so callers never need to know about Avalonia threading.
         Dispatcher.UIThread.Invoke(() =>
         {
-            _dialog = new TaskProgressDialog();
-            _dialog.SetTitle(windowTitle);
-            _dialog.SetMessage(labelText);
-            _dialog.ShowCancelButton(allowCancel);
-            _dialog.Show();
+            _panel = MultiTaskProgressDialog.CreatePanel(windowTitle, labelText, allowCancel);
         });
     }
 
@@ -33,15 +29,15 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
 
     public void SetLabelText(string text)
     {
-        _dialog.SetMessage(text);
+        Dispatcher.UIThread.Post(() => _panel.SetMessage(text));
     }
 
     public TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action)
     {
         Dispatcher.UIThread.Invoke(() =>
         {
-            _dialog.SetMessage(message);
-            _dialog.SetIndeterminate(true);
+            _panel.SetMessage(message);
+            _panel.SetIndeterminate(true);
         });
 
         var task = Task.Run(action);
@@ -63,6 +59,22 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
         return result;
     }
 
+    public async Task<TResult> RunOnBackgroundThreadAsync<TResult>(string message, Func<TResult> action)
+    {
+        var sw = Stopwatch.StartNew();
+
+        Dispatcher.UIThread.Post(() =>
+        {
+            _panel.SetMessage(message);
+            _panel.SetIndeterminate(true);
+        });
+
+        var result = await Task.Run(action);
+
+        JALogger.Log($"Finished {message} in {sw.Elapsed.TotalSeconds:F2}s");
+        return result;
+    }
+
     public List<TOutput> ProcessWithProgress<TInput, TOutput>(
         List<TInput> items,
         Func<TInput, TOutput> processItem,
@@ -75,9 +87,9 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
         
         Dispatcher.UIThread.Invoke(() =>
         {
-            _dialog.SetMessage($"{message} 0 of {totalItems}");
-            _dialog.SetIndeterminate(false);
-            _dialog.SetProgress(0, totalItems);
+            _panel.SetMessage($"{message} 0 of {totalItems}");
+            _panel.SetIndeterminate(false);
+            _panel.SetProgress(0, totalItems);
         });
         
         var startTime = DateTime.Now;
@@ -86,7 +98,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
         for (int i = 0; i < totalItems; i++)
         {
             // Check for cancellation
-            if (_allowCancel && _dialog.WasCanceled)
+            if (_allowCancel && _panel.WasCanceled)
             {
                 JALogger.Log($"Operation canceled by user after {i} of {totalItems} items");
                 break;
@@ -110,16 +122,16 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
 
                 if (Dispatcher.UIThread.CheckAccess())
                 {
-                    _dialog.SetProgress(progressIndex, totalItems);
-                    _dialog.SetMessage(progressMessage);
+                    _panel.SetProgress(progressIndex, totalItems);
+                    _panel.SetMessage(progressMessage);
                     Dispatcher.UIThread.RunJobs();
                 }
                 else
                 {
                     Dispatcher.UIThread.Post(() =>
                     {
-                        _dialog.SetProgress(progressIndex, totalItems);
-                        _dialog.SetMessage(progressMessage);
+                        _panel.SetProgress(progressIndex, totalItems);
+                        _panel.SetMessage(progressMessage);
                     });
                 }
             }
@@ -129,6 +141,65 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
         JALogger.Log($"Finished {message} in {finalElapsed:F2}s, handled {results.Count} items");
         
         return results;
+    }
+
+    public Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(
+        List<TInput> items,
+        Func<TInput, TOutput> processItem,
+        string message)
+    {
+        var totalItems = items.Count;
+
+        Dispatcher.UIThread.Post(() =>
+        {
+            _panel.SetMessage($"{message} 0 of {totalItems}");
+            _panel.SetIndeterminate(false);
+            _panel.SetProgress(0, totalItems);
+        });
+
+        return Task.Run(() =>
+        {
+            var results = new List<TOutput>(totalItems);
+            var startTime = DateTime.Now;
+            var lastRefresh = DateTime.Now;
+
+            for (int i = 0; i < totalItems; i++)
+            {
+                if (_allowCancel && _panel.WasCanceled)
+                {
+                    JALogger.Log($"Operation canceled by user after {i} of {totalItems} items");
+                    break;
+                }
+
+                results.Add(processItem(items[i]));
+
+                var now = DateTime.Now;
+                if ((now - lastRefresh).TotalMilliseconds > 100 || i == totalItems - 1)
+                {
+                    lastRefresh = now;
+                    var progressIndex = i + 1;
+                    var elapsed = i > 0 ? (now - startTime).TotalSeconds : 0;
+                    var estimatedTotal = i > 0 ? (elapsed / progressIndex) * totalItems : 0;
+                    var estimatedRemaining = i > 0 ? estimatedTotal - elapsed : 0;
+                    var progressMessage = i > 0
+                        ? $"{message} {progressIndex} of {totalItems} Total: {FormatSeconds(estimatedTotal)} Elapsed: {FormatSeconds(elapsed)} Remaining: {FormatSeconds(estimatedRemaining)}"
+                        : $"{message} {progressIndex} of {totalItems}";
+
+                    var capturedIdx = progressIndex;
+                    var capturedMsg = progressMessage;
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        _panel.SetProgress(capturedIdx, totalItems);
+                        _panel.SetMessage(capturedMsg);
+                    });
+                }
+            }
+
+            var finalElapsed = (DateTime.Now - startTime).TotalSeconds;
+            JALogger.Log($"Finished {message} in {finalElapsed:F2}s, handled {results.Count} items");
+
+            return results;
+        });
     }
 
     private static string FormatSeconds(double seconds)
@@ -145,7 +216,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
 
     public void Close()
     {
-        Dispatcher.UIThread.Post(() => _dialog.Close());
+        Dispatcher.UIThread.Post(() => MultiTaskProgressDialog.RemovePanel(_panel));
     }
 
     public void Dispose()

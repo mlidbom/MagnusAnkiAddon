@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace JAStudio.Core.TaskRunners;
 
@@ -32,6 +33,14 @@ public class InvisibleTaskRunner : ITaskProgressRunner
       return result;
    }
 
+   public Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(
+      List<TInput> items,
+      Func<TInput, TOutput> processItem,
+      string message)
+   {
+      return Task.Run(() => ProcessWithProgress(items, processItem, message));
+   }
+
    public void SetLabelText(string labelText)
    {
       // Invisible - no-op
@@ -54,6 +63,11 @@ public class InvisibleTaskRunner : ITaskProgressRunner
       watch.Stop();
       MyLog.Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g}");
       return result;
+   }
+
+   public Task<TResult> RunOnBackgroundThreadAsync<TResult>(string message, Func<TResult> action)
+   {
+      return Task.Run(() => RunOnBackgroundThreadWithSpinningProgressDialog(message, action));
    }
 
    public bool IsHidden()

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using JAStudio.Core.TaskRunners;
 using JAStudio.PythonInterop;
 
 namespace JAStudio.Core.Note.Collection;
@@ -79,6 +81,26 @@ public abstract class NoteCacheBase<TNote> where TNote : JPNote
          using var scope = services.TaskRunner.Current($"Pushing {_noteType.Name} notes into cache");
          var runner = services.TaskRunner.GetCurrent()!;
          runner.ProcessWithProgress(
+            allNotes,
+            noteData =>
+            {
+               AddToCacheFromData(noteData);
+               return 0;
+            },
+            $"Pushing {_noteType.Name} notes into cache");
+      }
+   }
+
+   /// <summary>
+   /// Async version of <see cref="InitFromList"/> for parallel loading.
+   /// The caller provides a dedicated <see cref="ITaskProgressRunner"/> so that
+   /// multiple caches can load concurrently, each with its own progress panel.
+   /// </summary>
+   public async Task InitFromListAsync(List<NoteData> allNotes, ITaskProgressRunner runner)
+   {
+      if(allNotes.Count > 0)
+      {
+         await runner.ProcessWithProgressAsync(
             allNotes,
             noteData =>
             {
