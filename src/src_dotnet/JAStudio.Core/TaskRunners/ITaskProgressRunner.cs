@@ -7,7 +7,7 @@ namespace JAStudio.Core.TaskRunners;
 
 public interface ITaskProgressRunner : IDisposable
 {
-   List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message);
+   List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, Parallelism? parallelism = null);
 
    TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action);
 

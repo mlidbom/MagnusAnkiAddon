@@ -15,20 +15,31 @@ public class InvisibleTaskRunner : ITaskProgressRunner
    public List<TOutput> ProcessWithProgress<TInput, TOutput>(
       List<TInput> items,
       Func<TInput, TOutput> processItem,
-      string message)
+      string message,
+      Parallelism? parallelism = null)
    {
+      var threads = (parallelism ?? Parallelism.Sequential).Threads;
       var watch = Stopwatch.StartNew();
-      var result = new List<TOutput>();
-      foreach(var item in items)
+
+      if(threads <= 1)
       {
-         result.Add(processItem(item));
+         var result = new List<TOutput>(items.Count);
+         foreach(var item in items)
+         {
+            result.Add(processItem(item));
+         }
+         watch.Stop();
+         MyLog.Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g} handled {items.Count} items");
+         return result;
       }
 
-      var totalItems = items.Count;
+      var results = new TOutput[items.Count];
+      System.Threading.Tasks.Parallel.For(0, items.Count,
+         new System.Threading.Tasks.ParallelOptions { MaxDegreeOfParallelism = threads },
+         i => results[i] = processItem(items[i]));
       watch.Stop();
-      MyLog.Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g} handled {totalItems} items");
-
-      return result;
+      MyLog.Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g} handled {items.Count} items ({threads} threads)");
+      return new List<TOutput>(results);
    }
 
    public Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(

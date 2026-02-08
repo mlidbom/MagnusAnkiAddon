@@ -1,5 +1,5 @@
 import typing
-from JAStudio.Core.TaskRunners import ITaskProgressRunner
+from JAStudio.Core.TaskRunners import ITaskProgressRunner, Parallelism
 from System.Collections.Generic import List_1, IReadOnlyList_1
 from System import Func_2, Func_1
 from System.Threading.Tasks import Task_1
@@ -38,7 +38,7 @@ class AvaloniaTaskProgressRunner(ITaskProgressRunner):
         class ProcessWithProgress_2(typing.Generic[ProcessWithProgress_2_T1, ProcessWithProgress_2_T2]):
             ProcessWithProgress_2_TInput = AvaloniaTaskProgressRunner.ProcessWithProgress_MethodGroup.ProcessWithProgress_2_T1
             ProcessWithProgress_2_TOutput = AvaloniaTaskProgressRunner.ProcessWithProgress_MethodGroup.ProcessWithProgress_2_T2
-            def __call__(self, items: List_1[ProcessWithProgress_2_TInput], processItem: Func_2[ProcessWithProgress_2_TInput, ProcessWithProgress_2_TOutput], message: str) -> List_1[ProcessWithProgress_2_TOutput]:...
+            def __call__(self, items: List_1[ProcessWithProgress_2_TInput], processItem: Func_2[ProcessWithProgress_2_TInput, ProcessWithProgress_2_TOutput], message: str, parallelism: Parallelism = ...) -> List_1[ProcessWithProgress_2_TOutput]:...
 
 
     # Skipped ProcessWithProgressAsync due to it being static, abstract and generic.
@@ -52,7 +52,7 @@ class AvaloniaTaskProgressRunner(ITaskProgressRunner):
         class ProcessWithProgressAsync_2(typing.Generic[ProcessWithProgressAsync_2_T1, ProcessWithProgressAsync_2_T2]):
             ProcessWithProgressAsync_2_TInput = AvaloniaTaskProgressRunner.ProcessWithProgressAsync_MethodGroup.ProcessWithProgressAsync_2_T1
             ProcessWithProgressAsync_2_TOutput = AvaloniaTaskProgressRunner.ProcessWithProgressAsync_MethodGroup.ProcessWithProgressAsync_2_T2
-            def __call__(self, items: List_1[ProcessWithProgressAsync_2_TInput], processItem: Func_2[ProcessWithProgressAsync_2_TInput, ProcessWithProgressAsync_2_TOutput], message: str) -> Task_1[List_1[ProcessWithProgressAsync_2_TOutput]]:...
+            def __call__(self, items: List_1[ProcessWithProgressAsync_2_TInput], processItem: Func_2[ProcessWithProgressAsync_2_TInput, ProcessWithProgressAsync_2_TOutput], message: str, parallelism: Parallelism = ...) -> Task_1[List_1[ProcessWithProgressAsync_2_TOutput]]:...
 
 
     # Skipped RunOnBackgroundThreadAsync due to it being static, abstract and generic.

@@ -74,10 +74,10 @@ public class TaskRunnerScope : ITaskProgressRunner
 
    ITaskProgressRunner CreateRunner(string message) => _taskRunner.Create(_windowTitle, message, _visible, _allowCancel, _modal);
 
-   public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message)
+   public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, Parallelism? parallelism = null)
    {
       using var runner = CreateRunner(message);
-      return runner.ProcessWithProgress(items, processItem, message);
+      return runner.ProcessWithProgress(items, processItem, message, parallelism);
    }
 
    public TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action)

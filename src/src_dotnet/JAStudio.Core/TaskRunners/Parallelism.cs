@@ -8,10 +8,10 @@ namespace JAStudio.Core.TaskRunners;
 public record Parallelism
 {
    public static readonly Parallelism Sequential = new(1);
-   public static readonly Parallelism AllCores = new(Environment.ProcessorCount);
-   public static readonly Parallelism HalfCores = new(Math.Max(1, Environment.ProcessorCount / 2));
+   public static readonly Parallelism AllLogicalCores = new(Environment.ProcessorCount);
+   public static readonly Parallelism HalfLogicalCores = new(Math.Max(1, Environment.ProcessorCount / 2));
 
-   public static Parallelism FractionOfCores(double fraction) =>
+   public static Parallelism FractionOfLogicalCores(double fraction) =>
       new(Math.Max(1, (int)(Environment.ProcessorCount * fraction)));
 
    public static Parallelism Cores(int count) => new(Math.Max(1, count));

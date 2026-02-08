@@ -68,11 +68,12 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
       return await Task.Run(action);
    }
 
-   public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message)
+   public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, Parallelism? parallelism = null)
    {
       var totalItems = items.Count;
-      var results = new List<TOutput>(totalItems);
-      using var _ = this.Log().Info().LogMethodExecutionTime($"{message} handled {items.Count} items");
+      var threads = (parallelism ?? Parallelism.Sequential).Threads;
+      var results = new TOutput[totalItems];
+      using var _ = this.Log().Info().LogMethodExecutionTime($"{message} handled {items.Count} items ({threads} threads)");
 
       Dispatcher.UIThread.Invoke(() =>
       {
@@ -81,51 +82,69 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
          _panel.SetProgress(0, totalItems);
       });
 
+      int completed = 0;
       var startTime = DateTime.Now;
       var lastRefresh = DateTime.Now;
 
-      for(int i = 0; i < totalItems; i++)
+      void UpdateProgress()
       {
-         // Check for cancellation
-         if(_allowCancel && _panel.WasCanceled)
-         {
-            JALogger.Log($"Operation canceled by user after {i} of {totalItems} items");
-            break;
-         }
-
-         // Process item
-         results.Add(processItem(items[i]));
-
-         // Update UI periodically (every 100ms or on last item)
          var now = DateTime.Now;
-         if((now - lastRefresh).TotalMilliseconds > 100 || i == totalItems - 1)
+         var current = System.Threading.Interlocked.Increment(ref completed);
+         if((now - lastRefresh).TotalMilliseconds > 100 || current == totalItems)
          {
             lastRefresh = now;
-            var progressIndex = i + 1;
-            var elapsedForEstimate = i > 0 ? (now - startTime).TotalSeconds : 0;
-            var estimatedTotal = i > 0 ? (elapsedForEstimate / progressIndex) * totalItems : 0;
-            var estimatedRemaining = i > 0 ? estimatedTotal - elapsedForEstimate : 0;
-            var progressMessage = i > 0
-                                     ? $"{message} {progressIndex} of {totalItems} Total: {FormatSeconds(estimatedTotal)} Elapsed: {FormatSeconds(elapsedForEstimate)} Remaining: {FormatSeconds(estimatedRemaining)}"
-                                     : $"{message} {progressIndex} of {totalItems}";
+            var elapsed = current > 0 ? (now - startTime).TotalSeconds : 0;
+            var estimatedTotal = current > 0 ? (elapsed / current) * totalItems : 0;
+            var estimatedRemaining = current > 0 ? estimatedTotal - elapsed : 0;
+            var progressMessage = current > 0
+                                     ? $"{message} {current} of {totalItems} Total: {FormatSeconds(estimatedTotal)} Elapsed: {FormatSeconds(elapsed)} Remaining: {FormatSeconds(estimatedRemaining)}"
+                                     : $"{message} {current} of {totalItems}";
 
+            var capturedCurrent = current;
+            var capturedMsg = progressMessage;
             if(Dispatcher.UIThread.CheckAccess())
             {
-               _panel.SetProgress(progressIndex, totalItems);
-               _panel.SetMessage(progressMessage);
+               _panel.SetProgress(capturedCurrent, totalItems);
+               _panel.SetMessage(capturedMsg);
                Dispatcher.UIThread.RunJobs();
-            } else
+            }
+            else
             {
                Dispatcher.UIThread.Post(() =>
                {
-                  _panel.SetProgress(progressIndex, totalItems);
-                  _panel.SetMessage(progressMessage);
+                  _panel.SetProgress(capturedCurrent, totalItems);
+                  _panel.SetMessage(capturedMsg);
                });
             }
          }
       }
 
-      return results;
+      if(threads <= 1)
+      {
+         for(int i = 0; i < totalItems; i++)
+         {
+            if(_allowCancel && _panel.WasCanceled)
+            {
+               JALogger.Log($"Operation canceled by user after {completed} of {totalItems} items");
+               break;
+            }
+            results[i] = processItem(items[i]);
+            UpdateProgress();
+         }
+      }
+      else
+      {
+         System.Threading.Tasks.Parallel.For(0, totalItems,
+            new System.Threading.Tasks.ParallelOptions { MaxDegreeOfParallelism = threads },
+            i =>
+            {
+               if(_allowCancel && _panel.WasCanceled) return;
+               results[i] = processItem(items[i]);
+               UpdateProgress();
+            });
+      }
+
+      return new List<TOutput>(results);
    }
 
    public Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, Parallelism? parallelism = null)
