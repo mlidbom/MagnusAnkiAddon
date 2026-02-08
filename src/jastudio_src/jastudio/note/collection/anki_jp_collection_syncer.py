@@ -87,9 +87,9 @@ class AnkiJPCollectionSyncer(Slots):
 
                     from jastudio.note.collection.anki_single_collection_syncer import AnkiSingleCollectionSyncer
                     collection = dotnet_ui_root.Services.App.Collection
-                    self._vocab = AnkiSingleCollectionSyncer(VocabNote, collection.Vocab.Cache, self._cache_runner, NoteTypes.Vocab)
-                    self._sentences = AnkiSingleCollectionSyncer(SentenceNote, collection.Sentences.Cache, self._cache_runner, NoteTypes.Sentence)
-                    self._kanji = AnkiSingleCollectionSyncer(KanjiNote, collection.Kanji.Cache, self._cache_runner, NoteTypes.Kanji)
+                    self._vocab = AnkiSingleCollectionSyncer(VocabNote, collection.Vocab.AnkiSyncHandler, self._cache_runner, NoteTypes.Vocab)
+                    self._sentences = AnkiSingleCollectionSyncer(SentenceNote, collection.Sentences.AnkiSyncHandler, self._cache_runner, NoteTypes.Sentence)
+                    self._kanji = AnkiSingleCollectionSyncer(KanjiNote, collection.Kanji.AnkiSyncHandler, self._cache_runner, NoteTypes.Kanji)
 
                 self._cache_runner.start()
 

@@ -7,7 +7,8 @@ namespace JAStudio.Core.Note.Collection;
 public class SentenceCollection
 {
     private readonly IBackendNoteCreator _backendNoteCreator;
-    public readonly SentenceCache Cache;
+    internal readonly SentenceCache Cache;
+    public IAnkiNoteUpdateHandler AnkiSyncHandler => Cache;
 
     public SentenceCollection(IBackendNoteCreator backendNoteCreator)
     {

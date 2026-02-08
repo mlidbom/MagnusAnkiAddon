@@ -8,7 +8,8 @@ namespace JAStudio.Core.Note.Collection;
 public class VocabCollection
 {
     private readonly IBackendNoteCreator _backendNoteCreator;
-    public readonly VocabCache Cache;
+    internal readonly VocabCache Cache;
+    public IAnkiNoteUpdateHandler AnkiSyncHandler => Cache;
 
     public VocabCollection(IBackendNoteCreator backendNoteCreator)
     {

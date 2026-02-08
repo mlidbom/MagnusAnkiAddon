@@ -20,7 +20,7 @@ public class CachedNote
    }
 }
 
-public abstract class NoteCacheBase<TNote> where TNote : JPNote
+public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote : JPNote
 {
    readonly Func<NoteServices, NoteData, TNote> _noteConstructor;
    readonly Type _noteType;

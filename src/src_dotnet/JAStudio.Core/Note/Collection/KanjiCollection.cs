@@ -8,7 +8,8 @@ namespace JAStudio.Core.Note.Collection;
 public class KanjiCollection
 {
     private readonly IBackendNoteCreator _backendNoteCreator;
-    public readonly KanjiCache Cache;
+    internal readonly KanjiCache Cache;
+    public IAnkiNoteUpdateHandler AnkiSyncHandler => Cache;
 
     public KanjiCollection(IBackendNoteCreator backendNoteCreator)
     {

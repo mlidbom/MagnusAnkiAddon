@@ -13,17 +13,17 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from anki.notes import Note
-    from JAStudio.Core.Note.Collection import NoteCacheBase_1
+    from JAStudio.Core.Note.Collection import IAnkiNoteUpdateHandler
     from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner
 
 class AnkiSingleCollectionSyncer[TNote: JPNote](Slots):
-    def __init__(self, cached_note_type: type[TNote], note_cache: NoteCacheBase_1[TNote], cache_runner: AnkiCollectionSyncRunner, note_type_name: str) -> None:
+    def __init__(self, cached_note_type: type[TNote], anki_sync_handler: IAnkiNoteUpdateHandler, cache_runner: AnkiCollectionSyncRunner, note_type_name: str) -> None:
         self._note_type: type[TNote] = cached_note_type
-        self._cache: NoteCacheBase_1[TNote] = note_cache
+        self._anki_sync_handler: IAnkiNoteUpdateHandler = anki_sync_handler
         self._note_type_name: str = note_type_name
         self._is_updating_anki_note: bool = False
 
-        self._cache.OnNoteUpdated(self._update_anki_note)
+        self._anki_sync_handler.OnNoteUpdated(self._update_anki_note)
 
         cache_runner.connect_will_remove(self._on_will_be_removed)
         cache_runner.connect_note_addded(self._on_added)
@@ -47,14 +47,14 @@ class AnkiSingleCollectionSyncer[TNote: JPNote](Slots):
         if not self._is_my_note_type(backend_note): return
         if not backend_note.id: return
         note_data = JPNoteDataShim.from_note(backend_note)
-        self._cache.AnkiNoteWillFlush(note_data)
+        self._anki_sync_handler.AnkiNoteWillFlush(note_data)
 
     def _on_added(self, backend_note: Note) -> None:
         if not self._is_my_note_type(backend_note): return
         if not backend_note.id: return
         note_data = JPNoteDataShim.from_note(backend_note)
-        self._cache.AnkiNoteAdded(note_data)
+        self._anki_sync_handler.AnkiNoteAdded(note_data)
 
     def _on_will_be_removed(self, note_ids: Sequence[NoteId]) -> None:
         for note_id in note_ids:
-            self._cache.AnkiNoteRemoved(int(note_id))
+            self._anki_sync_handler.AnkiNoteRemoved(int(note_id))
