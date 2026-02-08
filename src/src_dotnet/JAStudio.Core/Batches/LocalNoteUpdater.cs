@@ -63,8 +63,7 @@ public class LocalNoteUpdater
         }
 
         using var scope = _taskRunner.Current("Updating sentences");
-        var runner = _taskRunner.GetCurrent()!;
-        runner.ProcessWithProgress(
+        scope.ProcessWithProgress(
             _sentences.All().ToList(),
             s => { UpdateSentence(s); return 0; },
             "Updating sentences");
@@ -78,8 +77,7 @@ public class LocalNoteUpdater
         }
 
         using var scope = _taskRunner.Current("Updating kanji");
-        var runner = _taskRunner.GetCurrent()!;
-        runner.ProcessWithProgress(
+        scope.ProcessWithProgress(
             _kanji.All().ToList(),
             k => { UpdateKanji(k); return 0; },
             "Updating kanji");
@@ -93,8 +91,7 @@ public class LocalNoteUpdater
         }
 
         using var scope = _taskRunner.Current("Updating vocab");
-        var runner = _taskRunner.GetCurrent()!;
-        runner.ProcessWithProgress(
+        scope.ProcessWithProgress(
             _vocab.All().ToList(),
             v => { UpdateVocab(v); return 0; },
             "Updating vocab");
@@ -119,8 +116,7 @@ public class LocalNoteUpdater
         }
 
         using var scope = _taskRunner.Current("Tagging sentence notes");
-        var runner = _taskRunner.GetCurrent()!;
-        runner.ProcessWithProgress(
+        scope.ProcessWithProgress(
             _sentences.All().ToList(),
             s => { TagSentence(s); return 0; },
             "Tagging sentence notes");
@@ -138,8 +134,7 @@ public class LocalNoteUpdater
         }
 
         using var scope = _taskRunner.Current("Tagging vocab");
-        var runner = _taskRunner.GetCurrent()!;
-        runner.ProcessWithProgress(
+        scope.ProcessWithProgress(
             _vocab.All().ToList(),
             v => { TagNote(v); return 0; },
             "Tag vocab notes");
@@ -281,10 +276,9 @@ public class LocalNoteUpdater
         }
 
         using var scope = _taskRunner.Current("Tagging kanji");
-        var runner = _taskRunner.GetCurrent()!;
         var allKanji = _kanji.All().ToList();
-        runner.ProcessWithProgress(allKanji, k => { TagKanji(k); return 0; }, "Tagging kanji with studying metadata");
-        runner.ProcessWithProgress(allKanji, k => { TagHasSingleKanjiVocabWithReadingDifferentFromKanjiPrimaryReading(k); return 0; }, "Tagging kanji with single kanji vocab");
+        scope.ProcessWithProgress(allKanji, k => { TagKanji(k); return 0; }, "Tagging kanji with studying metadata");
+        scope.ProcessWithProgress(allKanji, k => { TagHasSingleKanjiVocabWithReadingDifferentFromKanjiPrimaryReading(k); return 0; }, "Tagging kanji with single kanji vocab");
     }
 
     public void ReparseAllSentences()
@@ -324,9 +318,8 @@ public class LocalNoteUpdater
         var random = new Random();
         sentences = sentences.OrderBy(_ => random.Next()).ToList();
 
-        using var scope = _taskRunner.Current("Reparse Sentences", inhibitGc: runGcDuringBatch);
-        var runner = _taskRunner.GetCurrent()!;
-        runner.ProcessWithProgress(
+        using var scope = _taskRunner.Current("Reparse Sentences");
+        scope.ProcessWithProgress(
             sentences,
             s => { ReparseSentence(s); return 0; },
             "Reparsing sentences.",
@@ -338,9 +331,8 @@ public class LocalNoteUpdater
     {
         vocab.UpdateGeneratedData();
         using var scope = _taskRunner.Current("Reparsing sentences for vocab");
-        var runner = _taskRunner.GetCurrent()!;
         
-        var sentences = runner.RunOnBackgroundThreadWithSpinningProgressDialog(
+        var sentences = scope.RunOnBackgroundThreadWithSpinningProgressDialog(
             "Fetching sentences to reparse",
             () => _sentences.PotentiallyMatchingVocab(vocab).ToHashSet());
         
@@ -357,9 +349,8 @@ public class LocalNoteUpdater
     public void CreateMissingVocabWithDictionaryEntries()
     {
         using var scope = _taskRunner.Current("Creating vocab notes for parsed words with no vocab notes");
-        var runner = _taskRunner.GetCurrent()!;
 
-        var dictionaryWordsWithNoVocab = runner.RunOnBackgroundThreadWithSpinningProgressDialog(
+        var dictionaryWordsWithNoVocab = scope.RunOnBackgroundThreadWithSpinningProgressDialog(
             "Fetching parsed words with no vocab notes from parsing results",
             () => _sentences.All()
                 .SelectMany(sentence => sentence.ParsingResult.Get().ParsedWords
@@ -380,7 +371,7 @@ public class LocalNoteUpdater
             }
         }
 
-        runner.ProcessWithProgress(
+        scope.ProcessWithProgress(
             dictionaryWordsWithNoVocab,
             r => { CreateVocabIfNotAlreadyCreated(r); return 0; },
             "Creating vocab notes");
@@ -389,9 +380,8 @@ public class LocalNoteUpdater
     public void RegenerateJamdictVocabAnswers()
     {
         using var scope = _taskRunner.Current("Regenerating vocab source answers from jamdict");
-        var runner = _taskRunner.GetCurrent()!;
         var vocabNotes = _vocab.All().ToList();
-        runner.ProcessWithProgress(
+        scope.ProcessWithProgress(
             vocabNotes,
             vocab => { vocab.GenerateAndSetAnswer(); return 0; },
             "Regenerating vocab source answers from jamdict");

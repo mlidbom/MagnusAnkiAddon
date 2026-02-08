@@ -79,8 +79,7 @@ public abstract class NoteCacheBase<TNote> where TNote : JPNote
       {
          var services = RequireServices();
          using var scope = services.TaskRunner.Current($"Pushing {_noteType.Name} notes into cache");
-         var runner = services.TaskRunner.GetCurrent()!;
-         runner.ProcessWithProgress(
+         scope.ProcessWithProgress(
             allNotes,
             noteData =>
             {
