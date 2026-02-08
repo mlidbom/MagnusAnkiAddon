@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Compze.Utilities.SystemCE.ThreadingCE.ResourceAccess;
 using JAStudio.Core.Anki;
 using JAStudio.PythonInterop;
 
@@ -104,6 +105,7 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
    where TNote : JPNote
    where TSnapshot : CachedNote
 {
+   readonly IMonitorCE _monitor = IMonitorCE.WithDefaultTimeout();
    readonly Dictionary<string, List<TNote>> _byQuestion = new();
    readonly Dictionary<long, TSnapshot> _snapshotById = new();
 
@@ -118,7 +120,7 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
    protected abstract void InheritorRemoveFromCache(TNote note, TSnapshot snapshot);
    protected abstract void InheritorAddToCache(TNote note, TSnapshot snapshot);
 
-   public override void RemoveFromCache(TNote note)
+   public override void RemoveFromCache(TNote note) => _monitor.Update(() =>
    {
       var id = note.GetId();
       if(id == 0) throw new InvalidOperationException("Cannot remove note without ID");
@@ -133,9 +135,9 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
       }
 
       InheritorRemoveFromCache(note, cached);
-   }
+   });
 
-   public override void AddToCache(TNote note)
+   public override void AddToCache(TNote note) => _monitor.Update(() =>
    {
       var id = note.GetId();
       if(id == 0) throw new InvalidOperationException("Cannot add note without ID");
@@ -152,5 +154,5 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
       _byQuestion[snapshot.Question].Add(note);
 
       InheritorAddToCache(note, snapshot);
-   }
+   });
 }
