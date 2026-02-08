@@ -57,16 +57,17 @@ public class JPCollection
 
       var vocabData = Task.Run(() =>
       {
-         //this should get its own panel
+         //this should get its own panel but I Never see this displayed
          var vocabData = runner.RunOnBackgroundThreadWithSpinningProgressDialog("Fetching Vocabs from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Vocab));
+         //The subtask here IS displayed correctly.
          return Vocab.Cache.InitFromListAsync(vocabData);
       });
 
-      //this should get its own panel
+      //this should get its own panel but I Never see this displayed
       var kanjiData = runner.RunOnBackgroundThreadAsync("Fetching Kanji from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Kanji));
-      //this should get its own panel
+      //this should get its own panel but I Never see this displayed
       var sentenceData = runner.RunOnBackgroundThreadAsync("Fetching Sentences from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Sentence));
-      //this should get its own panel
+      //This is the only one of the three I see displayed and it runs WAY too long. I think it is hiding the other two.
       var studyingStatuses = runner.RunOnBackgroundThreadAsync("Fetching Studying Statuses from anki db", () => CardStudyingStatusLoader.FetchAll(dbPath));
 
       //What actually happens, I see only "Fetching Studying Statuses from anki db", none of the others
@@ -75,7 +76,9 @@ public class JPCollection
 
       Task.WhenAll(
          vocabData,
+         //this should get its own panel
          Kanji.Cache.InitFromListAsync(kanjiData.Result),
+         //this should get its own panel
          Sentences.Cache.InitFromListAsync(sentenceData.Result)
       ).GetAwaiter().GetResult();
 
