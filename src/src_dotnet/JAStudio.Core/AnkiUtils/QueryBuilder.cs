@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.Anki;
 using JAStudio.Core.LanguageServices;
 using JAStudio.Core.LanguageServices.JanomeEx;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
@@ -17,12 +18,14 @@ public class QueryBuilder
    readonly VocabCollection _vocab;
    readonly KanjiCollection _kanji;
    readonly AnalysisServices _analysisServices;
+   readonly AnkiNoteIdMap _ankiNoteIdMap;
 
-   internal QueryBuilder(VocabCollection vocab, KanjiCollection kanji, AnalysisServices analysisServices)
+   internal QueryBuilder(VocabCollection vocab, KanjiCollection kanji, AnalysisServices analysisServices, AnkiNoteIdMap ankiNoteIdMap)
    {
       _vocab = vocab;
       _kanji = kanji;
       _analysisServices = analysisServices;
+      _ankiNoteIdMap = ankiNoteIdMap;
    }
 
    const string ExcludedDeckSubstring = "*Excluded*";
@@ -96,17 +99,21 @@ public class QueryBuilder
     /// </summary>
     public string NotesLookup(IEnumerable<JPNote> notes)
     {
-        return NotesByIds(notes.Select(n => (long)n.GetId()));
+        return NotesByIds(notes.Select(n => n.GetId()));
     }
 
     /// <summary>
-    /// Creates a query to find notes by their IDs.
-    /// Ported from notes_by_id()
+    /// Creates a query to find notes by their domain NoteIds.
+    /// Converts to Anki long IDs for the query string.
     /// </summary>
-    public string NotesByIds(IEnumerable<long> noteIds)
+    public string NotesByIds(IEnumerable<NoteId> noteIds)
     {
-        var ids = noteIds.ToList();
-        return ids.Count > 0 ? $"{NoteFieldsConstants.NoteId}:{string.Join(",", ids)}" : "";
+        var ankiIds = noteIds
+            .Select(id => _ankiNoteIdMap.ToAnkiId(id))
+            .Where(id => id.HasValue)
+            .Select(id => id!.Value)
+            .ToList();
+        return ankiIds.Count > 0 ? $"{NoteFieldsConstants.NoteId}:{string.Join(",", ankiIds)}" : "";
     }
 
     /// <summary>

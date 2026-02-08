@@ -15,7 +15,7 @@ public class VocabNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
       Assert.NotNull(vocab);
       Assert.Equal("食べる", vocab.GetQuestion());
       Assert.Equal("to eat", vocab.GetAnswer());
-      Assert.NotEqual(0, vocab.GetId());
+      Assert.False(vocab.GetId().IsEmpty);
    }
 
    [Fact]

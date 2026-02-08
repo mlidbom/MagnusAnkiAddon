@@ -141,17 +141,17 @@ public class BrowserMenus
    {
       try
       {
-         // Get note ID from card ID via AnkiFacade, then load from collection
-         var noteId = AnkiFacade.GetNoteIdFromCardId(cardId);
+         // Get Anki note ID from card ID via AnkiFacade, then look up by Anki ID
+         var ankiNoteId = AnkiFacade.GetNoteIdFromCardId(cardId);
 
-         // Try each note type collection
-         var vocab = _services.App.Collection.Vocab.WithIdOrNone(noteId);
+         // Try each note type collection using Anki ID mapping
+         JPNote? vocab = _services.App.Collection.Vocab.WithAnkiIdOrNone(ankiNoteId);
          if(vocab != null) return vocab;
 
-         var sentence = _services.App.Collection.Sentences.WithIdOrNone(noteId);
+         JPNote? sentence = _services.App.Collection.Sentences.WithAnkiIdOrNone(ankiNoteId);
          if(sentence != null) return sentence;
 
-         var kanji = _services.App.Collection.Kanji.WithIdOrNone(noteId);
+         JPNote? kanji = _services.App.Collection.Kanji.WithAnkiIdOrNone(ankiNoteId);
          return kanji;
       }
       catch(Exception ex)
@@ -161,15 +161,15 @@ public class BrowserMenus
       }
    }
 
-   private List<SentenceNote> GetSentenceNotes(List<long> noteIds)
+   private List<SentenceNote> GetSentenceNotes(List<long> ankiNoteIds)
    {
       var sentences = new List<SentenceNote>();
 
-      foreach(var noteId in noteIds)
+      foreach(var ankiNoteId in ankiNoteIds)
       {
          try
          {
-            var note = _services.App.Collection.Sentences.WithIdOrNone(noteId);
+            var note = _services.App.Collection.Sentences.WithAnkiIdOrNone(ankiNoteId) as SentenceNote;
             if(note != null)
             {
                sentences.Add(note);
@@ -177,7 +177,7 @@ public class BrowserMenus
          }
          catch(Exception ex)
          {
-            JALogger.Log($"Failed to load note {noteId}: {ex.Message}");
+            JALogger.Log($"Failed to load note {ankiNoteId}: {ex.Message}");
          }
       }
 

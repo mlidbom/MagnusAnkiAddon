@@ -114,12 +114,12 @@ public class SentenceNoteMenus
         return SpecMenuItem.Submenu(ShortcutFinger.Home5("View"), items);
     }
 
-    private static IEnumerable<long> GetParsedWordsNoteIds(SentenceNote sentence)
+    private static IEnumerable<NoteId> GetParsedWordsNoteIds(SentenceNote sentence)
     {
         var parsingResult = sentence.ParsingResult.Get();
         var vocabIds = parsingResult.ParsedWords
-            .Where(p => p.VocabId != -1)
-            .Select(p => (long)p.VocabId)
+            .Where(p => !p.VocabId.IsEmpty)
+            .Select(p => p.VocabId)
             .Distinct();
         return vocabIds;
     }

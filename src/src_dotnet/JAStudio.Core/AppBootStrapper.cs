@@ -42,7 +42,8 @@ static class AppBootstrapper
          // Core services
          Singleton.For<Settings>().CreatedBy((JapaneseConfig config) => new Settings(config)),
          Singleton.For<AnalysisServices>().CreatedBy((VocabCollection vocab, DictLookup dictLookup, Settings settings) => new AnalysisServices(vocab, dictLookup, settings)),
-         Singleton.For<QueryBuilder>().CreatedBy((VocabCollection vocab, KanjiCollection kanji, AnalysisServices analysisServices) => new QueryBuilder(vocab, kanji, analysisServices)),
+         Singleton.For<AnkiNoteIdMap>().CreatedBy(() => new AnkiNoteIdMap()),
+         Singleton.For<QueryBuilder>().CreatedBy((VocabCollection vocab, KanjiCollection kanji, AnalysisServices analysisServices, AnkiNoteIdMap ankiNoteIdMap) => new QueryBuilder(vocab, kanji, analysisServices, ankiNoteIdMap)),
          Singleton.For<LocalNoteUpdater>().CreatedBy((TaskRunner taskRunner, VocabCollection vocab, KanjiCollection kanji, SentenceCollection sentences, JapaneseConfig config, DictLookup dictLookup, VocabNoteFactory vocabNoteFactory) =>
                                                         new LocalNoteUpdater(taskRunner, vocab, kanji, sentences, config, dictLookup, vocabNoteFactory)),
          Singleton.For<TaskRunner>().CreatedBy((JapaneseConfig config) => new TaskRunner(config)),

@@ -264,14 +264,14 @@ public partial class NoteSearchDialogViewModel : ObservableObject
          return;
 
       var noteId = SelectedResult.NoteId;
-      var query = _services.QueryBuilder.NotesByIds(new[] { (long)noteId });
+      var query = _services.QueryBuilder.NotesByIds(new[] { noteId });
       AnkiFacade.Browser.ExecuteLookup(query);
    }
 }
 
 public class NoteSearchResultViewModel
 {
-   public long NoteId { get; }
+   public NoteId NoteId { get; }
    public string NoteType { get; }
    public string Question { get; }
    public string Answer { get; }

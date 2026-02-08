@@ -37,11 +37,11 @@ public class BulkLoaderTests
    [Fact]
    public void LoadAllNotesOfType_loads_vocab_notes()
    {
-      var notes = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Vocab);
-      Assert.NotEmpty(notes);
-      Assert.All(notes, n =>
+      var result = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Vocab);
+      Assert.NotEmpty(result.Notes);
+      Assert.All(result.Notes, n =>
       {
-         Assert.True(n.Id > 0);
+         Assert.False(n.Id.IsEmpty);
          Assert.NotEmpty(n.Fields);
       });
    }
@@ -49,17 +49,17 @@ public class BulkLoaderTests
    [Fact]
    public void LoadAllNotesOfType_loads_kanji_notes()
    {
-      var notes = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Kanji);
-      Assert.NotEmpty(notes);
-      Assert.All(notes, n => Assert.True(n.Id > 0));
+      var result = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Kanji);
+      Assert.NotEmpty(result.Notes);
+      Assert.All(result.Notes, n => Assert.False(n.Id.IsEmpty));
    }
 
    [Fact]
    public void LoadAllNotesOfType_loads_sentence_notes()
    {
-      var notes = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Sentence);
-      Assert.NotEmpty(notes);
-      Assert.All(notes, n => Assert.True(n.Id > 0));
+      var result = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Sentence);
+      Assert.NotEmpty(result.Notes);
+      Assert.All(result.Notes, n => Assert.False(n.Id.IsEmpty));
    }
 
    [Fact]
@@ -72,8 +72,8 @@ public class BulkLoaderTests
    [Fact]
    public void LoadAllNotesOfType_vocab_notes_have_expected_fields()
    {
-      var notes = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Vocab);
-      var first = notes.First();
+      var result = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Vocab);
+      var first = result.Notes.First();
       Assert.True(first.Fields.ContainsKey("Q"), $"Fields: [{string.Join(", ", first.Fields.Keys)}]");
       Assert.True(first.Fields.ContainsKey("A"));
       Assert.True(first.Fields.ContainsKey("Reading"));
@@ -82,16 +82,16 @@ public class BulkLoaderTests
    [Fact]
    public void LoadAllNotesOfType_kanji_notes_have_expected_fields()
    {
-      var notes = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Kanji);
-      var first = notes.First();
+      var result = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Kanji);
+      var first = result.Notes.First();
       Assert.True(first.Fields.ContainsKey("Q"), $"Fields: [{string.Join(", ", first.Fields.Keys)}]");
    }
 
    [Fact]
    public void LoadAllNotesOfType_sentence_notes_have_expected_fields()
    {
-      var notes = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Sentence);
-      var first = notes.First();
+      var result = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Sentence);
+      var first = result.Notes.First();
       Assert.True(first.Fields.ContainsKey("Q"), $"Fields: [{string.Join(", ", first.Fields.Keys)}]");
    }
 
@@ -121,7 +121,7 @@ public class BulkLoaderTests
       var statuses = CardStudyingStatusLoader.FetchAll(TestDbPath);
       Assert.All(statuses, s =>
       {
-         Assert.True(s.NoteId > 0);
+         Assert.True(s.AnkiNoteId > 0);
          Assert.False(string.IsNullOrEmpty(s.CardType));
          Assert.False(string.IsNullOrEmpty(s.NoteTypeName));
       });

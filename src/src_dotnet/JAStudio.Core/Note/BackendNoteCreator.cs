@@ -34,29 +34,18 @@ internal class AnkiBackendNoteCreator : IBackendNoteCreator
 
 public class TestingBackendNoteCreator : IBackendNoteCreator
 {
-   private long _currentId;
-
-   private long GetNextId()
-   {
-      _currentId++;
-      return _currentId;
-   }
-
    public void CreateKanji(KanjiNote note, Action callback)
    {
-      note.SetId(GetNextId());
       callback();
    }
 
    public void CreateVocab(VocabNote note, Action callback)
    {
-      note.SetId(GetNextId());
       callback();
    }
 
    public void CreateSentence(SentenceNote note, Action callback)
    {
-      note.SetId(GetNextId());
       callback();
    }
 }

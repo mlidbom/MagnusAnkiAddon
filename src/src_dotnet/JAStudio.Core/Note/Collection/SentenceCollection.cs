@@ -49,7 +49,9 @@ public class SentenceCollection
 
     public List<SentenceNote> All() => Cache.All();
 
-    public SentenceNote? WithIdOrNone(long noteId) => Cache.WithIdOrNone(noteId);
+    public SentenceNote? WithIdOrNone(NoteId noteId) => Cache.WithIdOrNone(noteId);
+    public SentenceNote? WithAnkiIdOrNone(long ankiNoteId) => Cache.WithAnkiIdOrNone(ankiNoteId);
+    public NoteId AnkiIdToNoteId(long ankiNoteId) => Cache.AnkiIdToNoteId(ankiNoteId);
 
     public List<SentenceNote> WithQuestion(string question) => Cache.WithQuestion(question);
 
@@ -102,7 +104,7 @@ public class SentenceCollection
 public class SentenceSnapshot : CachedNote
 {
     public string[] Words { get; }
-    public long[] DetectedVocab { get; }
+    public NoteId[] DetectedVocab { get; }
     public string[] UserHighlightedVocab { get; }
     public string[] MarkedIncorrectVocab { get; }
 
@@ -120,11 +122,13 @@ public class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
     private readonly Dictionary<string, HashSet<SentenceNote>> _byVocabForm = new();
     private readonly Dictionary<string, List<SentenceNote>> _byUserHighlightedVocab = new();
     private readonly Dictionary<string, List<SentenceNote>> _byUserMarkedInvalidVocab = new();
-    private readonly Dictionary<long, HashSet<SentenceNote>> _byVocabId = new();
+    private readonly Dictionary<NoteId, HashSet<SentenceNote>> _byVocabId = new();
 
     public SentenceCache() : base(typeof(SentenceNote), (services, data) => new SentenceNote(services, data))
     {
     }
+
+    protected override NoteId CreateTypedId(Guid value) => new SentenceId(value);
 
     protected override SentenceSnapshot CreateSnapshot(SentenceNote note)
     {
@@ -151,7 +155,7 @@ public class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
         return _byUserMarkedInvalidVocab.TryGetValue(form, out var notes) ? notes : new List<SentenceNote>();
     }
 
-    private static void RemoveFirstNoteWithId(List<SentenceNote> noteList, long id)
+    private static void RemoveFirstNoteWithId(List<SentenceNote> noteList, NoteId id)
     {
         for (var i = 0; i < noteList.Count; i++)
         {

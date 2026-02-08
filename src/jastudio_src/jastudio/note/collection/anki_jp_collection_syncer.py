@@ -109,7 +109,7 @@ class AnkiJPCollectionSyncer(Slots):
     # noinspection PyTypeHints
     @classmethod
     def note_from_note_id(cls, note_id: NoteId) -> JPNote | None:
-        dotnet_ui_root.Services.App.Collection.NoteFromNoteId(note_id)
+        dotnet_ui_root.Services.App.Collection.NoteFromAnkiNoteId(int(note_id))
 
     def destruct_sync(self) -> None:
         if self._pending_init_timer is not None: self._pending_init_timer.cancel()

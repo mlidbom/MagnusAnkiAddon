@@ -1,4 +1,4 @@
-from JAStudio.Core.Note import VocabNote, JPNote
+from JAStudio.Core.Note import VocabNote, NoteId, JPNote
 from JAStudio.Core.Note.NoteFields import MutableSerializedObjectField_1, IObjectSerializer_1
 from System.Collections.Generic import List_1, HashSet_1
 from JAStudio.Core.Note.NoteFields.AutoSaveWrappers import FieldSetWrapper_1, FieldWrapper_2, ValueWrapper_1
@@ -40,7 +40,7 @@ class RelatedVocab:
     @property
     def ErgativeTwin(self) -> ErgativeTwin: ...
     @property
-    def InCompoundIds(self) -> HashSet_1[int]: ...
+    def InCompoundIds(self) -> HashSet_1[NoteId]: ...
     @property
     def PerfectSynonyms(self) -> PerfectSynonyms: ...
     @property

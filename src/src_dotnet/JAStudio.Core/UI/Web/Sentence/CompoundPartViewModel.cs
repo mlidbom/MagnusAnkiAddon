@@ -44,7 +44,7 @@ public class CompoundPartViewModel
         Settings settings,
         VocabCollection vocab,
         int depth = 0,
-        HashSet<long>? visited = null)
+        HashSet<NoteId>? visited = null)
     {
         if (!settings.HideAllCompounds())
         {

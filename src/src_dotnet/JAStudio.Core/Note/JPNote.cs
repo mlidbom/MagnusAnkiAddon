@@ -24,9 +24,9 @@ public abstract class JPNote
    public NoteTags Tags { get; }
 
    readonly Dictionary<string, string> _fields;
-   long _idCache;
+   NoteId _id;
 
-   protected JPNote(NoteServices services, NoteData? data = null)
+   protected JPNote(NoteServices services, NoteId id, NoteData? data = null)
    {
       Services = services;
       RecursiveFlushGuard = new NoteFlushGuard(this);
@@ -35,7 +35,7 @@ public abstract class JPNote
       Tags = new NoteTags(this, data);
 
       _fields = data?.Fields ?? new Dictionary<string, string>();
-      _idCache = data?.Id ?? 0;
+      _id = id;
    }
 
    public bool IsFlushing => RecursiveFlushGuard.IsFlushing;
@@ -50,13 +50,12 @@ public abstract class JPNote
 
    public override bool Equals(object? obj)
    {
-      var id = GetId();
-      if(id == 0)
+      if(_id.IsEmpty)
       {
          throw new InvalidOperationException("You cannot compare or hash a note that has not been saved yet since it has no id");
       }
 
-      return obj is JPNote other && other.GetId() == id;
+      return obj is JPNote other && other.GetId() == _id;
    }
 
    public abstract void UpdateInCache();
@@ -78,7 +77,7 @@ public abstract class JPNote
 
    public void SuspendAllCards()
    {
-      Services.AnkiCardOperations.SuspendAllCardsForNote(GetId());
+      Services.AnkiCardOperations.SuspendAllCardsForNote(_id);
       
       // Update local status for all known card types
       var cardTypes = _cardStatus.Keys.ToList();
@@ -92,7 +91,7 @@ public abstract class JPNote
 
    public void UnsuspendAllCards()
    {
-      Services.AnkiCardOperations.UnsuspendAllCardsForNote(GetId());
+      Services.AnkiCardOperations.UnsuspendAllCardsForNote(_id);
       
       // Update local status for all known card types
       var cardTypes = _cardStatus.Keys.ToList();
@@ -116,7 +115,7 @@ public abstract class JPNote
    {
       if(_hashValue == 0)
       {
-         _hashValue = (int)GetId();
+         _hashValue = _id.GetHashCode();
          if(_hashValue == 0)
          {
             throw new InvalidOperationException("You cannot compare or hash a note that has not been saved yet since it has no id");
@@ -164,17 +163,7 @@ public abstract class JPNote
 
    public HashSet<JPNote> GetDependenciesRecursive() => GetDependenciesRecursive(new HashSet<JPNote>());
 
-   public long GetId() => _idCache;
-
-   public void SetId(long id)
-   {
-      if(_idCache != 0)
-      {
-         throw new InvalidOperationException("Cannot change id of a note that has already been saved");
-      }
-
-      _idCache = id;
-   }
+   public NoteId GetId() => _id;
 
    public virtual void UpdateGeneratedData()
    {
@@ -183,7 +172,7 @@ public abstract class JPNote
 
    public string GetField(string fieldName) => _fields.TryGetValue(fieldName, out var value) ? value : string.Empty;
 
-   bool IsPersisted() => _idCache != 0;
+   bool IsPersisted() => !_id.IsEmpty;
 
    public void Flush()
    {

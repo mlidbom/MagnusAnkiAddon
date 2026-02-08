@@ -10,7 +10,7 @@ namespace JAStudio.Core.Note.Collection;
 
 public class CachedNote
 {
-   public long Id { get; }
+   public NoteId Id { get; }
    public string Question { get; }
 
    public CachedNote(JPNote note)
@@ -24,8 +24,10 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
 {
    readonly Func<NoteServices, NoteData, TNote> _noteConstructor;
    readonly Type _noteType;
-   protected readonly Dictionary<long, TNote> _byId = new();
+   protected readonly Dictionary<NoteId, TNote> _byId = new();
    readonly List<Action<TNote>> _updateListeners = new();
+   readonly Dictionary<long, NoteId> _ankiIdToNoteId = new();
+   readonly Dictionary<NoteId, long> _noteIdToAnkiId = new();
    NoteServices? _noteServices;
 
    protected NoteCacheBase(Type cachedNoteType, Func<NoteServices, NoteData, TNote> noteConstructor)
@@ -47,10 +49,35 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       _updateListeners.Add(callback);
    }
 
-   public TNote? WithIdOrNone(long noteId) => _byId.TryGetValue(noteId, out var note) ? note : null;
+   public TNote? WithIdOrNone(NoteId noteId) => _byId.TryGetValue(noteId, out var note) ? note : null;
 
-   public void AnkiNoteAdded(NoteData data)
+   /// <summary>
+   /// Registers the mapping between an Anki note ID and the domain NoteId.
+   /// Called during bulk loading and when notes are added via Anki.
+   /// </summary>
+   public void RegisterAnkiIdMapping(long ankiNoteId, NoteId noteId)
    {
+      _ankiIdToNoteId[ankiNoteId] = noteId;
+      _noteIdToAnkiId[noteId] = ankiNoteId;
+   }
+
+   /// <summary>Look up a note by its Anki long ID (uses the internal mapping).</summary>
+   public TNote? WithAnkiIdOrNone(long ankiNoteId) =>
+      _ankiIdToNoteId.TryGetValue(ankiNoteId, out var noteId) ? WithIdOrNone(noteId) : null;
+
+   /// <summary>Converts an Anki long ID to the corresponding domain NoteId.</summary>
+   public NoteId AnkiIdToNoteId(long ankiNoteId) =>
+      _ankiIdToNoteId.TryGetValue(ankiNoteId, out var noteId) ? noteId : NoteId.Empty;
+
+   /// <summary>Returns the Anki long note ID for the given domain NoteId.</summary>
+   public long GetAnkiNoteId(NoteId noteId) =>
+      _noteIdToAnkiId.TryGetValue(noteId, out var ankiId) ? ankiId : 0;
+
+   public void AnkiNoteAdded(long ankiNoteId, NoteData data)
+   {
+      data.Id = CreateTypedId(Guid.NewGuid());
+      _ankiIdToNoteId[ankiNoteId] = data.Id;
+      _noteIdToAnkiId[data.Id] = ankiNoteId;
       var note = _noteConstructor(RequireServices(), data);
       using(note.RecursiveFlushGuard.PauseFlushing())
       {
@@ -59,12 +86,14 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       AddToCache(note);
    }
 
-   public void AnkiNoteWillFlush(NoteData data)
+   public void AnkiNoteWillFlush(long ankiNoteId, NoteData data)
    {
-      var existing = WithIdOrNone(data.Id);
+      if(!_ankiIdToNoteId.TryGetValue(ankiNoteId, out var noteId)) return;
+      var existing = WithIdOrNone(noteId);
       if(existing == null) return;
       if(existing.IsFlushing) return; // Our code initiated this flush, nothing to do
 
+      data.Id = noteId;
       var note = _noteConstructor(RequireServices(), data);
       note.CopyStudyingStatusFrom(existing);
       using(note.RecursiveFlushGuard.PauseFlushing())
@@ -75,18 +104,32 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       NotifyUpdateListeners(note);
    }
 
-   public void AnkiNoteRemoved(long noteId)
+   public void AnkiNoteRemoved(long ankiNoteId)
    {
+      if(!_ankiIdToNoteId.TryGetValue(ankiNoteId, out var noteId)) return;
       var existing = WithIdOrNone(noteId);
       if(existing != null)
       {
          RemoveFromCache(existing);
       }
+      _ankiIdToNoteId.Remove(ankiNoteId);
+      if(noteId != null) _noteIdToAnkiId.Remove(noteId);
    }
+
+   /// <summary>Creates the correctly typed NoteId for this cache (VocabId, KanjiId, etc.)</summary>
+   protected abstract NoteId CreateTypedId(Guid value);
 
    public void JpNoteUpdated(TNote note)
    {
-      RefreshInCache(note);
+      var existing = WithIdOrNone(note.GetId());
+      if(existing != null)
+      {
+         RefreshInCache(note);
+      }
+      else
+      {
+         AddToCache(note);
+      }
       NotifyUpdateListeners(note);
    }
 
@@ -109,8 +152,16 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       var dbPath = AnkiFacade.Col.DbFilePath();
 
       using var runner = RequireServices().TaskRunner.Current($"Loading {_noteType.Name} notes from the anki db");
-      var noteData = await runner.RunOnBackgroundThreadAsync($"Fetching {_noteType.Name} notes from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.FromType(_noteType)));
-      await runner.ProcessWithProgressAsync(noteData, AddToCacheFromData, "");
+      var loadResult = await runner.RunOnBackgroundThreadAsync($"Fetching {_noteType.Name} notes from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.FromType(_noteType)));
+
+      // Register Anki ID mappings
+      foreach(var (ankiId, noteId) in loadResult.AnkiIdMap)
+      {
+         _ankiIdToNoteId[ankiId] = noteId;
+         _noteIdToAnkiId[noteId] = ankiId;
+      }
+
+      await runner.ProcessWithProgressAsync(loadResult.Notes, AddToCacheFromData, "");
    }
 
    void AddToCacheFromData(NoteData noteData)
@@ -121,12 +172,16 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
    public abstract void RemoveFromCache(TNote note);
    public abstract void AddToCache(TNote note);
 
-   public void SetStudyingStatuses(List<CardStudyingStatus> cardStatuses)
+   public void SetStudyingStatuses(Dictionary<long, List<CardStudyingStatus>> statusesByAnkiId)
    {
-      foreach(var status in cardStatuses)
+      foreach(var (ankiId, statuses) in statusesByAnkiId)
       {
-         var note = WithIdOrNone(status.NoteId);
-         note?.SetStudyingStatus(status);
+         var note = WithAnkiIdOrNone(ankiId);
+         if(note != null)
+         {
+            foreach(var status in statuses)
+               note.SetStudyingStatus(status);
+         }
       }
    }
 }
@@ -137,7 +192,7 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
 {
    readonly IMonitorCE _monitor = IMonitorCE.WithDefaultTimeout();
    readonly Dictionary<string, List<TNote>> _byQuestion = new();
-   readonly Dictionary<long, TSnapshot> _snapshotById = new();
+   readonly Dictionary<NoteId, TSnapshot> _snapshotById = new();
 
    protected NoteCache(Type cachedNoteType, Func<NoteServices, NoteData, TNote> noteConstructor)
       : base(cachedNoteType, noteConstructor) {}
@@ -153,7 +208,7 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
    public override void RemoveFromCache(TNote note) => _monitor.Update(() =>
    {
       var id = note.GetId();
-      if(id == 0) throw new InvalidOperationException("Cannot remove note without ID");
+      if(id.IsEmpty) throw new InvalidOperationException("Cannot remove note without ID");
 
       var cached = _snapshotById[id];
       _snapshotById.Remove(id);
@@ -170,7 +225,19 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
    public override void AddToCache(TNote note) => _monitor.Update(() =>
    {
       var id = note.GetId();
-      if(id == 0) throw new InvalidOperationException("Cannot add note without ID");
+      if(id.IsEmpty) throw new InvalidOperationException("Cannot add note without ID");
+
+      // If already in cache, clean up old secondary indexes first (idempotent add)
+      if(_snapshotById.TryGetValue(id, out var existingSnapshot))
+      {
+         _byId.Remove(id);
+         _snapshotById.Remove(id);
+         if(_byQuestion.TryGetValue(existingSnapshot.Question, out var existingQuestionList))
+         {
+            existingQuestionList.Remove(note);
+         }
+         InheritorRemoveFromCache(note, existingSnapshot);
+      }
 
       var snapshot = CreateSnapshot(note);
       _snapshotById[id] = snapshot;

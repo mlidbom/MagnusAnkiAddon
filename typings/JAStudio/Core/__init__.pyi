@@ -6,7 +6,7 @@ from JAStudio.Core.UI.Web.Kanji import KanjiNoteRenderer
 from JAStudio.Core.UI.Web.Sentence import SentenceNoteRenderer
 from JAStudio.Core.UI.Web.Vocab import VocabNoteRenderer
 from System.Collections.Generic import List_1
-from JAStudio.Core.Anki import AnkiCardOperations
+from JAStudio.Core.Anki import AnkiCardOperations, AnkiNoteIdMap
 from JAStudio.Core.Batches import LocalNoteUpdater
 from JAStudio.Core.Note import NoteServices
 from JAStudio.Core.AnkiUtils import QueryBuilder
@@ -67,6 +67,8 @@ class StringExtensions(abc.ABC):
 class TemporaryServiceCollection(IDisposable):
     @property
     def AnkiCardOperations(self) -> AnkiCardOperations: ...
+    @property
+    def AnkiNoteIdMap(self) -> AnkiNoteIdMap: ...
     @property
     def App(self) -> App: ...
     @property

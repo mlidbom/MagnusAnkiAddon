@@ -1,5 +1,5 @@
 import abc
-from JAStudio.Core.Note import VocabNote, SentenceNote
+from JAStudio.Core.Note import VocabNote, SentenceNote, NoteId
 from System.Collections.Generic import List_1, HashSet_1
 from JAStudio.Core.UI.Web import PreRenderingContentRenderer_1
 from JAStudio.Core.Note.Sentences import ParsedMatch, ParsingResult
@@ -93,7 +93,7 @@ class VocabSentenceViewModel:
     @property
     def HighlightedSentences(self) -> HashSet_1[SentenceNote]: ...
     @property
-    def MatchedVocabIds(self) -> HashSet_1[int]: ...
+    def MatchedVocabIds(self) -> HashSet_1[NoteId]: ...
     @property
     def Matches(self) -> List_1[VocabSentenceMatchViewModel]: ...
     @property

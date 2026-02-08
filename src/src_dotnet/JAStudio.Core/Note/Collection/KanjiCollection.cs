@@ -19,7 +19,9 @@ public class KanjiCollection
 
     public List<KanjiNote> All() => Cache.All();
 
-    public KanjiNote? WithIdOrNone(long noteId) => Cache.WithIdOrNone(noteId);
+    public KanjiNote? WithIdOrNone(NoteId noteId) => Cache.WithIdOrNone(noteId);
+    public KanjiNote? WithAnkiIdOrNone(long ankiNoteId) => Cache.WithAnkiIdOrNone(ankiNoteId);
+    public NoteId AnkiIdToNoteId(long ankiNoteId) => Cache.AnkiIdToNoteId(ankiNoteId);
 
     public List<KanjiNote> WithAnyKanjiIn(List<string> kanjiList)
     {
@@ -69,12 +71,14 @@ public class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
     {
     }
 
+    protected override NoteId CreateTypedId(Guid value) => new KanjiId(value);
+
     protected override KanjiSnapshot CreateSnapshot(KanjiNote note)
     {
         return new KanjiSnapshot(note);
     }
 
-    private static void RemoveFirstNoteWithId(List<KanjiNote> noteList, long id)
+    private static void RemoveFirstNoteWithId(List<KanjiNote> noteList, NoteId id)
     {
         for (var i = 0; i < noteList.Count; i++)
         {

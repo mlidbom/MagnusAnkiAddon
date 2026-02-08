@@ -29,6 +29,7 @@ public class TemporaryServiceCollection : IDisposable
    public LocalNoteUpdater LocalNoteUpdater => _serviceLocator.Resolve<LocalNoteUpdater>();
    public TaskRunner TaskRunner => _serviceLocator.Resolve<TaskRunner>();
    public AnkiCardOperations AnkiCardOperations => _serviceLocator.Resolve<AnkiCardOperations>();
+   public AnkiNoteIdMap AnkiNoteIdMap => _serviceLocator.Resolve<AnkiNoteIdMap>();
 
    // Note services
    public NoteServices NoteServices => _serviceLocator.Resolve<NoteServices>();

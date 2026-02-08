@@ -19,7 +19,9 @@ public class VocabCollection
 
     public bool IsWord(string form) => Cache.WithForm(form).Any();
     public List<VocabNote> All() => Cache.All();
-    public VocabNote? WithIdOrNone(long noteId) => Cache.WithIdOrNone(noteId);
+    public VocabNote? WithIdOrNone(NoteId noteId) => Cache.WithIdOrNone(noteId);
+    public VocabNote? WithAnkiIdOrNone(long ankiNoteId) => Cache.WithAnkiIdOrNone(ankiNoteId);
+    public NoteId AnkiIdToNoteId(long ankiNoteId) => Cache.AnkiIdToNoteId(ankiNoteId);
     public IEnumerable<VocabNote> WithDisambiguationName(string name) => Cache.WithDisambiguationName(name);
     public IEnumerable<VocabNote> WithForm(string form) => Cache.WithForm(form);
     public List<VocabNote> WithCompoundPart(string disambiguationName) => Cache.WithCompoundPart(disambiguationName);
@@ -118,6 +120,8 @@ public class VocabCache : NoteCache<VocabNote, VocabSnapshot>
     {
     }
 
+    protected override NoteId CreateTypedId(Guid value) => new VocabId(value);
+
     public IEnumerable<VocabNote> WithForm(string form)
     {
         return _byForm.TryGetValue(form, out var notes) ? notes : Enumerable.Empty<VocabNote>();
@@ -182,7 +186,7 @@ public class VocabCache : NoteCache<VocabNote, VocabSnapshot>
         return new VocabSnapshot(note);
     }
 
-    private static void RemoveFirstNoteWithId(List<VocabNote> noteList, long id)
+    private static void RemoveFirstNoteWithId(List<VocabNote> noteList, NoteId id)
     {
         for (var i = 0; i < noteList.Count; i++)
         {

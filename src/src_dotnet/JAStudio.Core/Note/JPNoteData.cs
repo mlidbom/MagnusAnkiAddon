@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using JAStudio.PythonInterop;
 using JAStudio.PythonInterop.Utilities;
@@ -6,34 +7,26 @@ namespace JAStudio.Core.Note;
 
 public class NoteData
 {
-   public long Id { get; set; }
+   public NoteId Id { get; set; }
    public Dictionary<string, string> Fields { get; set; }
    public List<string> Tags { get; set; }
 
-   public NoteData(long id, Dictionary<string, string> fields, List<string> tags)
+   public NoteData(NoteId id, Dictionary<string, string> fields, List<string> tags)
    {
       Id = id;
       Fields = fields;
       Tags = tags;
    }
 
-   public static IReadOnlyList<NoteData> FromPythonListOfNoteData(dynamic pythonList) => PythonEnvironment.Use(() =>
-   {
-      var result = new List<NoteData>();
-      foreach(var item in pythonList)
-      {
-         result.Add(FromPythonNoteData(item));
-      }
-
-      return result;
-   });
-
+   /// <summary>
+   /// Creates NoteData from Python. The domain NoteId is NOT set here — it must be assigned
+   /// by the caller (e.g. the sync handler or bulk loader) since Python only knows Anki IDs.
+   /// </summary>
    public static NoteData FromPythonNoteData(dynamic item)
    {
-      var id = (long)item.id;
       var fields = PythonDotNetShim.StringStringDict.ToDotNet(item.fields);
       var tags = PythonDotNetShim.StringList.ToDotNet(item.tags);
-      return new NoteData(id, fields, tags);
+      return new NoteData(NoteId.Empty, fields, tags);
    }
 
    //class JPNoteData:

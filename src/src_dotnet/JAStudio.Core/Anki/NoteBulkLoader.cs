@@ -6,6 +6,22 @@ using Microsoft.Data.Sqlite;
 namespace JAStudio.Core.Anki;
 
 /// <summary>
+/// Result from bulk loading notes from Anki's SQLite database.
+/// Contains both the domain NoteData (with Guid-based IDs) and the Anki ID mapping.
+/// </summary>
+public class AnkiBulkLoadResult
+{
+   public List<NoteData> Notes { get; }
+   public Dictionary<long, NoteId> AnkiIdMap { get; }
+
+   public AnkiBulkLoadResult(List<NoteData> notes, Dictionary<long, NoteId> ankiIdMap)
+   {
+      Notes = notes;
+      AnkiIdMap = ankiIdMap;
+   }
+}
+
+/// <summary>
 /// Loads all notes of a given note type directly from Anki's SQLite database.
 /// Port of jastudio.anki_extentions.note_bulk_loader.NoteBulkLoader.
 /// </summary>
@@ -17,7 +33,7 @@ public static class NoteBulkLoader
    /// Load all notes of the specified note type from the Anki database.
    /// Opens and closes its own connection so it's safe to call from any thread.
    /// </summary>
-   public static List<NoteData> LoadAllNotesOfType(string dbFilePath, string noteTypeName)
+   public static AnkiBulkLoadResult LoadAllNotesOfType(string dbFilePath, string noteTypeName)
    {
       using var db = AnkiDatabase.OpenReadOnly(dbFilePath);
       var (noteTypeId, fieldMap, fieldCount) = GetNoteTypeInfo(db.Connection, noteTypeName);
@@ -63,7 +79,7 @@ public static class NoteBulkLoader
       return (noteTypeId.Value, fieldMap, fieldMap.Count);
    }
 
-   static List<NoteData> LoadNotes(SqliteConnection connection, long noteTypeId, Dictionary<string, int> fieldMap, int fieldCount)
+   static AnkiBulkLoadResult LoadNotes(SqliteConnection connection, long noteTypeId, Dictionary<string, int> fieldMap, int fieldCount)
    {
       using var cmd = connection.CreateCommand();
       cmd.CommandText = """
@@ -77,10 +93,15 @@ public static class NoteBulkLoader
 
       using var reader = cmd.ExecuteReader();
       var results = new List<NoteData>();
+      var ankiIdMap = new Dictionary<long, NoteId>();
 
       while (reader.Read())
       {
-         var id = reader.GetInt64(0);
+         var ankiId = reader.GetInt64(0);
+
+         // Generate a deterministic Guid from the Anki note ID for cross-session stability.
+         // This will be replaced by reading from a jp_note_id field once that migration is done.
+         var noteId = new NoteId(NoteId.DeterministicGuidFromAnkiId(ankiId));
 
          var tagsRaw = reader.IsDBNull(1) ? "" : reader.GetString(1);
          var tags = string.IsNullOrEmpty(tagsRaw)
@@ -98,9 +119,10 @@ public static class NoteBulkLoader
             fields[name] = ordinal < fieldValues.Length ? fieldValues[ordinal] : "";
          }
 
-         results.Add(new NoteData(id, fields, tags));
+         ankiIdMap[ankiId] = noteId;
+         results.Add(new NoteData(noteId, fields, tags));
       }
 
-      return results;
+      return new AnkiBulkLoadResult(results, ankiIdMap);
    }
 }

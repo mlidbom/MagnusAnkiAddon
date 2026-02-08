@@ -81,7 +81,7 @@ public class VocabCloner
     public VocabNote Clone()
     {
         var data = Note.GetData();
-        data.Id = 0;
+        data.Id = NoteId.Empty;
         data.Tags = [];
         var clone = new VocabNote(Note.Services, data);
 

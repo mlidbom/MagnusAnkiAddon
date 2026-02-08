@@ -2,7 +2,7 @@ from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction import CandidateWord
 from JAStudio.Core.Configuration import Settings
 from JAStudio.Core.Note.Collection import VocabCollection
 from System.Collections.Generic import List_1, HashSet_1
-from JAStudio.Core.Note import VocabNote, SentenceNote
+from JAStudio.Core.Note import VocabNote, NoteId, SentenceNote
 from JAStudio.Core.Note.Sentences import SentenceConfiguration
 from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches import Match, VocabMatch
 from JAStudio.Core.UI.Web import PreRenderingContentRenderer_1
@@ -47,7 +47,7 @@ class CompoundPartViewModel:
     @property
     def VocabNote(self) -> VocabNote: ...
     @staticmethod
-    def GetCompoundPartsRecursive(matchViewModel: MatchViewModel, vocabNote: VocabNote, config: SentenceConfiguration, settings: Settings, vocab: VocabCollection, depth: int = ..., visited: HashSet_1[int] = ...) -> List_1[CompoundPartViewModel]: ...
+    def GetCompoundPartsRecursive(matchViewModel: MatchViewModel, vocabNote: VocabNote, config: SentenceConfiguration, settings: Settings, vocab: VocabCollection, depth: int = ..., visited: HashSet_1[NoteId] = ...) -> List_1[CompoundPartViewModel]: ...
 
 
 class MatchViewModel:

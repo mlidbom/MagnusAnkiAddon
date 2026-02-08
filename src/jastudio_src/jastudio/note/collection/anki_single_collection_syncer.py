@@ -35,8 +35,9 @@ class AnkiSingleCollectionSyncer[TNote: JPNote](Slots):
     def _update_anki_note(self, note: TNote) -> None:
         self._is_updating_anki_note = True
         try:
-            if note.GetId():
-                anki_note = app.anki_collection().get_note(NoteId(note.GetId()))
+            anki_id = self._anki_sync_handler.GetAnkiNoteId(note.GetId())
+            if anki_id:
+                anki_note = app.anki_collection().get_note(NoteId(anki_id))
                 JPNoteDataShim.sync_note_to_anki_note(note, anki_note)
                 app.anki_collection().update_note(anki_note)
         finally:
@@ -47,13 +48,13 @@ class AnkiSingleCollectionSyncer[TNote: JPNote](Slots):
         if not self._is_my_note_type(backend_note): return
         if not backend_note.id: return
         note_data = JPNoteDataShim.from_note(backend_note)
-        self._anki_sync_handler.AnkiNoteWillFlush(note_data)
+        self._anki_sync_handler.AnkiNoteWillFlush(int(backend_note.id), note_data)
 
     def _on_added(self, backend_note: Note) -> None:
         if not self._is_my_note_type(backend_note): return
         if not backend_note.id: return
         note_data = JPNoteDataShim.from_note(backend_note)
-        self._anki_sync_handler.AnkiNoteAdded(note_data)
+        self._anki_sync_handler.AnkiNoteAdded(int(backend_note.id), note_data)
 
     def _on_will_be_removed(self, note_ids: Sequence[NoteId]) -> None:
         for note_id in note_ids:

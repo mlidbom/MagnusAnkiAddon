@@ -3,7 +3,7 @@ from CommunityToolkit.Mvvm.ComponentModel import ObservableObject
 from System.Collections.ObjectModel import ObservableCollection_1
 from JAStudio.Core import TemporaryServiceCollection
 from CommunityToolkit.Mvvm.Input import AsyncRelayCommand, IRelayCommand, RelayCommand, IAsyncRelayCommand
-from JAStudio.Core.Note import JPNote, VocabNote
+from JAStudio.Core.Note import JPNote, NoteId, VocabNote
 from Avalonia.Controls import Window
 from JAStudio.UI.Controls import RequireForbidControlViewModel, StringSetControlViewModel
 from System.Threading.Tasks import Task
@@ -63,7 +63,7 @@ class NoteSearchResultViewModel:
     @property
     def Answer(self) -> str: ...
     @property
-    def NoteId(self) -> int: ...
+    def NoteId(self) -> NoteId: ...
     @property
     def NoteType(self) -> str: ...
     @property

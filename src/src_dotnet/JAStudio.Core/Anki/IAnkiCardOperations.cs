@@ -1,4 +1,5 @@
 using System;
+using JAStudio.Core.Note;
 
 namespace JAStudio.Core.Anki;
 
@@ -8,11 +9,11 @@ namespace JAStudio.Core.Anki;
 /// </summary>
 public interface IAnkiCardOperations
 {
-    /// <summary>Suspend all cards for the given note ID.</summary>
-    void SuspendAllCardsForNote(long noteId);
+    /// <summary>Suspend all cards for the given note.</summary>
+    void SuspendAllCardsForNote(NoteId noteId);
 
-    /// <summary>Unsuspend all cards for the given note ID.</summary>
-    void UnsuspendAllCardsForNote(long noteId);
+    /// <summary>Unsuspend all cards for the given note.</summary>
+    void UnsuspendAllCardsForNote(NoteId noteId);
 }
 
 /// <summary>
@@ -33,8 +34,8 @@ public class AnkiCardOperations
         _implementation = implementation;
     }
 
-    /// <summary>Suspend all cards for the given note ID.</summary>
-    public void SuspendAllCardsForNote(long noteId)
+    /// <summary>Suspend all cards for the given note.</summary>
+    public void SuspendAllCardsForNote(NoteId noteId)
     {
         if (_implementation == null)
         {
@@ -45,8 +46,8 @@ public class AnkiCardOperations
         _implementation.SuspendAllCardsForNote(noteId);
     }
 
-    /// <summary>Unsuspend all cards for the given note ID.</summary>
-    public void UnsuspendAllCardsForNote(long noteId)
+    /// <summary>Unsuspend all cards for the given note.</summary>
+    public void UnsuspendAllCardsForNote(NoteId noteId)
     {
         if (_implementation == null)
         {

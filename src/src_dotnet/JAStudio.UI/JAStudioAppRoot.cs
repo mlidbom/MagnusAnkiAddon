@@ -88,7 +88,7 @@ public class JAStudioAppRoot
                                                          new AvaloniaTaskProgressRunner(windowTitle, labelText, allowCancel));
 
       // Register Anki card operations so Core can suspend/unsuspend cards via Anki API
-      root.Services.AnkiCardOperations.SetImplementation(new AnkiCardOperationsImpl());
+      root.Services.AnkiCardOperations.SetImplementation(new AnkiCardOperationsImpl(root.Services.AnkiNoteIdMap));
 
       return root;
    }
@@ -150,7 +150,7 @@ public class JAStudioAppRoot
       Dispatcher.UIThread.Invoke(() =>
       {
          var vocabCache = _app.Collection.Vocab;
-         var vocab = vocabCache.WithIdOrNone(vocabId);
+         var vocab = vocabCache.WithAnkiIdOrNone(vocabId);
          if(vocab == null)
          {
             JALogger.Log($"Vocab note with ID {vocabId} not found");

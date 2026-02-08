@@ -1,3 +1,6 @@
+using System;
+using JAStudio.Core.Note;
+
 namespace JAStudio.Core.Note.Sentences.Serialization;
 
 public class ParsedWordSerializer
@@ -12,7 +15,7 @@ public class ParsedWordSerializer
             parsedWord.StartIndex.ToString(),
             parsedWord.IsDisplayed ? "1" : "0",
             parsedWord.ParsedForm,
-            parsedWord.VocabId.ToString()
+            parsedWord.VocabId.Value.ToString()
         });
     }
 
@@ -20,12 +23,29 @@ public class ParsedWordSerializer
     {
         var values = serialized.Split(new[] { Separator }, System.StringSplitOptions.None);
 
+        // Parse VocabId: supports both Guid format (new) and legacy long format
+        NoteId vocabId;
+        var idStr = values[4];
+        if(Guid.TryParse(idStr, out var guid))
+        {
+            vocabId = new NoteId(guid);
+        }
+        else if(long.TryParse(idStr, out var legacyId) && legacyId != -1)
+        {
+            // Legacy long ID — generate deterministic Guid matching NoteBulkLoader
+            vocabId = new NoteId(NoteId.DeterministicGuidFromAnkiId(legacyId));
+        }
+        else
+        {
+            vocabId = ParsedMatch.MissingNoteId;
+        }
+
         return new ParsedMatch(
             values[0],
             int.Parse(values[1]),
             values[2] != "0",
             values[3],
-            long.Parse(values[4])
+            vocabId
         );
     }
 }

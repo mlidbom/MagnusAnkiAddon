@@ -20,12 +20,12 @@ public class ParsingResult
         ParserVersion = parserVersion ?? string.Empty;
     }
 
-    public HashSet<long> MatchedVocabIds
+    public HashSet<NoteId> MatchedVocabIds
     {
         get
         {
             return ParsedWords
-                .Where(p => p.VocabId != -1)
+                .Where(p => !p.VocabId.IsEmpty)
                 .Select(p => p.VocabId)
                 .ToHashSet();
         }
