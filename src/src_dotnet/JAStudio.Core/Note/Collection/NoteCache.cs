@@ -81,7 +81,6 @@ public abstract class NoteCacheBase<TNote> where TNote : JPNote
       var noteData = await runner.RunOnBackgroundThreadAsync("Fetching Vocabs from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.FromType(_noteType)));
       await runner.ProcessWithProgressAsync(noteData, AddToCacheFromData, "");
    }
-   
 
    void AddToCacheFromData(NoteData noteData)
    {
