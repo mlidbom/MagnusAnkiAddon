@@ -14,11 +14,7 @@ public class TaskRunner
 
    public void SetUiTaskRunnerFactory(Func<string, string, bool, bool, ITaskProgressRunner> factory)
    {
-      if(_uiTaskRunnerFactory != null)
-      {
-         throw new InvalidOperationException("UI task runner factory already set.");
-      }
-
+      if(_uiTaskRunnerFactory != null) throw new InvalidOperationException("UI task runner factory already set.");
       _uiTaskRunnerFactory = factory;
    }
 
@@ -31,11 +27,7 @@ public class TaskRunner
          return new InvisibleTaskRunner(windowTitle, labelText);
       }
 
-      if(_uiTaskRunnerFactory == null)
-      {
-         throw new InvalidOperationException("No UI task runner factory set. Set it with TaskRunner.SetUiTaskRunnerFactory().");
-      }
-
+      if(_uiTaskRunnerFactory == null) throw new InvalidOperationException("No UI task runner factory set. Set it with TaskRunner.SetUiTaskRunnerFactory().");
       return _uiTaskRunnerFactory(windowTitle, labelText, allowCancel, modal);
    }
 
@@ -98,15 +90,5 @@ public class TaskRunnerScope : ITaskProgressRunner
       return await runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync(message, action);
    }
 
-   public void SetLabelText(string text)
-   { /* No persistent panel — each method manages its own */
-   }
-
-   public void RunGc()
-   { /* No-op in C# */
-   }
-
-   public bool IsHidden() => !_visible;
-   public void Close() {}
    public void Dispose() {}
 }

@@ -53,7 +53,7 @@ public class JPCollection
       using var _ = this.Log().Warning().LogMethodExecutionTime();
       var dbPath = AnkiFacade.Col.DbFilePath();
 
-      using var runner = noteServices.TaskRunner.Current("Loading collection");
+      using var runner = noteServices.TaskRunner.Current("Loading collection", allowCancel: false, modal: true);
 
       var studyingStatuses = runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Fetching Studying Statuses from anki db", () => CardStudyingStatusLoader.FetchAll(dbPath));
       var vocabData = Vocab.Cache.LoadAsync();

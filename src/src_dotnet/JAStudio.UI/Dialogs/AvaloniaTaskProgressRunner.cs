@@ -22,7 +22,9 @@ class AvaloniaTaskProgressRunner : ITaskProgressRunner
    {
       using var _ = this.Log().Info().LogMethodExecutionTime($"{nameof(ProcessWithProgress)}: executed {message}: handling {items.Count} items using ({threads.Threads} threads)");
       InitListProcessingProgress(items, message);
-      return ProcessItems(items, processItem, message, threads);
+      var task = Task.Run(() => ProcessItems(items, processItem, message, threads));
+      KeepUIThreadAliveWhileWaitingForTaskToComplete(task);
+      return task.Result;
    });
 
    public TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action) => Dispatcher.UIThread.Invoke(() =>
