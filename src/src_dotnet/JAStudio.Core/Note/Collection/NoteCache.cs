@@ -49,10 +49,7 @@ public abstract class NoteCacheBase<TNote> where TNote : JPNote
 
    public TNote? WithIdOrNone(long noteId) => _byId.TryGetValue(noteId, out var note) ? note : null;
 
-   public void AnkiNoteUpdated(TNote note)
-   {
-      RefreshInCache(note);
-   }
+   public void AnkiNoteUpdated(NoteData data) => throw new NotImplementedException();
 
    public void JpNoteUpdated(TNote note)
    {
