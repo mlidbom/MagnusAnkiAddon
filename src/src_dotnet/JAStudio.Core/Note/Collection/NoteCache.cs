@@ -78,7 +78,7 @@ public abstract class NoteCacheBase<TNote> where TNote : JPNote
       var dbPath = AnkiFacade.Col.DbFilePath();
 
       using var runner = RequireServices().TaskRunner.Current($"Loading {_noteType.Name} notes from the anki db");
-      var noteData = await runner.RunOnBackgroundThreadAsync("Fetching Vocabs from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.FromType(_noteType)));
+      var noteData = await runner.RunOnBackgroundThreadAsync($"Fetching {_noteType.Name} notes from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.FromType(_noteType)));
       await runner.ProcessWithProgressAsync(noteData, AddToCacheFromData, "");
    }
 
