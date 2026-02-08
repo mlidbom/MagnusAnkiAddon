@@ -61,7 +61,7 @@ public class JapaneseMainMenu
          {
             BuildUpdateSubmenuSpec(),
             SpecMenuItem.Command(ShortcutFinger.Home2("Convert Immersion Kit sentences"), OnConvertImmersionKitSentences),
-            SpecMenuItem.Command(ShortcutFinger.Home3("Update everything except reparsing sentences"), OnUpdateAll),
+            SpecMenuItem.Command(ShortcutFinger.Home3("Update everything except reanalysing sentences"), OnUpdateAll),
             SpecMenuItem.Command(ShortcutFinger.Home4("Create vocab notes for parsed words"), OnCreateMissingVocab),
             SpecMenuItem.Command(ShortcutFinger.Home5("Regenerate vocab source answers from jamdict"), OnRegenerateVocabAnswers)
          }
