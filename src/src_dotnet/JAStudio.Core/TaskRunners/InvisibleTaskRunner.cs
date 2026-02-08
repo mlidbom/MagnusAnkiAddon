@@ -12,55 +12,50 @@ public class InvisibleTaskRunner : ITaskProgressRunner
       MyLog.Debug($"##--InvisibleTaskRunner--## Created for {windowTitle} - {labelText}");
    }
 
-   public List<TOutput> ProcessWithProgress<TInput, TOutput>(
-      List<TInput> items,
-      Func<TInput, TOutput> processItem,
-      string message,
-      Parallelism? parallelism = null)
+   public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
    {
-      var threads = (parallelism ?? Parallelism.Sequential).Threads;
       var watch = Stopwatch.StartNew();
 
-      if(threads <= 1)
+      if(threads.IsSequential)
       {
          var result = new List<TOutput>(items.Count);
          foreach(var item in items)
          {
             result.Add(processItem(item));
          }
+
          watch.Stop();
          MyLog.Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g} handled {items.Count} items");
          return result;
-      }
+      } else
+      {
 
-      var results = new TOutput[items.Count];
-      System.Threading.Tasks.Parallel.For(0, items.Count,
-         new System.Threading.Tasks.ParallelOptions { MaxDegreeOfParallelism = threads },
-         i => results[i] = processItem(items[i]));
-      watch.Stop();
-      MyLog.Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g} handled {items.Count} items ({threads} threads)");
-      return new List<TOutput>(results);
+         var results = new TOutput[items.Count];
+         Parallel.For(0,
+                      items.Count,
+                      threads.ParallelOptions,
+                      i => results[i] = processItem(items[i]));
+         watch.Stop();
+         MyLog.Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g} handled {items.Count} items ({threads.Threads} threads)");
+         return new List<TOutput>(results);
+      }
    }
 
-   public Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(
-      List<TInput> items,
-      Func<TInput, TOutput> processItem,
-      string message,
-      Parallelism? parallelism = null)
+   public Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
    {
-      var threads = (parallelism ?? Parallelism.Sequential).Threads;
       return Task.Run(() =>
       {
-         if(threads <= 1)
-            return ProcessWithProgress(items, processItem, message);
+         if(threads.IsSequential)
+            return ProcessWithProgress(items, processItem, message, threads);
 
          var watch = Stopwatch.StartNew();
          var results = new TOutput[items.Count];
-         System.Threading.Tasks.Parallel.For(0, items.Count,
-            new System.Threading.Tasks.ParallelOptions { MaxDegreeOfParallelism = threads },
-            i => results[i] = processItem(items[i]));
+         Parallel.For(0,
+                      items.Count,
+                      threads.ParallelOptions,
+                      i => results[i] = processItem(items[i]));
          watch.Stop();
-         MyLog.Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g} handled {items.Count} items ({threads} threads)");
+         MyLog.Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g} handled {items.Count} items ({threads.Threads} threads)");
          return new List<TOutput>(results);
       });
    }
@@ -94,10 +89,7 @@ public class InvisibleTaskRunner : ITaskProgressRunner
       return Task.Run(() => RunOnBackgroundThreadWithSpinningProgressDialog(message, action));
    }
 
-   public bool IsHidden()
-   {
-      return true;
-   }
+   public bool IsHidden() => true;
 
    public void Dispose()
    {

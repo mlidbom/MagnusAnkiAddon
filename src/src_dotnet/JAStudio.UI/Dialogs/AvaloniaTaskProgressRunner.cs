@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using Compze.Utilities.Logging;
@@ -12,18 +11,11 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
 {
    TaskProgressPanel _panel = null!;
    readonly bool _allowCancel;
-   readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 
-   public AvaloniaTaskProgressRunner(string windowTitle, string labelText, bool allowCancel, bool modal)
+   public AvaloniaTaskProgressRunner(string windowTitle, string labelText, bool allowCancel)
    {
       _allowCancel = allowCancel;
-
-      // All Avalonia control creation and interaction must happen on the UI thread.
-      // Marshal here so callers never need to know about Avalonia threading.
-      Dispatcher.UIThread.Invoke(() =>
-      {
-         _panel = MultiTaskProgressDialog.CreatePanel(windowTitle, labelText, allowCancel);
-      });
+      Dispatcher.UIThread.Invoke(() => _panel = MultiTaskProgressDialog.CreatePanel(windowTitle, labelText, allowCancel));
    }
 
    public bool IsHidden() => false;
@@ -68,12 +60,11 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
       return await Task.Run(action);
    }
 
-   public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, Parallelism? parallelism = null)
+   public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
    {
       var totalItems = items.Count;
-      var threads = (parallelism ?? Parallelism.Sequential).Threads;
       var results = new TOutput[totalItems];
-      using var _ = this.Log().Info().LogMethodExecutionTime($"{message} handled {items.Count} items ({threads} threads)");
+      using var _ = this.Log().Info().LogMethodExecutionTime($"{message} handled {items.Count} items ({threads.Threads} threads)");
 
       Dispatcher.UIThread.Invoke(() =>
       {
@@ -107,8 +98,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
                _panel.SetProgress(capturedCurrent, totalItems);
                _panel.SetMessage(capturedMsg);
                Dispatcher.UIThread.RunJobs();
-            }
-            else
+            } else
             {
                Dispatcher.UIThread.Post(() =>
                {
@@ -119,7 +109,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
          }
       }
 
-      if(threads <= 1)
+      if(threads.IsSequential)
       {
          for(int i = 0; i < totalItems; i++)
          {
@@ -128,30 +118,30 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
                JALogger.Log($"Operation canceled by user after {completed} of {totalItems} items");
                break;
             }
+
             results[i] = processItem(items[i]);
             UpdateProgress();
          }
-      }
-      else
+      } else
       {
-         System.Threading.Tasks.Parallel.For(0, totalItems,
-            new System.Threading.Tasks.ParallelOptions { MaxDegreeOfParallelism = threads },
-            i =>
-            {
-               if(_allowCancel && _panel.WasCanceled) return;
-               results[i] = processItem(items[i]);
-               UpdateProgress();
-            });
+         Parallel.For(0,
+                      totalItems,
+                      threads.ParallelOptions,
+                      i =>
+                      {
+                         if(_allowCancel && _panel.WasCanceled) return;
+                         results[i] = processItem(items[i]);
+                         UpdateProgress();
+                      });
       }
 
       return new List<TOutput>(results);
    }
 
-   public Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, Parallelism? parallelism = null)
+   public Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
    {
       var totalItems = items.Count;
-      var threads = (parallelism ?? Parallelism.Sequential).Threads;
-      using var _ = this.Log().Info().LogMethodExecutionTime($"{message} handled {items.Count} items ({threads} threads)");
+      using var _ = this.Log().Info().LogMethodExecutionTime($"{message} handled {items.Count} items ({threads.Threads} threads)");
 
       Dispatcher.UIThread.Post(() =>
       {
@@ -191,7 +181,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
             }
          }
 
-         if(threads <= 1)
+         if(threads.IsSequential)
          {
             for(int i = 0; i < totalItems; i++)
             {
@@ -204,17 +194,17 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
                results[i] = processItem(items[i]);
                UpdateProgress(1);
             }
-         }
-         else
+         } else
          {
-            System.Threading.Tasks.Parallel.For(0, totalItems,
-               new System.Threading.Tasks.ParallelOptions { MaxDegreeOfParallelism = threads },
-               i =>
-               {
-                  if(_allowCancel && _panel.WasCanceled) return;
-                  results[i] = processItem(items[i]);
-                  UpdateProgress(1);
-               });
+            Parallel.For(0,
+                         totalItems,
+                         threads.ParallelOptions,
+                         i =>
+                         {
+                            if(_allowCancel && _panel.WasCanceled) return;
+                            results[i] = processItem(items[i]);
+                            UpdateProgress(1);
+                         });
          }
 
          return new List<TOutput>(results);

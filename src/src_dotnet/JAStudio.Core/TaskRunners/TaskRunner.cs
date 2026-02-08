@@ -74,10 +74,10 @@ public class TaskRunnerScope : ITaskProgressRunner
 
    ITaskProgressRunner CreateRunner(string message) => _taskRunner.Create(_windowTitle, message, _visible, _allowCancel, _modal);
 
-   public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, Parallelism? parallelism = null)
+   public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
    {
       using var runner = CreateRunner(message);
-      return runner.ProcessWithProgress(items, processItem, message, parallelism);
+      return runner.ProcessWithProgress(items, processItem, message, threads);
    }
 
    public TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action)
@@ -86,10 +86,10 @@ public class TaskRunnerScope : ITaskProgressRunner
       return runner.RunOnBackgroundThreadWithSpinningProgressDialog(message, action);
    }
 
-   public async Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, Parallelism? parallelism = null)
+   public async Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threadCount)
    {
       using var runner = CreateRunner(message);
-      return await runner.ProcessWithProgressAsync(items, processItem, message, parallelism);
+      return await runner.ProcessWithProgressAsync(items, processItem, message, threadCount);
    }
 
    public async Task<TResult> RunOnBackgroundThreadAsync<TResult>(string message, Func<TResult> action)

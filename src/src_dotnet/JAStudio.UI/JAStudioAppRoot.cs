@@ -85,7 +85,7 @@ public class JAStudioAppRoot
 
       // Set up task runner factory
       root.Services.TaskRunner.SetUiTaskRunnerFactory((windowTitle, labelText, allowCancel, modal) =>
-                                                         new AvaloniaTaskProgressRunner(windowTitle, labelText, allowCancel, modal));
+                                                         new AvaloniaTaskProgressRunner(windowTitle, labelText, allowCancel));
 
       // Register Anki card operations so Core can suspend/unsuspend cards via Anki API
       root.Services.AnkiCardOperations.SetImplementation(new AnkiCardOperationsImpl());

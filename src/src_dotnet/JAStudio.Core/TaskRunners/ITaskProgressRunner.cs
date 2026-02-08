@@ -7,7 +7,8 @@ namespace JAStudio.Core.TaskRunners;
 
 public interface ITaskProgressRunner : IDisposable
 {
-   List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, Parallelism? parallelism = null);
+   public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message) => ProcessWithProgress(items, processItem, message, ThreadCount.One);
+   List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads);
 
    TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action);
 
@@ -15,11 +16,12 @@ public interface ITaskProgressRunner : IDisposable
    /// Async version of <see cref="ProcessWithProgress{TInput,TOutput}"/>.
    /// Runs processing on a background thread while posting progress updates to the UI.
    /// Multiple async operations can run in parallel, each with its own progress display.
-   /// Use <paramref name="parallelism"/> to process items concurrently within this operation.
+   /// Use <paramref name="threadCount"/> to process items concurrently within this operation.
    /// </summary>
-   Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, Parallelism? parallelism = null);
+   Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threadCount);
 
-   Task ProcessWithProgressAsync<TInput>(List<TInput> items, Action<TInput> processItem, string message, Parallelism? parallelism = null) => ProcessWithProgressAsync(items, processItem.AsFunc(), message, parallelism);
+   Task ProcessWithProgressAsync<TInput>(List<TInput> items, Action<TInput> processItem, string message) => ProcessWithProgressAsync(items, processItem.AsFunc(), message, ThreadCount.One);
+   Task ProcessWithProgressAsync<TInput>(List<TInput> items, Action<TInput> processItem, string message, ThreadCount threadCount) => ProcessWithProgressAsync(items, processItem.AsFunc(), message, threadCount);
 
    /// <summary>
    /// Async version of <see cref="RunOnBackgroundThreadWithSpinningProgressDialog{TResult}"/>.

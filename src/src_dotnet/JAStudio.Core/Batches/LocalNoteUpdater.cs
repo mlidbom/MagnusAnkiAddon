@@ -358,7 +358,7 @@ public class LocalNoteUpdater
                                     return 0;
                                  },
                                  "Reanalysing sentences.",
-                                 parallelism: Parallelism.WithThreads((int)_config.ReanalysisThreads.GetValue()));
+                                 threads: ThreadCount.WithThreads((int)_config.ReanalysisThreads.GetValue()));
    }
 
    public void ReparseSentencesForVocab(VocabNote vocab)
