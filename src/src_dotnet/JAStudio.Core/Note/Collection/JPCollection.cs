@@ -57,9 +57,9 @@ public class JPCollection
 
       var vocabData = Task.Run(() =>
       {
-         //this should get its own panel but I Never see this displayed
+         //this displays as I would expect
          var vocabData = runner.RunOnBackgroundThreadWithSpinningProgressDialog("Fetching Vocabs from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Vocab));
-         //The subtask here IS displayed correctly.
+         //The subtask displays as I would expect
          return Vocab.Cache.InitFromListAsync(vocabData);
       });
 
