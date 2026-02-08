@@ -15,9 +15,7 @@ public class InvisibleTaskRunner : ITaskProgressRunner
    public List<TOutput> ProcessWithProgress<TInput, TOutput>(
       List<TInput> items,
       Func<TInput, TOutput> processItem,
-      string message,
-      bool runGc = false,
-      int minimumItemsToGc = 0)
+      string message)
    {
       var watch = Stopwatch.StartNew();
       var result = new List<TOutput>();

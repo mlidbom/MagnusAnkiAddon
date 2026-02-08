@@ -45,13 +45,8 @@ public class TaskRunner
    /// Every method call on the scope creates its own progress panel, runs the work,
    /// and removes the panel when done. Concurrent calls display stacked panels.
    /// </summary>
-   public TaskRunnerScope Current(
-      string windowTitle,
-      string? labelText = null,
-      bool forceHide = false,
-      bool allowCancel = true,
-      bool modal = false) =>
-      new(this, windowTitle, forceHide, allowCancel, modal);
+   public ITaskProgressRunner Current(string windowTitle, bool forceHide = false, bool allowCancel = true, bool modal = false) =>
+      new TaskRunnerScope(this, windowTitle, forceHide, allowCancel, modal);
 }
 
 /// <summary>
@@ -60,7 +55,7 @@ public class TaskRunner
 /// progress panel for the duration of that call then removes it. This means
 /// concurrent calls (sync or async) each get their own panel automatically.
 /// </summary>
-public class TaskRunnerScope : IDisposable, ITaskProgressRunner
+public class TaskRunnerScope : ITaskProgressRunner
 {
    readonly TaskRunner _taskRunner;
    readonly string _windowTitle;
@@ -68,12 +63,7 @@ public class TaskRunnerScope : IDisposable, ITaskProgressRunner
    readonly bool _allowCancel;
    readonly bool _modal;
 
-   internal TaskRunnerScope(
-      TaskRunner taskRunner,
-      string windowTitle,
-      bool forceHide,
-      bool allowCancel,
-      bool modal)
+   internal TaskRunnerScope(TaskRunner taskRunner, string windowTitle, bool forceHide, bool allowCancel, bool modal)
    {
       _taskRunner = taskRunner;
       _windowTitle = windowTitle;
@@ -84,17 +74,10 @@ public class TaskRunnerScope : IDisposable, ITaskProgressRunner
 
    ITaskProgressRunner CreateRunner(string message) => _taskRunner.Create(_windowTitle, message, _visible, _allowCancel, _modal);
 
-   // ── Sync: each call gets its own panel ──
-
-   public List<TOutput> ProcessWithProgress<TInput, TOutput>(
-      List<TInput> items,
-      Func<TInput, TOutput> processItem,
-      string message,
-      bool runGc = false,
-      int minimumItemsToGc = 0)
+   public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message)
    {
       using var runner = CreateRunner(message);
-      return runner.ProcessWithProgress(items, processItem, message, runGc, minimumItemsToGc);
+      return runner.ProcessWithProgress(items, processItem, message);
    }
 
    public TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action)
@@ -103,12 +86,7 @@ public class TaskRunnerScope : IDisposable, ITaskProgressRunner
       return runner.RunOnBackgroundThreadWithSpinningProgressDialog(message, action);
    }
 
-   // ── Async: each call gets its own panel ──
-
-   public async Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(
-      List<TInput> items,
-      Func<TInput, TOutput> processItem,
-      string message)
+   public async Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message)
    {
       using var runner = CreateRunner(message);
       return await runner.ProcessWithProgressAsync(items, processItem, message);
@@ -120,9 +98,15 @@ public class TaskRunnerScope : IDisposable, ITaskProgressRunner
       return await runner.RunOnBackgroundThreadAsync(message, action);
    }
 
-   public void SetLabelText(string text) { /* No persistent panel — each method manages its own */ }
-   public void RunGc() { /* No-op in C# */ }
+   public void SetLabelText(string text)
+   { /* No persistent panel — each method manages its own */
+   }
+
+   public void RunGc()
+   { /* No-op in C# */
+   }
+
    public bool IsHidden() => !_visible;
-   public void Close() { }
-   public void Dispose() { }
+   public void Close() {}
+   public void Dispose() {}
 }

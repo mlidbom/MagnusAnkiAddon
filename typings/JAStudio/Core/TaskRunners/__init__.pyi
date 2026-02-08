@@ -1,7 +1,7 @@
-import typing, abc
+import typing
 from System.Collections.Generic import List_1
-from System import Func_2, Func_1, IDisposable, Func_5
-from System.Threading.Tasks import Task_1
+from System import Func_2, Func_1, IDisposable, Action_1, Action, Func_5
+from System.Threading.Tasks import Task_1, Task
 
 class InvisibleTaskRunner(ITaskProgressRunner):
     def __init__(self, windowTitle: str, labelText: str) -> None: ...
@@ -21,7 +21,7 @@ class InvisibleTaskRunner(ITaskProgressRunner):
         class ProcessWithProgress_2(typing.Generic[ProcessWithProgress_2_T1, ProcessWithProgress_2_T2]):
             ProcessWithProgress_2_TInput = InvisibleTaskRunner.ProcessWithProgress_MethodGroup.ProcessWithProgress_2_T1
             ProcessWithProgress_2_TOutput = InvisibleTaskRunner.ProcessWithProgress_MethodGroup.ProcessWithProgress_2_T2
-            def __call__(self, items: List_1[ProcessWithProgress_2_TInput], processItem: Func_2[ProcessWithProgress_2_TInput, ProcessWithProgress_2_TOutput], message: str, runGc: bool = ..., minimumItemsToGc: int = ...) -> List_1[ProcessWithProgress_2_TOutput]:...
+            def __call__(self, items: List_1[ProcessWithProgress_2_TInput], processItem: Func_2[ProcessWithProgress_2_TInput, ProcessWithProgress_2_TOutput], message: str) -> List_1[ProcessWithProgress_2_TOutput]:...
 
 
     # Skipped ProcessWithProgressAsync due to it being static, abstract and generic.
@@ -65,14 +65,6 @@ class InvisibleTaskRunner(ITaskProgressRunner):
 
 
 class ITaskProgressRunner(IDisposable, typing.Protocol):
-    @abc.abstractmethod
-    def Close(self) -> None: ...
-    @abc.abstractmethod
-    def IsHidden(self) -> bool: ...
-    @abc.abstractmethod
-    def RunGc(self) -> None: ...
-    @abc.abstractmethod
-    def SetLabelText(self, text: str) -> None: ...
     # Skipped ProcessWithProgress due to it being static, abstract and generic.
 
     ProcessWithProgress : ProcessWithProgress_MethodGroup
@@ -84,13 +76,14 @@ class ITaskProgressRunner(IDisposable, typing.Protocol):
         class ProcessWithProgress_2(typing.Generic[ProcessWithProgress_2_T1, ProcessWithProgress_2_T2]):
             ProcessWithProgress_2_TInput = ITaskProgressRunner.ProcessWithProgress_MethodGroup.ProcessWithProgress_2_T1
             ProcessWithProgress_2_TOutput = ITaskProgressRunner.ProcessWithProgress_MethodGroup.ProcessWithProgress_2_T2
-            def __call__(self, items: List_1[ProcessWithProgress_2_TInput], processItem: Func_2[ProcessWithProgress_2_TInput, ProcessWithProgress_2_TOutput], message: str, runGc: bool = ..., minimumItemsToGc: int = ...) -> List_1[ProcessWithProgress_2_TOutput]:...
+            def __call__(self, items: List_1[ProcessWithProgress_2_TInput], processItem: Func_2[ProcessWithProgress_2_TInput, ProcessWithProgress_2_TOutput], message: str) -> List_1[ProcessWithProgress_2_TOutput]:...
 
 
     # Skipped ProcessWithProgressAsync due to it being static, abstract and generic.
 
     ProcessWithProgressAsync : ProcessWithProgressAsync_MethodGroup
     class ProcessWithProgressAsync_MethodGroup:
+        @typing.overload
         def __getitem__(self, t:typing.Tuple[typing.Type[ProcessWithProgressAsync_2_T1], typing.Type[ProcessWithProgressAsync_2_T2]]) -> ProcessWithProgressAsync_2[ProcessWithProgressAsync_2_T1, ProcessWithProgressAsync_2_T2]: ...
 
         ProcessWithProgressAsync_2_T1 = typing.TypeVar('ProcessWithProgressAsync_2_T1')
@@ -99,6 +92,14 @@ class ITaskProgressRunner(IDisposable, typing.Protocol):
             ProcessWithProgressAsync_2_TInput = ITaskProgressRunner.ProcessWithProgressAsync_MethodGroup.ProcessWithProgressAsync_2_T1
             ProcessWithProgressAsync_2_TOutput = ITaskProgressRunner.ProcessWithProgressAsync_MethodGroup.ProcessWithProgressAsync_2_T2
             def __call__(self, items: List_1[ProcessWithProgressAsync_2_TInput], processItem: Func_2[ProcessWithProgressAsync_2_TInput, ProcessWithProgressAsync_2_TOutput], message: str) -> Task_1[List_1[ProcessWithProgressAsync_2_TOutput]]:...
+
+        @typing.overload
+        def __getitem__(self, t:typing.Type[ProcessWithProgressAsync_1_T1]) -> ProcessWithProgressAsync_1[ProcessWithProgressAsync_1_T1]: ...
+
+        ProcessWithProgressAsync_1_T1 = typing.TypeVar('ProcessWithProgressAsync_1_T1')
+        class ProcessWithProgressAsync_1(typing.Generic[ProcessWithProgressAsync_1_T1]):
+            ProcessWithProgressAsync_1_TInput = ITaskProgressRunner.ProcessWithProgressAsync_MethodGroup.ProcessWithProgressAsync_1_T1
+            def __call__(self, items: List_1[ProcessWithProgressAsync_1_TInput], processItem: Action_1[ProcessWithProgressAsync_1_TInput], message: str) -> Task:...
 
 
     # Skipped RunOnBackgroundThreadAsync due to it being static, abstract and generic.
@@ -112,6 +113,7 @@ class ITaskProgressRunner(IDisposable, typing.Protocol):
             RunOnBackgroundThreadAsync_1_TResult = ITaskProgressRunner.RunOnBackgroundThreadAsync_MethodGroup.RunOnBackgroundThreadAsync_1_T1
             def __call__(self, message: str, action: Func_1[RunOnBackgroundThreadAsync_1_TResult]) -> Task_1[RunOnBackgroundThreadAsync_1_TResult]:...
 
+        def __call__(self, message: str, action: Action) -> Task:...
 
     # Skipped RunOnBackgroundThreadWithSpinningProgressDialog due to it being static, abstract and generic.
 
@@ -128,7 +130,7 @@ class ITaskProgressRunner(IDisposable, typing.Protocol):
 
 
 class TaskRunner:
-    def Current(self, windowTitle: str, labelText: str = ..., forceHide: bool = ..., allowCancel: bool = ..., modal: bool = ...) -> TaskRunnerScope: ...
+    def Current(self, windowTitle: str, forceHide: bool = ..., allowCancel: bool = ..., modal: bool = ...) -> ITaskProgressRunner: ...
     def SetUiTaskRunnerFactory(self, factory: Func_5[str, str, bool, bool, ITaskProgressRunner]) -> None: ...
 
 
@@ -149,7 +151,7 @@ class TaskRunnerScope(ITaskProgressRunner):
         class ProcessWithProgress_2(typing.Generic[ProcessWithProgress_2_T1, ProcessWithProgress_2_T2]):
             ProcessWithProgress_2_TInput = TaskRunnerScope.ProcessWithProgress_MethodGroup.ProcessWithProgress_2_T1
             ProcessWithProgress_2_TOutput = TaskRunnerScope.ProcessWithProgress_MethodGroup.ProcessWithProgress_2_T2
-            def __call__(self, items: List_1[ProcessWithProgress_2_TInput], processItem: Func_2[ProcessWithProgress_2_TInput, ProcessWithProgress_2_TOutput], message: str, runGc: bool = ..., minimumItemsToGc: int = ...) -> List_1[ProcessWithProgress_2_TOutput]:...
+            def __call__(self, items: List_1[ProcessWithProgress_2_TInput], processItem: Func_2[ProcessWithProgress_2_TInput, ProcessWithProgress_2_TOutput], message: str) -> List_1[ProcessWithProgress_2_TOutput]:...
 
 
     # Skipped ProcessWithProgressAsync due to it being static, abstract and generic.

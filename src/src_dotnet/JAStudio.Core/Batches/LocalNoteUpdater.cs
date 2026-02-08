@@ -322,9 +322,7 @@ public class LocalNoteUpdater
         scope.ProcessWithProgress(
             sentences,
             s => { ReparseSentence(s); return 0; },
-            "Reparsing sentences.",
-            runGc: runGcDuringBatch,
-            minimumItemsToGc: 500);
+            "Reparsing sentences.");
     }
 
     public void ReparseSentencesForVocab(VocabNote vocab)

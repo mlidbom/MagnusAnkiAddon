@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using JAStudio.Core.TaskRunners;
+using JAStudio.Core.Anki;
 using JAStudio.PythonInterop;
 
 namespace JAStudio.Core.Note.Collection;
@@ -73,48 +73,15 @@ public abstract class NoteCacheBase<TNote> where TNote : JPNote
       AddToCache(note);
    }
 
-   public void InitFromList(List<NoteData> allNotes)
+   public async Task LoadAsync()
    {
-      if(allNotes.Count > 0)
-      {
-         var services = RequireServices();
-         using var scope = services.TaskRunner.Current($"Pushing {_noteType.Name} notes into cache");
-         scope.ProcessWithProgress(
-            allNotes,
-            noteData =>
-            {
-               AddToCacheFromData(noteData);
-               return 0;
-            },
-            $"Pushing {_noteType.Name} notes into cache");
-      }
-   }
+      var dbPath = AnkiFacade.Col.DbFilePath();
 
-   /// <summary>
-   /// Async version of <see cref="InitFromList"/> for parallel loading.
-   /// Each call runs on its own thread via <see cref="Task.Run"/> so that
-   /// <see cref="TaskRunner.Current"/> creates an independent scope and progress panel.
-   /// Multiple concurrent calls display stacked progress rows automatically.
-   /// </summary>
-   public Task InitFromListAsync(List<NoteData> allNotes)
-   {
-      if(allNotes.Count == 0) return Task.CompletedTask;
-
-      var services = RequireServices();
-      var message = $"Pushing {_noteType.Name} notes into cache";
-      return Task.Run(() =>
-      {
-         using var scope = services.TaskRunner.Current(message);
-         scope.ProcessWithProgress(
-            allNotes,
-            noteData =>
-            {
-               AddToCacheFromData(noteData);
-               return 0;
-            },
-            message);
-      });
+      using var runner = RequireServices().TaskRunner.Current($"Loading {_noteType.Name} notes from the anki db");
+      var noteData = await runner.RunOnBackgroundThreadAsync("Fetching Vocabs from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.FromType(_noteType)));
+      await runner.ProcessWithProgressAsync(noteData, AddToCacheFromData, "");
    }
+   
 
    void AddToCacheFromData(NoteData noteData)
    {

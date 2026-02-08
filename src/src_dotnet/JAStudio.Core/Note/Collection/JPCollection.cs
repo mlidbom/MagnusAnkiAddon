@@ -55,32 +55,12 @@ public class JPCollection
 
       using var runner = noteServices.TaskRunner.Current("Loading collection");
 
-      var vocabData = Task.Run(() =>
-      {
-         //this displays as I would expect
-         var vocabData = runner.RunOnBackgroundThreadWithSpinningProgressDialog("Fetching Vocabs from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Vocab));
-         //The subtask displays as I would expect
-         return Vocab.Cache.InitFromListAsync(vocabData);
-      });
-
-      //this should get its own panel but I Never see this displayed
-      var kanjiData = runner.RunOnBackgroundThreadAsync("Fetching Kanji from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Kanji));
-      //this should get its own panel but I Never see this displayed
-      var sentenceData = runner.RunOnBackgroundThreadAsync("Fetching Sentences from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Sentence));
-      //This is the only one of the three I see displayed and it runs WAY too long. I think it is hiding the other two.
       var studyingStatuses = runner.RunOnBackgroundThreadAsync("Fetching Studying Statuses from anki db", () => CardStudyingStatusLoader.FetchAll(dbPath));
+      var vocabData = Vocab.Cache.LoadAsync();
+      var kanjiData = Kanji.Cache.LoadAsync();
+      var sentenceData = Sentences.Cache.LoadAsync();
 
-      //What actually happens, I see only "Fetching Studying Statuses from anki db", none of the others
-
-      Task.WaitAll(kanjiData, sentenceData, studyingStatuses);
-
-      Task.WhenAll(
-         vocabData,
-         //this should get its own panel
-         Kanji.Cache.InitFromListAsync(kanjiData.Result),
-         //this should get its own panel
-         Sentences.Cache.InitFromListAsync(sentenceData.Result)
-      ).GetAwaiter().GetResult();
+      Task.WaitAll(kanjiData, sentenceData, vocabData, studyingStatuses);
 
       Vocab.Cache.SetStudyingStatuses(studyingStatuses.Result.Where(s => s.NoteTypeName == NoteTypes.Vocab).ToList());
       Kanji.Cache.SetStudyingStatuses(studyingStatuses.Result.Where(s => s.NoteTypeName == NoteTypes.Kanji).ToList());
