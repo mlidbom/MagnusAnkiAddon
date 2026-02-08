@@ -27,7 +27,7 @@ public interface ITaskProgressRunner : IDisposable
    /// Async version of <see cref="RunOnBackgroundThreadWithSpinningProgressDialog{TResult}"/>.
    /// Runs the action on a background thread with an indeterminate progress indicator.
    /// </summary>
-   Task<TResult> RunOnBackgroundThreadAsync<TResult>(string message, Func<TResult> action);
+   Task<TResult> RunOnBackgroundThreadWithSpinningProgressDialogAsync<TResult>(string message, Func<TResult> action);
 
-   Task RunOnBackgroundThreadAsync(string message, Action action) => RunOnBackgroundThreadAsync(message, action.AsFunc());
+   Task RunOnBackgroundThreadAsync(string message, Action action) => RunOnBackgroundThreadWithSpinningProgressDialogAsync(message, action.AsFunc());
 }
