@@ -27,11 +27,9 @@ def add_to_qt_menu(target_qt_menu: QMenu, specs: Iterable[SpecMenuItem]) -> None
 
         name_with_accelerator = _add_acceleratator_key_to_name(spec.Name, spec.KeyboardShortcut)
 
-        if not spec.IsEnabled:
-            non_optional(target_qt_menu.addAction(name_with_accelerator)).setEnabled(False)  # pyright: ignore [reportUnknownMemberType]
-
         if spec.Kind == SpecMenuItemKind.Submenu:
             qt_sub_menu = non_optional(target_qt_menu.addMenu(name_with_accelerator))
+            qt_sub_menu.setEnabled(spec.IsEnabled)
             add_to_qt_menu(qt_sub_menu, spec.Children)
         elif spec.Kind == SpecMenuItemKind.Separator:
             target_qt_menu.addSeparator()
@@ -45,9 +43,7 @@ def add_to_qt_menu(target_qt_menu: QMenu, specs: Iterable[SpecMenuItem]) -> None
             action.triggered.connect(lambda urdu, a=spec.Action: a.Invoke())  # pyright: ignore [reportUnknownMemberType, reportUnknownLambdaType]
             target_qt_menu.addAction(action)  # pyright: ignore [reportUnknownMemberType]
         else:
-            mylog.error(f"Unknown menu spec type: {spec.Name}")
-            target_qt_menu.addAction(f"Invalid: {spec.Name}")  # pyright: ignore [reportUnknownMemberType]
-            #raise Exception(f"Unknown menu spec type: {spec.Name}")
+            raise Exception(f"Unknown menu spec type: {spec.Name}")
 
 def _add_acceleratator_key_to_name(name: str, accelerator: str) -> str:
     name = name.replace("_","&")
