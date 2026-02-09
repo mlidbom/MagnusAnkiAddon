@@ -388,7 +388,7 @@ public class LocalNoteUpdater
          "Fetching parsed words with no vocab notes from parsing results",
          () => _sentences.All()
                          .SelectMany(sentence => sentence.ParsingResult.Get().ParsedWords
-                                                         .Where(word => word.VocabId == ParsedMatch.MissingNoteId)
+                                                         .Where(word => word.VocabId == null)
                                                          .Select(word => word.ParsedForm))
                          .Distinct()
                          .Select(form => _dictLookup.LookupWord(form))

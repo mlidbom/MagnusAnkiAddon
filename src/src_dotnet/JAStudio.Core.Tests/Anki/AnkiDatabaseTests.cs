@@ -41,7 +41,7 @@ public class BulkLoaderTests
       Assert.NotEmpty(result.Notes);
       Assert.All(result.Notes, n =>
       {
-         Assert.False(n.Id.IsEmpty);
+         Assert.NotNull(n.Id);
          Assert.NotEmpty(n.Fields);
       });
    }
@@ -51,7 +51,7 @@ public class BulkLoaderTests
    {
       var result = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Kanji);
       Assert.NotEmpty(result.Notes);
-      Assert.All(result.Notes, n => Assert.False(n.Id.IsEmpty));
+      Assert.All(result.Notes, n => Assert.NotNull(n.Id));
    }
 
    [Fact]
@@ -59,7 +59,7 @@ public class BulkLoaderTests
    {
       var result = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Sentence);
       Assert.NotEmpty(result.Notes);
-      Assert.All(result.Notes, n => Assert.False(n.Id.IsEmpty));
+      Assert.All(result.Notes, n => Assert.NotNull(n.Id));
    }
 
    [Fact]

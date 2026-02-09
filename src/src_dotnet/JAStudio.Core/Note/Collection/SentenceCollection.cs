@@ -51,7 +51,7 @@ public class SentenceCollection
 
     public SentenceNote? WithIdOrNone(NoteId noteId) => Cache.WithIdOrNone(noteId);
     public SentenceNote? WithAnkiIdOrNone(long ankiNoteId) => Cache.WithAnkiIdOrNone(ankiNoteId);
-    public NoteId AnkiIdToNoteId(long ankiNoteId) => Cache.AnkiIdToNoteId(ankiNoteId);
+    public NoteId? AnkiIdToNoteId(long ankiNoteId) => Cache.AnkiIdToNoteId(ankiNoteId);
 
     public List<SentenceNote> WithQuestion(string question) => Cache.WithQuestion(question);
 

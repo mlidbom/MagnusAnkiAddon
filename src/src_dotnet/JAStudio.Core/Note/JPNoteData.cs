@@ -7,11 +7,11 @@ namespace JAStudio.Core.Note;
 
 public class NoteData
 {
-   public NoteId Id { get; set; }
+   public NoteId? Id { get; set; }
    public Dictionary<string, string> Fields { get; set; }
    public List<string> Tags { get; set; }
 
-   public NoteData(NoteId id, Dictionary<string, string> fields, List<string> tags)
+   public NoteData(NoteId? id, Dictionary<string, string> fields, List<string> tags)
    {
       Id = id;
       Fields = fields;
@@ -26,7 +26,7 @@ public class NoteData
    {
       var fields = PythonDotNetShim.StringStringDict.ToDotNet(item.fields);
       var tags = PythonDotNetShim.StringList.ToDotNet(item.tags);
-      return new NoteData(NoteId.Empty, fields, tags);
+      return new NoteData(null, fields, tags);
    }
 
    //class JPNoteData:

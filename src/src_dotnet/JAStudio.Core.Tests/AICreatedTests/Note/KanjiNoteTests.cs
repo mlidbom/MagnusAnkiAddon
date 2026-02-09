@@ -15,7 +15,7 @@ public class KanjiNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
       Assert.NotNull(kanji);
       Assert.Equal("漢", kanji.GetQuestion());
       Assert.Equal("Chinese character", kanji.GetAnswer());
-      Assert.False(kanji.GetId().IsEmpty);
+      Assert.NotNull(kanji.GetId());
    }
 
    [Fact]

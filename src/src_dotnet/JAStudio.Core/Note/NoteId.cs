@@ -10,8 +10,6 @@ namespace JAStudio.Core.Note;
 /// </summary>
 public record NoteId(Guid Value)
 {
-   public static readonly NoteId Empty = new(Guid.Empty);
-   public bool IsEmpty => Value == Guid.Empty;
    public override string ToString() => Value.ToString();
 
    /// <summary>
@@ -30,18 +28,15 @@ public record NoteId(Guid Value)
 
 public record VocabId(Guid Value) : NoteId(Value)
 {
-   public new static readonly VocabId Empty = new(Guid.Empty);
    public static VocabId New() => new(Guid.NewGuid());
 }
 
 public record KanjiId(Guid Value) : NoteId(Value)
 {
-   public new static readonly KanjiId Empty = new(Guid.Empty);
    public static KanjiId New() => new(Guid.NewGuid());
 }
 
 public record SentenceId(Guid Value) : NoteId(Value)
 {
-   public new static readonly SentenceId Empty = new(Guid.Empty);
    public static SentenceId New() => new(Guid.NewGuid());
 }

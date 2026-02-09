@@ -66,8 +66,8 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       _ankiIdToNoteId.TryGetValue(ankiNoteId, out var noteId) ? WithIdOrNone(noteId) : null;
 
    /// <summary>Converts an Anki long ID to the corresponding domain NoteId.</summary>
-   public NoteId AnkiIdToNoteId(long ankiNoteId) =>
-      _ankiIdToNoteId.TryGetValue(ankiNoteId, out var noteId) ? noteId : NoteId.Empty;
+   public NoteId? AnkiIdToNoteId(long ankiNoteId) =>
+      _ankiIdToNoteId.TryGetValue(ankiNoteId, out var noteId) ? noteId : null;
 
    /// <summary>Returns the Anki long note ID for the given domain NoteId.</summary>
    public long GetAnkiNoteId(NoteId noteId) =>
@@ -208,7 +208,6 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
    public override void RemoveFromCache(TNote note) => _monitor.Update(() =>
    {
       var id = note.GetId();
-      if(id.IsEmpty) throw new InvalidOperationException("Cannot remove note without ID");
 
       var cached = _snapshotById[id];
       _snapshotById.Remove(id);
@@ -225,7 +224,6 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
    public override void AddToCache(TNote note) => _monitor.Update(() =>
    {
       var id = note.GetId();
-      if(id.IsEmpty) throw new InvalidOperationException("Cannot add note without ID");
 
       // If already in cache, clean up old secondary indexes first (idempotent add)
       if(_snapshotById.TryGetValue(id, out var existingSnapshot))

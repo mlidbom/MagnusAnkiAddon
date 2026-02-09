@@ -83,7 +83,7 @@ public class VocabSentenceViewModel
         DisplayedMatches = Matches.Where(match => match.IsDisplayed).ToList();
         HighlightedSentences = vocabNote.Sentences.UserHighlighted().ToHashSet();
         ShadedMatches = Matches.Where(match => !match.IsDisplayed).ToList();
-        MatchedVocabIds = Result.ParsedWords.Select(match => match.VocabId).ToHashSet();
+        MatchedVocabIds = Result.ParsedWords.Where(match => match.VocabId != null).Select(match => match.VocabId!).ToHashSet();
     }
 
     public VocabSentenceMatchViewModel PrimaryMatch =>
@@ -110,7 +110,7 @@ public class VocabSentenceViewModel
             var shadingStartIndex = shadingMatch?.StartIndex ?? match.StartIndex;
             var shadingEndIndex = shadingMatch?.EndIndex ?? match.EndIndex;
 
-            var preCoveringMatchClass = shadingMatch != null && Vocab.RelatedNotes.InCompoundIds.Contains(shadingMatch.VocabId)
+            var preCoveringMatchClass = shadingMatch != null && shadingMatch.VocabId != null && Vocab.RelatedNotes.InCompoundIds.Contains(shadingMatch.VocabId)
                 ? "compound"
                 : "shadingMatch";
             var postCoveringMatchClass = preCoveringMatchClass;

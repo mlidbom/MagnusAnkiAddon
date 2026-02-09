@@ -15,7 +15,7 @@ public class ParsedWordSerializer
             parsedWord.StartIndex.ToString(),
             parsedWord.IsDisplayed ? "1" : "0",
             parsedWord.ParsedForm,
-            parsedWord.VocabId.Value.ToString()
+            parsedWord.VocabId?.Value.ToString() ?? ""
         });
     }
 
@@ -24,9 +24,9 @@ public class ParsedWordSerializer
         var values = serialized.Split(new[] { Separator }, System.StringSplitOptions.None);
 
         // Parse VocabId: supports both Guid format (new) and legacy long format
-        NoteId vocabId;
+        NoteId? vocabId;
         var idStr = values[4];
-        if(Guid.TryParse(idStr, out var guid))
+        if(Guid.TryParse(idStr, out var guid) && guid != Guid.Empty)
         {
             vocabId = new NoteId(guid);
         }
@@ -37,7 +37,7 @@ public class ParsedWordSerializer
         }
         else
         {
-            vocabId = ParsedMatch.MissingNoteId;
+            vocabId = null;
         }
 
         return new ParsedMatch(

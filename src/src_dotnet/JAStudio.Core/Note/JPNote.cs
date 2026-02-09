@@ -50,11 +50,6 @@ public abstract class JPNote
 
    public override bool Equals(object? obj)
    {
-      if(_id.IsEmpty)
-      {
-         throw new InvalidOperationException("You cannot compare or hash a note that has not been saved yet since it has no id");
-      }
-
       return obj is JPNote other && other.GetId() == _id;
    }
 
@@ -172,14 +167,9 @@ public abstract class JPNote
 
    public string GetField(string fieldName) => _fields.TryGetValue(fieldName, out var value) ? value : string.Empty;
 
-   bool IsPersisted() => !_id.IsEmpty;
-
    public void Flush()
    {
-      if(IsPersisted())
-      {
-         RecursiveFlushGuard.Flush();
-      }
+      RecursiveFlushGuard.Flush();
    }
 
    public void SetField(string fieldName, string value)

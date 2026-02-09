@@ -27,7 +27,6 @@ class CachingSentenceConfigurationField:
 
 class ParsedMatch:
     def __init__(self, variant: str, startIndex: int, isDisplayed: bool, word: str, vocabId: NoteId) -> None: ...
-    MissingNoteId : NoteId
     Serializer : ParsedWordSerializer
     @property
     def EndIndex(self) -> int: ...

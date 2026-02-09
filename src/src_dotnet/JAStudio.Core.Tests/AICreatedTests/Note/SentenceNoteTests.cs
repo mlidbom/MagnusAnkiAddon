@@ -15,7 +15,7 @@ public class SentenceNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTe
       Assert.NotNull(sentence);
       Assert.Equal("これは本です。", sentence.GetQuestion());
       Assert.Equal("This is a book.", sentence.GetAnswer());
-      Assert.False(sentence.GetId().IsEmpty);
+      Assert.NotNull(sentence.GetId());
    }
 
    [Fact]

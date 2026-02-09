@@ -125,6 +125,7 @@ public class NoteContextMenu
    public List<Avalonia.Controls.MenuItem> BuildVocabContextMenu(long vocabId, string selection, string clipboard)
    {
       var noteId = _services.App.Collection.Vocab.AnkiIdToNoteId(vocabId);
+      if(noteId == null) return [];
       var specs = BuildVocabContextMenuSpec(noteId, selection, clipboard);
       return ConvertToAvaloniaMenuItems(specs);
    }
@@ -135,6 +136,7 @@ public class NoteContextMenu
    public List<Avalonia.Controls.MenuItem> BuildKanjiContextMenu(long kanjiId, string selection, string clipboard)
    {
       var noteId = _services.App.Collection.Kanji.AnkiIdToNoteId(kanjiId);
+      if(noteId == null) return [];
       var specs = BuildKanjiContextMenuSpec(noteId, selection, clipboard);
       return ConvertToAvaloniaMenuItems(specs);
    }
@@ -145,6 +147,7 @@ public class NoteContextMenu
    public List<Avalonia.Controls.MenuItem> BuildSentenceContextMenu(long sentenceId, string selection, string clipboard)
    {
       var noteId = _services.App.Collection.Sentences.AnkiIdToNoteId(sentenceId);
+      if(noteId == null) return [];
       var specs = BuildSentenceContextMenuSpec(noteId, selection, clipboard);
       return ConvertToAvaloniaMenuItems(specs);
    }

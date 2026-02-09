@@ -118,8 +118,8 @@ public class SentenceNoteMenus
     {
         var parsingResult = sentence.ParsingResult.Get();
         var vocabIds = parsingResult.ParsedWords
-            .Where(p => !p.VocabId.IsEmpty)
-            .Select(p => p.VocabId)
+            .Where(p => p.VocabId != null)
+            .Select(p => p.VocabId!)
             .Distinct();
         return vocabIds;
     }

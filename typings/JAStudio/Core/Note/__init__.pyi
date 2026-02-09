@@ -93,9 +93,6 @@ class JPNote(abc.ABC):
 
 class KanjiId(NoteId, IEquatable_1[KanjiId]):
     def __init__(self, Value: Guid) -> None: ...
-    Empty : KanjiId
-    @property
-    def IsEmpty(self) -> bool: ...
     @property
     def Value(self) -> Guid: ...
     @Value.setter
@@ -297,9 +294,6 @@ class NoteFlushGuard:
 
 class NoteId(IEquatable_1[NoteId]):
     def __init__(self, Value: Guid) -> None: ...
-    Empty : NoteId
-    @property
-    def IsEmpty(self) -> bool: ...
     @property
     def Value(self) -> Guid: ...
     @Value.setter
@@ -366,9 +360,6 @@ class NoteTypes(abc.ABC):
 
 class SentenceId(NoteId, IEquatable_1[SentenceId]):
     def __init__(self, Value: Guid) -> None: ...
-    Empty : SentenceId
-    @property
-    def IsEmpty(self) -> bool: ...
     @property
     def Value(self) -> Guid: ...
     @Value.setter
@@ -620,9 +611,6 @@ class TestingBackendNoteCreator(IBackendNoteCreator):
 
 class VocabId(NoteId, IEquatable_1[VocabId]):
     def __init__(self, Value: Guid) -> None: ...
-    Empty : VocabId
-    @property
-    def IsEmpty(self) -> bool: ...
     @property
     def Value(self) -> Guid: ...
     @Value.setter

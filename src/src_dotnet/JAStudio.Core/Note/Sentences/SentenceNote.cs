@@ -14,7 +14,7 @@ public class SentenceNote : JPNote
     public CachingSentenceConfigurationField Configuration { get; private set; }
     public MutableSerializedObjectField<ParsingResult> ParsingResult { get; }
 
-    public SentenceNote(NoteServices services, NoteData? data = null) : base(services, data != null && !data.Id.IsEmpty ? new SentenceId(data.Id.Value) : SentenceId.New(), data)
+    public SentenceNote(NoteServices services, NoteData? data = null) : base(services, data?.Id != null ? new SentenceId(data.Id.Value) : SentenceId.New(), data)
     {
         Configuration = new CachingSentenceConfigurationField(this);
         ParsingResult = new MutableSerializedObjectField<ParsingResult>(
@@ -89,9 +89,9 @@ public class SentenceNote : JPNote
         var parsingResult = ParsingResult.Get();
         if (parsingResult != null)
         {
-            foreach (var match in parsingResult.ParsedWords.Where(p => p.IsDisplayed && !p.VocabId.IsEmpty))
+            foreach (var match in parsingResult.ParsedWords.Where(p => p.IsDisplayed && p.VocabId != null))
             {
-                var vocab = Services.Collection.Vocab.WithIdOrNone(match.VocabId);
+                var vocab = Services.Collection.Vocab.WithIdOrNone(match.VocabId!);
                 if (vocab != null)
                 {
                     dependencies.Add(vocab);

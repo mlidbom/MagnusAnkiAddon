@@ -25,8 +25,8 @@ public class ParsingResult
         get
         {
             return ParsedWords
-                .Where(p => !p.VocabId.IsEmpty)
-                .Select(p => p.VocabId)
+                .Where(p => p.VocabId != null)
+                .Select(p => p.VocabId!)
                 .ToHashSet();
         }
     }

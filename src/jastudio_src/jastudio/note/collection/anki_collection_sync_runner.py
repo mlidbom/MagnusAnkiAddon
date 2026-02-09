@@ -4,12 +4,9 @@ import threading
 from typing import TYPE_CHECKING
 
 from anki import hooks
-from anki.models import ModelManager
 from autoslot import Slots
 from jaspythonutils.sysutils import ex_assert
-from jaspythonutils.sysutils.typed import checked_cast, non_optional
 from jastudio.anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
-from jastudio.ankiutils import app
 from JAStudio.Core.Note import NoteTypes
 from jastudio.sysutils import app_thread_pool, ex_thread
 from typed_linq_collections.collections.q_list import QList
@@ -19,6 +16,7 @@ if TYPE_CHECKING:
 
     from anki.collection import Collection
     from anki.decks import DeckId
+    from anki.models import ModelManager
     from anki.notes import Note, NoteId
 
 class AnkiCollectionSyncRunner(Slots):
@@ -73,7 +71,6 @@ class AnkiCollectionSyncRunner(Slots):
 
     def flush_updates(self) -> None:
         with self._lock:
-            self._check_for_updated_note_types_and_reset_app_if_found()
             self._internal_flush_updates()
 
     def _on_will_be_added(self, _collection: Collection, backend_note: Note, _deck_id: DeckId) -> None:  # pyright: ignore[reportUnusedParameter]
@@ -102,12 +99,3 @@ class AnkiCollectionSyncRunner(Slots):
     def connect_will_remove(self, on_will_remove: Callable[[Sequence[NoteId]], None]) -> None:
         with self._lock:
             self._will_remove_subscribers.append(on_will_remove)
-
-    def _check_for_updated_note_types_and_reset_app_if_found(self) -> None:
-        for cached_note_type in self._note_types:
-            ex_assert.not_none(self._anki_collection.db)
-            current = NoteTypeEx.from_dict(non_optional(checked_cast(ModelManager, self._anki_collection.models).get(cached_note_type.id)))
-            try:
-                current.assert_schema_matches(cached_note_type)
-            except AssertionError:
-                app_thread_pool.pool.submit(lambda: app.reset())  # We are running on the thread that will be killed by the reset...

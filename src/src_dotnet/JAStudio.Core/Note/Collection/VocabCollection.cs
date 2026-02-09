@@ -21,7 +21,7 @@ public class VocabCollection
     public List<VocabNote> All() => Cache.All();
     public VocabNote? WithIdOrNone(NoteId noteId) => Cache.WithIdOrNone(noteId);
     public VocabNote? WithAnkiIdOrNone(long ankiNoteId) => Cache.WithAnkiIdOrNone(ankiNoteId);
-    public NoteId AnkiIdToNoteId(long ankiNoteId) => Cache.AnkiIdToNoteId(ankiNoteId);
+    public NoteId? AnkiIdToNoteId(long ankiNoteId) => Cache.AnkiIdToNoteId(ankiNoteId);
     public IEnumerable<VocabNote> WithDisambiguationName(string name) => Cache.WithDisambiguationName(name);
     public IEnumerable<VocabNote> WithForm(string form) => Cache.WithForm(form);
     public List<VocabNote> WithCompoundPart(string disambiguationName) => Cache.WithCompoundPart(disambiguationName);
