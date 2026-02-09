@@ -27,10 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="PythonInterop\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="Compze.Utilities">
       <HintPath>..\manual_libs\Compze.Utilities.dll</HintPath>
     </Reference>
