@@ -50,15 +50,6 @@ class AnkiCollectionSyncRunner(Slots):
         while self._running:
             self.flush_updates()
             ex_thread.sleep_thread_not_doing_the_current_work(0.1)
-    #
-    def destruct(self) -> None:
-        with self._lock:
-            self._running = False
-            self._internal_flush_updates()
-
-            hooks.notes_will_be_deleted.remove(self._on_will_be_removed)  # pyright: ignore[reportUnknownMemberType]
-            hooks.note_will_be_added.remove(self._on_will_be_added)  # pyright: ignore[reportUnknownMemberType]
-            hooks.note_will_flush.remove(self._on_will_flush)
 
     def _internal_flush_updates(self) -> None:
         completely_added_list = self._pending_add.where(lambda it: it.id != 0).to_list()
