@@ -115,7 +115,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
          {
             if(_allowCancel && _panel.WasCanceled)
             {
-               JALogger.Log($"Operation canceled by user after {completed} of {totalItems} items");
+               this.Log().Info($"Operation canceled by user after {completed} of {totalItems} items");
                break;
             }
 
@@ -187,7 +187,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
             {
                if(_allowCancel && _panel.WasCanceled)
                {
-                  JALogger.Log($"Operation canceled by user after {completed} of {totalItems} items");
+                  this.Log().Info($"Operation canceled by user after {completed} of {totalItems} items");
                   break;
                }
 

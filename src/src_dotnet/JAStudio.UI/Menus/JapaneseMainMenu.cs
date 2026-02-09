@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Compze.Utilities.Logging;
 using JAStudio.Core.Anki;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
@@ -85,10 +86,10 @@ public class JapaneseMainMenu
    // Config menu actions
    void OnOptions()
    {
-      JALogger.Log("OnOptions() called!");
-      JALogger.Log("Calling ShowOptionsDialog()...");
+      this.Log().Info("OnOptions() called!");
+      this.Log().Info("Calling ShowOptionsDialog()...");
       _appRoot.ShowOptionsDialog();
-      JALogger.Log("ShowOptionsDialog() completed");
+      this.Log().Info("ShowOptionsDialog() completed");
    }
 
    void OnReadingsMappings() => _appRoot.ShowReadingsMappingsDialog();

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Compze.Utilities.Logging;
 using JAStudio.Core.Anki;
 using JAStudio.Core.Note;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
@@ -156,7 +157,7 @@ public class BrowserMenus
       }
       catch(Exception ex)
       {
-         JALogger.Log($"Failed to get note from card ID {cardId}: {ex.Message}");
+         this.Log().Info($"Failed to get note from card ID {cardId}: {ex.Message}");
          return null;
       }
    }
@@ -177,7 +178,7 @@ public class BrowserMenus
          }
          catch(Exception ex)
          {
-            JALogger.Log($"Failed to load note {ankiNoteId}: {ex.Message}");
+            this.Log().Info($"Failed to load note {ankiNoteId}: {ex.Message}");
          }
       }
 

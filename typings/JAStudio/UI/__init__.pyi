@@ -51,11 +51,6 @@ class App(Application):
     def __setitem__(self, binding: IndexerDescriptor, value: IBinding) -> None: ...
 
 
-class JALogger(abc.ABC):
-    @staticmethod
-    def Log(message: str) -> None: ...
-
-
 class JAStudioAppRoot:
     @property
     def Services(self) -> TemporaryServiceCollection: ...

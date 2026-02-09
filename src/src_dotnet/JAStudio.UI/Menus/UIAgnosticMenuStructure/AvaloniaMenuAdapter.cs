@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Avalonia.Controls;
+using Compze.Utilities.Logging;
 
 namespace JAStudio.UI.Menus.UIAgnosticMenuStructure;
 
@@ -9,21 +10,23 @@ namespace JAStudio.UI.Menus.UIAgnosticMenuStructure;
 /// </summary>
 public static class AvaloniaMenuAdapter
 {
+   static readonly ILogger Log = CompzeLogger.For(typeof(AvaloniaMenuAdapter));
+
    /// <summary>
    /// Convert a single MenuItem spec to an Avalonia MenuItem.
    /// Recursively builds submenus.
    /// </summary>
-   public static Avalonia.Controls.MenuItem ToAvalonia(SpecMenuItem spec)
+   public static MenuItem ToAvalonia(SpecMenuItem spec)
    {
       if(spec.Kind == SpecMenuItemKind.Separator)
       {
          // Avalonia uses a special Separator control, not a MenuItem
          // Caller should check Kind and use new Separator() instead
-         JALogger.Log("Warning: ToAvalonia called on separator - caller should handle separators directly");
-         return new Avalonia.Controls.MenuItem { Header = "-", IsEnabled = false };
+         Log.Info("Warning: ToAvalonia called on separator - caller should handle separators directly");
+         return new MenuItem { Header = "-", IsEnabled = false };
       }
 
-      var avaloniaItem = new Avalonia.Controls.MenuItem
+      var avaloniaItem = new MenuItem
                          {
                             Header = spec.Name,
                             IsEnabled = spec.IsEnabled,
@@ -53,6 +56,7 @@ public static class AvaloniaMenuAdapter
                else
                   avaloniaItem.Items.Add(ToAvalonia(childSpec));
             }
+
             break;
       }
 
@@ -84,7 +88,7 @@ public static class AvaloniaMenuAdapter
 /// <summary>
 /// Helper to parse keyboard shortcut strings into Avalonia KeyGestures.
 /// </summary>
-internal static class KeyGestureParser
+static class KeyGestureParser
 {
    public static Avalonia.Input.KeyGesture? Parse(string shortcutText) => Avalonia.Input.KeyGesture.Parse(shortcutText);
 }

@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Compze.Utilities.Logging;
 using Compze.Utilities.SystemCE;
 using Compze.Utilities.SystemCE.ThreadingCE.ResourceAccess;
 using JAStudio.Core.Configuration;
@@ -40,7 +41,7 @@ public class DictLookup
    HashSet<string> FindAllWords()
    {
       var stopwatch = Stopwatch.StartNew();
-      MyLog.Info("Prepopulating all word forms from jamdict.");
+      this.Log().Info("Prepopulating all word forms from jamdict.");
 
       var kanjiFormsQuery = "SELECT distinct text FROM Kanji";
       var kanaFormsQuery = "SELECT distinct text FROM Kana";
@@ -52,7 +53,7 @@ public class DictLookup
       result.UnionWith(kanaForms);
 
       stopwatch.Stop();
-      MyLog.Info($"Prepopulating all word forms from jamdict completed in {stopwatch.ElapsedMilliseconds}ms");
+      this.Log().Info($"Prepopulating all word forms from jamdict completed in {stopwatch.ElapsedMilliseconds}ms");
 
       return result;
    }
@@ -60,7 +61,7 @@ public class DictLookup
    HashSet<string> FindAllNames()
    {
       var stopwatch = Stopwatch.StartNew();
-      MyLog.Info("Prepopulating all name forms from jamdict.");
+      this.Log().Info("Prepopulating all name forms from jamdict.");
 
       var kanjiFormsQuery = "SELECT distinct text FROM NEKanji";
       var kanaFormsQuery = "SELECT distinct text FROM NEKana";
@@ -72,7 +73,7 @@ public class DictLookup
       result.UnionWith(kanaForms);
 
       stopwatch.Stop();
-      MyLog.Info($"Prepopulating all name forms from jamdict completed in {stopwatch.ElapsedMilliseconds}ms");
+      this.Log().Info($"Prepopulating all name forms from jamdict completed in {stopwatch.ElapsedMilliseconds}ms");
 
       return result;
    }

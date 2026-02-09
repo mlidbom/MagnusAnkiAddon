@@ -1,4 +1,5 @@
 using System;
+using Compze.Utilities.Logging;
 
 namespace JAStudio.Core.SysUtils;
 
@@ -43,11 +44,11 @@ public class StopWatch
             var elapsed = _watch.ElapsedSeconds();
             if (elapsed > _threshold)
             {
-                MyLog.Warning($"############## Execution time:{_watch.ElapsedFormatted()} for {_message} ##############");
+                this.Log().Warning($"############## Execution time:{_watch.ElapsedFormatted()} for {_message} ##############");
             }
             else if (elapsed * 2 > _threshold)
             {
-                MyLog.Info($"############## Execution time:{_watch.ElapsedFormatted()} for {_message} ##############");
+                this.Log().Info($"############## Execution time:{_watch.ElapsedFormatted()} for {_message} ##############");
             }
         }
     }

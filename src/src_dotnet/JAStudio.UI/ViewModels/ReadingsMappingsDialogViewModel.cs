@@ -4,6 +4,7 @@ using System.Linq;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Compze.Utilities.Logging;
 using JAStudio.Core.Anki;
 using JAStudio.Core.Configuration;
 
@@ -42,7 +43,7 @@ public partial class ReadingsMappingsDialogViewModel : ObservableObject
       // Save to file
       _services.App.Config.SaveMappings(sorted);
 
-      JALogger.Log("Readings mappings saved");
+      this.Log().Info("Readings mappings saved");
       _window.Close(true);
 
       // Refresh current note display to pick up new mappings

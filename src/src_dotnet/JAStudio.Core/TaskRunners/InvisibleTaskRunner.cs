@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Compze.Utilities.Logging;
 
 namespace JAStudio.Core.TaskRunners;
 
@@ -9,7 +10,7 @@ public class InvisibleTaskRunner : ITaskProgressRunner
 {
    public InvisibleTaskRunner(string windowTitle, string labelText)
    {
-      MyLog.Debug($"##--InvisibleTaskRunner--## Created for {windowTitle} - {labelText}");
+      this.Log().Debug($"##--InvisibleTaskRunner--## Created for {windowTitle} - {labelText}");
    }
 
    public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
@@ -25,7 +26,7 @@ public class InvisibleTaskRunner : ITaskProgressRunner
          }
 
          watch.Stop();
-         MyLog.Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g} handled {items.Count} items");
+         this.Log().Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g} handled {items.Count} items");
          return result;
       } else
       {
@@ -36,7 +37,7 @@ public class InvisibleTaskRunner : ITaskProgressRunner
                       threads.ParallelOptions,
                       i => results[i] = processItem(items[i]));
          watch.Stop();
-         MyLog.Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g} handled {items.Count} items ({threads.Threads} threads)");
+         this.Log().Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g} handled {items.Count} items ({threads.Threads} threads)");
          return new List<TOutput>(results);
       }
    }
@@ -55,7 +56,7 @@ public class InvisibleTaskRunner : ITaskProgressRunner
                       threads.ParallelOptions,
                       i => results[i] = processItem(items[i]));
          watch.Stop();
-         MyLog.Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g} handled {items.Count} items ({threads.Threads} threads)");
+         this.Log().Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g} handled {items.Count} items ({threads.Threads} threads)");
          return new List<TOutput>(results);
       });
    }
@@ -80,7 +81,7 @@ public class InvisibleTaskRunner : ITaskProgressRunner
       var watch = Stopwatch.StartNew();
       var result = action();
       watch.Stop();
-      MyLog.Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g}");
+      this.Log().Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g}");
       return result;
    }
 

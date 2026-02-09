@@ -108,7 +108,7 @@ public class JAStudioAppRoot
    /// </remarks>
    public void HandleAnkiLifecycleEvent(AnkiLifecycleEvent lifecycleEvent)
    {
-      JALogger.Log($"HandleAnkiLifecycleEvent({lifecycleEvent})");
+      this.Log().Info($"HandleAnkiLifecycleEvent({lifecycleEvent})");
 
       switch(lifecycleEvent)
       {
@@ -144,12 +144,12 @@ public class JAStudioAppRoot
          try
          {
             await Task.Delay(ReloadDebounceDelay, cts.Token);
-            JALogger.Log("Debounce elapsed — reloading from Anki database");
+            this.Log().Info("Debounce elapsed — reloading from Anki database");
             _app.Collection.ReloadFromAnkiDatabase();
          }
          catch(TaskCanceledException)
          {
-            JALogger.Log("Debounced reload cancelled by newer lifecycle event");
+            this.Log().Info("Debounced reload cancelled by newer lifecycle event");
          }
       });
    }
@@ -207,7 +207,7 @@ public class JAStudioAppRoot
          var vocab = vocabCache.WithAnkiIdOrNone(vocabId);
          if(vocab == null)
          {
-            JALogger.Log($"Vocab note with ID {vocabId} not found");
+            this.Log().Info($"Vocab note with ID {vocabId} not found");
             return;
          }
 
@@ -237,12 +237,12 @@ public class JAStudioAppRoot
    {
       Dispatcher.UIThread.Invoke(() =>
       {
-         JALogger.Log("Creating OptionsDialog window...");
+         this.Log().Info("Creating OptionsDialog window...");
          var window = new OptionsDialog(Services);
          WindowPositioner.PositionNearCursor(window);
-         JALogger.Log("OptionsDialog created, calling Show()...");
+         this.Log().Info("OptionsDialog created, calling Show()...");
          window.Show();
-         JALogger.Log("OptionsDialog.Show() completed");
+         this.Log().Info("OptionsDialog.Show() completed");
       });
    }
 
@@ -251,7 +251,7 @@ public class JAStudioAppRoot
    /// </summary>
    public void ShowReadingsMappingsDialog()
    {
-      JALogger.Log("ShowReadingsMappingsDialog() called");
+      this.Log().Info("ShowReadingsMappingsDialog() called");
       Dispatcher.UIThread.Invoke(() =>
       {
          var window = new ReadingsMappingsDialog(Services);
@@ -266,7 +266,7 @@ public class JAStudioAppRoot
    /// </summary>
    public void ToggleNoteSearchDialog()
    {
-      JALogger.Log("ToggleNoteSearchDialog() called");
+      this.Log().Info("ToggleNoteSearchDialog() called");
       Dispatcher.UIThread.Invoke(() =>
       {
          NoteSearchDialog.ToggleVisibility(Services);
@@ -279,7 +279,7 @@ public class JAStudioAppRoot
    /// </summary>
    public void ToggleEnglishWordSearchDialog()
    {
-      JALogger.Log("ToggleEnglishWordSearchDialog() called");
+      this.Log().Info("ToggleEnglishWordSearchDialog() called");
       Dispatcher.UIThread.Invoke(() =>
       {
          EnglishWordSearchDialog.ToggleVisibility();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Compze.Utilities.Logging;
 
 namespace JAStudio.UI.Views;
 
@@ -57,7 +58,7 @@ public partial class ContextMenuPopup : UserControl
 
    public void ShowAt(int x, int y)
    {
-      JALogger.Log($"ShowAt called with: ({x}, {y})");
+      this.Log().Info($"ShowAt called with: ({x}, {y})");
 
       // Create sub-menu items
       var menuItems = new List<MenuItem>();
@@ -87,7 +88,7 @@ public partial class ContextMenuPopup : UserControl
                          {
                             Header = $"Dummy Entry {i}"
                          };
-         dummyItem.Click += (s, e) => JALogger.Log($"Dummy item clicked: {((MenuItem)s!).Header}");
+         dummyItem.Click += (s, e) => this.Log().Info($"Dummy item clicked: {((MenuItem)s!).Header}");
          menuItems.Add(dummyItem);
       }
 
@@ -136,11 +137,11 @@ public partial class ContextMenuPopup : UserControl
          var adjustedY = y - menuHeight;
 
          _hostWindow.Position = new PixelPoint(x, adjustedY);
-         JALogger.Log($"Window opened at ({x}, {adjustedY}), original y: {y}, menu height: {menuHeight}, bounds: {_hostWindow.Bounds}");
+         this.Log().Info($"Window opened at ({x}, {adjustedY}), original y: {y}, menu height: {menuHeight}, bounds: {_hostWindow.Bounds}");
 
          // Open the submenu immediately
          topMenuItem.IsSubMenuOpen = true;
-         JALogger.Log("Submenu opened");
+         this.Log().Info("Submenu opened");
       };
 
       // Close when the submenu closes or window loses focus
@@ -166,11 +167,11 @@ public partial class ContextMenuPopup : UserControl
 
    void OnClipboardItemClick(object? sender, RoutedEventArgs e)
    {
-      JALogger.Log($"Clipboard item clicked: {_clipboardContent}");
+      this.Log().Info($"Clipboard item clicked: {_clipboardContent}");
    }
 
    void OnSelectionItemClick(object? sender, RoutedEventArgs e)
    {
-      JALogger.Log($"Selection item clicked: {_selectionContent}");
+      this.Log().Info($"Selection item clicked: {_selectionContent}");
    }
 }

@@ -2,6 +2,7 @@ using JAStudio.Core.Note.NoteFields;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Compze.Utilities.Logging;
 
 namespace JAStudio.Core.Note.Sentences.Serialization;
 
@@ -36,7 +37,7 @@ public class ParsingResultSerializer : IObjectSerializer<ParsingResult>
         }
         catch (Exception ex)
         {
-            MyLog.Warning($"Failed to deserialize ParsingResult:\nmessage:\n{ex.Message}\n{serialized}");
+            this.Log().Warning($"Failed to deserialize ParsingResult:\nmessage:\n{ex.Message}\n{serialized}");
             return new ParsingResult(new List<ParsedMatch>(), "", "");
         }
     }

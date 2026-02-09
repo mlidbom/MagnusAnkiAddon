@@ -1,4 +1,5 @@
 using System;
+using Compze.Utilities.Logging;
 
 namespace JAStudio.Core.Note;
 
@@ -36,7 +37,7 @@ public class NoteFlushGuard
             {
                 if (_note.Services.Settings.LogWhenFlushingNotes())
                 {
-                    MyLog.Info($"Flushing {_note.GetType().Name}: {_note.GetQuestion()}");
+                    this.Log().Info($"Flushing {_note.GetType().Name}: {_note.GetQuestion()}");
                 }
                 _note.UpdateInCache();
             }

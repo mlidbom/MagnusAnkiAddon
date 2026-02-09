@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JAStudio.Core.Configuration;
 using System;
+using Compze.Utilities.Logging;
 
 namespace JAStudio.UI.ViewModels;
 
@@ -24,7 +25,7 @@ public partial class OptionsDialogViewModel : ObservableObject
 
    public OptionsDialogViewModel(Window window, Core.TemporaryServiceCollection services)
    {
-      JALogger.Log("OptionsDialogViewModel constructor: starting...");
+      this.Log().Info("OptionsDialogViewModel constructor: starting...");
       _window = window;
       _services = services;
       if(Design.IsDesignMode)
@@ -33,9 +34,9 @@ public partial class OptionsDialogViewModel : ObservableObject
       }
 
       _config = _services.App.Config;
-      JALogger.Log("OptionsDialogViewModel constructor: calling LoadFromConfig()...");
+      this.Log().Info("OptionsDialogViewModel constructor: calling LoadFromConfig()...");
       LoadFromConfig();
-      JALogger.Log("OptionsDialogViewModel constructor: completed");
+      this.Log().Info("OptionsDialogViewModel constructor: completed");
    }
 
    // --- Numeric Values ---
