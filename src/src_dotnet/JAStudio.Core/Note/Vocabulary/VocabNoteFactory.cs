@@ -38,7 +38,7 @@ public class VocabNoteFactory
     {
         var note = new VocabNote(RequireServices());
         note.Question.Set(question);
-        note.SetField(NoteFieldsConstants.Vocab.SourceAnswer, answer);
+        note.SourceAnswer.Set(answer);
         note.SetReadings(readings);
         
         if (initializer != null)
@@ -53,8 +53,8 @@ public class VocabNoteFactory
     public VocabNote CreateFromUserData(string question, string answer, List<string> readings, Action<VocabNote>? initializer = null)
     {
         var note = Create(question, answer, readings, initializer);
-        note.User.Answer.Set(note.GetField(NoteFieldsConstants.Vocab.SourceAnswer));
-        note.SetField(NoteFieldsConstants.Vocab.SourceAnswer, "");
+        note.User.Answer.Set(note.SourceAnswer.Value);
+        note.SourceAnswer.Empty();
         
         return note;
     }

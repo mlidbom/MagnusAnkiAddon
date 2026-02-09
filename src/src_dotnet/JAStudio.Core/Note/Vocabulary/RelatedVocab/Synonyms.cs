@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
-using JAStudio.Core.Note.NoteFields;
+using JAStudio.Core.Note.ReactiveProperties;
 
 namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 
 public class Synonyms
 {
    readonly VocabNote _vocab;
-   readonly MutableSerializedObjectField<RelatedVocabData> _data;
+   readonly SerializedObjectProperty<RelatedVocabData> _data;
 
-    public Synonyms(VocabNote vocab, MutableSerializedObjectField<RelatedVocabData> data)
+    public Synonyms(VocabNote vocab, SerializedObjectProperty<RelatedVocabData> data)
     {
         _vocab = vocab;
         _data = data;

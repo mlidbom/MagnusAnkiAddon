@@ -3,7 +3,7 @@ using System.Linq;
 using JAStudio.Core.LanguageServices.JanomeEx;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 using JAStudio.Core.Note.Collection;
-using JAStudio.Core.Note.NoteFields;
+using JAStudio.Core.Note.ReactiveProperties;
 using JAStudio.Core.Note.Sentences;
 
 namespace JAStudio.Core.Note.Vocabulary;
@@ -11,12 +11,12 @@ namespace JAStudio.Core.Note.Vocabulary;
 public class VocabNoteUserCompoundParts
 {
     private readonly VocabNote _vocab;
-    private readonly MutableCommaSeparatedStringsListField _field;
+    private readonly CommaSeparatedListProperty _field;
 
-    public VocabNoteUserCompoundParts(VocabNote vocab)
+    public VocabNoteUserCompoundParts(VocabNote vocab, StringProperty compoundsField)
     {
         _vocab = vocab;
-        _field = new MutableCommaSeparatedStringsListField(vocab, NoteFieldsConstants.Vocab.UserCompounds);
+        _field = new CommaSeparatedListProperty(compoundsField);
     }
 
     private VocabNote Vocab => _vocab;

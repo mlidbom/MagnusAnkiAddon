@@ -1,3 +1,5 @@
+using System;
+
 namespace JAStudio.Core.Note.ReactiveProperties;
 
 /// <summary>
@@ -14,4 +16,13 @@ public class StringProperty : Property<string>
    public bool HasValue() => !string.IsNullOrEmpty(Value);
 
    public void Empty() => Value = string.Empty;
+
+   /// <summary>
+   /// Register a callback that fires whenever the value changes.
+   /// Replaces CachingMutableStringField.OnChange.
+   /// </summary>
+   public void OnChange(Action callback)
+   {
+      Subscribe(new DelegateObserver<string>(_ => callback()));
+   }
 }

@@ -1,35 +1,34 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.NoteFields.AutoSaveWrappers;
+using JAStudio.Core.Note.ReactiveProperties;
 
 namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 
 public class RelatedVocab
 {
    readonly VocabNote _vocab;
-   readonly MutableSerializedObjectField<RelatedVocabData> _data;
+   readonly SerializedObjectProperty<RelatedVocabData> _data;
    readonly Lazy<HashSet<NoteId>> _inCompoundIds;
 
-    public RelatedVocab(VocabNote vocab)
+    public RelatedVocab(VocabNote vocab, StringProperty relatedVocabField)
     {
         _vocab = vocab;
 
-        _data = new MutableSerializedObjectField<RelatedVocabData>(
-            vocab,
-            NoteFieldsConstants.Vocab.RelatedVocab,
+        _data = new SerializedObjectProperty<RelatedVocabData>(
+            relatedVocabField,
             RelatedVocabData.Serializer());
 
         ErgativeTwin = new ErgativeTwin(vocab, _data);
         Synonyms = new Synonyms(vocab, _data);
         PerfectSynonyms = new PerfectSynonyms(
             vocab,
-            FieldSetWrapper<string>.ForJsonObjectField(_data, _data.Get().PerfectSynonyms));
+            new FieldSetWrapper<string>(() => _data.Save(), () => _data.Get().PerfectSynonyms));
         Antonyms = new Antonyms(vocab, _data);
         SeeAlso = new SeeAlso(vocab, _data);
-        DerivedFrom = new FieldWrapper<string, RelatedVocabData>(_data, _data.Get().DerivedFrom);
-        ConfusedWith = FieldSetWrapper<string>.ForJsonObjectField(_data, _data.Get().ConfusedWith);
+        DerivedFrom = new FieldWrapper<string, RelatedVocabData>(() => _data.Save(), _data.Get().DerivedFrom);
+        ConfusedWith = new FieldSetWrapper<string>(() => _data.Save(), () => _data.Get().ConfusedWith);
 
         _inCompoundIds = new Lazy<HashSet<NoteId>>(() =>
             InCompounds().Select(voc => voc.GetId()).ToHashSet());

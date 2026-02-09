@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using JAStudio.Core.Note.NoteFields;
+using JAStudio.Core.Note.ReactiveProperties;
 using JAStudio.Core.SysUtils.Json;
 
 namespace JAStudio.Core.Note.Vocabulary;
@@ -87,7 +88,7 @@ public class VocabNoteMatchingRulesSerializer : IObjectSerializer<VocabNoteMatch
 public class VocabNoteMatchingRules
 {
     private readonly VocabNote _vocab;
-    private readonly MutableSerializedObjectField<VocabNoteMatchingRulesData> _field;
+    private readonly SerializedObjectProperty<VocabNoteMatchingRulesData> _field;
 
     public HashSet<string> SurfaceIsNot => _field.Get().SurfaceIsNot;
     public HashSet<string> YieldToSurface => _field.Get().YieldToSurface;
@@ -95,12 +96,11 @@ public class VocabNoteMatchingRules
     public HashSet<string> SuffixIsNot => _field.Get().SuffixIsNot;
     public HashSet<string> RequiredPrefix => _field.Get().RequiredPrefix;
 
-    public VocabNoteMatchingRules(VocabNote vocab)
+    public VocabNoteMatchingRules(VocabNote vocab, StringProperty matchingRulesField)
     {
         _vocab = vocab;
-        _field = new MutableSerializedObjectField<VocabNoteMatchingRulesData>(
-            vocab, 
-            NoteFieldsConstants.Vocab.MatchingRules, 
+        _field = new SerializedObjectProperty<VocabNoteMatchingRulesData>(
+            matchingRulesField, 
             new VocabNoteMatchingRulesSerializer());
     }
 

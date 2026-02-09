@@ -1,6 +1,6 @@
 import typing, abc
+from System import Action, Func_1
 from System.Collections.Generic import HashSet_1
-from JAStudio.Core.Note.NoteFields import MutableSerializedObjectField_1
 
 class FieldSetWrapper_GenericClasses(abc.ABCMeta):
     Generic_FieldSetWrapper_GenericClasses_FieldSetWrapper_1_TValue = typing.TypeVar('Generic_FieldSetWrapper_GenericClasses_FieldSetWrapper_1_TValue')
@@ -10,6 +10,7 @@ FieldSetWrapper : FieldSetWrapper_GenericClasses
 
 FieldSetWrapper_1_TValue = typing.TypeVar('FieldSetWrapper_1_TValue')
 class FieldSetWrapper_1(typing.Generic[FieldSetWrapper_1_TValue]):
+    def __init__(self, saveCallback: Action, value: Func_1[HashSet_1[FieldSetWrapper_1_TValue]]) -> None: ...
     def Add(self, value: FieldSetWrapper_1_TValue) -> None: ...
     def Any(self) -> bool: ...
     def Clear(self) -> None: ...
@@ -19,22 +20,6 @@ class FieldSetWrapper_1(typing.Generic[FieldSetWrapper_1_TValue]):
     def OverwriteWith(self, other: FieldSetWrapper_1[FieldSetWrapper_1_TValue]) -> None: ...
     def Remove(self, key: FieldSetWrapper_1_TValue) -> None: ...
     def ToString(self) -> str: ...
-    # Skipped ForJsonObjectField due to it being static, abstract and generic.
-
-    ForJsonObjectField : ForJsonObjectField_MethodGroup[FieldSetWrapper_1_TValue]
-    ForJsonObjectField_MethodGroup_FieldSetWrapper_1_TValue = typing.TypeVar('ForJsonObjectField_MethodGroup_FieldSetWrapper_1_TValue')
-    class ForJsonObjectField_MethodGroup(typing.Generic[ForJsonObjectField_MethodGroup_FieldSetWrapper_1_TValue]):
-        ForJsonObjectField_MethodGroup_FieldSetWrapper_1_TValue = FieldSetWrapper_1.ForJsonObjectField_MethodGroup_FieldSetWrapper_1_TValue
-        def __getitem__(self, t:typing.Type[ForJsonObjectField_1_T1]) -> ForJsonObjectField_1[ForJsonObjectField_MethodGroup_FieldSetWrapper_1_TValue, ForJsonObjectField_1_T1]: ...
-
-        ForJsonObjectField_1_FieldSetWrapper_1_TValue = typing.TypeVar('ForJsonObjectField_1_FieldSetWrapper_1_TValue')
-        ForJsonObjectField_1_T1 = typing.TypeVar('ForJsonObjectField_1_T1')
-        class ForJsonObjectField_1(typing.Generic[ForJsonObjectField_1_FieldSetWrapper_1_TValue, ForJsonObjectField_1_T1]):
-            ForJsonObjectField_1_FieldSetWrapper_1_TValue = FieldSetWrapper_1.ForJsonObjectField_MethodGroup.ForJsonObjectField_1_FieldSetWrapper_1_TValue
-            ForJsonObjectField_1_TWrapper = FieldSetWrapper_1.ForJsonObjectField_MethodGroup.ForJsonObjectField_1_T1
-            def __call__(self, field: MutableSerializedObjectField_1[ForJsonObjectField_1_TWrapper], value: HashSet_1[ForJsonObjectField_1_FieldSetWrapper_1_TValue]) -> FieldSetWrapper_1[ForJsonObjectField_1_FieldSetWrapper_1_TValue]:...
-
-
 
 
 class FieldWrapper_GenericClasses(abc.ABCMeta):
@@ -47,7 +32,7 @@ FieldWrapper : FieldWrapper_GenericClasses
 FieldWrapper_2_TValue = typing.TypeVar('FieldWrapper_2_TValue')
 FieldWrapper_2_TWrapper = typing.TypeVar('FieldWrapper_2_TWrapper')
 class FieldWrapper_2(typing.Generic[FieldWrapper_2_TValue, FieldWrapper_2_TWrapper]):
-    def __init__(self, field: MutableSerializedObjectField_1[FieldWrapper_2_TWrapper], value: ValueWrapper_1[FieldWrapper_2_TValue]) -> None: ...
+    def __init__(self, save: Action, value: ValueWrapper_1[FieldWrapper_2_TValue]) -> None: ...
     def Get(self) -> FieldWrapper_2_TValue: ...
     def Set(self, value: FieldWrapper_2_TValue) -> None: ...
     def ToString(self) -> str: ...

@@ -1,23 +1,19 @@
-using JAStudio.Core.Note.NoteFields;
+using JAStudio.Core.Note.ReactiveProperties;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteAudio
 {
-    private readonly VocabNote _vocab;
-    public WritableAudioField First { get; }
-    public WritableAudioField Second { get; }
-    public WritableAudioField Tts { get; }
+    public AudioProperty First { get; }
+    public AudioProperty Second { get; }
+    public AudioProperty Tts { get; }
 
-    public VocabNoteAudio(VocabNote vocab)
+    public VocabNoteAudio(StringProperty audioB, StringProperty audioG, StringProperty audioTTS)
     {
-        _vocab = vocab;
-        First = new WritableAudioField(vocab, NoteFieldsConstants.Vocab.AudioB);
-        Second = new WritableAudioField(vocab, NoteFieldsConstants.Vocab.AudioG);
-        Tts = new WritableAudioField(vocab, NoteFieldsConstants.Vocab.AudioTTS);
+        First = new AudioProperty(audioB);
+        Second = new AudioProperty(audioG);
+        Tts = new AudioProperty(audioTTS);
     }
-
-    private VocabNote Vocab => _vocab;
 
     public string GetPrimaryAudioPath()
     {

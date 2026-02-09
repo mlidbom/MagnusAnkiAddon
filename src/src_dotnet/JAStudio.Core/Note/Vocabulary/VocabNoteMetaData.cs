@@ -1,4 +1,4 @@
-using JAStudio.Core.Note.NoteFields;
+using JAStudio.Core.Note.ReactiveProperties;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
@@ -6,14 +6,15 @@ public class VocabNoteMetaData
 {
     private readonly VocabNote _vocab;
 
-    public VocabNoteMetaData(VocabNote vocab)
+    public IntProperty SentenceCount { get; }
+
+    public VocabNoteMetaData(VocabNote vocab, StringProperty sentenceCountField)
     {
         _vocab = vocab;
+        SentenceCount = new IntProperty(sentenceCountField);
     }
 
     private VocabNote Vocab => _vocab;
-
-    public IntegerField SentenceCount => new IntegerField(Vocab, NoteFieldsConstants.Vocab.SentenceCount);
 
     public string MetaTagsHtml(bool displayExtendedSentenceStatistics = true, bool noSentenceStatistics = false)
     {

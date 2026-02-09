@@ -1,3 +1,5 @@
+using JAStudio.Core.Note.ReactiveProperties;
+
 namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteMatchingConfiguration
@@ -6,12 +8,14 @@ public class VocabNoteMatchingConfiguration
     private VocabNoteMatchingRules? _rules;
     private int? _customRequirementsWeight;
 
+    public StringProperty MatchingRulesField { get; }
     public VocabMatchingRulesConfigurationRequiresForbidsFlags RequiresForbids { get; }
     public VocabMatchingRulesConfigurationBoolFlags BoolFlags { get; }
 
-    public VocabNoteMatchingConfiguration(VocabNote vocab)
+    public VocabNoteMatchingConfiguration(VocabNote vocab, StringProperty matchingRulesField)
     {
         _vocab = vocab;
+        MatchingRulesField = matchingRulesField;
         RequiresForbids = new VocabMatchingRulesConfigurationRequiresForbidsFlags(vocab);
         BoolFlags = new VocabMatchingRulesConfigurationBoolFlags(vocab);
     }
@@ -20,7 +24,7 @@ public class VocabNoteMatchingConfiguration
     {
         get
         {
-            _rules ??= new VocabNoteMatchingRules(_vocab);
+            _rules ??= new VocabNoteMatchingRules(_vocab, MatchingRulesField);
             return _rules;
         }
     }

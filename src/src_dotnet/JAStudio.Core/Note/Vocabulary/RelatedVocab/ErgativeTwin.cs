@@ -1,13 +1,13 @@
-using JAStudio.Core.Note.NoteFields;
+using JAStudio.Core.Note.ReactiveProperties;
 
 namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 
 public class ErgativeTwin
 {
     private readonly VocabNote _vocab;
-    private readonly MutableSerializedObjectField<RelatedVocabData> _data;
+    private readonly SerializedObjectProperty<RelatedVocabData> _data;
 
-    public ErgativeTwin(VocabNote vocab, MutableSerializedObjectField<RelatedVocabData> data)
+    public ErgativeTwin(VocabNote vocab, SerializedObjectProperty<RelatedVocabData> data)
     {
         _vocab = vocab;
         _data = data;

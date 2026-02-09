@@ -1,5 +1,5 @@
 using Compze.Utilities.SystemCE;
-using JAStudio.Core.Note.NoteFields;
+using JAStudio.Core.Note.ReactiveProperties;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,17 +8,17 @@ namespace JAStudio.Core.Note.Vocabulary;
 public class VocabNoteForms
 {
     private readonly VocabNote _vocab;
-    private readonly MutableCommaSeparatedStringsListFieldDeDuplicated _field;
+    private readonly DeDuplicatedCommaSeparatedListProperty _field;
     private readonly LazyCE<HashSet<string>> _allRawSet;
     private readonly LazyCE<List<string>> _allList;
     private readonly LazyCE<HashSet<string>> _allSet;
     private readonly LazyCE<HashSet<string>> _ownedForms;
     private readonly LazyCE<HashSet<string>> _notOwnedByOtherVocab;
 
-    public VocabNoteForms(VocabNote vocab)
+    public VocabNoteForms(VocabNote vocab, StringProperty formsField)
     {
         _vocab = vocab;
-        _field = new MutableCommaSeparatedStringsListFieldDeDuplicated(vocab, NoteFieldsConstants.Vocab.Forms);
+        _field = new DeDuplicatedCommaSeparatedListProperty(formsField);
         
         _allRawSet = new LazyCE<HashSet<string>>(() => _field.Get().ToHashSet());
         _allList = _field.LazyReader(() => _field.Get().Select(StripBrackets).ToList());

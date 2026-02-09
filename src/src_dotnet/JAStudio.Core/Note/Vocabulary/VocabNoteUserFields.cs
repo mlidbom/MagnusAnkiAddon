@@ -1,21 +1,21 @@
-using JAStudio.Core.Note.NoteFields;
+using JAStudio.Core.Note.ReactiveProperties;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteUserFields
 {
-    private readonly VocabNote _vocab;
-    public readonly CachingMutableStringField Answer;
+    public readonly StringProperty Answer;
+    public readonly StringProperty Mnemonic;
+    public readonly StringProperty Explanation;
+    public readonly StringProperty ExplanationLong;
 
-    public VocabNoteUserFields(VocabNote vocab)
+    public VocabNoteUserFields(StringProperty answer, StringProperty mnemonic, StringProperty explanation, StringProperty explanationLong)
     {
-        _vocab = vocab;
-        Answer = new CachingMutableStringField(vocab, NoteFieldsConstants.Vocab.UserAnswer);
+        Answer = answer;
+        Mnemonic = mnemonic;
+        Explanation = explanation;
+        ExplanationLong = explanationLong;
     }
-
-    public MutableStringField Mnemonic => new(_vocab, NoteFieldsConstants.Vocab.UserMnemonic);
-    public MutableStringField Explanation => new(_vocab, NoteFieldsConstants.Vocab.UserExplanation);
-    public MutableStringField ExplanationLong => new(_vocab, NoteFieldsConstants.Vocab.UserExplanationLong);
 
     public override string ToString()
     {

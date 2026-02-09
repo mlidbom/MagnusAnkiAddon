@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
-using JAStudio.Core.Note.NoteFields;
+using JAStudio.Core.Note.ReactiveProperties;
 
 namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 
 public class SeeAlso
 {
     private readonly VocabNote _vocab;
-    private readonly MutableSerializedObjectField<RelatedVocabData> _data;
+    private readonly SerializedObjectProperty<RelatedVocabData> _data;
 
-    public SeeAlso(VocabNote vocab, MutableSerializedObjectField<RelatedVocabData> data)
+    public SeeAlso(VocabNote vocab, SerializedObjectProperty<RelatedVocabData> data)
     {
         _vocab = vocab;
         _data = data;

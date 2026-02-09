@@ -1,20 +1,22 @@
+using System;
+
 namespace JAStudio.Core.Note.NoteFields.AutoSaveWrappers;
 
 public class FieldWrapper<TValue, TWrapper>
 {
-    private readonly MutableSerializedObjectField<TWrapper> _field;
+    private readonly Action _save;
     private readonly ValueWrapper<TValue> _value;
 
-    public FieldWrapper(MutableSerializedObjectField<TWrapper> field, ValueWrapper<TValue> value)
+    public FieldWrapper(Action save, ValueWrapper<TValue> value)
     {
-        _field = field;
+        _save = save;
         _value = value;
     }
 
     public void Set(TValue value)
     {
         _value.Set(value);
-        _field.Save();
+        _save();
     }
 
     public TValue Get()
