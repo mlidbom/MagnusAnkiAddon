@@ -45,17 +45,30 @@ Once we fully migrate away from Anki as the data store, the note types will seri
 
 | File | Role |
 |------|------|
-| `Storage/Dto/KanjiNoteDto.cs` | Plain DTO for kanji notes |
-| `Storage/Dto/VocabNoteDto.cs` | Plain DTO for vocab notes (includes `VocabMatchingRulesDto`, `VocabRelatedDataDto`) |
-| `Storage/Dto/SentenceNoteDto.cs` | Plain DTO for sentence notes (includes `SentenceConfigurationDto`, `ParsingResultDto`, `ParsedMatchDto`, `WordExclusionDto`) |
-| `Storage/Converters/KanjiNoteConverter.cs` | Kanji ↔ DTO conversion |
-| `Storage/Converters/VocabNoteConverter.cs` | Vocab ↔ DTO conversion (handles matching rules & related vocab serialization) |
-| `Storage/Converters/SentenceNoteConverter.cs` | Sentence ↔ DTO conversion (handles configuration & parsing result) |
-| `Storage/NoteSerializer.cs` | Public API — `Serialize`/`Deserialize` per note type, registered in DI container |
+| `Storage/AllNotesData.cs` | Groups all notes (kanji, vocab, sentences), sorted by ID on construction |
+| `Storage/NoteSerializer.cs` | Public API — `Serialize`/`Deserialize` per note type + `AllNotesData`, registered in DI |
+| `Storage/FileSystemNoteRepository.cs` | File-based persistence — individual files per note + single-file mode, registered in DI |
+| `Storage/Dto/*` | Internal DTOs (transitional, hidden behind `NoteSerializer`) |
+| `Storage/Converters/*` | Internal converters (transitional, hidden behind `NoteSerializer`) |
+
+### File System Layout
+
+```
+jas_database/
+├── kanji/{jas_note_id}.json
+├── vocab/{jas_note_id}.json
+├── sentences/{jas_note_id}.json
+└── all_notes.json              (single-file mode)
+```
 
 ### DI Registration
 
-`NoteSerializer` is registered as a singleton in `AppBootStrapper.cs`, injected with `NoteServices`.
+- `NoteSerializer` — singleton, injected with `NoteServices`
+- `FileSystemNoteRepository` — singleton, injected with `NoteSerializer`, root dir = `App.DatabaseDir`
+
+### Addon Root Dir
+
+At runtime, `App.AddonRootDir` calls `AnkiFacade.GetAddonRootDir()` which delegates to `anki_facade_backend.addon_root_dir()` in Python. During tests, falls back to assembly-based path resolution. `App.DatabaseDir` is `{AddonRootDir}/jas_database`.
 
 ## Known Limitations
 
@@ -64,6 +77,6 @@ Once we fully migrate away from Anki as the data store, the note types will seri
 
 ## Next Steps
 
-- Implement file-based storage: persist each note as a JSON file keyed by `jas_note_id`
 - Build the thin Anki sync layer: map `jas_note_id` to Anki note IDs for SRS scheduling
 - Migrate existing Anki note data into the git-based storage
+- Set up `src/jas_database/` as an independent git repo (gitignored by the parent repo, separate remote for data)

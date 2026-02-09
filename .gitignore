@@ -33,3 +33,4 @@ CopilotIndices
 /src/src_dotnet/JAStudio.UI/publish
 /diff_out.tmp
 diag*.txt
+/src/jas_database/
