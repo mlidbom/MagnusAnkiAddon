@@ -1,15 +1,16 @@
 import typing
 from JAStudio.Core.Note import SentenceNote, VocabNote, NoteId
-from JAStudio.Core.Note.NoteFields import MutableStringField
+from JAStudio.Core.Note.ReactiveProperties import StringProperty
 from System.Collections.Generic import List_1, HashSet_1, IEnumerable_1
 from JAStudio.Core.Note.Sentences.Serialization import ParsedWordSerializer, ParsingResultSerializer
 from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches import Match
 from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction import TextAnalysis, WordExclusion
+from JAStudio.Core.Note.NoteFields import MutableStringField
 from System import Action
 
 class CachingSentenceConfigurationField:
-    def __init__(self, sentence: SentenceNote) -> None: ...
-    Field : MutableStringField
+    def __init__(self, sentence: SentenceNote, field: StringProperty) -> None: ...
+    Field : StringProperty
     @property
     def Configuration(self) -> SentenceConfiguration: ...
     @property
@@ -98,6 +99,16 @@ class SentenceUserFields:
     def Comments(self) -> MutableStringField: ...
     @property
     def Question(self) -> MutableStringField: ...
+
+
+class SentenceUserProperties:
+    def __init__(self, comments: StringProperty, answer: StringProperty, question: StringProperty) -> None: ...
+    @property
+    def Answer(self) -> StringProperty: ...
+    @property
+    def Comments(self) -> StringProperty: ...
+    @property
+    def Question(self) -> StringProperty: ...
 
 
 class WordExclusionSet:

@@ -21,9 +21,10 @@ public class SentenceNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTe
    [Fact]
    public void SentenceNote_GetAnswer_StripsHtml()
    {
-      // Arrange
-      var sentence = new SentenceNote(NoteServices);
-      sentence.SetField(SentenceNoteFields.SourceAnswer, "<b>This</b> is a <i>book</i>.");
+      // Arrange — use AddSentence which sets SourceAnswer through the public API
+      var sentence = SentenceNote.AddSentence(NoteServices,
+         question: "これは本です。",
+         answer: "<b>This</b> is a <i>book</i>.");
 
       // Act
       var answer = sentence.GetAnswer();

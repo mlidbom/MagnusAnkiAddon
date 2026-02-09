@@ -67,10 +67,21 @@ public class PropertyBag : IDisposable
 
    /// <summary>
    /// Register a string property mapped to an Anki field.
+   /// Returns a <see cref="StringProperty"/> with Set/HasValue/Empty convenience methods.
    /// </summary>
-   public Property<string> String(string fieldKey)
+   public StringProperty String(string fieldKey)
    {
-      return Register(fieldKey, v => v, v => v, "");
+      var property = new StringProperty();
+      var registration = new RegisteredProperty<string>(fieldKey, property, v => v, v => v);
+      _properties.Add(registration);
+      _subscriptions.Add(property.Subscribe(_ =>
+      {
+         if (!_isSilent)
+         {
+            _anyChanged.Fire();
+         }
+      }));
+      return property;
    }
 
    /// <summary>

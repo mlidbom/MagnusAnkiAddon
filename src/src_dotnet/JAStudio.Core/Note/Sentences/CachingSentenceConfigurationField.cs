@@ -1,5 +1,5 @@
 using System;
-using JAStudio.Core.Note.NoteFields;
+using JAStudio.Core.Note.ReactiveProperties;
 using JAStudio.Core.Note.Sentences.Serialization;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +9,13 @@ namespace JAStudio.Core.Note.Sentences;
 public class CachingSentenceConfigurationField
 {
     private readonly SentenceNote _sentence;
-    public readonly MutableStringField Field;
+    public readonly StringProperty Field;
     private SentenceConfiguration _value;
 
-    public CachingSentenceConfigurationField(SentenceNote sentence)
+    public CachingSentenceConfigurationField(SentenceNote sentence, StringProperty field)
     {
         _sentence = sentence;
-        Field = new MutableStringField(sentence, SentenceNoteFields.Configuration);
+        Field = field;
         _value = SentenceConfigurationSerializer.Instance.Deserialize(Field.Value, Save);
     }
 

@@ -1,6 +1,6 @@
 using JAStudio.Core.LanguageServices.JanomeEx;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
-using JAStudio.Core.Note.NoteFields;
+using JAStudio.Core.Note.ReactiveProperties;
 using JAStudio.Core.Note.Sentences;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,37 +11,80 @@ namespace JAStudio.Core.Note;
 
 public class SentenceNote : JPNote
 {
+    readonly PropertyBag _properties = new();
+
+    // Stored fields
     public CachingSentenceConfigurationField Configuration { get; private set; }
-    public MutableSerializedObjectField<ParsingResult> ParsingResult { get; }
+    public SerializedObjectProperty<ParsingResult> ParsingResult { get; }
+
+    // String properties (registered in PropertyBag, backed by Anki field dictionary)
+    public StringProperty Id { get; }
+    public StringProperty Reading { get; }
+    public StringProperty SourceQuestion { get; }
+    public StringProperty ActiveQuestion { get; }
+    public StringProperty SourceComments { get; }
+    public StringProperty JanomeTokens { get; }
+    public StringProperty Screenshot { get; }
+
+    // User fields
+    public SentenceUserProperties User { get; }
+
+    // Composite properties
+    public SentenceQuestionProperty Question { get; }
+    public FallbackHtmlStrippedProperty Answer { get; }
+    public AudioProperty Audio { get; }
+
+    // Private string properties
+    StringProperty SourceAnswer { get; }
+    StringProperty ActiveAnswerField { get; }
 
     public SentenceNote(NoteServices services, NoteData? data = null) : base(services, data?.Id != null ? new SentenceId(data.Id.Value) : SentenceId.New(), data)
     {
-        Configuration = new CachingSentenceConfigurationField(this);
-        ParsingResult = new MutableSerializedObjectField<ParsingResult>(
-            this,
-            SentenceNoteFields.ParsingResult,
-            new ParsingResultSerializer());
+        // Register all string fields in the PropertyBag
+        Id = _properties.String(SentenceNoteFields.Id);
+        Reading = _properties.String(SentenceNoteFields.Reading);
+        SourceQuestion = _properties.String(SentenceNoteFields.SourceQuestion);
+        ActiveQuestion = _properties.String(SentenceNoteFields.ActiveQuestion);
+        SourceAnswer = _properties.String(SentenceNoteFields.SourceAnswer);
+        ActiveAnswerField = _properties.String(SentenceNoteFields.ActiveAnswer);
+        SourceComments = _properties.String(SentenceNoteFields.SourceComments);
+        JanomeTokens = _properties.String(SentenceNoteFields.JanomeTokens);
+        Screenshot = _properties.String(SentenceNoteFields.Screenshot);
+
+        var userComments = _properties.String(SentenceNoteFields.UserComments);
+        var userAnswer = _properties.String(SentenceNoteFields.UserAnswer);
+        var userQuestion = _properties.String(SentenceNoteFields.UserQuestion);
+        User = new SentenceUserProperties(userComments, userAnswer, userQuestion);
+
+        var audioField = _properties.String(SentenceNoteFields.Audio);
+        Audio = new AudioProperty(audioField);
+
+        var parsingResultField = _properties.String(SentenceNoteFields.ParsingResult);
+
+        // Load all registered properties from the Anki field dictionary
+        _properties.LoadFromDictionary(data?.Fields);
+
+        // Initialize complex sub-objects after loading
+        var configField = _properties.String(SentenceNoteFields.Configuration);
+        configField.SetSilently(data?.Fields != null && data.Fields.TryGetValue(SentenceNoteFields.Configuration, out var configValue) ? configValue : "");
+        Configuration = new CachingSentenceConfigurationField(this, configField);
+
+        ParsingResult = new SerializedObjectProperty<ParsingResult>(parsingResultField, new ParsingResultSerializer());
+
+        // Composite read-only properties
+        Question = new SentenceQuestionProperty(userQuestion, SourceQuestion);
+        Answer = new FallbackHtmlStrippedProperty(userAnswer, SourceAnswer);
+
+        // Wire up PropertyBag changes to JPNote's Flush mechanism
+        _properties.AnyChanged.Subscribe(() => Flush());
     }
+
+    public override NoteData GetData() => new(GetId(), _properties.ToDictionary(), Tags.ToInternedStringList());
 
     public override void UpdateInCache()
     {
         Services.Collection.Sentences.Cache.JpNoteUpdated(this);
     }
-
-    // Property accessors
-    public MutableStringField Id => new(this, SentenceNoteFields.Id);
-    public MutableStringField Reading => new(this, SentenceNoteFields.Reading);
-    public SentenceUserFields User => new(this);
-    public MutableStringField SourceQuestion => new(this, SentenceNoteFields.SourceQuestion);
-    public MutableStringField ActiveQuestion => new(this, SentenceNoteFields.ActiveQuestion);
-    public SentenceQuestionField Question => new(User.Question, SourceQuestion);
-    public StripHtmlOnReadFallbackStringField Answer => new(User.Answer, SourceAnswer);
-    private MutableStringField SourceAnswer => new(this, SentenceNoteFields.SourceAnswer);
-    public MutableStringField ActiveAnswer => new(this, SentenceNoteFields.ActiveAnswer);
-    public MutableStringField SourceComments => new(this, SentenceNoteFields.SourceComments);
-    private MutableStringField Screenshot => new(this, SentenceNoteFields.Screenshot);
-    public WritableAudioField Audio => new(this, SentenceNoteFields.Audio);
-    public MutableStringField JanomeTokens => new(this, SentenceNoteFields.JanomeTokens);
 
     public override string GetQuestion()
     {
@@ -113,19 +156,19 @@ public class SentenceNote : JPNote
     public override void UpdateGeneratedData()
     {
         base.UpdateGeneratedData();
-        
+
         UpdateParsedWords();
-        
-        SetField(SentenceNoteFields.ActiveAnswer, GetAnswer());
-        SetField(SentenceNoteFields.ActiveQuestion, GetQuestion());
+
+        ActiveAnswerField.Set(GetAnswer());
+        ActiveQuestion.Set(GetQuestion());
     }
 
     public void UpdateParsedWords(bool force = false)
     {
         var parsingResult = ParsingResult.Get();
         var questionText = Question.WithoutInvisibleSpace();
-        
-        if (!force && parsingResult != null && 
+
+        if (!force && parsingResult != null &&
             parsingResult.Sentence == questionText &&
             parsingResult.ParserVersion == TextAnalysis.Version)
         {
