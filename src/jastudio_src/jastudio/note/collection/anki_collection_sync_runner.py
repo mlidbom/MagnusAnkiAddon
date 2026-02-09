@@ -25,7 +25,6 @@ class AnkiCollectionSyncRunner(Slots):
         self._added_subscribers: list[Callable[[Note], None]] = []
         self._will_flush_subscribers: list[Callable[[Note], None]] = []
         self._will_remove_subscribers: list[Callable[[Sequence[NoteId]], None]] = []
-        self._destructors: list[Callable[[], None]] = []
         self._anki_collection: Collection = anki_collection
         self._running: bool = False
         self._lock: threading.RLock = threading.RLock()
@@ -60,8 +59,6 @@ class AnkiCollectionSyncRunner(Slots):
             hooks.notes_will_be_deleted.remove(self._on_will_be_removed)  # pyright: ignore[reportUnknownMemberType]
             hooks.note_will_be_added.remove(self._on_will_be_added)  # pyright: ignore[reportUnknownMemberType]
             hooks.note_will_flush.remove(self._on_will_flush)
-
-            for destructor in self._destructors: destructor()
 
     def _internal_flush_updates(self) -> None:
         completely_added_list = self._pending_add.where(lambda it: it.id != 0).to_list()
