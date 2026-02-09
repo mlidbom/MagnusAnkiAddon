@@ -8,6 +8,7 @@ namespace JAStudio.Core.TaskRunners;
 public interface ITaskProgressRunner : IDisposable
 {
    public void ProcessWithProgress<TInput>(List<TInput> items, Action<TInput> processItem, string message) => ProcessWithProgress(items, processItem.AsFunc(), message, ThreadCount.One);
+   public void ProcessWithProgress<TInput>(List<TInput> items, Action<TInput> processItem, string message, ThreadCount threads) => ProcessWithProgress(items, processItem.AsFunc(), message, threads);
    public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message) => ProcessWithProgress(items, processItem, message, ThreadCount.One);
    List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads);
 
