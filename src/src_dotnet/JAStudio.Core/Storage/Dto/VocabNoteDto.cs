@@ -16,7 +16,6 @@ public class VocabNoteDto
     public List<string> UserCompounds { get; set; } = new();
     public List<string> Readings { get; set; } = new();
     public string PartsOfSpeech { get; set; } = string.Empty;
-    public string InternalPartsOfSpeech { get; set; } = string.Empty;
     public string ParsedTypeOfSpeech { get; set; } = string.Empty;
     public string SourceMnemonic { get; set; } = string.Empty;
     public string SourceReadingMnemonic { get; set; } = string.Empty;

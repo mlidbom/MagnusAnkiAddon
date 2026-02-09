@@ -6,7 +6,7 @@ namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNotePartsOfSpeech
 {
-   const string FieldName = "parts_of_speech"; // NoteFields.Vocab.parts_of_speech
+   const string FieldName = NoteFieldsConstants.Vocab.PartsOfSpeech;
    readonly VocabNote _vocab;
 
     public VocabNotePartsOfSpeech(VocabNote vocab)

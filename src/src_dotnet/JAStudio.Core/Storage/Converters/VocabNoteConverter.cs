@@ -9,9 +9,6 @@ namespace JAStudio.Core.Storage.Converters;
 
 public static class VocabNoteConverter
 {
-    // This field is used by VocabNotePartsOfSpeech but isn't in NoteFieldsConstants
-    const string InternalPartsOfSpeechField = "parts_of_speech";
-
     static readonly VocabNoteMatchingRulesSerializer MatchingRulesSerializer = new();
     static readonly RelatedVocabDataSerializer RelatedVocabSerializer = RelatedVocabData.Serializer();
 
@@ -35,7 +32,6 @@ public static class VocabNoteConverter
             UserCompounds = StringExtensions.ExtractCommaSeparatedValues(note.GetField(NoteFieldsConstants.Vocab.UserCompounds)),
             Readings = StringExtensions.ExtractCommaSeparatedValues(note.GetField(NoteFieldsConstants.Vocab.Reading)),
             PartsOfSpeech = note.GetField(NoteFieldsConstants.Vocab.PartsOfSpeech),
-            InternalPartsOfSpeech = note.GetField(InternalPartsOfSpeechField),
             ParsedTypeOfSpeech = note.GetField(NoteFieldsConstants.Vocab.ParsedTypeOfSpeech),
             SourceMnemonic = note.GetField(NoteFieldsConstants.Vocab.SourceMnemonic),
             SourceReadingMnemonic = note.GetField(NoteFieldsConstants.Vocab.SourceReadingMnemonic),
@@ -66,7 +62,6 @@ public static class VocabNoteConverter
             [NoteFieldsConstants.Vocab.UserCompounds] = string.Join(", ", dto.UserCompounds),
             [NoteFieldsConstants.Vocab.Reading] = string.Join(", ", dto.Readings),
             [NoteFieldsConstants.Vocab.PartsOfSpeech] = dto.PartsOfSpeech,
-            [InternalPartsOfSpeechField] = dto.InternalPartsOfSpeech,
             [NoteFieldsConstants.Vocab.ParsedTypeOfSpeech] = dto.ParsedTypeOfSpeech,
             [NoteFieldsConstants.Vocab.SourceMnemonic] = dto.SourceMnemonic,
             [NoteFieldsConstants.Vocab.SourceReadingMnemonic] = dto.SourceReadingMnemonic,
