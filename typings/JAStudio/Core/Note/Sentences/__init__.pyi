@@ -5,7 +5,6 @@ from System.Collections.Generic import List_1, HashSet_1, IEnumerable_1
 from JAStudio.Core.Note.Sentences.Serialization import ParsedWordSerializer, ParsingResultSerializer
 from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches import Match
 from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction import TextAnalysis, WordExclusion
-from JAStudio.Core.Note.NoteFields import MutableStringField
 from System import Action
 
 class CachingSentenceConfigurationField:
@@ -89,16 +88,6 @@ class SentenceConfiguration:
     @staticmethod
     def FromValues(highlighted: List_1[str], incorrectMatches: List_1[WordExclusion], hiddenMatches: List_1[WordExclusion]) -> SentenceConfiguration: ...
     def ToString(self) -> str: ...
-
-
-class SentenceUserFields:
-    def __init__(self, sentence: SentenceNote) -> None: ...
-    @property
-    def Answer(self) -> MutableStringField: ...
-    @property
-    def Comments(self) -> MutableStringField: ...
-    @property
-    def Question(self) -> MutableStringField: ...
 
 
 class SentenceUserProperties:

@@ -38,7 +38,7 @@ public class KanjiNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
       // Arrange
       var kanji = new KanjiNote(NoteServices);
       kanji.SetQuestion("漢");
-      kanji.SetField(NoteFieldsConstants.Kanji.Radicals, "漢, 水, 口");
+      kanji.SetRadicals("漢, 水, 口");
 
       // Act
       var radicals = kanji.GetRadicals();

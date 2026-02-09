@@ -1,6 +1,6 @@
 using JAStudio.Core.Configuration;
 using JAStudio.Core.Note;
-using JAStudio.Core.Note.NoteFields;
+using JAStudio.Core.Note.ReactiveProperties;
 
 namespace JAStudio.Core.UI.Web.Sentence;
 
@@ -13,7 +13,7 @@ public class SentenceRenderer
     {
         if (_config.ShowSentenceBreakdownInEditMode.GetValue())
         {
-            return question.Replace(SentenceQuestionField.WordBreakTag, "<span class='wbr_tag'>&lt;wbr&gt;</span>");
+            return question.Replace(SentenceQuestionProperty.WordBreakTag, "<span class='wbr_tag'>&lt;wbr&gt;</span>");
         }
         return question;
     }
