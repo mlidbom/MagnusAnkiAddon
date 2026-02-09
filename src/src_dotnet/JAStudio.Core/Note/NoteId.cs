@@ -1,6 +1,4 @@
 using System;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace JAStudio.Core.Note;
 
@@ -11,19 +9,6 @@ namespace JAStudio.Core.Note;
 public record NoteId(Guid Value)
 {
    public override string ToString() => Value.ToString();
-
-   /// <summary>
-   /// Generates a deterministic Guid from an Anki long note ID.
-   /// This provides cross-session stability until the jp_note_id field is persisted in Anki.
-   /// Uses SHA256 with a fixed namespace to produce a consistent result.
-   /// </summary>
-   public static Guid DeterministicGuidFromAnkiId(long ankiId)
-   {
-      var input = Encoding.UTF8.GetBytes($"JAStudio:AnkiNoteId:{ankiId}");
-      var hash = SHA256.HashData(input);
-      // Take first 16 bytes of hash as a Guid
-      return new Guid(hash.AsSpan(0, 16));
-   }
 }
 
 public record VocabId(Guid Value) : NoteId(Value)

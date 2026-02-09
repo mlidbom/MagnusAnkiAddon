@@ -99,10 +99,6 @@ public static class NoteBulkLoader
       {
          var ankiId = reader.GetInt64(0);
 
-         // Generate a deterministic Guid from the Anki note ID for cross-session stability.
-         // This will be replaced by reading from a jp_note_id field once that migration is done.
-         var noteId = new NoteId(NoteId.DeterministicGuidFromAnkiId(ankiId));
-
          var tagsRaw = reader.IsDBNull(1) ? "" : reader.GetString(1);
          var tags = string.IsNullOrEmpty(tagsRaw)
             ? new List<string>()
@@ -118,6 +114,13 @@ public static class NoteBulkLoader
          {
             fields[name] = ordinal < fieldValues.Length ? fieldValues[ordinal] : "";
          }
+
+         // Read persisted jas_note_id from the note's fields, or generate a new one.
+         // A new GUID is written back to the jas_note_id field on next flush.
+         var jasNoteIdStr = fields.GetValueOrDefault(MyNoteFields.JasNoteId, "");
+         var noteId = Guid.TryParse(jasNoteIdStr, out var guid)
+            ? new NoteId(guid)
+            : new NoteId(Guid.NewGuid());
 
          ankiIdMap[ankiId] = noteId;
          results.Add(new NoteData(noteId, fields, tags));

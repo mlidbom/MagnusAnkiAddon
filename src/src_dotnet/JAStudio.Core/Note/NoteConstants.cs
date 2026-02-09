@@ -7,6 +7,7 @@ public static class MyNoteFields
 {
     public const string Question = "Q";
     public const string Answer = "A";
+    public const string JasNoteId = "jas_note_id";
 }
 
 public static class ImmersionKitSentenceNoteFields

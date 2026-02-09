@@ -30,10 +30,11 @@ public class ParsedWordSerializer
         {
             vocabId = new NoteId(guid);
         }
-        else if(long.TryParse(idStr, out var legacyId) && legacyId != -1)
+        else if(long.TryParse(idStr, out _) && idStr != "-1")
         {
-            // Legacy long ID — generate deterministic Guid matching NoteBulkLoader
-            vocabId = new NoteId(NoteId.DeterministicGuidFromAnkiId(legacyId));
+            // Legacy long Anki ID from before GUID migration — cannot resolve.
+            // Will be re-resolved when the sentence is next parsed.
+            vocabId = null;
         }
         else
         {

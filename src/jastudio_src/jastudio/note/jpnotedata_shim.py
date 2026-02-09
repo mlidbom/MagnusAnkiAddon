@@ -25,6 +25,8 @@ class JPNoteDataShim:
         note.tags = list(data.Tags)
         for key_value_pair in data.Fields:
             note[key_value_pair.Key] = key_value_pair.Value
+        # Persist the domain NoteId into the Anki field so it survives across sessions.
+        note["jas_note_id"] = str(jp_note.GetId())
 
 class JPNoteData:
     def __init__(self, id: int, fields: dict[str, str], tags: list[str]) -> None:
