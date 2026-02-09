@@ -26,35 +26,38 @@ public class FileSystemNoteRepository
 
     public void SaveKanji(KanjiNote note)
     {
-        Directory.CreateDirectory(KanjiDir);
-        File.WriteAllText(KanjiFilePath(note.GetId()), _serializer.Serialize(note));
+        var path = NoteFilePath(KanjiDir, note.GetId());
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        File.WriteAllText(path, _serializer.Serialize(note));
     }
 
     public KanjiNote LoadKanji(NoteId id)
     {
-        return _serializer.DeserializeKanji(File.ReadAllText(KanjiFilePath(id)));
+        return _serializer.DeserializeKanji(File.ReadAllText(NoteFilePath(KanjiDir, id)));
     }
 
     public void SaveVocab(VocabNote note)
     {
-        Directory.CreateDirectory(VocabDir);
-        File.WriteAllText(VocabFilePath(note.GetId()), _serializer.Serialize(note));
+        var path = NoteFilePath(VocabDir, note.GetId());
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        File.WriteAllText(path, _serializer.Serialize(note));
     }
 
     public VocabNote LoadVocab(NoteId id)
     {
-        return _serializer.DeserializeVocab(File.ReadAllText(VocabFilePath(id)));
+        return _serializer.DeserializeVocab(File.ReadAllText(NoteFilePath(VocabDir, id)));
     }
 
     public void SaveSentence(SentenceNote note)
     {
-        Directory.CreateDirectory(SentencesDir);
-        File.WriteAllText(SentenceFilePath(note.GetId()), _serializer.Serialize(note));
+        var path = NoteFilePath(SentencesDir, note.GetId());
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        File.WriteAllText(path, _serializer.Serialize(note));
     }
 
     public SentenceNote LoadSentence(NoteId id)
     {
-        return _serializer.DeserializeSentence(File.ReadAllText(SentenceFilePath(id)));
+        return _serializer.DeserializeSentence(File.ReadAllText(NoteFilePath(SentencesDir, id)));
     }
 
     public void SaveAll(AllNotesData data)
@@ -87,13 +90,14 @@ public class FileSystemNoteRepository
     static List<T> LoadAllFromDir<T>(string dir, System.Func<string, T> deserialize)
     {
         if (!Directory.Exists(dir)) return [];
-        return Directory.GetFiles(dir, "*.json")
+        return Directory.GetFiles(dir, "*.json", SearchOption.AllDirectories)
             .Select(File.ReadAllText)
             .Select(deserialize)
             .ToList();
     }
 
-    string KanjiFilePath(NoteId id) => Path.Combine(KanjiDir, $"{id.Value}.json");
-    string VocabFilePath(NoteId id) => Path.Combine(VocabDir, $"{id.Value}.json");
-    string SentenceFilePath(NoteId id) => Path.Combine(SentencesDir, $"{id.Value}.json");
+    static string Bucket(NoteId id) => id.Value.ToString("N")[..2];
+
+    static string NoteFilePath(string typeDir, NoteId id) =>
+        Path.Combine(typeDir, Bucket(id), $"{id.Value}.json");
 }
