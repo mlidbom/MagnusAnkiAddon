@@ -117,7 +117,7 @@ public class JPCollection
 
       using var runner = noteServices.TaskRunner.Current("Loading collection");
 
-      var studyingStatuses = runner.RunOnBackgroundThreadAsync("Fetching Studying Statuses from anki db", () => CardStudyingStatusLoader.FetchAll(dbPath));
+      var studyingStatuses = runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Fetching Studying Statuses from anki db", () => CardStudyingStatusLoader.FetchAll(dbPath));
       var vocabData = Vocab.Cache.LoadAsync();
       var kanjiData = Kanji.Cache.LoadAsync();
       var sentenceData = Sentences.Cache.LoadAsync();

@@ -92,10 +92,10 @@ public class TaskRunnerScope : ITaskProgressRunner
       return await runner.ProcessWithProgressAsync(items, processItem, message, threadCount);
    }
 
-   public async Task<TResult> RunOnBackgroundThreadAsync<TResult>(string message, Func<TResult> action)
+   public async Task<TResult> RunOnBackgroundThreadWithSpinningProgressDialogAsync<TResult>(string message, Func<TResult> action)
    {
       using var runner = CreateRunner(message);
-      return await runner.RunOnBackgroundThreadAsync(message, action);
+      return await runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync(message, action);
    }
 
    public void SetLabelText(string text)

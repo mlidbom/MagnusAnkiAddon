@@ -47,7 +47,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
       return task.Result;
    }
 
-   public async Task<TResult> RunOnBackgroundThreadAsync<TResult>(string message, Func<TResult> action)
+   public async Task<TResult> RunOnBackgroundThreadWithSpinningProgressDialogAsync<TResult>(string message, Func<TResult> action)
    {
       using var _ = this.Log().Info().LogMethodExecutionTime(message);
 

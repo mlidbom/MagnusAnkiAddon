@@ -85,7 +85,7 @@ public class InvisibleTaskRunner : ITaskProgressRunner
       return result;
    }
 
-   public Task<TResult> RunOnBackgroundThreadAsync<TResult>(string message, Func<TResult> action)
+   public Task<TResult> RunOnBackgroundThreadWithSpinningProgressDialogAsync<TResult>(string message, Func<TResult> action)
    {
       return Task.Run(() => RunOnBackgroundThreadWithSpinningProgressDialog(message, action));
    }
