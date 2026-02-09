@@ -120,6 +120,18 @@ public class VocabCache : NoteCache<VocabNote, VocabSnapshot>
     {
     }
 
+    protected override void ClearDerivedIndexes()
+    {
+        _byDisambiguationName.Clear();
+        _byForm.Clear();
+        _byKanjiInMainForm.Clear();
+        _byKanjiInAnyForm.Clear();
+        _byCompoundPart.Clear();
+        _byDerivedFrom.Clear();
+        _byReading.Clear();
+        _byStem.Clear();
+    }
+
     protected override NoteId CreateTypedId(Guid value) => new VocabId(value);
 
     public IEnumerable<VocabNote> WithForm(string form)

@@ -71,6 +71,12 @@ public class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
     {
     }
 
+    protected override void ClearDerivedIndexes()
+    {
+        _byRadical.Clear();
+        ByReading.Clear();
+    }
+
     protected override NoteId CreateTypedId(Guid value) => new KanjiId(value);
 
     protected override KanjiSnapshot CreateSnapshot(KanjiNote note)

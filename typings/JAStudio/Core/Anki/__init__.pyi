@@ -76,6 +76,21 @@ class AnkiFacade(abc.ABC):
 
 
 
+class AnkiLifecycleEvent(typing.SupportsInt):
+    @typing.overload
+    def __init__(self, value : int) -> None: ...
+    @typing.overload
+    def __init__(self, value : int, force_if_true: bool) -> None: ...
+    def __int__(self) -> int: ...
+    
+    # Values:
+    ProfileOpened : AnkiLifecycleEvent # 0
+    ProfileClosing : AnkiLifecycleEvent # 1
+    SyncStarting : AnkiLifecycleEvent # 2
+    SyncCompleted : AnkiLifecycleEvent # 3
+    CollectionLoaded : AnkiLifecycleEvent # 4
+
+
 class AnkiNoteIdMap:
     def __init__(self) -> None: ...
     def FromAnkiId(self, ankiId: int) -> NoteId: ...

@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from PyQt6.QtWidgets import QMenu
 
 def spread_due_dates(cards: Sequence[CardId], start_day: int, days: int) -> None:
-    anki_col = app.col().anki_collection
+    anki_col = app.anki_collection()
     scheduler = anki_col.sched
     for index, card_id in enumerate(cards):
         card: Card = anki_col.get_card(card_id)

@@ -128,6 +128,14 @@ public class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
     {
     }
 
+    protected override void ClearDerivedIndexes()
+    {
+        _byVocabForm.Clear();
+        _byUserHighlightedVocab.Clear();
+        _byUserMarkedInvalidVocab.Clear();
+        _byVocabId.Clear();
+    }
+
     protected override NoteId CreateTypedId(Guid value) => new SentenceId(value);
 
     protected override SentenceSnapshot CreateSnapshot(SentenceNote note)

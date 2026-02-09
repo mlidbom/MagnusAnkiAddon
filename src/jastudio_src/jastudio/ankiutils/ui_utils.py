@@ -111,7 +111,7 @@ class UIUtils(IUIUtils, Slots):
             if browser:
                 browser.onSearchActivated()  # pyright: ignore[reportUnknownMemberType]
 
-        app.col().flush_cache_updates()
+        app.flush_sync_updates()
         audio_suppressor.suppress_for_seconds(.3)
         force_reviewer_rerender()
         force_previewer_rerender()

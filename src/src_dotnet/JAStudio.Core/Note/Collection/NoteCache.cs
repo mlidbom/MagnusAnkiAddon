@@ -42,6 +42,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
    }
 
    NoteServices RequireServices() => _noteServices ?? throw new InvalidOperationException($"NoteServices not set on {_noteType.Name} cache. Call SetNoteServices first.");
+   internal NoteServices RequireServicesInternal() => RequireServices();
 
    public void OnNoteUpdated(dynamic listener)
    {
@@ -182,6 +183,16 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       AddToCache(_noteConstructor(RequireServices(), noteData));
    }
 
+   /// <summary>Removes all notes and ID mappings from the cache. Subclasses must override ClearInheritorIndexes to clear their custom indexes.</summary>
+   public void Clear()
+   {
+      _byId.Clear();
+      _ankiIdToNoteId.Clear();
+      _noteIdToAnkiId.Clear();
+      ClearInheritorIndexes();
+   }
+
+   protected abstract void ClearInheritorIndexes();
    public abstract void RemoveFromCache(TNote note);
    public abstract void AddToCache(TNote note);
 
@@ -217,6 +228,16 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
    protected abstract TSnapshot CreateSnapshot(TNote note);
    protected abstract void InheritorRemoveFromCache(TNote note, TSnapshot snapshot);
    protected abstract void InheritorAddToCache(TNote note, TSnapshot snapshot);
+
+   protected override void ClearInheritorIndexes()
+   {
+      _byQuestion.Clear();
+      _snapshotById.Clear();
+      ClearDerivedIndexes();
+   }
+
+   /// <summary>Override in leaf caches to clear type-specific secondary indexes.</summary>
+   protected abstract void ClearDerivedIndexes();
 
    public override void RemoveFromCache(TNote note) => _monitor.Update(() =>
    {

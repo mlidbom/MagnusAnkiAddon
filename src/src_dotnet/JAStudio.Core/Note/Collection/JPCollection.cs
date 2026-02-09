@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Compze.Utilities.Logging;
 using JAStudio.Core.Anki;
-using JAStudio.Core.TestUtils;
 
 namespace JAStudio.Core.Note.Collection;
 
@@ -74,9 +73,23 @@ public class JPCollection
       Vocab.Cache.SetNoteServices(noteServices);
       Kanji.Cache.SetNoteServices(noteServices);
       Sentences.Cache.SetNoteServices(noteServices);
+   }
 
-      if(!TestEnvDetector.IsTesting)
-         LoadFromAnkiDatabase(noteServices);
+   /// <summary>Clear all in-memory caches. Called when the Anki DB is about to become unreliable (e.g. sync starting, profile closing).</summary>
+   public void ClearCaches()
+   {
+      using var _ = this.Log().Warning().LogMethodExecutionTime();
+      Vocab.Cache.Clear();
+      Kanji.Cache.Clear();
+      Sentences.Cache.Clear();
+   }
+
+   /// <summary>Clear and reload all caches from the Anki DB. Called after sync or collection reload.</summary>
+   public void ReloadFromAnkiDatabase()
+   {
+      ClearCaches();
+      var noteServices = Vocab.Cache.RequireServicesInternal();
+      LoadFromAnkiDatabase(noteServices);
    }
 
    void LoadFromAnkiDatabase(NoteServices noteServices)

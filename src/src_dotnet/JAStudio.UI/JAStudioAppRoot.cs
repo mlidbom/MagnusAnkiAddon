@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -31,8 +30,6 @@ public class JAStudioAppRoot
 #pragma warning disable CS0414
    Thread? _uiThread;
 #pragma warning restore CS0414
-
-   static readonly ILogger Logger = CompzeLogger.For<JAStudioAppRoot>();
 
    /// <summary>
    /// The resolved service collection, derived from the bootstrapped Core.App.
@@ -95,20 +92,30 @@ public class JAStudioAppRoot
    }
 
    /// <summary>
-   /// Load all notes and studying statuses from Anki's SQLite database into the .NET caches.
-   /// Must be called after Anki's collection is open (e.g. from profile_did_open hook).
-   /// Runs on a worker thread so that Anki's main thread is not blocked.
+   /// Handle a lifecycle event from the Anki host.
+   /// Python calls this instead of managing complex init/destruct cycles.
    /// </summary>
-   public void Start()
+   public void HandleAnkiLifecycleEvent(AnkiLifecycleEvent lifecycleEvent)
    {
-      Task.Run(() => _ = Services.NoteServices);
-   }
+      JALogger.Log($"HandleAnkiLifecycleEvent({lifecycleEvent})");
 
-   public void ShutDown()
-   {
-      using var _ = Logger.Info().LogMethodExecutionTime();
-      _app.Dispose();
-      Dispatcher.UIThread.InvokeShutdown();
+      switch(lifecycleEvent)
+      {
+         case AnkiLifecycleEvent.ProfileOpened:
+         case AnkiLifecycleEvent.SyncCompleted:
+         case AnkiLifecycleEvent.CollectionLoaded:
+            _ = Services.NoteServices; // Ensure NoteServices is resolved (no-op after first time)
+            _app.Collection.ReloadFromAnkiDatabase();
+            break;
+
+         case AnkiLifecycleEvent.ProfileClosing:
+         case AnkiLifecycleEvent.SyncStarting:
+            _app.Collection.ClearCaches();
+            break;
+
+         default:
+            throw new ArgumentOutOfRangeException(nameof(lifecycleEvent), lifecycleEvent, null);
+      }
    }
 
    // ── Factory methods for Python-facing objects ──
