@@ -62,10 +62,11 @@ public class FileSystemNoteRepository
 
     public void SaveAll(AllNotesData data)
     {
+       var threads = ThreadCount.HalfLogicalCores;
         using var scope = _taskRunner.Current("Writing all notes to file system repository");
-        scope.ProcessWithProgress(data.Kanji, it => SaveKanji(it), "Saving kanji notes");
-        scope.ProcessWithProgress(data.Vocab, it => SaveVocab(it), "Saving vocab notes");
-        scope.ProcessWithProgress(data.Sentences, it => SaveSentence(it), "Saving sentence notes");
+        scope.ProcessWithProgress(data.Kanji, SaveKanji, "Saving kanji notes", threads);
+        scope.ProcessWithProgress(data.Vocab, SaveVocab, "Saving vocab notes", threads);
+        scope.ProcessWithProgress(data.Sentences, SaveSentence, "Saving sentence notes", threads);
     }
 
     public AllNotesData LoadAll()
