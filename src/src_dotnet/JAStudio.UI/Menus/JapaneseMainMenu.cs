@@ -64,7 +64,8 @@ public class JapaneseMainMenu
             SpecMenuItem.Command(ShortcutFinger.Home2("Convert Immersion Kit sentences"), OnConvertImmersionKitSentences),
             SpecMenuItem.Command(ShortcutFinger.Home3("Update everything except reanalysing sentences"), OnUpdateAll),
             SpecMenuItem.Command(ShortcutFinger.Home4("Create vocab notes for parsed words"), OnCreateMissingVocab),
-            SpecMenuItem.Command(ShortcutFinger.Home5("Regenerate vocab source answers from jamdict"), OnRegenerateVocabAnswers)
+            SpecMenuItem.Command(ShortcutFinger.Home5("Regenerate vocab source answers from jamdict"), OnRegenerateVocabAnswers),
+            SpecMenuItem.Command(ShortcutFinger.Up1("Force flush all notes"), OnForceFlushAllNotes)
          }
       );
 
@@ -110,4 +111,5 @@ public class JapaneseMainMenu
    void OnUpdateAll() => _services.LocalNoteUpdater.UpdateAll();
    void OnReparseSentences() => _services.LocalNoteUpdater.ReparseAllSentences();
    void OnFullRebuild() => _services.LocalNoteUpdater.FullRebuild();
+   void OnForceFlushAllNotes() => _services.LocalNoteUpdater.ForceFlushAllNotes();
 }

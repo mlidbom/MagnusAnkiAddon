@@ -69,6 +69,15 @@ class ITaskProgressRunner(IDisposable, typing.Protocol):
 
     ProcessWithProgress : ProcessWithProgress_MethodGroup
     class ProcessWithProgress_MethodGroup:
+        @typing.overload
+        def __getitem__(self, t:typing.Type[ProcessWithProgress_1_T1]) -> ProcessWithProgress_1[ProcessWithProgress_1_T1]: ...
+
+        ProcessWithProgress_1_T1 = typing.TypeVar('ProcessWithProgress_1_T1')
+        class ProcessWithProgress_1(typing.Generic[ProcessWithProgress_1_T1]):
+            ProcessWithProgress_1_TInput = ITaskProgressRunner.ProcessWithProgress_MethodGroup.ProcessWithProgress_1_T1
+            def __call__(self, items: List_1[ProcessWithProgress_1_TInput], processItem: Action_1[ProcessWithProgress_1_TInput], message: str) -> None:...
+
+        @typing.overload
         def __getitem__(self, t:typing.Tuple[typing.Type[ProcessWithProgress_2_T1], typing.Type[ProcessWithProgress_2_T2]]) -> ProcessWithProgress_2[ProcessWithProgress_2_T1, ProcessWithProgress_2_T2]: ...
 
         ProcessWithProgress_2_T1 = typing.TypeVar('ProcessWithProgress_2_T1')

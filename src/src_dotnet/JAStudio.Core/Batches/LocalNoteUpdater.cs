@@ -7,7 +7,6 @@ using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.LanguageServices.JanomeEx.Tokenizing.PreProcessingStage;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
-using JAStudio.Core.Note.Sentences;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.SysUtils;
 using JAStudio.Core.TaskRunners;
@@ -427,5 +426,14 @@ public class LocalNoteUpdater
             return 0;
          },
          "Regenerating vocab source answers from jamdict");
+   }
+
+   public void ForceFlushAllNotes()
+   {
+      using var scope = _taskRunner.Current("Flushing all notes");
+
+      scope.ProcessWithProgress(_kanji.All().ToList(), it => { it.Flush(); }, "Flushing kanji notes");
+      scope.ProcessWithProgress(_vocab.All().ToList(), it => { it.Flush(); }, "Flushing vocab notes");
+      scope.ProcessWithProgress(_sentences.All().ToList(), it => { it.Flush(); }, "Flushing sentence notes");
    }
 }
