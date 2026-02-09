@@ -360,8 +360,7 @@ public class LocalNoteUpdater
 
    public void WriteFileSystemRepository()
    {
-      using var scope = _taskRunner.Current("Writing all notes to file system repository");
       var allData = new AllNotesData(_kanji.All(), _vocab.All(), _sentences.All());
-      _fileSystemNoteRepository.SaveAllSingleFile(allData);
+      _fileSystemNoteRepository.SaveAll(allData);
    }
 }

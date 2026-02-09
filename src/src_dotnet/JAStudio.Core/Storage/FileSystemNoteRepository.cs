@@ -2,17 +2,20 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using JAStudio.Core.Note;
+using JAStudio.Core.TaskRunners;
 
 namespace JAStudio.Core.Storage;
 
 public class FileSystemNoteRepository
 {
     readonly NoteSerializer _serializer;
+    readonly TaskRunner _taskRunner;
     readonly string _rootDir;
 
-    public FileSystemNoteRepository(NoteSerializer serializer, string rootDir)
+    public FileSystemNoteRepository(NoteSerializer serializer, TaskRunner taskRunner, string rootDir)
     {
         _serializer = serializer;
+        _taskRunner = taskRunner;
         _rootDir = rootDir;
     }
 
@@ -56,9 +59,10 @@ public class FileSystemNoteRepository
 
     public void SaveAll(AllNotesData data)
     {
-        foreach (var note in data.Kanji) SaveKanji(note);
-        foreach (var note in data.Vocab) SaveVocab(note);
-        foreach (var note in data.Sentences) SaveSentence(note);
+        using var scope = _taskRunner.Current("Writing all notes to file system repository");
+        scope.ProcessWithProgress(data.Kanji, it => SaveKanji(it), "Saving kanji notes");
+        scope.ProcessWithProgress(data.Vocab, it => SaveVocab(it), "Saving vocab notes");
+        scope.ProcessWithProgress(data.Sentences, it => SaveSentence(it), "Saving sentence notes");
     }
 
     public AllNotesData LoadAll()

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using JAStudio.Core.Note;
 using JAStudio.Core.Storage;
+using JAStudio.Core.TaskRunners;
 using JAStudio.Core.Tests.Fixtures;
 using Xunit;
 
@@ -19,7 +20,7 @@ public class FileSystemNoteRepositoryTests : CollectionUsingTest, IDisposable
     {
         _serializer = GetService<NoteSerializer>();
         _tempDir = Path.Combine(Path.GetTempPath(), $"JAStudio_test_{Guid.NewGuid():N}");
-        _repo = new FileSystemNoteRepository(_serializer, _tempDir);
+        _repo = new FileSystemNoteRepository(_serializer, GetService<TaskRunner>(), _tempDir);
     }
 
     public new void Dispose()
