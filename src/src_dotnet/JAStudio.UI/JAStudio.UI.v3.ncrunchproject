@@ -1,5 +1,7 @@
 ﻿<ProjectConfiguration>
   <Settings>
-    <IgnoreThisComponentCompletely>True</IgnoreThisComponentCompletely>
+    <AdditionalFilesToIncludeForProject>
+      <Value>**.axaml</Value>
+    </AdditionalFilesToIncludeForProject>
   </Settings>
 </ProjectConfiguration>
