@@ -105,11 +105,7 @@ public class JAStudioAppRoot
          case AnkiLifecycleEvent.ProfileOpened:
          case AnkiLifecycleEvent.SyncCompleted:
          case AnkiLifecycleEvent.CollectionLoaded:
-            Task.Run(() =>
-            {
-               _ = Services.NoteServices; // Ensure NoteServices is resolved (no-op after first time)
-               _app.Collection.ReloadFromAnkiDatabase();
-            });
+            Task.Run(() => _app.Collection.ReloadFromAnkiDatabase());
             break;
 
          case AnkiLifecycleEvent.ProfileClosing:

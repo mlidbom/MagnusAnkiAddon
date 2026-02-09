@@ -14,9 +14,7 @@ public class App : IDisposable
 
    internal App()
    {
-
       Services = AppBootstrapper.Bootstrap(this).Resolve<TemporaryServiceCollection>();
-      Collection = Services.ServiceLocator.Resolve<JPCollection>();
    }
 
    public static bool IsTesting => TestEnvDetector.IsTesting;
@@ -30,7 +28,7 @@ public class App : IDisposable
    public static App Bootstrap() => new App();
 
    public JapaneseConfig Config => Services.ConfigurationStore.Config();
-   public JPCollection Collection { get; }
+   public JPCollection Collection => Services.ServiceLocator.Resolve<JPCollection>();
 
    internal static string UserFilesDir
    {

@@ -11,10 +11,10 @@ public class KanjiCollection
     internal readonly KanjiCache Cache;
     public IAnkiNoteUpdateHandler AnkiSyncHandler => Cache;
 
-    public KanjiCollection(IBackendNoteCreator backendNoteCreator)
+    public KanjiCollection(IBackendNoteCreator backendNoteCreator, NoteServices noteServices)
     {
         _backendNoteCreator = backendNoteCreator;
-        Cache = new KanjiCache();
+        Cache = new KanjiCache(noteServices);
     }
 
     public List<KanjiNote> All() => Cache.All();
@@ -67,7 +67,7 @@ public class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
     private readonly Dictionary<string, List<KanjiNote>> _byRadical = new();
     public readonly Dictionary<string, List<KanjiNote>> ByReading = new();
 
-    public KanjiCache() : base(typeof(KanjiNote), (services, data) => new KanjiNote(services, data))
+    public KanjiCache(NoteServices noteServices) : base(typeof(KanjiNote), (services, data) => new KanjiNote(services, data), noteServices)
     {
     }
 

@@ -11,10 +11,10 @@ public class VocabCollection
     internal readonly VocabCache Cache;
     public IAnkiNoteUpdateHandler AnkiSyncHandler => Cache;
 
-    public VocabCollection(IBackendNoteCreator backendNoteCreator)
+    public VocabCollection(IBackendNoteCreator backendNoteCreator, NoteServices noteServices)
     {
         _backendNoteCreator = backendNoteCreator;
-        Cache = new VocabCache();
+        Cache = new VocabCache(noteServices);
     }
 
     public bool IsWord(string form) => Cache.WithForm(form).Any();
@@ -116,7 +116,7 @@ public class VocabCache : NoteCache<VocabNote, VocabSnapshot>
     private readonly Dictionary<string, List<VocabNote>> _byReading = new();
     private readonly Dictionary<string, List<VocabNote>> _byStem = new();
 
-    public VocabCache() : base(typeof(VocabNote), (services, data) => new VocabNote(services, data))
+    public VocabCache(NoteServices noteServices) : base(typeof(VocabNote), (services, data) => new VocabNote(services, data), noteServices)
     {
     }
 

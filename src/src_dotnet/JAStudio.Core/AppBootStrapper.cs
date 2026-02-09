@@ -34,7 +34,8 @@ static class AppBootstrapper
          Singleton.For<ConfigurationStore>().CreatedBy((TemporaryServiceCollection services) => new ConfigurationStore(services)),
          Singleton.For<TemporaryServiceCollection>().CreatedBy(() => new TemporaryServiceCollection(container.ServiceLocator)),
          Singleton.For<JapaneseConfig>().CreatedBy((ConfigurationStore store) => store.Config()),
-         Singleton.For<JPCollection>().CreatedBy(() => new JPCollection(backendNoteCreator)),
+         Singleton.For<JPCollection>().CreatedBy((AnkiCardOperations ankiCardOps, Settings settings, KanjiNoteMnemonicMaker kanjiMnemonicMaker, JapaneseConfig config, TaskRunner taskRunner) =>
+                                                    new JPCollection(backendNoteCreator, ankiCardOps, settings, kanjiMnemonicMaker, config, taskRunner)),
          Singleton.For<VocabCollection>().CreatedBy((JPCollection col) => col.Vocab),
          Singleton.For<KanjiCollection>().CreatedBy((JPCollection col) => col.Kanji),
          Singleton.For<SentenceCollection>().CreatedBy((JPCollection col) => col.Sentences),
@@ -48,20 +49,14 @@ static class AppBootstrapper
                                                         new LocalNoteUpdater(taskRunner, vocab, kanji, sentences, config, dictLookup, vocabNoteFactory)),
          Singleton.For<TaskRunner>().CreatedBy((JapaneseConfig config) => new TaskRunner(config)),
          Singleton.For<AnkiCardOperations>().CreatedBy(() => new AnkiCardOperations()),
-         Singleton.For<DictLookup>().CreatedBy((VocabCollection vocab, JapaneseConfig config) => new DictLookup(vocab, config)),
          Singleton.For<TestApp>().CreatedBy((ConfigurationStore configurationStore) => new TestApp(app, configurationStore)),
 
-         // Note services
-         Singleton.For<NoteServices>().CreatedBy((JPCollection collection, AnkiCardOperations ankiCardOps, Settings settings, DictLookup dictLookup, VocabNoteFactory vocabNoteFactory, VocabNoteGeneratedData vocabNoteGeneratedData, KanjiNoteMnemonicMaker kanjiMnemonicMaker, JapaneseConfig config, TaskRunner taskRunner) =>
-         {
-            var noteServices = new NoteServices(collection, ankiCardOps, settings, dictLookup, vocabNoteFactory, vocabNoteGeneratedData, kanjiMnemonicMaker, config, taskRunner);
-            collection.SetNoteServices(noteServices);
-            vocabNoteFactory.SetNoteServices(noteServices);
-            return noteServices;
-         }),
+         // Services owned by JPCollection — registered as property accessors
+         Singleton.For<NoteServices>().CreatedBy((JPCollection col) => col.NoteServices),
+         Singleton.For<DictLookup>().CreatedBy((JPCollection col) => col.DictLookup),
+         Singleton.For<VocabNoteFactory>().CreatedBy((JPCollection col) => col.VocabNoteFactory),
+         Singleton.For<VocabNoteGeneratedData>().CreatedBy((JPCollection col) => col.VocabNoteGeneratedData),
          Singleton.For<KanjiNoteMnemonicMaker>().CreatedBy((JapaneseConfig config) => new KanjiNoteMnemonicMaker(config)),
-         Singleton.For<VocabNoteFactory>().CreatedBy((DictLookup dictLookup, VocabCollection vocab) => new VocabNoteFactory(dictLookup, vocab)),
-         Singleton.For<VocabNoteGeneratedData>().CreatedBy((DictLookup dictLookup) => new VocabNoteGeneratedData(dictLookup)),
 
          // ViewModels
          Singleton.For<SentenceKanjiListViewModel>().CreatedBy((KanjiCollection kanji) => new SentenceKanjiListViewModel(kanji)),

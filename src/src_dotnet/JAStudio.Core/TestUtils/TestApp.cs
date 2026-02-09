@@ -20,8 +20,6 @@ public class TestApp
       app.Services.ConfigurationStore.InitForTesting();
       app.Config.SetReadingsMappingsForTesting(TestReadingsMappings);
 
-      // Eagerly resolve NoteServices so caches are wired before any notes are created
-      _ = app.Services.NoteServices;
       return app;
    }
 

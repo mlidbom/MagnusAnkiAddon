@@ -3,6 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Compze.Utilities.Logging;
 using JAStudio.Core.Anki;
+using JAStudio.Core.Configuration;
+using JAStudio.Core.LanguageServices.JamdictEx;
+using JAStudio.Core.Note.Vocabulary;
+using JAStudio.Core.TaskRunners;
 
 namespace JAStudio.Core.Note.Collection;
 
@@ -54,25 +58,38 @@ public class JPCollection
       return Sentences.Cache.GetAnkiNoteId(noteId);
    }
 
+   public NoteServices NoteServices { get; }
+   public VocabNoteFactory VocabNoteFactory { get; }
+   public DictLookup DictLookup { get; }
+   public VocabNoteGeneratedData VocabNoteGeneratedData { get; }
+
    public void UpdateCardStudyingStatus(long cardId)
    {
       throw new NotImplementedException();
    }
 
-   public JPCollection(IBackendNoteCreator backendNoteCreator)
+   public JPCollection(
+      IBackendNoteCreator backendNoteCreator,
+      AnkiCardOperations ankiCardOperations,
+      Settings settings,
+      KanjiNoteMnemonicMaker kanjiNoteMnemonicMaker,
+      JapaneseConfig config,
+      TaskRunner taskRunner)
    {
       this.Log().Info().LogMethodExecutionTime();
 
-      Vocab = new VocabCollection(backendNoteCreator);
-      Kanji = new KanjiCollection(backendNoteCreator);
-      Sentences = new SentenceCollection(backendNoteCreator);
-   }
+      // Create the full service graph internally — no two-phase init needed.
+      // NoteServices references `this` (JPCollection), which is safe because
+      // constructors only store references; they don't call back into us.
+      DictLookup = new DictLookup(this, config);
+      VocabNoteGeneratedData = new VocabNoteGeneratedData(DictLookup);
+      VocabNoteFactory = new VocabNoteFactory(DictLookup, this);
+      NoteServices = new NoteServices(this, ankiCardOperations, settings, DictLookup, VocabNoteFactory, VocabNoteGeneratedData, kanjiNoteMnemonicMaker, config, taskRunner);
+      VocabNoteFactory.SetNoteServices(NoteServices);
 
-   public void SetNoteServices(NoteServices noteServices)
-   {
-      Vocab.Cache.SetNoteServices(noteServices);
-      Kanji.Cache.SetNoteServices(noteServices);
-      Sentences.Cache.SetNoteServices(noteServices);
+      Vocab = new VocabCollection(backendNoteCreator, NoteServices);
+      Kanji = new KanjiCollection(backendNoteCreator, NoteServices);
+      Sentences = new SentenceCollection(backendNoteCreator, NoteServices);
    }
 
    /// <summary>Clear all in-memory caches. Called when the Anki DB is about to become unreliable (e.g. sync starting, profile closing).</summary>
@@ -88,8 +105,7 @@ public class JPCollection
    public void ReloadFromAnkiDatabase()
    {
       ClearCaches();
-      var noteServices = Vocab.Cache.RequireServicesInternal();
-      LoadFromAnkiDatabase(noteServices);
+      LoadFromAnkiDatabase(NoteServices);
    }
 
    void LoadFromAnkiDatabase(NoteServices noteServices)

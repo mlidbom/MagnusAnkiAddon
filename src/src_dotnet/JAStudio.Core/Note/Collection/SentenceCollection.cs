@@ -10,10 +10,10 @@ public class SentenceCollection
     internal readonly SentenceCache Cache;
     public IAnkiNoteUpdateHandler AnkiSyncHandler => Cache;
 
-    public SentenceCollection(IBackendNoteCreator backendNoteCreator)
+    public SentenceCollection(IBackendNoteCreator backendNoteCreator, NoteServices noteServices)
     {
         _backendNoteCreator = backendNoteCreator;
-        Cache = new SentenceCache();
+        Cache = new SentenceCache(noteServices);
     }
 
     public List<SentenceNote> PotentiallyMatchingVocab(VocabNote vocab)
@@ -124,7 +124,7 @@ public class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
     private readonly Dictionary<string, List<SentenceNote>> _byUserMarkedInvalidVocab = new();
     private readonly Dictionary<NoteId, HashSet<SentenceNote>> _byVocabId = new();
 
-    public SentenceCache() : base(typeof(SentenceNote), (services, data) => new SentenceNote(services, data))
+    public SentenceCache(NoteServices noteServices) : base(typeof(SentenceNote), (services, data) => new SentenceNote(services, data), noteServices)
     {
     }
 

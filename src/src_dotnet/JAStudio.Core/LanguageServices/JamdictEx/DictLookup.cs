@@ -14,12 +14,12 @@ namespace JAStudio.Core.LanguageServices.JamdictEx;
 public class DictLookup
 {
    readonly IMonitorCE _monitor = IMonitorCE.WithDefaultTimeout();
-   readonly VocabCollection _vocab;
+   readonly JPCollection _collection;
    readonly JapaneseConfig _config;
 
-   internal DictLookup(VocabCollection vocab, JapaneseConfig config)
+   internal DictLookup(JPCollection collection, JapaneseConfig config)
    {
-      _vocab = vocab;
+      _collection = collection;
       _config = config;
       _jamdictThreadingWrapper = new JamdictThreadingWrapper(config);
       _allWordForms = new LazyCE<HashSet<string>>(FindAllWords);
@@ -246,7 +246,7 @@ public class DictLookup
 
    bool IsWordInner(string word) => LookupWord(word).FoundWords();
 
-   public bool IsDictionaryOrCollectionWord(string word) => _vocab.IsWord(word) || IsWord(word);
+   public bool IsDictionaryOrCollectionWord(string word) => _collection.Vocab.IsWord(word) || IsWord(word);
 
    public void EnsureLoadedIntoMemory()
    {

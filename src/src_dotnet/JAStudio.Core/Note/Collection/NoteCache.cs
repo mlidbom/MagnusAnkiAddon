@@ -28,21 +28,14 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
    readonly List<Action<TNote>> _updateListeners = new();
    readonly Dictionary<long, NoteId> _ankiIdToNoteId = new();
    readonly Dictionary<NoteId, long> _noteIdToAnkiId = new();
-   NoteServices? _noteServices;
+   readonly NoteServices _noteServices;
 
-   protected NoteCacheBase(Type cachedNoteType, Func<NoteServices, NoteData, TNote> noteConstructor)
+   protected NoteCacheBase(Type cachedNoteType, Func<NoteServices, NoteData, TNote> noteConstructor, NoteServices noteServices)
    {
       _noteConstructor = noteConstructor;
       _noteType = cachedNoteType;
-   }
-
-   public void SetNoteServices(NoteServices noteServices)
-   {
       _noteServices = noteServices;
    }
-
-   NoteServices RequireServices() => _noteServices ?? throw new InvalidOperationException($"NoteServices not set on {_noteType.Name} cache. Call SetNoteServices first.");
-   internal NoteServices RequireServicesInternal() => RequireServices();
 
    public void OnNoteUpdated(dynamic listener)
    {
@@ -79,7 +72,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       data.Id = CreateTypedId(Guid.NewGuid());
       _ankiIdToNoteId[ankiNoteId] = data.Id;
       _noteIdToAnkiId[data.Id] = ankiNoteId;
-      var note = _noteConstructor(RequireServices(), data);
+      var note = _noteConstructor(_noteServices, data);
       using(note.RecursiveFlushGuard.PauseFlushing())
       {
          note.UpdateGeneratedData();
@@ -95,7 +88,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       if(existing.IsFlushing) return; // Our code initiated this flush, nothing to do
 
       data.Id = noteId;
-      var note = _noteConstructor(RequireServices(), data);
+      var note = _noteConstructor(_noteServices, data);
       note.CopyStudyingStatusFrom(existing);
       using(note.RecursiveFlushGuard.PauseFlushing())
       {
@@ -152,7 +145,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
    {
       var dbPath = AnkiFacade.Col.DbFilePath();
 
-      using var runner = RequireServices().TaskRunner.Current($"Loading {_noteType.Name} notes from the anki db");
+      using var runner = _noteServices.TaskRunner.Current($"Loading {_noteType.Name} notes from the anki db");
       var loadResult = await runner.RunOnBackgroundThreadAsync($"Fetching {_noteType.Name} notes from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.FromType(_noteType)));
 
       // Build a temporary map from base NoteId → ankiId so we can re-register
@@ -165,7 +158,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
 
       await runner.ProcessWithProgressAsync(loadResult.Notes, noteData =>
       {
-         var note = _noteConstructor(RequireServices(), noteData);
+         var note = _noteConstructor(_noteServices, noteData);
          AddToCache(note);
 
          // Register mapping using the note's typed ID so record equality works in lookups.
@@ -180,7 +173,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
 
    void AddToCacheFromData(NoteData noteData)
    {
-      AddToCache(_noteConstructor(RequireServices(), noteData));
+      AddToCache(_noteConstructor(_noteServices, noteData));
    }
 
    /// <summary>Removes all notes and ID mappings from the cache. Subclasses must override ClearInheritorIndexes to clear their custom indexes.</summary>
@@ -218,8 +211,8 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
    readonly Dictionary<string, List<TNote>> _byQuestion = new();
    readonly Dictionary<NoteId, TSnapshot> _snapshotById = new();
 
-   protected NoteCache(Type cachedNoteType, Func<NoteServices, NoteData, TNote> noteConstructor)
-      : base(cachedNoteType, noteConstructor) {}
+   protected NoteCache(Type cachedNoteType, Func<NoteServices, NoteData, TNote> noteConstructor, NoteServices noteServices)
+      : base(cachedNoteType, noteConstructor, noteServices) {}
 
    public List<TNote> All() => _byId.Values.ToList();
 

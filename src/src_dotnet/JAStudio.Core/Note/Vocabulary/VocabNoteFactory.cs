@@ -8,16 +8,17 @@ namespace JAStudio.Core.Note.Vocabulary;
 public class VocabNoteFactory
 {
    readonly DictLookup _dictLookup;
-   readonly VocabCollection _vocab;
+   readonly JPCollection _collection;
    NoteServices? _noteServices;
 
-   internal VocabNoteFactory(DictLookup dictLookup, VocabCollection vocab)
+   internal VocabNoteFactory(DictLookup dictLookup, JPCollection collection)
    {
       _dictLookup = dictLookup;
-      _vocab = vocab;
+      _collection = collection;
    }
 
-   public void SetNoteServices(NoteServices noteServices) => _noteServices = noteServices;
+   /// <summary>Called by JPCollection after NoteServices is created to complete the wiring.</summary>
+   internal void SetNoteServices(NoteServices noteServices) => _noteServices = noteServices;
    NoteServices RequireServices() => _noteServices ?? throw new InvalidOperationException("NoteServices not set on VocabNoteFactory. Call SetNoteServices first.");
 
     public VocabNote CreateWithDictionary(string question)
@@ -46,7 +47,7 @@ public class VocabNoteFactory
             initializer(note);
         }
         
-        _vocab.Add(note);
+        _collection.Vocab.Add(note);
         return note;
     }
 
