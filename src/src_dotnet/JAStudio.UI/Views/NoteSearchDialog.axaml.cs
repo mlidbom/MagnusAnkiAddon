@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using JAStudio.UI.Utils;
 using JAStudio.UI.ViewModels;
 using System;
 
@@ -55,6 +56,7 @@ public partial class NoteSearchDialog : Window
         }
         else
         {
+            WindowPositioner.RepositionNearCursor(instance);
             instance.Show();
             instance.Activate();
             var searchInput = instance.FindControl<TextBox>("SearchInput");

@@ -468,3 +468,10 @@ class ShortcutFinger(abc.ABC):
     @staticmethod
     def Up5(text: str) -> str: ...
 
+
+class WindowPositioner(abc.ABC):
+    @staticmethod
+    def PositionNearCursor(window: Window) -> None: ...
+    @staticmethod
+    def RepositionNearCursor(window: Window) -> None: ...
+

@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using JAStudio.UI.Utils;
 
 namespace JAStudio.UI.Dialogs;
 
@@ -38,6 +39,7 @@ public partial class MultiTaskProgressDialog : Window
         if (_instance == null || !_instance.IsVisible)
         {
             _instance = new MultiTaskProgressDialog { Title = windowTitle };
+            WindowPositioner.PositionNearCursor(_instance);
             _instance.Show();
         }
 

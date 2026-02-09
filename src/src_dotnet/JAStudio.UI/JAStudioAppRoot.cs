@@ -13,6 +13,7 @@ using JAStudio.Core.Anki;
 using JAStudio.UI.Dialogs;
 using JAStudio.UI.Menus;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
+using JAStudio.UI.Utils;
 using JAStudio.UI.Views;
 
 namespace JAStudio.UI;
@@ -158,6 +159,7 @@ public class JAStudioAppRoot
          }
 
          var window = new VocabFlagsDialog(vocab, Services);
+         WindowPositioner.PositionNearCursor(window);
          window.Show();
       });
    }
@@ -170,6 +172,7 @@ public class JAStudioAppRoot
       Dispatcher.UIThread.Invoke(() =>
       {
          var window = new AboutDialog();
+         WindowPositioner.PositionNearCursor(window);
          window.Show();
       });
    }
@@ -183,6 +186,7 @@ public class JAStudioAppRoot
       {
          JALogger.Log("Creating OptionsDialog window...");
          var window = new OptionsDialog(Services);
+         WindowPositioner.PositionNearCursor(window);
          JALogger.Log("OptionsDialog created, calling Show()...");
          window.Show();
          JALogger.Log("OptionsDialog.Show() completed");
@@ -198,6 +202,7 @@ public class JAStudioAppRoot
       Dispatcher.UIThread.Invoke(() =>
       {
          var window = new ReadingsMappingsDialog(Services);
+         WindowPositioner.PositionNearCursor(window);
          window.Show();
       });
    }

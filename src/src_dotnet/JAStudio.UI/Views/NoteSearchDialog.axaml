@@ -9,7 +9,7 @@
         Title="Find Notes"
         Width="1800" Height="1100"
         Topmost="True"
-        WindowStartupLocation="CenterOwner">
+        WindowStartupLocation="Manual">
     
     <DockPanel Margin="10">
         <!-- Search Box -->

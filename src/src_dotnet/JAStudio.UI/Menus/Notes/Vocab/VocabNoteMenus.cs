@@ -298,6 +298,7 @@ public class VocabNoteMenus
       Dispatcher.UIThread.Invoke(() =>
       {
          var dialog = new VocabFlagsDialog(vocab, _services);
+         WindowPositioner.PositionNearCursor(dialog);
          dialog.Show();
       });
    }

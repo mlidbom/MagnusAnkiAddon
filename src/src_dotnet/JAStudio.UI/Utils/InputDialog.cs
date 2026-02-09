@@ -27,7 +27,7 @@ public class InputDialog : Window
       Height = 150;
       Title = "Input";
       CanResize = false;
-      WindowStartupLocation = WindowStartupLocation.CenterScreen;
+      WindowStartupLocation = WindowStartupLocation.Manual;
 
       var stack = new StackPanel
                   {
@@ -120,6 +120,7 @@ public class InputDialog : Window
    public static string? ShowAsync(string prompt, string initialValue = "")
    {
       var dialog = new InputDialog(prompt, initialValue);
+      WindowPositioner.PositionNearCursor(dialog);
       dialog.Show();
       return dialog._resultSource.Task.Result;
    }

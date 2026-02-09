@@ -8,7 +8,7 @@
         Width="600"
         SizeToContent="Height"
         CanResize="False"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="Manual"
         ShowInTaskbar="False">
 
     <ScrollViewer MaxHeight="600">

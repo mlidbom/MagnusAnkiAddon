@@ -7,7 +7,7 @@
         SizeToContent="WidthAndHeight"
         MinWidth="600" MinHeight="400"
         Design.Width="1400" Design.Height="980"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="Manual">
    <Window.RenderTransform>
       <ScaleTransform ScaleX="0.85" ScaleY="0.85" />
    </Window.RenderTransform>

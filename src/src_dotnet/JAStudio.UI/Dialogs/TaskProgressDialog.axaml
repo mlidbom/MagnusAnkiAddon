@@ -7,7 +7,7 @@
         Title="Processing..."
         Width="600" Height="120"
         CanResize="False"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="Manual"
         ShowInTaskbar="False">
     
     <StackPanel Margin="20" Spacing="15">

@@ -9,7 +9,7 @@
         Title="Find English Words"
         Width="800" Height="600"
         Topmost="True"
-        WindowStartupLocation="CenterOwner">
+        WindowStartupLocation="Manual">
     
     <DockPanel Margin="10">
         <!-- Search Box -->

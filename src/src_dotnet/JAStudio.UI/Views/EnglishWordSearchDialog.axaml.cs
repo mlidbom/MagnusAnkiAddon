@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using JAStudio.UI.Utils;
 using JAStudio.UI.ViewModels;
 
 namespace JAStudio.UI.Views;
@@ -74,6 +75,7 @@ public partial class EnglishWordSearchDialog : Window
         }
         else
         {
+            WindowPositioner.RepositionNearCursor(Instance);
             Instance.Show();
             Instance.Activate();
             var searchInput = Instance.FindControl<TextBox>("SearchInput");
