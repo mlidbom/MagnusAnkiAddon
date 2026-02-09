@@ -8,7 +8,7 @@ namespace JAStudio.Core.Note;
 /// </summary>
 public record NoteId(Guid Value)
 {
-   public override string ToString() => Value.ToString();
+   public sealed override string ToString() => Value.ToString();
 }
 
 public record VocabId(Guid Value) : NoteId(Value)
