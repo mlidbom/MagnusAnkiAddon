@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -104,8 +105,11 @@ public class JAStudioAppRoot
          case AnkiLifecycleEvent.ProfileOpened:
          case AnkiLifecycleEvent.SyncCompleted:
          case AnkiLifecycleEvent.CollectionLoaded:
-            _ = Services.NoteServices; // Ensure NoteServices is resolved (no-op after first time)
-            _app.Collection.ReloadFromAnkiDatabase();
+            Task.Run(() =>
+            {
+               _ = Services.NoteServices; // Ensure NoteServices is resolved (no-op after first time)
+               _app.Collection.ReloadFromAnkiDatabase();
+            });
             break;
 
          case AnkiLifecycleEvent.ProfileClosing:
