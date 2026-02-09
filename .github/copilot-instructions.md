@@ -8,6 +8,24 @@ dotnet build src\src_dotnet\JAStudio.slnx -c Debug # Build solution, generates t
 basedpyright-wrapper.bat # Check the python for typing errors.
 ```
 
+### How to Test
+
+```powershell
+dotnet test src\src_dotnet\JAStudio.slnx --verbosity quiet  # Run .NET tests
+pytest src\tests                                             # Run Python tests
+```
+
+### Definition of Done
+
+No task should be considered complete until:
+- `basedpyright-wrapper.bat` reports **0 errors**
+- All .NET tests pass
+- All Python tests pass
+
+### Python Type Errors
+
+Do **not** suppress type errors with `# pyright: ignore` or `# type: ignore` comments. The code should almost always be fixed or restructured to satisfy the type checker. If you cannot find a way to make the type checker understand the code, ask for permission before adding a suppression.
+
 ## Project Architecture
 
 ### Python as Thin Layer
@@ -16,7 +34,6 @@ This project is actively porting UI from Python/PyQt6 to C#/Avalonia. **Use Pyth
 - ✅ Menu logic, definitions, and handlers belong in C# (`JAStudio.UI`)
 - ✅ Business logic belongs in C# (`JAStudio.Core`)
 - ❌ Python should only be a thin integration layer with Anki
-- ❌ Do not build menus or UI logic in Python
 
 ### Directory Structure
 - `src\src_dotnet\` - C# source code (Avalonia UI, Core logic, Python interop)
