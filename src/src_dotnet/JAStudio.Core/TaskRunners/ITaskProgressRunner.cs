@@ -21,3 +21,4 @@ public interface ITaskProgressRunner : IDisposable
    Task<TResult> RunOnBackgroundThreadWithSpinningProgressDialogAsync<TResult>(string message, Func<TResult> action);
    Task RunOnBackgroundThreadWithSpinningProgressDialogAsync(string message, Action action) => RunOnBackgroundThreadWithSpinningProgressDialogAsync(message, action.AsFunc());
 }
+   
