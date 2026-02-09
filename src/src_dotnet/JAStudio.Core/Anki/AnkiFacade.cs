@@ -66,4 +66,7 @@ public static class AnkiFacade
 
    /// <summary>Get note ID from card ID (requires Anki API).</summary>
    public static long GetNoteIdFromCardId(long cardId) => Backend.Use(it => (long)it.get_note_id_from_card_id(cardId));
+
+   /// <summary>Get the addon root directory from the Python environment.</summary>
+   public static string GetAddonRootDir() => Backend.Use(it => (string)it.addon_root_dir());
 }

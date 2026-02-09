@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using JAStudio.Core.Anki;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
@@ -30,13 +31,21 @@ public class App : IDisposable
    public JapaneseConfig Config => Services.ConfigurationStore.Config();
    public JPCollection Collection => Services.ServiceLocator.Resolve<JPCollection>();
 
-   internal static string UserFilesDir
+   internal static string AddonRootDir
    {
       get
       {
-         var assemblyLocation = typeof(App).Assembly.Location;
-         var assemblyDir = Path.GetDirectoryName(Path.GetDirectoryName(assemblyLocation)) ?? string.Empty;
-         return Path.Combine(assemblyDir, "user_files");
+         if (IsTesting)
+         {
+            var assemblyLocation = typeof(App).Assembly.Location;
+            return Path.GetDirectoryName(Path.GetDirectoryName(assemblyLocation)) ?? string.Empty;
+         }
+
+         return AnkiFacade.GetAddonRootDir();
       }
    }
+
+   internal static string UserFilesDir => Path.Combine(AddonRootDir, "user_files");
+
+   internal static string DatabaseDir => Path.Combine(AddonRootDir, "jas_database");
 }

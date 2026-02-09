@@ -239,21 +239,21 @@ public class NoteSerializerRoundtripTests : CollectionUsingTest
     [Fact]
     public void AllNotesData_PreservesAllFieldsAfterRoundtrip()
     {
-        var kanji = NoteServices.Collection.Kanji.All();
-        var vocab = NoteServices.Collection.Vocab.All();
-        var sentences = NoteServices.Collection.Sentences.All();
+        var allData = new AllNotesData(
+            NoteServices.Collection.Kanji.All(),
+            NoteServices.Collection.Vocab.All(),
+            NoteServices.Collection.Sentences.All());
 
-        var allData = new AllNotesData(kanji, vocab, sentences);
         var json = _serializer.Serialize(allData);
         var roundtripped = _serializer.DeserializeAll(json);
 
-        for (var i = 0; i < kanji.Count; i++)
-            AssertNoteDataFieldsMatch(kanji[i].GetData(), roundtripped.Kanji[i].GetData(), $"Kanji '{kanji[i].GetQuestion()}'");
+        for (var i = 0; i < allData.Kanji.Count; i++)
+            AssertNoteDataFieldsMatch(allData.Kanji[i].GetData(), roundtripped.Kanji[i].GetData(), $"Kanji '{allData.Kanji[i].GetQuestion()}'");
 
-        for (var i = 0; i < vocab.Count; i++)
-            AssertNoteDataFieldsMatch(vocab[i].GetData(), roundtripped.Vocab[i].GetData(), $"Vocab '{vocab[i].GetQuestion()}'");
+        for (var i = 0; i < allData.Vocab.Count; i++)
+            AssertNoteDataFieldsMatch(allData.Vocab[i].GetData(), roundtripped.Vocab[i].GetData(), $"Vocab '{allData.Vocab[i].GetQuestion()}'");
 
-        for (var i = 0; i < sentences.Count; i++)
-            AssertNoteDataFieldsMatch(sentences[i].GetData(), roundtripped.Sentences[i].GetData(), $"Sentence '{Truncate(sentences[i].GetQuestion(), 20)}'");
+        for (var i = 0; i < allData.Sentences.Count; i++)
+            AssertNoteDataFieldsMatch(allData.Sentences[i].GetData(), roundtripped.Sentences[i].GetData(), $"Sentence '{Truncate(allData.Sentences[i].GetQuestion(), 20)}'");
     }
 }

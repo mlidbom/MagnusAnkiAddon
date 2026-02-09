@@ -35,6 +35,8 @@ class AnkiDatabase(IDisposable):
 
 class AnkiFacade(abc.ABC):
     @staticmethod
+    def GetAddonRootDir() -> str: ...
+    @staticmethod
     def GetNoteIdFromCardId(cardId: int) -> int: ...
 
     class Batches(abc.ABC):
