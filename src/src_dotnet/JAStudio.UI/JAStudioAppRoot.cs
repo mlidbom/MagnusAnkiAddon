@@ -27,6 +27,9 @@ namespace JAStudio.UI;
 public class JAStudioAppRoot
 {
    readonly Core.App _app;
+   CancellationTokenSource? _reloadCts;
+   static readonly TimeSpan ReloadDebounceDelay = TimeSpan.FromMilliseconds(500);
+
    // Stored to keep the UI thread rooted (prevent GC). Not accessed directly.
 #pragma warning disable CS0414
    Thread? _uiThread;
@@ -96,6 +99,13 @@ public class JAStudioAppRoot
    /// Handle a lifecycle event from the Anki host.
    /// Python calls this instead of managing complex init/destruct cycles.
    /// </summary>
+   /// <remarks>
+   /// Reload events are debounced: when Anki starts it often fires ProfileOpened
+   /// immediately followed by SyncStarting → SyncCompleted, so we wait briefly
+   /// before actually loading to avoid redundant expensive reloads.
+   /// Clear events (SyncStarting, ProfileClosing) cancel any pending reload and
+   /// clear caches immediately.
+   /// </remarks>
    public void HandleAnkiLifecycleEvent(AnkiLifecycleEvent lifecycleEvent)
    {
       JALogger.Log($"HandleAnkiLifecycleEvent({lifecycleEvent})");
@@ -103,18 +113,54 @@ public class JAStudioAppRoot
       switch(lifecycleEvent)
       {
          case AnkiLifecycleEvent.ProfileOpened:
+            ScheduleDebouncedReload();
+            break;
+
          case AnkiLifecycleEvent.SyncCompleted:
          case AnkiLifecycleEvent.CollectionLoaded:
+            CancelPendingReload();
             Task.Run(() => _app.Collection.ReloadFromAnkiDatabase());
             break;
 
          case AnkiLifecycleEvent.ProfileClosing:
          case AnkiLifecycleEvent.SyncStarting:
+            CancelPendingReload();
             _app.Collection.ClearCaches();
             break;
 
          default:
             throw new ArgumentOutOfRangeException(nameof(lifecycleEvent), lifecycleEvent, null);
+      }
+   }
+
+   void ScheduleDebouncedReload()
+   {
+      CancelPendingReload();
+      var cts = new CancellationTokenSource();
+      _reloadCts = cts;
+
+      Task.Run(async () =>
+      {
+         try
+         {
+            await Task.Delay(ReloadDebounceDelay, cts.Token);
+            JALogger.Log("Debounce elapsed — reloading from Anki database");
+            _app.Collection.ReloadFromAnkiDatabase();
+         }
+         catch(TaskCanceledException)
+         {
+            JALogger.Log("Debounced reload cancelled by newer lifecycle event");
+         }
+      });
+   }
+
+   void CancelPendingReload()
+   {
+      if(_reloadCts != null)
+      {
+         _reloadCts.Cancel();
+         _reloadCts.Dispose();
+         _reloadCts = null;
       }
    }
 
