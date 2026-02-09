@@ -8,6 +8,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.Tokenizing.PreProcessingStage;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Note.Vocabulary;
+using JAStudio.Core.Storage;
 using JAStudio.Core.SysUtils;
 using JAStudio.Core.TaskRunners;
 
@@ -22,8 +23,9 @@ public class LocalNoteUpdater
    readonly JapaneseConfig _config;
    readonly DictLookup _dictLookup;
    readonly VocabNoteFactory _vocabNoteFactory;
+   readonly FileSystemNoteRepository _fileSystemNoteRepository;
 
-   internal LocalNoteUpdater(TaskRunner taskRunner, VocabCollection vocab, KanjiCollection kanji, SentenceCollection sentences, JapaneseConfig config, DictLookup dictLookup, VocabNoteFactory vocabNoteFactory)
+   internal LocalNoteUpdater(TaskRunner taskRunner, VocabCollection vocab, KanjiCollection kanji, SentenceCollection sentences, JapaneseConfig config, DictLookup dictLookup, VocabNoteFactory vocabNoteFactory, FileSystemNoteRepository fileSystemNoteRepository)
    {
       _taskRunner = taskRunner;
       _vocab = vocab;
@@ -32,6 +34,7 @@ public class LocalNoteUpdater
       _config = config;
       _dictLookup = dictLookup;
       _vocabNoteFactory = vocabNoteFactory;
+      _fileSystemNoteRepository = fileSystemNoteRepository;
    }
 
    public void UpdateAll()
@@ -353,5 +356,12 @@ public class LocalNoteUpdater
       scope.ProcessWithProgress(_kanji.All().ToList(), it => { it.Flush(); }, "Flushing kanji notes");
       scope.ProcessWithProgress(_vocab.All().ToList(), it => { it.Flush(); }, "Flushing vocab notes");
       scope.ProcessWithProgress(_sentences.All().ToList(), it => { it.Flush(); }, "Flushing sentence notes");
+   }
+
+   public void WriteFileSystemRepository()
+   {
+      using var scope = _taskRunner.Current("Writing all notes to file system repository");
+      var allData = new AllNotesData(_kanji.All(), _vocab.All(), _sentences.All());
+      _fileSystemNoteRepository.SaveAllSingleFile(allData);
    }
 }

@@ -61,11 +61,12 @@ public class JapaneseMainMenu
          new List<SpecMenuItem>
          {
             BuildUpdateSubmenuSpec(),
-            SpecMenuItem.Command(ShortcutFinger.Home2("Convert Immersion Kit sentences"), OnConvertImmersionKitSentences),
-            SpecMenuItem.Command(ShortcutFinger.Home3("Update everything except reanalysing sentences"), OnUpdateAll),
-            SpecMenuItem.Command(ShortcutFinger.Home4("Create vocab notes for parsed words"), OnCreateMissingVocab),
-            SpecMenuItem.Command(ShortcutFinger.Home5("Regenerate vocab source answers from jamdict"), OnRegenerateVocabAnswers),
-            SpecMenuItem.Command(ShortcutFinger.Up1("Force flush all notes"), OnForceFlushAllNotes)
+            SpecMenuItem.Command(ShortcutFinger.Home2("Convert Immersion Kit sentences"), () => AnkiFacade.Batches.ConvertImmersionKitSentences()),
+            SpecMenuItem.Command(ShortcutFinger.Home3("Update everything except reanalysing sentences"), () => _services.LocalNoteUpdater.UpdateAll()),
+            SpecMenuItem.Command(ShortcutFinger.Home4("Create vocab notes for parsed words"), () => _services.LocalNoteUpdater.CreateMissingVocabWithDictionaryEntries()),
+            SpecMenuItem.Command(ShortcutFinger.Home5("Regenerate vocab source answers from jamdict"), () => _services.LocalNoteUpdater.RegenerateJamdictVocabAnswers()),
+            SpecMenuItem.Command(ShortcutFinger.Up1("Force flush all notes"), () => _services.LocalNoteUpdater.ForceFlushAllNotes()),
+            SpecMenuItem.Command(ShortcutFinger.Up2("Write file system repository"), () => _services.LocalNoteUpdater.WriteFileSystemRepository())
          }
       );
 
@@ -74,13 +75,13 @@ public class JapaneseMainMenu
          ShortcutFinger.Home1("Update"),
          new List<SpecMenuItem>
          {
-            SpecMenuItem.Command(ShortcutFinger.Home1("Vocab"), OnUpdateVocab),
-            SpecMenuItem.Command(ShortcutFinger.Home2("Kanji"), OnUpdateKanji),
-            SpecMenuItem.Command(ShortcutFinger.Home3("Sentences"), OnUpdateSentences),
-            SpecMenuItem.Command(ShortcutFinger.Home4("Tag note metadata"), OnTagNoteMetadata),
-            SpecMenuItem.Command(ShortcutFinger.Home5("All the above"), OnUpdateAll),
-            SpecMenuItem.Command(ShortcutFinger.Up1("Reparse sentences"), OnReparseSentences),
-            SpecMenuItem.Command(ShortcutFinger.Down1("All the above: Full rebuild"), OnFullRebuild)
+            SpecMenuItem.Command(ShortcutFinger.Home1("Vocab"), () => _services.LocalNoteUpdater.UpdateVocab()),
+            SpecMenuItem.Command(ShortcutFinger.Home2("Kanji"), () => _services.LocalNoteUpdater.UpdateKanji()),
+            SpecMenuItem.Command(ShortcutFinger.Home3("Sentences"), () => _services.LocalNoteUpdater.UpdateSentences()),
+            SpecMenuItem.Command(ShortcutFinger.Home4("Tag note metadata"), () => _services.LocalNoteUpdater.TagNoteMetadata()),
+            SpecMenuItem.Command(ShortcutFinger.Home5("All the above"), () => _services.LocalNoteUpdater.UpdateAll()),
+            SpecMenuItem.Command(ShortcutFinger.Up1("Reparse sentences"), () => _services.LocalNoteUpdater.ReparseAllSentences()),
+            SpecMenuItem.Command(ShortcutFinger.Down1("All the above: Full rebuild"), () => _services.LocalNoteUpdater.FullRebuild())
          }
       );
 
@@ -97,19 +98,4 @@ public class JapaneseMainMenu
 
    // Lookup menu actions
    void OnOpenNote() => _appRoot.ToggleNoteSearchDialog();
-
-   // Local Actions menu actions
-   void OnConvertImmersionKitSentences() => AnkiFacade.Batches.ConvertImmersionKitSentences();
-   void OnCreateMissingVocab() => _services.LocalNoteUpdater.CreateMissingVocabWithDictionaryEntries();
-   void OnRegenerateVocabAnswers() => _services.LocalNoteUpdater.RegenerateJamdictVocabAnswers();
-
-   // Update submenu actions
-   void OnUpdateVocab() => _services.LocalNoteUpdater.UpdateVocab();
-   void OnUpdateKanji() => _services.LocalNoteUpdater.UpdateKanji();
-   void OnUpdateSentences() => _services.LocalNoteUpdater.UpdateSentences();
-   void OnTagNoteMetadata() => _services.LocalNoteUpdater.TagNoteMetadata();
-   void OnUpdateAll() => _services.LocalNoteUpdater.UpdateAll();
-   void OnReparseSentences() => _services.LocalNoteUpdater.ReparseAllSentences();
-   void OnFullRebuild() => _services.LocalNoteUpdater.FullRebuild();
-   void OnForceFlushAllNotes() => _services.LocalNoteUpdater.ForceFlushAllNotes();
 }
