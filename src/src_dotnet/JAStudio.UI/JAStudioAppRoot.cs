@@ -82,9 +82,9 @@ public class JAStudioAppRoot
 
       // Wait for Avalonia to finish framework initialization
       App.WaitForInitialization(TimeSpan.FromSeconds(30));
-
+      
       var root = new JAStudioAppRoot(app) { _uiThread = uiThread };
-
+      
       // Set up task runner factory
       root.Services.TaskRunner.SetUiTaskRunnerFactory((windowTitle, labelText, allowCancel, modal) =>
                                                          new AvaloniaTaskProgressRunner(windowTitle, labelText, allowCancel));
@@ -94,6 +94,8 @@ public class JAStudioAppRoot
 
       return root;
    }
+
+   bool _profileOpen = false;
 
    /// <summary>
    /// Handle a lifecycle event from the Anki host.
@@ -113,16 +115,23 @@ public class JAStudioAppRoot
       switch(lifecycleEvent)
       {
          case AnkiLifecycleEvent.ProfileOpened:
+            _profileOpen = true;
             ScheduleDebouncedReload();
             break;
 
          case AnkiLifecycleEvent.SyncCompleted:
-         case AnkiLifecycleEvent.CollectionLoaded:
-            CancelPendingReload();
-            Task.Run(() => _app.Collection.ReloadFromAnkiDatabase());
+            if(_profileOpen)
+            {
+               CancelPendingReload();
+               Task.Run(() => _app.Collection.ReloadFromAnkiDatabase());
+            }
             break;
 
          case AnkiLifecycleEvent.ProfileClosing:
+            _profileOpen = false;
+            CancelPendingReload();
+            _app.Collection.ClearCaches();
+            break;
          case AnkiLifecycleEvent.SyncStarting:
             CancelPendingReload();
             _app.Collection.ClearCaches();
@@ -131,6 +140,13 @@ public class JAStudioAppRoot
          default:
             throw new ArgumentOutOfRangeException(nameof(lifecycleEvent), lifecycleEvent, null);
       }
+   }
+
+   public void ShutDown()
+   {
+      using var _ = this.Log().Info().LogMethodExecutionTime();
+      _app.Dispose();
+      Dispatcher.UIThread.InvokeShutdown();
    }
 
    void ScheduleDebouncedReload()

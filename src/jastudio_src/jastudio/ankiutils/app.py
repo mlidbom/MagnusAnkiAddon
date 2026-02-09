@@ -8,14 +8,11 @@ from typing import TYPE_CHECKING
 
 from jastudio import mylog
 from jaspythonutils.sysutils.typed import checked_cast, non_optional
-# noinspection PyUnusedImports, Annotator
-import jastudio.mylog  # pyright: ignore [reportUnusedImport]  # noqa: F401
 from jastudio.note.collection.anki_collection_synchronizer import AnkiCollectionSynchronizer
 from jastudio.testutils import ex_pytest
 
 from JAStudio.Core.Anki import AnkiLifecycleEvent
 from aqt import gui_hooks
-
 
 is_testing = ex_pytest.is_testing
 
@@ -24,14 +21,15 @@ if TYPE_CHECKING:
     from anki.dbproxy import DBProxy
     from anki.scheduler.v3 import Scheduler  # pyright: ignore[reportMissingTypeStubs]
     from aqt import AnkiQt  # type: ignore[attr-defined]  # pyright: ignore[reportPrivateImportUsage]
-    from JAStudio.Core.Configuration import JapaneseConfig
-
     from jastudio.anki_extentions.config_manager_ex import ConfigManagerEx
     from jastudio.ankiutils.ui_utils_interface import IUIUtils
+    from JAStudio.Core.Configuration import JapaneseConfig
 
 _synchronizer: AnkiCollectionSynchronizer | None = None
 
 addon_name: str = "should_be_replaced_by_init"
+
+_profile_open = False
 
 def _notify_dotnet(event: AnkiLifecycleEvent) -> None:
     from jastudio.ui import dotnet_ui_root
@@ -73,11 +71,17 @@ def get_ui_utils() -> IUIUtils:
     return UIUtils(main_window())
 
 def _profile_opened() -> None:
+    global _profile_open
+    _profile_open = True
     mylog.info("profile_opened")
     _ensure_initialized()
     _notify_dotnet(AnkiLifecycleEvent.ProfileOpened)
+    non_optional(_synchronizer).start()
 
-def _profile_closing() -> None: _notify_dotnet(AnkiLifecycleEvent.ProfileClosing)
+def _profile_closing() -> None:
+    non_optional(_synchronizer).stop()
+    _notify_dotnet(AnkiLifecycleEvent.ProfileClosing)
+
 def _sync_will_start(_col: object | None = None) -> None: _notify_dotnet(AnkiLifecycleEvent.SyncStarting)
 def _sync_did_finish() -> None: _notify_dotnet(AnkiLifecycleEvent.SyncCompleted)
 

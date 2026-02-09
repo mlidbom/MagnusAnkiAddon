@@ -17,6 +17,7 @@ try:
     with StopWatch.log_execution_time("Loading .NET runtime"):
         load("coreclr", runtime_config=config_file)
         atexit.unregister(unload) # without this line shutdown takse forever, and we make sure to clean everything we need up elsewhere.
+
         mylog.info("Loaded .NET runtime")
         import clr
 

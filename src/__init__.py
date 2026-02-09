@@ -3,8 +3,6 @@ from __future__ import annotations
 import os
 import sys
 
-from jastudio import mylog
-
 is_testing = "pytest" in sys.modules
 if not is_testing:
     from pathlib import Path

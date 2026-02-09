@@ -46,6 +46,10 @@ class AnkiCollectionSyncRunner(Slots):
             self._running = True
             app_thread_pool.pool.submit(self._run_periodic_flushes)
 
+    def stop(self) -> None:
+        with self._lock:
+            self._running = False
+
     def _run_periodic_flushes(self) -> None:
         while self._running:
             self.flush_updates()

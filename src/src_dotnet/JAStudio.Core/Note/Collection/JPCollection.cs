@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Compze.Utilities.Logging;
+using Compze.Utilities.SystemCE;
 using JAStudio.Core.Anki;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JamdictEx;
@@ -112,6 +113,7 @@ public class JPCollection
    {
       using var _ = this.Log().Warning().LogMethodExecutionTime();
       var dbPath = AnkiFacade.Col.DbFilePath();
+      if(dbPath == null) throw new InvalidOperationException("Anki collection database is not initialized yet");
 
       using var runner = noteServices.TaskRunner.Current("Loading collection");
 

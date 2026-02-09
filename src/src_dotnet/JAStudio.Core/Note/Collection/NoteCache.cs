@@ -144,6 +144,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
    public async Task LoadAsync()
    {
       var dbPath = AnkiFacade.Col.DbFilePath();
+      if(dbPath == null) throw new InvalidOperationException("Anki collection database is not initialized yet");
 
       using var runner = _noteServices.TaskRunner.Current($"Loading {_noteType.Name} notes from the anki db");
       var loadResult = await runner.RunOnBackgroundThreadAsync($"Fetching {_noteType.Name} notes from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.FromType(_noteType)));

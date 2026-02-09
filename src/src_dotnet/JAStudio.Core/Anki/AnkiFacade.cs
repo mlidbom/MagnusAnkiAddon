@@ -61,7 +61,7 @@ public static class AnkiFacade
 
    public static class Col
    {
-      public static string DbFilePath() => Backend.Use(it => (string)it.col_db_file_path());
+      public static string? DbFilePath() => Backend.Use(it => (string)it.col_db_file_path());
    }
 
    /// <summary>Get note ID from card ID (requires Anki API).</summary>

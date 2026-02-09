@@ -15,4 +15,8 @@ class AnkiCollectionSynchronizer:
         self.Sentences: AnkiSingleCollectionSyncer[SentenceNote] = AnkiSingleCollectionSyncer(SentenceNote, collection.Sentences.AnkiSyncHandler, self._sync_runner, NoteTypes.Sentence)
         self.Kanji: AnkiSingleCollectionSyncer[KanjiNote] = AnkiSingleCollectionSyncer(KanjiNote, collection.Kanji.AnkiSyncHandler, self._sync_runner, NoteTypes.Kanji)
 
+    def start(self) -> None:
         self._sync_runner.start()
+
+    def stop(self) -> None:
+        self._sync_runner.stop()
