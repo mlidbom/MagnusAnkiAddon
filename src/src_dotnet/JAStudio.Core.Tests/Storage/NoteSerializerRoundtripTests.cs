@@ -204,4 +204,56 @@ public class NoteSerializerRoundtripTests : CollectionUsingTest
                 $"{context}: Original field '{kvp.Key}' with value [{kvp.Value}] missing from roundtripped data");
         }
     }
+
+    [Fact]
+    public void AllNotesData_RoundtripsToIdenticalJson()
+    {
+        var allData = new AllNotesData(
+            NoteServices.Collection.Kanji.All(),
+            NoteServices.Collection.Vocab.All(),
+            NoteServices.Collection.Sentences.All());
+
+        var json = _serializer.Serialize(allData);
+        var roundtripped = _serializer.DeserializeAll(json);
+        var reJson = _serializer.Serialize(roundtripped);
+
+        Assert.Equal(json, reJson);
+    }
+
+    [Fact]
+    public void AllNotesData_PreservesNoteCountsAfterRoundtrip()
+    {
+        var kanji = NoteServices.Collection.Kanji.All();
+        var vocab = NoteServices.Collection.Vocab.All();
+        var sentences = NoteServices.Collection.Sentences.All();
+
+        var allData = new AllNotesData(kanji, vocab, sentences);
+        var json = _serializer.Serialize(allData);
+        var roundtripped = _serializer.DeserializeAll(json);
+
+        Assert.Equal(kanji.Count, roundtripped.Kanji.Count);
+        Assert.Equal(vocab.Count, roundtripped.Vocab.Count);
+        Assert.Equal(sentences.Count, roundtripped.Sentences.Count);
+    }
+
+    [Fact]
+    public void AllNotesData_PreservesAllFieldsAfterRoundtrip()
+    {
+        var kanji = NoteServices.Collection.Kanji.All();
+        var vocab = NoteServices.Collection.Vocab.All();
+        var sentences = NoteServices.Collection.Sentences.All();
+
+        var allData = new AllNotesData(kanji, vocab, sentences);
+        var json = _serializer.Serialize(allData);
+        var roundtripped = _serializer.DeserializeAll(json);
+
+        for (var i = 0; i < kanji.Count; i++)
+            AssertNoteDataFieldsMatch(kanji[i].GetData(), roundtripped.Kanji[i].GetData(), $"Kanji '{kanji[i].GetQuestion()}'");
+
+        for (var i = 0; i < vocab.Count; i++)
+            AssertNoteDataFieldsMatch(vocab[i].GetData(), roundtripped.Vocab[i].GetData(), $"Vocab '{vocab[i].GetQuestion()}'");
+
+        for (var i = 0; i < sentences.Count; i++)
+            AssertNoteDataFieldsMatch(sentences[i].GetData(), roundtripped.Sentences[i].GetData(), $"Sentence '{Truncate(sentences[i].GetQuestion(), 20)}'");
+    }
 }
