@@ -154,14 +154,27 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       using var runner = RequireServices().TaskRunner.Current($"Loading {_noteType.Name} notes from the anki db");
       var loadResult = await runner.RunOnBackgroundThreadAsync($"Fetching {_noteType.Name} notes from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.FromType(_noteType)));
 
-      // Register Anki ID mappings
+      // Build a temporary map from base NoteId → ankiId so we can re-register
+      // with the typed NoteId (VocabId, KanjiId, etc.) after note construction.
+      var baseIdToAnkiId = new Dictionary<Guid, long>();
       foreach(var (ankiId, noteId) in loadResult.AnkiIdMap)
       {
-         _ankiIdToNoteId[ankiId] = noteId;
-         _noteIdToAnkiId[noteId] = ankiId;
+         baseIdToAnkiId[noteId.Value] = ankiId;
       }
 
-      await runner.ProcessWithProgressAsync(loadResult.Notes, AddToCacheFromData, "");
+      await runner.ProcessWithProgressAsync(loadResult.Notes, noteData =>
+      {
+         var note = _noteConstructor(RequireServices(), noteData);
+         AddToCache(note);
+
+         // Register mapping using the note's typed ID so record equality works in lookups.
+         var typedId = note.GetId();
+         if(baseIdToAnkiId.TryGetValue(typedId.Value, out var ankiId))
+         {
+            _ankiIdToNoteId[ankiId] = typedId;
+            _noteIdToAnkiId[typedId] = ankiId;
+         }
+      }, "");
    }
 
    void AddToCacheFromData(NoteData noteData)
