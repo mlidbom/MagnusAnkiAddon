@@ -176,10 +176,6 @@ public class NoteSerializerRoundtripTests : CollectionUsingTest
         Assert.Equal(json, _serializer.Serialize(roundtripped));
     }
 
-    // The jas_note_id field is stored on the NoteId object, not in the fields dict,
-    // so the original GetData() won't have it but the deserialized note will. Exclude from comparison.
-    static readonly HashSet<string> FieldsExcludedFromComparison = [MyNoteFields.JasNoteId];
-
     static bool IsEffectivelyEmpty(string value) => string.IsNullOrEmpty(value) || value == "0";
 
     static string Truncate(string value, int maxLength) =>
@@ -195,8 +191,6 @@ public class NoteSerializerRoundtripTests : CollectionUsingTest
 
         foreach (var kvp in roundtripped.Fields)
         {
-            if (FieldsExcludedFromComparison.Contains(kvp.Key)) continue;
-
             var originalValue = original.Fields.TryGetValue(kvp.Key, out var v) ? v : string.Empty;
             if (IsEffectivelyEmpty(originalValue) && IsEffectivelyEmpty(kvp.Value)) continue;
 
@@ -204,7 +198,7 @@ public class NoteSerializerRoundtripTests : CollectionUsingTest
                 $"{context}: Field '{kvp.Key}' mismatch.\n  Original:     [{originalValue}]\n  Roundtripped: [{kvp.Value}]");
         }
 
-        foreach (var kvp in original.Fields.Where(f => !string.IsNullOrEmpty(f.Value) && !FieldsExcludedFromComparison.Contains(f.Key)))
+        foreach (var kvp in original.Fields.Where(f => !string.IsNullOrEmpty(f.Value)))
         {
             Assert.True(roundtripped.Fields.ContainsKey(kvp.Key),
                 $"{context}: Original field '{kvp.Key}' with value [{kvp.Value}] missing from roundtripped data");

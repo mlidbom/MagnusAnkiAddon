@@ -1,5 +1,7 @@
 # Note Serialization Layer
 
+> **Purpose**: This document captures the current state and next steps for the note serialization work. It is a continuation point, not a history log — completed items are removed.
+
 ## Vision
 
 This git repository becomes the **source of truth** for all note data. Anki notes will be stripped down to very few fields `jas_note_id`, audio fields required for anki to play audio, and likely the question and answer fields so that the user can search and find notes in anki. All all other data lives in the git repository.
@@ -55,21 +57,8 @@ Once we fully migrate away from Anki as the data store, the note types will seri
 
 `NoteSerializer` is registered as a singleton in `AppBootStrapper.cs`, injected with `NoteServices`.
 
-## Current Status
-
-- **Done**: All three note types serialize to JSON and deserialize back, with roundtrip tests passing against all test fixture data.
-- **Covered by tests**: 9 roundtrip tests in `JAStudio.Core.Tests/Storage/NoteSerializerRoundtripTests.cs`:
-  - JSON roundtrip (serialize → deserialize → re-serialize = identical JSON) for all kanji, vocab, and sentence fixture notes
-  - NoteData field preservation for all fixture notes
-  - Rich-data roundtrip tests for manually constructed notes with populated fields
-
-## Bug Found & Fixed
-
-`VocabNotePartsOfSpeech` was using a hardcoded field name `"parts_of_speech"` instead of `NoteFieldsConstants.Vocab.PartsOfSpeech` (`"TOS"`). The constant is the real Anki field name. Fixed `VocabNotePartsOfSpeech` to use the constant.
-
 ## Known Limitations
 
-- The `jas_note_id` field is excluded from NoteData field comparisons in tests. The original `GetData().Fields` dict doesn't contain it (the ID lives on the `NoteId` object), but `FromDto` writes it into fields for Anki sync. This is expected behavior, not a bug.
 - Sentence count `"0"` vs empty string is treated as equivalent in field comparisons.
 - DTOs store comma-separated fields as `List<string>` and rejoin with `", "` on roundtrip. This normalizes whitespace around separators, which is acceptable.
 
@@ -78,4 +67,3 @@ Once we fully migrate away from Anki as the data store, the note types will seri
 - Implement file-based storage: persist each note as a JSON file keyed by `jas_note_id`
 - Build the thin Anki sync layer: map `jas_note_id` to Anki note IDs for SRS scheduling
 - Migrate existing Anki note data into the git-based storage
-- Strip Anki notes down to just `jas_note_id`

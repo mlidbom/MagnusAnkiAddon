@@ -36,6 +36,7 @@ public abstract class JPNote
 
       _fields = data?.Fields ?? new Dictionary<string, string>();
       _id = id;
+      _fields[MyNoteFields.JasNoteId] = id.Value.ToString();
    }
 
    public bool IsFlushing => RecursiveFlushGuard.IsFlushing;
