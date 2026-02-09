@@ -10,6 +10,7 @@ using JAStudio.Core.LanguageServices.JanomeEx;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Note.Vocabulary;
+using JAStudio.Core.Storage;
 using JAStudio.Core.TaskRunners;
 using JAStudio.Core.TestUtils;
 using JAStudio.Core.UI.Web.Kanji;
@@ -56,6 +57,7 @@ static class AppBootstrapper
          Singleton.For<DictLookup>().CreatedBy((JPCollection col) => col.DictLookup),
          Singleton.For<VocabNoteFactory>().CreatedBy((JPCollection col) => col.VocabNoteFactory),
          Singleton.For<VocabNoteGeneratedData>().CreatedBy((JPCollection col) => col.VocabNoteGeneratedData),
+         Singleton.For<NoteSerializer>().CreatedBy((NoteServices noteServices) => new NoteSerializer(noteServices)),
          Singleton.For<KanjiNoteMnemonicMaker>().CreatedBy((JapaneseConfig config) => new KanjiNoteMnemonicMaker(config)),
 
          // ViewModels
