@@ -4,6 +4,7 @@ using System.Linq;
 using JAStudio.Core.Anki;
 using JAStudio.Core.Note;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
+using Avalonia.Threading;
 using JAStudio.UI.Utils;
 using JAStudio.UI.Views;
 
@@ -294,8 +295,11 @@ public class VocabNoteMenus
    // Action handlers
    void OnEditVocabFlags(VocabNote vocab)
    {
-      var dialog = new VocabFlagsDialog(vocab, _services);
-      dialog.Show();
+      Dispatcher.UIThread.Invoke(() =>
+      {
+         var dialog = new VocabFlagsDialog(vocab, _services);
+         dialog.Show();
+      });
    }
 
    void OnAcceptVocabMeaning(VocabNote vocab)
