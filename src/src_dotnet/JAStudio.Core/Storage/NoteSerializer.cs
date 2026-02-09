@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using JAStudio.Core.Note;
 using JAStudio.Core.Storage.Converters;
@@ -13,6 +14,7 @@ public class NoteSerializer
     {
         WriteIndented = true,
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
     };
 
     readonly NoteServices _noteServices;
