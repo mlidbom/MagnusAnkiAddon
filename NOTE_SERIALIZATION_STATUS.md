@@ -45,9 +45,11 @@ Once we fully migrate away from Anki as the data store, the note types will seri
 
 | File | Role |
 |------|------|
+| `Storage/INoteRepository.cs` | Interface for note persistence — `Save` per type + `LoadAll` |
 | `Storage/AllNotesData.cs` | Groups all notes (kanji, vocab, sentences), sorted by ID on construction |
 | `Storage/NoteSerializer.cs` | Public API — `Serialize`/`Deserialize` per note type + `AllNotesData`, registered in DI |
-| `Storage/FileSystemNoteRepository.cs` | File-based persistence — individual files per note + single-file mode, registered in DI |
+| `Storage/FileSystemNoteRepository.cs` | Production `INoteRepository` — individual files per note (bucketed), bulk save with progress, single-file mode |
+| `Storage/InMemoryNoteRepository.cs` | Test `INoteRepository` — in-memory dictionaries, no I/O |
 | `Storage/Dto/*` | Internal DTOs (transitional, hidden behind `NoteSerializer`) |
 | `Storage/Converters/*` | Internal converters (transitional, hidden behind `NoteSerializer`) |
 
@@ -55,16 +57,28 @@ Once we fully migrate away from Anki as the data store, the note types will seri
 
 ```
 jas_database/
-├── kanji/{jas_note_id}.json
-├── vocab/{jas_note_id}.json
-├── sentences/{jas_note_id}.json
+├── kanji/{2-char-hex-bucket}/{jas_note_id}.json
+├── vocab/{2-char-hex-bucket}/{jas_note_id}.json
+├── sentences/{2-char-hex-bucket}/{jas_note_id}.json
 └── all_notes.json              (single-file mode)
 ```
 
+Notes are bucketed into 256 subdirectories (00–ff) based on the first 2 hex chars of the GUID to keep directory sizes manageable.
+
+### Auto-Save on Flush
+
+When a note is flushed (`NoteFlushGuard.Flush()` → `UpdateInCache()`), the cache's `OnNoteUpdated` listener fires and calls `INoteRepository.Save(note)`. This is wired up in `JPCollection`'s constructor — each cache gets a listener that delegates to the injected `INoteRepository`.
+
 ### DI Registration
 
+- `INoteRepository` — registered first (before `JPCollection`); `InMemoryNoteRepository` for tests, `FileSystemNoteRepository` for production
+- `FileSystemNoteRepository` — takes `Lazy<NoteSerializer>` to break the circular dependency (`INoteRepository` → `NoteSerializer` → `NoteServices` → `JPCollection` → `INoteRepository`)
 - `NoteSerializer` — singleton, injected with `NoteServices`
-- `FileSystemNoteRepository` — singleton, injected with `NoteSerializer`, root dir = `App.DatabaseDir`
+- `JPCollection` — receives `INoteRepository`, registers cache update listeners
+
+### Data Repository
+
+`src/jas_database/` is an independent git repo (gitignored by JAStudio, remote: `https://github.com/mlidbom/JAStudioData.git`). Code and data commits are fully decoupled.
 
 ### Addon Root Dir
 
@@ -79,4 +93,3 @@ At runtime, `App.AddonRootDir` calls `AnkiFacade.GetAddonRootDir()` which delega
 
 - Build the thin Anki sync layer: map `jas_note_id` to Anki note IDs for SRS scheduling
 - Migrate existing Anki note data into the git-based storage
-- Set up `src/jas_database/` as an independent git repo (gitignored by the parent repo, separate remote for data)
