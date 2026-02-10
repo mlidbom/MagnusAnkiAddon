@@ -117,9 +117,12 @@ public class BrowserMenus
 
    private void OnReparseSentences(List<SentenceNote> sentences)
    {
-      _services.LocalNoteUpdater.ReparseSentences(sentences);
-      AnkiFacade.UIUtils.Refresh();
-      AnkiFacade.UIUtils.ShowTooltip($"Reparsed {sentences.Count} sentence(s)", 3000);
+      BackgroundTaskManager.Run(() =>
+      {
+         _services.LocalNoteUpdater.ReparseSentences(sentences);
+         AnkiFacade.UIUtils.Refresh();
+         AnkiFacade.UIUtils.ShowTooltip($"Reparsed {sentences.Count} sentence(s)", 3000);
+      });
    }
 
    // Helper methods

@@ -336,18 +336,24 @@ public class NoteContextMenu
 
    void OnReparseMatchingSentences(string text)
    {
-      _services.LocalNoteUpdater.ReparseMatchingSentences(text);
-      AnkiFacade.UIUtils.Refresh();
-      AnkiFacade.UIUtils.ShowTooltip($"Reparsed sentences matching: {text}", 3000);
+      BackgroundTaskManager.Run(() =>
+      {
+         _services.LocalNoteUpdater.ReparseMatchingSentences(text);
+         AnkiFacade.UIUtils.Refresh();
+         AnkiFacade.UIUtils.ShowTooltip($"Reparsed sentences matching: {text}", 3000);
+      });
    }
 
    void OnCreateVocabNote(string text)
    {
-      var newVocab = _services.VocabNoteFactory.CreateWithDictionary(text);
-      _services.LocalNoteUpdater.ReparseSentencesForVocab(newVocab);
+      BackgroundTaskManager.Run(() =>
+      {
+         var newVocab = _services.VocabNoteFactory.CreateWithDictionary(text);
+         _services.LocalNoteUpdater.ReparseSentencesForVocab(newVocab);
 
-      var query = _services.QueryBuilder.NotesLookup([newVocab]);
-      AnkiFacade.Browser.ExecuteLookupAndShowPreviewer(query);
+         var query = _services.QueryBuilder.NotesLookup([newVocab]);
+         AnkiFacade.Browser.ExecuteLookupAndShowPreviewer(query);
+      });
    }
 
    void OnCreateSentenceNote(string text)

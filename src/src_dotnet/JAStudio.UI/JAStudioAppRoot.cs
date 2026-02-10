@@ -15,6 +15,7 @@ using JAStudio.UI.Dialogs;
 using JAStudio.UI.Menus;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
+using JAStudio.UI.Utils;
 using JAStudio.UI.Views;
 
 namespace JAStudio.UI;
@@ -29,7 +30,6 @@ public class JAStudioAppRoot
 {
    readonly Core.App _app;
    CancellationTokenSource? _reloadCts;
-   Task? _reloadTask;
    static readonly TimeSpan ReloadDebounceDelay = TimeSpan.FromMilliseconds(500);
 
    // Stored to keep the UI thread rooted (prevent GC). Not accessed directly.
@@ -130,8 +130,7 @@ public class JAStudioAppRoot
             if(_profileOpen)
             {
                CancelPendingReload();
-               _reloadTask = Task.Run(() => _app.Collection.ReloadFromAnkiDatabase());
-               ObserveReloadTask(_reloadTask);
+               BackgroundTaskManager.Run(() => _app.Collection.ReloadFromAnkiDatabase());
             }
 
             break;
@@ -164,13 +163,12 @@ public class JAStudioAppRoot
       var cts = new CancellationTokenSource();
       _reloadCts = cts;
 
-      _reloadTask = Task.Run(async () =>
+      BackgroundTaskManager.RunAsync(async () =>
       {
          await Task.Delay(ReloadDebounceDelay, cts.Token);
-         this.Log().Info("Debounce elapsed — reloading from Anki database");
+         this.Log().Info("Debounce elapsed \u2014 reloading from Anki database");
          _app.Collection.ReloadFromAnkiDatabase();
       });
-      ObserveReloadTask(_reloadTask);
    }
 
    void CancelPendingReload()
@@ -181,21 +179,6 @@ public class JAStudioAppRoot
          _reloadCts.Dispose();
          _reloadCts = null;
       }
-   }
-
-   void ObserveReloadTask(Task task)
-   {
-      task.ContinueWith(t =>
-                        {
-                           if(t.IsCanceled)
-                           {
-                              this.Log().Info("Debounced reload cancelled by newer lifecycle event");
-                           } else if(t.Exception is {} ex)
-                           {
-                              this.Log().Error(ex, $"ReloadFromAnkiDatabase failed with exception:");
-                           }
-                        },
-                        TaskContinuationOptions.NotOnRanToCompletion);
    }
 
    // ── Factory methods for Python-facing objects ──

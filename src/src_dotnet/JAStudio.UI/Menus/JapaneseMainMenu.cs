@@ -61,12 +61,12 @@ public class JapaneseMainMenu
          new List<SpecMenuItem>
          {
             BuildUpdateSubmenuSpec(),
-            SpecMenuItem.Command(ShortcutFinger.Home2("Convert Immersion Kit sentences"), () => AnkiFacade.Batches.ConvertImmersionKitSentences()),
-            SpecMenuItem.Command(ShortcutFinger.Home3("Update everything except reanalysing sentences"), () => _services.LocalNoteUpdater.UpdateAll()),
-            SpecMenuItem.Command(ShortcutFinger.Home4("Create vocab notes for parsed words"), () => _services.LocalNoteUpdater.CreateMissingVocabWithDictionaryEntries()),
-            SpecMenuItem.Command(ShortcutFinger.Home5("Regenerate vocab source answers from jamdict"), () => _services.LocalNoteUpdater.RegenerateJamdictVocabAnswers()),
-            SpecMenuItem.Command(ShortcutFinger.Up1("Force flush all notes"), () => _services.LocalNoteUpdater.ForceFlushAllNotes()),
-            SpecMenuItem.Command(ShortcutFinger.Up2("Write file system repository"), () => _services.LocalNoteUpdater.WriteFileSystemRepository())
+            SpecMenuItem.Command(ShortcutFinger.Home2("Convert Immersion Kit sentences"), () => BackgroundTaskManager.Run(() => AnkiFacade.Batches.ConvertImmersionKitSentences())),
+            SpecMenuItem.Command(ShortcutFinger.Home3("Update everything except reanalysing sentences"), () => BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.UpdateAll())),
+            SpecMenuItem.Command(ShortcutFinger.Home4("Create vocab notes for parsed words"), () => BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.CreateMissingVocabWithDictionaryEntries())),
+            SpecMenuItem.Command(ShortcutFinger.Home5("Regenerate vocab source answers from jamdict"), () => BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.RegenerateJamdictVocabAnswers())),
+            SpecMenuItem.Command(ShortcutFinger.Up1("Force flush all notes"), () => BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.ForceFlushAllNotes())),
+            SpecMenuItem.Command(ShortcutFinger.Up2("Write file system repository"), () => BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.WriteFileSystemRepository()))
          }
       );
 
@@ -75,13 +75,13 @@ public class JapaneseMainMenu
          ShortcutFinger.Home1("Update"),
          new List<SpecMenuItem>
          {
-            SpecMenuItem.Command(ShortcutFinger.Home1("Vocab"), () => _services.LocalNoteUpdater.UpdateVocab()),
-            SpecMenuItem.Command(ShortcutFinger.Home2("Kanji"), () => _services.LocalNoteUpdater.UpdateKanji()),
-            SpecMenuItem.Command(ShortcutFinger.Home3("Sentences"), () => _services.LocalNoteUpdater.UpdateSentences()),
-            SpecMenuItem.Command(ShortcutFinger.Home4("Tag note metadata"), () => _services.LocalNoteUpdater.TagNoteMetadata()),
-            SpecMenuItem.Command(ShortcutFinger.Home5("All the above"), () => _services.LocalNoteUpdater.UpdateAll()),
-            SpecMenuItem.Command(ShortcutFinger.Up1("Reparse sentences"), () => _services.LocalNoteUpdater.ReparseAllSentences()),
-            SpecMenuItem.Command(ShortcutFinger.Down1("All the above: Full rebuild"), () => _services.LocalNoteUpdater.FullRebuild())
+            SpecMenuItem.Command(ShortcutFinger.Home1("Vocab"), () => BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.UpdateVocab())),
+            SpecMenuItem.Command(ShortcutFinger.Home2("Kanji"), () => BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.UpdateKanji())),
+            SpecMenuItem.Command(ShortcutFinger.Home3("Sentences"), () => BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.UpdateSentences())),
+            SpecMenuItem.Command(ShortcutFinger.Home4("Tag note metadata"), () => BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.TagNoteMetadata())),
+            SpecMenuItem.Command(ShortcutFinger.Home5("All the above"), () => BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.UpdateAll())),
+            SpecMenuItem.Command(ShortcutFinger.Up1("Reparse sentences"), () => BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.ReparseAllSentences())),
+            SpecMenuItem.Command(ShortcutFinger.Down1("All the above: Full rebuild"), () => BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.FullRebuild()))
          }
       );
 
