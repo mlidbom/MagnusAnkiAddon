@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,18 +8,16 @@ namespace JAStudio.Core.Storage;
 
 public class FileSystemNoteRepository : INoteRepository
 {
-    readonly Lazy<NoteSerializer> _serializer;
+    readonly NoteSerializer _serializer;
     readonly TaskRunner _taskRunner;
     readonly string _rootDir;
 
-    public FileSystemNoteRepository(Lazy<NoteSerializer> serializer, TaskRunner taskRunner, string rootDir)
+    public FileSystemNoteRepository(NoteSerializer serializer, TaskRunner taskRunner, string rootDir)
     {
         _serializer = serializer;
         _taskRunner = taskRunner;
         _rootDir = rootDir;
     }
-
-    NoteSerializer Serializer => _serializer.Value;
 
     string KanjiDir => Path.Combine(_rootDir, "kanji");
     string VocabDir => Path.Combine(_rootDir, "vocab");
@@ -31,21 +28,21 @@ public class FileSystemNoteRepository : INoteRepository
     {
         var path = NoteFilePath(KanjiDir, note.GetId());
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-        File.WriteAllText(path, Serializer.Serialize(note));
+        File.WriteAllText(path, _serializer.Serialize(note));
     }
 
     public void Save(VocabNote note)
     {
         var path = NoteFilePath(VocabDir, note.GetId());
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-        File.WriteAllText(path, Serializer.Serialize(note));
+        File.WriteAllText(path, _serializer.Serialize(note));
     }
 
     public void Save(SentenceNote note)
     {
         var path = NoteFilePath(SentencesDir, note.GetId());
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-        File.WriteAllText(path, Serializer.Serialize(note));
+        File.WriteAllText(path, _serializer.Serialize(note));
     }
 
     public void SaveAll(AllNotesData data)
@@ -59,21 +56,21 @@ public class FileSystemNoteRepository : INoteRepository
 
     public AllNotesData LoadAll()
     {
-        var kanji = LoadAllFromDir(KanjiDir, Serializer.DeserializeKanji);
-        var vocab = LoadAllFromDir(VocabDir, Serializer.DeserializeVocab);
-        var sentences = LoadAllFromDir(SentencesDir, Serializer.DeserializeSentence);
+        var kanji = LoadAllFromDir(KanjiDir, _serializer.DeserializeKanji);
+        var vocab = LoadAllFromDir(VocabDir, _serializer.DeserializeVocab);
+        var sentences = LoadAllFromDir(SentencesDir, _serializer.DeserializeSentence);
         return new AllNotesData(kanji, vocab, sentences);
     }
 
     public void SaveAllSingleFile(AllNotesData data)
     {
         Directory.CreateDirectory(_rootDir);
-        File.WriteAllText(AllNotesPath, Serializer.Serialize(data));
+        File.WriteAllText(AllNotesPath, _serializer.Serialize(data));
     }
 
     public AllNotesData LoadAllSingleFile()
     {
-        return Serializer.DeserializeAll(File.ReadAllText(AllNotesPath));
+        return _serializer.DeserializeAll(File.ReadAllText(AllNotesPath));
     }
 
     static List<T> LoadAllFromDir<T>(string dir, System.Func<string, T> deserialize)

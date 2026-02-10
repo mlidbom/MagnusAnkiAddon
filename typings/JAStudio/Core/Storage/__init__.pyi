@@ -1,7 +1,6 @@
 import typing, abc
 from System.Collections.Generic import List_1
 from JAStudio.Core.Note import KanjiNote, VocabNote, SentenceNote, NoteServices
-from System import Lazy_1
 from JAStudio.Core.TaskRunners import TaskRunner
 
 class AllNotesData:
@@ -15,7 +14,7 @@ class AllNotesData:
 
 
 class FileSystemNoteRepository(INoteRepository):
-    def __init__(self, serializer: Lazy_1[NoteSerializer], taskRunner: TaskRunner, rootDir: str) -> None: ...
+    def __init__(self, serializer: NoteSerializer, taskRunner: TaskRunner, rootDir: str) -> None: ...
     def LoadAll(self) -> AllNotesData: ...
     def LoadAllSingleFile(self) -> AllNotesData: ...
     def SaveAll(self, data: AllNotesData) -> None: ...

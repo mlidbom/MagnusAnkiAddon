@@ -72,8 +72,8 @@ When a note is flushed (`NoteFlushGuard.Flush()` → `UpdateInCache()`), the cac
 ### DI Registration
 
 - `INoteRepository` — registered first (before `JPCollection`); `InMemoryNoteRepository` for tests, `FileSystemNoteRepository` for production
-- `FileSystemNoteRepository` — takes `Lazy<NoteSerializer>` to break the circular dependency (`INoteRepository` → `NoteSerializer` → `NoteServices` → `JPCollection` → `INoteRepository`)
 - `NoteSerializer` — singleton, injected with `NoteServices`
+- `FileSystemNoteRepository` — singleton, injected with `NoteSerializer` + `TaskRunner`
 - `JPCollection` — receives `INoteRepository`, registers cache update listeners
 
 ### Data Repository

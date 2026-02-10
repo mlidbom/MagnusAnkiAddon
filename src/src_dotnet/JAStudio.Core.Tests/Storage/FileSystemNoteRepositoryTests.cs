@@ -20,7 +20,7 @@ public class FileSystemNoteRepositoryTests : CollectionUsingTest, IDisposable
     {
         _serializer = GetService<NoteSerializer>();
         _tempDir = Path.Combine(Path.GetTempPath(), $"JAStudio_test_{Guid.NewGuid():N}");
-        _repo = new FileSystemNoteRepository(new Lazy<NoteSerializer>(() => _serializer), GetService<TaskRunner>(), _tempDir);
+        _repo = new FileSystemNoteRepository(_serializer, GetService<TaskRunner>(), _tempDir);
     }
 
     public new void Dispose()

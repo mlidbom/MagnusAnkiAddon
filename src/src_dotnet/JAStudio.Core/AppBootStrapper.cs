@@ -38,11 +38,8 @@ static class AppBootstrapper
       else
       {
          registrar.Register(
-            Singleton.For<INoteRepository>().CreatedBy((TaskRunner taskRunner) =>
-               (INoteRepository)new FileSystemNoteRepository(
-                  new Lazy<NoteSerializer>(() => container.ServiceLocator.Resolve<NoteSerializer>()),
-                  taskRunner,
-                  App.DatabaseDir)));
+            Singleton.For<INoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner) =>
+               (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, App.DatabaseDir)));
       }
 
       registrar.Register(
@@ -74,11 +71,8 @@ static class AppBootstrapper
          Singleton.For<VocabNoteFactory>().CreatedBy((JPCollection col) => col.VocabNoteFactory),
          Singleton.For<VocabNoteGeneratedData>().CreatedBy((JPCollection col) => col.VocabNoteGeneratedData),
          Singleton.For<NoteSerializer>().CreatedBy((NoteServices noteServices) => new NoteSerializer(noteServices)),
-         Singleton.For<FileSystemNoteRepository>().CreatedBy((TaskRunner taskRunner) =>
-            new FileSystemNoteRepository(
-               new Lazy<NoteSerializer>(() => container.ServiceLocator.Resolve<NoteSerializer>()),
-               taskRunner,
-               App.DatabaseDir)),
+         Singleton.For<FileSystemNoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner) =>
+            new FileSystemNoteRepository(serializer, taskRunner, App.DatabaseDir)),
          Singleton.For<KanjiNoteMnemonicMaker>().CreatedBy((JapaneseConfig config) => new KanjiNoteMnemonicMaker(config)),
 
          // ViewModels
