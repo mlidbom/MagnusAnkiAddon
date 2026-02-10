@@ -33,63 +33,66 @@ public class VocabCache : NoteCache<VocabNote, VocabSnapshot>
 
    protected override NoteId CreateTypedId(Guid value) => new VocabId(value);
 
-   public IEnumerable<VocabNote> WithForm(string form)
+   public List<VocabNote> WithForm(string form)
    {
-      return _byForm.TryGetValue(form, out var notes) ? notes : Enumerable.Empty<VocabNote>();
+      return _monitor.Read(() => _byForm.TryGetValue(form, out var notes) ? notes.ToList() : new List<VocabNote>());
    }
 
-   public IEnumerable<VocabNote> WithDisambiguationName(string form)
+   public List<VocabNote> WithDisambiguationName(string form)
    {
-      return _byDisambiguationName.TryGetValue(form, out var notes) ? notes : Enumerable.Empty<VocabNote>();
+      return _monitor.Read(() => _byDisambiguationName.TryGetValue(form, out var notes) ? notes.ToList() : new List<VocabNote>());
    }
 
    public List<VocabNote> WithCompoundPart(string disambiguationName)
    {
-      var compoundParts = new HashSet<VocabNote>();
-
-      void FetchParts(string partForm)
+      return _monitor.Read(() =>
       {
-         if (_byCompoundPart.TryGetValue(partForm, out var vocabList))
+         var compoundParts = new HashSet<VocabNote>();
+
+         void FetchParts(string partForm)
          {
-            foreach (var vocab in vocabList)
+            if (_byCompoundPart.TryGetValue(partForm, out var vocabList))
             {
-               if (!compoundParts.Contains(vocab))
+               foreach (var vocab in vocabList)
                {
-                  compoundParts.Add(vocab);
-                  FetchParts(vocab.Question.DisambiguationName);
+                  if (!compoundParts.Contains(vocab))
+                  {
+                     compoundParts.Add(vocab);
+                     FetchParts(vocab.Question.DisambiguationName);
+                  }
                }
             }
          }
-      }
 
-      FetchParts(disambiguationName);
+         FetchParts(disambiguationName);
 
-      return compoundParts.OrderBy(v => v.GetQuestion()).ToList();
+         return compoundParts.OrderBy(v => v.GetQuestion()).ToList();
+      });
    }
 
    public List<VocabNote> DerivedFrom(string form)
    {
-      return _byDerivedFrom.TryGetValue(form, out var notes) ? notes.ToList() : new List<VocabNote>();
+      return _monitor.Read(() => _byDerivedFrom.TryGetValue(form, out var notes) ? notes.ToList() : new List<VocabNote>());
    }
 
    public List<VocabNote> WithKanjiInMainForm(string kanji)
    {
-      return _byKanjiInMainForm.TryGetValue(kanji, out var notes) ? notes.ToList() : new List<VocabNote>();
+      return _monitor.Read(() => _byKanjiInMainForm.TryGetValue(kanji, out var notes) ? notes.ToList() : new List<VocabNote>());
    }
 
    public List<VocabNote> WithKanjiInAnyForm(string kanji)
    {
-      return _byKanjiInAnyForm.TryGetValue(kanji, out var notes) ? notes.ToList() : new List<VocabNote>();
+      return _monitor.Read(() => _byKanjiInAnyForm.TryGetValue(kanji, out var notes) ? notes.ToList() : new List<VocabNote>());
    }
 
    public List<VocabNote> WithReading(string reading)
    {
-      return _byReading.TryGetValue(reading, out var notes) ? notes.ToList() : new List<VocabNote>();
+      return _monitor.Read(() => _byReading.TryGetValue(reading, out var notes) ? notes.ToList() : new List<VocabNote>());
    }
 
    public List<VocabNote> WithStem(string stem)
    {
-      return _byStem.TryGetValue(stem, out var notes) ? notes.ToList() : new List<VocabNote>();
+      return _monitor.Read(() => _byStem.TryGetValue(stem, out var notes) ? notes.ToList() : new List<VocabNote>());
    }
 
    protected override VocabSnapshot CreateSnapshot(VocabNote note)

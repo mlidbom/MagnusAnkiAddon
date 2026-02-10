@@ -7,7 +7,7 @@ namespace JAStudio.Core.Note.Collection;
 public class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
 {
    private readonly Dictionary<string, HashSet<KanjiNote>> _byRadical = new();
-   public readonly Dictionary<string, HashSet<KanjiNote>> ByReading = new();
+   private readonly Dictionary<string, HashSet<KanjiNote>> _byReading = new();
 
    public KanjiCache(NoteServices noteServices) : base(typeof(KanjiNote), (services, data) => new KanjiNote(services, data), noteServices)
    {
@@ -16,7 +16,7 @@ public class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
    protected override void ClearDerivedIndexes()
    {
       _byRadical.Clear();
-      ByReading.Clear();
+      _byReading.Clear();
    }
 
    protected override NoteId CreateTypedId(Guid value) => new KanjiId(value);
@@ -37,7 +37,7 @@ public class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
       }
       foreach (var reading in snapshot.Readings)
       {
-         if (ByReading.TryGetValue(reading, out var set))
+         if (_byReading.TryGetValue(reading, out var set))
          {
             set.Remove(note);
          }
@@ -56,16 +56,21 @@ public class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
       }
       foreach (var reading in snapshot.Readings)
       {
-         if (!ByReading.ContainsKey(reading))
+         if (!_byReading.ContainsKey(reading))
          {
-            ByReading[reading] = new HashSet<KanjiNote>();
+            _byReading[reading] = new HashSet<KanjiNote>();
          }
-         ByReading[reading].Add(note);
+         _byReading[reading].Add(note);
       }
    }
 
    public List<KanjiNote> WithRadical(string radical)
    {
-      return _byRadical.TryGetValue(radical, out var notes) ? notes.ToList() : new List<KanjiNote>();
+      return _monitor.Read(() => _byRadical.TryGetValue(radical, out var notes) ? notes.ToList() : new List<KanjiNote>());
+   }
+
+   public HashSet<KanjiNote> WithReading(string reading)
+   {
+      return _monitor.Read(() => _byReading.TryGetValue(reading, out var notes) ? notes.ToHashSet() : new HashSet<KanjiNote>());
    }
 }

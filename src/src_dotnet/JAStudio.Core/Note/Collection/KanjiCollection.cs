@@ -38,9 +38,7 @@ public class KanjiCollection
     public HashSet<KanjiNote> WithReading(string reading)
     {
         var hiraganaReading = KanaUtils.AnythingToHiragana(reading);
-        return Cache.ByReading.TryGetValue(hiraganaReading, out var notes) 
-            ? notes 
-            : new HashSet<KanjiNote>();
+        return Cache.WithReading(hiraganaReading);
     }
 
     public void Add(KanjiNote note)

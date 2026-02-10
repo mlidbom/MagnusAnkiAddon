@@ -32,22 +32,22 @@ public class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
 
    public List<SentenceNote> WithVocab(VocabNote vocab)
    {
-      return _byVocabId.TryGetValue(vocab.GetId(), out var notes) ? notes.ToList() : new List<SentenceNote>();
+      return _monitor.Read(() => _byVocabId.TryGetValue(vocab.GetId(), out var notes) ? notes.ToList() : new List<SentenceNote>());
    }
 
    public List<SentenceNote> WithVocabForm(string form)
    {
-      return _byVocabForm.TryGetValue(form, out var notes) ? notes.ToList() : new List<SentenceNote>();
+      return _monitor.Read(() => _byVocabForm.TryGetValue(form, out var notes) ? notes.ToList() : new List<SentenceNote>());
    }
 
    public List<SentenceNote> WithUserHighlightedVocab(string form)
    {
-      return _byUserHighlightedVocab.TryGetValue(form, out var notes) ? notes.ToList() : new List<SentenceNote>();
+      return _monitor.Read(() => _byUserHighlightedVocab.TryGetValue(form, out var notes) ? notes.ToList() : new List<SentenceNote>());
    }
 
    public List<SentenceNote> WithUserMarkedInvalidVocab(string form)
    {
-      return _byUserMarkedInvalidVocab.TryGetValue(form, out var notes) ? notes.ToList() : new List<SentenceNote>();
+      return _monitor.Read(() => _byUserMarkedInvalidVocab.TryGetValue(form, out var notes) ? notes.ToList() : new List<SentenceNote>());
    }
 
    protected override void InheritorRemoveFromCache(SentenceNote note, SentenceSnapshot snapshot)
