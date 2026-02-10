@@ -15,7 +15,6 @@ using JAStudio.UI.Dialogs;
 using JAStudio.UI.Menus;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
-using JAStudio.UI.Utils;
 using JAStudio.UI.Views;
 
 namespace JAStudio.UI;
