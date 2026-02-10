@@ -11,7 +11,7 @@ public class KanjiNote : JPNote
 {
     private static readonly Regex PrimaryReadingPattern = new(@"<primary>(.*?)</primary>", RegexOptions.Compiled);
 
-    public KanjiNote(NoteServices services, NoteData? data = null) : base(services, data?.Id != null ? new KanjiId(data.Id.Value) : KanjiId.New(), data)
+    public KanjiNote(NoteServices services, NoteData? data = null) : base(services, data?.Id as KanjiId ?? KanjiId.New(), data)
     {
     }
 
