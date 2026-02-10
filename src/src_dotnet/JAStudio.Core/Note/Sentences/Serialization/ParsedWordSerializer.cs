@@ -1,5 +1,6 @@
 using System;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.Note.Sentences.Serialization;
 
@@ -28,7 +29,7 @@ public class ParsedWordSerializer
         var idStr = values[4];
         if(Guid.TryParse(idStr, out var guid) && guid != Guid.Empty)
         {
-            vocabId = new NoteId(guid);
+            vocabId = new VocabId(guid);
         }
         else if(long.TryParse(idStr, out _) && idStr != "-1")
         {

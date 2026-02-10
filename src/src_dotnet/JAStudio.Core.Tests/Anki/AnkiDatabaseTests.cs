@@ -37,7 +37,7 @@ public class BulkLoaderTests
    [Fact]
    public void LoadAllNotesOfType_loads_vocab_notes()
    {
-      var result = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Vocab);
+      var result = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Vocab, g => new VocabId(g));
       Assert.NotEmpty(result.Notes);
       Assert.All(result.Notes, n =>
       {
@@ -49,7 +49,7 @@ public class BulkLoaderTests
    [Fact]
    public void LoadAllNotesOfType_loads_kanji_notes()
    {
-      var result = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Kanji);
+      var result = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Kanji, g => new KanjiId(g));
       Assert.NotEmpty(result.Notes);
       Assert.All(result.Notes, n => Assert.NotNull(n.Id));
    }
@@ -57,7 +57,7 @@ public class BulkLoaderTests
    [Fact]
    public void LoadAllNotesOfType_loads_sentence_notes()
    {
-      var result = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Sentence);
+      var result = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Sentence, g => new SentenceId(g));
       Assert.NotEmpty(result.Notes);
       Assert.All(result.Notes, n => Assert.NotNull(n.Id));
    }
@@ -66,13 +66,13 @@ public class BulkLoaderTests
    public void LoadAllNotesOfType_throws_for_unknown_note_type()
    {
       Assert.Throws<System.Collections.Generic.KeyNotFoundException>(
-         () => NoteBulkLoader.LoadAllNotesOfType(TestDbPath, "NonExistentNoteType"));
+         () => NoteBulkLoader.LoadAllNotesOfType(TestDbPath, "NonExistentNoteType", g => new VocabId(g)));
    }
 
    [Fact]
    public void LoadAllNotesOfType_vocab_notes_have_expected_fields()
    {
-      var result = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Vocab);
+      var result = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Vocab, g => new VocabId(g));
       var first = result.Notes.First();
       Assert.True(first.Fields.ContainsKey("Q"), $"Fields: [{string.Join(", ", first.Fields.Keys)}]");
       Assert.True(first.Fields.ContainsKey("A"));
@@ -82,7 +82,7 @@ public class BulkLoaderTests
    [Fact]
    public void LoadAllNotesOfType_kanji_notes_have_expected_fields()
    {
-      var result = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Kanji);
+      var result = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Kanji, g => new KanjiId(g));
       var first = result.Notes.First();
       Assert.True(first.Fields.ContainsKey("Q"), $"Fields: [{string.Join(", ", first.Fields.Keys)}]");
    }
@@ -90,7 +90,7 @@ public class BulkLoaderTests
    [Fact]
    public void LoadAllNotesOfType_sentence_notes_have_expected_fields()
    {
-      var result = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Sentence);
+      var result = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Sentence, g => new SentenceId(g));
       var first = result.Notes.First();
       Assert.True(first.Fields.ContainsKey("Q"), $"Fields: [{string.Join(", ", first.Fields.Keys)}]");
    }

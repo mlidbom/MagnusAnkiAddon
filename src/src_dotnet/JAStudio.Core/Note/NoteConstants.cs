@@ -58,6 +58,8 @@ public static class NoteTypes
     
     public static string FromType(Type noteType) => _map[noteType];
 
+    public static Func<Guid, NoteId> IdFactoryFromType(Type noteType) => _idFactories[noteType];
+
     //create a dictionary from type to string for our supported type her
     static readonly Dictionary<Type, string> _map = new()
                                                     {
@@ -65,6 +67,13 @@ public static class NoteTypes
                                                        [typeof(VocabNote)] = Vocab,
                                                        [typeof(SentenceNote)] = Sentence,
                                                     };
+
+    static readonly Dictionary<Type, Func<Guid, NoteId>> _idFactories = new()
+                                                                        {
+                                                                           [typeof(KanjiNote)] = g => new KanjiId(g),
+                                                                           [typeof(VocabNote)] = g => new VocabId(g),
+                                                                           [typeof(SentenceNote)] = g => new SentenceId(g),
+                                                                        };
 }
 
 public static class NoteFieldsConstants

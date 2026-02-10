@@ -1,7 +1,7 @@
 import typing, abc
 from System.Collections.Generic import List_1, Dictionary_2
 from JAStudio.Core.Note import NoteData, NoteId
-from System import IDisposable
+from System import IDisposable, Func_2, Guid
 from Microsoft.Data.Sqlite import SqliteConnection
 from JAStudio.Core.Note.Collection import CardStudyingStatus
 
@@ -117,5 +117,5 @@ class IAnkiCardOperations(typing.Protocol):
 
 class NoteBulkLoader(abc.ABC):
     @staticmethod
-    def LoadAllNotesOfType(dbFilePath: str, noteTypeName: str) -> AnkiBulkLoadResult: ...
+    def LoadAllNotesOfType(dbFilePath: str, noteTypeName: str, idFactory: Func_2[Guid, NoteId]) -> AnkiBulkLoadResult: ...
 

@@ -140,7 +140,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       if(dbPath == null) throw new InvalidOperationException("Anki collection database is not initialized yet");
 
       using var runner = _noteServices.TaskRunner.Current($"Loading {_noteType.Name} notes from the anki db");
-      var loadResult = await runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync($"Fetching {_noteType.Name} notes from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.FromType(_noteType)));
+      var loadResult = await runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync($"Fetching {_noteType.Name} notes from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.FromType(_noteType), NoteTypes.IdFactoryFromType(_noteType)));
 
       // Build a temporary map from base NoteId → ankiId so we can re-register
       // with the typed NoteId (VocabId, KanjiId, etc.) after note construction.

@@ -1,5 +1,5 @@
 import typing, clr, abc
-from System import Action, IEquatable_1, Guid, IDisposable, Array_1
+from System import Action, IEquatable_1, Guid, IDisposable, Func_2, Array_1
 from JAStudio.Core.Note.Collection import JPCollection, CardStudyingStatus
 from System.Collections.Generic import HashSet_1, List_1, Dictionary_2, IEnumerable_1, IEnumerator_1, IReadOnlyList_1
 from JAStudio.Core.Anki import AnkiCardOperations, AnkiNoteIdMap
@@ -292,8 +292,7 @@ class NoteFlushGuard:
     def PauseFlushing(self) -> IDisposable: ...
 
 
-class NoteId(IEquatable_1[NoteId]):
-    def __init__(self, Value: Guid) -> None: ...
+class NoteId(IEquatable_1[NoteId], abc.ABC):
     @property
     def Value(self) -> Guid: ...
     @Value.setter
@@ -356,6 +355,8 @@ class NoteTypes(abc.ABC):
     Vocab : str
     @staticmethod
     def FromType(noteType: typing.Type[typing.Any]) -> str: ...
+    @staticmethod
+    def IdFactoryFromType(noteType: typing.Type[typing.Any]) -> Func_2[Guid, NoteId]: ...
 
 
 class SentenceId(NoteId, IEquatable_1[SentenceId]):

@@ -33,11 +33,11 @@ public static class NoteBulkLoader
    /// Load all notes of the specified note type from the Anki database.
    /// Opens and closes its own connection so it's safe to call from any thread.
    /// </summary>
-   public static AnkiBulkLoadResult LoadAllNotesOfType(string dbFilePath, string noteTypeName)
+   public static AnkiBulkLoadResult LoadAllNotesOfType(string dbFilePath, string noteTypeName, Func<Guid, NoteId> idFactory)
    {
       using var db = AnkiDatabase.OpenReadOnly(dbFilePath);
       var (noteTypeId, fieldMap, fieldCount) = GetNoteTypeInfo(db.Connection, noteTypeName);
-      return LoadNotes(db.Connection, noteTypeId, fieldMap, fieldCount);
+      return LoadNotes(db.Connection, noteTypeId, fieldMap, fieldCount, idFactory);
    }
 
    static (long noteTypeId, Dictionary<string, int> fieldMap, int fieldCount) GetNoteTypeInfo(SqliteConnection connection, string noteTypeName)
@@ -79,7 +79,7 @@ public static class NoteBulkLoader
       return (noteTypeId.Value, fieldMap, fieldMap.Count);
    }
 
-   static AnkiBulkLoadResult LoadNotes(SqliteConnection connection, long noteTypeId, Dictionary<string, int> fieldMap, int fieldCount)
+   static AnkiBulkLoadResult LoadNotes(SqliteConnection connection, long noteTypeId, Dictionary<string, int> fieldMap, int fieldCount, Func<Guid, NoteId> idFactory)
    {
       using var cmd = connection.CreateCommand();
       cmd.CommandText = """
@@ -119,8 +119,8 @@ public static class NoteBulkLoader
          // A new GUID is written back to the jas_note_id field on next flush.
          var jasNoteIdStr = fields.GetValueOrDefault(MyNoteFields.JasNoteId, "");
          var noteId = Guid.TryParse(jasNoteIdStr, out var guid)
-            ? new NoteId(guid)
-            : new NoteId(Guid.NewGuid());
+            ? idFactory(guid)
+            : idFactory(Guid.NewGuid());
 
          ankiIdMap[ankiId] = noteId;
          results.Add(new NoteData(noteId, fields, tags));

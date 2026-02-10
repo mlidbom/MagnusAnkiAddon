@@ -6,7 +6,7 @@ namespace JAStudio.Core.Note;
 /// Base type for domain note identity. Wraps a Guid to provide strong typing.
 /// Notes get their identity at construction time and it never changes.
 /// </summary>
-public record NoteId(Guid Value)
+public abstract record NoteId(Guid Value)
 {
    public sealed override string ToString() => Value.ToString();
 }

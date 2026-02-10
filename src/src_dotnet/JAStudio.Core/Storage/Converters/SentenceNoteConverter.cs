@@ -145,7 +145,7 @@ public static class SentenceNoteConverter
 
     static ParsedMatch FromMatchDto(ParsedMatchDto dto)
     {
-        NoteId? vocabId = dto.VocabId.HasValue ? new NoteId(dto.VocabId.Value) : null;
+        NoteId? vocabId = dto.VocabId.HasValue ? new VocabId(dto.VocabId.Value) : null;
 
         return new ParsedMatch(
             dto.Variant,
