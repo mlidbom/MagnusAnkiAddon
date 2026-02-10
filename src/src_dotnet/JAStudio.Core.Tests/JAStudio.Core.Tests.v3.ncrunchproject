@@ -1,0 +1,9 @@
+﻿<ProjectConfiguration>
+  <Settings>
+    <IgnoredTests>
+      <NamedTestSelector>
+        <TestName>JAStudio.Core.Tests.Storage.AnkiVsFileSystemComparisonTests.VocabNotes_AnkiAndFileSystem_HaveIdenticalFields</TestName>
+      </NamedTestSelector>
+    </IgnoredTests>
+  </Settings>
+</ProjectConfiguration>
