@@ -277,6 +277,11 @@ public static class JsonHelper
 
     public static string DictToJson(Dictionary<string, object> dict)
     {
-        return JsonSerializer.Serialize(dict);
+        return JsonSerializer.Serialize(dict, DictJsonOptions);
     }
+
+    static readonly JsonSerializerOptions DictJsonOptions = new()
+    {
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+    };
 }
