@@ -24,4 +24,19 @@ public class AnkiNoteIdMap
    public long RequireAnkiId(NoteId noteId) => _noteIdToAnki.TryGetValue(noteId, out var ankiId)
       ? ankiId
       : throw new KeyNotFoundException($"No Anki ID mapping found for NoteId {noteId}");
+
+   public void Unregister(long ankiId)
+   {
+      if(_ankiToNoteId.TryGetValue(ankiId, out var noteId))
+      {
+         _noteIdToAnki.Remove(noteId);
+         _ankiToNoteId.Remove(ankiId);
+      }
+   }
+
+   public void Clear()
+   {
+      _noteIdToAnki.Clear();
+      _ankiToNoteId.Clear();
+   }
 }

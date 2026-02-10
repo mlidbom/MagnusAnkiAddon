@@ -26,8 +26,6 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
    readonly Type _noteType;
    protected readonly Dictionary<NoteId, TNote> _byId = new();
    readonly List<Action<TNote>> _updateListeners = new();
-   readonly Dictionary<long, NoteId> _ankiIdToNoteId = new();
-   readonly Dictionary<NoteId, long> _noteIdToAnkiId = new();
    readonly NoteServices _noteServices;
 
    protected NoteCacheBase(Type cachedNoteType, Func<NoteServices, NoteData, TNote> noteConstructor, NoteServices noteServices)
@@ -50,33 +48,22 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
 
    public TNote? WithIdOrNone(NoteId noteId) => _byId.TryGetValue(noteId, out var note) ? note : null;
 
-   /// <summary>
-   /// Registers the mapping between an Anki note ID and the domain NoteId.
-   /// Called during bulk loading and when notes are added via Anki.
-   /// </summary>
-   public void RegisterAnkiIdMapping(long ankiNoteId, NoteId noteId)
-   {
-      _ankiIdToNoteId[ankiNoteId] = noteId;
-      _noteIdToAnkiId[noteId] = ankiNoteId;
-   }
-
-   /// <summary>Look up a note by its Anki long ID (uses the internal mapping).</summary>
+   /// <summary>Look up a note by its Anki long ID (uses the shared AnkiNoteIdMap).</summary>
    public TNote? WithAnkiIdOrNone(long ankiNoteId) =>
-      _ankiIdToNoteId.TryGetValue(ankiNoteId, out var noteId) ? WithIdOrNone(noteId) : null;
+      _noteServices.AnkiNoteIdMap.FromAnkiId(ankiNoteId) is { } noteId ? WithIdOrNone(noteId) : null;
 
    /// <summary>Converts an Anki long ID to the corresponding domain NoteId.</summary>
    public NoteId? AnkiIdToNoteId(long ankiNoteId) =>
-      _ankiIdToNoteId.TryGetValue(ankiNoteId, out var noteId) ? noteId : null;
+      _noteServices.AnkiNoteIdMap.FromAnkiId(ankiNoteId);
 
    /// <summary>Returns the Anki long note ID for the given domain NoteId.</summary>
    public long GetAnkiNoteId(NoteId noteId) =>
-      _noteIdToAnkiId.TryGetValue(noteId, out var ankiId) ? ankiId : 0;
+      _noteServices.AnkiNoteIdMap.ToAnkiId(noteId) ?? 0;
 
    public void AnkiNoteAdded(long ankiNoteId, NoteData data)
    {
       data.Id = CreateTypedId(Guid.NewGuid());
-      _ankiIdToNoteId[ankiNoteId] = data.Id;
-      _noteIdToAnkiId[data.Id] = ankiNoteId;
+      _noteServices.AnkiNoteIdMap.Register(ankiNoteId, data.Id);
       var note = _noteConstructor(_noteServices, data);
       using(note.RecursiveFlushGuard.PauseFlushing())
       {
@@ -87,7 +74,8 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
 
    public void AnkiNoteWillFlush(long ankiNoteId, NoteData data)
    {
-      if(!_ankiIdToNoteId.TryGetValue(ankiNoteId, out var noteId)) return;
+      var noteId = _noteServices.AnkiNoteIdMap.FromAnkiId(ankiNoteId);
+      if(noteId == null) return;
       var existing = WithIdOrNone(noteId);
       if(existing == null) return;
       if(existing.IsFlushing) return; // Our code initiated this flush, nothing to do
@@ -105,14 +93,14 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
 
    public void AnkiNoteRemoved(long ankiNoteId)
    {
-      if(!_ankiIdToNoteId.TryGetValue(ankiNoteId, out var noteId)) return;
+      var noteId = _noteServices.AnkiNoteIdMap.FromAnkiId(ankiNoteId);
+      if(noteId == null) return;
       var existing = WithIdOrNone(noteId);
       if(existing != null)
       {
          RemoveFromCache(existing);
       }
-      _ankiIdToNoteId.Remove(ankiNoteId);
-      if(noteId != null) _noteIdToAnkiId.Remove(noteId);
+      _noteServices.AnkiNoteIdMap.Unregister(ankiNoteId);
    }
 
    /// <summary>Creates the correctly typed NoteId for this cache (VocabId, KanjiId, etc.)</summary>
@@ -171,8 +159,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
          var typedId = note.GetId();
          if(baseIdToAnkiId.TryGetValue(typedId.Value, out var ankiId))
          {
-            _ankiIdToNoteId[ankiId] = typedId;
-            _noteIdToAnkiId[typedId] = ankiId;
+            _noteServices.AnkiNoteIdMap.Register(ankiId, typedId);
          }
       }, "");
    }
@@ -186,8 +173,6 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
    public void Clear()
    {
       _byId.Clear();
-      _ankiIdToNoteId.Clear();
-      _noteIdToAnkiId.Clear();
       ClearInheritorIndexes();
    }
 

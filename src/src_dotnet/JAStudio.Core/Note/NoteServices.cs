@@ -23,6 +23,7 @@ public class NoteServices
    public KanjiNoteMnemonicMaker KanjiNoteMnemonicMaker { get; }
    public JapaneseConfig Config { get; }
    public TaskRunner TaskRunner { get; }
+   public AnkiNoteIdMap AnkiNoteIdMap { get; }
 
    internal NoteServices(
       JPCollection collection,
@@ -33,7 +34,8 @@ public class NoteServices
       VocabNoteGeneratedData vocabNoteGeneratedData,
       KanjiNoteMnemonicMaker kanjiNoteMnemonicMaker,
       JapaneseConfig config,
-      TaskRunner taskRunner)
+      TaskRunner taskRunner,
+      AnkiNoteIdMap ankiNoteIdMap)
    {
       Collection = collection;
       AnkiCardOperations = ankiCardOperations;
@@ -44,5 +46,6 @@ public class NoteServices
       KanjiNoteMnemonicMaker = kanjiNoteMnemonicMaker;
       Config = config;
       TaskRunner = taskRunner;
+      AnkiNoteIdMap = ankiNoteIdMap;
    }
 }

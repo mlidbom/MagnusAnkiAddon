@@ -2,7 +2,7 @@ import typing, clr, abc
 from System import Action, IEquatable_1, Guid, IDisposable, Array_1
 from JAStudio.Core.Note.Collection import JPCollection, CardStudyingStatus
 from System.Collections.Generic import HashSet_1, List_1, Dictionary_2, IEnumerable_1, IEnumerator_1, IReadOnlyList_1
-from JAStudio.Core.Anki import AnkiCardOperations
+from JAStudio.Core.Anki import AnkiCardOperations, AnkiNoteIdMap
 from JAStudio.Core.Configuration import JapaneseConfig, Settings
 from JAStudio.Core.LanguageServices.JamdictEx import DictLookup
 from JAStudio.Core.TaskRunners import TaskRunner
@@ -317,6 +317,8 @@ class NoteId(IEquatable_1[NoteId]):
 class NoteServices:
     @property
     def AnkiCardOperations(self) -> AnkiCardOperations: ...
+    @property
+    def AnkiNoteIdMap(self) -> AnkiNoteIdMap: ...
     @property
     def Collection(self) -> JPCollection: ...
     @property

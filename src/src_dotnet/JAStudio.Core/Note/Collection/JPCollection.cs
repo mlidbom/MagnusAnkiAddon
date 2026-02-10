@@ -35,13 +35,8 @@ public class JPCollection
    /// </summary>
    public JPNote? NoteFromAnkiNoteId(long ankiNoteId)
    {
-      JPNote? note = Vocab.WithAnkiIdOrNone(ankiNoteId);
-      if(note != null) return note;
-
-      note = Kanji.WithAnkiIdOrNone(ankiNoteId);
-      if(note != null) return note;
-
-      return Sentences.WithAnkiIdOrNone(ankiNoteId);
+      var noteId = NoteServices.AnkiNoteIdMap.FromAnkiId(ankiNoteId);
+      return noteId != null ? NoteFromNoteId(noteId) : null;
    }
 
    /// <summary>
@@ -49,16 +44,7 @@ public class JPCollection
    /// Used at the Python boundary where Anki's numeric ID is needed.
    /// Returns 0 if no mapping found.
    /// </summary>
-   public long GetAnkiNoteId(NoteId noteId)
-   {
-      var ankiId = Vocab.Cache.GetAnkiNoteId(noteId);
-      if(ankiId != 0) return ankiId;
-
-      ankiId = Kanji.Cache.GetAnkiNoteId(noteId);
-      if(ankiId != 0) return ankiId;
-
-      return Sentences.Cache.GetAnkiNoteId(noteId);
-   }
+   public long GetAnkiNoteId(NoteId noteId) => NoteServices.AnkiNoteIdMap.ToAnkiId(noteId) ?? 0;
 
    public NoteServices NoteServices { get; }
    public VocabNoteFactory VocabNoteFactory { get; }
@@ -77,7 +63,8 @@ public class JPCollection
       KanjiNoteMnemonicMaker kanjiNoteMnemonicMaker,
       JapaneseConfig config,
       TaskRunner taskRunner,
-      INoteRepository noteRepository)
+      INoteRepository noteRepository,
+      AnkiNoteIdMap ankiNoteIdMap)
    {
       this.Log().Info().LogMethodExecutionTime();
 
@@ -87,7 +74,7 @@ public class JPCollection
       DictLookup = new DictLookup(this, config);
       VocabNoteGeneratedData = new VocabNoteGeneratedData(DictLookup);
       VocabNoteFactory = new VocabNoteFactory(DictLookup, this);
-      NoteServices = new NoteServices(this, ankiCardOperations, settings, DictLookup, VocabNoteFactory, VocabNoteGeneratedData, kanjiNoteMnemonicMaker, config, taskRunner);
+      NoteServices = new NoteServices(this, ankiCardOperations, settings, DictLookup, VocabNoteFactory, VocabNoteGeneratedData, kanjiNoteMnemonicMaker, config, taskRunner, ankiNoteIdMap);
       VocabNoteFactory.SetNoteServices(NoteServices);
 
       Vocab = new VocabCollection(backendNoteCreator, NoteServices);
@@ -103,6 +90,7 @@ public class JPCollection
    public void ClearCaches()
    {
       using var _ = this.Log().Warning().LogMethodExecutionTime();
+      NoteServices.AnkiNoteIdMap.Clear();
       Vocab.Cache.Clear();
       Kanji.Cache.Clear();
       Sentences.Cache.Clear();
