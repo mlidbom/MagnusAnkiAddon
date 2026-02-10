@@ -6,6 +6,6 @@ public static class MnemonicRenderer
 {
     public static string RenderMnemonic(KanjiNote note)
     {
-        return note.GetActiveMnemonic();
+        return note.ActiveMnemonic;
     }
 }

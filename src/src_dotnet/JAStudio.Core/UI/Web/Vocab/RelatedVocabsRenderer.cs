@@ -32,7 +32,7 @@ public class RelatedVocabsRenderer
 
         var vocabEntries = vocabList.Select(vocabNote => $$$"""
                         <div class="relatedVocab {{{CreateClasses(vocabNote)}}}">
-                            <audio src="{{{vocabNote.Audio.GetPrimaryAudioPath()}}}"></audio><a class="play-button"></a>
+                            <audio src="{{{vocabNote.Audio.PrimaryAudioPath}}}"></audio><a class="play-button"></a>
                             <span class="question clipboard">{{{vocabNote.Question.DisambiguationName}}}</span>
                             {{{RenderReadings(vocabNote)}}}
                             {{{vocabNote.MetaData.MetaTagsHtml(noSentenceStatistics: noSentenceStatistics)}}}

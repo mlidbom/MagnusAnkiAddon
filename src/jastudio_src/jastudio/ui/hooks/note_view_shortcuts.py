@@ -27,7 +27,7 @@ def init() -> None:
     def remove_mnemonic() -> None:
         kanji = try_get_review_note_of_type(KanjiNote)
         if kanji:
-            kanji.SetUserMnemonic("")
+            kanji.UserMnemonic = ""
             refresh_shallow()
 
         vocab = try_get_review_note_of_type(VocabNote)
@@ -57,13 +57,13 @@ def init() -> None:
         return app.config() # todo migration hook in dotnet config here
 
     def toggle_show_compound_parts_in_sentence_breakdown() -> None:
-        _config().ShowCompoundPartsInSentenceBreakdown.SetValue(not _config().ShowCompoundPartsInSentenceBreakdown.GetValue())
-        if _config().ShowCompoundPartsInSentenceBreakdown.GetValue():
-            _config().ShowSentenceBreakdownInEditMode.SetValue(False)
+        _config().ShowCompoundPartsInSentenceBreakdown.Value = not _config().ShowCompoundPartsInSentenceBreakdown.Value
+        if _config().ShowCompoundPartsInSentenceBreakdown.Value:
+            _config().ShowSentenceBreakdownInEditMode.Value = False
         refresh_shallow()
 
     def toggle_expando_flag(flag: ConfigurationValue_1[bool]) -> None:
-        flag.SetValue(not flag.GetValue())
+        flag.Value = not flag.Value
         refresh_shallow()
 
     def toggle_hide_transparent_compounds__in_sentence_breakdown() -> None:

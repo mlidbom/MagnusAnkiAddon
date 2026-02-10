@@ -100,7 +100,7 @@ public class UdSentenceBreakdownRenderer
     {
         return string.Join("\n",
             _config.SentenceViewToggles
-                .Where(toggle => toggle.GetValue())
+                .Where(toggle => toggle.Value)
                 .Select(RenderToggle));
     }
 

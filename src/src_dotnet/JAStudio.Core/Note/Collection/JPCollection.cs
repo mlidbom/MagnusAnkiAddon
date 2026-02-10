@@ -91,7 +91,7 @@ public class JPCollection
       Sentences.Cache.Clear();
    }
 
-   string NoteRepositoryType => _config.LoadNotesFromFileSystem.GetValue() ? "file system" : "anki";
+   string NoteRepositoryType => _config.LoadNotesFromFileSystem.Value ? "file system" : "anki";
 
    /// <summary>Clear and reload all caches from the Anki DB. Called after sync or collection reload.</summary>
    public void ReloadFromAnkiDatabase()
@@ -102,7 +102,7 @@ public class JPCollection
       LoadAnkiUserData();
    }
    
-   INoteRepository ConfiguredRepository => _config.LoadNotesFromFileSystem.GetValue() ? _noteRepository : new AnkiNoteRepository(NoteServices);
+   INoteRepository ConfiguredRepository => _config.LoadNotesFromFileSystem.Value ? _noteRepository : new AnkiNoteRepository(NoteServices);
 
    void LoadFromRepository()
    {

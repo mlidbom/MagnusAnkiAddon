@@ -23,17 +23,19 @@ public class ConfigurationValue<T>
                   : defaultValue;
    }
 
-   public T GetValue() => _value;
-
-   public void SetValue(T value)
+   public T Value
    {
-      _value = value;
-
-      _configDict[Name] = value!;
-
-      foreach(var callback in _changeCallbacks)
+      get => _value;
+      set
       {
-         callback(GetValue());
+         _value = value;
+
+         _configDict[Name] = value!;
+
+         foreach(var callback in _changeCallbacks)
+         {
+            callback(Value);
+         }
       }
    }
 

@@ -20,7 +20,7 @@ if not is_testing:
 
     ui.init()
 
-    if app.config().EnableAutomaticGarbageCollection.GetValue():
+    if app.config().EnableAutomaticGarbageCollection.Value:
         import gc
 
         gc.enable()

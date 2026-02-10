@@ -134,8 +134,8 @@ public class NoteSerializerRoundtripTests : CollectionUsingTest
     public void KanjiNote_WithRichData_RoundtripsCorrectly()
     {
         var kanji = CreateKanji("試", "test/try", "<primary>ため</primary>", "<primary>し</primary>");
-        kanji.SetUserAnswer("custom answer");
-        kanji.SetUserMnemonic("my mnemonic");
+        kanji.UserAnswer = "custom answer";
+        kanji.UserMnemonic = "my mnemonic";
         kanji.SetRadicals("言, 弋, 工");
         kanji.AddUserSimilarMeaning("験");
 
@@ -143,10 +143,10 @@ public class NoteSerializerRoundtripTests : CollectionUsingTest
         var roundtripped = _serializer.DeserializeKanji(json);
 
         Assert.Equal(kanji.GetQuestion(), roundtripped.GetQuestion());
-        Assert.Equal("custom answer", roundtripped.GetUserAnswer());
-        Assert.Equal("my mnemonic", roundtripped.GetUserMnemonic());
-        Assert.Contains("言", roundtripped.GetRadicals());
-        Assert.Contains("験", roundtripped.GetUserSimilarMeaning());
+        Assert.Equal("custom answer", roundtripped.UserAnswer);
+        Assert.Equal("my mnemonic", roundtripped.UserMnemonic);
+        Assert.Contains("言", roundtripped.Radicals);
+        Assert.Contains("験", roundtripped.UserSimilarMeaning);
 
         Assert.Equal(json, _serializer.Serialize(roundtripped));
     }

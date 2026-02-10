@@ -123,12 +123,12 @@ public class KanjiNoteMnemonicMaker
         }
 
         var radicalNames = kanjiNote.GetRadicalsNotes()
-            .Select(rad => rad.GetPrimaryRadicalMeaning())
+            .Select(rad => rad.PrimaryRadicalMeaning)
             .ToList();
 
         var radicalParts = string.Join(" ", radicalNames.Select(name => $"<rad>{name}</rad>"));
-        var meaningPart = $"<kan>{kanjiNote.GetPrimaryMeaning()}</kan>";
-        var readingsParts = string.Join(" ", kanjiNote.GetPrimaryReadings().Select(CreateReadingsTag));
+        var meaningPart = $"<kan>{kanjiNote.PrimaryMeaning}</kan>";
+        var readingsParts = string.Join(" ", kanjiNote.PrimaryReadings.Select(CreateReadingsTag));
 
         var mnemonic = $"{radicalParts} {meaningPart} {readingsParts} ...";
         return mnemonic.Trim();

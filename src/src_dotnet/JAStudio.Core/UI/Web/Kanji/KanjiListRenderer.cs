@@ -65,7 +65,7 @@ public class KanjiListRenderer
     public string KanjiKanjiList(KanjiNote kanji)
     {
         var kanjis = _kanji.WithRadical(kanji.GetQuestion());
-        var kanjiReadings = kanji.GetReadingsClean();
+        var kanjiReadings = kanji.ReadingsClean;
 
         return RenderList(kanji, kanjis, kanjiReadings);
     }

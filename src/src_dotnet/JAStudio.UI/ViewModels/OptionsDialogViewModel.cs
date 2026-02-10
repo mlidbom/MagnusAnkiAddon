@@ -44,230 +44,230 @@ public partial class OptionsDialogViewModel : ObservableObject
    [ObservableProperty] double _autoadvanceVocabStartingSeconds;
 
    partial void OnAutoadvanceVocabStartingSecondsChanged(double value) =>
-      _config.AutoadvanceVocabStartingSeconds.SetValue((float)value);
+      _config.AutoadvanceVocabStartingSeconds.Value = (float)value;
 
    [ObservableProperty] double _autoadvanceVocabHiraganaSeconds;
 
    partial void OnAutoadvanceVocabHiraganaSecondsChanged(double value) =>
-      _config.AutoadvanceVocabHiraganaSeconds.SetValue((float)value);
+      _config.AutoadvanceVocabHiraganaSeconds.Value = (float)value;
 
    [ObservableProperty] double _autoadvanceVocabKatakanaSeconds;
 
    partial void OnAutoadvanceVocabKatakanaSecondsChanged(double value) =>
-      _config.AutoadvanceVocabKatakanaSeconds.SetValue((float)value);
+      _config.AutoadvanceVocabKatakanaSeconds.Value = (float)value;
 
    [ObservableProperty] double _autoadvanceVocabKanjiSeconds;
 
    partial void OnAutoadvanceVocabKanjiSecondsChanged(double value) =>
-      _config.AutoadvanceVocabKanjiSeconds.SetValue((float)value);
+      _config.AutoadvanceVocabKanjiSeconds.Value = (float)value;
 
    [ObservableProperty] double _autoadvanceSentenceStartingSeconds;
 
    partial void OnAutoadvanceSentenceStartingSecondsChanged(double value) =>
-      _config.AutoadvanceSentenceStartingSeconds.SetValue((float)value);
+      _config.AutoadvanceSentenceStartingSeconds.Value = (float)value;
 
    [ObservableProperty] double _autoadvanceSentenceHiraganaSeconds;
 
    partial void OnAutoadvanceSentenceHiraganaSecondsChanged(double value) =>
-      _config.AutoadvanceSentenceHiraganaSeconds.SetValue((float)value);
+      _config.AutoadvanceSentenceHiraganaSeconds.Value = (float)value;
 
    [ObservableProperty] double _autoadvanceSentenceKatakanaSeconds;
 
    partial void OnAutoadvanceSentenceKatakanaSecondsChanged(double value) =>
-      _config.AutoadvanceSentenceKatakanaSeconds.SetValue((float)value);
+      _config.AutoadvanceSentenceKatakanaSeconds.Value = (float)value;
 
    [ObservableProperty] double _autoadvanceSentenceKanjiSeconds;
 
    partial void OnAutoadvanceSentenceKanjiSecondsChanged(double value) =>
-      _config.AutoadvanceSentenceKanjiSeconds.SetValue((float)value);
+      _config.AutoadvanceSentenceKanjiSeconds.Value = (float)value;
 
    [ObservableProperty] double _boostFailedCardAllowedTimeByFactor;
 
    partial void OnBoostFailedCardAllowedTimeByFactorChanged(double value) =>
-      _config.BoostFailedCardAllowedTimeByFactor.SetValue((float)value);
+      _config.BoostFailedCardAllowedTimeByFactor.Value = (float)value;
 
    [ObservableProperty] long _decreaseFailedCardIntervalsInterval;
 
    partial void OnDecreaseFailedCardIntervalsIntervalChanged(long value) =>
-      _config.DecreaseFailedCardIntervalsInterval.SetValue(value);
+      _config.DecreaseFailedCardIntervalsInterval.Value = value;
 
    [ObservableProperty] long _timeboxSentenceRead;
 
    partial void OnTimeboxSentenceReadChanged(long value) =>
-      _config.TimeboxSentenceRead.SetValue(value);
+      _config.TimeboxSentenceRead.Value = value;
 
    [ObservableProperty] long _timeboxSentenceListen;
 
    partial void OnTimeboxSentenceListenChanged(long value) =>
-      _config.TimeboxSentenceListen.SetValue(value);
+      _config.TimeboxSentenceListen.Value = value;
 
    [ObservableProperty] long _timeboxVocabRead;
 
    partial void OnTimeboxVocabReadChanged(long value) =>
-      _config.TimeboxVocabRead.SetValue(value);
+      _config.TimeboxVocabRead.Value = value;
 
    [ObservableProperty] long _timeboxVocabListen;
 
    partial void OnTimeboxVocabListenChanged(long value) =>
-      _config.TimeboxVocabListen.SetValue(value);
+      _config.TimeboxVocabListen.Value = value;
 
    [ObservableProperty] long _timeboxKanjiRead;
 
    partial void OnTimeboxKanjiReadChanged(long value) =>
-      _config.TimeboxKanjiRead.SetValue(value);
+      _config.TimeboxKanjiRead.Value = value;
 
    [ObservableProperty] double _minimumTimeViewingQuestion;
 
    partial void OnMinimumTimeViewingQuestionChanged(double value) =>
-      _config.MinimumTimeViewingQuestion.SetValue((float)value);
+      _config.MinimumTimeViewingQuestion.Value = (float)value;
 
    [ObservableProperty] double _minimumTimeViewingAnswer;
 
    partial void OnMinimumTimeViewingAnswerChanged(double value) =>
-      _config.MinimumTimeViewingAnswer.SetValue((float)value);
+      _config.MinimumTimeViewingAnswer.Value = (float)value;
 
    // --- Sentence Display Toggles ---
 
    [ObservableProperty] bool _showKanjiInSentenceBreakdown;
 
    partial void OnShowKanjiInSentenceBreakdownChanged(bool value) =>
-      _config.ShowKanjiInSentenceBreakdown.SetValue(value);
+      _config.ShowKanjiInSentenceBreakdown.Value = value;
 
    [ObservableProperty] bool _showCompoundPartsInSentenceBreakdown;
 
    partial void OnShowCompoundPartsInSentenceBreakdownChanged(bool value) =>
-      _config.ShowCompoundPartsInSentenceBreakdown.SetValue(value);
+      _config.ShowCompoundPartsInSentenceBreakdown.Value = value;
 
    [ObservableProperty] bool _showKanjiMnemonicsInSentenceBreakdown;
 
    partial void OnShowKanjiMnemonicsInSentenceBreakdownChanged(bool value) =>
-      _config.ShowKanjiMnemonicsInSentenceBreakdown.SetValue(value);
+      _config.ShowKanjiMnemonicsInSentenceBreakdown.Value = value;
 
    [ObservableProperty] bool _hideCompositionallyTransparentCompounds;
 
    partial void OnHideCompositionallyTransparentCompoundsChanged(bool value) =>
-      _config.HideCompositionallyTransparentCompounds.SetValue(value);
+      _config.HideCompositionallyTransparentCompounds.Value = value;
 
    [ObservableProperty] bool _automaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound;
 
    partial void OnAutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompoundChanged(bool value) =>
-      _config.AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound.SetValue(value);
+      _config.AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound.Value = value;
 
    [ObservableProperty] bool _automaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound;
 
    partial void OnAutomaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompoundChanged(bool value) =>
-      _config.AutomaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound.SetValue(value);
+      _config.AutomaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound.Value = value;
 
    [ObservableProperty] bool _automaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound;
 
    partial void OnAutomaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompoundChanged(bool value) =>
-      _config.AutomaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound.SetValue(value);
+      _config.AutomaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound.Value = value;
 
    [ObservableProperty] bool _hideAllCompounds;
 
    partial void OnHideAllCompoundsChanged(bool value) =>
-      _config.HideAllCompounds.SetValue(value);
+      _config.HideAllCompounds.Value = value;
 
    [ObservableProperty] bool _showSentenceBreakdownInEditMode;
 
    partial void OnShowSentenceBreakdownInEditModeChanged(bool value) =>
-      _config.ShowSentenceBreakdownInEditMode.SetValue(value);
+      _config.ShowSentenceBreakdownInEditMode.Value = value;
 
    // --- Misc Toggles ---
 
    [ObservableProperty] bool _yomitanIntegrationCopyAnswerToClipboard;
 
    partial void OnYomitanIntegrationCopyAnswerToClipboardChanged(bool value) =>
-      _config.YomitanIntegrationCopyAnswerToClipboard.SetValue(value);
+      _config.YomitanIntegrationCopyAnswerToClipboard.Value = value;
 
    [ObservableProperty] bool _ankiInternalFsrsSetEnableFsrsShortTermWithSteps;
 
    partial void OnAnkiInternalFsrsSetEnableFsrsShortTermWithStepsChanged(bool value) =>
-      _config.AnkiInternalFsrsSetEnableFsrsShortTermWithSteps.SetValue(value);
+      _config.AnkiInternalFsrsSetEnableFsrsShortTermWithSteps.Value = value;
 
    [ObservableProperty] bool _decreaseFailedCardIntervals;
 
    partial void OnDecreaseFailedCardIntervalsChanged(bool value) =>
-      _config.DecreaseFailedCardIntervals.SetValue(value);
+      _config.DecreaseFailedCardIntervals.Value = value;
 
    [ObservableProperty] bool _preventDoubleClicks;
 
    partial void OnPreventDoubleClicksChanged(bool value) =>
-      _config.PreventDoubleClicks.SetValue(value);
+      _config.PreventDoubleClicks.Value = value;
 
    [ObservableProperty] bool _boostFailedCardAllowedTime;
 
    partial void OnBoostFailedCardAllowedTimeChanged(bool value) =>
-      _config.BoostFailedCardAllowedTime.SetValue(value);
+      _config.BoostFailedCardAllowedTime.Value = value;
 
    [ObservableProperty] bool _preferDefaultMnemonicsToSourceMnemonics;
 
    partial void OnPreferDefaultMnemonicsToSourceMnemonicsChanged(bool value) =>
-      _config.PreferDefaultMnemonicsToSourceMnemonics.SetValue(value);
+      _config.PreferDefaultMnemonicsToSourceMnemonics.Value = value;
 
    // --- Performance and Memory Toggles ---
 
    [ObservableProperty] bool _loadStudioInForeground;
 
    partial void OnLoadStudioInForegroundChanged(bool value) =>
-      _config.LoadStudioInForeground.SetValue(value);
+      _config.LoadStudioInForeground.Value = value;
 
    [ObservableProperty] bool _loadJamdictDbIntoMemory;
 
    partial void OnLoadJamdictDbIntoMemoryChanged(bool value) =>
-      _config.LoadJamdictDbIntoMemory.SetValue(value);
+      _config.LoadJamdictDbIntoMemory.Value = value;
 
    [ObservableProperty] bool _preCacheCardStudyingStatus;
 
    partial void OnPreCacheCardStudyingStatusChanged(bool value) =>
-      _config.PreCacheCardStudyingStatus.SetValue(value);
+      _config.PreCacheCardStudyingStatus.Value = value;
 
    [ObservableProperty] bool _preventAnkiFromGarbageCollectingEveryTimeAWindowCloses;
 
    partial void OnPreventAnkiFromGarbageCollectingEveryTimeAWindowClosesChanged(bool value) =>
-      _config.PreventAnkiFromGarbageCollectingEveryTimeAWindowCloses.SetValue(value);
+      _config.PreventAnkiFromGarbageCollectingEveryTimeAWindowCloses.Value = value;
 
    [ObservableProperty] bool _disableAllAutomaticGarbageCollection;
 
    partial void OnDisableAllAutomaticGarbageCollectionChanged(bool value) =>
-      _config.DisableAllAutomaticGarbageCollection.SetValue(value);
+      _config.DisableAllAutomaticGarbageCollection.Value = value;
 
    [ObservableProperty] bool _enableGarbageCollectionDuringBatches;
 
    partial void OnEnableGarbageCollectionDuringBatchesChanged(bool value) =>
-      _config.EnableGarbageCollectionDuringBatches.SetValue(value);
+      _config.EnableGarbageCollectionDuringBatches.Value = value;
 
    [ObservableProperty] bool _enableAutomaticGarbageCollection;
 
    partial void OnEnableAutomaticGarbageCollectionChanged(bool value) =>
-      _config.EnableAutomaticGarbageCollection.SetValue(value);
+      _config.EnableAutomaticGarbageCollection.Value = value;
 
    [ObservableProperty] long _reanalysisThreads;
 
    partial void OnReanalysisThreadsChanged(long value) =>
-      _config.ReanalysisThreads.SetValue(value);
+      _config.ReanalysisThreads.Value = value;
 
    // --- Developer Only Toggles ---
 
    [ObservableProperty] bool _enableTraceMalloc;
 
    partial void OnEnableTraceMallocChanged(bool value) =>
-      _config.EnableTraceMalloc.SetValue(value);
+      _config.EnableTraceMalloc.Value = value;
 
    [ObservableProperty] bool _trackInstancesInMemory;
 
    partial void OnTrackInstancesInMemoryChanged(bool value) =>
-      _config.TrackInstancesInMemory.SetValue(value);
+      _config.TrackInstancesInMemory.Value = value;
 
    [ObservableProperty] bool _logWhenFlushingNotes;
 
    partial void OnLogWhenFlushingNotesChanged(bool value) =>
-      _config.LogWhenFlushingNotes.SetValue(value);
+      _config.LogWhenFlushingNotes.Value = value;
 
    [ObservableProperty] bool _loadNotesFromFileSystem;
 
    partial void OnLoadNotesFromFileSystemChanged(bool value) =>
-      _config.LoadNotesFromFileSystem.SetValue(value);
+      _config.LoadNotesFromFileSystem.Value = value;
 
    // --- Commands ---
 
@@ -281,61 +281,61 @@ public partial class OptionsDialogViewModel : ObservableObject
    void LoadFromConfig()
    {
       // Numeric values
-      AutoadvanceVocabStartingSeconds = _config.AutoadvanceVocabStartingSeconds.GetValue();
-      AutoadvanceVocabHiraganaSeconds = _config.AutoadvanceVocabHiraganaSeconds.GetValue();
-      AutoadvanceVocabKatakanaSeconds = _config.AutoadvanceVocabKatakanaSeconds.GetValue();
-      AutoadvanceVocabKanjiSeconds = _config.AutoadvanceVocabKanjiSeconds.GetValue();
+      AutoadvanceVocabStartingSeconds = _config.AutoadvanceVocabStartingSeconds.Value;
+      AutoadvanceVocabHiraganaSeconds = _config.AutoadvanceVocabHiraganaSeconds.Value;
+      AutoadvanceVocabKatakanaSeconds = _config.AutoadvanceVocabKatakanaSeconds.Value;
+      AutoadvanceVocabKanjiSeconds = _config.AutoadvanceVocabKanjiSeconds.Value;
 
-      AutoadvanceSentenceStartingSeconds = _config.AutoadvanceSentenceStartingSeconds.GetValue();
-      AutoadvanceSentenceHiraganaSeconds = _config.AutoadvanceSentenceHiraganaSeconds.GetValue();
-      AutoadvanceSentenceKatakanaSeconds = _config.AutoadvanceSentenceKatakanaSeconds.GetValue();
-      AutoadvanceSentenceKanjiSeconds = _config.AutoadvanceSentenceKanjiSeconds.GetValue();
+      AutoadvanceSentenceStartingSeconds = _config.AutoadvanceSentenceStartingSeconds.Value;
+      AutoadvanceSentenceHiraganaSeconds = _config.AutoadvanceSentenceHiraganaSeconds.Value;
+      AutoadvanceSentenceKatakanaSeconds = _config.AutoadvanceSentenceKatakanaSeconds.Value;
+      AutoadvanceSentenceKanjiSeconds = _config.AutoadvanceSentenceKanjiSeconds.Value;
 
-      BoostFailedCardAllowedTimeByFactor = _config.BoostFailedCardAllowedTimeByFactor.GetValue();
-      DecreaseFailedCardIntervalsInterval = _config.DecreaseFailedCardIntervalsInterval.GetValue();
+      BoostFailedCardAllowedTimeByFactor = _config.BoostFailedCardAllowedTimeByFactor.Value;
+      DecreaseFailedCardIntervalsInterval = _config.DecreaseFailedCardIntervalsInterval.Value;
 
-      TimeboxSentenceRead = _config.TimeboxSentenceRead.GetValue();
-      TimeboxSentenceListen = _config.TimeboxSentenceListen.GetValue();
-      TimeboxVocabRead = _config.TimeboxVocabRead.GetValue();
-      TimeboxVocabListen = _config.TimeboxVocabListen.GetValue();
-      TimeboxKanjiRead = _config.TimeboxKanjiRead.GetValue();
+      TimeboxSentenceRead = _config.TimeboxSentenceRead.Value;
+      TimeboxSentenceListen = _config.TimeboxSentenceListen.Value;
+      TimeboxVocabRead = _config.TimeboxVocabRead.Value;
+      TimeboxVocabListen = _config.TimeboxVocabListen.Value;
+      TimeboxKanjiRead = _config.TimeboxKanjiRead.Value;
 
-      MinimumTimeViewingQuestion = _config.MinimumTimeViewingQuestion.GetValue();
-      MinimumTimeViewingAnswer = _config.MinimumTimeViewingAnswer.GetValue();
+      MinimumTimeViewingQuestion = _config.MinimumTimeViewingQuestion.Value;
+      MinimumTimeViewingAnswer = _config.MinimumTimeViewingAnswer.Value;
 
       // Sentence Display
-      ShowKanjiInSentenceBreakdown = _config.ShowKanjiInSentenceBreakdown.GetValue();
-      ShowCompoundPartsInSentenceBreakdown = _config.ShowCompoundPartsInSentenceBreakdown.GetValue();
-      ShowKanjiMnemonicsInSentenceBreakdown = _config.ShowKanjiMnemonicsInSentenceBreakdown.GetValue();
-      HideCompositionallyTransparentCompounds = _config.HideCompositionallyTransparentCompounds.GetValue();
-      AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound = _config.AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound.GetValue();
-      AutomaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound = _config.AutomaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound.GetValue();
-      AutomaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound = _config.AutomaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound.GetValue();
-      HideAllCompounds = _config.HideAllCompounds.GetValue();
-      ShowSentenceBreakdownInEditMode = _config.ShowSentenceBreakdownInEditMode.GetValue();
+      ShowKanjiInSentenceBreakdown = _config.ShowKanjiInSentenceBreakdown.Value;
+      ShowCompoundPartsInSentenceBreakdown = _config.ShowCompoundPartsInSentenceBreakdown.Value;
+      ShowKanjiMnemonicsInSentenceBreakdown = _config.ShowKanjiMnemonicsInSentenceBreakdown.Value;
+      HideCompositionallyTransparentCompounds = _config.HideCompositionallyTransparentCompounds.Value;
+      AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound = _config.AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound.Value;
+      AutomaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound = _config.AutomaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound.Value;
+      AutomaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound = _config.AutomaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound.Value;
+      HideAllCompounds = _config.HideAllCompounds.Value;
+      ShowSentenceBreakdownInEditMode = _config.ShowSentenceBreakdownInEditMode.Value;
 
       // Misc
-      YomitanIntegrationCopyAnswerToClipboard = _config.YomitanIntegrationCopyAnswerToClipboard.GetValue();
-      AnkiInternalFsrsSetEnableFsrsShortTermWithSteps = _config.AnkiInternalFsrsSetEnableFsrsShortTermWithSteps.GetValue();
-      DecreaseFailedCardIntervals = _config.DecreaseFailedCardIntervals.GetValue();
-      PreventDoubleClicks = _config.PreventDoubleClicks.GetValue();
-      BoostFailedCardAllowedTime = _config.BoostFailedCardAllowedTime.GetValue();
-      PreferDefaultMnemonicsToSourceMnemonics = _config.PreferDefaultMnemonicsToSourceMnemonics.GetValue();
+      YomitanIntegrationCopyAnswerToClipboard = _config.YomitanIntegrationCopyAnswerToClipboard.Value;
+      AnkiInternalFsrsSetEnableFsrsShortTermWithSteps = _config.AnkiInternalFsrsSetEnableFsrsShortTermWithSteps.Value;
+      DecreaseFailedCardIntervals = _config.DecreaseFailedCardIntervals.Value;
+      PreventDoubleClicks = _config.PreventDoubleClicks.Value;
+      BoostFailedCardAllowedTime = _config.BoostFailedCardAllowedTime.Value;
+      PreferDefaultMnemonicsToSourceMnemonics = _config.PreferDefaultMnemonicsToSourceMnemonics.Value;
 
       // Performance and Memory
-      LoadStudioInForeground = _config.LoadStudioInForeground.GetValue();
-      LoadJamdictDbIntoMemory = _config.LoadJamdictDbIntoMemory.GetValue();
-      PreCacheCardStudyingStatus = _config.PreCacheCardStudyingStatus.GetValue();
-      PreventAnkiFromGarbageCollectingEveryTimeAWindowCloses = _config.PreventAnkiFromGarbageCollectingEveryTimeAWindowCloses.GetValue();
-      DisableAllAutomaticGarbageCollection = _config.DisableAllAutomaticGarbageCollection.GetValue();
-      EnableGarbageCollectionDuringBatches = _config.EnableGarbageCollectionDuringBatches.GetValue();
-      EnableAutomaticGarbageCollection = _config.EnableAutomaticGarbageCollection.GetValue();
-      ReanalysisThreads = _config.ReanalysisThreads.GetValue();
+      LoadStudioInForeground = _config.LoadStudioInForeground.Value;
+      LoadJamdictDbIntoMemory = _config.LoadJamdictDbIntoMemory.Value;
+      PreCacheCardStudyingStatus = _config.PreCacheCardStudyingStatus.Value;
+      PreventAnkiFromGarbageCollectingEveryTimeAWindowCloses = _config.PreventAnkiFromGarbageCollectingEveryTimeAWindowCloses.Value;
+      DisableAllAutomaticGarbageCollection = _config.DisableAllAutomaticGarbageCollection.Value;
+      EnableGarbageCollectionDuringBatches = _config.EnableGarbageCollectionDuringBatches.Value;
+      EnableAutomaticGarbageCollection = _config.EnableAutomaticGarbageCollection.Value;
+      ReanalysisThreads = _config.ReanalysisThreads.Value;
 
       // Developer Only
-      EnableTraceMalloc = _config.EnableTraceMalloc.GetValue();
-      TrackInstancesInMemory = _config.TrackInstancesInMemory.GetValue();
-      LogWhenFlushingNotes = _config.LogWhenFlushingNotes.GetValue();
-      LoadNotesFromFileSystem = _config.LoadNotesFromFileSystem.GetValue();
+      EnableTraceMalloc = _config.EnableTraceMalloc.Value;
+      TrackInstancesInMemory = _config.TrackInstancesInMemory.Value;
+      LogWhenFlushingNotes = _config.LogWhenFlushingNotes.Value;
+      LoadNotesFromFileSystem = _config.LoadNotesFromFileSystem.Value;
    }
 }

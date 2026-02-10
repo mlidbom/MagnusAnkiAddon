@@ -95,12 +95,12 @@ public class SentenceAnalysisViewModelWithSelectDataTests : SentenceAnalysisView
    {
       try
       {
-         GetService<JapaneseConfig>().HideAllCompounds.SetValue(true);
+         GetService<JapaneseConfig>().HideAllCompounds.Value = true;
          AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(sentence, expectedOutput);
       }
       finally
       {
-         GetService<JapaneseConfig>().HideAllCompounds.SetValue(false);
+         GetService<JapaneseConfig>().HideAllCompounds.Value = false;
       }
    }
 

@@ -134,16 +134,16 @@ public class LocalNoteUpdater
                                    .ToList();
          kanji.Tags.Toggle(Tags.Kanji.WithStudyingVocab, studyingReadingVocab.Any());
 
-         var readingsHtml = $"{kanji.GetReadingOnHtml()} {kanji.GetReadingKunHtml()} {kanji.GetReadingNanHtml()}";
+         var readingsHtml = $"{kanji.ReadingOnHtml} {kanji.ReadingKunHtml} {kanji.ReadingNanHtml}";
          var primaryReadings = primaryReadingPattern.Matches(readingsHtml)
                                                     .Select(m => m.Groups[1].Value)
                                                     .ToList();
          kanji.Tags.Toggle(Tags.Kanji.WithNoPrimaryReadings, !primaryReadings.Any());
 
-         var primaryOnReadings = primaryReadingPattern.Matches(kanji.GetReadingOnHtml())
+         var primaryOnReadings = primaryReadingPattern.Matches(kanji.ReadingOnHtml)
                                                       .Select(m => m.Groups[1].Value)
                                                       .ToList();
-         var nonPrimaryOnReadings = kanji.GetReadingsOn()
+         var nonPrimaryOnReadings = kanji.ReadingsOn
                                          .Where(reading => !primaryReadings.Contains(reading))
                                          .ToList();
 
@@ -195,7 +195,7 @@ public class LocalNoteUpdater
          kanji.Tags.Toggle(Tags.Kanji.HasNonPrimaryOnReadingVocabWithOnlyKnownKanji,
                            nonPrimaryOnReadings.Any(reading => HasVocabWithReadingAndNoUnknownKanji(reading)));
 
-         var allReadings = kanji.GetReadingsClean();
+         var allReadings = kanji.ReadingsClean;
 
          bool VocabMatchesPrimaryReading(VocabNote vocab)
          {
@@ -226,7 +226,7 @@ public class LocalNoteUpdater
 
          if(singleKanjiVocab.Any())
          {
-            var readingsHtml = $"{kanji.GetReadingOnHtml()} {kanji.GetReadingKunHtml()} {kanji.GetReadingNanHtml()}";
+            var readingsHtml = $"{kanji.ReadingOnHtml} {kanji.ReadingKunHtml} {kanji.ReadingNanHtml}";
             var primaryReadings = primaryReadingPattern.Matches(readingsHtml)
                                                        .Select(m => m.Groups[1].Value)
                                                        .ToList();
@@ -292,7 +292,7 @@ public class LocalNoteUpdater
 
       using var runner = _taskRunner.Current("Reparse Sentences");
       runner.ProcessWithProgress(sentences, it => { ReparseSentence(it); }, "Reanalysing sentences.",
-                                 threads: ThreadCount.WithThreads((int)_config.ReanalysisThreads.GetValue()));
+                                 threads: ThreadCount.WithThreads((int)_config.ReanalysisThreads.Value));
    }
 
    public void ReparseSentencesForVocab(VocabNote vocab)

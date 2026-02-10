@@ -24,17 +24,17 @@ public class KanjiViewModel
 
     public string Readings()
     {
-        var readings = $"{KanaUtils.HiraganaToKatakana(Kanji.GetReadingOnHtml())} <span class=\"readingsSeparator\">|</span> {Kanji.GetReadingKunHtml()}";
-        if (!string.IsNullOrEmpty(Kanji.GetReadingNanHtml()))
+        var readings = $"{KanaUtils.HiraganaToKatakana(Kanji.ReadingOnHtml)} <span class=\"readingsSeparator\">|</span> {Kanji.ReadingKunHtml}";
+        if (!string.IsNullOrEmpty(Kanji.ReadingNanHtml))
         {
-            readings += $" <span class=\"readingsSeparator\">|</span> {Kanji.GetReadingNanHtml()}";
+            readings += $" <span class=\"readingsSeparator\">|</span> {Kanji.ReadingNanHtml}";
         }
         return readings;
     }
 
     public string Mnemonic()
     {
-        return Kanji.GetActiveMnemonic();
+        return Kanji.ActiveMnemonic;
     }
 
     public override string ToString()

@@ -9,7 +9,7 @@ public class KanjiSnapshot : CachedNote
 
    public KanjiSnapshot(KanjiNote note) : base(note)
    {
-      Radicals = note.GetRadicals().Distinct().ToArray();
-      Readings = note.GetReadingsClean().Distinct().ToArray();
+      Radicals = note.Radicals.Distinct().ToArray();
+      Readings = note.ReadingsClean.Distinct().ToArray();
    }
 }

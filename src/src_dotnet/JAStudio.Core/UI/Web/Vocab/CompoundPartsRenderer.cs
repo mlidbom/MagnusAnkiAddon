@@ -38,7 +38,7 @@ public static class CompoundPartsRenderer
 
         var vocabEntries = vocabList.Select(vocabWrapper => $$$"""
                         <div class="relatedVocab {{{CreateClasses(vocabWrapper.VocabNote, vocabWrapper.Depth)}}}">
-                            <audio src="{{{vocabWrapper.VocabNote.Audio.GetPrimaryAudioPath()}}}"></audio><a class="play-button"></a>
+                            <audio src="{{{vocabWrapper.VocabNote.Audio.PrimaryAudioPath}}}"></audio><a class="play-button"></a>
                             <span class="question clipboard">{{{vocabWrapper.VocabNote.Question.DisambiguationName}}}</span>
                             {{{RenderReadings(vocabWrapper)}}}
                             {{{vocabWrapper.VocabNote.MetaData.MetaTagsHtml(noSentenceStatistics: true)}}}

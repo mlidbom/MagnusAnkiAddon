@@ -103,7 +103,7 @@ public class SentenceNoteMenus
             var toggle = config.SentenceViewToggles[i];
             items.Add(SpecMenuItem.Command(
                 ShortcutFinger.FingerByPriorityOrder(i, toggle.Title),
-                () => toggle.SetValue(!toggle.GetValue())));
+                () => toggle.Value = !toggle.Value));
         }
 
         // Add the "Toggle all auto yield flags" action

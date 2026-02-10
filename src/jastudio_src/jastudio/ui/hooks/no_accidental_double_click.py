@@ -18,18 +18,18 @@ _real_answer_card = Reviewer._answerCard  # pyright: ignore[reportPrivateUsage]
 _stopwatch = StopWatch()
 
 def _show_answer(reviewer: Reviewer) -> None:
-    if app.config().PreventDoubleClicks.GetValue() and mw.reviewer.auto_advance_enabled:
+    if app.config().PreventDoubleClicks.Value and mw.reviewer.auto_advance_enabled:
         global _stopwatch
-        if non_optional(reviewer.card).time_taken() < app.config().MinimumTimeViewingQuestion.GetValue() * 1000:
+        if non_optional(reviewer.card).time_taken() < app.config().MinimumTimeViewingQuestion.Value * 1000:
             tooltip("Blocked accidental doubleclick")
             return
         _stopwatch = StopWatch()
     _real_show_answer(reviewer)
 
 def _answer_card(reviewer: Reviewer, ease: Literal[1, 2, 3, 4]) -> None:
-    if app.config().PreventDoubleClicks.GetValue() and mw.reviewer.auto_advance_enabled:
+    if app.config().PreventDoubleClicks.Value and mw.reviewer.auto_advance_enabled:
         global _stopwatch
-        if _stopwatch.elapsed_seconds() < app.config().MinimumTimeViewingAnswer.GetValue():
+        if _stopwatch.elapsed_seconds() < app.config().MinimumTimeViewingAnswer.Value:
             tooltip("Blocked accidental doubleclick")
             return
 

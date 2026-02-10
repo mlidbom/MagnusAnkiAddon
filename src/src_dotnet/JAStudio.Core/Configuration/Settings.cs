@@ -32,16 +32,16 @@ public class Settings
     void Refresh()
     {
         var config = _config;
-        _hideTransparentCompounds = config.HideCompositionallyTransparentCompounds.GetValue();
-        _showBreakdownInEditMode = config.ShowSentenceBreakdownInEditMode.GetValue();
-        _hideAllCompounds = config.HideAllCompounds.GetValue();
-        _logWhenFlushingNotes = config.LogWhenFlushingNotes.GetValue();
-        _showCompoundPartsInSentenceBreakdown = config.ShowCompoundPartsInSentenceBreakdown.GetValue();
-        _showKanjiInSentenceBreakdown = config.ShowKanjiInSentenceBreakdown.GetValue();
-        _showKanjiMnemonicsInSentenceBreakdown = config.ShowKanjiMnemonicsInSentenceBreakdown.GetValue();
-        _automaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound = config.AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound.GetValue();
-        _automaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound = config.AutomaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound.GetValue();
-        _automaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound = config.AutomaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound.GetValue();
+        _hideTransparentCompounds = config.HideCompositionallyTransparentCompounds.Value;
+        _showBreakdownInEditMode = config.ShowSentenceBreakdownInEditMode.Value;
+        _hideAllCompounds = config.HideAllCompounds.Value;
+        _logWhenFlushingNotes = config.LogWhenFlushingNotes.Value;
+        _showCompoundPartsInSentenceBreakdown = config.ShowCompoundPartsInSentenceBreakdown.Value;
+        _showKanjiInSentenceBreakdown = config.ShowKanjiInSentenceBreakdown.Value;
+        _showKanjiMnemonicsInSentenceBreakdown = config.ShowKanjiMnemonicsInSentenceBreakdown.Value;
+        _automaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound = config.AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound.Value;
+        _automaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound = config.AutomaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound.Value;
+        _automaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound = config.AutomaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound.Value;
     }
 
     public bool HideTransparentCompounds() { EnsureInitialized(); return _hideTransparentCompounds; }

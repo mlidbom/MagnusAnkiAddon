@@ -15,11 +15,11 @@ public class KanjiNotePortedTests : CollectionUsingTest
    public void InsideRadicalPopulation()
    {
       var inside = GetService<KanjiCollection>().WithKanji("内")!;
-      inside.SetUserMnemonic("<rad>head</rad> <rad>person</rad>");
+      inside.UserMnemonic = "<rad>head</rad> <rad>person</rad>";
 
       inside.PopulateRadicalsFromMnemonicTags();
 
-      Assert.Equal(["冂", "人"], inside.GetRadicals());
+      Assert.Equal(["冂", "人"], inside.Radicals);
    }
 
    [Theory]
@@ -34,16 +34,16 @@ public class KanjiNotePortedTests : CollectionUsingTest
 
       kanjiNote.BootstrapMnemonicFromRadicals();
 
-      Assert.Equal(expectedMnemonic, kanjiNote.GetUserMnemonic());
+      Assert.Equal(expectedMnemonic, kanjiNote.UserMnemonic);
    }
 
    [Fact]
    public void GetPrimaryMeaning()
    {
       var one = GetService<KanjiCollection>().WithKanji("一")!;
-      Assert.Equal("ground", one.GetPrimaryRadicalMeaning());
+      Assert.Equal("ground", one.PrimaryRadicalMeaning);
 
       var hon = GetService<KanjiCollection>().WithKanji("本")!;
-      Assert.Equal("true", hon.GetPrimaryRadicalMeaning());
+      Assert.Equal("true", hon.PrimaryRadicalMeaning);
    }
 }

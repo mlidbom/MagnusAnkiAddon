@@ -248,7 +248,7 @@ public class QueryBuilder
 
         bool KanjiContainsAllRadicals(KanjiNote kanji)
         {
-            var kanjiRadicals = kanji.GetRadicals().ToHashSet();
+            var kanjiRadicals = kanji.Radicals.ToHashSet();
             return radicals.All(r => kanjiRadicals.Contains(r.ToString()));
         }
 

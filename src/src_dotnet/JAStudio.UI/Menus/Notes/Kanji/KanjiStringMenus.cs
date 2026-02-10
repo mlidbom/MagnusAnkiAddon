@@ -20,7 +20,7 @@ public static class KanjiStringMenus
         SpecMenuItem BuildHighlightedVocabMenuSpec(string vocabToAdd)
         {
             var items = new List<SpecMenuItem>();
-            var primaryVocab = kanji.GetPrimaryVocab();
+            var primaryVocab = kanji.PrimaryVocab;
 
             // Add positioning actions for each existing primary vocab
             for (int i = 0; i < primaryVocab.Count; i++)
@@ -55,13 +55,13 @@ public static class KanjiStringMenus
             if (KanaUtils.IsOnlyKatakana(str))
             {
                 var hiraganaString = KanaUtils.KatakanaToHiragana(str);
-                if (kanji.GetPrimaryReadingsOn().Contains(hiraganaString))
+                if (kanji.PrimaryReadingsOn.Contains(hiraganaString))
                 {
                     items.Add(SpecMenuItem.Command(
                         titleFactory("Remove primary Onyomi Reading"),
                         () => kanji.RemovePrimaryOnReading(hiraganaString)));
                 }
-                else if (kanji.GetReadingsOn().Contains(hiraganaString))
+                else if (kanji.ReadingsOn.Contains(hiraganaString))
                 {
                     items.Add(SpecMenuItem.Command(
                         titleFactory("Make primary Onyomi Reading"),
@@ -70,13 +70,13 @@ public static class KanjiStringMenus
             }
             else if (KanaUtils.IsOnlyHiragana(str))
             {
-                if (kanji.GetPrimaryReadingsKun().Contains(str))
+                if (kanji.PrimaryReadingsKun.Contains(str))
                 {
                     items.Add(SpecMenuItem.Command(
                         titleFactory("Remove primary Kunyomi reading"),
                         () => kanji.RemovePrimaryKunReading(str)));
                 }
-                else if (kanji.GetReadingsKun().Contains(str))
+                else if (kanji.ReadingsKun.Contains(str))
                 {
                     items.Add(SpecMenuItem.Command(
                         titleFactory("Make primary Kunyomi reading"),

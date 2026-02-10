@@ -11,7 +11,7 @@ public class QuestionRenderer
 
     public string RenderWbr(string question)
     {
-        return _config.ShowSentenceBreakdownInEditMode.GetValue()
+        return _config.ShowSentenceBreakdownInEditMode.Value
             ? question.Replace(SentenceQuestionField.WordBreakTag, "<span class='wbr_tag'>&lt;wbr&gt;</span>")
             : question;
     }

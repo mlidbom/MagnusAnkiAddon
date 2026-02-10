@@ -37,23 +37,16 @@ public class KanjiNote : JPNote
 
     public override string GetAnswer()
     {
-        var userAnswer = GetUserAnswer();
+        var userAnswer = UserAnswer;
         return !string.IsNullOrEmpty(userAnswer) ? userAnswer : GetField(NoteFieldsConstants.Kanji.SourceAnswer);
     }
 
-    public string GetAnswerText()
-    {
-        return StringExtensions.StripHtmlMarkup(GetAnswer());
-    }
+    public string AnswerText => StringExtensions.StripHtmlMarkup(GetAnswer());
 
-    public string GetUserAnswer()
+    public string UserAnswer
     {
-        return GetField(NoteFieldsConstants.Kanji.UserAnswer);
-    }
-
-    public void SetUserAnswer(string value)
-    {
-        SetField(NoteFieldsConstants.Kanji.UserAnswer, value);
+        get => GetField(NoteFieldsConstants.Kanji.UserAnswer);
+        set => SetField(NoteFieldsConstants.Kanji.UserAnswer, value);
     }
 
     public override void UpdateGeneratedData()
@@ -61,16 +54,16 @@ public class KanjiNote : JPNote
         base.UpdateGeneratedData();
 
         // Katakana sneaks in via yomitan etc
-        SetReadingOn(KanaUtils.KatakanaToHiragana(GetReadingOnHtml()));
+        ReadingOnHtml = KanaUtils.KatakanaToHiragana(ReadingOnHtml);
 
         void UpdatePrimaryAudios()
         {
-            var vocabWeShouldPlay = GetPrimaryVocab()
+            var vocabWeShouldPlay = PrimaryVocab
                 .SelectMany(question => Services.Collection.Vocab.WithQuestion(question))
                 .ToList();
             
             var audioString = vocabWeShouldPlay.Count > 0
-                ? string.Join("", vocabWeShouldPlay.Select(vo => vo.Audio.GetPrimaryAudio()))
+                ? string.Join("", vocabWeShouldPlay.Select(vo => vo.Audio.PrimaryAudio))
                 : string.Empty;
             
             SetPrimaryVocabAudio(audioString);
@@ -80,121 +73,113 @@ public class KanjiNote : JPNote
         UpdatePrimaryAudios();
     }
 
-    public List<string> GetReadingsOn()
+    public List<string> ReadingsOn => StringExtensions.ExtractCommaSeparatedValues(
+            StringExtensions.StripHtmlMarkup(ReadingOnHtml));
+
+    public List<string> ReadingOnListHtml => StringExtensions.ExtractCommaSeparatedValues(ReadingOnHtml);
+
+    public List<string> ReadingsKun => StringExtensions.ExtractCommaSeparatedValues(
+            StringExtensions.StripHtmlMarkup(ReadingKunHtml));
+
+    public List<string> ReadingKunListHtml => StringExtensions.ExtractCommaSeparatedValues(ReadingKunHtml);
+
+    public List<string> ReadingNanListHtml => StringExtensions.ExtractCommaSeparatedValues(ReadingNanHtml);
+
+    public List<string> ReadingsClean
     {
-        return StringExtensions.ExtractCommaSeparatedValues(
-            StringExtensions.StripHtmlMarkup(GetReadingOnHtml()));
+        get
+        {
+            var allReadings = new List<string>();
+            allReadings.AddRange(ReadingOnListHtml);
+            allReadings.AddRange(ReadingKunListHtml);
+            allReadings.AddRange(ReadingNanListHtml);
+            return allReadings.Select(StringExtensions.StripHtmlMarkup).ToList();
+        }
     }
 
-    public List<string> GetReadingOnListHtml()
+    public string ReadingOnHtml
     {
-        return StringExtensions.ExtractCommaSeparatedValues(GetReadingOnHtml());
+        get => GetField(NoteFieldsConstants.Kanji.ReadingOn);
+        set => SetField(NoteFieldsConstants.Kanji.ReadingOn, value);
     }
 
-    public List<string> GetReadingsKun()
+    public List<string> PrimaryReadings
     {
-        return StringExtensions.ExtractCommaSeparatedValues(
-            StringExtensions.StripHtmlMarkup(GetReadingKunHtml()));
+        get
+        {
+            var readings = new List<string>();
+            readings.AddRange(PrimaryReadingsOn);
+            readings.AddRange(PrimaryReadingsKun);
+            readings.AddRange(PrimaryReadingsNan);
+            return readings;
+        }
     }
 
-    public List<string> GetReadingKunListHtml()
+    public List<string> PrimaryReadingsOn
     {
-        return StringExtensions.ExtractCommaSeparatedValues(GetReadingKunHtml());
+        get
+        {
+            var matches = PrimaryReadingPattern.Matches(ReadingOnHtml);
+            return matches.Select(m => StringExtensions.StripHtmlMarkup(m.Groups[1].Value)).ToList();
+        }
     }
 
-    public List<string> GetReadingNanListHtml()
+    public List<string> PrimaryReadingsKun
     {
-        return StringExtensions.ExtractCommaSeparatedValues(GetReadingNanHtml());
+        get
+        {
+            var matches = PrimaryReadingPattern.Matches(ReadingKunHtml);
+            return matches.Select(m => StringExtensions.StripHtmlMarkup(m.Groups[1].Value)).ToList();
+        }
     }
 
-    public List<string> GetReadingsClean()
+    public List<string> PrimaryReadingsNan
     {
-        var allReadings = new List<string>();
-        allReadings.AddRange(GetReadingOnListHtml());
-        allReadings.AddRange(GetReadingKunListHtml());
-        allReadings.AddRange(GetReadingNanListHtml());
-        return allReadings.Select(StringExtensions.StripHtmlMarkup).ToList();
+        get
+        {
+            var matches = PrimaryReadingPattern.Matches(ReadingNanHtml);
+            return matches.Select(m => StringExtensions.StripHtmlMarkup(m.Groups[1].Value)).ToList();
+        }
     }
 
-    public string GetReadingOnHtml()
+    public string ReadingKunHtml
     {
-        return GetField(NoteFieldsConstants.Kanji.ReadingOn);
+        get => GetField(NoteFieldsConstants.Kanji.ReadingKun);
+        set => SetField(NoteFieldsConstants.Kanji.ReadingKun, value);
     }
 
-    public void SetReadingOn(string value)
-    {
-        SetField(NoteFieldsConstants.Kanji.ReadingOn, value);
-    }
-
-    public List<string> GetPrimaryReadings()
-    {
-        var readings = new List<string>();
-        readings.AddRange(GetPrimaryReadingsOn());
-        readings.AddRange(GetPrimaryReadingsKun());
-        readings.AddRange(GetPrimaryReadingsNan());
-        return readings;
-    }
-
-    public List<string> GetPrimaryReadingsOn()
-    {
-        var matches = PrimaryReadingPattern.Matches(GetReadingOnHtml());
-        return matches.Select(m => StringExtensions.StripHtmlMarkup(m.Groups[1].Value)).ToList();
-    }
-
-    public List<string> GetPrimaryReadingsKun()
-    {
-        var matches = PrimaryReadingPattern.Matches(GetReadingKunHtml());
-        return matches.Select(m => StringExtensions.StripHtmlMarkup(m.Groups[1].Value)).ToList();
-    }
-
-    public List<string> GetPrimaryReadingsNan()
-    {
-        var matches = PrimaryReadingPattern.Matches(GetReadingNanHtml());
-        return matches.Select(m => StringExtensions.StripHtmlMarkup(m.Groups[1].Value)).ToList();
-    }
-
-    public string GetReadingKunHtml()
-    {
-        return GetField(NoteFieldsConstants.Kanji.ReadingKun);
-    }
-
-    public void SetReadingKun(string value)
-    {
-        SetField(NoteFieldsConstants.Kanji.ReadingKun, value);
-    }
-
-    public string GetReadingNanHtml()
-    {
-        return GetField(NoteFieldsConstants.Kanji.ReadingNan);
-    }
+    public string ReadingNanHtml => GetField(NoteFieldsConstants.Kanji.ReadingNan);
 
     public void AddPrimaryOnReading(string reading)
     {
-        SetReadingOn(StringExtensions.ReplaceWord(reading, $"<primary>{reading}</primary>", GetReadingOnHtml()));
+        ReadingOnHtml = StringExtensions.ReplaceWord(reading, $"<primary>{reading}</primary>", ReadingOnHtml);
     }
 
     public void RemovePrimaryOnReading(string reading)
     {
-        SetReadingOn(GetReadingOnHtml().Replace($"<primary>{reading}</primary>", reading));
+        ReadingOnHtml = ReadingOnHtml.Replace($"<primary>{reading}</primary>", reading);
     }
 
     public void AddPrimaryKunReading(string reading)
     {
-        SetReadingKun(StringExtensions.ReplaceWord(reading, $"<primary>{reading}</primary>", GetReadingKunHtml()));
+        ReadingKunHtml = StringExtensions.ReplaceWord(reading, $"<primary>{reading}</primary>", ReadingKunHtml);
     }
 
     public void RemovePrimaryKunReading(string reading)
     {
-        SetReadingKun(GetReadingKunHtml().Replace($"<primary>{reading}</primary>", reading));
+        ReadingKunHtml = ReadingKunHtml.Replace($"<primary>{reading}</primary>", reading);
     }
 
-    public List<string> GetRadicals()
+    public List<string> Radicals
     {
-        var radicalsField = GetField(NoteFieldsConstants.Kanji.Radicals);
-        var question = GetQuestion();
-        return StringExtensions.ExtractCommaSeparatedValues(radicalsField)
-            .Where(r => r != question)
-            .ToList();
+        get
+        {
+            var radicalsField = GetField(NoteFieldsConstants.Kanji.Radicals);
+            var question = GetQuestion();
+            return StringExtensions.ExtractCommaSeparatedValues(radicalsField)
+                .Where(r => r != question)
+                .ToList();
+        }
     }
 
     public void SetRadicals(string value)
@@ -205,7 +190,7 @@ public class KanjiNote : JPNote
     public void PositionPrimaryVocab(string vocab, int newIndex = -1)
     {
         vocab = vocab.Trim();
-        var primaryVocabList = GetPrimaryVocab();
+        var primaryVocabList = PrimaryVocab;
         
         // Remove if already present
         if (primaryVocabList.Contains(vocab))
@@ -223,25 +208,22 @@ public class KanjiNote : JPNote
             primaryVocabList.Insert(newIndex, vocab);
         }
 
-        SetPrimaryVocab(primaryVocabList);
+        PrimaryVocab = primaryVocabList;
     }
 
     public void RemovePrimaryVocab(string vocab)
     {
-        var primaryVocabList = GetPrimaryVocab();
+        var primaryVocabList = PrimaryVocab;
         primaryVocabList.RemoveAll(v => v == vocab);
-        SetPrimaryVocab(primaryVocabList);
+        PrimaryVocab = primaryVocabList;
     }
 
-    public List<string> GetUserSimilarMeaning()
-    {
-        return StringExtensions.ExtractCommaSeparatedValues(
+    public List<string> UserSimilarMeaning => StringExtensions.ExtractCommaSeparatedValues(
             GetField(NoteFieldsConstants.Kanji.UserSimilarMeaning));
-    }
 
     public void AddUserSimilarMeaning(string newSynonymQuestion, bool isRecursiveCall = false)
     {
-        var nearSynonymsQuestions = GetUserSimilarMeaning();
+        var nearSynonymsQuestions = UserSimilarMeaning;
         if (!nearSynonymsQuestions.Contains(newSynonymQuestion))
         {
             nearSynonymsQuestions.Add(newSynonymQuestion);
@@ -260,15 +242,12 @@ public class KanjiNote : JPNote
         }
     }
 
-    public List<string> GetRelatedConfusedWith()
-    {
-        return StringExtensions.ExtractCommaSeparatedValues(
+    public List<string> RelatedConfusedWith => StringExtensions.ExtractCommaSeparatedValues(
             GetField(NoteFieldsConstants.Kanji.RelatedConfusedWith));
-    }
 
     public void AddRelatedConfusedWith(string newConfusedWith)
     {
-        var confusedWith = GetRelatedConfusedWith();
+        var confusedWith = RelatedConfusedWith;
         if (!confusedWith.Contains(newConfusedWith))
         {
             confusedWith.Add(newConfusedWith);
@@ -276,20 +255,19 @@ public class KanjiNote : JPNote
         SetField(NoteFieldsConstants.Kanji.RelatedConfusedWith, string.Join(", ", confusedWith));
     }
 
-    public List<string> GetPrimaryVocabsOrDefaults()
+    public List<string> PrimaryVocabsOrDefaults
     {
-        var primaryVocab = GetPrimaryVocab();
-        return primaryVocab.Count > 0 ? primaryVocab : GenerateDefaultPrimaryVocab();
+        get
+        {
+            var primaryVocab = PrimaryVocab;
+            return primaryVocab.Count > 0 ? primaryVocab : GenerateDefaultPrimaryVocab();
+        }
     }
 
-    public List<string> GetPrimaryVocab()
+    public List<string> PrimaryVocab
     {
-        return StringExtensions.ExtractCommaSeparatedValues(GetField(NoteFieldsConstants.Kanji.PrimaryVocab));
-    }
-
-    public void SetPrimaryVocab(List<string> value)
-    {
-        SetField(NoteFieldsConstants.Kanji.PrimaryVocab, string.Join(", ", value));
+        get => StringExtensions.ExtractCommaSeparatedValues(GetField(NoteFieldsConstants.Kanji.PrimaryVocab));
+        set => SetField(NoteFieldsConstants.Kanji.PrimaryVocab, string.Join(", ", value));
     }
 
     public List<string> GenerateDefaultPrimaryVocab()
@@ -303,7 +281,7 @@ public class KanjiNote : JPNote
             .ThenBy(v => v.GetQuestion().Length)
             .ToList();
 
-        var primaryReadings = GetPrimaryReadings().Distinct().ToList();
+        var primaryReadings = PrimaryReadings.Distinct().ToList();
 
         foreach (var primaryReading in primaryReadings)
         {
@@ -324,29 +302,35 @@ public class KanjiNote : JPNote
     private static readonly Regex AnyWordPattern = new(@"\b[-\w]+\b", RegexOptions.Compiled);
     private static readonly Regex ParenthesizedWordPattern = new(@"\([-\w]+\)", RegexOptions.Compiled);
 
-    public string GetPrimaryMeaning()
+    public string PrimaryMeaning
     {
-        var radicalMeaningMatch = AnyWordPattern.Match(GetAnswerText().Replace("{", "").Replace("}", ""));
-        return radicalMeaningMatch.Success ? radicalMeaningMatch.Groups[0].Value : "";
+        get
+        {
+            var radicalMeaningMatch = AnyWordPattern.Match(AnswerText.Replace("{", "").Replace("}", ""));
+            return radicalMeaningMatch.Success ? radicalMeaningMatch.Groups[0].Value : "";
+        }
     }
 
-    public string GetPrimaryRadicalMeaning()
+    public string PrimaryRadicalMeaning
     {
-        string GetDedicatedRadicalPrimaryMeaning()
+        get
         {
-            var radicalMeaningMatch = ParenthesizedWordPattern.Match(GetAnswerText());
-            return radicalMeaningMatch.Success
-                ? radicalMeaningMatch.Groups[0].Value.Replace("(", "").Replace(")", "")
-                : "";
-        }
+            string GetDedicatedRadicalPrimaryMeaning()
+            {
+                var radicalMeaningMatch = ParenthesizedWordPattern.Match(AnswerText);
+                return radicalMeaningMatch.Success
+                    ? radicalMeaningMatch.Groups[0].Value.Replace("(", "").Replace(")", "")
+                    : "";
+            }
 
-        var result = GetDedicatedRadicalPrimaryMeaning();
-        return !string.IsNullOrEmpty(result) ? result : GetPrimaryMeaning();
+            var result = GetDedicatedRadicalPrimaryMeaning();
+            return !string.IsNullOrEmpty(result) ? result : PrimaryMeaning;
+        }
     }
 
     public List<KanjiNote> GetRadicalsNotes()
     {
-        return GetRadicals()
+        return Radicals
             .Select(radical => Services.Collection.Kanji.WithKanji(radical))
             .Where(k => k != null)
             .Cast<KanjiNote>()
@@ -358,8 +342,8 @@ public class KanjiNote : JPNote
         string PrimaryReading(string read) => $"<span class=\"kanjiReadingPrimary\">{read}</span>";
         string SecondaryReading(string read) => $"<span class=\"kanjiReadingSecondary\">{read}</span>";
 
-        var primaryReadings = GetPrimaryReadings();
-        var secondaryReadings = GetReadingsClean()
+        var primaryReadings = PrimaryReadings;
+        var secondaryReadings = ReadingsClean
             .Where(reading => !primaryReadings.Contains(reading) && !string.IsNullOrEmpty(reading))
             .ToList();
 
@@ -407,7 +391,7 @@ public class KanjiNote : JPNote
         vocabForm = ExStr.StripHtmlAndBracketMarkupAndNoiseCharacters(vocabForm);
 
         // Check for covering readings (readings that contain this reading as a substring)
-        var coveringReadings = GetReadingsClean()
+        var coveringReadings = ReadingsClean
             .Where(r => kanjiReading != r && r.Contains(kanjiReading))
             .ToList();
 
@@ -431,36 +415,31 @@ public class KanjiNote : JPNote
             : kanjiReading == "";
     }
 
-    public string GetActiveMnemonic()
+    public string ActiveMnemonic
     {
-        var userMnemonic = GetUserMnemonic();
-        if (!string.IsNullOrEmpty(userMnemonic))
+        get
         {
-            return userMnemonic;
+            if (!string.IsNullOrEmpty(UserMnemonic))
+            {
+                return UserMnemonic;
+            }
+
+            if (Services.Config.PreferDefaultMnemonicsToSourceMnemonics.Value)
+            {
+                return $"# {Services.KanjiNoteMnemonicMaker.CreateDefaultMnemonic(this)}";
+            }
+
+            return SourceMeaningMnemonic;
         }
-
-        if (Services.Config.PreferDefaultMnemonicsToSourceMnemonics.GetValue())
-        {
-            return $"# {Services.KanjiNoteMnemonicMaker.CreateDefaultMnemonic(this)}";
-        }
-
-        return GetSourceMeaningMnemonic();
     }
 
-    public string GetUserMnemonic()
+    public string UserMnemonic
     {
-        return GetField(NoteFieldsConstants.Kanji.UserMnemonic);
+        get => GetField(NoteFieldsConstants.Kanji.UserMnemonic);
+        set => SetField(NoteFieldsConstants.Kanji.UserMnemonic, value);
     }
 
-    public void SetUserMnemonic(string value)
-    {
-        SetField(NoteFieldsConstants.Kanji.UserMnemonic, value);
-    }
-
-    public string GetSourceMeaningMnemonic()
-    {
-        return GetField(NoteFieldsConstants.Kanji.SourceMeaningMnemonic);
-    }
+    public string SourceMeaningMnemonic => GetField(NoteFieldsConstants.Kanji.SourceMeaningMnemonic);
 
     private void SetPrimaryVocabAudio(string value)
     {
@@ -476,20 +455,20 @@ public class KanjiNote : JPNote
     {
         return VocabNoteSorting.SortVocabListByStudyingStatus(
             GetVocabNotes(), 
-            GetPrimaryVocabsOrDefaults(), 
+            PrimaryVocabsOrDefaults, 
             preferredKanji: GetQuestion());
     }
 
     public void BootstrapMnemonicFromRadicals()
     {
-        SetUserMnemonic(Services.KanjiNoteMnemonicMaker.CreateDefaultMnemonic(this));
+        UserMnemonic = Services.KanjiNoteMnemonicMaker.CreateDefaultMnemonic(this);
     }
 
     public void PopulateRadicalsFromMnemonicTags()
     {
         List<string> DetectRadicalsFromMnemonic()
         {
-            var radicalNames = System.Text.RegularExpressions.Regex.Matches(GetUserMnemonic(), @"<rad>(.*?)</rad>")
+            var radicalNames = System.Text.RegularExpressions.Regex.Matches(UserMnemonic, @"<rad>(.*?)</rad>")
                 .Cast<System.Text.RegularExpressions.Match>()
                 .Select(m => m.Groups[1].Value)
                 .ToList();
@@ -510,7 +489,7 @@ public class KanjiNote : JPNote
                 .ToList();
         }
 
-        var radicals = GetRadicals();
+        var radicals = Radicals;
         foreach (var radical in DetectRadicalsFromMnemonic())
         {
             if (!radicals.Contains(radical))
@@ -526,9 +505,9 @@ public class KanjiNote : JPNote
     {
         var note = new KanjiNote(services);
         note.SetQuestion(question);
-        note.SetUserAnswer(answer);
-        note.SetReadingOn(onReadings);
-        note.SetReadingKun(kunReading);
+        note.UserAnswer = answer;
+        note.ReadingOnHtml = onReadings;
+        note.ReadingKunHtml = kunReading;
         services.Collection.Kanji.Add(note);
         return note;
     }

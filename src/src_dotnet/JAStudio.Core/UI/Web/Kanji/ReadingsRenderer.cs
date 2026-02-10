@@ -8,14 +8,14 @@ public static class ReadingsRenderer
 {
     public static string RenderKatakanaOnyomi(KanjiNote kanjiNote)
     {
-        var onReadingsList = kanjiNote.GetReadingOnListHtml()
+        var onReadingsList = kanjiNote.ReadingOnListHtml
             .Select(KanaUtils.HiraganaToKatakana)
             .ToList();
         var onReadings = string.Join(", ", onReadingsList.Select(reading => 
             $"""<span class="clipboard">{reading}</span>"""));
-        var kunReadings = string.Join(", ", kanjiNote.GetReadingKunListHtml().Select(reading => 
+        var kunReadings = string.Join(", ", kanjiNote.ReadingKunListHtml.Select(reading => 
             $"""<span class="clipboard">{reading}</span>"""));
-        var nanReadings = string.Join(", ", kanjiNote.GetReadingNanListHtml().Select(reading => 
+        var nanReadings = string.Join(", ", kanjiNote.ReadingNanListHtml.Select(reading => 
             $"""<span class="clipboard">{reading}</span>"""));
 
         return $"""

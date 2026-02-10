@@ -25,11 +25,11 @@ public class KanjiNoteMenus
         {
             BuildOpenMenuSpec(kanji),
             SpecMenuItem.Command(ShortcutFinger.Home5("Reset Primary Vocabs"), 
-                () => kanji.SetPrimaryVocab(new List<string>()))
+                () => kanji.PrimaryVocab = new List<string>())
         };
 
         // Add conditional "Accept meaning" if no user answer exists
-        if (string.IsNullOrEmpty(kanji.GetUserAnswer()))
+        if (string.IsNullOrEmpty(kanji.UserAnswer))
         {
             items.Add(SpecMenuItem.Command(ShortcutFinger.Up1("Accept meaning"), 
                 () => OnAcceptKanjiMeaning(kanji)));
@@ -40,7 +40,7 @@ public class KanjiNoteMenus
         items.Add(SpecMenuItem.Command(ShortcutFinger.Up3("Bootstrap mnemonic from radicals"), 
             () => kanji.BootstrapMnemonicFromRadicals()));
         items.Add(SpecMenuItem.Command(ShortcutFinger.Up4("Reset mnemonic"), 
-            () => kanji.SetUserMnemonic("")));
+            () => kanji.UserMnemonic = ""));
 
         return SpecMenuItem.Submenu(ShortcutFinger.Home3("Note actions"), items);
     }
@@ -50,7 +50,7 @@ public class KanjiNoteMenus
         var items = new List<SpecMenuItem>
         {
             SpecMenuItem.Command(ShortcutFinger.Home1("Primary Vocabs"), 
-                () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder.VocabsLookupStrings(kanji.GetPrimaryVocab()))),
+                () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder.VocabsLookupStrings(kanji.PrimaryVocab))),
             SpecMenuItem.Command(ShortcutFinger.Home2("Vocabs"), 
                 () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder.VocabWithKanji(kanji))),
             SpecMenuItem.Command(ShortcutFinger.Home3("Radicals"), 
@@ -80,7 +80,7 @@ public class KanjiNoteMenus
     private static void OnAcceptKanjiMeaning(KanjiNote kanji)
     {
         var meaning = FormatKanjiMeaning(kanji.GetAnswer());
-        kanji.SetUserAnswer(meaning);
+        kanji.UserAnswer = meaning;
     }
 
     private static string FormatKanjiMeaning(string meaning)

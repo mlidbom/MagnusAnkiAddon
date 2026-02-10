@@ -9,7 +9,7 @@ public static class DependenciesRenderer
 {
     public static string RenderDependenciesList(KanjiNote note)
     {
-        var readings = note.GetReadingsClean();
+        var readings = note.ReadingsClean;
 
         string HighlightPrimaryReadingSources(string text)
         {
@@ -31,8 +31,8 @@ public static class DependenciesRenderer
         string FormatReadings(KanjiNote kanji)
         {
             var separator = """<span class="readingsSeparator">|</span>""";
-            var readingsOn = string.Join(", ", kanji.GetReadingOnListHtml().Select(KanaUtils.HiraganaToKatakana));
-            var readingsKun = string.Join(", ", kanji.GetReadingKunListHtml());
+            var readingsOn = string.Join(", ", kanji.ReadingOnListHtml.Select(KanaUtils.HiraganaToKatakana));
+            var readingsKun = string.Join(", ", kanji.ReadingKunListHtml);
             return $"{readingsOn} {separator} {readingsKun}";
         }
 
@@ -45,7 +45,7 @@ public static class DependenciesRenderer
             <div class="dependency_name clipboard">{{{kanji.GetAnswer()}}}</div>
             <div class="dependency_readings">{{{HighlightPrimaryReadingSources(FormatReadings(kanji))}}}</div>
         </div>
-        <div class="dependency_mnemonic">{{{kanji.GetActiveMnemonic()}}}</div>
+        <div class="dependency_mnemonic">{{{kanji.ActiveMnemonic}}}</div>
     </div>
 """);
 

@@ -57,7 +57,7 @@ public class JamdictThreadingWrapper
       // NOTE: Caller must already hold the GIL
       dynamic jamdictModule = Py.Import("jamdict");
 
-      bool memoryMode = _config.LoadJamdictDbIntoMemory.GetValue() && !App.IsTesting;
+      bool memoryMode = _config.LoadJamdictDbIntoMemory.Value && !App.IsTesting;
 
       if(memoryMode)
       {

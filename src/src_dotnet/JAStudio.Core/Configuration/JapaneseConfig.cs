@@ -220,10 +220,10 @@ public class JapaneseConfig
 
    public void ToggleAllSentenceDisplayAutoYieldFlags(bool? value = null)
    {
-      var actualValue = value ?? !AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound.GetValue();
-      AutomaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound.SetValue(actualValue);
-      AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound.SetValue(actualValue);
-      AutomaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound.SetValue(actualValue);
+      var actualValue = value ?? !AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound.Value;
+      AutomaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound.Value = actualValue;
+      AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound.Value = actualValue;
+      AutomaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound.Value = actualValue;
    }
 
    public void SaveMappings(string mappings)

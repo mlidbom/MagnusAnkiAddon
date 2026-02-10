@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 def copy_card_sort_field_to_clipboard(note: Note) -> None:
     with StopWatch.log_warning_if_slower_than(0.01):
-        if app.config().YomitanIntegrationCopyAnswerToClipboard.GetValue():
+        if app.config().YomitanIntegrationCopyAnswerToClipboard.Value:
             model = cast(NotetypeDict, note.note_type())
             sort_field:int = typed.int_(model["sortf"])  # pyright: ignore[reportAny]
             sort_value = typed.str_(note.fields[sort_field])

@@ -25,7 +25,7 @@ public class KanjiNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
       var kanji = CreateKanji("漢", "Chinese character", "カン、かん", "");
 
       // Act
-      var readings = kanji.GetReadingsOn();
+      var readings = kanji.ReadingsOn;
 
       // Assert
       Assert.Contains("カン", readings);
@@ -41,7 +41,7 @@ public class KanjiNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
       kanji.SetField(NoteFieldsConstants.Kanji.Radicals, "漢, 水, 口");
 
       // Act
-      var radicals = kanji.GetRadicals();
+      var radicals = kanji.Radicals;
 
       // Assert
       Assert.DoesNotContain("漢", radicals);
@@ -54,10 +54,10 @@ public class KanjiNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    {
       // Arrange
       var kanji = new KanjiNote(NoteServices);
-      kanji.SetReadingOn("<primary>カン</primary>, ケン");
+      kanji.ReadingOnHtml = "<primary>カン</primary>, ケン";
 
       // Act
-      var primaryReadings = kanji.GetPrimaryReadingsOn();
+      var primaryReadings = kanji.PrimaryReadingsOn;
 
       // Assert
       Assert.Single(primaryReadings);
@@ -69,13 +69,13 @@ public class KanjiNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    {
       // Arrange
       var kanji = new KanjiNote(NoteServices);
-      kanji.SetReadingOn("カン, ケン");
+      kanji.ReadingOnHtml = "カン, ケン";
 
       // Act
       kanji.AddPrimaryOnReading("カン");
 
       // Assert
-      Assert.Contains("<primary>カン</primary>", kanji.GetReadingOnHtml());
+      Assert.Contains("<primary>カン</primary>", kanji.ReadingOnHtml);
    }
 
    [Fact]
@@ -83,13 +83,13 @@ public class KanjiNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    {
       // Arrange
       var kanji = new KanjiNote(NoteServices);
-      kanji.SetReadingOn("<primary>カン</primary>, ケン");
+      kanji.ReadingOnHtml = "<primary>カン</primary>, ケン";
 
       // Act
       kanji.RemovePrimaryOnReading("カン");
 
       // Assert
-      Assert.DoesNotContain("<primary>カン</primary>", kanji.GetReadingOnHtml());
-      Assert.Contains("カン", kanji.GetReadingOnHtml());
+      Assert.DoesNotContain("<primary>カン</primary>", kanji.ReadingOnHtml);
+      Assert.Contains("カン", kanji.ReadingOnHtml);
    }
 }

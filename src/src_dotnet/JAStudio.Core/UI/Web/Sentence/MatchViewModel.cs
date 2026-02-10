@@ -56,7 +56,7 @@ public class MatchViewModel
         if (VocabMatch != null)
         {
             CompoundParts = CompoundPartViewModel.GetCompoundPartsRecursive(this, VocabMatch.Vocab, _config, settings, vocab);
-            AudioPath = VocabMatch.Vocab.Audio.GetPrimaryAudioPath();
+            AudioPath = VocabMatch.Vocab.Audio.PrimaryAudioPath;
             _metaTags = VocabMatch.Vocab.GetMetaTags().ToList();
             MetaTagsHtml = VocabMatch.Vocab.MetaData.MetaTagsHtml(displayExtendedSentenceStatistics: false);
             MatchOwnsForm = VocabMatch.Vocab.Forms.IsOwnedForm(ParsedForm);

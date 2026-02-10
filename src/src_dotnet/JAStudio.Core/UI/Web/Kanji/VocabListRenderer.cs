@@ -7,8 +7,8 @@ public static class VocabListRenderer
 {
     public static string GenerateVocabHtmlList(KanjiNote kanjiNote)
     {
-        var primaryVocab = kanjiNote.GetPrimaryVocabsOrDefaults();
-        var hasRealPrimaryVocabs = kanjiNote.GetPrimaryVocab().Count > 0;
+        var primaryVocab = kanjiNote.PrimaryVocabsOrDefaults;
+        var hasRealPrimaryVocabs = kanjiNote.PrimaryVocab.Count > 0;
 
         string CreateClasses(KanjiNote kanji, VocabNote vocab)
         {
@@ -16,7 +16,7 @@ public static class VocabListRenderer
 
             var vocabReadings = vocab.Readings.Get();
             if (primaryVocab.Contains(vocab.GetQuestion()) || 
-                (vocabReadings.Count > 0 && kanji.GetPrimaryVocab().Contains(vocabReadings[0])))
+                (vocabReadings.Count > 0 && kanji.PrimaryVocab.Contains(vocabReadings[0])))
             {
                 classes += hasRealPrimaryVocabs ? " primary_vocab" : " default_primary_vocab";
             }
@@ -38,7 +38,7 @@ public static class VocabListRenderer
                 var readings = string.Join(", ", kanjiNote.TagVocabReadings(vocabNote));
                 return $$$"""
                     <div class="kanjiVocabEntry {{{CreateClasses(kanjiNote, vocabNote)}}}">
-                        <audio src="{{{vocabNote.Audio.GetPrimaryAudioPath()}}}"></audio><a class="play-button"></a>
+                        <audio src="{{{vocabNote.Audio.PrimaryAudioPath}}}"></audio><a class="play-button"></a>
                         <span class="kanji clipboard">{{{vocabNote.GetQuestion()}}}</span>
                         (<span class="clipboard vocabReading">{{{readings}}}</span>)
                         {{{vocabNote.MetaData.MetaTagsHtml(true)}}}

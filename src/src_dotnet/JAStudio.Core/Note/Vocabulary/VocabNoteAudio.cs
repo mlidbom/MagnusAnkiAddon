@@ -19,32 +19,38 @@ public class VocabNoteAudio
 
     private VocabNote Vocab => _vocab;
 
-    public string GetPrimaryAudioPath()
+    public string PrimaryAudioPath
     {
-        var firstPath = First.FirstAudioFilePath();
-        if (!string.IsNullOrEmpty(firstPath)) return firstPath;
+        get
+        {
+            var firstPath = First.FirstAudioFilePath();
+            if (!string.IsNullOrEmpty(firstPath)) return firstPath;
         
-        var secondPath = Second.FirstAudioFilePath();
-        if (!string.IsNullOrEmpty(secondPath)) return secondPath;
+            var secondPath = Second.FirstAudioFilePath();
+            if (!string.IsNullOrEmpty(secondPath)) return secondPath;
         
-        var ttsPath = Tts.FirstAudioFilePath();
-        if (!string.IsNullOrEmpty(ttsPath)) return ttsPath;
+            var ttsPath = Tts.FirstAudioFilePath();
+            if (!string.IsNullOrEmpty(ttsPath)) return ttsPath;
         
-        return string.Empty;
+            return string.Empty;
+        }
     }
 
-    public string GetPrimaryAudio()
+    public string PrimaryAudio
     {
-        var firstValue = First.RawValue();
-        if (!string.IsNullOrEmpty(firstValue)) return firstValue;
+        get
+        {
+            var firstValue = First.RawValue();
+            if (!string.IsNullOrEmpty(firstValue)) return firstValue;
         
-        var secondValue = Second.RawValue();
-        if (!string.IsNullOrEmpty(secondValue)) return secondValue;
+            var secondValue = Second.RawValue();
+            if (!string.IsNullOrEmpty(secondValue)) return secondValue;
         
-        var ttsValue = Tts.RawValue();
-        if (!string.IsNullOrEmpty(ttsValue)) return ttsValue;
+            var ttsValue = Tts.RawValue();
+            if (!string.IsNullOrEmpty(ttsValue)) return ttsValue;
         
-        return string.Empty;
+            return string.Empty;
+        }
     }
 
     public override string ToString()
