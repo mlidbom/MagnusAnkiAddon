@@ -269,6 +269,11 @@ public partial class OptionsDialogViewModel : ObservableObject
    partial void OnLogWhenFlushingNotesChanged(bool value) =>
       _config.LogWhenFlushingNotes.SetValue(value);
 
+   [ObservableProperty] bool _loadNotesFromFileSystem;
+
+   partial void OnLoadNotesFromFileSystemChanged(bool value) =>
+      _config.LoadNotesFromFileSystem.SetValue(value);
+
    // --- Commands ---
 
    [RelayCommand] void Close()
@@ -337,5 +342,6 @@ public partial class OptionsDialogViewModel : ObservableObject
       EnableTraceMalloc = _config.EnableTraceMalloc.GetValue();
       TrackInstancesInMemory = _config.TrackInstancesInMemory.GetValue();
       LogWhenFlushingNotes = _config.LogWhenFlushingNotes.GetValue();
+      LoadNotesFromFileSystem = _config.LoadNotesFromFileSystem.GetValue();
    }
 }

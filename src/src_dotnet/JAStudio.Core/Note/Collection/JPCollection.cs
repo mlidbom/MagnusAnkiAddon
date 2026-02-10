@@ -64,6 +64,7 @@ public class JPCollection
 
       NoteServices = noteServices;
       _noteRepository = noteRepository;
+      _config = config;
       DictLookup = new DictLookup(this, config);
       VocabNoteGeneratedData = new VocabNoteGeneratedData(DictLookup);
       VocabNoteFactory = new VocabNoteFactory(DictLookup, this, noteServices);
@@ -78,6 +79,7 @@ public class JPCollection
    }
 
    readonly INoteRepository _noteRepository;
+   readonly JapaneseConfig _config;
 
    /// <summary>Clear all in-memory caches. Called when the Anki DB is about to become unreliable (e.g. sync starting, profile closing).</summary>
    public void ClearCaches()
@@ -101,7 +103,11 @@ public class JPCollection
    {
       using var _ = this.Log().Warning().LogMethodExecutionTime();
 
-      var allNotes = _noteRepository.LoadAll();
+      INoteRepository source = _config.LoadNotesFromFileSystem.GetValue()
+         ? _noteRepository
+         : new AnkiNoteRepository(NoteServices);
+
+      var allNotes = source.LoadAll();
 
       using var runner = NoteServices.TaskRunner.Current("Populating caches");
       runner.ProcessWithProgress(allNotes.Kanji, Kanji.Cache.AddToCache, "Pushing kanji notes into cache");

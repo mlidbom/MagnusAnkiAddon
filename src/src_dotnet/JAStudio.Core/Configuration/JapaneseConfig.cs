@@ -73,6 +73,7 @@ public class JapaneseConfig
    public ConfigurationValue<bool> TrackInstancesInMemory { get; }
    public ConfigurationValue<bool> EnableTraceMalloc { get; }
    public ConfigurationValue<bool> LogWhenFlushingNotes { get; }
+   public ConfigurationValue<bool> LoadNotesFromFileSystem { get; }
 
    public List<ConfigurationValue<bool>> DeveloperOnlyToggles { get; }
 
@@ -199,12 +200,14 @@ public class JapaneseConfig
       TrackInstancesInMemory = Add(New("track_instances_in_memory", "Track instances in memory. [Requires restart.. Only useful to developers and will use extra memory.]", false, To.Bool));
       EnableTraceMalloc = Add(New("enable_trace_malloc", "Enable tracemalloc. Will show memory usage in logs and increase memory usage A LOT. [Requires restart]", false, To.Bool));
       LogWhenFlushingNotes = Add(New("log_when_flushing_notes", "Log when flushing notes to backend.", false, To.Bool));
+      LoadNotesFromFileSystem = Add(New("load_notes_from_file_system", "Load notes from file system instead of Anki database.", true, To.Bool));
 
       DeveloperOnlyToggles =
       [
          EnableTraceMalloc,
          TrackInstancesInMemory,
-         LogWhenFlushingNotes
+         LogWhenFlushingNotes,
+         LoadNotesFromFileSystem
       ];
 
       FeatureToggles =

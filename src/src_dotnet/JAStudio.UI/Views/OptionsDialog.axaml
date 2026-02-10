@@ -226,6 +226,7 @@
                             <CheckBox Content="Track instances in memory. [Requires restart.. Only useful to developers and will use extra memory.]" 
                                     IsChecked="{Binding TrackInstancesInMemory}" />
                             <CheckBox Content="Log when flushing notes to backend." IsChecked="{Binding LogWhenFlushingNotes}" />
+                            <CheckBox Content="Load notes from file system instead of Anki database." IsChecked="{Binding LoadNotesFromFileSystem}" />
                         </StackPanel>
                     </Border>
 
