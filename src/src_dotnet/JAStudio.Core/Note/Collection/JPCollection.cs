@@ -100,10 +100,10 @@ public class JPCollection
    void LoadFromRepository()
    {
       using var _ = this.Log().Warning().LogMethodExecutionTime();
-      using var runner = NoteServices.TaskRunner.Current("Loading collection from repository");
 
-      var allNotes = runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Loading notes from repository", () => _noteRepository.LoadAll()).Result;
+      var allNotes = _noteRepository.LoadAll();
 
+      using var runner = NoteServices.TaskRunner.Current("Populating caches");
       runner.ProcessWithProgress(allNotes.Kanji, Kanji.Cache.AddToCache, "Pushing kanji notes into cache");
       runner.ProcessWithProgress(allNotes.Vocab, Vocab.Cache.AddToCache, "Pushing vocab notes into cache");
       runner.ProcessWithProgress(allNotes.Sentences, Sentences.Cache.AddToCache, "Pushing sentence notes into cache");
