@@ -13,7 +13,7 @@ public class MatchInspector
 {
    readonly Match _match;
 
-   public MatchInspector(Match match) => _match = match;
+   internal MatchInspector(Match match) => _match = match;
 
    public Match Match => _match;
    public CandidateWordVariant Variant => Match.Variant;

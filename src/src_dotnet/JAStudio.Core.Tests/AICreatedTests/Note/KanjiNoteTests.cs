@@ -53,8 +53,10 @@ public class KanjiNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void KanjiNote_GetPrimaryReadings_ExtractsMarkedReadings()
    {
       // Arrange
-      var kanji = new KanjiNote(NoteServices);
-      kanji.ReadingOnHtml = "<primary>カン</primary>, ケン";
+      var kanji = new KanjiNote(NoteServices)
+                  {
+                     ReadingOnHtml = "<primary>カン</primary>, ケン"
+                  };
 
       // Act
       var primaryReadings = kanji.PrimaryReadingsOn;
@@ -68,8 +70,10 @@ public class KanjiNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void KanjiNote_AddPrimaryReading_MarksReading()
    {
       // Arrange
-      var kanji = new KanjiNote(NoteServices);
-      kanji.ReadingOnHtml = "カン, ケン";
+      var kanji = new KanjiNote(NoteServices)
+                  {
+                     ReadingOnHtml = "カン, ケン"
+                  };
 
       // Act
       kanji.AddPrimaryOnReading("カン");
@@ -82,8 +86,10 @@ public class KanjiNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void KanjiNote_RemovePrimaryReading_UnmarksReading()
    {
       // Arrange
-      var kanji = new KanjiNote(NoteServices);
-      kanji.ReadingOnHtml = "<primary>カン</primary>, ケン";
+      var kanji = new KanjiNote(NoteServices)
+                  {
+                     ReadingOnHtml = "<primary>カン</primary>, ケン"
+                  };
 
       // Act
       kanji.RemovePrimaryOnReading("カン");

@@ -1,7 +1,7 @@
 import abc
-from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches import Match, VocabMatch
 from JAStudio.Core.Note.Sentences import SentenceConfiguration
 from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction import TextAnalysisLocation, CandidateWordVariant, CandidateWord
+from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches import Match, VocabMatch
 from JAStudio.Core.Configuration import Settings
 from JAStudio.Core.Note.Vocabulary import VocabMatchingRulesConfigurationRequiresForbidsFlags
 
@@ -17,7 +17,6 @@ class CustomForbidsNoCache(MatchRequirement):
 
 
 class MatchInspector:
-    def __init__(self, match: Match) -> None: ...
     @property
     def CompoundLocationsAllHaveValidNonCompoundMatches(self) -> bool: ...
     @property
