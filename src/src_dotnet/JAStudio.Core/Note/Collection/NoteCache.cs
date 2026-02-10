@@ -50,7 +50,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
 
    /// <summary>Look up a note by its Anki long ID (uses the shared AnkiNoteIdMap).</summary>
    public TNote? WithAnkiIdOrNone(long ankiNoteId) =>
-      _noteServices.AnkiNoteIdMap.FromAnkiId(ankiNoteId) is { } noteId ? WithIdOrNone(noteId) : null;
+      _noteServices.AnkiNoteIdMap.FromAnkiId(ankiNoteId) is {} noteId ? WithIdOrNone(noteId) : null;
 
    /// <summary>Converts an Anki long ID to the corresponding domain NoteId.</summary>
    public NoteId? AnkiIdToNoteId(long ankiNoteId) =>
@@ -69,6 +69,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       {
          note.UpdateGeneratedData();
       }
+
       AddToCache(note);
    }
 
@@ -87,6 +88,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       {
          note.UpdateGeneratedData();
       }
+
       RefreshInCache(note);
       NotifyUpdateListeners(note);
    }
@@ -100,6 +102,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       {
          RemoveFromCache(existing);
       }
+
       _noteServices.AnkiNoteIdMap.Unregister(ankiNoteId);
    }
 
@@ -112,11 +115,11 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       if(existing != null)
       {
          RefreshInCache(note);
-      }
-      else
+      } else
       {
          AddToCache(note);
       }
+
       NotifyUpdateListeners(note);
    }
 
@@ -142,26 +145,14 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       using var runner = _noteServices.TaskRunner.Current($"Loading {_noteType.Name} notes from the anki db");
       var loadResult = await runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync($"Fetching {_noteType.Name} notes from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.FromType(_noteType), NoteTypes.IdFactoryFromType(_noteType)));
 
-      // Build a temporary map from base NoteId → ankiId so we can re-register
-      // with the typed NoteId (VocabId, KanjiId, etc.) after note construction.
-      var baseIdToAnkiId = new Dictionary<Guid, long>();
       foreach(var (ankiId, noteId) in loadResult.AnkiIdMap)
       {
-         baseIdToAnkiId[noteId.Value] = ankiId;
+         _noteServices.AnkiNoteIdMap.Register(ankiId, noteId);
       }
 
-      await runner.ProcessWithProgressAsync(loadResult.Notes, noteData =>
-      {
-         var note = _noteConstructor(_noteServices, noteData);
-         AddToCache(note);
+      var notes = runner.ProcessWithProgress(loadResult.Notes, it => _noteConstructor(_noteServices, it), $"Constructing {_noteType.Name} notes");
 
-         // Register mapping using the note's typed ID so record equality works in lookups.
-         var typedId = note.GetId();
-         if(baseIdToAnkiId.TryGetValue(typedId.Value, out var ankiId))
-         {
-            _noteServices.AnkiNoteIdMap.Register(ankiId, typedId);
-         }
-      }, "");
+      await runner.ProcessWithProgressAsync(notes, AddToCache, $"Pushing {_noteType.Name} notes into cache");
    }
 
    void AddToCacheFromData(NoteData noteData)
@@ -252,6 +243,7 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
          {
             existingQuestionList.Remove(note);
          }
+
          InheritorRemoveFromCache(note, existingSnapshot);
       }
 
