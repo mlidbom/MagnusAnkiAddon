@@ -4,9 +4,9 @@
 
 ## Vision
 
-This git repository becomes the **source of truth** for all note data. Anki notes will be stripped down to very few fields `jas_note_id`, audio fields required for anki to play audio, and likely the question and answer fields so that the user can search and find notes in anki. All all other data lives in the git repository.
+The git-based `jas_database/` is the **source of truth** for all note data. All data is already serialized to JSON — we can stop loading from Anki at any time.
 
-The Anki integration layer becomes very thin: look up the `jas_note_id` render the menus provided by our code, render the card view by calling our code,  open dialogs in our code
+The Anki integration layer becomes very thin: look up the `jas_note_id`, render the menus provided by our code, render the card view by calling our code, open dialogs in our code. Anki is just an SRS scheduler.
 
 ### Benefits
 
@@ -17,29 +17,41 @@ The Anki integration layer becomes very thin: look up the `jas_note_id` render t
 
 ## Architecture
 
-### Current Architecture (transitional)
+### Serialization & Construction
+
+Notes are constructed from DTOs. Each note type has a corresponding DTO class that represents the serialized JSON shape. The DTO is a dumb data bag — no logic, just the fields as they appear in JSON.
 
 ```
-JPNote (domain object)
-    ↓ Converter.ToDto()
 JSON string
     ↓ System.Text.Json
 NoteDto
-    ↓ Converter.FromDto()
-NoteData (existing transfer object → note constructor)
-```
-
-The DTOs and `NoteData` are **temporary artifacts** of the current migration. They exist because the note types still expect to be constructed from `NoteData` (the Anki-era transfer object).
-
-### Target Architecture
-
-```
+    ↓ Note constructor
 JPNote (domain object)
-    ↔ System.Text.Json
+    ↓ DtoMapper.ToDto()
+NoteDto
+    ↓ System.Text.Json
 JSON string
 ```
 
-Once we fully migrate away from Anki as the data store, the note types will serialize directly to/from JSON — no intermediate DTOs or `NoteData`. The converters and DTO classes will be removed.
+Each note type has a **DtoMapper** class (e.g. `VocabDtoMapper`) responsible for extracting data from a live Note into the current DTO shape for serialization.
+
+### Format Migration Strategy
+
+**No per-file auto-migration.** Format migration is a **batch operation**:
+
+1. Load the entire collection using the **old** serializer/DTO format → fully populated Note objects in memory
+2. The mapper has access to the full collection, so cross-note resolution (e.g. string → NoteId) works
+3. **New DtoMapper** extracts data from live Notes into the **new** DTO shape
+4. **New serializer** writes the new DTOs to disk
+5. Switch Note constructors to accept the new DTO type, delete old DTOs/mapper
+6. Commit both code and data
+
+This is explicitly a batch tool that runs once per migration. There is only ever one format at a time — old serialization code is deleted after migration.
+
+**Why batch, not per-file:**
+- Data migrations (string → NoteId, denormalized → normalized) require **global knowledge** of the entire collection
+- Cross-note references can't be resolved without the full dataset loaded
+- A one-time batch is simpler, testable, and avoids permanent migration infrastructure
 
 ### Components
 
@@ -50,8 +62,8 @@ Once we fully migrate away from Anki as the data store, the note types will seri
 | `Storage/NoteSerializer.cs` | Public API — `Serialize`/`Deserialize` per note type + `AllNotesData`, registered in DI |
 | `Storage/FileSystemNoteRepository.cs` | Production `INoteRepository` — individual files per note (bucketed), bulk save with progress, single-file mode |
 | `Storage/InMemoryNoteRepository.cs` | Test `INoteRepository` — in-memory dictionaries, no I/O |
-| `Storage/Dto/*` | Internal DTOs (transitional, hidden behind `NoteSerializer`) |
-| `Storage/Converters/*` | Internal converters (transitional, hidden behind `NoteSerializer`) |
+| `Storage/Dto/*` | DTO classes matching the current JSON format |
+| `Storage/Converters/*` | Converters: Note→DTO (for save) and DTO→NoteData (for load) |
 
 ### File System Layout
 
@@ -91,5 +103,7 @@ At runtime, `App.AddonRootDir` calls `AnkiFacade.GetAddonRootDir()` which delega
 
 ## Next Steps
 
+- Design the V2 DTO format: typed IDs, proper structure (no more flat string fields)
+- Build batch migration tool: load V1 → full collection in memory → resolve cross-note references → write V2
+- Switch to loading from `jas_database/` instead of Anki (all data is already there)
 - Build the thin Anki sync layer: map `jas_note_id` to Anki note IDs for SRS scheduling
-- Migrate existing Anki note data into the git-based storage
