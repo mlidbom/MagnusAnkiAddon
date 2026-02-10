@@ -1,16 +1,17 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using JAStudio.Core.Note;
 
 namespace JAStudio.Core.Anki;
 
 /// <summary>
-/// Bidirectional mapping between domain NoteIds and Anki long note IDs.
+/// Thread-safe bidirectional mapping between domain NoteIds and Anki long note IDs.
 /// Lives in the Anki integration layer — the domain should not reference this directly.
 /// </summary>
 public class AnkiNoteIdMap
 {
-   readonly Dictionary<NoteId, long> _noteIdToAnki = new();
-   readonly Dictionary<long, NoteId> _ankiToNoteId = new();
+   readonly ConcurrentDictionary<NoteId, long> _noteIdToAnki = new();
+   readonly ConcurrentDictionary<long, NoteId> _ankiToNoteId = new();
 
    public void Register(long ankiId, NoteId noteId)
    {
@@ -27,10 +28,9 @@ public class AnkiNoteIdMap
 
    public void Unregister(long ankiId)
    {
-      if(_ankiToNoteId.TryGetValue(ankiId, out var noteId))
+      if(_ankiToNoteId.TryRemove(ankiId, out var noteId))
       {
-         _noteIdToAnki.Remove(noteId);
-         _ankiToNoteId.Remove(ankiId);
+         _noteIdToAnki.TryRemove(noteId, out _);
       }
    }
 
