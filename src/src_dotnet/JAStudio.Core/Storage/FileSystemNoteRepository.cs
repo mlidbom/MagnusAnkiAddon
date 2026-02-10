@@ -25,6 +25,15 @@ public class FileSystemNoteRepository : INoteRepository
    string KanjiDir => Path.Combine(_rootDir, "kanji");
    string VocabDir => Path.Combine(_rootDir, "vocab");
    string SentencesDir => Path.Combine(_rootDir, "sentences");
+
+   // Per-type snapshot files
+   string KanjiSnapshotPath => Path.Combine(_rootDir, "snapshot_kanji.json");
+   string VocabSnapshotPath => Path.Combine(_rootDir, "snapshot_vocab.json");
+   string SentencesSnapshotPath => Path.Combine(_rootDir, "snapshot_sentences.json");
+
+   bool HasSnapshot => File.Exists(KanjiSnapshotPath) && File.Exists(VocabSnapshotPath) && File.Exists(SentencesSnapshotPath);
+
+   // Legacy single-file path (kept for SaveAllSingleFile/LoadAllSingleFile test helpers)
    string AllNotesPath => Path.Combine(_rootDir, "all_notes.json");
 
    public void Save(KanjiNote note)
@@ -70,7 +79,7 @@ public class FileSystemNoteRepository : INoteRepository
 
    public AllNotesData LoadAll()
    {
-      if(File.Exists(AllNotesPath))
+      if(HasSnapshot)
          return LoadWithSnapshot();
 
       var data = LoadAllFromIndividualFiles();
@@ -98,27 +107,45 @@ public class FileSystemNoteRepository : INoteRepository
 
    AllNotesData LoadWithSnapshot()
    {
-      using var scope = _taskRunner.Current("Loading notes from snapshot + incremental files");
-      var snapshotTime = File.GetLastWriteTimeUtc(AllNotesPath);
+      using var scope = _taskRunner.Current("Loading notes from snapshot");
 
-      var snapshotFileContent = scope.RunOnBackgroundThreadWithSpinningProgressDialog("Reading snapshot file", () => File.ReadAllText(AllNotesPath));
-      var snapshotData = Task.Run(() => _serializer.DeserializeAll(snapshotFileContent));
+      var kanjiSnapshotTime = File.GetLastWriteTimeUtc(KanjiSnapshotPath);
+      var vocabSnapshotTime = File.GetLastWriteTimeUtc(VocabSnapshotPath);
+      var sentencesSnapshotTime = File.GetLastWriteTimeUtc(SentencesSnapshotPath);
 
-      // Scan all individual files in parallel — we need both the set of current IDs (for delete detection)
-      // and the list of files newer than the snapshot (for patching).
+      // Stream all 3 snapshot files in parallel — each deserializes + constructs notes in one pass.
+      // DeserializeAsyncEnumerable reads one JSON array element at a time, so the full DTO list
+      // is never materialized in memory.
+      var kanjiTask = Task.Run(async () =>
+      {
+         using var stream = OpenSequentialRead(KanjiSnapshotPath);
+         return await _serializer.DeserializeKanjiStreamAsync(stream);
+      });
+      var vocabTask = Task.Run(async () =>
+      {
+         using var stream = OpenSequentialRead(VocabSnapshotPath);
+         return await _serializer.DeserializeVocabStreamAsync(stream);
+      });
+      var sentencesTask = Task.Run(async () =>
+      {
+         using var stream = OpenSequentialRead(SentencesSnapshotPath);
+         return await _serializer.DeserializeSentenceStreamAsync(stream);
+      });
+
+      // Scan individual files for incremental patching (runs in parallel with deserialization)
       var kanjiFileInfo = scope.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Scanning kanji files", () => GetJsonFileInfo(KanjiDir));
       var vocabFileInfo = scope.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Scanning vocab files", () => GetJsonFileInfo(VocabDir));
       var sentenceFileInfo = scope.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Scanning sentence files", () => GetJsonFileInfo(SentencesDir));
 
-      var snapshot = snapshotData.Result;
+      Task.WaitAll(kanjiTask, vocabTask, sentencesTask);
 
-      var kanjiById = snapshot.Kanji.ToDictionary(n => n.GetId());
-      var vocabById = snapshot.Vocab.ToDictionary(n => n.GetId());
-      var sentencesById = snapshot.Sentences.ToDictionary(n => n.GetId());
+      var kanjiById = kanjiTask.Result.ToDictionary(n => n.GetId());
+      var vocabById = vocabTask.Result.ToDictionary(n => n.GetId());
+      var sentencesById = sentencesTask.Result.ToDictionary(n => n.GetId());
 
-      PatchFromDisk(kanjiById, kanjiFileInfo.Result, snapshotTime, _serializer.DeserializeKanji);
-      PatchFromDisk(vocabById, vocabFileInfo.Result, snapshotTime, _serializer.DeserializeVocab);
-      PatchFromDisk(sentencesById, sentenceFileInfo.Result, snapshotTime, _serializer.DeserializeSentence);
+      PatchFromDisk(kanjiById, kanjiFileInfo.Result, kanjiSnapshotTime, _serializer.DeserializeKanji);
+      PatchFromDisk(vocabById, vocabFileInfo.Result, vocabSnapshotTime, _serializer.DeserializeVocab);
+      PatchFromDisk(sentencesById, sentenceFileInfo.Result, sentencesSnapshotTime, _serializer.DeserializeSentence);
 
       return new AllNotesData(kanjiById.Values.ToList(), vocabById.Values.ToList(), sentencesById.Values.ToList());
    }
@@ -154,16 +181,44 @@ public class FileSystemNoteRepository : INoteRepository
    }
 
    /// <summary>
-   /// Atomically writes the snapshot file (write to temp, then rename).
-   /// Safe against crashes mid-write — the old snapshot remains intact until the rename succeeds.
+   /// Atomically writes per-type snapshot files (write temp files, then rename all 3).
+   /// 3 parallel writes — each serializes one note at a time via Utf8JsonWriter.
    /// </summary>
    public void SaveSnapshot(AllNotesData data)
    {
       using var _ = this.Log().Info().LogMethodExecutionTime();
       Directory.CreateDirectory(_rootDir);
-      var tempPath = AllNotesPath + ".tmp";
-      File.WriteAllText(tempPath, _serializer.Serialize(data));
-      File.Move(tempPath, AllNotesPath, overwrite: true);
+
+      var kanjiTmp = KanjiSnapshotPath + ".tmp";
+      var vocabTmp = VocabSnapshotPath + ".tmp";
+      var sentencesTmp = SentencesSnapshotPath + ".tmp";
+
+      Task.WaitAll(
+         Task.Run(() =>
+         {
+            using var stream = OpenSequentialWrite(kanjiTmp);
+            _serializer.SerializeKanjiToStream(data.Kanji, stream);
+         }),
+         Task.Run(() =>
+         {
+            using var stream = OpenSequentialWrite(vocabTmp);
+            _serializer.SerializeVocabToStream(data.Vocab, stream);
+         }),
+         Task.Run(() =>
+         {
+            using var stream = OpenSequentialWrite(sentencesTmp);
+            _serializer.SerializeSentenceToStream(data.Sentences, stream);
+         })
+      );
+
+      // Atomic rename — previous snapshot files remain intact until each rename succeeds
+      File.Move(kanjiTmp, KanjiSnapshotPath, overwrite: true);
+      File.Move(vocabTmp, VocabSnapshotPath, overwrite: true);
+      File.Move(sentencesTmp, SentencesSnapshotPath, overwrite: true);
+
+      // Clean up legacy single-file snapshot if present
+      if(File.Exists(AllNotesPath))
+         File.Delete(AllNotesPath);
    }
 
    // --- Kept for backward compatibility with existing tests ---
@@ -176,7 +231,13 @@ public class FileSystemNoteRepository : INoteRepository
 
    public AllNotesData LoadAllSingleFile() => _serializer.DeserializeAll(File.ReadAllText(AllNotesPath));
 
-   // --- File scanning helpers ---
+   // --- File helpers ---
+
+   static FileStream OpenSequentialRead(string path) =>
+      new(path, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 65536, FileOptions.SequentialScan);
+
+   static FileStream OpenSequentialWrite(string path) =>
+      new(path, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 65536, FileOptions.SequentialScan);
 
    static List<string> GetJsonFiles(string dir) =>
       !Directory.Exists(dir) ? [] : Directory.GetFiles(dir, "*.json", SearchOption.AllDirectories).ToList();
@@ -185,16 +246,19 @@ public class FileSystemNoteRepository : INoteRepository
    {
       if(!Directory.Exists(dir)) return [];
 
-      return Directory.GetFiles(dir, "*.json", SearchOption.AllDirectories)
-                      .Select(path =>
-                       {
-                          var fileName = Path.GetFileNameWithoutExtension(path);
-                          return Guid.TryParse(fileName, out var guid)
-                                    ? new NoteFileInfo(path, guid, File.GetLastWriteTimeUtc(path))
-                                    : null;
-                       })
-                      .Where(info => info != null)
-                      .ToList()!;
+      // Uses DirectoryInfo.EnumerateFiles — timestamps come from the directory
+      // enumeration data (FindNextFile on Windows), avoiding a separate stat call per file.
+      return new DirectoryInfo(dir)
+            .EnumerateFiles("*.json", SearchOption.AllDirectories)
+            .Select(fi =>
+             {
+                var fileName = Path.GetFileNameWithoutExtension(fi.Name);
+                return Guid.TryParse(fileName, out var guid)
+                          ? new NoteFileInfo(fi.FullName, guid, fi.LastWriteTimeUtc)
+                          : null;
+             })
+            .Where(info => info != null)
+            .ToList()!;
    }
 
    static string Bucket(NoteId id) => id.Value.ToString("N")[..2];

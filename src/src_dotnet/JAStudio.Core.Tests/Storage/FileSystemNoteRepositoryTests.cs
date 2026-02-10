@@ -166,16 +166,10 @@ public class FileSystemNoteRepositoryTests : CollectionUsingTest, IDisposable
     {
         var allData = BuildAllNotesData();
 
-        _repo.SaveAllSingleFile(allData);
-        // No individual files — LoadAll should fall back to snapshot-only path
-        var loaded = _repo.LoadAll();
-
-        // Snapshot alone (no individual files) means PatchFromDisk removes everything
-        // because no individual files exist. So we need individual files too.
-        // Let's use SaveAll to write both.
+        // We need both individual files and snapshot for PatchFromDisk to work
         _repo.SaveAll(allData);
         _repo.SaveSnapshot(allData);
-        loaded = _repo.LoadAll();
+        var loaded = _repo.LoadAll();
 
         AssertAllNotesDataMatch(allData, loaded);
     }
@@ -251,11 +245,13 @@ public class FileSystemNoteRepositoryTests : CollectionUsingTest, IDisposable
         _repo.SaveSnapshot(allData);
 
         // Verify the snapshot can be loaded and matches
-        var loaded = _repo.LoadAllSingleFile();
+        var loaded = _repo.LoadAll();
         AssertAllNotesDataMatch(allData, loaded);
 
-        // Verify no .tmp file remains
-        Assert.False(File.Exists(Path.Combine(_tempDir, "all_notes.json.tmp")));
+        // Verify no .tmp files remain
+        Assert.False(File.Exists(Path.Combine(_tempDir, "snapshot_kanji.json.tmp")));
+        Assert.False(File.Exists(Path.Combine(_tempDir, "snapshot_vocab.json.tmp")));
+        Assert.False(File.Exists(Path.Combine(_tempDir, "snapshot_sentences.json.tmp")));
     }
 
     // --- Helpers ---
