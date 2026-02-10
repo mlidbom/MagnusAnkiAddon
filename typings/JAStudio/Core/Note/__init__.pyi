@@ -259,7 +259,6 @@ class NoteFieldsConstants(abc.ABC):
         Homophones : str
         Kanji : str
         MatchingRules : str
-        ParsedTypeOfSpeech : str
         PartsOfSpeech : str
         Question : str
         Reading : str
