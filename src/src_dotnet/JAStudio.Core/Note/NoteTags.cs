@@ -1,8 +1,6 @@
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using Compze.Utilities.SystemCE.ThreadingCE.ResourceAccess;
 
 namespace JAStudio.Core.Note;
 
@@ -10,7 +8,6 @@ public class NoteTags : IEnumerable<Tag>
 {
    readonly JPNote _note;
    readonly HashSet<Tag> _tags = new();
-   static readonly ConcurrentDictionary<HashSet<Tag>, List<string>> InternedStringLists = new();
 
    public NoteTags(JPNote note, NoteData? data = null)
    {
@@ -66,8 +63,8 @@ public class NoteTags : IEnumerable<Tag>
 
    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-   public List<string> ToInternedStringList()
+   public List<string> ToStringList()
    {
-      return InternedStringLists.GetOrAdd(_tags, _ => this.Select(t => t.Name).OrderBy(n => n).ToList());
+      return this.Select(t => t.Name).OrderBy(n => n).ToList();
    }
 }

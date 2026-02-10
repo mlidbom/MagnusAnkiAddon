@@ -40,7 +40,7 @@ public static class SentenceNoteConverter
             Configuration = ToConfigurationDto(config),
             ParsingResult = ToParsingResultDto(parsingResult),
             JanomeTokens = note.GetField(SentenceNoteFields.JanomeTokens),
-            Tags = note.Tags.ToInternedStringList(),
+            Tags = note.Tags.ToStringList(),
         };
     }
 

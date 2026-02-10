@@ -47,7 +47,7 @@ public abstract class JPNote
       _cardStatus[status.CardType] = !status.IsSuspended;
    }
 
-   public NoteData GetData() => new(GetId(), _fields, Tags.ToInternedStringList());
+   public NoteData GetData() => new(GetId(), _fields, Tags.ToStringList());
 
    public override bool Equals(object? obj)
    {

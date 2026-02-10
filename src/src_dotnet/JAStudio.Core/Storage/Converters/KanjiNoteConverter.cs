@@ -29,7 +29,7 @@ public static class KanjiNoteConverter
             UserMnemonic = note.GetField(NoteFieldsConstants.Kanji.UserMnemonic),
             SimilarMeaning = StringExtensions.ExtractCommaSeparatedValues(note.GetField(NoteFieldsConstants.Kanji.UserSimilarMeaning)),
             ConfusedWith = StringExtensions.ExtractCommaSeparatedValues(note.GetField(NoteFieldsConstants.Kanji.RelatedConfusedWith)),
-            Tags = note.Tags.ToInternedStringList(),
+            Tags = note.Tags.ToStringList(),
         };
     }
 

@@ -41,7 +41,7 @@ public static class VocabNoteConverter
             SentenceCount = int.TryParse(note.GetField(NoteFieldsConstants.Vocab.SentenceCount), out var sc) ? sc : 0,
             MatchingRules = ToMatchingRulesDto(matchingRulesData),
             RelatedVocab = ToRelatedVocabDto(relatedVocabData),
-            Tags = note.Tags.ToInternedStringList(),
+            Tags = note.Tags.ToStringList(),
         };
     }
 
