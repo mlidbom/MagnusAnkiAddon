@@ -7,8 +7,8 @@ namespace JAStudio.Core.Note.Collection;
 public class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
 {
    private readonly Dictionary<string, HashSet<SentenceNote>> _byVocabForm = new();
-   private readonly Dictionary<string, List<SentenceNote>> _byUserHighlightedVocab = new();
-   private readonly Dictionary<string, List<SentenceNote>> _byUserMarkedInvalidVocab = new();
+   private readonly Dictionary<string, HashSet<SentenceNote>> _byUserHighlightedVocab = new();
+   private readonly Dictionary<string, HashSet<SentenceNote>> _byUserMarkedInvalidVocab = new();
    private readonly Dictionary<NoteId, HashSet<SentenceNote>> _byVocabId = new();
 
    public SentenceCache(NoteServices noteServices) : base(typeof(SentenceNote), (services, data) => new SentenceNote(services, data), noteServices)
@@ -42,31 +42,16 @@ public class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
 
    public List<SentenceNote> WithUserHighlightedVocab(string form)
    {
-      return _byUserHighlightedVocab.TryGetValue(form, out var notes) ? notes : new List<SentenceNote>();
+      return _byUserHighlightedVocab.TryGetValue(form, out var notes) ? notes.ToList() : new List<SentenceNote>();
    }
 
    public List<SentenceNote> WithUserMarkedInvalidVocab(string form)
    {
-      return _byUserMarkedInvalidVocab.TryGetValue(form, out var notes) ? notes : new List<SentenceNote>();
-   }
-
-   private static void RemoveFirstNoteWithId(List<SentenceNote> noteList, NoteId id)
-   {
-      for (var i = 0; i < noteList.Count; i++)
-      {
-         if (noteList[i].GetId() == id)
-         {
-            noteList.RemoveAt(i);
-            return;
-         }
-      }
-      throw new Exception($"Could not find note with id {id} in list");
+      return _byUserMarkedInvalidVocab.TryGetValue(form, out var notes) ? notes.ToList() : new List<SentenceNote>();
    }
 
    protected override void InheritorRemoveFromCache(SentenceNote note, SentenceSnapshot snapshot)
    {
-      var id = snapshot.Id;
-
       foreach (var vocabForm in snapshot.Words)
       {
          if (_byVocabForm.TryGetValue(vocabForm, out var set))
@@ -76,16 +61,16 @@ public class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
       }
       foreach (var vocabForm in snapshot.UserHighlightedVocab)
       {
-         if (_byUserHighlightedVocab.TryGetValue(vocabForm, out var list))
+         if (_byUserHighlightedVocab.TryGetValue(vocabForm, out var set))
          {
-            RemoveFirstNoteWithId(list, id);
+            set.Remove(note);
          }
       }
       foreach (var vocabForm in snapshot.MarkedIncorrectVocab)
       {
-         if (_byUserMarkedInvalidVocab.TryGetValue(vocabForm, out var list))
+         if (_byUserMarkedInvalidVocab.TryGetValue(vocabForm, out var set))
          {
-            RemoveFirstNoteWithId(list, id);
+            set.Remove(note);
          }
       }
       foreach (var vocabId in snapshot.DetectedVocab)
@@ -111,7 +96,7 @@ public class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
       {
          if (!_byUserHighlightedVocab.ContainsKey(vocabForm))
          {
-            _byUserHighlightedVocab[vocabForm] = new List<SentenceNote>();
+            _byUserHighlightedVocab[vocabForm] = new HashSet<SentenceNote>();
          }
          _byUserHighlightedVocab[vocabForm].Add(note);
       }
@@ -119,7 +104,7 @@ public class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
       {
          if (!_byUserMarkedInvalidVocab.ContainsKey(vocabForm))
          {
-            _byUserMarkedInvalidVocab[vocabForm] = new List<SentenceNote>();
+            _byUserMarkedInvalidVocab[vocabForm] = new HashSet<SentenceNote>();
          }
          _byUserMarkedInvalidVocab[vocabForm].Add(note);
       }

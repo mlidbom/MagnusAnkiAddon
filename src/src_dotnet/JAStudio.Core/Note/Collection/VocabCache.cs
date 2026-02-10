@@ -6,14 +6,14 @@ namespace JAStudio.Core.Note.Collection;
 
 public class VocabCache : NoteCache<VocabNote, VocabSnapshot>
 {
-   private readonly Dictionary<string, List<VocabNote>> _byDisambiguationName = new();
-   private readonly Dictionary<string, List<VocabNote>> _byForm = new();
-   private readonly Dictionary<string, List<VocabNote>> _byKanjiInMainForm = new();
-   private readonly Dictionary<string, List<VocabNote>> _byKanjiInAnyForm = new();
-   private readonly Dictionary<string, List<VocabNote>> _byCompoundPart = new();
-   private readonly Dictionary<string, List<VocabNote>> _byDerivedFrom = new();
-   private readonly Dictionary<string, List<VocabNote>> _byReading = new();
-   private readonly Dictionary<string, List<VocabNote>> _byStem = new();
+   private readonly Dictionary<string, HashSet<VocabNote>> _byDisambiguationName = new();
+   private readonly Dictionary<string, HashSet<VocabNote>> _byForm = new();
+   private readonly Dictionary<string, HashSet<VocabNote>> _byKanjiInMainForm = new();
+   private readonly Dictionary<string, HashSet<VocabNote>> _byKanjiInAnyForm = new();
+   private readonly Dictionary<string, HashSet<VocabNote>> _byCompoundPart = new();
+   private readonly Dictionary<string, HashSet<VocabNote>> _byDerivedFrom = new();
+   private readonly Dictionary<string, HashSet<VocabNote>> _byReading = new();
+   private readonly Dictionary<string, HashSet<VocabNote>> _byStem = new();
 
    public VocabCache(NoteServices noteServices) : base(typeof(VocabNote), (services, data) => new VocabNote(services, data), noteServices)
    {
@@ -69,27 +69,27 @@ public class VocabCache : NoteCache<VocabNote, VocabSnapshot>
 
    public List<VocabNote> DerivedFrom(string form)
    {
-      return _byDerivedFrom.TryGetValue(form, out var notes) ? notes : new List<VocabNote>();
+      return _byDerivedFrom.TryGetValue(form, out var notes) ? notes.ToList() : new List<VocabNote>();
    }
 
    public List<VocabNote> WithKanjiInMainForm(string kanji)
    {
-      return _byKanjiInMainForm.TryGetValue(kanji, out var notes) ? notes : new List<VocabNote>();
+      return _byKanjiInMainForm.TryGetValue(kanji, out var notes) ? notes.ToList() : new List<VocabNote>();
    }
 
    public List<VocabNote> WithKanjiInAnyForm(string kanji)
    {
-      return _byKanjiInAnyForm.TryGetValue(kanji, out var notes) ? notes : new List<VocabNote>();
+      return _byKanjiInAnyForm.TryGetValue(kanji, out var notes) ? notes.ToList() : new List<VocabNote>();
    }
 
    public List<VocabNote> WithReading(string reading)
    {
-      return _byReading.TryGetValue(reading, out var notes) ? notes : new List<VocabNote>();
+      return _byReading.TryGetValue(reading, out var notes) ? notes.ToList() : new List<VocabNote>();
    }
 
    public List<VocabNote> WithStem(string stem)
    {
-      return _byStem.TryGetValue(stem, out var notes) ? notes : new List<VocabNote>();
+      return _byStem.TryGetValue(stem, out var notes) ? notes.ToList() : new List<VocabNote>();
    }
 
    protected override VocabSnapshot CreateSnapshot(VocabNote note)
@@ -97,53 +97,39 @@ public class VocabCache : NoteCache<VocabNote, VocabSnapshot>
       return new VocabSnapshot(note);
    }
 
-   private static void RemoveFirstNoteWithId(List<VocabNote> noteList, NoteId id)
-   {
-      for (var i = 0; i < noteList.Count; i++)
-      {
-         if (noteList[i].GetId() == id)
-         {
-            noteList.RemoveAt(i);
-            return;
-         }
-      }
-      throw new Exception($"Could not find note with id {id} in list");
-   }
-
    protected override void InheritorRemoveFromCache(VocabNote note, VocabSnapshot snapshot)
    {
-      var id = snapshot.Id;
       foreach (var form in snapshot.Forms)
       {
-         if (_byForm.TryGetValue(form, out var list)) RemoveFirstNoteWithId(list, id);
+         if (_byForm.TryGetValue(form, out var set)) set.Remove(note);
       }
       foreach (var part in snapshot.CompoundParts)
       {
-         if (_byCompoundPart.TryGetValue(part, out var list)) RemoveFirstNoteWithId(list, id);
+         if (_byCompoundPart.TryGetValue(part, out var set)) set.Remove(note);
       }
-      if (_byDerivedFrom.TryGetValue(snapshot.DerivedFrom, out var derivedList))
+      if (_byDerivedFrom.TryGetValue(snapshot.DerivedFrom, out var derivedSet))
       {
-         RemoveFirstNoteWithId(derivedList, id);
+         derivedSet.Remove(note);
       }
-      if (_byDisambiguationName.TryGetValue(snapshot.DisambiguationName, out var disambigList))
+      if (_byDisambiguationName.TryGetValue(snapshot.DisambiguationName, out var disambigSet))
       {
-         RemoveFirstNoteWithId(disambigList, id);
+         disambigSet.Remove(note);
       }
       foreach (var kanji in snapshot.MainFormKanji)
       {
-         if (_byKanjiInMainForm.TryGetValue(kanji, out var list)) RemoveFirstNoteWithId(list, id);
+         if (_byKanjiInMainForm.TryGetValue(kanji, out var set)) set.Remove(note);
       }
       foreach (var kanji in snapshot.AllKanji)
       {
-         if (_byKanjiInAnyForm.TryGetValue(kanji, out var list)) RemoveFirstNoteWithId(list, id);
+         if (_byKanjiInAnyForm.TryGetValue(kanji, out var set)) set.Remove(note);
       }
       foreach (var reading in snapshot.Readings)
       {
-         if (_byReading.TryGetValue(reading, out var list)) RemoveFirstNoteWithId(list, id);
+         if (_byReading.TryGetValue(reading, out var set)) set.Remove(note);
       }
       foreach (var stem in snapshot.Stems)
       {
-         if (_byStem.TryGetValue(stem, out var list)) RemoveFirstNoteWithId(list, id);
+         if (_byStem.TryGetValue(stem, out var set)) set.Remove(note);
       }
    }
 
@@ -151,38 +137,38 @@ public class VocabCache : NoteCache<VocabNote, VocabSnapshot>
    {
       foreach (var form in snapshot.Forms)
       {
-         if (!_byForm.ContainsKey(form)) _byForm[form] = new List<VocabNote>();
+         if (!_byForm.ContainsKey(form)) _byForm[form] = new HashSet<VocabNote>();
          _byForm[form].Add(note);
       }
       foreach (var compoundPart in snapshot.CompoundParts)
       {
-         if (!_byCompoundPart.ContainsKey(compoundPart)) _byCompoundPart[compoundPart] = new List<VocabNote>();
+         if (!_byCompoundPart.ContainsKey(compoundPart)) _byCompoundPart[compoundPart] = new HashSet<VocabNote>();
          _byCompoundPart[compoundPart].Add(note);
       }
-      if (!_byDerivedFrom.ContainsKey(snapshot.DerivedFrom)) _byDerivedFrom[snapshot.DerivedFrom] = new List<VocabNote>();
+      if (!_byDerivedFrom.ContainsKey(snapshot.DerivedFrom)) _byDerivedFrom[snapshot.DerivedFrom] = new HashSet<VocabNote>();
       _byDerivedFrom[snapshot.DerivedFrom].Add(note);
         
-      if (!_byDisambiguationName.ContainsKey(snapshot.DisambiguationName)) _byDisambiguationName[snapshot.DisambiguationName] = new List<VocabNote>();
+      if (!_byDisambiguationName.ContainsKey(snapshot.DisambiguationName)) _byDisambiguationName[snapshot.DisambiguationName] = new HashSet<VocabNote>();
       _byDisambiguationName[snapshot.DisambiguationName].Add(note);
         
       foreach (var kanji in snapshot.MainFormKanji)
       {
-         if (!_byKanjiInMainForm.ContainsKey(kanji)) _byKanjiInMainForm[kanji] = new List<VocabNote>();
+         if (!_byKanjiInMainForm.ContainsKey(kanji)) _byKanjiInMainForm[kanji] = new HashSet<VocabNote>();
          _byKanjiInMainForm[kanji].Add(note);
       }
       foreach (var kanji in snapshot.AllKanji)
       {
-         if (!_byKanjiInAnyForm.ContainsKey(kanji)) _byKanjiInAnyForm[kanji] = new List<VocabNote>();
+         if (!_byKanjiInAnyForm.ContainsKey(kanji)) _byKanjiInAnyForm[kanji] = new HashSet<VocabNote>();
          _byKanjiInAnyForm[kanji].Add(note);
       }
       foreach (var reading in snapshot.Readings)
       {
-         if (!_byReading.ContainsKey(reading)) _byReading[reading] = new List<VocabNote>();
+         if (!_byReading.ContainsKey(reading)) _byReading[reading] = new HashSet<VocabNote>();
          _byReading[reading].Add(note);
       }
       foreach (var stem in snapshot.Stems)
       {
-         if (!_byStem.ContainsKey(stem)) _byStem[stem] = new List<VocabNote>();
+         if (!_byStem.ContainsKey(stem)) _byStem[stem] = new HashSet<VocabNote>();
          _byStem[stem].Add(note);
       }
    }

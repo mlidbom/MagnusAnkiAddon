@@ -6,8 +6,8 @@ namespace JAStudio.Core.Note.Collection;
 
 public class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
 {
-   private readonly Dictionary<string, List<KanjiNote>> _byRadical = new();
-   public readonly Dictionary<string, List<KanjiNote>> ByReading = new();
+   private readonly Dictionary<string, HashSet<KanjiNote>> _byRadical = new();
+   public readonly Dictionary<string, HashSet<KanjiNote>> ByReading = new();
 
    public KanjiCache(NoteServices noteServices) : base(typeof(KanjiNote), (services, data) => new KanjiNote(services, data), noteServices)
    {
@@ -26,34 +26,20 @@ public class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
       return new KanjiSnapshot(note);
    }
 
-   private static void RemoveFirstNoteWithId(List<KanjiNote> noteList, NoteId id)
-   {
-      for (var i = 0; i < noteList.Count; i++)
-      {
-         if (noteList[i].GetId() == id)
-         {
-            noteList.RemoveAt(i);
-            return;
-         }
-      }
-      throw new Exception($"Could not find note with id {id} in list");
-   }
-
    protected override void InheritorRemoveFromCache(KanjiNote note, KanjiSnapshot snapshot)
    {
-      var id = snapshot.Id;
       foreach (var form in snapshot.Radicals)
       {
-         if (_byRadical.TryGetValue(form, out var list))
+         if (_byRadical.TryGetValue(form, out var set))
          {
-            RemoveFirstNoteWithId(list, id);
+            set.Remove(note);
          }
       }
       foreach (var reading in snapshot.Readings)
       {
-         if (ByReading.TryGetValue(reading, out var list))
+         if (ByReading.TryGetValue(reading, out var set))
          {
-            RemoveFirstNoteWithId(list, id);
+            set.Remove(note);
          }
       }
    }
@@ -64,7 +50,7 @@ public class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
       {
          if (!_byRadical.ContainsKey(form))
          {
-            _byRadical[form] = new List<KanjiNote>();
+            _byRadical[form] = new HashSet<KanjiNote>();
          }
          _byRadical[form].Add(note);
       }
@@ -72,7 +58,7 @@ public class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
       {
          if (!ByReading.ContainsKey(reading))
          {
-            ByReading[reading] = new List<KanjiNote>();
+            ByReading[reading] = new HashSet<KanjiNote>();
          }
          ByReading[reading].Add(note);
       }

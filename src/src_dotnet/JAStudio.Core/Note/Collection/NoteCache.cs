@@ -190,7 +190,7 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
    where TSnapshot : CachedNote
 {
    readonly IMonitorCE _monitor = IMonitorCE.WithDefaultTimeout();
-   readonly Dictionary<string, List<TNote>> _byQuestion = new();
+   readonly Dictionary<string, HashSet<TNote>> _byQuestion = new();
    readonly Dictionary<NoteId, TSnapshot> _snapshotById = new();
 
    protected NoteCache(Type cachedNoteType, Func<NoteServices, NoteData, TNote> noteConstructor, NoteServices noteServices)
@@ -198,7 +198,7 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
 
    public List<TNote> All() => _byId.Values.ToList();
 
-   public List<TNote> WithQuestion(string question) => _byQuestion.TryGetValue(question, out var notes) ? notes : new List<TNote>();
+   public List<TNote> WithQuestion(string question) => _byQuestion.TryGetValue(question, out var notes) ? notes.ToList() : new List<TNote>();
 
    protected abstract TSnapshot CreateSnapshot(TNote note);
    protected abstract void InheritorRemoveFromCache(TNote note, TSnapshot snapshot);
@@ -253,7 +253,7 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
 
       if(!_byQuestion.ContainsKey(snapshot.Question))
       {
-         _byQuestion[snapshot.Question] = new List<TNote>();
+         _byQuestion[snapshot.Question] = new HashSet<TNote>();
       }
 
       _byQuestion[snapshot.Question].Add(note);

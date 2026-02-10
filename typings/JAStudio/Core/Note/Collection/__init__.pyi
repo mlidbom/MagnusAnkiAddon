@@ -4,7 +4,7 @@ from JAStudio.Core.Configuration import JapaneseConfig
 from JAStudio.Core.Storage import INoteRepository
 from JAStudio.Core.LanguageServices.JamdictEx import DictLookup
 from JAStudio.Core.Note.Vocabulary import VocabNoteFactory, VocabNoteGeneratedData
-from System.Collections.Generic import Dictionary_2, List_1, HashSet_1, IEnumerable_1
+from System.Collections.Generic import Dictionary_2, HashSet_1, List_1, IEnumerable_1
 from System import Array_1, Action_1
 from System.Threading.Tasks import Task
 
@@ -67,7 +67,7 @@ class JPCollection:
 
 class KanjiCache(NoteCache_2[KanjiNote, KanjiSnapshot]):
     def __init__(self, noteServices: NoteServices) -> None: ...
-    ByReading : Dictionary_2[str, List_1[KanjiNote]]
+    ByReading : Dictionary_2[str, HashSet_1[KanjiNote]]
     def WithRadical(self, radical: str) -> List_1[KanjiNote]: ...
 
 

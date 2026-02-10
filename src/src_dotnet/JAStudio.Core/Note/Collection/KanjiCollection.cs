@@ -39,7 +39,7 @@ public class KanjiCollection
     {
         var hiraganaReading = KanaUtils.AnythingToHiragana(reading);
         return Cache.ByReading.TryGetValue(hiraganaReading, out var notes) 
-            ? notes.ToHashSet() 
+            ? notes 
             : new HashSet<KanjiNote>();
     }
 
