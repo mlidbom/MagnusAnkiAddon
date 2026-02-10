@@ -74,20 +74,14 @@ public sealed class TextAnalysis
             .ToList();
     }
 
-    public static TextAnalysis FromText(AnalysisServices services, string text)
-    {
-        return new TextAnalysis(services, text, SentenceConfiguration.Empty());
-    }
+    public static TextAnalysis FromText(AnalysisServices services, string text) => new(services, text, SentenceConfiguration.Empty());
 
     public List<string> AllWordsStrings()
     {
         return ValidMatches.Select(w => w.ParsedForm).ToList();
     }
 
-    public override string ToString()
-    {
-        return Text;
-    }
+    public override string ToString() => Text;
 
     private void ConnectNextAndPreviousToLocations()
     {

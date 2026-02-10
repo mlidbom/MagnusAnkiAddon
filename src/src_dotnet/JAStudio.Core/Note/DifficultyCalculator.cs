@@ -18,10 +18,7 @@ public class DifficultyCalculator
         _kanjiSeconds = kanjiSeconds;
     }
 
-    public static bool IsOtherCharacter(char ch)
-    {
-        return !KanaUtils.CharacterIsKana(ch) && !KanaUtils.CharacterIsKanji(ch);
-    }
+    public static bool IsOtherCharacter(char ch) => !KanaUtils.CharacterIsKana(ch) && !KanaUtils.CharacterIsKanji(ch);
 
     public double AllowedSeconds(string text)
     {

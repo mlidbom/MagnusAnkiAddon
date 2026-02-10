@@ -16,10 +16,7 @@ public class PreRenderingContentRenderer<TNote> where TNote : JPNote
     private readonly Dictionary<string, Func<TNote, string>> _renderMethods;
     private Dictionary<string, Task<string>>? _tasks;
 
-    public PreRenderingContentRenderer(Dictionary<string, Func<TNote, string>> renderMethods)
-    {
-        _renderMethods = renderMethods;
-    }
+    public PreRenderingContentRenderer(Dictionary<string, Func<TNote, string>> renderMethods) => _renderMethods = renderMethods;
 
     /// <summary>
     /// Main entry point. Dispatches based on display type.

@@ -14,18 +14,16 @@ namespace JAStudio.UI.Menus;
 /// </summary>
 public static class SentenceStringMenus
 {
-    public static SpecMenuItem BuildStringMenuSpec(SentenceNote sentence, string menuString)
-    {
-        return SpecMenuItem.Submenu(
-            $"Selection: \"{menuString}\"",
-            new List<SpecMenuItem>
-            {
-                BuildAddMenuSpec(sentence, menuString),
-                BuildRemoveMenuSpec(sentence, menuString),
-                BuildSplitWithWordBreakTagSpec(sentence, menuString)
-            }
-        );
-    }
+    public static SpecMenuItem BuildStringMenuSpec(SentenceNote sentence, string menuString) =>
+       SpecMenuItem.Submenu(
+          $"Selection: \"{menuString}\"",
+          new List<SpecMenuItem>
+          {
+             BuildAddMenuSpec(sentence, menuString),
+             BuildRemoveMenuSpec(sentence, menuString),
+             BuildSplitWithWordBreakTagSpec(sentence, menuString)
+          }
+       );
 
     private static SpecMenuItem BuildAddMenuSpec(SentenceNote sentence, string menuString)
     {
