@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Compze.Utilities.Logging;
 using JAStudio.Core.Note;
 using JAStudio.Core.TaskRunners;
@@ -100,9 +101,8 @@ public class FileSystemNoteRepository : INoteRepository
       using var scope = _taskRunner.Current("Loading notes from snapshot + incremental files");
       var snapshotTime = File.GetLastWriteTimeUtc(AllNotesPath);
 
-      var snapshotData = scope.RunOnBackgroundThreadWithSpinningProgressDialogAsync(
-         "Loading snapshot file",
-         () => _serializer.DeserializeAll(File.ReadAllText(AllNotesPath)));
+      var snapshotFileContent = scope.RunOnBackgroundThreadWithSpinningProgressDialog("Reading snapshot file", () => File.ReadAllText(AllNotesPath));
+      var snapshotData = Task.Run(() => _serializer.DeserializeAll(snapshotFileContent));
 
       // Scan all individual files in parallel — we need both the set of current IDs (for delete detection)
       // and the list of files newer than the snapshot (for patching).
