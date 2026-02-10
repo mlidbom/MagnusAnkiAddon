@@ -8,6 +8,15 @@ The git-based `jas_database/` is the **source of truth** for all note data. All 
 
 The Anki integration layer becomes very thin: look up the `jas_note_id`, render the menus provided by our code, render the card view by calling our code, open dialogs in our code. Anki is just an SRS scheduler.
 
+### Data Separation: Corpus vs User
+
+| Concern | Examples | Store | Shared? |
+|---------|----------|-------|---------|
+| **Corpus data** | Kanji, vocab, sentences, readings, meanings, relationships, forms, parts of speech | `jas_database/` (git) | Yes — versioned, shareable |
+| **User data** | Anki note IDs, card studying status, scheduling state | Anki's SQLite | No — per-user |
+
+Note classes currently mix both concerns (e.g. `IsStudying()` lives alongside `Question`). Eventually the user data should be separated out so Note classes deal purely in corpus data. Not a priority while there is only one user/developer.
+
 ### Benefits
 
 - Full version history of all note edits via git
@@ -103,7 +112,7 @@ At runtime, `App.AddonRootDir` calls `AnkiFacade.GetAddonRootDir()` which delega
 
 ## Next Steps
 
+- **Switch corpus loading from Anki to `jas_database/`** — load notes via `INoteRepository.LoadAll()`, then overlay user data (studying status, AnkiNoteIdMap) from Anki separately
 - Design the V2 DTO format: typed IDs, proper structure (no more flat string fields)
 - Build batch migration tool: load V1 → full collection in memory → resolve cross-note references → write V2
-- Switch to loading from `jas_database/` instead of Anki (all data is already there)
 - Build the thin Anki sync layer: map `jas_note_id` to Anki note IDs for SRS scheduling
