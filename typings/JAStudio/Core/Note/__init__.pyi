@@ -256,7 +256,6 @@ class NoteFieldsConstants(abc.ABC):
         AudioG : str
         AudioTTS : str
         Forms : str
-        Homophones : str
         Kanji : str
         MatchingRules : str
         PartsOfSpeech : str

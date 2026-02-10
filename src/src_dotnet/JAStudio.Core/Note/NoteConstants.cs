@@ -150,7 +150,6 @@ public static class NoteFieldsConstants
         public const string Kanji = "__kanji";
         public const string Forms = "F";
         public const string SourceReadingMnemonic = "source_reading_mnemonic";
-        public const string Homophones = "Homophones";
     }
 }
 
