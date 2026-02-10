@@ -96,7 +96,7 @@ public class JPCollection
    /// <summary>Clear and reload all caches from the Anki DB. Called after sync or collection reload.</summary>
    public void ReloadFromAnkiDatabase()
    {
-      using var runner = NoteServices.TaskRunner.Current($@"""Populating caches from {NoteRepositoryType}""");
+      using var runner = NoteServices.TaskRunner.Current($"Populating caches from {NoteRepositoryType}");
       ClearCaches();
       LoadFromRepository();
       LoadAnkiUserData();
@@ -110,7 +110,7 @@ public class JPCollection
 
       var allNotes = ConfiguredRepository.LoadAll();
 
-      using var runner = NoteServices.TaskRunner.Current($@"""Populating caches from {NoteRepositoryType}""");
+      using var runner = NoteServices.TaskRunner.Current($"Populating caches from {NoteRepositoryType}");
 
       Task.WaitAll(
          runner.ProcessWithProgressAsync(allNotes.Kanji, Kanji.Cache.AddToCache, "Pushing kanji notes into cache"),
