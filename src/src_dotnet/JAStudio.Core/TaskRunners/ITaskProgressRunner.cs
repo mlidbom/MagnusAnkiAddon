@@ -12,6 +12,7 @@ public interface ITaskProgressRunner : IDisposable
    public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message) => ProcessWithProgress(items, processItem, message, ThreadCount.One);
    List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads);
 
+   Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message) => ProcessWithProgressAsync(items, processItem, message, ThreadCount.One);
    Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threadCount);
 
    Task ProcessWithProgressAsync<TInput>(List<TInput> items, Action<TInput> processItem, string message) => ProcessWithProgressAsync(items, processItem.AsFunc(), message, ThreadCount.One);

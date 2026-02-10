@@ -1,4 +1,5 @@
-using System.Linq;
+using System;
+using System.Threading.Tasks;
 using JAStudio.Core.Anki;
 using JAStudio.Core.Note;
 
@@ -12,28 +13,40 @@ public class AnkiNoteRepository : INoteRepository
 {
    readonly NoteServices _noteServices;
 
-   public AnkiNoteRepository(NoteServices noteServices)
-   {
-      _noteServices = noteServices;
-   }
+   public AnkiNoteRepository(NoteServices noteServices) => _noteServices = noteServices;
 
    public AllNotesData LoadAll()
    {
       var dbPath = AnkiFacade.Col.DbFilePath()
-                   ?? throw new System.InvalidOperationException("Anki collection database is not initialized yet");
+                ?? throw new InvalidOperationException("Anki collection database is not initialized yet");
 
-      var vocabBulk = NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Vocab, g => new VocabId(g));
-      var kanjiBulk = NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Kanji, g => new KanjiId(g));
-      var sentenceBulk = NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Sentence, g => new SentenceId(g));
+      using var scope = _noteServices.TaskRunner.Current("Loading notes from Anki database");
 
-      var vocab = vocabBulk.Notes.Select(nd => new VocabNote(_noteServices, nd)).ToList();
-      var kanji = kanjiBulk.Notes.Select(nd => new KanjiNote(_noteServices, nd)).ToList();
-      var sentences = sentenceBulk.Notes.Select(nd => new SentenceNote(_noteServices, nd)).ToList();
+      var vocabBulk = scope.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Loading vocab from Anki", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Vocab, g => new VocabId(g)));
+      var kanjiBulk = scope.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Loading kanji from Anki", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Kanji, g => new KanjiId(g)));
+      var sentenceBulk = scope.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Loading sentences from Anki", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Sentence, g => new SentenceId(g)));
 
-      return new AllNotesData(kanji, vocab, sentences);
+      // ReSharper disable AccessToDisposedClosure
+      var vocab = Task.Run(async () => scope.ProcessWithProgress((await vocabBulk).Notes, nd => new VocabNote(_noteServices, nd), "Creating vocab notes from anki"));
+      var kanji = Task.Run(async () => scope.ProcessWithProgress((await kanjiBulk).Notes, nd => new KanjiNote(_noteServices, nd), "Creating kanji notes from anki"));
+      var sentences = Task.Run(async () => scope.ProcessWithProgress((await sentenceBulk).Notes, nd => new SentenceNote(_noteServices, nd), "Creating sentence notes from anki"));
+      // ReSharper restore AccessToDisposedClosure
+
+      return new AllNotesData(kanji.Result, vocab.Result, sentences.Result);
    }
 
-   public void Save(KanjiNote note) { /* No-op: Anki is the source of truth in this mode */ }
-   public void Save(VocabNote note) { /* No-op: Anki is the source of truth in this mode */ }
-   public void Save(SentenceNote note) { /* No-op: Anki is the source of truth in this mode */ }
+   public void Save(KanjiNote note)
+   {
+      throw new NotImplementedException("this should never be called");
+   }
+
+   public void Save(VocabNote note)
+   {
+      throw new NotImplementedException("this should never be called");
+   }
+
+   public void Save(SentenceNote note)
+   {
+      throw new NotImplementedException("this should never be called");
+   }
 }

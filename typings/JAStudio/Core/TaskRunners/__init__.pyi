@@ -99,6 +99,19 @@ class ITaskProgressRunner(IDisposable, typing.Protocol):
     ProcessWithProgressAsync : ProcessWithProgressAsync_MethodGroup
     class ProcessWithProgressAsync_MethodGroup:
         @typing.overload
+        def __getitem__(self, t:typing.Tuple[typing.Type[ProcessWithProgressAsync_2_T1], typing.Type[ProcessWithProgressAsync_2_T2]]) -> ProcessWithProgressAsync_2[ProcessWithProgressAsync_2_T1, ProcessWithProgressAsync_2_T2]: ...
+
+        ProcessWithProgressAsync_2_T1 = typing.TypeVar('ProcessWithProgressAsync_2_T1')
+        ProcessWithProgressAsync_2_T2 = typing.TypeVar('ProcessWithProgressAsync_2_T2')
+        class ProcessWithProgressAsync_2(typing.Generic[ProcessWithProgressAsync_2_T1, ProcessWithProgressAsync_2_T2]):
+            ProcessWithProgressAsync_2_TInput = ITaskProgressRunner.ProcessWithProgressAsync_MethodGroup.ProcessWithProgressAsync_2_T1
+            ProcessWithProgressAsync_2_TOutput = ITaskProgressRunner.ProcessWithProgressAsync_MethodGroup.ProcessWithProgressAsync_2_T2
+            @typing.overload
+            def __call__(self, items: List_1[ProcessWithProgressAsync_2_TInput], processItem: Func_2[ProcessWithProgressAsync_2_TInput, ProcessWithProgressAsync_2_TOutput], message: str) -> Task_1[List_1[ProcessWithProgressAsync_2_TOutput]]:...
+            @typing.overload
+            def __call__(self, items: List_1[ProcessWithProgressAsync_2_TInput], processItem: Func_2[ProcessWithProgressAsync_2_TInput, ProcessWithProgressAsync_2_TOutput], message: str, threadCount: ThreadCount) -> Task_1[List_1[ProcessWithProgressAsync_2_TOutput]]:...
+
+        @typing.overload
         def __getitem__(self, t:typing.Type[ProcessWithProgressAsync_1_T1]) -> ProcessWithProgressAsync_1[ProcessWithProgressAsync_1_T1]: ...
 
         ProcessWithProgressAsync_1_T1 = typing.TypeVar('ProcessWithProgressAsync_1_T1')
@@ -108,16 +121,6 @@ class ITaskProgressRunner(IDisposable, typing.Protocol):
             def __call__(self, items: List_1[ProcessWithProgressAsync_1_TInput], processItem: Action_1[ProcessWithProgressAsync_1_TInput], message: str) -> Task:...
             @typing.overload
             def __call__(self, items: List_1[ProcessWithProgressAsync_1_TInput], processItem: Action_1[ProcessWithProgressAsync_1_TInput], message: str, threadCount: ThreadCount) -> Task:...
-
-        @typing.overload
-        def __getitem__(self, t:typing.Tuple[typing.Type[ProcessWithProgressAsync_2_T1], typing.Type[ProcessWithProgressAsync_2_T2]]) -> ProcessWithProgressAsync_2[ProcessWithProgressAsync_2_T1, ProcessWithProgressAsync_2_T2]: ...
-
-        ProcessWithProgressAsync_2_T1 = typing.TypeVar('ProcessWithProgressAsync_2_T1')
-        ProcessWithProgressAsync_2_T2 = typing.TypeVar('ProcessWithProgressAsync_2_T2')
-        class ProcessWithProgressAsync_2(typing.Generic[ProcessWithProgressAsync_2_T1, ProcessWithProgressAsync_2_T2]):
-            ProcessWithProgressAsync_2_TInput = ITaskProgressRunner.ProcessWithProgressAsync_MethodGroup.ProcessWithProgressAsync_2_T1
-            ProcessWithProgressAsync_2_TOutput = ITaskProgressRunner.ProcessWithProgressAsync_MethodGroup.ProcessWithProgressAsync_2_T2
-            def __call__(self, items: List_1[ProcessWithProgressAsync_2_TInput], processItem: Func_2[ProcessWithProgressAsync_2_TInput, ProcessWithProgressAsync_2_TOutput], message: str, threadCount: ThreadCount) -> Task_1[List_1[ProcessWithProgressAsync_2_TOutput]]:...
 
 
     # Skipped RunOnBackgroundThreadWithSpinningProgressDialog due to it being static, abstract and generic.

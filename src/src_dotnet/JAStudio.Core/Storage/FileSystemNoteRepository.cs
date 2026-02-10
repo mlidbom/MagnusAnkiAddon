@@ -56,7 +56,7 @@ public class FileSystemNoteRepository : INoteRepository
 
    public AllNotesData LoadAll()
    {
-      using var scope = _taskRunner.Current("Loading notes from repository");
+      using var scope = _taskRunner.Current("Loading notes from file system");
 
       var kanjiFiles = scope.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Scanning kanji files", () => GetJsonFiles(KanjiDir));
       var vocabFiles = scope.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Scanning vocab files", () => GetJsonFiles(VocabDir));

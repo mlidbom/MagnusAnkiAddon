@@ -91,28 +91,31 @@ public class JPCollection
       Sentences.Cache.Clear();
    }
 
+   string NoteRepositoryType => _config.LoadNotesFromFileSystem.GetValue() ? "file system" : "anki";
+
    /// <summary>Clear and reload all caches from the Anki DB. Called after sync or collection reload.</summary>
    public void ReloadFromAnkiDatabase()
    {
+      using var runner = NoteServices.TaskRunner.Current($@"""Populating caches from {NoteRepositoryType}""");
       ClearCaches();
       LoadFromRepository();
       LoadAnkiUserData();
    }
+   
+   INoteRepository ConfiguredRepository => _config.LoadNotesFromFileSystem.GetValue() ? _noteRepository : new AnkiNoteRepository(NoteServices);
 
    void LoadFromRepository()
    {
       using var _ = this.Log().Warning().LogMethodExecutionTime();
 
-      INoteRepository source = _config.LoadNotesFromFileSystem.GetValue()
-         ? _noteRepository
-         : new AnkiNoteRepository(NoteServices);
+      var allNotes = ConfiguredRepository.LoadAll();
 
-      var allNotes = source.LoadAll();
+      using var runner = NoteServices.TaskRunner.Current($@"""Populating caches from {NoteRepositoryType}""");
 
-      using var runner = NoteServices.TaskRunner.Current("Populating caches");
-      runner.ProcessWithProgress(allNotes.Kanji, Kanji.Cache.AddToCache, "Pushing kanji notes into cache");
-      runner.ProcessWithProgress(allNotes.Vocab, Vocab.Cache.AddToCache, "Pushing vocab notes into cache");
-      runner.ProcessWithProgress(allNotes.Sentences, Sentences.Cache.AddToCache, "Pushing sentence notes into cache");
+      Task.WaitAll(
+         runner.ProcessWithProgressAsync(allNotes.Kanji, Kanji.Cache.AddToCache, "Pushing kanji notes into cache"),
+         runner.ProcessWithProgressAsync(allNotes.Vocab, Vocab.Cache.AddToCache, "Pushing vocab notes into cache"),
+         runner.ProcessWithProgressAsync(allNotes.Sentences, Sentences.Cache.AddToCache, "Pushing sentence notes into cache"));
    }
 
    void LoadAnkiUserData()
