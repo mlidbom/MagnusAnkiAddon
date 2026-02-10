@@ -40,6 +40,49 @@ public static class NoteBulkLoader
       return LoadNotes(db.Connection, noteTypeId, fieldMap, fieldCount, idFactory);
    }
 
+   /// <summary>
+   /// Build a lightweight AnkiNoteId → domain NoteId mapping for all known note types.
+   /// Only reads the jas_note_id field — does not load full note data.
+   /// </summary>
+   public static Dictionary<long, NoteId> LoadAnkiIdMaps(string dbFilePath)
+   {
+      using var db = AnkiDatabase.OpenReadOnly(dbFilePath);
+      var result = new Dictionary<long, NoteId>();
+
+      foreach(var noteTypeName in NoteTypes.AllList)
+      {
+         var idFactory = NoteTypes.IdFactoryFromName(noteTypeName);
+         var (noteTypeId, fieldMap, _) = GetNoteTypeInfo(db.Connection, noteTypeName);
+
+         if(!fieldMap.TryGetValue(MyNoteFields.JasNoteId, out var jasNoteIdOrdinal))
+            continue;
+
+         using var cmd = db.Connection.CreateCommand();
+         cmd.CommandText = """
+                           SELECT notes.id, notes.flds
+                           FROM notes
+                           WHERE notes.mid = @mid
+                           """;
+         cmd.Parameters.AddWithValue("@mid", noteTypeId);
+
+         using var reader = cmd.ExecuteReader();
+         while(reader.Read())
+         {
+            var ankiId = reader.GetInt64(0);
+            var fldsRaw = reader.IsDBNull(1) ? "" : reader.GetString(1);
+            var fieldValues = string.IsNullOrEmpty(fldsRaw) ? Array.Empty<string>() : fldsRaw.Split(FieldSeparator);
+
+            var jasNoteIdStr = jasNoteIdOrdinal < fieldValues.Length ? fieldValues[jasNoteIdOrdinal] : "";
+            if(Guid.TryParse(jasNoteIdStr, out var guid))
+            {
+               result[ankiId] = idFactory(guid);
+            }
+         }
+      }
+
+      return result;
+   }
+
    static (long noteTypeId, Dictionary<string, int> fieldMap, int fieldCount) GetNoteTypeInfo(SqliteConnection connection, string noteTypeName)
    {
       // Get note type ID.

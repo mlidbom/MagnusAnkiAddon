@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Compze.Utilities.Logging;
-using Compze.Utilities.SystemCE;
 using JAStudio.Core.Anki;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JamdictEx;
@@ -64,6 +63,7 @@ public class JPCollection
       this.Log().Info().LogMethodExecutionTime();
 
       NoteServices = noteServices;
+      _noteRepository = noteRepository;
       DictLookup = new DictLookup(this, config);
       VocabNoteGeneratedData = new VocabNoteGeneratedData(DictLookup);
       VocabNoteFactory = new VocabNoteFactory(DictLookup, this, noteServices);
@@ -76,6 +76,8 @@ public class JPCollection
       Vocab.Cache.OnNoteUpdated(note => noteRepository.Save(note));
       Sentences.Cache.OnNoteUpdated(note => noteRepository.Save(note));
    }
+
+   readonly INoteRepository _noteRepository;
 
    /// <summary>Clear all in-memory caches. Called when the Anki DB is about to become unreliable (e.g. sync starting, profile closing).</summary>
    public void ClearCaches()
@@ -91,37 +93,54 @@ public class JPCollection
    public void ReloadFromAnkiDatabase()
    {
       ClearCaches();
-      LoadFromAnkiDatabase(NoteServices);
+      LoadFromRepository();
+      LoadAnkiUserData();
    }
 
-   void LoadFromAnkiDatabase(NoteServices noteServices)
+   void LoadFromRepository()
+   {
+      using var _ = this.Log().Warning().LogMethodExecutionTime();
+      using var runner = NoteServices.TaskRunner.Current("Loading collection from repository");
+
+      var allNotes = runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Loading notes from repository", () => _noteRepository.LoadAll()).Result;
+
+      runner.ProcessWithProgress(allNotes.Kanji, Kanji.Cache.AddToCache, "Pushing kanji notes into cache");
+      runner.ProcessWithProgress(allNotes.Vocab, Vocab.Cache.AddToCache, "Pushing vocab notes into cache");
+      runner.ProcessWithProgress(allNotes.Sentences, Sentences.Cache.AddToCache, "Pushing sentence notes into cache");
+   }
+
+   void LoadAnkiUserData()
    {
       using var _ = this.Log().Warning().LogMethodExecutionTime();
       var dbPath = AnkiFacade.Col.DbFilePath();
       if(dbPath == null) throw new InvalidOperationException("Anki collection database is not initialized yet");
 
-      using var runner = noteServices.TaskRunner.Current("Loading collection");
+      using var runner = NoteServices.TaskRunner.Current("Loading user data from Anki");
 
-      var studyingStatuses = runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Fetching Studying Statuses from anki db", () => CardStudyingStatusLoader.FetchAll(dbPath));
-      var vocabData = Vocab.Cache.LoadAsync();
-      var kanjiData = Kanji.Cache.LoadAsync();
-      var sentenceData = Sentences.Cache.LoadAsync();
+      var ankiIdMapTask = runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Loading Anki ID mappings", () => NoteBulkLoader.LoadAnkiIdMaps(dbPath));
+      var studyingStatusesTask = runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Fetching studying statuses from Anki", () => CardStudyingStatusLoader.FetchAll(dbPath));
 
-      Task.WaitAll(kanjiData, sentenceData, vocabData, studyingStatuses);
+      Task.WaitAll(ankiIdMapTask, studyingStatusesTask);
 
-      // Group studying statuses by Anki note ID for efficient lookup
-      var vocabStatuses = studyingStatuses.Result
-         .Where(s => s.NoteTypeName == NoteTypes.Vocab)
-         .GroupBy(s => s.AnkiNoteId)
-         .ToDictionary(g => g.Key, g => g.ToList());
-      var kanjiStatuses = studyingStatuses.Result
-         .Where(s => s.NoteTypeName == NoteTypes.Kanji)
-         .GroupBy(s => s.AnkiNoteId)
-         .ToDictionary(g => g.Key, g => g.ToList());
-      var sentenceStatuses = studyingStatuses.Result
-         .Where(s => s.NoteTypeName == NoteTypes.Sentence)
-         .GroupBy(s => s.AnkiNoteId)
-         .ToDictionary(g => g.Key, g => g.ToList());
+      foreach(var (ankiId, noteId) in ankiIdMapTask.Result)
+      {
+         NoteServices.AnkiNoteIdMap.Register(ankiId, noteId);
+      }
+
+      var studyingStatuses = studyingStatusesTask.Result;
+
+      var vocabStatuses = studyingStatuses
+                         .Where(s => s.NoteTypeName == NoteTypes.Vocab)
+                         .GroupBy(s => s.AnkiNoteId)
+                         .ToDictionary(g => g.Key, g => g.ToList());
+      var kanjiStatuses = studyingStatuses
+                         .Where(s => s.NoteTypeName == NoteTypes.Kanji)
+                         .GroupBy(s => s.AnkiNoteId)
+                         .ToDictionary(g => g.Key, g => g.ToList());
+      var sentenceStatuses = studyingStatuses
+                            .Where(s => s.NoteTypeName == NoteTypes.Sentence)
+                            .GroupBy(s => s.AnkiNoteId)
+                            .ToDictionary(g => g.Key, g => g.ToList());
 
       Vocab.Cache.SetStudyingStatuses(vocabStatuses);
       Kanji.Cache.SetStudyingStatuses(kanjiStatuses);

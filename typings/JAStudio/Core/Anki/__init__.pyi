@@ -118,4 +118,6 @@ class IAnkiCardOperations(typing.Protocol):
 class NoteBulkLoader(abc.ABC):
     @staticmethod
     def LoadAllNotesOfType(dbFilePath: str, noteTypeName: str, idFactory: Func_2[Guid, NoteId]) -> AnkiBulkLoadResult: ...
+    @staticmethod
+    def LoadAnkiIdMaps(dbFilePath: str) -> Dictionary_2[int, NoteId]: ...
 
