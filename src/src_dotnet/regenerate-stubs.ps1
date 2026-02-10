@@ -2,11 +2,13 @@
 # Regenerate Python type stubs for JAStudio .NET assemblies
 #
 # Usage:
-#   .\regenerate-stubs.ps1              # Default - includes all System.* types (slow)
-#   .\regenerate-stubs.ps1 -OnlyTargetTypes  # Fast - only JAStudio types
+#   .\regenerate-stubs.ps1                          # Default Debug config
+#   .\regenerate-stubs.ps1 -OnlyTargetTypes           # Fast - only JAStudio types
+#   .\regenerate-stubs.ps1 -Configuration Release      # Use Release DLLs
 
 param(
-    [switch]$OnlyTargetTypes
+    [switch]$OnlyTargetTypes,
+    [string]$Configuration = "Debug"
 )
 
 # Always work relative to script location
@@ -48,7 +50,7 @@ Write-Host "`nGenerating stubs..." -ForegroundColor Cyan
 $args = @(
     $StubGenDll,
     "--dest-path", $TypingsPath,
-    "--target-dlls", "JAStudio.Core\bin\Debug\net10.0\JAStudio.Core.dll,JAStudio.PythonInterop\bin\Debug\net10.0\JAStudio.PythonInterop.dll"
+    "--target-dlls", "JAStudio.Core\bin\$Configuration\net10.0\JAStudio.Core.dll,JAStudio.PythonInterop\bin\$Configuration\net10.0\JAStudio.PythonInterop.dll,JAStudio.UI\bin\$Configuration\net10.0\win-x64\JAStudio.UI.dll"
 )
 
 if ($OnlyTargetTypes) {

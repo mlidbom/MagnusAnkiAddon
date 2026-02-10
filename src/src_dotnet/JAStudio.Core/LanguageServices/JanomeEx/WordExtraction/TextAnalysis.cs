@@ -12,10 +12,12 @@ public sealed class TextAnalysis
 
     private static readonly JNTokenizer Tokenizer = new();
 
+    public AnalysisServices Services { get; }
     public bool ForUI { get; }
     public string Text { get; }
     public SentenceConfiguration Configuration { get; }
     public JNTokenizedText TokenizedText { get; }
+    public string SerializedJanomeTokens { get; }
     public List<IAnalysisToken> PreProcessedTokens { get; }
     public List<TextAnalysisLocation> Locations { get; }
     public TextAnalysisLocation StartLocation { get; }
@@ -24,13 +26,16 @@ public sealed class TextAnalysis
     public List<Match> ValidMatches { get; }
     public List<Match> DisplayMatches { get; }
 
-    public TextAnalysis(string sentence, SentenceConfiguration sentenceConfiguration, bool forUI = false)
+    public TextAnalysis(AnalysisServices services, string sentence, SentenceConfiguration sentenceConfiguration, bool forUI = false, string? cachedJanomeTokens = null)
     {
+        Services = services;
         ForUI = forUI;
         Text = sentence;
         Configuration = sentenceConfiguration;
-        TokenizedText = Tokenizer.Tokenize(sentence);
-        PreProcessedTokens = TokenizedText.PreProcess();
+        var tokenizeResult = Tokenizer.Tokenize(sentence, cachedJanomeTokens);
+        TokenizedText = tokenizeResult.TokenizedText;
+        SerializedJanomeTokens = tokenizeResult.SerializedTokens;
+        PreProcessedTokens = TokenizedText.PreProcess(services.Vocab, services.DictLookup);
 
         Locations = new List<TextAnalysisLocation>();
 
@@ -69,9 +74,9 @@ public sealed class TextAnalysis
             .ToList();
     }
 
-    public static TextAnalysis FromText(string text)
+    public static TextAnalysis FromText(AnalysisServices services, string text)
     {
-        return new TextAnalysis(text, SentenceConfiguration.Empty());
+        return new TextAnalysis(services, text, SentenceConfiguration.Empty());
     }
 
     public List<string> AllWordsStrings()

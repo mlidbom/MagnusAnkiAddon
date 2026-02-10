@@ -1,0 +1,47 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:JAStudio.UI.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
+        x:Class="JAStudio.UI.Views.ReadingsMappingsDialog"
+        x:DataType="vm:ReadingsMappingsDialogViewModel"
+        Title="Readings Mappings"
+        Width="600" Height="500"
+        WindowStartupLocation="Manual">
+    
+    <DockPanel Margin="10">
+        <!-- Search Box -->
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,10">
+            <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <TextBox Text="{Binding SearchText, Mode=TwoWay}"
+                     Watermark="Type to search..."
+                     MinWidth="400"/>
+        </StackPanel>
+
+        <!-- Buttons -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="Save (Alt+Enter)" 
+                    Command="{Binding SaveCommand}"
+                    HotKey="Alt+Enter"
+                    IsDefault="True"
+                    Margin="0,0,10,0"/>
+            <Button Content="Cancel" 
+                    Command="{Binding CancelCommand}"
+                    IsCancel="True"/>
+        </StackPanel>
+
+        <!-- Text Editor -->
+        <Border BorderBrush="{DynamicResource SystemAccentColor}" 
+                BorderThickness="1" 
+                CornerRadius="4">
+            <TextBox Text="{Binding MappingsText, Mode=TwoWay}"
+                     AcceptsReturn="True"
+                     TextWrapping="NoWrap"
+                     FontFamily="Consolas,Courier New,monospace"
+                     FontSize="12"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
+        </Border>
+    </DockPanel>
+</Window>

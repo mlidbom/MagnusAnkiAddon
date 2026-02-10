@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.Configuration;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Note.Sentences;
-using JAStudio.Core.Note.Vocabulary;
-using Settings = JAStudio.Core.Configuration.Settings;
 
 namespace JAStudio.Core.UI.Web.Sentence;
 
@@ -41,14 +41,16 @@ public class CompoundPartViewModel
         MatchViewModel matchViewModel,
         VocabNote vocabNote,
         SentenceConfiguration config,
+        Settings settings,
+        VocabCollection vocab,
         int depth = 0,
-        HashSet<long>? visited = null)
+        HashSet<NoteId>? visited = null)
     {
-        if (!Settings.HideAllCompounds())
+        if (!settings.HideAllCompounds())
         {
-            if (!Settings.ShowCompoundPartsInSentenceBreakdown()) return new List<CompoundPartViewModel>();
-            visited ??= new HashSet<long>();
-            if (visited.Contains(vocabNote.GetId())) return new List<CompoundPartViewModel>();
+            if (!settings.ShowCompoundPartsInSentenceBreakdown()) return [];
+            visited ??= [];
+            if (visited.Contains(vocabNote.GetId())) return [];
 
             visited.Add(vocabNote.GetId());
 
@@ -58,7 +60,7 @@ public class CompoundPartViewModel
             {
                 var wrapper = new CompoundPartViewModel(part, depth, config);
                 result.Add(wrapper);
-                var nestedParts = GetCompoundPartsRecursive(matchViewModel, part, config, depth + 1, visited);
+                var nestedParts = GetCompoundPartsRecursive(matchViewModel, part, config, settings, vocab, depth + 1, visited);
                 result.AddRange(nestedParts);
             }
 
@@ -70,17 +72,17 @@ public class CompoundPartViewModel
         {
             var godanBase = match.Word.StartLocation.Token.BaseForm;
             var godanPotentialPartBase = match.Word.EndLocation.Token.BaseForm;
-            var godan = App.Col().Vocab.WithFormPreferDisambiguationNameOrExactMatch(godanBase);
-            var godanPotential = App.Col().Vocab.WithFormPreferDisambiguationNameOrExactMatch(godanPotentialPartBase);
+            var godan = vocab.WithFormPreferDisambiguationNameOrExactMatch(godanBase);
+            var godanPotential = vocab.WithFormPreferDisambiguationNameOrExactMatch(godanPotentialPartBase);
             if (godan.Any() && godanPotential.Any())
             {
-                return new List<CompoundPartViewModel>
-                {
-                    new CompoundPartViewModel(godan.First(), depth, config),
-                    new CompoundPartViewModel(godanPotential.First(), depth, config)
-                };
+                return
+                [
+                   new CompoundPartViewModel(godan.First(), depth, config),
+                   new CompoundPartViewModel(godanPotential.First(), depth, config)
+                ];
             }
-            return new List<CompoundPartViewModel>();
+            return [];
         }
 
         // We may still have parts if janome tokenizes a word we consider a compound as a single token

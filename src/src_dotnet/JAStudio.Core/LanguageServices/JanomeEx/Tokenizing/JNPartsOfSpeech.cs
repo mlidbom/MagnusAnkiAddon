@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using JAStudio.Core.SysUtils;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;
 

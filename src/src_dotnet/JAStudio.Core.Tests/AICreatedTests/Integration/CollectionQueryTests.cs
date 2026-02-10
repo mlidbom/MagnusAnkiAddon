@@ -1,27 +1,21 @@
 using System.Linq;
-using JAStudio.Core.Note;
-using JAStudio.Core.TestUtils;
 using Xunit;
+using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.Tests.AICreatedTests.Integration;
 
-public class CollectionQueryTests : IAIGeneratedTestClass
+public class CollectionQueryTests : TestStartingWithEmptyCollection, IAIGeneratedTestClass
 {
-    public CollectionQueryTests()
-    {
-        TestApp.Reset();
-    }
-
     [Fact]
     public void VocabCollection_WithQuestion_FindsVocabByQuestion()
     {
         // Arrange
-        var vocab1 = VocabNote.Create("食べる", "to eat", "たべる");
-        var vocab2 = VocabNote.Create("本", "book", "ほん");
-        var vocab3 = VocabNote.Create("走る", "to run", "はしる");
+        var vocab1 = CreateVocab("食べる", "to eat", "たべる");
+        var vocab2 = CreateVocab("本", "book", "ほん");
+        var vocab3 = CreateVocab("走る", "to run", "はしる");
 
         // Act
-        var results = App.Col().Vocab.WithQuestion("\u672c");
+        var results = GetService<VocabCollection>().WithQuestion("\u672c");
 
         // Assert
         Assert.Single(results);
@@ -32,11 +26,11 @@ public class CollectionQueryTests : IAIGeneratedTestClass
     public void VocabCollection_WithQuestion_DoesNotFindByForm()
     {
         // Arrange
-        var vocab = VocabNote.Create("食べる", "to eat", "たべる");
+        var vocab = CreateVocab("食べる", "to eat", "たべる");
         vocab.Forms.Add("食う");
 
         // Act - Forms are not questions, so this should not find the vocab
-        var results = App.Col().Vocab.WithQuestion("食う");
+        var results = GetService<VocabCollection>().WithQuestion("食う");
 
         // Assert - Should be empty because "食う" is a form, not the question
         Assert.Empty(results);
@@ -46,10 +40,10 @@ public class CollectionQueryTests : IAIGeneratedTestClass
     public void VocabCollection_WithQuestion_ReturnsEmptyWhenNotFound()
     {
         // Arrange
-        var vocab = VocabNote.Create("食べる", "to eat", "たべる");
+        var vocab = CreateVocab("食べる", "to eat", "たべる");
 
         // Act
-        var results = App.Col().Vocab.WithQuestion("存在しない");
+        var results = GetService<VocabCollection>().WithQuestion("存在しない");
 
         // Assert
         Assert.Empty(results);
@@ -59,11 +53,11 @@ public class CollectionQueryTests : IAIGeneratedTestClass
     public void KanjiCollection_WithKanji_FindsKanjiByQuestion()
     {
         // Arrange
-        var kanji1 = KanjiNote.Create("食", "eat", "ショク", "た");
-        var kanji2 = KanjiNote.Create("本", "book", "ホン", "もと");
+        var kanji1 = CreateKanji("食", "eat", "ショク", "た");
+        var kanji2 = CreateKanji("本", "book", "ホン", "もと");
 
         // Act
-        var result = App.Col().Kanji.WithKanji("食");
+        var result = GetService<KanjiCollection>().WithKanji("食");
 
         // Assert
         Assert.NotNull(result);
@@ -74,10 +68,10 @@ public class CollectionQueryTests : IAIGeneratedTestClass
     public void KanjiCollection_WithKanji_ReturnsNullWhenNotFound()
     {
         // Arrange
-        var kanji = KanjiNote.Create("食", "eat", "ショク", "た");
+        var kanji = CreateKanji("食", "eat", "ショク", "た");
 
         // Act
-        var result = App.Col().Kanji.WithKanji("存");
+        var result = GetService<KanjiCollection>().WithKanji("存");
 
         // Assert
         Assert.Null(result);
@@ -87,10 +81,10 @@ public class CollectionQueryTests : IAIGeneratedTestClass
     public void SentenceCollection_Add_MakesNoteQueryable()
     {
         // Arrange
-        var sentence = SentenceNote.CreateTestNote("これは本です。", "This is a book.");
+        var sentence = CreateTestSentence("これは本です。", "This is a book.");
 
         // Act - Note is automatically added in CreateTestNote
-        var allSentences = App.Col().Sentences.All();
+        var allSentences = GetService<SentenceCollection>().All();
 
         // Assert
         Assert.Contains(sentence, allSentences);
@@ -100,14 +94,14 @@ public class CollectionQueryTests : IAIGeneratedTestClass
     public void MultipleCollections_IndependentlyManageNotes()
     {
         // Arrange
-        var kanji = KanjiNote.Create("食", "eat", "ショク", "た");
-        var vocab = VocabNote.Create("食べる", "to eat", "たべる");
-        var sentence = SentenceNote.CreateTestNote("食べる", "to eat");
+        var kanji = CreateKanji("食", "eat", "ショク", "た");
+        var vocab = CreateVocab("食べる", "to eat", "たべる");
+        var sentence = CreateTestSentence("食べる", "to eat");
 
         // Act
-        var kanjiCount = App.Col().Kanji.All().Count;
-        var vocabCount = App.Col().Vocab.All().Count;
-        var sentenceCount = App.Col().Sentences.All().Count;
+        var kanjiCount = GetService<KanjiCollection>().All().Count;
+        var vocabCount = GetService<VocabCollection>().All().Count;
+        var sentenceCount = GetService<SentenceCollection>().All().Count;
 
         // Assert
         Assert.Equal(1, kanjiCount);
@@ -119,12 +113,12 @@ public class CollectionQueryTests : IAIGeneratedTestClass
     public void VocabCollection_ById_ReturnsCorrectNote()
     {
         // Arrange
-        var vocab1 = VocabNote.Create("食べる", "to eat", "たべる");
-        var vocab2 = VocabNote.Create("本", "book", "ほん");
+        var vocab1 = CreateVocab("食べる", "to eat", "たべる");
+        var vocab2 = CreateVocab("本", "book", "ほん");
         var id1 = vocab1.GetId();
 
         // Act
-        var result = App.Col().Vocab.WithIdOrNone(id1);
+        var result = GetService<VocabCollection>().WithIdOrNone(id1);
 
         // Assert
         Assert.NotNull(result);

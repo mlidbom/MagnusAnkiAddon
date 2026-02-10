@@ -26,7 +26,7 @@ public class ExploreTokenPartOfSpeechInformationTests : IDisposable
     public void IdentifySomethingWords(string sentence, List<JNToken> expectedTokens)
     {
         var tokenized = _tokenizer.Tokenize(sentence);
-        Assert.Equal(expectedTokens, tokenized.Tokens);
+        Assert.Equal(expectedTokens, tokenized.TokenizedText.Tokens);
     }
 
     public static IEnumerable<object[]> GetTokenTestData()

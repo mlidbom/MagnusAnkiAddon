@@ -4,12 +4,8 @@ from typing import TYPE_CHECKING
 
 from aqt import gui_hooks, mw
 from aqt.reviewer import Reviewer
-from jaslib.note.difficulty_calculator import DifficultyCalculator
-from jaslib.note.kanjinote import KanjiNote
-from jaslib.note.note_constants import CardTypes
-from jaslib.note.sentences.sentencenote import SentenceNote
-from jaslib.note.vocabulary.vocabnote import VocabNote
 from jaspythonutils.sysutils.typed import non_optional
+from JAStudio.Core.Note import CardTypes, DifficultyCalculator, KanjiNote, SentenceNote, VocabNote
 
 from jastudio.anki_extentions.card_ex import CardEx
 from jastudio.ankiutils import app, ui_utils
@@ -20,7 +16,7 @@ if TYPE_CHECKING:
 _real_auto_advance_to_answer_if_enabled = Reviewer._auto_advance_to_answer_if_enabled  # noqa  # pyright: ignore[reportPrivateUsage]
 
 def is_handled_card(card: CardEx) -> bool:
-    if card.type().name != CardTypes.reading:
+    if card.type().name != CardTypes.Reading:
         return False
 
     import jastudio.note.ankijpnote
@@ -32,24 +28,24 @@ def seconds_to_show_question(card: CardEx) -> float:
 
     def default_time_allowed() -> float:
         if isinstance(note, SentenceNote):
-            return DifficultyCalculator(starting_seconds=app.config().autoadvance_sentence_starting_seconds.get_value(),
-                                        hiragana_seconds=app.config().autoadvance_sentence_hiragana_seconds.get_value(),
-                                        katakata_seconds=app.config().autoadvance_sentence_katakana_seconds.get_value(),
-                                        kanji_seconds=app.config().autoadvance_sentence_kanji_seconds.get_value()).allowed_seconds(note.question.without_invisible_space())
+            return DifficultyCalculator(startingSeconds=app.config().AutoadvanceSentenceStartingSeconds.GetValue(),
+                                        hiraganaSeconds=app.config().AutoadvanceSentenceHiraganaSeconds.GetValue(),
+                                        katakataSeconds=app.config().AutoadvanceSentenceKatakanaSeconds.GetValue(),
+                                        kanjiSeconds=app.config().AutoadvanceSentenceKanjiSeconds.GetValue()).AllowedSeconds(note.Question.WithoutInvisibleSpace())
         if isinstance(note, VocabNote):
-            return DifficultyCalculator(starting_seconds=app.config().autoadvance_vocab_starting_seconds.get_value(),
-                                        hiragana_seconds=app.config().autoadvance_vocab_hiragana_seconds.get_value(),
-                                        katakata_seconds=app.config().autoadvance_vocab_katakana_seconds.get_value(),
-                                        kanji_seconds=app.config().autoadvance_vocab_kanji_seconds.get_value()).allowed_seconds(note.get_question())
+            return DifficultyCalculator(startingSeconds=app.config().AutoadvanceVocabStartingSeconds.GetValue(),
+                                        hiraganaSeconds=app.config().AutoadvanceVocabHiraganaSeconds.GetValue(),
+                                        katakataSeconds=app.config().AutoadvanceVocabKatakanaSeconds.GetValue(),
+                                        kanjiSeconds=app.config().AutoadvanceVocabKanjiSeconds.GetValue()).AllowedSeconds(note.GetQuestion())
         if isinstance(note, KanjiNote):
             return card.get_deck().get_config().get_seconds_to_show_question()
         raise Exception("We should never get here")
 
     time_allowed = default_time_allowed()
-    if app.config().boost_failed_card_allowed_time.get_value():
+    if app.config().BoostFailedCardAllowedTime.GetValue():
         sequential_failures = card.sequential_again_answers_today()
         if sequential_failures > 0:
-            config_bostfactor = app.config().boost_failed_card_allowed_time_by_factor.get_value()
+            config_bostfactor = app.config().BoostFailedCardAllowedTimeByFactor.GetValue()
             multiplier = config_bostfactor ** sequential_failures
 
             time_allowed *= multiplier

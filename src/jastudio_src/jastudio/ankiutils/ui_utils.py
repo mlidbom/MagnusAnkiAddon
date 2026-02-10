@@ -7,12 +7,13 @@ from PyQt6.QtWidgets import QApplication
 from typed_linq_collections.q_iterable import query
 
 from jastudio.ankiutils import app
+from jastudio.ui import dotnet_ui_root
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
     from anki.notes import Note
-    from jaslib.note.jpnote import JPNote
+    from JAStudio.Core.Note import JPNote
 
 import aqt
 from aqt import AnkiQt  # type: ignore[attr-defined]  # pyright: ignore[reportPrivateImportUsage]
@@ -47,6 +48,7 @@ def is_displaytype_displaying_review_answer(display_type: str) -> bool:
 def is_reviewer_display_type(display_type: str) -> bool:
     return display_type.startswith("review")
 
+# noinspection PyTypeHints
 def get_note_from_web_view(view: AnkiWebView) -> JPNote | None:
     inner_note: Note | None
 
@@ -69,8 +71,7 @@ def get_note_from_web_view(view: AnkiWebView) -> JPNote | None:
     else:
         return None
 
-    from jastudio.note.ankijpnote import AnkiJPNote
-    return AnkiJPNote.note_from_note(inner_note)
+    return dotnet_ui_root.Services.App.Collection.NoteFromAnkiNoteId(inner_note.id)
 
 class UIUtils(IUIUtils, Slots):
     def __init__(self, mw: AnkiQt) -> None:
@@ -110,7 +111,6 @@ class UIUtils(IUIUtils, Slots):
             if browser:
                 browser.onSearchActivated()  # pyright: ignore[reportUnknownMemberType]
 
-        app.col().flush_cache_updates()
         audio_suppressor.suppress_for_seconds(.3)
         force_reviewer_rerender()
         force_previewer_rerender()
@@ -143,6 +143,8 @@ class UIUtils(IUIUtils, Slots):
 
         app_thread_pool.run_on_ui_thread_fire_and_forget(show_tooltip)
 
+# noinspection PyTypeHints
 def try_get_review_note() -> JPNote | None:
-    from jastudio.note.ankijpnote import AnkiJPNote
-    return AnkiJPNote.note_from_card(non_optional(main_window().reviewer.card)) if main_window().reviewer.card else None
+    card = main_window().reviewer.card
+    if not card: return None
+    return dotnet_ui_root.Services.App.Collection.NoteFromAnkiNoteId(card.nid if card.nid else card.note().id)

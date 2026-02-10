@@ -3,11 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
-from jaslib.note.kanjinote import KanjiNote
-from jaslib.note.sentences.sentencenote import SentenceNote
-from jaslib.note.vocabulary.vocabnote import VocabNote
 from jaspythonutils.sysutils import typed
 from jaspythonutils.sysutils.typed import try_cast
+from JAStudio.Core.Note import KanjiNote, SentenceNote, VocabNote
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtGui import QKeySequence, QShortcut
 
@@ -17,7 +15,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from aqt.main import MainWindowState
-    from jaslib.configuration.configuration_value import ConfigurationValueBool
+    from JAStudio.Core.Configuration import ConfigurationValue_1, JapaneseConfig
     from PyQt6.QtWidgets import QWidget
 
 def init() -> None:
@@ -29,68 +27,71 @@ def init() -> None:
     def remove_mnemonic() -> None:
         kanji = try_get_review_note_of_type(KanjiNote)
         if kanji:
-            kanji.set_user_mnemonic("")
+            kanji.SetUserMnemonic("")
             refresh_shallow()
 
         vocab = try_get_review_note_of_type(VocabNote)
         if vocab:
-            vocab.user.mnemonic.empty()
+            vocab.User.Mnemonic.Empty()
             refresh_shallow()
 
     def generate_compound_parts() -> None:
         vocab = try_get_review_note_of_type(VocabNote)
         if vocab:
-            vocab.compound_parts.auto_generate()
+            vocab.CompoundParts.AutoGenerate()
             refresh_shallow()
 
     def reset_incorrect_matches() -> None:
         sentence = try_get_review_note_of_type(SentenceNote)
         if sentence:
-            sentence.configuration.incorrect_matches.reset()
+            sentence.Configuration.IncorrectMatches.Reset()
             refresh_shallow()
 
     def reset_source_comments() -> None:
         sentence = try_get_review_note_of_type(SentenceNote)
         if sentence:
-            sentence.source_comments.empty()
+            sentence.SourceComments.Empty()
             refresh_shallow()
 
+    def _config() -> JapaneseConfig:
+        return app.config() # todo migration hook in dotnet config here
+
     def toggle_show_compound_parts_in_sentence_breakdown() -> None:
-        app.config().show_compound_parts_in_sentence_breakdown.set_value(not app.config().show_compound_parts_in_sentence_breakdown.get_value())
-        if app.config().show_compound_parts_in_sentence_breakdown.get_value():
-            app.config().show_sentence_breakdown_in_edit_mode.set_value(False)
+        _config().ShowCompoundPartsInSentenceBreakdown.SetValue(not _config().ShowCompoundPartsInSentenceBreakdown.GetValue())
+        if _config().ShowCompoundPartsInSentenceBreakdown.GetValue():
+            _config().ShowSentenceBreakdownInEditMode.SetValue(False)
         refresh_shallow()
 
-    def toggle_expando_flag(flag: ConfigurationValueBool) -> None:
-        flag.set_value(not flag.get_value())
+    def toggle_expando_flag(flag: ConfigurationValue_1[bool]) -> None:
+        flag.SetValue(not flag.GetValue())
         refresh_shallow()
 
     def toggle_hide_transparent_compounds__in_sentence_breakdown() -> None:
-        toggle_expando_flag(app.config().hide_compositionally_transparent_compounds)
+        toggle_expando_flag(_config().HideCompositionallyTransparentCompounds)
 
     def toggle_hide_all_compounds_in_sentence_breakdown() -> None:
-        toggle_expando_flag(app.config().hide_all_compounds)
+        toggle_expando_flag(_config().HideAllCompounds)
 
     def toggle_show_kanji_in_sentence_breakdown() -> None:
-        toggle_expando_flag(app.config().show_kanji_in_sentence_breakdown)
+        toggle_expando_flag(_config().ShowKanjiInSentenceBreakdown)
 
     def toggle_show_kanji_mnemonics_in_sentence_breakdown() -> None:
-        toggle_expando_flag(app.config().show_kanji_mnemonics_in_sentence_breakdown)
+        toggle_expando_flag(_config().ShowKanjiMnemonicsInSentenceBreakdown)
 
     def toggle_show_sentence_breakdown_in_edit_mode() -> None:
-        toggle_expando_flag(app.config().show_sentence_breakdown_in_edit_mode)
+        toggle_expando_flag(_config().ShowSentenceBreakdownInEditMode)
 
     def toggle_yield_last_token_in_suru_verb_compounds_to_overlapping_compound() -> None:
-        toggle_expando_flag(app.config().automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound)
+        toggle_expando_flag(_config().AutomaticallyYieldLastTokenInSuruVerbCompoundsToOverlappingCompound)
 
     def toggle_yield_last_token_in_passive_verb_compounds_to_overlapping_compound() -> None:
-        toggle_expando_flag(app.config().automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound)
+        toggle_expando_flag(_config().AutomaticallyYieldLastTokenInPassiveVerbCompoundsToOverlappingCompound)
 
     def toggle_yield_last_token_in_causative_verb_compounds_to_overlapping_compound() -> None:
-        toggle_expando_flag(app.config().automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound)
+        toggle_expando_flag(_config().AutomaticallyYieldLastTokenInCausativeVerbCompoundsToOverlappingCompound)
 
     def toggle_all_yield_last_token_flags() -> None:
-        app.config().toggle_all_sentence_display_auto_yield_flags()
+        _config().ToggleAllSentenceDisplayAutoYieldFlags()
         refresh_shallow()
 
     # noinspection DuplicatedCode

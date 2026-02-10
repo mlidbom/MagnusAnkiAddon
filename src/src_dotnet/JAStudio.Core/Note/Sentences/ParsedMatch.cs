@@ -5,16 +5,15 @@ namespace JAStudio.Core.Note.Sentences;
 
 public class ParsedMatch
 {
-    public const int MissingNoteId = -1;
     public static readonly ParsedWordSerializer Serializer = new();
 
     public int StartIndex { get; set; }
     public bool IsDisplayed { get; set; }
     public string Variant { get; set; }
     public string ParsedForm { get; set; }
-    public int VocabId { get; set; }
+    public NoteId? VocabId { get; set; }
 
-    public ParsedMatch(string variant, int startIndex, bool isDisplayed, string word, int vocabId)
+    public ParsedMatch(string variant, int startIndex, bool isDisplayed, string word, NoteId? vocabId)
     {
         StartIndex = startIndex;
         IsDisplayed = isDisplayed;
@@ -32,7 +31,7 @@ public class ParsedMatch
             match.StartIndex,
             match.IsValidForDisplay,
             match.ParsedForm,
-            match is VocabMatch vocabMatch ? vocabMatch.Vocab.GetId() : MissingNoteId
+            match is VocabMatch vocabMatch ? vocabMatch.Vocab.GetId() : null
         );
     }
 

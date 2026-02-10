@@ -1,5 +1,3 @@
-using JAStudio.Core.SysUtils;
-
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Requirements;
 
 /// <summary>

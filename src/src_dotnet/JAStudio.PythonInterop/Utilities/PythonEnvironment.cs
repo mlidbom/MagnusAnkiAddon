@@ -9,119 +9,126 @@ namespace JAStudio.PythonInterop.Utilities;
 
 public static class PythonEnvironment
 {
-    public static TResult Use<TResult>(Func<TResult> func)
-    {
-        using (LockGil())
-            return func();
-    }
+   public static PythonObjectWrapper Import(string module) => Use(() => new PythonObjectWrapper(Py.Import(module)));
 
-    public static void Use(Action action) => Use(action.AsFunc());
+   public static TResult Use<TResult>(Func<TResult> func)
+   {
+      using(LockGil())
+         return func();
+   }
 
-    public static IDisposable LockGil()
-    {
-        EnsureInitialized();
-        return Py.GIL();
-    }
+   public static void Use(Action action) => Use(action.AsFunc());
 
-    private static readonly IMonitorCE Monitor = IMonitorCE.WithDefaultTimeout();
+   public static IDisposable LockGil()
+   {
+      EnsureInitialized();
+      return Py.GIL();
+   }
 
-    /// <param name="venvPath">Optional path to venv. If not provided, uses JASTUDIO_VENV_PATH environment variable or auto-detects.</param>
-    public static void EnsureInitialized(string? venvPath = null)
-    {
-        if (PythonEngine.IsInitialized) return;
-        Monitor.Update(() =>
-        {
-            if (PythonEngine.IsInitialized) return;
+   private static readonly IMonitorCE Monitor = IMonitorCE.WithDefaultTimeout();
 
-            venvPath ??= GetVenvPath();
+   /// <param name="venvPath">Optional path to venv. If not provided, uses JASTUDIO_VENV_PATH environment variable or auto-detects.</param>
+   public static void EnsureInitialized(string? venvPath = null)
+   {
+      if(PythonEngine.IsInitialized) return;
+      Monitor.Update(() =>
+      {
+         if(PythonEngine.IsInitialized) return;
 
-            if (!Directory.Exists(venvPath))
-            {
-                throw new Exception($"""
-                                     Python venv not found at: {venvPath}
-                                     Please set JASTUDIO_VENV_PATH environment variable to your venv location.
-                                     Current directory: {Directory.GetCurrentDirectory()}
-                                     """);
-            }
+         venvPath ??= GetVenvPath();
 
-            // Read pyvenv.cfg to find base Python installation
-            var pyvenvCfg = Path.Combine(venvPath, "pyvenv.cfg");
-            if (!File.Exists(pyvenvCfg))
-            {
-                throw new Exception($"pyvenv.cfg not found at: {pyvenvCfg}");
-            }
+         if(!Directory.Exists(venvPath))
+         {
+            throw new Exception($"""
+                                 Python venv not found at: {venvPath}
+                                 Please set JASTUDIO_VENV_PATH environment variable to your venv location.
+                                 Current directory: {Directory.GetCurrentDirectory()}
+                                 """);
+         }
 
-            var basePython = GetBasePythonFromConfig(pyvenvCfg);
-            if (basePython == null)
-            {
-                throw new Exception($"Could not find base Python from {pyvenvCfg}");
-            }
+         // Read pyvenv.cfg to find base Python installation
+         var pyvenvCfg = Path.Combine(venvPath, "pyvenv.cfg");
+         if(!File.Exists(pyvenvCfg))
+         {
+            throw new Exception($"pyvenv.cfg not found at: {pyvenvCfg}");
+         }
 
-            // Find the Python DLL
-            var pythonDll = FindPythonDll(venvPath, basePython);
-            if (pythonDll == null)
-            {
-                throw new Exception($"Could not find Python DLL in {venvPath} or {basePython}");
-            }
+         var basePython = GetBasePythonFromConfig(pyvenvCfg);
+         if(basePython == null)
+         {
+            throw new Exception($"Could not find base Python from {pyvenvCfg}");
+         }
 
-            Console.WriteLine($"[PythonEnvironment] Using venv: {venvPath}");
-            Console.WriteLine($"[PythonEnvironment] Base Python: {basePython}");
-            Console.WriteLine($"[PythonEnvironment] Python DLL: {pythonDll}");
+         // Find the Python DLL
+         var pythonDll = FindPythonDll(venvPath, basePython);
+         if(pythonDll == null)
+         {
+            throw new Exception($"Could not find Python DLL in {venvPath} or {basePython}");
+         }
 
-            // Configure Python.NET
-            Runtime.PythonDLL = pythonDll;
-            PythonEngine.PythonHome = basePython;
-            PythonEngine.PythonPath = string.Join(
-                Path.PathSeparator.ToString(),
-                Path.Combine(basePython, "Lib"),
-                Path.Combine(venvPath, "Lib", "site-packages"),
-                Path.Combine(basePython, "DLLs")
-            );
+         Console.WriteLine($"[PythonEnvironment] Using venv: {venvPath}");
+         Console.WriteLine($"[PythonEnvironment] Base Python: {basePython}");
+         Console.WriteLine($"[PythonEnvironment] Python DLL: {pythonDll}");
 
-            PythonEngine.Initialize();
-            PythonEngine.BeginAllowThreads();
-        });
-    }
+         // Configure Python.NET
+         Runtime.PythonDLL = pythonDll;
+         PythonEngine.PythonHome = basePython;
+         PythonEngine.PythonPath = string.Join(
+            Path.PathSeparator.ToString(),
+            Path.Combine(basePython, "Lib"),
+            Path.Combine(venvPath, "Lib", "site-packages"),
+            Path.Combine(basePython, "DLLs")
+         );
 
-    private static string GetVenvPath()
-    {
-        var envPath = Environment.GetEnvironmentVariable("JASTUDIO_VENV_PATH");
-        if (!string.IsNullOrEmpty(envPath))
-        {
-            return envPath;
-        }
+         PythonEngine.Initialize();
+         PythonEngine.BeginAllowThreads();
+      });
+   }
 
-        var projectRoot = Path.GetFullPath(Path.Combine(
-            Directory.GetCurrentDirectory(),
-            "..", "..", "..", "..", "..", ".."
-        ));
-        return Path.Combine(projectRoot, "venv");
-    }
+   private static string GetVenvPath()
+   {
+      var envPath = Environment.GetEnvironmentVariable("JASTUDIO_VENV_PATH");
+      if(!string.IsNullOrEmpty(envPath))
+      {
+         return envPath;
+      }
 
-    private static string? GetBasePythonFromConfig(string pyvenvCfgPath)
-    {
-        return File.ReadAllLines(pyvenvCfgPath)
-            .Where(line => line.StartsWith("home = "))
-            .Select(line => line[7..].Trim())
-            .FirstOrDefault();
-    }
+      var projectRoot = Path.GetFullPath(Path.Combine(
+                                            Directory.GetCurrentDirectory(),
+                                            "..",
+                                            "..",
+                                            "..",
+                                            "..",
+                                            "..",
+                                            ".."
+                                         ));
+      return Path.Combine(projectRoot, "venv");
+   }
 
-    private static string? FindPythonDll(string venvPath, string basePython)
-    {
-        var venvScripts = Path.Combine(venvPath, "Scripts");
+   private static string? GetBasePythonFromConfig(string pyvenvCfgPath)
+   {
+      return File.ReadAllLines(pyvenvCfgPath)
+                 .Where(line => line.StartsWith("home = "))
+                 .Select(line => line[7..].Trim())
+                 .FirstOrDefault();
+   }
 
-        if (Directory.Exists(venvScripts))
-        {
-            var venvDll = Directory.GetFiles(venvScripts, "python3??.dll")
-                .OrderByDescending(f => f)
-                .FirstOrDefault();
+   private static string? FindPythonDll(string venvPath, string basePython)
+   {
+      var venvScripts = Path.Combine(venvPath, "Scripts");
 
-            if (venvDll != null)
-            {
-                return venvDll;
-            }
-        }
+      if(Directory.Exists(venvScripts))
+      {
+         var venvDll = Directory.GetFiles(venvScripts, "python3??.dll")
+                                .OrderByDescending(f => f)
+                                .FirstOrDefault();
 
-        return null;
-    }
+         if(venvDll != null)
+         {
+            return venvDll;
+         }
+      }
+
+      return null;
+   }
 }

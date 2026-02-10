@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import atexit
 import os
 from pathlib import Path
 
-from jaslib import mylog
 from jaspythonutils.sysutils.timeutil import StopWatch
-from pythonnet import load
+from jastudio import mylog
+from pythonnet import load, unload
 
 config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "runtimeconfig.json")
 
@@ -15,6 +16,8 @@ def _get_workspace_root() -> Path:
 try:
     with StopWatch.log_execution_time("Loading .NET runtime"):
         load("coreclr", runtime_config=config_file)
+        atexit.unregister(unload) # without this line shutdown takse forever, and we make sure to clean everything we need up elsewhere.
+
         mylog.info("Loaded .NET runtime")
         import clr
 
@@ -32,6 +35,7 @@ try:
         jastudio_dlls = [
                 runtime_binaries / "JAStudio.Core.dll",
                 runtime_binaries / "JAStudio.PythonInterop.dll",
+                runtime_binaries / "JAStudio.UI.dll",
         ]
 
         for dll_path in jastudio_dlls:

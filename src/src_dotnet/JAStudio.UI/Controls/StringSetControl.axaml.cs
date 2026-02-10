@@ -1,0 +1,152 @@
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
+using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+
+namespace JAStudio.UI.Controls;
+
+public partial class StringSetControl : UserControl
+{
+    public StringSetControl()
+    {
+        InitializeComponent();
+    }
+}
+
+/// <summary>
+/// ViewModel for a string set control (add/remove chips).
+/// </summary>
+public partial class StringSetControlViewModel : ObservableObject
+{
+    private readonly HashSet<string> _backingSet;
+    private readonly Window? _parentWindow;
+    private bool _hasChanges;
+
+    public string Title { get; }
+
+    [ObservableProperty]
+    private ObservableCollection<StringChipViewModel> _items = new();
+
+    public StringSetControlViewModel(HashSet<string> backingSet, string title, Window? parentWindow = null)
+    {
+        _backingSet = backingSet;
+        Title = title;
+        _parentWindow = parentWindow;
+        RefreshItems();
+    }
+
+    [RelayCommand]
+    private async Task AddAsync()
+    {
+        if (_parentWindow == null)
+            return;
+
+        var dialog = new TextInputDialog
+        {
+            Title = $"Add to {Title}",
+            Prompt = "Enter value:"
+        };
+
+        var result = await dialog.ShowDialog<string?>(_parentWindow);
+
+        if (!string.IsNullOrWhiteSpace(result))
+        {
+            _backingSet.Add(result);
+            _hasChanges = true;
+            RefreshItems();
+        }
+    }
+
+    private void RefreshItems()
+    {
+        Items.Clear();
+        foreach (var value in _backingSet.OrderBy(s => s))
+        {
+            Items.Add(new StringChipViewModel(value, RemoveValue));
+        }
+    }
+
+    private void RemoveValue(string value)
+    {
+        _backingSet.Remove(value);
+        _hasChanges = true;
+        RefreshItems();
+    }
+
+    public bool HasChanges() => _hasChanges;
+}
+
+/// <summary>
+/// ViewModel for a single string chip with a remove button.
+/// </summary>
+public partial class StringChipViewModel : ObservableObject
+{
+    private readonly System.Action<string> _onRemove;
+
+    public string Value { get; }
+
+    public StringChipViewModel(string value, System.Action<string> onRemove)
+    {
+        Value = value;
+        _onRemove = onRemove;
+    }
+
+    [RelayCommand]
+    private void Remove()
+    {
+        _onRemove(Value);
+    }
+}
+
+/// <summary>
+/// Simple text input dialog.
+/// </summary>
+public partial class TextInputDialog : Window
+{
+    public string? Prompt
+    {
+        get => _promptTextBlock.Text;
+        set => _promptTextBlock.Text = value;
+    }
+
+    private readonly TextBlock _promptTextBlock;
+    private readonly TextBox _inputTextBox;
+
+    public TextInputDialog()
+    {
+        Width = 400;
+        Height = 150;
+        WindowStartupLocation = WindowStartupLocation.CenterOwner;
+        CanResize = false;
+
+        var panel = new StackPanel { Margin = new Avalonia.Thickness(20), Spacing = 15 };
+
+        _promptTextBlock = new TextBlock();
+        panel.Children.Add(_promptTextBlock);
+
+        _inputTextBox = new TextBox();
+        panel.Children.Add(_inputTextBox);
+
+        var buttonPanel = new StackPanel
+        {
+            Orientation = Avalonia.Layout.Orientation.Horizontal,
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
+            Spacing = 10
+        };
+
+        var okButton = new Button { Content = "OK", Width = 80 };
+        okButton.Click += (s, e) => Close(_inputTextBox.Text);
+        buttonPanel.Children.Add(okButton);
+
+        var cancelButton = new Button { Content = "Cancel", Width = 80 };
+        cancelButton.Click += (s, e) => Close(null);
+        buttonPanel.Children.Add(cancelButton);
+
+        panel.Children.Add(buttonPanel);
+
+        Content = panel;
+    }
+}

@@ -1,42 +1,28 @@
-using System;
 using System.Linq;
-using JAStudio.Core.Note;
-using JAStudio.Core.Tests.Fixtures;
 using JAStudio.Core.ViewModels.KanjiList;
 using Xunit;
+using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.Tests.ViewModels;
 
 /// <summary>
 /// Tests ported from test_kanji_list_viewmodel.py
 /// </summary>
-public class KanjiListViewModelTests : IDisposable
+public class KanjiListViewModelTests : CollectionUsingTest
 {
-    private readonly IDisposable _collectionScope;
+   [Fact]
+   public void KanjiListViewModel()
+   {
+      var sentences = GetService<SentenceCollection>().All();
+      foreach(var sentence in sentences)
+      {
+         var extractedKanji = sentence.ExtractKanji();
+         var viewModel = GetService<SentenceKanjiListViewModel>().Create(extractedKanji);
 
-    public KanjiListViewModelTests()
-    {
-        _collectionScope = CollectionFactory.InjectCollectionWithAllSampleData();
-    }
+         var extractedKanjiSet = extractedKanji.ToHashSet();
+         var foundKanjiSet = viewModel.KanjiList.Select(m => m.Question()).ToHashSet();
 
-    public void Dispose()
-    {
-        _collectionScope.Dispose();
-    }
-
-    [Fact]
-    public void KanjiListViewModel()
-    {
-        var sentences = App.Col().Sentences.All();
-        foreach (var sentence in sentences)
-        {
-            var extractedKanji = sentence.ExtractKanji();
-            var viewModel = SentenceKanjiListViewModel.Create(extractedKanji);
-
-            var extractedKanjiSet = extractedKanji.ToHashSet();
-            var foundKanjiSet = viewModel.KanjiList.Select(m => m.Question()).ToHashSet();
-
-            Assert.Equal(extractedKanjiSet, foundKanjiSet);
-        }
-    }
+         Assert.Equal(extractedKanjiSet, foundKanjiSet);
+      }
+   }
 }

@@ -4,14 +4,14 @@ import os
 import tracemalloc
 
 from autoslot import Slots
-from jaslib import mylog
+from jastudio import mylog
 from jastudio.ankiutils import app
 from jastudio.sysutils import ex_gc
 
 
 class ExMalloc(Slots):
     def __init__(self) -> None:
-        self.disabled: bool = not app.config().enable_trace_malloc.get_value()
+        self.disabled: bool = not app.config().EnableTraceMalloc.GetValue()
         env_override = os.environ.get("TRACEMALLOC")
         if env_override is not None:
             self.disabled = env_override != "1"

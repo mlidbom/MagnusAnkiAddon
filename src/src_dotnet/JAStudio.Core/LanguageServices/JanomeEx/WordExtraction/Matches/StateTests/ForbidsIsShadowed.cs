@@ -1,5 +1,4 @@
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Requirements;
-using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.Head;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests;
 

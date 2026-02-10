@@ -6,8 +6,8 @@ namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 
 public class Synonyms
 {
-    private readonly VocabNote _vocab;
-    private readonly MutableSerializedObjectField<RelatedVocabData> _data;
+   readonly VocabNote _vocab;
+   readonly MutableSerializedObjectField<RelatedVocabData> _data;
 
     public Synonyms(VocabNote vocab, MutableSerializedObjectField<RelatedVocabData> data)
     {
@@ -17,23 +17,20 @@ public class Synonyms
 
     public HashSet<string> Strings() => _data.Get().Synonyms;
 
-    private void Save()
+    void Save()
     {
         Strings().Remove(_vocab.GetQuestion()); // todo: this is cleanup after a bug. Remove soon
         _data.Save();
     }
 
-    public List<VocabNote> Notes()
-    {
-        return App.Col().Vocab.WithAnyFormInPreferDisambiguationNameOrExactMatch(Strings().ToList());
-    }
+    public List<VocabNote> Notes() => _vocab.Services.Collection.Vocab.WithAnyFormInPreferDisambiguationNameOrExactMatch(Strings().ToList());
 
     public void Add(string synonym)
     {
         if (synonym == _vocab.GetQuestion()) return;
         Strings().Add(synonym);
 
-        foreach (var similar in App.Col().Vocab.WithQuestion(synonym).ToList())
+        foreach (var similar in _vocab.Services.Collection.Vocab.WithQuestion(synonym).ToList())
         {
             if (!similar.RelatedNotes.Synonyms.Strings().Contains(_vocab.GetQuestion()))
             {
@@ -46,7 +43,7 @@ public class Synonyms
 
     public void AddTransitivelyOneLevel(string synonym)
     {
-        var newSynonymNotes = App.Col().Vocab.WithAnyFormInPreferDisambiguationNameOrExactMatch(new List<string> { synonym });
+        var newSynonymNotes = _vocab.Services.Collection.Vocab.WithAnyFormInPreferDisambiguationNameOrExactMatch([synonym]);
 
         foreach (var synonymNote in newSynonymNotes)
         {
@@ -71,7 +68,7 @@ public class Synonyms
     {
         Strings().Remove(toRemove);
 
-        foreach (var similar in App.Col().Vocab.WithQuestion(toRemove))
+        foreach (var similar in _vocab.Services.Collection.Vocab.WithQuestion(toRemove))
         {
             if (similar.RelatedNotes.Synonyms.Strings().Contains(_vocab.GetQuestion()))
             {

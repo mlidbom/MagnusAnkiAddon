@@ -1,13 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.LanguageServices;
 using JAStudio.Core.LanguageServices.JamdictEx;
-using JAStudio.Core.SysUtils;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
-public static class VocabNoteGeneratedData
+public class VocabNoteGeneratedData
 {
-    public static void UpdateGeneratedData(VocabNote vocab)
+   readonly DictLookup _dictLookup;
+   internal VocabNoteGeneratedData(DictLookup dictLookup) => _dictLookup = dictLookup;
+
+    public void UpdateGeneratedData(VocabNote vocab)
     {
         vocab.MetaData.SentenceCount.Set(vocab.Sentences.All().Count);
         vocab.SetField(NoteFieldsConstants.Vocab.ActiveAnswer, vocab.GetAnswer());
@@ -18,8 +21,8 @@ public static class VocabNoteGeneratedData
 
         if (string.IsNullOrEmpty(readings) && KanaUtils.IsOnlyKana(question))
         {
-            vocab.SetReadings(new List<string> { question });
-            vocab.Tags.Set(Tags.Vocab.UsuallyKanaOnly);
+            vocab.SetReadings([question]);
+            vocab.Tags.Set(Tags.UsuallyKanaOnly);
         }
 
         if (vocab.CompoundParts.All().Count == 0 && vocab.PartsOfSpeech.IsSuruVerbIncluded())
@@ -35,10 +38,10 @@ public static class VocabNoteGeneratedData
 
             if (vocab.GetReadings().Any())
             {
-                var lookup = DictLookup.LookupVocabWordOrName(vocab);
+                var lookup = _dictLookup.LookupVocabWordOrName(vocab);
                 if (lookup.IsUk() && !vocab.Tags.Contains(Tags.DisableKanaOnly))
                 {
-                    vocab.Tags.Set(Tags.Vocab.UsuallyKanaOnly);
+                    vocab.Tags.Set(Tags.UsuallyKanaOnly);
                 }
 
                 if (!vocab.Forms.AllSet().Any())
@@ -62,7 +65,7 @@ public static class VocabNoteGeneratedData
 
             if (!vocab.Forms.AllSet().Contains(vocab.GetQuestion()) && vocab.Question.IsValid)
             {
-                var updatedForms = vocab.Forms.AllSet().Union(new[] { vocab.GetQuestion() }).ToHashSet();
+                var updatedForms = vocab.Forms.AllSet().Union([vocab.GetQuestion()]).ToHashSet();
                 vocab.Forms.SetSet(updatedForms);
             }
         }

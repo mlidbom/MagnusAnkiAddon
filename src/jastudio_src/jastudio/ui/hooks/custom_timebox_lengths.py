@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING
 import aqt.utils
 from aqt import gui_hooks
 from aqt.overview import Overview
-from jaslib.note.note_constants import CardTypes, NoteTypes
 from jaspythonutils.sysutils import typed
+from JAStudio.Core.Note import CardTypes, NoteTypes
 
 from jastudio.anki_extentions.card_ex import CardEx
 from jastudio.anki_extentions.deck_ex import DeckEx
@@ -28,13 +28,13 @@ def adjust_timebox(_web_content: WebContent, context: object) -> None:
             notetype = card.type()
 
             card_notetype_timebox_minutes: dict[tuple[str, str], int] = {
-                (NoteTypes.Sentence, CardTypes.reading): app.config().timebox_sentence_read.get_value(),
-                (NoteTypes.Sentence, CardTypes.listening): app.config().timebox_sentence_listen.get_value(),
+                (NoteTypes.Sentence, CardTypes.Reading): app.config().TimeboxSentenceRead.GetValue(),
+                (NoteTypes.Sentence, CardTypes.Listening): app.config().TimeboxSentenceListen.GetValue(),
 
-                (NoteTypes.Vocab, CardTypes.reading): app.config().timebox_vocab_read.get_value(),
-                (NoteTypes.Vocab, CardTypes.listening): app.config().timebox_vocab_listen.get_value(),
+                (NoteTypes.Vocab, CardTypes.Reading): app.config().TimeboxVocabRead.GetValue(),
+                (NoteTypes.Vocab, CardTypes.Listening): app.config().TimeboxVocabListen.GetValue(),
 
-                (NoteTypes.Kanji, CardTypes.reading): app.config().timebox_kanji_read.get_value(),
+                (NoteTypes.Kanji, CardTypes.Reading): app.config().TimeboxKanjiRead.GetValue(),
             }
 
             key = (notetype.name, typed.str_(card.type().name))

@@ -1,21 +1,15 @@
 using JAStudio.Core.Note;
-using JAStudio.Core.TestUtils;
 using Xunit;
 
 namespace JAStudio.Core.Tests.AICreatedTests.Integration;
 
-public class TagPropagationTests : IAIGeneratedTestClass
+public class TagPropagationTests : TestStartingWithEmptyCollection, IAIGeneratedTestClass
 {
-    public TagPropagationTests()
-    {
-        TestApp.Reset();
-    }
-
     [Fact]
     public void SettingTag_StoresOnNote()
     {
         // Arrange
-        var vocab = VocabNote.Create("食べる", "to eat", "たべる");
+        var vocab = CreateVocab("食べる", "to eat", "たべる");
 
         // Act
         vocab.Tags.Set(Tags.TTSAudio);
@@ -28,7 +22,7 @@ public class TagPropagationTests : IAIGeneratedTestClass
     public void UnsettingTag_RemovesFromNote()
     {
         // Arrange
-        var vocab = VocabNote.Create("食べる", "to eat", "たべる");
+        var vocab = CreateVocab("食べる", "to eat", "たべる");
         vocab.Tags.Set(Tags.TTSAudio);
 
         // Act
@@ -42,7 +36,7 @@ public class TagPropagationTests : IAIGeneratedTestClass
     public void MultipleTagsCanBeSetOnSameNote()
     {
         // Arrange
-        var kanji = KanjiNote.Create("食", "eat", "ショク", "た");
+        var kanji = CreateKanji("食", "eat", "ショク", "た");
 
         // Act
         kanji.Tags.Set(Tags.TTSAudio);
@@ -59,8 +53,8 @@ public class TagPropagationTests : IAIGeneratedTestClass
     public void TagsAreIndependentBetweenNotes()
     {
         // Arrange
-        var vocab1 = VocabNote.Create("食べる", "to eat", "たべる");
-        var vocab2 = VocabNote.Create("飲む", "to drink", "のむ");
+        var vocab1 = CreateVocab("食べる", "to eat", "たべる");
+        var vocab2 = CreateVocab("飲む", "to drink", "のむ");
 
         // Act
         vocab1.Tags.Set(Tags.TTSAudio);
@@ -74,7 +68,7 @@ public class TagPropagationTests : IAIGeneratedTestClass
     public void TogglingTag_WorksCorrectly()
     {
         // Arrange
-        var sentence = SentenceNote.CreateTestNote("これは本です。", "This is a book.");
+        var sentence = CreateTestSentence("これは本です。", "This is a book.");
 
         // Act & Assert - Set tag
         sentence.Tags.Set(Tags.TTSAudio);

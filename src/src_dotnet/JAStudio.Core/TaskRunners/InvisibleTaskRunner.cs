@@ -1,68 +1,99 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using Compze.Utilities.Logging;
 
 namespace JAStudio.Core.TaskRunners;
 
 public class InvisibleTaskRunner : ITaskProgressRunner
 {
-    public InvisibleTaskRunner(string windowTitle, string labelText)
-    {
-        // Invisible - no UI
-    }
+   public InvisibleTaskRunner(string windowTitle, string labelText)
+   {
+      this.Log().Debug($"##--InvisibleTaskRunner--## Created for {windowTitle} - {labelText}");
+   }
 
-    public List<TOutput> ProcessWithProgress<TInput, TOutput>(
-        List<TInput> items,
-        Func<TInput, TOutput> processItem,
-        string message,
-        bool runGc = false,
-        int minimumItemsToGc = 0)
-    {
-        var watch = Stopwatch.StartNew();
-        var result = new List<TOutput>();
-        foreach (var item in items)
-        {
+   public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
+   {
+      var watch = Stopwatch.StartNew();
+
+      if(threads.IsSequential)
+      {
+         var result = new List<TOutput>(items.Count);
+         foreach(var item in items)
+         {
             result.Add(processItem(item));
-        }
-        
-        var totalItems = items.Count;
-        watch.Stop();
-        MyLog.Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g} handled {totalItems} items");
-        
-        return result;
-    }
+         }
 
-    public void SetLabelText(string labelText)
-    {
-        // Invisible - no-op
-    }
+         watch.Stop();
+         this.Log().Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g} handled {items.Count} items");
+         return result;
+      } else
+      {
 
-    public void RunGc()
-    {
-        // No-op for invisible runner
-    }
+         var results = new TOutput[items.Count];
+         Parallel.For(0,
+                      items.Count,
+                      threads.ParallelOptions,
+                      i => results[i] = processItem(items[i]));
+         watch.Stop();
+         this.Log().Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g} handled {items.Count} items ({threads.Threads} threads)");
+         return new List<TOutput>(results);
+      }
+   }
 
-    public void Close()
-    {
-        // Invisible - no-op
-    }
+   public Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
+   {
+      return Task.Run(() =>
+      {
+         if(threads.IsSequential)
+            return ProcessWithProgress(items, processItem, message, threads);
 
-    public TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action)
-    {
-        var watch = Stopwatch.StartNew();
-        var result = action();
-        watch.Stop();
-        MyLog.Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g}");
-        return result;
-    }
+         var watch = Stopwatch.StartNew();
+         var results = new TOutput[items.Count];
+         Parallel.For(0,
+                      items.Count,
+                      threads.ParallelOptions,
+                      i => results[i] = processItem(items[i]));
+         watch.Stop();
+         this.Log().Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g} handled {items.Count} items ({threads.Threads} threads)");
+         return new List<TOutput>(results);
+      });
+   }
 
-    public bool IsHidden()
-    {
-        return true;
-    }
+   public void SetLabelText(string labelText)
+   {
+      // Invisible - no-op
+   }
 
-    public void Dispose()
-    {
-        Close();
-    }
+   public void RunGc()
+   {
+      // No-op for invisible runner
+   }
+
+   public void Close()
+   {
+      // Invisible - no-op
+   }
+
+   public TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action)
+   {
+      var watch = Stopwatch.StartNew();
+      var result = action();
+      watch.Stop();
+      this.Log().Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g}");
+      return result;
+   }
+
+   public Task<TResult> RunOnBackgroundThreadWithSpinningProgressDialogAsync<TResult>(string message, Func<TResult> action)
+   {
+      return Task.Run(() => RunOnBackgroundThreadWithSpinningProgressDialog(message, action));
+   }
+
+   public bool IsHidden() => true;
+
+   public void Dispose()
+   {
+      Close();
+   }
 }

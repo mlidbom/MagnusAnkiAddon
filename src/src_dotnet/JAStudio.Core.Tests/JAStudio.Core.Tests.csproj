@@ -1,26 +1,43 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+   <PropertyGroup>
+      <TargetFramework>net10.0</TargetFramework>
+      <ImplicitUsings>disable</ImplicitUsings>
+      <Nullable>enable</Nullable>
 
-    <IsPackable>false</IsPackable>
-    <IsTestProject>true</IsTestProject>
-  </PropertyGroup>
+      <IsPackable>false</IsPackable>
+      <IsTestProject>true</IsTestProject>
+   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="xunit.v3" Version="3.2.2" />
-  </ItemGroup>
+   <ItemGroup>
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+      <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
+         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+         <PrivateAssets>all</PrivateAssets>
+      </PackageReference>
+      <PackageReference Include="xunit.v3" Version="3.2.2" />
+   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\JAStudio.Core\JAStudio.Core.csproj" />
-    <ProjectReference Include="..\JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
-  </ItemGroup>
+   <ItemGroup>
+      <ProjectReference Include="..\JAStudio.Core\JAStudio.Core.csproj" />
+      <ProjectReference Include="..\JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
+   </ItemGroup>
+
+   <ItemGroup>
+      <Reference Include="Compze.Utilities">
+         <HintPath>..\manual_libs\Compze.Utilities.dll</HintPath>
+      </Reference>
+      <Reference Include="Compze.Utilities.Testing.Must">
+        <HintPath>..\manual_libs\Compze.Utilities.Testing.Must.dll</HintPath>
+      </Reference>
+
+      <Reference Include="DiffPlex">
+        <HintPath>..\manual_libs\DiffPlex.dll</HintPath>
+      </Reference>
+
+      <Reference Include="Newtonsoft.Json">
+        <HintPath>..\manual_libs\Newtonsoft.Json.dll</HintPath>
+      </Reference>
+   </ItemGroup>
 
 </Project>

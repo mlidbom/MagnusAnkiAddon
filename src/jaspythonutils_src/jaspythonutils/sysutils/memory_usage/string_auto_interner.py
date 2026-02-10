@@ -4,7 +4,7 @@ import os
 import sys
 from typing import TYPE_CHECKING
 
-from jaslib import app
+from jastudio.ankiutils import app
 from typed_linq_collections.collections.q_dict import QDict
 from typed_linq_collections.collections.string_interning import set_default_intern_func
 
@@ -18,7 +18,7 @@ _is_enabled = False
 
 def try_enable() -> None:  # call this after populating the application memory cache, thus discarding the unhelpful strings from interning and ensuring that the helpful ones stay using a single instance.
     global _is_enabled
-    _is_enabled = app.config().enable_auto_string_interning.get_value()
+    _is_enabled = app.config().EnableAutoStringInterning.GetValue()
     _env_override = os.environ.get("STRING_INTERNING")
     if _env_override:
         _is_enabled = _env_override == "1"

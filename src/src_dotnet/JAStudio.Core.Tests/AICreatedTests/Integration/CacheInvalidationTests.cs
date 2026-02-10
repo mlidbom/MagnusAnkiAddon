@@ -1,21 +1,15 @@
-using JAStudio.Core.Note;
-using JAStudio.Core.TestUtils;
 using Xunit;
+using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.Tests.AICreatedTests.Integration;
 
-public class CacheInvalidationTests : IAIGeneratedTestClass
+public class CacheInvalidationTests : TestStartingWithEmptyCollection, IAIGeneratedTestClass
 {
-    public CacheInvalidationTests()
-    {
-        TestApp.Reset();
-    }
-
     [Fact]
     public void UpdatingVocabQuestion_UpdatesCache()
     {
         // Arrange
-        var vocab = VocabNote.Create("食べる", "to eat", "たべる");
+        var vocab = CreateVocab("食べる", "to eat", "たべる");
         var originalQuestion = vocab.GetQuestion();
 
         // Act
@@ -23,11 +17,11 @@ public class CacheInvalidationTests : IAIGeneratedTestClass
         vocab.UpdateGeneratedData(); // Trigger cache update
 
         // Assert - Old question should not find it
-        var oldResults = App.Col().Vocab.WithQuestion("食べる");
+        var oldResults = GetService<VocabCollection>().WithQuestion("食べる");
         Assert.Empty(oldResults);
 
         // New question should find it
-        var newResults = App.Col().Vocab.WithQuestion("飲む");
+        var newResults = GetService<VocabCollection>().WithQuestion("飲む");
         Assert.Single(newResults);
         Assert.Equal(vocab, newResults[0]);
     }
@@ -36,17 +30,17 @@ public class CacheInvalidationTests : IAIGeneratedTestClass
     public void AddingVocabForm_DoesNotMakeItFindableByWithQuestion()
     {
         // Arrange
-        var vocab = VocabNote.Create("食べる", "to eat", "たべる");
+        var vocab = CreateVocab("食べる", "to eat", "たべる");
 
         // Act - Add a form that doesn't exist as another vocab's question
         vocab.Forms.Add("taberu-form");
 
         // Assert - Forms are not questions, so WithQuestion should NOT find it
-        var results = App.Col().Vocab.WithQuestion("taberu-form");
+        var results = GetService<VocabCollection>().WithQuestion("taberu-form");
         Assert.Empty(results);
-        
+
         // But it should still be findable by its actual question
-        var byQuestion = App.Col().Vocab.WithQuestion("\u98df\u3079\u308b");
+        var byQuestion = GetService<VocabCollection>().WithQuestion("\u98df\u3079\u308b");
         Assert.Single(byQuestion);
     }
 
@@ -54,9 +48,9 @@ public class CacheInvalidationTests : IAIGeneratedTestClass
     public void RemovingVocabForm_StillFindableByQuestion()
     {
         // Arrange
-        var vocab = VocabNote.Create("食べる", "to eat", "たべる");
+        var vocab = CreateVocab("食べる", "to eat", "たべる");
         vocab.Forms.Add("食う");
-        
+
         // Verify forms are stored
         Assert.Contains("食う", vocab.Forms.AllSet());
 
@@ -65,9 +59,9 @@ public class CacheInvalidationTests : IAIGeneratedTestClass
 
         // Assert - Form should be removed
         Assert.DoesNotContain("食う", vocab.Forms.AllSet());
-        
+
         // But still findable by its question
-        var results = App.Col().Vocab.WithQuestion("食べる");
+        var results = GetService<VocabCollection>().WithQuestion("食べる");
         Assert.Single(results);
     }
 
@@ -75,23 +69,23 @@ public class CacheInvalidationTests : IAIGeneratedTestClass
     public void UpdatingKanjiQuestion_UpdatesCache()
     {
         // Arrange
-        var kanji = KanjiNote.Create("食", "eat", "ショク", "た");
+        var kanji = CreateKanji("食", "eat", "ショク", "た");
 
         // Act
         kanji.SetQuestion("飲");
         kanji.UpdateGeneratedData();
 
         // Assert
-        Assert.Null(App.Col().Kanji.WithKanji("食"));
-        Assert.NotNull(App.Col().Kanji.WithKanji("飲"));
-        Assert.Equal(kanji, App.Col().Kanji.WithKanji("飲"));
+        Assert.Null(GetService<KanjiCollection>().WithKanji("食"));
+        Assert.NotNull(GetService<KanjiCollection>().WithKanji("飲"));
+        Assert.Equal(kanji, GetService<KanjiCollection>().WithKanji("飲"));
     }
 
     [Fact]
     public void MultipleUpdates_MaintainCacheConsistency()
     {
         // Arrange
-        var vocab = VocabNote.Create("走る", "to run", "はしる");
+        var vocab = CreateVocab("走る", "to run", "はしる");
 
         // Act - Multiple updates
         vocab.Forms.Add("駆ける");
@@ -101,11 +95,11 @@ public class CacheInvalidationTests : IAIGeneratedTestClass
         vocab.Forms.Remove("駆ける");
 
         // Assert - Cache should reflect final state
-        var byNewQuestion = App.Col().Vocab.WithQuestion("疾走する");
+        var byNewQuestion = GetService<VocabCollection>().WithQuestion("疾走する");
         Assert.Single(byNewQuestion);
 
         // Old question should not find it
-        var byOldQuestion = App.Col().Vocab.WithQuestion("走る");
+        var byOldQuestion = GetService<VocabCollection>().WithQuestion("走る");
         Assert.Empty(byOldQuestion);
 
         // Forms should be stored correctly

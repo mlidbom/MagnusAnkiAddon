@@ -1,7 +1,6 @@
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
-using JAStudio.Core.SysUtils;
 using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.LanguageServices.JamdictEx;

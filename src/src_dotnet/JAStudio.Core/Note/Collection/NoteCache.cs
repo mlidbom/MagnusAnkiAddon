@@ -1,161 +1,263 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JAStudio.Core.TaskRunners;
+using System.Threading.Tasks;
+using Compze.Utilities.SystemCE.ThreadingCE.ResourceAccess;
+using JAStudio.Core.Anki;
+using JAStudio.PythonInterop;
 
 namespace JAStudio.Core.Note.Collection;
 
 public class CachedNote
 {
-    public int Id { get; }
-    public string Question { get; }
+   public NoteId Id { get; }
+   public string Question { get; }
 
-    public CachedNote(JPNote note)
-    {
-        Id = note.GetId();
-        Question = note.GetQuestion();
-    }
+   public CachedNote(JPNote note)
+   {
+      Id = note.GetId();
+      Question = note.GetQuestion();
+   }
 }
 
-public abstract class NoteCacheBase<TNote> where TNote : JPNote
+public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote : JPNote
 {
-    private readonly Func<JPNoteData, TNote> _noteConstructor;
-    private readonly Type _noteType;
-    protected readonly Dictionary<int, TNote> _byId = new();
-    private readonly List<Action<TNote>> _updateListeners = new();
+   readonly Func<NoteServices, NoteData, TNote> _noteConstructor;
+   readonly Type _noteType;
+   protected readonly Dictionary<NoteId, TNote> _byId = new();
+   readonly List<Action<TNote>> _updateListeners = new();
+   readonly NoteServices _noteServices;
 
-    protected NoteCacheBase(Type cachedNoteType, Func<JPNoteData, TNote> noteConstructor)
-    {
-        _noteConstructor = noteConstructor;
-        _noteType = cachedNoteType;
-    }
+   protected NoteCacheBase(Type cachedNoteType, Func<NoteServices, NoteData, TNote> noteConstructor, NoteServices noteServices)
+   {
+      _noteConstructor = noteConstructor;
+      _noteType = cachedNoteType;
+      _noteServices = noteServices;
+   }
 
-    public void OnNoteUpdated(Action<TNote> listener)
-    {
-        _updateListeners.Add(listener);
-    }
+   public void OnNoteUpdated(dynamic listener)
+   {
+      Action<TNote> callback = PythonDotNetShim.Action.ToDotNet<TNote>(listener);
+      _updateListeners.Add(callback);
+   }
 
-    public TNote? WithIdOrNone(int noteId)
-    {
-        return _byId.TryGetValue(noteId, out var note) ? note : null;
-    }
+   public void OnNoteUpdated(Action<TNote> listener)
+   {
+      _updateListeners.Add(listener);
+   }
 
-    public void AnkiNoteUpdated(TNote note)
-    {
-        RefreshInCache(note);
-    }
+   public TNote? WithIdOrNone(NoteId noteId) => _byId.TryGetValue(noteId, out var note) ? note : null;
 
-    public void JpNoteUpdated(TNote note)
-    {
-        RefreshInCache(note);
-        NotifyUpdateListeners(note);
-    }
+   /// <summary>Look up a note by its Anki long ID (uses the shared AnkiNoteIdMap).</summary>
+   public TNote? WithAnkiIdOrNone(long ankiNoteId) =>
+      _noteServices.AnkiNoteIdMap.FromAnkiId(ankiNoteId) is {} noteId ? WithIdOrNone(noteId) : null;
 
-    private void NotifyUpdateListeners(TNote note)
-    {
-        foreach (var listener in _updateListeners)
-        {
-            listener(note);
-        }
-    }
+   /// <summary>Converts an Anki long ID to the corresponding domain NoteId.</summary>
+   public NoteId? AnkiIdToNoteId(long ankiNoteId) =>
+      _noteServices.AnkiNoteIdMap.FromAnkiId(ankiNoteId);
 
-    private void RefreshInCache(TNote note)
-    {
-        RemoveFromCache(note);
-        AddToCache(note);
-    }
+   /// <summary>Returns the Anki long note ID for the given domain NoteId.</summary>
+   public long GetAnkiNoteId(NoteId noteId) =>
+      _noteServices.AnkiNoteIdMap.ToAnkiId(noteId) ?? 0;
 
-    public void InitFromList(List<JPNoteData> allNotes)
-    {
-        if (allNotes.Count > 0)
-        {
-            using var scope = TaskRunner.Current($"Pushing {_noteType.Name} notes into cache");
-            var runner = TaskRunner.GetCurrent()!;
-            runner.ProcessWithProgress(
-                allNotes,
-                noteData => { AddToCacheFromData(noteData); return 0; },
-                $"Pushing {_noteType.Name} notes into cache");
-        }
-    }
+   public void AnkiNoteAdded(long ankiNoteId, NoteData data)
+   {
+      data.Id = CreateTypedId(Guid.NewGuid());
+      _noteServices.AnkiNoteIdMap.Register(ankiNoteId, data.Id);
+      var note = _noteConstructor(_noteServices, data);
+      using(note.RecursiveFlushGuard.PauseFlushing())
+      {
+         note.UpdateGeneratedData();
+      }
 
-    private void AddToCacheFromData(JPNoteData noteData)
-    {
-        AddToCache(_noteConstructor(noteData));
-    }
+      AddToCache(note);
+   }
 
-    public abstract void RemoveFromCache(TNote note);
-    public abstract void AddToCache(TNote note);
+   public void AnkiNoteWillFlush(long ankiNoteId, NoteData data)
+   {
+      var noteId = _noteServices.AnkiNoteIdMap.FromAnkiId(ankiNoteId);
+      if(noteId == null) return;
+      var existing = WithIdOrNone(noteId);
+      if(existing == null) return;
+      if(existing.IsFlushing) return; // Our code initiated this flush, nothing to do
 
-    public void SetStudyingStatuses(List<CardStudyingStatus> cardStatuses)
-    {
-        foreach (var status in cardStatuses)
-        {
-            var note = WithIdOrNone(status.NoteId);
-            note?.SetStudyingStatus(status);
-        }
-    }
+      data.Id = noteId;
+      var note = _noteConstructor(_noteServices, data);
+      note.CopyStudyingStatusFrom(existing);
+      using(note.RecursiveFlushGuard.PauseFlushing())
+      {
+         note.UpdateGeneratedData();
+      }
+
+      RefreshInCache(note);
+      NotifyUpdateListeners(note);
+   }
+
+   public void AnkiNoteRemoved(long ankiNoteId)
+   {
+      var noteId = _noteServices.AnkiNoteIdMap.FromAnkiId(ankiNoteId);
+      if(noteId == null) return;
+      var existing = WithIdOrNone(noteId);
+      if(existing != null)
+      {
+         RemoveFromCache(existing);
+      }
+
+      _noteServices.AnkiNoteIdMap.Unregister(ankiNoteId);
+   }
+
+   /// <summary>Creates the correctly typed NoteId for this cache (VocabId, KanjiId, etc.)</summary>
+   protected abstract NoteId CreateTypedId(Guid value);
+
+   public void JpNoteUpdated(TNote note)
+   {
+      var existing = WithIdOrNone(note.GetId());
+      if(existing != null)
+      {
+         RefreshInCache(note);
+      } else
+      {
+         AddToCache(note);
+      }
+
+      NotifyUpdateListeners(note);
+   }
+
+   void NotifyUpdateListeners(TNote note)
+   {
+      foreach(var listener in _updateListeners)
+      {
+         listener(note);
+      }
+   }
+
+   void RefreshInCache(TNote note)
+   {
+      RemoveFromCache(note);
+      AddToCache(note);
+   }
+
+   public async Task LoadAsync()
+   {
+      var dbPath = AnkiFacade.Col.DbFilePath();
+      if(dbPath == null) throw new InvalidOperationException("Anki collection database is not initialized yet");
+
+      using var runner = _noteServices.TaskRunner.Current($"Loading {_noteType.Name} notes from the anki db");
+      var loadResult = await runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync($"Fetching {_noteType.Name} notes from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.FromType(_noteType), NoteTypes.IdFactoryFromType(_noteType)));
+
+      foreach(var (ankiId, noteId) in loadResult.AnkiIdMap)
+      {
+         _noteServices.AnkiNoteIdMap.Register(ankiId, noteId);
+      }
+
+      var notes = runner.ProcessWithProgress(loadResult.Notes, it => _noteConstructor(_noteServices, it), $"Constructing {_noteType.Name} notes");
+
+      await runner.ProcessWithProgressAsync(notes, AddToCache, $"Pushing {_noteType.Name} notes into cache");
+   }
+
+   void AddToCacheFromData(NoteData noteData)
+   {
+      AddToCache(_noteConstructor(_noteServices, noteData));
+   }
+
+   /// <summary>Removes all notes and ID mappings from the cache. Subclasses must override ClearInheritorIndexes to clear their custom indexes.</summary>
+   public void Clear()
+   {
+      _byId.Clear();
+      ClearInheritorIndexes();
+   }
+
+   protected abstract void ClearInheritorIndexes();
+   public abstract void RemoveFromCache(TNote note);
+   public abstract void AddToCache(TNote note);
+
+   public void SetStudyingStatuses(Dictionary<long, List<CardStudyingStatus>> statusesByAnkiId)
+   {
+      foreach(var (ankiId, statuses) in statusesByAnkiId)
+      {
+         var note = WithAnkiIdOrNone(ankiId);
+         if(note != null)
+         {
+            foreach(var status in statuses)
+               note.SetStudyingStatus(status);
+         }
+      }
+   }
 }
 
 public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
-    where TNote : JPNote
-    where TSnapshot : CachedNote
+   where TNote : JPNote
+   where TSnapshot : CachedNote
 {
-    private readonly Dictionary<string, List<TNote>> _byQuestion = new();
-    private readonly Dictionary<int, TSnapshot> _snapshotById = new();
-    private readonly HashSet<int> _deleted = new();
-    private bool _flushing;
+   readonly IMonitorCE _monitor = IMonitorCE.WithDefaultTimeout();
+   readonly Dictionary<string, List<TNote>> _byQuestion = new();
+   readonly Dictionary<NoteId, TSnapshot> _snapshotById = new();
 
-    protected NoteCache(Type cachedNoteType, Func<JPNoteData, TNote> noteConstructor)
-        : base(cachedNoteType, noteConstructor)
-    {
-    }
+   protected NoteCache(Type cachedNoteType, Func<NoteServices, NoteData, TNote> noteConstructor, NoteServices noteServices)
+      : base(cachedNoteType, noteConstructor, noteServices) {}
 
-    public List<TNote> All()
-    {
-        return _byId.Values.ToList();
-    }
+   public List<TNote> All() => _byId.Values.ToList();
 
-    public List<TNote> WithQuestion(string question)
-    {
-        return _byQuestion.TryGetValue(question, out var notes) ? notes : new List<TNote>();
-    }
+   public List<TNote> WithQuestion(string question) => _byQuestion.TryGetValue(question, out var notes) ? notes : new List<TNote>();
 
-    protected abstract TSnapshot CreateSnapshot(TNote note);
-    protected abstract void InheritorRemoveFromCache(TNote note, TSnapshot snapshot);
-    protected abstract void InheritorAddToCache(TNote note, TSnapshot snapshot);
+   protected abstract TSnapshot CreateSnapshot(TNote note);
+   protected abstract void InheritorRemoveFromCache(TNote note, TSnapshot snapshot);
+   protected abstract void InheritorAddToCache(TNote note, TSnapshot snapshot);
 
-    public override void RemoveFromCache(TNote note)
-    {
-        var id = note.GetId();
-        if (id == 0) throw new InvalidOperationException("Cannot remove note without ID");
+   protected override void ClearInheritorIndexes()
+   {
+      _byQuestion.Clear();
+      _snapshotById.Clear();
+      ClearDerivedIndexes();
+   }
 
-        var cached = _snapshotById[id];
-        _snapshotById.Remove(id);
-        _byId.Remove(id);
-        
-        if (_byQuestion.TryGetValue(cached.Question, out var questionList))
-        {
-            questionList.Remove(note);
-        }
-        
-        InheritorRemoveFromCache(note, cached);
-    }
+   /// <summary>Override in leaf caches to clear type-specific secondary indexes.</summary>
+   protected abstract void ClearDerivedIndexes();
 
-    public override void AddToCache(TNote note)
-    {
-        var id = note.GetId();
-        if (id == 0) throw new InvalidOperationException("Cannot add note without ID");
+   public override void RemoveFromCache(TNote note) => _monitor.Update(() =>
+   {
+      var id = note.GetId();
 
-        var snapshot = CreateSnapshot(note);
-        _snapshotById[id] = snapshot;
-        _byId[id] = note;
-        
-        if (!_byQuestion.ContainsKey(snapshot.Question))
-        {
-            _byQuestion[snapshot.Question] = new List<TNote>();
-        }
-        _byQuestion[snapshot.Question].Add(note);
-        
-        InheritorAddToCache(note, snapshot);
-    }
+      var cached = _snapshotById[id];
+      _snapshotById.Remove(id);
+      _byId.Remove(id);
+
+      if(_byQuestion.TryGetValue(cached.Question, out var questionList))
+      {
+         questionList.Remove(note);
+      }
+
+      InheritorRemoveFromCache(note, cached);
+   });
+
+   public override void AddToCache(TNote note) => _monitor.Update(() =>
+   {
+      var id = note.GetId();
+
+      // If already in cache, clean up old secondary indexes first (idempotent add)
+      if(_snapshotById.TryGetValue(id, out var existingSnapshot))
+      {
+         _byId.Remove(id);
+         _snapshotById.Remove(id);
+         if(_byQuestion.TryGetValue(existingSnapshot.Question, out var existingQuestionList))
+         {
+            existingQuestionList.Remove(note);
+         }
+
+         InheritorRemoveFromCache(note, existingSnapshot);
+      }
+
+      var snapshot = CreateSnapshot(note);
+      _snapshotById[id] = snapshot;
+      _byId[id] = note;
+
+      if(!_byQuestion.ContainsKey(snapshot.Question))
+      {
+         _byQuestion[snapshot.Question] = new List<TNote>();
+      }
+
+      _byQuestion[snapshot.Question].Add(note);
+
+      InheritorAddToCache(note, snapshot);
+   });
 }

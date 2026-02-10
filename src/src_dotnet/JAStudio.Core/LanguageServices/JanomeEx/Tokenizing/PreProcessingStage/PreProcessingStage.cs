@@ -1,30 +1,30 @@
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing.PreProcessingStage;
 
 public class PreProcessingStage
 {
-    private readonly VocabCollection _vocabs;
+   readonly VocabCollection _vocabs;
+   readonly DictLookup _dictLookup;
 
-    public PreProcessingStage(VocabCollection vocabs)
+    public PreProcessingStage(VocabCollection vocabs, DictLookup dictLookup)
     {
         _vocabs = vocabs;
+        _dictLookup = dictLookup;
     }
 
-    public List<IAnalysisToken> PreProcess(List<JNToken> tokens)
-    {
-        return tokens.SelectMany(PreProcessToken).ToList();
-    }
+    public List<IAnalysisToken> PreProcess(List<JNToken> tokens) => tokens.SelectMany(PreProcessToken).ToList();
 
-    private List<IAnalysisToken> PreProcessToken(JNToken token)
+    List<IAnalysisToken> PreProcessToken(JNToken token)
     {
         // Note: The order here matters, it's not random. Any change will break things even should the tests be incomplete and not show it.
-        
+
         if (token.Surface == JNToken.SplitterTokenText)
         {
-            return new List<IAnalysisToken>();
+            return [];
         }
 
         var splitGodanImperative = GodanImperativeSplitter.TrySplit(token);
@@ -33,7 +33,7 @@ public class PreProcessingStage
             return splitGodanImperative;
         }
 
-        var splitHybrid = IchidanGodanPotentialOrImperativeHybridSplitter.TrySplit(token, _vocabs);
+        var splitHybrid = IchidanGodanPotentialOrImperativeHybridSplitter.TrySplit(token, _vocabs, _dictLookup);
         if (splitHybrid != null)
         {
             return splitHybrid;
@@ -51,6 +51,6 @@ public class PreProcessingStage
             return splitDictionaryFormVerb;
         }
 
-        return new List<IAnalysisToken> { token };
+        return [token];
     }
 }

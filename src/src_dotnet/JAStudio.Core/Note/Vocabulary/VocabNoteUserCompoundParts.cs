@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using JAStudio.Core.LanguageServices.JamdictEx;
+using JAStudio.Core.LanguageServices.JanomeEx;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Note.NoteFields;
@@ -16,7 +16,7 @@ public class VocabNoteUserCompoundParts
     public VocabNoteUserCompoundParts(VocabNote vocab)
     {
         _vocab = vocab;
-        _field = new MutableCommaSeparatedStringsListField(vocab, NoteFieldsConstants.Vocab.UserCompoundParts);
+        _field = new MutableCommaSeparatedStringsListField(vocab, NoteFieldsConstants.Vocab.UserCompounds);
     }
 
     private VocabNote Vocab => _vocab;
@@ -44,14 +44,14 @@ public class VocabNoteUserCompoundParts
     public HashSet<VocabNote> AllNotes()
     {
         return All()
-            .SelectMany(part => App.Col().Vocab.WithQuestion(part))
+            .SelectMany(part => Vocab.Services.Collection.Vocab.WithQuestion(part))
             .ToHashSet();
     }
 
     public List<VocabNote> PrimaryPartsNotes()
     {
         return Primary()
-            .SelectMany(part => App.Col().Vocab.WithFormPreferDisambiguationNameOrExactMatch(part))
+            .SelectMany(part => Vocab.Services.Collection.Vocab.WithFormPreferDisambiguationNameOrExactMatch(part))
             .ToList();
     }
 
@@ -61,7 +61,8 @@ public class VocabNoteUserCompoundParts
             .Select(form => WordExclusion.Global(form))
             .ToList();
         var config = SentenceConfiguration.FromIncorrectMatches(exclusions);
-        var analysis = new TextAnalysis(Vocab.GetQuestion(), config);
+        var analysisServices = new AnalysisServices(Vocab.Services.Collection.Vocab, Vocab.Services.DictLookup, Vocab.Services.Settings);
+        var analysis = new TextAnalysis(analysisServices, Vocab.GetQuestion(), config);
         var compoundParts = analysis.DisplayWordVariants
             .Where(a => !Vocab.Forms.AllSet().Contains(a.Form))
             .Select(a => a.Form)
@@ -84,7 +85,7 @@ public class VocabNoteUserCompoundParts
             }
 
             var allWordSubstrings = allSubstrings
-                .Where(w => DictLookup.IsDictionaryOrCollectionWord(w))
+                .Where(w => Vocab.Services.DictLookup.IsDictionaryOrCollectionWord(w))
                 .ToList();
 
             compoundParts = allWordSubstrings
@@ -98,7 +99,7 @@ public class VocabNoteUserCompoundParts
 
         foreach (var missing in segmentsMissingVocab)
         {
-            VocabNoteFactory.CreateWithDictionary(missing);
+            Vocab.Services.VocabNoteFactory.CreateWithDictionary(missing);
         }
 
         Set(compoundParts);

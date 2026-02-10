@@ -1,5 +1,6 @@
-using JAStudio.Core.Note.Sentences;
-using System.Linq;
+using System;
+using JAStudio.Core.Note;
+using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.Note.Sentences.Serialization;
 
@@ -15,7 +16,7 @@ public class ParsedWordSerializer
             parsedWord.StartIndex.ToString(),
             parsedWord.IsDisplayed ? "1" : "0",
             parsedWord.ParsedForm,
-            parsedWord.VocabId.ToString()
+            parsedWord.VocabId?.Value.ToString() ?? ""
         });
     }
 
@@ -23,12 +24,30 @@ public class ParsedWordSerializer
     {
         var values = serialized.Split(new[] { Separator }, System.StringSplitOptions.None);
 
+        // Parse VocabId: supports both Guid format (new) and legacy long format
+        NoteId? vocabId;
+        var idStr = values[4];
+        if(Guid.TryParse(idStr, out var guid) && guid != Guid.Empty)
+        {
+            vocabId = new VocabId(guid);
+        }
+        else if(long.TryParse(idStr, out _) && idStr != "-1")
+        {
+            // Legacy long Anki ID from before GUID migration — cannot resolve.
+            // Will be re-resolved when the sentence is next parsed.
+            vocabId = null;
+        }
+        else
+        {
+            vocabId = null;
+        }
+
         return new ParsedMatch(
             values[0],
             int.Parse(values[1]),
             values[2] != "0",
             values[3],
-            int.Parse(values[4])
+            vocabId
         );
     }
 }

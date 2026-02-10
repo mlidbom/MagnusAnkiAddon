@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
-using JAStudio.Core.LanguageServices.JanomeEx.Tokenizing.PreProcessingStage;
+using JAStudio.Core.LanguageServices.JamdictEx;
+using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;
 
@@ -17,16 +18,6 @@ public class JNTokenizedText
         RawTokens = rawTokens ?? new object(); // Placeholder - not used in C# but maintained for API compatibility
     }
 
-    public List<IAnalysisToken> PreProcess()
-    {
-        try
-        {
-            return new PreProcessingStage.PreProcessingStage(App.Col().Vocab).PreProcess(Tokens);
-        }
-        catch (Exception)
-        {
-            MyLog.Error($"Failed to pre-process text: {Text}");
-            throw;
-        }
-    }
+    public List<IAnalysisToken> PreProcess(VocabCollection vocab, DictLookup dictLookup) => 
+       new PreProcessingStage.PreProcessingStage(vocab, dictLookup).PreProcess(Tokens);
 }

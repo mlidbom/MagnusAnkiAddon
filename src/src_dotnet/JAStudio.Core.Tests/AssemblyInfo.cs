@@ -1,4 +1,4 @@
 using Xunit;
 
-// Disable parallel test execution to avoid static state conflicts
-[assembly: CollectionBehavior(DisableTestParallelization = true)]
+// Enable parallel test execution — no shared static state
+[assembly: CollectionBehavior(DisableTestParallelization = false)]

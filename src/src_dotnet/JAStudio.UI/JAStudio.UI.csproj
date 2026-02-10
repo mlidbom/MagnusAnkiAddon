@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+     <TargetFramework>net10.0</TargetFramework>
+     <ImplicitUsings>disable</ImplicitUsings>
+     <Nullable>enable</Nullable>
+    <!-- Copy NuGet assemblies (Avalonia, Skia) to output folder -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <!-- Include native libraries for current platform -->
+    <RuntimeIdentifier Condition="$([MSBuild]::IsOSPlatform('Windows'))">win-x64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="$([MSBuild]::IsOSPlatform('Linux'))">linux-x64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="$([MSBuild]::IsOSPlatform('OSX'))">osx-x64</RuntimeIdentifier>
+    <SelfContained>false</SelfContained>
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.2.5" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.5" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.2.5" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="MessageBox.Avalonia" Version="3.1.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\JAStudio.Core\JAStudio.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Compze.Utilities">
+      <HintPath>..\manual_libs\Compze.Utilities.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="RegenerateStubs" AfterTargets="Build" Condition="'$(NCrunch)' != '1'">
+    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\regenerate-stubs.ps1&quot; -OnlyTargetTypes -Configuration $(Configuration)" />
+  </Target>
+
+  <Target Name="CopyRuntimeBinaries" AfterTargets="RegenerateStubs" Condition="'$(NCrunch)' != '1'">
+    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\copy-runtime-binaries.ps1&quot; -SourceDir &quot;$(TargetDir.TrimEnd('\'))&quot; -DestDir &quot;$(MSBuildProjectDirectory)\..\..\runtime_binaries&quot;" />
+  </Target>
+
+</Project>

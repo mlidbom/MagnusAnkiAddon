@@ -1,17 +1,10 @@
-using System.Collections.Generic;
 using JAStudio.Core.LanguageServices;
-using JAStudio.Core.TestUtils;
 using Xunit;
 
 namespace JAStudio.Core.Tests.LanguageServices;
 
-public class ConjugationBaseTests
+public class ConjugationBaseTests : TestStartingWithEmptyCollection
 {
-    public ConjugationBaseTests()
-    {
-        TestApp.Initialize();
-    }
-
     [Theory]
     // irregular verbs
     [InlineData("くる", new[] { "き", "こ", "くれ", "き" })]
@@ -87,11 +80,11 @@ public class ConjugationBaseTests
         RunTests(word, conjugationBases, isIchidan: false, isGodan: true);
     }
 
-    private static void RunTests(string word, string[] conjugationBases, bool isIchidan = false, bool isGodan = false)
+    static void RunTests(string word, string[] conjugationBases, bool isIchidan = false, bool isGodan = false)
     {
         var result = Conjugator.GetWordStems(word, isIchidan, isGodan);
         Assert.Equal(conjugationBases, result);
-        
+
         if (conjugationBases.Length > 1)
         {
             var iStem = Conjugator.GetIStem(word, isIchidan, isGodan);
@@ -108,13 +101,13 @@ public class ConjugationBaseTests
             var aStem = Conjugator.GetAStem(word, isIchidan, isGodan);
             Assert.Equal(conjugationBases[1], aStem);
         }
-        
+
         if (conjugationBases.Length > 3)
         {
             var eStem = Conjugator.GetEStem(word, isIchidan, isGodan);
             Assert.Equal(conjugationBases[2], eStem);
         }
-        
+
         if (conjugationBases.Length > 4)
         {
             var teStem = Conjugator.GetTeStem(word, isIchidan, isGodan);

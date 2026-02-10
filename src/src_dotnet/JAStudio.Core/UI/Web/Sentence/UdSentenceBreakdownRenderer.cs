@@ -1,7 +1,7 @@
 using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;
 using JAStudio.Core.Note;
-using JAStudio.Core.UI.Web.Sentence;
+using JAStudio.Core.Note.Collection;
 using JAStudio.Core.ViewModels.KanjiList;
 using System;
 using System.Collections.Generic;
@@ -10,18 +10,29 @@ using System.Text;
 
 namespace JAStudio.Core.UI.Web.Sentence;
 
-public static class UdSentenceBreakdownRenderer
+public class UdSentenceBreakdownRenderer
 {
-    private static string FormatReason(string reason)
-    {
-        return reason.Contains("configured") 
-            ? $"""<span class="configured">{reason}</span>""" 
-            : reason;
-    }
+    readonly Settings _settings;
+   readonly SentenceKanjiListViewModel _sentenceKanjiListViewModel;
+   readonly JapaneseConfig _config;
+   readonly VocabCollection _vocab;
 
-    private static string BuildInvalidForDisplaySpan(MatchViewModel viewModel)
+   internal UdSentenceBreakdownRenderer(Settings settings, SentenceKanjiListViewModel sentenceKanjiListViewModel, JapaneseConfig config, VocabCollection vocab)
+   {
+      _settings = settings;
+      _sentenceKanjiListViewModel = sentenceKanjiListViewModel;
+      _config = config;
+      _vocab = vocab;
+   }
+
+    string FormatReason(string reason) =>
+       reason.Contains("configured")
+          ? $"""<span class="configured">{reason}</span>"""
+          : reason;
+
+    string BuildInvalidForDisplaySpan(MatchViewModel viewModel)
     {
-        if (!Settings.ShowBreakdownInEditMode() || 
+        if (!_settings.ShowBreakdownInEditMode() ||
             (viewModel.IncorrectReasons.Count == 0 && viewModel.HidingReasons.Count == 0))
             return "";
 
@@ -33,17 +44,17 @@ public static class UdSentenceBreakdownRenderer
         return $"""<span>{string.Join("\n", incorrectReasons.Concat(hidingReasons))}</span>""";
     }
 
-    private static string RenderMatchKanji(MatchViewModel match)
+    string RenderMatchKanji(MatchViewModel match)
     {
         if (!match.ShowKanji)
             return "";
 
-        var viewmodel = SentenceKanjiListViewModel.Create(match.Kanji);
+        var viewmodel = _sentenceKanjiListViewModel.Create(match.Kanji);
 
         var kanjiItems = viewmodel.KanjiList.Select(kanji =>
         {
-            var mnemonicHtml = match.ShowKanjiMnemonics 
-                ? $"""<div class="kanji_mnemonic">{kanji.Mnemonic()}</div>""" 
+            var mnemonicHtml = match.ShowKanjiMnemonics
+                ? $"""<div class="kanji_mnemonic">{kanji.Mnemonic()}</div>"""
                 : "";
 
             return $$$"""
@@ -65,52 +76,45 @@ public static class UdSentenceBreakdownRenderer
             """;
     }
 
-    private static readonly Dictionary<string, string> ToggleAbbreviations = new()
-    {
-        { "show_sentence_breakdown_in_edit_mode", "EM" },
-        { "show_kanji_in_sentence_breakdown", "SK" },
-        { "show_compound_parts_in_sentence_breakdown", "SCP" },
-        { "show_kanji_mnemonics_in_sentence_breakdown", "SKM" },
-        { "automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound", "YSV" },
-        { "automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound", "YPV" },
-        { "automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound", "YCV" },
-        { "hide_compositionally_transparent_compounds", "HCTC" },
-        { "hide_all_compounds", "HAC" }
-    };
+    static readonly Dictionary<string, string> ToggleAbbreviations = new()
+                                                                     {
+                                                                        { "show_sentence_breakdown_in_edit_mode", "EM" },
+                                                                        { "show_kanji_in_sentence_breakdown", "SK" },
+                                                                        { "show_compound_parts_in_sentence_breakdown", "SCP" },
+                                                                        { "show_kanji_mnemonics_in_sentence_breakdown", "SKM" },
+                                                                        { "automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound", "YSV" },
+                                                                        { "automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound", "YPV" },
+                                                                        { "automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound", "YCV" },
+                                                                        { "hide_compositionally_transparent_compounds", "HCTC" },
+                                                                        { "hide_all_compounds", "HAC" }
+                                                                     };
 
-    private static string GetToggleAbbreviation(string toggle)
-    {
-        return ToggleAbbreviations.TryGetValue(toggle, out var abbr) 
-            ? abbr 
-            : $"MISSING_ABBREVIATION:{toggle}";
-    }
+    string GetToggleAbbreviation(string toggle) =>
+       ToggleAbbreviations.TryGetValue(toggle, out var abbr)
+          ? abbr
+          : $"MISSING_ABBREVIATION:{toggle}";
 
-    private static string RenderToggle(ConfigurationValue<bool> toggle)
-    {
-        return $"""<span class="toggle {toggle.Name}" title="{toggle.Title}">{GetToggleAbbreviation(toggle.Name)}</span>  """;
-    }
+    string RenderToggle(ConfigurationValue<bool> toggle) => $"""<span class="toggle {toggle.Name}" title="{toggle.Title}">{GetToggleAbbreviation(toggle.Name)}</span>  """;
 
-    private static string RenderToggleList()
+    string RenderToggleList()
     {
-        return string.Join("\n", 
-            App.Config().SentenceViewToggles
+        return string.Join("\n",
+            _config.SentenceViewToggles
                 .Where(toggle => toggle.GetValue())
                 .Select(RenderToggle));
     }
 
-    private static string RenderViewSettings()
-    {
-        return $"""
-            <span class="view_settings">
-                <span class="view_settings_title">Settings:</span>
-                {RenderToggleList()}
-            </span>
-            """;
-    }
+    string RenderViewSettings() =>
+       $"""
+        <span class="view_settings">
+            <span class="view_settings_title">Settings:</span>
+            {RenderToggleList()}
+        </span>
+        """;
 
-    public static string RenderSentenceAnalysis(SentenceNote note)
+    public string RenderSentenceAnalysis(SentenceNote note)
     {
-        var sentenceAnalysis = new SentenceViewModel(note);
+        var sentenceAnalysis = new SentenceViewModel(note, _settings, _vocab);
         var html = new StringBuilder();
 
         html.AppendLine($"""
@@ -121,11 +125,11 @@ public static class UdSentenceBreakdownRenderer
 
         foreach (var match in sentenceAnalysis.DisplayedMatches)
         {
-            var vocabFormHtml = match.DisplayVocabForm 
-                ? $"""<span class="vocabHitForm clipboard">{match.VocabForm}</span>""" 
+            var vocabFormHtml = match.DisplayVocabForm
+                ? $"""<span class="vocabHitForm clipboard">{match.VocabForm}</span>"""
                 : "";
-            var readingsHtml = match.DisplayReadings 
-                ? $"""<span class="vocabHitReadings clipboard">{match.Readings}</span>""" 
+            var readingsHtml = match.DisplayReadings
+                ? $"""<span class="vocabHitReadings clipboard">{match.Readings}</span>"""
                 : "";
 
             html.AppendLine($$$"""
@@ -146,8 +150,8 @@ public static class UdSentenceBreakdownRenderer
             {
                 foreach (var compoundPart in match.CompoundParts)
                 {
-                    var compoundReadingsHtml = compoundPart.DisplayReadings 
-                        ? $"""<span class="vocabHitReadings clipboard">{compoundPart.Readings}</span>""" 
+                    var compoundReadingsHtml = compoundPart.DisplayReadings
+                        ? $"""<span class="vocabHitReadings clipboard">{compoundPart.Readings}</span>"""
                         : "";
 
                     html.AppendLine($$$"""
@@ -181,32 +185,32 @@ public static class UdSentenceBreakdownRenderer
         return html.ToString();
     }
 
-    private static readonly List<(Func<IAnalysisToken, bool> Predicate, string Abbr, string Title)> TokenBooleanFlags = new()
-    {
-        (t => t.IsPastTenseStem, "PTS", "past_tense_stem"),
-        (t => t.IsPastTenseMarker, "PTM", "past_tense_marker"),
-        (t => t.IsMasuStem, "Masu", "masu_stem"),
-        (t => t.IsAdverb, "Adv", "adverb"),
-        (t => t.IsIrrealis, "Irr", "irrealis"),
-        (t => t.IsEndOfStatement, "EOS", "end_of_statement"),
-        (t => t.HasTeFormStem, "HTFS", "has_te_form_stem"),
-        (t => t.IsNonWordCharacter, "NWC", "non_word_character"),
-        (t => t.IsDictionaryVerbFormStem, "DVS", "dictionary_verb_form_stem"),
-        (t => t.IsDictionaryVerbInflection, "DVI", "dictionary_verb_inflection"),
-        (t => t.IsGodanPotentialStem, "GPS", "godan_potential_stem"),
-        (t => t.IsGodanImperativeStem, "GIS", "godan_imperative_stem"),
-        (t => t.IsIchidanImperativeStem, "IIS", "ichidan_imperative_stem"),
-        (t => t.IsGodanPotentialInflection, "GPI", "godan_potential_inflection"),
-        (t => t.IsGodanImperativeInflection, "GII", "godan_imperative_inflection"),
-        (t => t.IsIchidanImperativeInflection, "III", "ichidan_imperative_inflection"),
-        (t => t.IsInflectableWord, "Infl", "inflectable_word"),
-        (t => t.IsIchidanVerb, "一段", "ichidan_verb"),
-        (t => t.IsGodanVerb, "五弾", "godan_verb"),
-    };
+    static readonly List<(Func<IAnalysisToken, bool> Predicate, string Abbr, string Title)> TokenBooleanFlags =
+    [
+       (t => t.IsPastTenseStem, "PTS", "past_tense_stem"),
+       (t => t.IsPastTenseMarker, "PTM", "past_tense_marker"),
+       (t => t.IsMasuStem, "Masu", "masu_stem"),
+       (t => t.IsAdverb, "Adv", "adverb"),
+       (t => t.IsIrrealis, "Irr", "irrealis"),
+       (t => t.IsEndOfStatement, "EOS", "end_of_statement"),
+       (t => t.HasTeFormStem, "HTFS", "has_te_form_stem"),
+       (t => t.IsNonWordCharacter, "NWC", "non_word_character"),
+       (t => t.IsDictionaryVerbFormStem, "DVS", "dictionary_verb_form_stem"),
+       (t => t.IsDictionaryVerbInflection, "DVI", "dictionary_verb_inflection"),
+       (t => t.IsGodanPotentialStem, "GPS", "godan_potential_stem"),
+       (t => t.IsGodanImperativeStem, "GIS", "godan_imperative_stem"),
+       (t => t.IsIchidanImperativeStem, "IIS", "ichidan_imperative_stem"),
+       (t => t.IsGodanPotentialInflection, "GPI", "godan_potential_inflection"),
+       (t => t.IsGodanImperativeInflection, "GII", "godan_imperative_inflection"),
+       (t => t.IsIchidanImperativeInflection, "III", "ichidan_imperative_inflection"),
+       (t => t.IsInflectableWord, "Infl", "inflectable_word"),
+       (t => t.IsIchidanVerb, "一段", "ichidan_verb"),
+       (t => t.IsGodanVerb, "五弾", "godan_verb")
+    ];
 
-    private static string RenderTokens(SentenceViewModel sentenceAnalysis)
+    string RenderTokens(SentenceViewModel sentenceAnalysis)
     {
-        if (!Settings.ShowBreakdownInEditMode())
+        if (!_settings.ShowBreakdownInEditMode())
             return "";
 
         var tokens = sentenceAnalysis.Analysis.Analysis.PreProcessedTokens.ToList();
@@ -220,7 +224,7 @@ public static class UdSentenceBreakdownRenderer
         return html;
     }
 
-    private static string RenderTokenProperties(IAnalysisToken token)
+    string RenderTokenProperties(IAnalysisToken token)
     {
         var properties = TokenBooleanFlags
             .Where(flag => flag.Predicate(token))
@@ -230,7 +234,7 @@ public static class UdSentenceBreakdownRenderer
         return properties.Count > 0 ? string.Join(", ", properties) : "";
     }
 
-    private static string RenderTokenList(List<IAnalysisToken> tokens, string sectionTitle)
+    string RenderTokenList(List<IAnalysisToken> tokens, string sectionTitle)
     {
         var html = new StringBuilder();
 
@@ -258,7 +262,7 @@ public static class UdSentenceBreakdownRenderer
         foreach (var token in tokens)
         {
             var customTokenClass = token is not JNToken ? "custom_token_class" : "";
-            
+
             html.AppendLine($$$"""
                     <tr>
                         <td class="surface"><span class="japanese clipboard">{{{token.Surface}}}</span></td>

@@ -1,202 +1,196 @@
-using System.Collections.Generic;
 using JAStudio.Core.Note;
-using JAStudio.Core.TestUtils;
 using Xunit;
 
 namespace JAStudio.Core.Tests.AICreatedTests.Note;
 
-public class VocabNoteTests : IAIGeneratedTestClass
+public class VocabNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestClass
 {
-    public VocabNoteTests()
-    {
-        TestApp.Initialize();
-    }
+   [Fact]
+   public void VocabNote_Create_SetsBasicProperties()
+   {
+      // Arrange & Act
+      var vocab = CreateVocab("食べる", "to eat", "たべる");
 
-    [Fact]
-    public void VocabNote_Create_SetsBasicProperties()
-    {
-        // Arrange & Act
-        var vocab = VocabNote.Create("食べる", "to eat", "たべる");
+      // Assert
+      Assert.NotNull(vocab);
+      Assert.Equal("食べる", vocab.GetQuestion());
+      Assert.Equal("to eat", vocab.GetAnswer());
+      Assert.NotNull(vocab.GetId());
+   }
 
-        // Assert
-        Assert.NotNull(vocab);
-        Assert.Equal("食べる", vocab.GetQuestion());
-        Assert.Equal("to eat", vocab.GetAnswer());
-        Assert.NotEqual(0, vocab.GetId());
-    }
+   [Fact]
+   public void VocabNote_GetReadings_ReturnsCorrectReadings()
+   {
+      // Arrange
+      var vocab = CreateVocab("食べる", "to eat", "たべる", "くう");
 
-    [Fact]
-    public void VocabNote_GetReadings_ReturnsCorrectReadings()
-    {
-        // Arrange
-        var vocab = VocabNote.Create("食べる", "to eat", "たべる", "くう");
+      // Act
+      var readings = vocab.GetReadings();
 
-        // Act
-        var readings = vocab.GetReadings();
+      // Assert
+      Assert.Equal(2, readings.Count);
+      Assert.Contains("たべる", readings);
+      Assert.Contains("くう", readings);
+   }
 
-        // Assert
-        Assert.Equal(2, readings.Count);
-        Assert.Contains("たべる", readings);
-        Assert.Contains("くう", readings);
-    }
+   [Fact]
+   public void VocabNote_SetReadings_UpdatesReadings()
+   {
+      // Arrange
+      var vocab = CreateVocab("本", "book", "ほん");
 
-    [Fact]
-    public void VocabNote_SetReadings_UpdatesReadings()
-    {
-        // Arrange
-        var vocab = VocabNote.Create("本", "book", "ほん");
+      // Act
+      vocab.SetReadings(["ほん", "もと"]);
+      var readings = vocab.GetReadings();
 
-        // Act
-        vocab.SetReadings(new List<string> { "ほん", "もと" });
-        var readings = vocab.GetReadings();
+      // Assert
+      Assert.Equal(2, readings.Count);
+      Assert.Contains("ほん", readings);
+      Assert.Contains("もと", readings);
+   }
 
-        // Assert
-        Assert.Equal(2, readings.Count);
-        Assert.Contains("ほん", readings);
-        Assert.Contains("もと", readings);
-    }
+   [Fact]
+   public void VocabNote_Question_HandlesDisambiguation()
+   {
+      // Arrange
+      var vocab = new VocabNote(NoteServices);
 
-    [Fact]
-    public void VocabNote_Question_HandlesDisambiguation()
-    {
-        // Arrange
-        var vocab = new VocabNote();
-        
-        // Act
-        vocab.Question.Set("取る:to take");
+      // Act
+      vocab.Question.Set("取る:to take");
 
-        // Assert
-        Assert.True(vocab.Question.IsDisambiguated);
-        Assert.Equal("取る", vocab.Question.Raw);
-        Assert.Equal("取る:to take", vocab.Question.DisambiguationName);
-    }
+      // Assert
+      Assert.True(vocab.Question.IsDisambiguated);
+      Assert.Equal("取る", vocab.Question.Raw);
+      Assert.Equal("取る:to take", vocab.Question.DisambiguationName);
+   }
 
-    [Fact]
-    public void VocabNote_Question_RejectsInvalidDisambiguation()
-    {
-        // Arrange
-        var vocab = new VocabNote();
-        
-        // Act
-        vocab.Question.Set("a:b:c");
+   [Fact]
+   public void VocabNote_Question_RejectsInvalidDisambiguation()
+   {
+      // Arrange
+      var vocab = new VocabNote(NoteServices);
 
-        // Assert
-        Assert.False(vocab.Question.IsValid);
-        Assert.Equal(JAStudio.Core.Note.Vocabulary.VocabNoteQuestion.InvalidQuestionMessage, vocab.Question.Raw);
-    }
+      // Act
+      vocab.Question.Set("a:b:c");
 
-    [Fact]
-    public void VocabNote_Forms_AddsAndRemovesForms()
-    {
-        // Arrange
-        var vocab = VocabNote.Create("走る", "to run", "はしる");
+      // Assert
+      Assert.False(vocab.Question.IsValid);
+      Assert.Equal(JAStudio.Core.Note.Vocabulary.VocabNoteQuestion.InvalidQuestionMessage, vocab.Question.Raw);
+   }
 
-        // Act - Add form
-        vocab.Forms.Add("駆ける");
-        var formsAfterAdd = vocab.Forms.AllList();
+   [Fact]
+   public void VocabNote_Forms_AddsAndRemovesForms()
+   {
+      // Arrange
+      var vocab = CreateVocab("走る", "to run", "はしる");
 
-        // Assert - Form added
-        Assert.Contains("駆ける", formsAfterAdd);
+      // Act - Add form
+      vocab.Forms.Add("駆ける");
+      var formsAfterAdd = vocab.Forms.AllList();
 
-        // Act - Remove form
-        vocab.Forms.Remove("駆ける");
-        var formsAfterRemove = vocab.Forms.AllList();
+      // Assert - Form added
+      Assert.Contains("駆ける", formsAfterAdd);
 
-        // Assert - Form removed
-        Assert.DoesNotContain("駆ける", formsAfterRemove);
-    }
+      // Act - Remove form
+      vocab.Forms.Remove("駆ける");
+      var formsAfterRemove = vocab.Forms.AllList();
 
-    [Fact]
-    public void VocabNote_Forms_IncludesQuestionAsOwnedForm()
-    {
-        // Arrange
-        var vocab = VocabNote.Create("走る", "to run", "はしる");
+      // Assert - Form removed
+      Assert.DoesNotContain("駆ける", formsAfterRemove);
+   }
 
-        // Act
-        var ownedForms = vocab.Forms.OwnedForms();
+   [Fact]
+   public void VocabNote_Forms_IncludesQuestionAsOwnedForm()
+   {
+      // Arrange
+      var vocab = CreateVocab("走る", "to run", "はしる");
 
-        // Assert
-        Assert.Contains("走る", ownedForms);
-    }
+      // Act
+      var ownedForms = vocab.Forms.OwnedForms();
 
-    [Fact]
-    public void VocabNote_Forms_IdentifiesOwnedForms()
-    {
-        // Arrange
-        var vocab = new VocabNote();
-        vocab.Question.Set("走る");
-        vocab.Forms.SetList(new List<string> { "[駆ける]", "はしる" });
+      // Assert
+      Assert.Contains("走る", ownedForms);
+   }
 
-        // Act
-        var isOwnedBracketed = vocab.Forms.IsOwnedForm("駆ける");
-        var isOwnedQuestion = vocab.Forms.IsOwnedForm("走る");
-        var isNotOwned = vocab.Forms.IsOwnedForm("はしる");
+   [Fact]
+   public void VocabNote_Forms_IdentifiesOwnedForms()
+   {
+      // Arrange
+      var vocab = new VocabNote(NoteServices);
+      vocab.Question.Set("走る");
+      vocab.Forms.SetList(["[駆ける]", "はしる"]);
 
-        // Assert
-        Assert.True(isOwnedBracketed);
-        Assert.True(isOwnedQuestion);
-        Assert.False(isNotOwned);
-    }
+      // Act
+      var isOwnedBracketed = vocab.Forms.IsOwnedForm("駆ける");
+      var isOwnedQuestion = vocab.Forms.IsOwnedForm("走る");
+      var isNotOwned = vocab.Forms.IsOwnedForm("はしる");
 
-    [Fact]
-    public void VocabNote_UserFields_StoresUserData()
-    {
-        // Arrange
-        var vocab = VocabNote.Create("食べる", "to eat", "たべる");
+      // Assert
+      Assert.True(isOwnedBracketed);
+      Assert.True(isOwnedQuestion);
+      Assert.False(isNotOwned);
+   }
 
-        // Act
-        vocab.User.Answer.Set("to consume");
-        vocab.User.Mnemonic.Set("Remember 'taberu' sounds like 'table' where you eat");
-        vocab.User.Explanation.Set("Common verb");
+   [Fact]
+   public void VocabNote_UserFields_StoresUserData()
+   {
+      // Arrange
+      var vocab = CreateVocab("食べる", "to eat", "たべる");
 
-        // Assert
-        Assert.Equal("to consume", vocab.User.Answer.Value);
-        Assert.Equal("Remember 'taberu' sounds like 'table' where you eat", vocab.User.Mnemonic.Value);
-        Assert.Equal("Common verb", vocab.User.Explanation.Value);
-    }
+      // Act
+      vocab.User.Answer.Set("to consume");
+      vocab.User.Mnemonic.Set("Remember 'taberu' sounds like 'table' where you eat");
+      vocab.User.Explanation.Set("Common verb");
 
-    [Fact]
-    public void VocabNote_GetAnswer_PreferesUserAnswer()
-    {
-        // Arrange
-        var vocab = VocabNote.Create("本", "book", "ほん");
+      // Assert
+      Assert.Equal("to consume", vocab.User.Answer.Value);
+      Assert.Equal("Remember 'taberu' sounds like 'table' where you eat", vocab.User.Mnemonic.Value);
+      Assert.Equal("Common verb", vocab.User.Explanation.Value);
+   }
 
-        // Act - Initially uses source answer
-        var initialAnswer = vocab.GetAnswer();
+   [Fact]
+   public void VocabNote_GetAnswer_PreferesUserAnswer()
+   {
+      // Arrange
+      var vocab = CreateVocab("本", "book", "ほん");
 
-        // Set user answer
-        vocab.User.Answer.Set("written work");
-        var userAnswer = vocab.GetAnswer();
+      // Act - Initially uses source answer
+      var initialAnswer = vocab.GetAnswer();
 
-        // Assert
-        Assert.Equal("book", initialAnswer);
-        Assert.Equal("written work", userAnswer);
-    }
+      // Set user answer
+      vocab.User.Answer.Set("written work");
+      var userAnswer = vocab.GetAnswer();
 
-    [Fact]
-    public void VocabNote_Question_AddsQuestionToFormsAutomatically()
-    {
-        // Arrange
-        var vocab = new VocabNote();
+      // Assert
+      Assert.Equal("book", initialAnswer);
+      Assert.Equal("written work", userAnswer);
+   }
 
-        // Act
-        vocab.Question.Set("新しい");
+   [Fact]
+   public void VocabNote_Question_AddsQuestionToFormsAutomatically()
+   {
+      // Arrange
+      var vocab = new VocabNote(NoteServices);
 
-        // Assert
-        Assert.Contains("新しい", vocab.Forms.AllSet());
-    }
+      // Act
+      vocab.Question.Set("新しい");
 
-    [Fact]
-    public void VocabNote_CreateWithForms_SetsForms()
-    {
-        // Arrange & Act
-        var vocab = VocabNote.Create("食べる", "to eat", 
-            new List<string> { "たべる" }, 
-            new List<string> { "食う", "召し上がる" });
+      // Assert
+      Assert.Contains("新しい", vocab.Forms.AllSet());
+   }
 
-        // Assert
-        var forms = vocab.Forms.AllSet();
-        Assert.Contains("食う", forms);
-        Assert.Contains("召し上がる", forms);
-    }
+   [Fact]
+   public void VocabNote_CreateWithForms_SetsForms()
+   {
+      // Arrange & Act
+      var vocab = CreateVocab("食べる",
+                              "to eat",
+                              ["たべる"],
+                              ["食う", "召し上がる"]);
+
+      // Assert
+      var forms = vocab.Forms.AllSet();
+      Assert.Contains("食う", forms);
+      Assert.Contains("召し上がる", forms);
+   }
 }

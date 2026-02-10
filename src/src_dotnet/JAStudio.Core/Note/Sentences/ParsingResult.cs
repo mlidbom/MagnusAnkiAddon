@@ -1,5 +1,4 @@
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
-using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches;
 using JAStudio.Core.Note.Sentences.Serialization;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,13 +20,13 @@ public class ParsingResult
         ParserVersion = parserVersion ?? string.Empty;
     }
 
-    public HashSet<int> MatchedVocabIds
+    public HashSet<NoteId> MatchedVocabIds
     {
         get
         {
             return ParsedWords
-                .Where(p => p.VocabId != -1)
-                .Select(p => p.VocabId)
+                .Where(p => p.VocabId != null)
+                .Select(p => p.VocabId!)
                 .ToHashSet();
         }
     }

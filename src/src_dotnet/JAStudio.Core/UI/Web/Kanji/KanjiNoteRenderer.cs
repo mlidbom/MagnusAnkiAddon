@@ -7,9 +7,16 @@ namespace JAStudio.Core.UI.Web.Kanji;
 /// <summary>
 /// Factory for creating PreRenderingContentRenderer with KanjiNote tag mappings.
 /// </summary>
-public static class KanjiNoteRenderer
+public class KanjiNoteRenderer
 {
-    public static PreRenderingContentRenderer<KanjiNote> CreateRenderer()
+    readonly KanjiListRenderer _kanjiListRenderer;
+
+    internal KanjiNoteRenderer(KanjiListRenderer kanjiListRenderer)
+    {
+        _kanjiListRenderer = kanjiListRenderer;
+    }
+
+    public PreRenderingContentRenderer<KanjiNote> CreateRenderer()
     {
         return new PreRenderingContentRenderer<KanjiNote>(new Dictionary<string, Func<KanjiNote, string>>
         {
@@ -17,7 +24,7 @@ public static class KanjiNoteRenderer
             ["##MNEMONIC##"] = MnemonicRenderer.RenderMnemonic,
             ["##KANJI_READINGS##"] = ReadingsRenderer.RenderKatakanaOnyomi,
             ["##VOCAB_LIST##"] = VocabListRenderer.GenerateVocabHtmlList,
-            ["##KANJI_LIST##"] = KanjiListRenderer.KanjiKanjiList,
+            ["##KANJI_LIST##"] = note => _kanjiListRenderer.KanjiKanjiList(note),
         });
     }
 }

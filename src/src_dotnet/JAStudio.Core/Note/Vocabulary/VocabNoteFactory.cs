@@ -1,14 +1,26 @@
 using System;
 using System.Collections.Generic;
 using JAStudio.Core.LanguageServices.JamdictEx;
+using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
-public static class VocabNoteFactory
+public class VocabNoteFactory
 {
-    public static VocabNote CreateWithDictionary(string question)
+   readonly DictLookup _dictLookup;
+   readonly JPCollection _collection;
+   readonly NoteServices _noteServices;
+
+   internal VocabNoteFactory(DictLookup dictLookup, JPCollection collection, NoteServices noteServices)
+   {
+      _dictLookup = dictLookup;
+      _collection = collection;
+      _noteServices = noteServices;
+   }
+
+    public VocabNote CreateWithDictionary(string question)
     {
-        var lookupResult = DictLookup.LookupWord(question);
+        var lookupResult = _dictLookup.LookupWord(question);
         if (!lookupResult.FoundWords())
         {
             return Create(question, "", new List<string>());
@@ -20,9 +32,9 @@ public static class VocabNoteFactory
         return created;
     }
 
-    public static VocabNote Create(string question, string answer, List<string> readings, Action<VocabNote>? initializer = null)
+    public VocabNote Create(string question, string answer, List<string> readings, Action<VocabNote>? initializer = null)
     {
-        var note = new VocabNote();
+        var note = new VocabNote(_noteServices);
         note.Question.Set(question);
         note.SetField(NoteFieldsConstants.Vocab.SourceAnswer, answer);
         note.SetReadings(readings);
@@ -32,11 +44,11 @@ public static class VocabNoteFactory
             initializer(note);
         }
         
-        App.Col().Vocab.Add(note);
+        _collection.Vocab.Add(note);
         return note;
     }
 
-    public static VocabNote CreateFromUserData(string question, string answer, List<string> readings, Action<VocabNote>? initializer = null)
+    public VocabNote CreateFromUserData(string question, string answer, List<string> readings, Action<VocabNote>? initializer = null)
     {
         var note = Create(question, answer, readings, initializer);
         note.User.Answer.Set(note.GetField(NoteFieldsConstants.Vocab.SourceAnswer));

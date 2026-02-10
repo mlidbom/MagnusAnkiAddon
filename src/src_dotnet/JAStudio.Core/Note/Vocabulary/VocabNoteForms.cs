@@ -18,7 +18,7 @@ public class VocabNoteForms
     public VocabNoteForms(VocabNote vocab)
     {
         _vocab = vocab;
-        _field = new MutableCommaSeparatedStringsListFieldDeDuplicated(vocab, NoteFieldsConstants.Vocab.UserForms);
+        _field = new MutableCommaSeparatedStringsListFieldDeDuplicated(vocab, NoteFieldsConstants.Vocab.Forms);
         
         _allRawSet = new LazyCE<HashSet<string>>(() => _field.Get().ToHashSet());
         _allList = _field.LazyReader(() => _field.Get().Select(StripBrackets).ToList());
@@ -44,7 +44,7 @@ public class VocabNoteForms
     {
         bool IsNotOwnedByOtherFormNote(string form)
         {
-            return !App.Col().Vocab.Cache.WithQuestion(form)
+            return !_vocab.Services.Collection.Vocab.Cache.WithQuestion(form)
                 .Any(formOwningVocab => 
                     formOwningVocab != _vocab && 
                     formOwningVocab.Forms.AllSet().Contains(_vocab.GetQuestion()));
@@ -66,7 +66,7 @@ public class VocabNoteForms
     public List<VocabNote> AllListNotes()
     {
         return _allList.Value
-            .SelectMany(form => App.Col().Vocab.Cache.WithQuestion(form))
+            .SelectMany(form => _vocab.Services.Collection.Vocab.Cache.WithQuestion(form))
             .ToList();
     }
 
@@ -109,7 +109,7 @@ public class VocabNoteForms
         _field.Remove(remove);
 
         // Also remove from notes that have this vocab's question as a form
-        var removeNotes = App.Col().Vocab.Cache.WithQuestion(remove)
+        var removeNotes = _vocab.Services.Collection.Vocab.Cache.WithQuestion(remove)
             .Where(voc => voc.Forms.AllSet().Contains(_vocab.GetQuestion()))
             .ToList();
         
@@ -124,7 +124,7 @@ public class VocabNoteForms
         _field.Add(add);
 
         // Also add to notes that reference this form
-        var addNotes = App.Col().Vocab.Cache.WithQuestion(add)
+        var addNotes = _vocab.Services.Collection.Vocab.Cache.WithQuestion(add)
             .Where(voc => !voc.Forms.AllSet().Contains(_vocab.GetQuestion()))
             .ToList();
         

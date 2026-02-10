@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using Compze.Utilities.SystemCE.ThreadingCE.ResourceAccess;
 using JAStudio.PythonInterop.Utilities;
 using Python.Runtime;
 
@@ -8,71 +8,115 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;
 
 public sealed class JNTokenizer
 {
-    private static readonly HashSet<string> CharactersThatMayConfuseJanomeSoWeReplaceThemWithOrdinaryFullWidthSpaces = 
-        new() { "!", "！", "|", "（", "）" };
+   readonly IMonitorCE _monitor = IMonitorCE.WithDefaultTimeout();
 
-    private readonly dynamic _tokenizer;
+   static readonly HashSet<string> CharactersThatMayConfuseJanomeSoWeReplaceThemWithOrdinaryFullWidthSpaces =
+      ["!", "！", "|", "（", "）"];
 
-    public JNTokenizer()
-    {
-        using (PythonEnvironment.LockGil())
-        {
-            dynamic janome = Py.Import("janome.tokenizer");
-            _tokenizer = janome.Tokenizer();
-        }
-    }
+   /// <summary>The invisible space character (U+200B) used as field separator in the serialized token string from Python.</summary>
+   const string FieldSeparator = "\u200B";
 
-    public JNTokenizedText Tokenize(string text)
-    {
-        return PythonEnvironment.Use(() =>
-        {
-            // Apparently janome does not fully understand that invisible spaces are word separators,
-            // so we replace them with ordinary spaces since they are not anything that should need to be parsed
-            var sanitizedText = text.Replace(StringExtensions.InvisibleSpace, JNToken.SplitterTokenText);
-            
-            foreach (var character in CharactersThatMayConfuseJanomeSoWeReplaceThemWithOrdinaryFullWidthSpaces)
-            {
-                sanitizedText = sanitizedText.Replace(character, " ");
-            }
+   const string WrapperPythonCode =
+      """
+      from janome.tokenizer import Tokenizer
 
-            // It seems that janome is sometimes confused and changes its parsing if there is no whitespace after the text, so let's add one
-            var tokens = new List<dynamic>();
-            foreach (var token in Dyn.Enumerate(_tokenizer.tokenize(sanitizedText)))
-            {
-                tokens.Add(token);
-            }
+      _FIELD_SEPARATOR = "\u200B"
+      _tokenizer = Tokenizer()
 
-            // Create JNToken objects - extract all data from Python immediately
-            var jnTokens = tokens.Select(token =>
-            {
-                var partsOfSpeech = JNPartsOfSpeech.Fetch((string)token.part_of_speech);
-                
-                return new JNToken(
-                    partsOfSpeech,
-                    baseForm: (string)token.base_form ?? string.Empty,
-                    surface: (string)token.surface ?? string.Empty,
-                    inflectionType: (string)token.infl_type ?? "*",
-                    inflectedForm: (string)token.infl_form ?? "*",
-                    reading: (string)token.reading ?? string.Empty,
-                    phonetic: (string)token.phonetic ?? string.Empty,
-                    nodeType: (string)token.node_type ?? string.Empty
-                );
-            }).ToList();
+      def _sanitize(value):
+          if value is None:
+              return ""
+          return str(value).replace("\n", " ").replace("\r", " ")
 
-            // Link tokens with previous/next pointers
-            for (var i = 0; i < jnTokens.Count; i++)
-            {
-                if (i > 0)
-                {
-                    jnTokens[i].Previous = jnTokens[i - 1];
-                }
-                if (i < jnTokens.Count - 1)
-                {
-                    jnTokens[i].Next = jnTokens[i + 1];
-                }
-            }
+      def tokenize_to_string(text):
+          lines = []
+          for token in _tokenizer.tokenize(text):
+              fields = _FIELD_SEPARATOR.join([
+                  _sanitize(token.part_of_speech),
+                  _sanitize(token.base_form),
+                  _sanitize(token.surface),
+                  _sanitize(token.infl_type),
+                  _sanitize(token.infl_form),
+                  _sanitize(token.reading),
+                  _sanitize(token.phonetic),
+                  _sanitize(token.node_type),
+              ])
+              lines.append(fields)
+          return "\n".join(lines)
+      """;
 
-            return new JNTokenizedText(text, jnTokens);
-        });
-    }
+   readonly PythonObjectWrapper _wrapper;
+
+   public JNTokenizer()
+   {
+      _wrapper = PythonEnvironment.Use(() =>
+      {
+         var module = PyModule.FromString("janome_tokenizer_wrapper", WrapperPythonCode);
+         return new PythonObjectWrapper(module);
+      });
+   }
+
+   public JNTokenizeResult Tokenize(string text, string? cachedSerializedTokens = null)
+   {
+      // Apparently janome does not fully understand that invisible spaces are word separators,
+      // so we replace them with ordinary spaces since they are not anything that should need to be parsed
+      var sanitizedText = text.Replace(StringExtensions.InvisibleSpace, JNToken.SplitterTokenText);
+
+      foreach(var character in CharactersThatMayConfuseJanomeSoWeReplaceThemWithOrdinaryFullWidthSpaces)
+      {
+         sanitizedText = sanitizedText.Replace(character, " ");
+      }
+
+      // Use cached serialized tokens if available, otherwise call Python (the expensive part)
+      var serialized = cachedSerializedTokens ?? _monitor.Read(() => _wrapper.Use(module => (string)module.tokenize_to_string(sanitizedText)));
+
+      var jnTokens = ParseSerializedTokens(serialized);
+
+      // Link tokens with previous/next pointers
+      for(var i = 0; i < jnTokens.Count; i++)
+      {
+         if(i > 0)
+         {
+            jnTokens[i].Previous = jnTokens[i - 1];
+         }
+
+         if(i < jnTokens.Count - 1)
+         {
+            jnTokens[i].Next = jnTokens[i + 1];
+         }
+      }
+
+      return new JNTokenizeResult(new JNTokenizedText(text, jnTokens), serialized);
+   }
+
+   static List<JNToken> ParseSerializedTokens(string serialized)
+   {
+      if(string.IsNullOrEmpty(serialized))
+         return [];
+
+      var lines = serialized.Split('\n');
+      var result = new List<JNToken>(lines.Length);
+
+      foreach(var line in lines)
+      {
+         if(line.Length == 0) continue;
+
+         var fields = line.Split(FieldSeparator, StringSplitOptions.None);
+         // Fields: 0=part_of_speech, 1=base_form, 2=surface, 3=infl_type, 4=infl_form, 5=reading, 6=phonetic, 7=node_type
+         var partsOfSpeech = JNPartsOfSpeech.Fetch(fields[0]);
+
+         result.Add(new JNToken(
+                       partsOfSpeech,
+                       baseForm: fields[1],
+                       surface: fields[2],
+                       inflectionType: fields[3],
+                       inflectedForm: fields[4],
+                       reading: fields[5],
+                       phonetic: fields[6],
+                       nodeType: fields[7]
+                    ));
+      }
+
+      return result;
+   }
 }

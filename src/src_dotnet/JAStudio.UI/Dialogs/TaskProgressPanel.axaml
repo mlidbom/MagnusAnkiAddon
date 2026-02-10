@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="560" d:DesignHeight="80"
+             x:Class="JAStudio.UI.Dialogs.TaskProgressPanel">
+
+    <StackPanel Margin="0,4" Spacing="6">
+        <!-- Message Label -->
+        <TextBlock x:Name="MessageLabel"
+                   Text="Processing..."
+                   TextWrapping="Wrap"
+                   FontSize="13"/>
+
+        <!-- Progress Bar -->
+        <ProgressBar x:Name="ProgressBar"
+                     Height="18"
+                     IsIndeterminate="True"
+                     Minimum="0"
+                     Maximum="100"
+                     Value="0"/>
+
+        <!-- Cancel Button (optional) -->
+        <Button x:Name="CancelButton"
+                Content="Cancel"
+                HorizontalAlignment="Center"
+                Width="100"
+                Click="OnCancelClick"
+                IsVisible="False"/>
+    </StackPanel>
+</UserControl>

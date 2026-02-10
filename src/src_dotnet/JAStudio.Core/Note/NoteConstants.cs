@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace JAStudio.Core.Note;
@@ -6,6 +7,7 @@ public static class MyNoteFields
 {
     public const string Question = "Q";
     public const string Answer = "A";
+    public const string JasNoteId = "jas_note_id";
 }
 
 public static class ImmersionKitSentenceNoteFields
@@ -31,6 +33,7 @@ public static class SentenceNoteFields
     public const string SourceAnswer = "source_answer";
     public const string UserAnswer = "__answer";
     public const string ParsingResult = "__parsing_result";
+    public const string JanomeTokens = "__janome_tokens";
     public const string Audio = "Audio Sentence";
     public const string Screenshot = "Screenshot";
     public const string Configuration = "__configuration";
@@ -49,7 +52,37 @@ public static class NoteTypes
     public const string Vocab = "_Vocab";
     public const string Sentence = "_japanese_sentence";
 
-    public static readonly HashSet<string> All = new() { Kanji, Vocab, Sentence };
+    public static readonly HashSet<string> All = [Kanji, Vocab, Sentence];
+    
+    public static readonly IReadOnlyList<string> AllList = [Kanji, Vocab, Sentence];
+    
+    public static string FromType(Type noteType) => _map[noteType];
+
+    public static Func<Guid, NoteId> IdFactoryFromType(Type noteType) => _idFactories[noteType];
+
+    public static Func<Guid, NoteId> IdFactoryFromName(string noteTypeName) => _idFactoriesByName[noteTypeName];
+
+    //create a dictionary from type to string for our supported type her
+    static readonly Dictionary<Type, string> _map = new()
+                                                    {
+                                                       [typeof(KanjiNote)] = Kanji,
+                                                       [typeof(VocabNote)] = Vocab,
+                                                       [typeof(SentenceNote)] = Sentence,
+                                                    };
+
+    static readonly Dictionary<Type, Func<Guid, NoteId>> _idFactories = new()
+                                                                        {
+                                                                           [typeof(KanjiNote)] = g => new KanjiId(g),
+                                                                           [typeof(VocabNote)] = g => new VocabId(g),
+                                                                           [typeof(SentenceNote)] = g => new SentenceId(g),
+                                                                        };
+
+    static readonly Dictionary<string, Func<Guid, NoteId>> _idFactoriesByName = new()
+                                                                                {
+                                                                                   [Kanji] = g => new KanjiId(g),
+                                                                                   [Vocab] = g => new VocabId(g),
+                                                                                   [Sentence] = g => new SentenceId(g),
+                                                                                };
 }
 
 public static class NoteFieldsConstants
@@ -72,24 +105,6 @@ public static class NoteFieldsConstants
             public const string Reading = CardTypes.Reading;
             public const string Listening = CardTypes.Listening;
         }
-    }
-
-    public static class Sentence
-    {
-        public const string Id = "id_sentence";
-        public const string SourceQuestion = "question_sentence_source";
-        public const string UserQuestion = "question_sentence_user";
-        public const string ActiveQuestion = "question_sentence_active";
-        public const string SourceAnswer = "answer_sentence_source";
-        public const string UserAnswer = "answer_sentence_user";
-        public const string ActiveAnswer = "answer_sentence_active";
-        public const string SourceComments = "comments_sentence_source";
-        public const string Screenshot = "screenshot_sentence";
-        public const string Audio = "audio_sentence";
-        public const string Reading = "reading_sentence";
-        public const string ParsingResult = "parsing_result";
-        public const string Configuration = "sentence_configuration";
-        public const string UserComments = "__comments";
     }
 
     public static class Kanji
@@ -122,23 +137,19 @@ public static class NoteFieldsConstants
         public const string ActiveAnswer = MyNoteFields.Answer;
         public const string SourceAnswer = "source_answer";
         public const string UserAnswer = "__answer";
-        public const string ReadingKana = "Reading_Kana";
-        public const string ReadingRomaji = "Reading_Romaji";
-        public const string PartsOfSpeech = "__parts_of_speech";
-        public const string Audio = "__audio";
+        public const string UserExplanation = "__explanation";
+        public const string UserExplanationLong = "__explanation_long";
+        public const string UserCompounds = "__compounds";
+        public const string UserMnemonic = "__mnemonic";
+        public const string Reading = "Reading";
+        public const string PartsOfSpeech = "TOS";
+        public const string SourceMnemonic = "source_mnemonic";
         public const string AudioB = "Audio_b";
         public const string AudioG = "Audio_g";
         public const string AudioTTS = "Audio_TTS";
         public const string Kanji = "__kanji";
-        public const string UserCompoundParts = "__userCompoundParts";
-        public const string UserForms = "__user_forms";
-        public const string Register = "__register";
-        public const string Metadata = "__metadata";
-        public const string MetaTags = "__meta_tags";
-        public const string GeneratedData = "__generated_data";
-        public const string UserMnemonic = "__mnemonic";
-        public const string UserExplanation = "__explanation";
-        public const string UserExplanationLong = "__explanation_long";
+        public const string Forms = "F";
+        public const string SourceReadingMnemonic = "source_reading_mnemonic";
     }
 }
 

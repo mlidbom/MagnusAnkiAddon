@@ -50,15 +50,15 @@ public static class POS
     public const string Unknown = "Unknown";
     public const string MasuSuffix = "masu-suffix"; // non-standard, follows the 連用形/masu-stem form of a verb
 
-    public static readonly HashSet<string> AllVerbPoses = new()
-    {
-        GodanVerb,
-        IchidanVerb,
-        SuruVerb,
-        KuruVerb,
-        NuVerb,
-        SuVerb,
-        YodanVerb,
-        NidanVerb
-    };
+    public static readonly HashSet<string> AllVerbPoses =
+    [
+       GodanVerb,
+       IchidanVerb,
+       SuruVerb,
+       KuruVerb,
+       NuVerb,
+       SuVerb,
+       YodanVerb,
+       NidanVerb
+    ];
 }

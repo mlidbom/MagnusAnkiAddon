@@ -1,125 +1,147 @@
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using JAStudio.Core.Configuration;
 
 namespace JAStudio.Core.TaskRunners;
 
-public static class TaskRunner
+public class TaskRunner
 {
-    private static Func<string, string, bool, bool, ITaskProgressRunner>? _uiTaskRunnerFactory;
-    private static int _depth;
-    private static ITaskProgressRunner? _current;
+   readonly JapaneseConfig _config;
+   internal TaskRunner(JapaneseConfig config) => _config = config;
 
-    public static void SetUiTaskRunnerFactory(Func<string, string, bool, bool, ITaskProgressRunner> factory)
-    {
-        if (_uiTaskRunnerFactory != null)
-        {
-            throw new InvalidOperationException("UI task runner factory already set.");
-        }
-        _uiTaskRunnerFactory = factory;
-    }
+   Func<string, string, bool, bool, ITaskProgressRunner>? _uiTaskRunnerFactory;
 
-    public static ITaskProgressRunner Create(string windowTitle, string labelText, bool? visible = null, bool allowCancel = true, bool modal = false)
-    {
-        visible ??= !App.IsTesting;
-        
-        if (!visible.Value)
-        {
-            return new InvisibleTaskRunner(windowTitle, labelText);
-        }
+   public void SetUiTaskRunnerFactory(Func<string, string, bool, bool, ITaskProgressRunner> factory)
+   {
+      if(_uiTaskRunnerFactory != null)
+      {
+         throw new InvalidOperationException("UI task runner factory already set.");
+      }
 
-        if (_uiTaskRunnerFactory == null)
-        {
-            throw new InvalidOperationException("No UI task runner factory set. Set it with TaskRunner.SetUiTaskRunnerFactory().");
-        }
+      _uiTaskRunnerFactory = factory;
+   }
 
-        return _uiTaskRunnerFactory(windowTitle, labelText, allowCancel, modal);
-    }
+   Action<string>? _holdDialog;
+   Action? _releaseDialog;
 
-    public static TaskRunnerScope Current(
-        string windowTitle,
-        string? labelText = null,
-        bool forceHide = false,
-        bool inhibitGc = false,
-        bool forceGc = false,
-        bool allowCancel = true,
-        bool modal = false)
-    {
-        return new TaskRunnerScope(windowTitle, labelText, forceHide, inhibitGc, forceGc, allowCancel, modal);
-    }
+   public void SetDialogLifetimeCallbacks(Action<string> hold, Action release)
+   {
+      _holdDialog = hold;
+      _releaseDialog = release;
+   }
 
-    internal static void EnterScope(ITaskProgressRunner runner)
-    {
-        _depth++;
-        if (_depth == 1)
-        {
-            _current = runner;
-        }
-    }
+   internal ITaskProgressRunner Create(string windowTitle, string labelText, bool? visible = null, bool allowCancel = true, bool modal = false)
+   {
+      visible ??= !App.IsTesting;
 
-    internal static void ExitScope(ITaskProgressRunner runner, bool forceGc)
-    {
-        _depth--;
-        if (_depth == 0)
-        {
-            runner.Close();
-            _current = null;
-        }
-        else if (forceGc)
-        {
-            runner.RunGc();
-        }
-    }
+      if(!visible.Value)
+      {
+         return new InvisibleTaskRunner(windowTitle, labelText);
+      }
 
-    internal static ITaskProgressRunner? GetCurrent() => _current;
+      if(_uiTaskRunnerFactory == null)
+      {
+         throw new InvalidOperationException("No UI task runner factory set. Set it with TaskRunner.SetUiTaskRunnerFactory().");
+      }
+
+      return _uiTaskRunnerFactory(windowTitle, labelText, allowCancel, modal);
+   }
+
+   int _depth;
+
+   /// <summary>
+   /// The one and only way to obtain a task runner.
+   /// Returns a scope that implements <see cref="ITaskProgressRunner"/>.
+   /// Nested calls share the same progress dialog window which stays open and
+   /// in place until the outermost scope is disposed. Each individual method
+   /// call on the scope gets its own progress panel within that dialog.
+   /// </summary>
+   public ITaskProgressRunner Current(string windowTitle, bool forceHide = false, bool allowCancel = true, bool modal = false)
+   {
+      var visible = !App.IsTesting && !forceHide;
+      _depth++;
+      if(_depth == 1 && visible)
+      {
+         _holdDialog?.Invoke(windowTitle);
+      }
+
+      return new TaskRunnerScope(this, windowTitle, visible, allowCancel, modal);
+   }
+
+   internal void OnScopeDisposed()
+   {
+      _depth--;
+      if(_depth == 0)
+      {
+         _releaseDialog?.Invoke();
+      }
+   }
 }
 
-public class TaskRunnerScope : IDisposable
+/// <summary>
+/// A scoped task runner obtained from <see cref="TaskRunner.Current"/>.
+/// Each method call creates its own progress panel for the duration of that call.
+/// The dialog window is held open by <see cref="TaskRunner"/> from the outermost
+/// scope until it is disposed, so panels can come and go without the window
+/// flickering or repositioning.
+/// </summary>
+public class TaskRunnerScope : ITaskProgressRunner
 {
-    private readonly ITaskProgressRunner _runner;
-    private readonly bool _forceGc;
-    private readonly bool _inhibitGc;
+   readonly TaskRunner _taskRunner;
+   readonly string _windowTitle;
+   readonly bool _visible;
+   readonly bool _allowCancel;
+   readonly bool _modal;
+   bool _disposed;
 
-    public TaskRunnerScope(
-        string windowTitle,
-        string? labelText,
-        bool forceHide,
-        bool inhibitGc,
-        bool forceGc,
-        bool allowCancel,
-        bool modal)
-    {
-        _inhibitGc = inhibitGc;
-        _forceGc = forceGc;
-        
-        var visible = !App.IsTesting && !forceHide;
-        
-        if (TaskRunner.GetCurrent() == null)
-        {
-            _runner = TaskRunner.Create(windowTitle, labelText ?? windowTitle, visible, allowCancel, modal);
-            TaskRunner.EnterScope(_runner);
-            
-            if (!inhibitGc && (App.Config().EnableGarbageCollectionDuringBatches.GetValue() || forceGc))
-            {
-                _runner.RunGc();
-            }
-        }
-        else
-        {
-            _runner = TaskRunner.GetCurrent()!;
-            _runner.SetLabelText(labelText ?? windowTitle);
-        }
-    }
-    
-    public ITaskProgressRunner Runner => _runner;
+   internal TaskRunnerScope(TaskRunner taskRunner, string windowTitle, bool visible, bool allowCancel, bool modal)
+   {
+      _taskRunner = taskRunner;
+      _windowTitle = windowTitle;
+      _allowCancel = allowCancel;
+      _modal = modal;
+      _visible = visible;
+   }
 
-    public void Dispose()
-    {
-        if (TaskRunner.GetCurrent() == _runner)
-        {
-            if (!_inhibitGc && (App.Config().EnableGarbageCollectionDuringBatches.GetValue() || _forceGc))
-            {
-                _runner.RunGc();
-            }
-        }
-        TaskRunner.ExitScope(_runner, _forceGc);
-    }
+   ITaskProgressRunner CreateRunner(string message) => _taskRunner.Create(_windowTitle, message, _visible, _allowCancel, _modal);
+
+   public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
+   {
+      using var runner = CreateRunner(message);
+      return runner.ProcessWithProgress(items, processItem, message, threads);
+   }
+
+   public TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action)
+   {
+      using var runner = CreateRunner(message);
+      return runner.RunOnBackgroundThreadWithSpinningProgressDialog(message, action);
+   }
+
+   public async Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threadCount)
+   {
+      using var runner = CreateRunner(message);
+      return await runner.ProcessWithProgressAsync(items, processItem, message, threadCount);
+   }
+
+   public async Task<TResult> RunOnBackgroundThreadWithSpinningProgressDialogAsync<TResult>(string message, Func<TResult> action)
+   {
+      using var runner = CreateRunner(message);
+      return await runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync(message, action);
+   }
+
+   public void SetLabelText(string text)
+   { /* No persistent panel — each method manages its own */
+   }
+
+   public bool IsHidden() => !_visible;
+
+   public void Close() => Dispose();
+
+   public void Dispose()
+   {
+      if(_disposed) return;
+      _disposed = true;
+      _taskRunner.OnScopeDisposed();
+   }
 }

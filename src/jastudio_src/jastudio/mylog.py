@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING
 
 from jaspythonutils.sysutils.lazy import Lazy
 
+from jastudio.testutils import ex_pytest
+
 if TYPE_CHECKING:
     import logging
     from logging.handlers import RotatingFileHandler
@@ -74,7 +76,11 @@ def get_logger(module: str) -> logging.Logger:
 
 _addon_name = os.path.basename(os.path.dirname(os.path.dirname(__file__)))
 
-# noinspection PyPep8
-import jaslib.mylog  # noqa: E402
+_logger: Lazy[logging.Logger] = Lazy(lambda: get_logger(_addon_name))
 
-jaslib.mylog.set_logger_factory(Lazy(lambda: get_logger(_addon_name)))
+def debug(msg: str) -> None:
+    if not ex_pytest.is_testing: _logger().debug(msg)
+def info(msg: str) -> None:
+    if not ex_pytest.is_testing: _logger().info(msg)
+def warning(msg: str) -> None: _logger().warning(msg)
+def error(msg: str) -> None: _logger().error(msg)

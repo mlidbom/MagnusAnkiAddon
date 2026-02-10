@@ -1,28 +1,39 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+   <PropertyGroup>
+      <TargetFramework>net10.0</TargetFramework>
+      <ImplicitUsings>disable</ImplicitUsings>
+      <Nullable>enable</Nullable>
+   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Compze\src\Compze\Utilities\Compze.Utilities.csproj" />
-    <ProjectReference Include="..\JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
-  </ItemGroup>
+   <ItemGroup>
+      <ProjectReference Include="..\JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
+   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="UserFiles\**\*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+   <ItemGroup>
+      <None Update="UserFiles\**\*">
+         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="LanguageServices\EnglishDictionary\data\**\*">
+         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+   </ItemGroup>
 
-  <Target Name="RegenerateStubs" AfterTargets="Build" Condition="'$(NCrunch)' != '1'">
-    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\regenerate-stubs.ps1&quot; -OnlyTargetTypes" />
-  </Target>
+   <ItemGroup>
+      <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.2" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+      <PackageReference Include="SimpleInjector" Version="5.5.0" />
+   </ItemGroup>
 
-  <Target Name="CopyRuntimeBinaries" AfterTargets="RegenerateStubs" Condition="'$(NCrunch)' != '1'">
-    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\copy-runtime-binaries.ps1&quot; -SourceDir &quot;$(TargetDir.TrimEnd('\'))&quot; -DestDir &quot;$(MSBuildProjectDirectory)\..\..\runtime_binaries&quot;" />
-  </Target>
+   <ItemGroup>
+      <Reference Include="Compze.Utilities">
+         <HintPath>..\manual_libs\Compze.Utilities.dll</HintPath>
+      </Reference>
+      <Reference Include="Compze.Utilities.DependencyInjection.SimpleInjector">
+         <HintPath>..\manual_libs\Compze.Utilities.DependencyInjection.SimpleInjector.dll</HintPath>
+      </Reference>
+   </ItemGroup>
+
+   <!-- Stub regeneration moved to JAStudio.UI project (builds last, has all DLLs) -->
 
 </Project>

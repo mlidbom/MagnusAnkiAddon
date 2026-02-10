@@ -1,3 +1,5 @@
+#pragma warning disable IDE0051 //unused members
+
 using System.Collections.Generic;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;

@@ -59,7 +59,8 @@ class POS(abc.ABC):
     ZuruVerb : str
 
 
-class POSSetManager(abc.ABC):
+class POSSetManager:
+    def __init__(self) -> None: ...
     @staticmethod
     def Get(pos: str) -> FrozenSet_1[str]: ...
     @staticmethod
@@ -221,13 +222,10 @@ class VocabNoteConjugator:
     def GetStemsForPrimaryForm(self) -> List_1[str]: ...
 
 
-class VocabNoteFactory(abc.ABC):
-    @staticmethod
-    def Create(question: str, answer: str, readings: List_1[str], initializer: Action_1[VocabNote] = ...) -> VocabNote: ...
-    @staticmethod
-    def CreateFromUserData(question: str, answer: str, readings: List_1[str], initializer: Action_1[VocabNote] = ...) -> VocabNote: ...
-    @staticmethod
-    def CreateWithDictionary(question: str) -> VocabNote: ...
+class VocabNoteFactory:
+    def Create(self, question: str, answer: str, readings: List_1[str], initializer: Action_1[VocabNote] = ...) -> VocabNote: ...
+    def CreateFromUserData(self, question: str, answer: str, readings: List_1[str], initializer: Action_1[VocabNote] = ...) -> VocabNote: ...
+    def CreateWithDictionary(self, question: str) -> VocabNote: ...
 
 
 class VocabNoteForms:
@@ -248,9 +246,8 @@ class VocabNoteForms:
     def WithoutNoiseCharacters(self) -> List_1[str]: ...
 
 
-class VocabNoteGeneratedData(abc.ABC):
-    @staticmethod
-    def UpdateGeneratedData(vocab: VocabNote) -> None: ...
+class VocabNoteGeneratedData:
+    def UpdateGeneratedData(self, vocab: VocabNote) -> None: ...
 
 
 class VocabNoteKanji:

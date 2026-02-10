@@ -1,14 +1,13 @@
 import abc
+from JAStudio.Core import App
 
-class ExPytest(abc.ABC):
+class TestApp:
+    @staticmethod
+    def Reset() -> App: ...
+
+
+class TestEnvDetector(abc.ABC):
     @classmethod
     @property
     def IsTesting(cls) -> bool: ...
-
-
-class TestApp(abc.ABC):
-    @staticmethod
-    def Initialize() -> None: ...
-    @staticmethod
-    def Reset() -> None: ...
 

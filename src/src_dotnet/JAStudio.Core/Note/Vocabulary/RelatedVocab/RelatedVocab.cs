@@ -8,9 +8,9 @@ namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 
 public class RelatedVocab
 {
-    private readonly VocabNote _vocab;
-    private readonly MutableSerializedObjectField<RelatedVocabData> _data;
-    private readonly Lazy<HashSet<int>> _inCompoundIds;
+   readonly VocabNote _vocab;
+   readonly MutableSerializedObjectField<RelatedVocabData> _data;
+   readonly Lazy<HashSet<NoteId>> _inCompoundIds;
 
     public RelatedVocab(VocabNote vocab)
     {
@@ -31,7 +31,7 @@ public class RelatedVocab
         DerivedFrom = new FieldWrapper<string, RelatedVocabData>(_data, _data.Get().DerivedFrom);
         ConfusedWith = FieldSetWrapper<string>.ForJsonObjectField(_data, _data.Get().ConfusedWith);
 
-        _inCompoundIds = new Lazy<HashSet<int>>(() =>
+        _inCompoundIds = new Lazy<HashSet<NoteId>>(() =>
             InCompounds().Select(voc => voc.GetId()).ToHashSet());
     }
 
@@ -43,17 +43,14 @@ public class RelatedVocab
     public FieldWrapper<string, RelatedVocabData> DerivedFrom { get; }
     public FieldSetWrapper<string> ConfusedWith { get; }
 
-    public HashSet<int> InCompoundIds => _inCompoundIds.Value;
+    public HashSet<NoteId> InCompoundIds => _inCompoundIds.Value;
 
-    public List<VocabNote> InCompounds()
-    {
-        return App.Col().Vocab.WithCompoundPart(_vocab.Question.DisambiguationName);
-    }
+    public List<VocabNote> InCompounds() => _vocab.Services.Collection.Vocab.WithCompoundPart(_vocab.Question.DisambiguationName);
 
     public HashSet<VocabNote> HomophonesNotes()
     {
         return _vocab.GetReadings()
-            .SelectMany(reading => App.Col().Vocab.WithReading(reading))
+            .SelectMany(reading => _vocab.Services.Collection.Vocab.WithReading(reading))
             .Where(homophone => homophone != _vocab)
             .ToHashSet();
     }
@@ -61,32 +58,26 @@ public class RelatedVocab
     public HashSet<VocabNote> StemsNotes()
     {
         return _vocab.Conjugator.GetStemsForPrimaryForm()
-            .SelectMany(stem => App.Col().Vocab.WithQuestion(stem))
+            .SelectMany(stem => _vocab.Services.Collection.Vocab.WithQuestion(stem))
             .ToHashSet();
     }
 
-    private HashSet<KanjiNote> MainFormKanjiNotes
-    {
-        get
-        {
-            return App.Col().Kanji.WithAnyKanjiIn(_vocab.Kanji.ExtractMainFormKanji()).ToHashSet();
-        }
-    }
+    HashSet<KanjiNote> MainFormKanjiNotes => _vocab.Services.Collection.Kanji.WithAnyKanjiIn(_vocab.Kanji.ExtractMainFormKanji()).ToHashSet();
 
     public HashSet<JPNote> GetDirectDependencies()
     {
         var dependencies = new HashSet<JPNote>();
-        
+
         foreach (var kanji in MainFormKanjiNotes)
         {
             dependencies.Add(kanji);
         }
-        
+
         foreach (var compoundPart in _vocab.CompoundParts.AllNotes())
         {
             dependencies.Add(compoundPart);
         }
-        
+
         return dependencies;
     }
 }

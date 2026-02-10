@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace JAStudio.Core.TestUtils;
 
-public static class ExPytest
+public static class TestEnvDetector
 {
     public static bool IsTesting { get; } = AppDomain.CurrentDomain
         .GetAssemblies()

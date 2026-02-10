@@ -32,44 +32,44 @@ public static class DictionaryFormVerbSplitter
         return null;
     }
 
-    private static List<IAnalysisToken> SplitIchidanDictionaryForm(JNToken token)
+    static List<IAnalysisToken> SplitIchidanDictionaryForm(JNToken token)
     {
         var ichidanSurface = token.Surface[..^1];
-        return new List<IAnalysisToken>
-        {
-            new IchidanDictionaryFormStem(token, ichidanSurface, token.BaseForm),
-            new IchidanDictionaryFormInflection(token)
-        };
+        return
+        [
+           new IchidanDictionaryFormStem(token, ichidanSurface, token.BaseForm),
+           new IchidanDictionaryFormInflection(token)
+        ];
     }
 
-    private static List<IAnalysisToken> SplitGodanDictionaryForm(JNToken token)
+    static List<IAnalysisToken> SplitGodanDictionaryForm(JNToken token)
     {
         var godanSurface = token.Surface[..^1];
         var godanDictionaryEnding = token.Surface[^1..];
-        return new List<IAnalysisToken>
-        {
-            new GodanDictionaryFormStem(token, godanSurface, token.BaseForm),
-            new GodanDictionaryFormInflection(token, godanDictionaryEnding, "う")
-        };
+        return
+        [
+           new GodanDictionaryFormStem(token, godanSurface, token.BaseForm),
+           new GodanDictionaryFormInflection(token, godanDictionaryEnding, "う")
+        ];
     }
 
-    private static List<IAnalysisToken> SplitKuruVerb(JNToken token)
+    static List<IAnalysisToken> SplitKuruVerb(JNToken token)
     {
         var surface = token.Surface[..^1];
-        return new List<IAnalysisToken>
-        {
-            new KuruVerbDictionaryFormStem(token, surface, token.BaseForm),
-            new KuruVerbDictionaryFormInflection(token)
-        };
+        return
+        [
+           new KuruVerbDictionaryFormStem(token, surface, token.BaseForm),
+           new KuruVerbDictionaryFormInflection(token)
+        ];
     }
 
-    private static List<IAnalysisToken> SplitSuruVerb(JNToken token)
+    static List<IAnalysisToken> SplitSuruVerb(JNToken token)
     {
         var surface = token.Surface[..^1];
-        return new List<IAnalysisToken>
-        {
-            new SuruVerbDictionaryFormStem(token, surface, token.BaseForm),
-            new SuruVerbDictionaryFormInflection(token)
-        };
+        return
+        [
+           new SuruVerbDictionaryFormStem(token, surface, token.BaseForm),
+           new SuruVerbDictionaryFormInflection(token)
+        ];
     }
 }
