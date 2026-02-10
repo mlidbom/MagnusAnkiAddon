@@ -22,6 +22,15 @@ public class TaskRunner
       _uiTaskRunnerFactory = factory;
    }
 
+   Action<string>? _holdDialog;
+   Action? _releaseDialog;
+
+   public void SetDialogLifetimeCallbacks(Action<string> hold, Action release)
+   {
+      _holdDialog = hold;
+      _releaseDialog = release;
+   }
+
    internal ITaskProgressRunner Create(string windowTitle, string labelText, bool? visible = null, bool allowCancel = true, bool modal = false)
    {
       visible ??= !App.IsTesting;
@@ -39,21 +48,43 @@ public class TaskRunner
       return _uiTaskRunnerFactory(windowTitle, labelText, allowCancel, modal);
    }
 
+   int _depth;
+
    /// <summary>
    /// The one and only way to obtain a task runner.
    /// Returns a scope that implements <see cref="ITaskProgressRunner"/>.
-   /// Every method call on the scope creates its own progress panel, runs the work,
-   /// and removes the panel when done. Concurrent calls display stacked panels.
+   /// Nested calls share the same progress dialog window which stays open and
+   /// in place until the outermost scope is disposed. Each individual method
+   /// call on the scope gets its own progress panel within that dialog.
    /// </summary>
-   public ITaskProgressRunner Current(string windowTitle, bool forceHide = false, bool allowCancel = true, bool modal = false) =>
-      new TaskRunnerScope(this, windowTitle, forceHide, allowCancel, modal);
+   public ITaskProgressRunner Current(string windowTitle, bool forceHide = false, bool allowCancel = true, bool modal = false)
+   {
+      var visible = !App.IsTesting && !forceHide;
+      _depth++;
+      if(_depth == 1 && visible)
+      {
+         _holdDialog?.Invoke(windowTitle);
+      }
+
+      return new TaskRunnerScope(this, windowTitle, visible, allowCancel, modal);
+   }
+
+   internal void OnScopeDisposed()
+   {
+      _depth--;
+      if(_depth == 0)
+      {
+         _releaseDialog?.Invoke();
+      }
+   }
 }
 
 /// <summary>
 /// A scoped task runner obtained from <see cref="TaskRunner.Current"/>.
-/// Implements <see cref="ITaskProgressRunner"/> — every method call creates its own
-/// progress panel for the duration of that call then removes it. This means
-/// concurrent calls (sync or async) each get their own panel automatically.
+/// Each method call creates its own progress panel for the duration of that call.
+/// The dialog window is held open by <see cref="TaskRunner"/> from the outermost
+/// scope until it is disposed, so panels can come and go without the window
+/// flickering or repositioning.
 /// </summary>
 public class TaskRunnerScope : ITaskProgressRunner
 {
@@ -62,14 +93,15 @@ public class TaskRunnerScope : ITaskProgressRunner
    readonly bool _visible;
    readonly bool _allowCancel;
    readonly bool _modal;
+   bool _disposed;
 
-   internal TaskRunnerScope(TaskRunner taskRunner, string windowTitle, bool forceHide, bool allowCancel, bool modal)
+   internal TaskRunnerScope(TaskRunner taskRunner, string windowTitle, bool visible, bool allowCancel, bool modal)
    {
       _taskRunner = taskRunner;
       _windowTitle = windowTitle;
       _allowCancel = allowCancel;
       _modal = modal;
-      _visible = !App.IsTesting && !forceHide;
+      _visible = visible;
    }
 
    ITaskProgressRunner CreateRunner(string message) => _taskRunner.Create(_windowTitle, message, _visible, _allowCancel, _modal);
@@ -102,11 +134,14 @@ public class TaskRunnerScope : ITaskProgressRunner
    { /* No persistent panel — each method manages its own */
    }
 
-   public void RunGc()
-   { /* No-op in C# */
-   }
-
    public bool IsHidden() => !_visible;
-   public void Close() {}
-   public void Dispose() {}
+
+   public void Close() => Dispose();
+
+   public void Dispose()
+   {
+      if(_disposed) return;
+      _disposed = true;
+      _taskRunner.OnScopeDisposed();
+   }
 }

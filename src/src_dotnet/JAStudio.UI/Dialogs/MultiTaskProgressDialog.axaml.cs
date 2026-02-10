@@ -14,6 +14,7 @@ namespace JAStudio.UI.Dialogs;
 public partial class MultiTaskProgressDialog : Window
 {
     static MultiTaskProgressDialog? _instance;
+    static int _holdCount;
 
     public MultiTaskProgressDialog()
     {
@@ -26,6 +27,35 @@ public partial class MultiTaskProgressDialog : Window
     }
 
     StackPanel Container => this.FindControl<StackPanel>("PanelContainer")!;
+
+    /// <summary>
+    /// Hold the dialog open even when all panels have been removed.
+    /// Call once when the outermost task scope is entered.
+    /// Must be called on the UI thread.
+    /// </summary>
+    public static void Hold(string windowTitle)
+    {
+        Dispatcher.UIThread.VerifyAccess();
+        _holdCount++;
+        if (_instance == null || !_instance.IsVisible)
+        {
+            _instance = new MultiTaskProgressDialog { Title = windowTitle };
+            WindowPositioner.PositionNearCursor(_instance);
+            _instance.Show();
+        }
+    }
+
+    /// <summary>
+    /// Release a hold. When the hold count reaches zero and no panels remain,
+    /// the dialog is closed.
+    /// Must be called on the UI thread.
+    /// </summary>
+    public static void Release()
+    {
+        Dispatcher.UIThread.VerifyAccess();
+        _holdCount--;
+        CloseIfEmpty();
+    }
 
     /// <summary>
     /// Create a new progress panel and add it to the shared dialog.
@@ -53,7 +83,7 @@ public partial class MultiTaskProgressDialog : Window
 
     /// <summary>
     /// Remove a panel from the shared dialog.
-    /// Closes the dialog when the last panel is removed.
+    /// Closes the dialog when the last panel is removed and no holds are active.
     /// Must be called on the UI thread.
     /// </summary>
     public static void RemovePanel(TaskProgressPanel panel)
@@ -63,8 +93,12 @@ public partial class MultiTaskProgressDialog : Window
         if (_instance == null) return;
 
         _instance.Container.Children.Remove(panel);
+        CloseIfEmpty();
+    }
 
-        if (_instance.Container.Children.Count == 0)
+    static void CloseIfEmpty()
+    {
+        if (_instance != null && _holdCount <= 0 && _instance.Container.Children.Count == 0)
         {
             _instance.Close();
             _instance = null;

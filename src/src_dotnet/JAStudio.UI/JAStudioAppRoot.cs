@@ -90,6 +90,11 @@ public class JAStudioAppRoot
       root.Services.TaskRunner.SetUiTaskRunnerFactory((windowTitle, labelText, allowCancel, modal) =>
                                                          new AvaloniaTaskProgressRunner(windowTitle, labelText, allowCancel));
 
+      // Keep the progress dialog window open across nested task scopes
+      root.Services.TaskRunner.SetDialogLifetimeCallbacks(
+         windowTitle => Dispatcher.UIThread.Invoke(() => MultiTaskProgressDialog.Hold(windowTitle)),
+         () => Dispatcher.UIThread.Post(() => MultiTaskProgressDialog.Release()));
+
       // Register Anki card operations so Core can suspend/unsuspend cards via Anki API
       root.Services.AnkiCardOperations.SetImplementation(new AnkiCardOperationsImpl(root.Services.AnkiNoteIdMap));
 

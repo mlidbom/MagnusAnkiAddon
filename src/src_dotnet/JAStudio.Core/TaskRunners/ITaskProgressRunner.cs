@@ -21,5 +21,8 @@ public interface ITaskProgressRunner : IDisposable
    TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action);
    Task<TResult> RunOnBackgroundThreadWithSpinningProgressDialogAsync<TResult>(string message, Func<TResult> action);
    Task RunOnBackgroundThreadWithSpinningProgressDialogAsync(string message, Action action) => RunOnBackgroundThreadWithSpinningProgressDialogAsync(message, action.AsFunc());
+
+   void SetLabelText(string text);
+   bool IsHidden();
 }
    
