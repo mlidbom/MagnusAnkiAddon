@@ -65,7 +65,6 @@ public class JapaneseConfig
    // Memory toggles
    public ConfigurationValue<bool> EnableGarbageCollectionDuringBatches { get; }
    public ConfigurationValue<bool> EnableAutomaticGarbageCollection { get; }
-   public ConfigurationValue<bool> EnableAutoStringInterning { get; }
 
    public List<ConfigurationValue<bool>> PerformanceAndMemoryToggles { get; }
 
@@ -182,7 +181,6 @@ public class JapaneseConfig
       // memory toggles
       EnableGarbageCollectionDuringBatches = Add(New("enable_garbage_collection_during_batches", "Enable Batch GC. [Requires restart]", true, To.Bool));
       EnableAutomaticGarbageCollection = Add(New("enable_automatic_garbage_collection", "Enable automatic GC. [Requires restart. Reduces memory usage the most but slows Anki down and may cause crashes due to Qt incompatibility.]", false, To.Bool));
-      EnableAutoStringInterning = Add(New("enable_auto_string_interning", "Enable automatic string interning. Reduces memory usage at the cost of some CPU overhead and slowdown. [Requires restart]", false, To.Bool));
 
       PerformanceAndMemoryToggles =
       [
@@ -192,8 +190,7 @@ public class JapaneseConfig
          PreventAnkiFromGarbageCollectingEveryTimeAWindowCloses,
          DisableAllAutomaticGarbageCollection,
          EnableGarbageCollectionDuringBatches,
-         EnableAutomaticGarbageCollection,
-         EnableAutoStringInterning
+         EnableAutomaticGarbageCollection
       ];
 
       // developer only toggles

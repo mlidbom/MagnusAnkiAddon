@@ -242,11 +242,6 @@ public partial class OptionsDialogViewModel : ObservableObject
    partial void OnEnableAutomaticGarbageCollectionChanged(bool value) =>
       _config.EnableAutomaticGarbageCollection.SetValue(value);
 
-   [ObservableProperty] bool _enableAutoStringInterning;
-
-   partial void OnEnableAutoStringInterningChanged(bool value) =>
-      _config.EnableAutoStringInterning.SetValue(value);
-
    [ObservableProperty] long _reanalysisThreads;
 
    partial void OnReanalysisThreadsChanged(long value) =>
@@ -335,7 +330,6 @@ public partial class OptionsDialogViewModel : ObservableObject
       DisableAllAutomaticGarbageCollection = _config.DisableAllAutomaticGarbageCollection.GetValue();
       EnableGarbageCollectionDuringBatches = _config.EnableGarbageCollectionDuringBatches.GetValue();
       EnableAutomaticGarbageCollection = _config.EnableAutomaticGarbageCollection.GetValue();
-      EnableAutoStringInterning = _config.EnableAutoStringInterning.GetValue();
       ReanalysisThreads = _config.ReanalysisThreads.GetValue();
 
       // Developer Only
