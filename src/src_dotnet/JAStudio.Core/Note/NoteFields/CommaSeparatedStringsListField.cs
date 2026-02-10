@@ -18,16 +18,7 @@ public class MutableCommaSeparatedStringsListField
 
     private List<string> ParseValue()
     {
-        var value = _field.Value;
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return new List<string>();
-        }
-
-        return value.Split(',')
-            .Select(s => s.Trim())
-            .Where(s => !string.IsNullOrEmpty(s))
-            .ToList();
+        return StringExtensions.ExtractCommaSeparatedValues(_field.Value);
     }
 
     public List<string> Get()

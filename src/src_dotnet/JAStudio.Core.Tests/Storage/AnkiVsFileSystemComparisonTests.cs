@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using JAStudio.Core.Anki;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.Storage;
 using JAStudio.Core.TaskRunners;
 using JAStudio.Core.Tests.Fixtures;
@@ -13,7 +14,7 @@ namespace JAStudio.Core.Tests.Storage;
 
 /// <summary>
 /// TEMPORARY test: loads vocab notes from both Anki SQLite and the filesystem repository,
-/// then compares every field to identify discrepancies. Delete after debugging.
+/// then compares raw fields AND parsed structured data to identify discrepancies. Delete after debugging.
 /// </summary>
 public class AnkiVsFileSystemComparisonTests : TestStartingWithEmptyCollection
 {
@@ -24,8 +25,11 @@ public class AnkiVsFileSystemComparisonTests : TestStartingWithEmptyCollection
    static readonly string JasDatabaseDir =
       Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "jas_database"));
 
+   // Fields that only exist in Anki and are not serialized to the DTO — benign
+   static readonly HashSet<string> IgnoredFields = ["__technical_notes", "__references", "Image", "__image"];
+
    [Fact]
-   public void VocabNotes_AnkiAndFileSystem_HaveIdenticalFields()
+   public void VocabNotes_AnkiAndFileSystem_HaveIdenticalData()
    {
       // --- Load from Anki ---
       var ankiBulk = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Vocab, g => new VocabId(g));
@@ -38,133 +42,117 @@ public class AnkiVsFileSystemComparisonTests : TestStartingWithEmptyCollection
       var repo = new FileSystemNoteRepository(serializer, GetService<TaskRunner>(), JasDatabaseDir);
       var fsNotes = repo.LoadAll().Vocab.ToDictionary(n => n.GetId());
 
-      Console.WriteLine($"Anki: {ankiNotes.Count} vocab notes, FileSystem: {fsNotes.Count} vocab notes");
-
-      // --- Check counts ---
-      var missingInFs = ankiNotes.Keys.Except(fsNotes.Keys).ToList();
-      var missingInAnki = fsNotes.Keys.Except(ankiNotes.Keys).ToList();
-
-      foreach (var id in missingInFs)
-         Console.WriteLine($"MISSING in filesystem: {id} (Q: {ankiNotes[id].GetQuestion()})");
-      foreach (var id in missingInAnki)
-         Console.WriteLine($"MISSING in Anki: {id}");
-
-      // --- Compare fields for notes present in both ---
-      var commonIds = ankiNotes.Keys.Intersect(fsNotes.Keys).ToList();
+      // --- Match and compare ---
+      var commonIds = ankiNotes.Keys.Intersect(fsNotes.Keys).OrderBy(id => id.Value).ToList();
       var differences = new List<string>();
 
       foreach (var id in commonIds)
       {
-         var ankiData = ankiNotes[id].GetData();
-         var fsData = fsNotes[id].GetData();
+         var anki = ankiNotes[id];
+         var fs = fsNotes[id];
+         var q = Truncate(anki.GetQuestion(), 30);
 
-         // Compare all fields from Anki
+         // --- Raw field comparison (skip benign fields) ---
+         var ankiData = anki.GetData();
+         var fsData = fs.GetData();
+
          foreach (var kvp in ankiData.Fields)
          {
-            var ankiValue = kvp.Value;
-            var fsValue = fsData.Fields.TryGetValue(kvp.Key, out var v) ? v : "<MISSING>";
-
-            if (ankiValue != fsValue)
-            {
-               // Skip known benign differences
-               if (kvp.Key == "sentence_count" && IsEffectivelyEmpty(ankiValue) && IsEffectivelyEmpty(fsValue))
-                  continue;
-
-               var diff = $"Note {ankiData.Id} (Q: {Truncate(ankiNotes[id].GetQuestion(), 30)}): " +
-                          $"Field '{kvp.Key}' differs\n" +
-                          $"  Anki: [{Truncate(ankiValue, 100)}]\n" +
-                          $"  FS:   [{Truncate(fsValue, 100)}]";
-               differences.Add(diff);
-               Console.WriteLine(diff);
-            }
+            if (IgnoredFields.Contains(kvp.Key)) continue;
+            var ankiVal = kvp.Value;
+            var fsVal = fsData.Fields.TryGetValue(kvp.Key, out var v) ? v : "<MISSING>";
+            if (ankiVal != fsVal && !(kvp.Key == "sentence_count" && IsEffectivelyEmpty(ankiVal) && IsEffectivelyEmpty(fsVal)))
+               differences.Add($"[{id}] {q}: FIELD '{kvp.Key}'\n  Anki: [{Truncate(ankiVal, 200)}]\n  FS:   [{Truncate(fsVal, 200)}]");
          }
 
-         // Check for fields in filesystem that aren't in Anki
-         foreach (var kvp in fsData.Fields.Where(f => !string.IsNullOrEmpty(f.Value)))
-         {
-            if (!ankiData.Fields.ContainsKey(kvp.Key))
-            {
-               var diff = $"Note {fsData.Id} (Q: {Truncate(fsNotes[id].GetQuestion(), 30)}): " +
-                          $"Field '{kvp.Key}' exists in FS but not in Anki\n" +
-                          $"  FS value: [{Truncate(kvp.Value, 100)}]";
-               differences.Add(diff);
-               Console.WriteLine(diff);
-            }
-         }
-
-         // Compare tags
+         // --- Tags ---
          var ankiTags = ankiData.Tags.OrderBy(t => t).ToList();
          var fsTags = fsData.Tags.OrderBy(t => t).ToList();
          if (!ankiTags.SequenceEqual(fsTags))
-         {
-            var diff = $"Note {ankiData.Id} (Q: {Truncate(ankiNotes[id].GetQuestion(), 30)}): " +
-                       $"Tags differ\n" +
-                       $"  Anki: [{string.Join(", ", ankiTags)}]\n" +
-                       $"  FS:   [{string.Join(", ", fsTags)}]";
-            differences.Add(diff);
-            Console.WriteLine(diff);
-         }
-      }
+            differences.Add($"[{id}] {q}: TAGS\n  Anki: [{string.Join(", ", ankiTags)}]\n  FS:   [{string.Join(", ", fsTags)}]");
 
-      Console.WriteLine($"\nSummary: {commonIds.Count} notes compared, {differences.Count} field differences found");
-      Console.WriteLine($"  Missing in filesystem: {missingInFs.Count}");
-      Console.WriteLine($"  Missing in Anki: {missingInAnki.Count}");
+         // --- Parsed structured data ---
+         CompareList(differences, $"[{id}] {q}", "Readings", anki.GetReadings(), fs.GetReadings());
+         CompareList(differences, $"[{id}] {q}", "Forms", anki.Forms.AllList(), fs.Forms.AllList());
+         CompareString(differences, $"[{id}] {q}", "Question", anki.GetQuestion(), fs.GetQuestion());
+         CompareString(differences, $"[{id}] {q}", "Answer", anki.GetAnswer(), fs.GetAnswer());
+         CompareString(differences, $"[{id}] {q}", "SourceAnswer", anki.SourceAnswer.Value, fs.SourceAnswer.Value);
+         CompareString(differences, $"[{id}] {q}", "ActiveAnswer", anki.ActiveAnswer.Value, fs.ActiveAnswer.Value);
+         CompareString(differences, $"[{id}] {q}", "User.Answer", anki.User.Answer.Value, fs.User.Answer.Value);
+         CompareString(differences, $"[{id}] {q}", "User.Mnemonic", anki.User.Mnemonic.Value, fs.User.Mnemonic.Value);
+         CompareString(differences, $"[{id}] {q}", "User.Explanation", anki.User.Explanation.Value, fs.User.Explanation.Value);
+         CompareString(differences, $"[{id}] {q}", "PartsOfSpeech.Raw", anki.PartsOfSpeech.RawStringValue(), fs.PartsOfSpeech.RawStringValue());
+
+         // --- MatchingRules ---
+         var ankiRules = anki.MatchingConfiguration.ConfigurableRules;
+         var fsRules = fs.MatchingConfiguration.ConfigurableRules;
+         CompareSet(differences, $"[{id}] {q}", "Rules.SurfaceIsNot", ankiRules.SurfaceIsNot, fsRules.SurfaceIsNot);
+         CompareSet(differences, $"[{id}] {q}", "Rules.PrefixIsNot", ankiRules.PrefixIsNot, fsRules.PrefixIsNot);
+         CompareSet(differences, $"[{id}] {q}", "Rules.SuffixIsNot", ankiRules.SuffixIsNot, fsRules.SuffixIsNot);
+         CompareSet(differences, $"[{id}] {q}", "Rules.YieldToSurface", ankiRules.YieldToSurface, fsRules.YieldToSurface);
+         CompareSet(differences, $"[{id}] {q}", "Rules.RequiredPrefix", ankiRules.RequiredPrefix, fsRules.RequiredPrefix);
+
+         // --- RelatedVocab ---
+         CompareString(differences, $"[{id}] {q}", "Related.ErgativeTwin", anki.RelatedNotes.ErgativeTwin.Get(), fs.RelatedNotes.ErgativeTwin.Get());
+         CompareSet(differences, $"[{id}] {q}", "Related.Synonyms", anki.RelatedNotes.Synonyms.Strings(), fs.RelatedNotes.Synonyms.Strings());
+         CompareSet(differences, $"[{id}] {q}", "Related.PerfectSynonyms", anki.RelatedNotes.PerfectSynonyms.Get(), fs.RelatedNotes.PerfectSynonyms.Get());
+         CompareSet(differences, $"[{id}] {q}", "Related.Antonyms", anki.RelatedNotes.Antonyms.Strings(), fs.RelatedNotes.Antonyms.Strings());
+         CompareSet(differences, $"[{id}] {q}", "Related.ConfusedWith", anki.RelatedNotes.ConfusedWith.Get(), fs.RelatedNotes.ConfusedWith.Get());
+         CompareSet(differences, $"[{id}] {q}", "Related.SeeAlso", anki.RelatedNotes.SeeAlso.Strings(), fs.RelatedNotes.SeeAlso.Strings());
+
+         // --- RequireForbid flags (the critical matching data) ---
+         foreach (var (ankiFlag, fsFlag) in anki.MatchingConfiguration.RequiresForbids.AllFlags
+                     .Zip(fs.MatchingConfiguration.RequiresForbids.AllFlags))
+         {
+            if (ankiFlag.IsRequired != fsFlag.IsRequired || ankiFlag.IsForbidden != fsFlag.IsForbidden)
+               differences.Add($"[{id}] {q}: RequireForbid '{ankiFlag.Name}'\n" +
+                              $"  Anki: Required={ankiFlag.IsRequired} Forbidden={ankiFlag.IsForbidden}\n" +
+                              $"  FS:   Required={fsFlag.IsRequired} Forbidden={fsFlag.IsForbidden}");
+         }
+
+         // --- BoolFlags ---
+         CompareBool(differences, $"[{id}] {q}", "IsInflectingWord",
+            anki.MatchingConfiguration.BoolFlags.IsInflectingWord.IsSet(),
+            fs.MatchingConfiguration.BoolFlags.IsInflectingWord.IsSet());
+         CompareBool(differences, $"[{id}] {q}", "IsPoisonWord",
+            anki.MatchingConfiguration.BoolFlags.IsPoisonWord.IsSet(),
+            fs.MatchingConfiguration.BoolFlags.IsPoisonWord.IsSet());
+      }
 
       var reportPath = Path.Combine(Path.GetTempPath(), "anki_vs_fs_diff.txt");
-      var reportLines = new List<string>();
+      var summary = $"Anki: {ankiNotes.Count}, FS: {fsNotes.Count}, Common: {commonIds.Count}, " +
+                    $"Missing in FS: {ankiNotes.Keys.Except(fsNotes.Keys).Count()}, " +
+                    $"Missing in Anki: {fsNotes.Keys.Except(ankiNotes.Keys).Count()}, " +
+                    $"Differences: {differences.Count}";
+      File.WriteAllText(reportPath, summary + "\n\n" + string.Join("\n\n", differences), System.Text.Encoding.UTF8);
 
-      try
-      {
-         reportLines.Add($"Anki notes: {ankiNotes.Count}, FS notes: {fsNotes.Count}");
-         reportLines.Add($"Common IDs: {ankiNotes.Keys.Intersect(fsNotes.Keys).Count()}");
-         reportLines.Add($"Missing in filesystem: {missingInFs.Count}");
-         reportLines.Add($"Missing in Anki: {missingInAnki.Count}");
-         reportLines.Add("");
+      Assert.True(differences.Count == 0, $"{differences.Count} differences. Report: {reportPath}");
+   }
 
-         reportLines.Add("--- Sample Anki IDs ---");
-         foreach (var n in ankiNotes.Values.Take(5))
-            reportLines.Add($"  {n.GetId()} {n.GetId().Value} Q: {n.GetQuestion()}");
-         reportLines.Add("");
-         reportLines.Add("--- Sample FS IDs ---");
-         foreach (var n in fsNotes.Values.Take(5))
-            reportLines.Add($"  {n.GetId()} {n.GetId().Value} Q: {n.GetQuestion()}");
-         reportLines.Add("");
+   static void CompareString(List<string> diffs, string ctx, string label, string anki, string fs)
+   {
+      if (anki != fs)
+         diffs.Add($"{ctx}: {label}\n  Anki: [{Truncate(anki, 200)}]\n  FS:   [{Truncate(fs, 200)}]");
+   }
 
-         // Try matching by question text instead (handle duplicate questions)
-         var ankiByQ = ankiNotes.Values.GroupBy(n => n.GetQuestion()).ToDictionary(g => g.Key, g => g.First());
-         var fsByQ = fsNotes.Values.GroupBy(n => n.GetQuestion()).ToDictionary(g => g.Key, g => g.First());
-         var commonByQ = ankiByQ.Keys.Intersect(fsByQ.Keys).ToList();
-         reportLines.Add($"--- Match by question text: {commonByQ.Count} common ---");
+   static void CompareList(List<string> diffs, string ctx, string label, List<string> anki, List<string> fs)
+   {
+      if (!anki.SequenceEqual(fs))
+         diffs.Add($"{ctx}: {label}\n  Anki: [{string.Join(", ", anki)}]\n  FS:   [{string.Join(", ", fs)}]");
+   }
 
-         foreach (var q in commonByQ.Take(10))
-         {
-            var ankiN = ankiByQ[q];
-            var fsN = fsByQ[q];
-            reportLines.Add($"  Q: {Truncate(q, 30)}  Anki ID: {ankiN.GetId().Value}  FS ID: {fsN.GetId().Value}  Match: {ankiN.GetId() == fsN.GetId()}");
+   static void CompareSet(List<string> diffs, string ctx, string label, IEnumerable<string> anki, IEnumerable<string> fs)
+   {
+      var ankiSorted = anki.OrderBy(s => s).ToList();
+      var fsSorted = fs.OrderBy(s => s).ToList();
+      if (!ankiSorted.SequenceEqual(fsSorted))
+         diffs.Add($"{ctx}: {label}\n  Anki: [{string.Join(", ", ankiSorted)}]\n  FS:   [{string.Join(", ", fsSorted)}]");
+   }
 
-            // Compare fields for these matched notes
-            var ankiData = ankiN.GetData();
-            var fsData = fsN.GetData();
-            foreach (var kvp in ankiData.Fields)
-            {
-               var ankiVal = kvp.Value;
-               var fsVal = fsData.Fields.TryGetValue(kvp.Key, out var v) ? v : "<MISSING>";
-               if (ankiVal != fsVal && !(kvp.Key == "sentence_count" && IsEffectivelyEmpty(ankiVal) && IsEffectivelyEmpty(fsVal)))
-               {
-                  reportLines.Add($"    DIFF field '{kvp.Key}': Anki=[{Truncate(ankiVal, 80)}] FS=[{Truncate(fsVal, 80)}]");
-               }
-            }
-         }
-      }
-      catch (Exception ex)
-      {
-         reportLines.Add($"EXCEPTION: {ex}");
-      }
-
-      File.WriteAllText(reportPath, string.Join("\n", reportLines), System.Text.Encoding.UTF8);
-
-      Assert.True(differences.Count == 0 && missingInFs.Count == 0 && missingInAnki.Count == 0,
-         $"{differences.Count} differences, {missingInFs.Count} missing in FS, {missingInAnki.Count} missing in Anki. Report: {reportPath}");
+   static void CompareBool(List<string> diffs, string ctx, string label, bool anki, bool fs)
+   {
+      if (anki != fs)
+         diffs.Add($"{ctx}: {label}\n  Anki: {anki}\n  FS:   {fs}");
    }
 
    static bool IsEffectivelyEmpty(string value) => string.IsNullOrEmpty(value) || value == "0";
