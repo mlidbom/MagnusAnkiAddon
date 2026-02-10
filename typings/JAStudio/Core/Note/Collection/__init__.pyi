@@ -3,10 +3,11 @@ from JAStudio.Core.Note import JPNote, NoteId, NoteData, IBackendNoteCreator, Ka
 from JAStudio.Core.Anki import AnkiCardOperations
 from JAStudio.Core.Configuration import Settings, JapaneseConfig
 from JAStudio.Core.TaskRunners import TaskRunner
+from JAStudio.Core.Storage import INoteRepository
 from JAStudio.Core.LanguageServices.JamdictEx import DictLookup
 from JAStudio.Core.Note.Vocabulary import VocabNoteFactory, VocabNoteGeneratedData
 from System.Collections.Generic import Dictionary_2, List_1, HashSet_1, IEnumerable_1
-from System import Array_1
+from System import Array_1, Action_1
 from System.Threading.Tasks import Task
 
 class CachedNote:
@@ -43,7 +44,7 @@ class IAnkiNoteUpdateHandler(typing.Protocol):
 
 
 class JPCollection:
-    def __init__(self, backendNoteCreator: IBackendNoteCreator, ankiCardOperations: AnkiCardOperations, settings: Settings, kanjiNoteMnemonicMaker: KanjiNoteMnemonicMaker, config: JapaneseConfig, taskRunner: TaskRunner) -> None: ...
+    def __init__(self, backendNoteCreator: IBackendNoteCreator, ankiCardOperations: AnkiCardOperations, settings: Settings, kanjiNoteMnemonicMaker: KanjiNoteMnemonicMaker, config: JapaneseConfig, taskRunner: TaskRunner, noteRepository: INoteRepository) -> None: ...
     @property
     def DictLookup(self) -> DictLookup: ...
     @property
@@ -133,13 +134,23 @@ class NoteCacheBase_1(typing.Generic[NoteCacheBase_1_TNote], IAnkiNoteUpdateHand
     def GetAnkiNoteId(self, noteId: NoteId) -> int: ...
     def JpNoteUpdated(self, note: NoteCacheBase_1_TNote) -> None: ...
     def LoadAsync(self) -> Task: ...
-    def OnNoteUpdated(self, listener: typing.Any) -> None: ...
     def RegisterAnkiIdMapping(self, ankiNoteId: int, noteId: NoteId) -> None: ...
     @abc.abstractmethod
     def RemoveFromCache(self, note: NoteCacheBase_1_TNote) -> None: ...
     def SetStudyingStatuses(self, statusesByAnkiId: Dictionary_2[int, List_1[CardStudyingStatus]]) -> None: ...
     def WithAnkiIdOrNone(self, ankiNoteId: int) -> NoteCacheBase_1_TNote: ...
     def WithIdOrNone(self, noteId: NoteId) -> NoteCacheBase_1_TNote: ...
+    # Skipped OnNoteUpdated due to it being static, abstract and generic.
+
+    OnNoteUpdated : OnNoteUpdated_MethodGroup[NoteCacheBase_1_TNote]
+    OnNoteUpdated_MethodGroup_NoteCacheBase_1_TNote = typing.TypeVar('OnNoteUpdated_MethodGroup_NoteCacheBase_1_TNote')
+    class OnNoteUpdated_MethodGroup(typing.Generic[OnNoteUpdated_MethodGroup_NoteCacheBase_1_TNote]):
+        OnNoteUpdated_MethodGroup_NoteCacheBase_1_TNote = NoteCacheBase_1.OnNoteUpdated_MethodGroup_NoteCacheBase_1_TNote
+        @typing.overload
+        def __call__(self, listener: Action_1[OnNoteUpdated_MethodGroup_NoteCacheBase_1_TNote]) -> None:...
+        @typing.overload
+        def __call__(self, listener: typing.Any) -> None:...
+
 
 
 class SentenceCache(NoteCache_2[SentenceNote, SentenceSnapshot]):

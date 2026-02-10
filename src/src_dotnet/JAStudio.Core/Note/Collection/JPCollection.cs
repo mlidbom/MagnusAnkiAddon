@@ -7,6 +7,7 @@ using JAStudio.Core.Anki;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.Note.Vocabulary;
+using JAStudio.Core.Storage;
 using JAStudio.Core.TaskRunners;
 
 namespace JAStudio.Core.Note.Collection;
@@ -75,7 +76,8 @@ public class JPCollection
       Settings settings,
       KanjiNoteMnemonicMaker kanjiNoteMnemonicMaker,
       JapaneseConfig config,
-      TaskRunner taskRunner)
+      TaskRunner taskRunner,
+      INoteRepository noteRepository)
    {
       this.Log().Info().LogMethodExecutionTime();
 
@@ -91,6 +93,10 @@ public class JPCollection
       Vocab = new VocabCollection(backendNoteCreator, NoteServices);
       Kanji = new KanjiCollection(backendNoteCreator, NoteServices);
       Sentences = new SentenceCollection(backendNoteCreator, NoteServices);
+
+      Kanji.Cache.OnNoteUpdated(note => noteRepository.Save(note));
+      Vocab.Cache.OnNoteUpdated(note => noteRepository.Save(note));
+      Sentences.Cache.OnNoteUpdated(note => noteRepository.Save(note));
    }
 
    /// <summary>Clear all in-memory caches. Called when the Anki DB is about to become unreliable (e.g. sync starting, profile closing).</summary>

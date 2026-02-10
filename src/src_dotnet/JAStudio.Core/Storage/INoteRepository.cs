@@ -1,0 +1,12 @@
+using JAStudio.Core.Note;
+
+namespace JAStudio.Core.Storage;
+
+public interface INoteRepository
+{
+    void Save(KanjiNote note);
+    void Save(VocabNote note);
+    void Save(SentenceNote note);
+
+    AllNotesData LoadAll();
+}

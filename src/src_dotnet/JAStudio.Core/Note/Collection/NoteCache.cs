@@ -43,6 +43,11 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       _updateListeners.Add(callback);
    }
 
+   public void OnNoteUpdated(Action<TNote> listener)
+   {
+      _updateListeners.Add(listener);
+   }
+
    public TNote? WithIdOrNone(NoteId noteId) => _byId.TryGetValue(noteId, out var note) ? note : null;
 
    /// <summary>

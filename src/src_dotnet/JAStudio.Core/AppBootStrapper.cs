@@ -1,4 +1,5 @@
-﻿using Compze.Utilities.DependencyInjection;
+﻿using System;
+using Compze.Utilities.DependencyInjection;
 using Compze.Utilities.DependencyInjection.Abstractions;
 using Compze.Utilities.DependencyInjection.SimpleInjector;
 using JAStudio.Core.Anki;
@@ -29,14 +30,29 @@ static class AppBootstrapper
       var container = new SimpleInjectorDependencyInjectionContainer();
       var registrar = container.Register();
 
+      if (App.IsTesting)
+      {
+         registrar.Register(
+            Singleton.For<INoteRepository>().CreatedBy(() => (INoteRepository)new InMemoryNoteRepository()));
+      }
+      else
+      {
+         registrar.Register(
+            Singleton.For<INoteRepository>().CreatedBy((TaskRunner taskRunner) =>
+               (INoteRepository)new FileSystemNoteRepository(
+                  new Lazy<NoteSerializer>(() => container.ServiceLocator.Resolve<NoteSerializer>()),
+                  taskRunner,
+                  App.DatabaseDir)));
+      }
+
       registrar.Register(
          Singleton.For<IBackendNoteCreator>().Instance(backendNoteCreator),
          Singleton.For<App>().Instance(app),
          Singleton.For<ConfigurationStore>().CreatedBy((TemporaryServiceCollection services) => new ConfigurationStore(services)),
          Singleton.For<TemporaryServiceCollection>().CreatedBy(() => new TemporaryServiceCollection(container.ServiceLocator)),
          Singleton.For<JapaneseConfig>().CreatedBy((ConfigurationStore store) => store.Config()),
-         Singleton.For<JPCollection>().CreatedBy((AnkiCardOperations ankiCardOps, Settings settings, KanjiNoteMnemonicMaker kanjiMnemonicMaker, JapaneseConfig config, TaskRunner taskRunner) =>
-                                                    new JPCollection(backendNoteCreator, ankiCardOps, settings, kanjiMnemonicMaker, config, taskRunner)),
+         Singleton.For<JPCollection>().CreatedBy((AnkiCardOperations ankiCardOps, Settings settings, KanjiNoteMnemonicMaker kanjiMnemonicMaker, JapaneseConfig config, TaskRunner taskRunner, INoteRepository noteRepository) =>
+                                                    new JPCollection(backendNoteCreator, ankiCardOps, settings, kanjiMnemonicMaker, config, taskRunner, noteRepository)),
          Singleton.For<VocabCollection>().CreatedBy((JPCollection col) => col.Vocab),
          Singleton.For<KanjiCollection>().CreatedBy((JPCollection col) => col.Kanji),
          Singleton.For<SentenceCollection>().CreatedBy((JPCollection col) => col.Sentences),
@@ -58,7 +74,11 @@ static class AppBootstrapper
          Singleton.For<VocabNoteFactory>().CreatedBy((JPCollection col) => col.VocabNoteFactory),
          Singleton.For<VocabNoteGeneratedData>().CreatedBy((JPCollection col) => col.VocabNoteGeneratedData),
          Singleton.For<NoteSerializer>().CreatedBy((NoteServices noteServices) => new NoteSerializer(noteServices)),
-         Singleton.For<FileSystemNoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner) => new FileSystemNoteRepository(serializer, taskRunner, App.DatabaseDir)),
+         Singleton.For<FileSystemNoteRepository>().CreatedBy((TaskRunner taskRunner) =>
+            new FileSystemNoteRepository(
+               new Lazy<NoteSerializer>(() => container.ServiceLocator.Resolve<NoteSerializer>()),
+               taskRunner,
+               App.DatabaseDir)),
          Singleton.For<KanjiNoteMnemonicMaker>().CreatedBy((JapaneseConfig config) => new KanjiNoteMnemonicMaker(config)),
 
          // ViewModels
@@ -79,6 +99,7 @@ static class AppBootstrapper
       );
 
       TemporaryServiceCollection.Instance = container.ServiceLocator.Resolve<TemporaryServiceCollection>();
+
       return container.ServiceLocator;
    }
 }

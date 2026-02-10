@@ -20,7 +20,7 @@ public class FileSystemNoteRepositoryTests : CollectionUsingTest, IDisposable
     {
         _serializer = GetService<NoteSerializer>();
         _tempDir = Path.Combine(Path.GetTempPath(), $"JAStudio_test_{Guid.NewGuid():N}");
-        _repo = new FileSystemNoteRepository(_serializer, GetService<TaskRunner>(), _tempDir);
+        _repo = new FileSystemNoteRepository(new Lazy<NoteSerializer>(() => _serializer), GetService<TaskRunner>(), _tempDir);
     }
 
     public new void Dispose()
@@ -39,10 +39,15 @@ public class FileSystemNoteRepositoryTests : CollectionUsingTest, IDisposable
         Assert.NotEmpty(allKanji);
 
         foreach (var kanji in allKanji)
+            _repo.Save(kanji);
+
+        var loaded = _repo.LoadAll();
+        Assert.Equal(allKanji.Count, loaded.Kanji.Count);
+
+        foreach (var kanji in allKanji)
         {
-            _repo.SaveKanji(kanji);
-            var loaded = _repo.LoadKanji(kanji.GetId());
-            AssertNoteDataFieldsMatch(kanji.GetData(), loaded.GetData(), $"Kanji '{kanji.GetQuestion()}'");
+            var roundtripped = loaded.Kanji.Single(k => k.GetId() == kanji.GetId());
+            AssertNoteDataFieldsMatch(kanji.GetData(), roundtripped.GetData(), $"Kanji '{kanji.GetQuestion()}'");
         }
     }
 
@@ -55,10 +60,15 @@ public class FileSystemNoteRepositoryTests : CollectionUsingTest, IDisposable
         Assert.NotEmpty(allVocab);
 
         foreach (var vocab in allVocab)
+            _repo.Save(vocab);
+
+        var loaded = _repo.LoadAll();
+        Assert.Equal(allVocab.Count, loaded.Vocab.Count);
+
+        foreach (var vocab in allVocab)
         {
-            _repo.SaveVocab(vocab);
-            var loaded = _repo.LoadVocab(vocab.GetId());
-            AssertNoteDataFieldsMatch(vocab.GetData(), loaded.GetData(), $"Vocab '{vocab.GetQuestion()}'");
+            var roundtripped = loaded.Vocab.Single(v => v.GetId() == vocab.GetId());
+            AssertNoteDataFieldsMatch(vocab.GetData(), roundtripped.GetData(), $"Vocab '{vocab.GetQuestion()}'");
         }
     }
 
@@ -71,10 +81,15 @@ public class FileSystemNoteRepositoryTests : CollectionUsingTest, IDisposable
         Assert.NotEmpty(allSentences);
 
         foreach (var sentence in allSentences)
+            _repo.Save(sentence);
+
+        var loaded = _repo.LoadAll();
+        Assert.Equal(allSentences.Count, loaded.Sentences.Count);
+
+        foreach (var sentence in allSentences)
         {
-            _repo.SaveSentence(sentence);
-            var loaded = _repo.LoadSentence(sentence.GetId());
-            AssertNoteDataFieldsMatch(sentence.GetData(), loaded.GetData(), $"Sentence '{Truncate(sentence.GetQuestion(), 20)}'");
+            var roundtripped = loaded.Sentences.Single(s => s.GetId() == sentence.GetId());
+            AssertNoteDataFieldsMatch(sentence.GetData(), roundtripped.GetData(), $"Sentence '{Truncate(sentence.GetQuestion(), 20)}'");
         }
     }
 
