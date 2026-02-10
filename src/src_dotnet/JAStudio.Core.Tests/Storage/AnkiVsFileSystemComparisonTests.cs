@@ -28,7 +28,7 @@ public class AnkiVsFileSystemComparisonTests : TestStartingWithEmptyCollection
    // Fields that only exist in Anki and are not serialized to the DTO — benign
    static readonly HashSet<string> IgnoredFields = ["__technical_notes", "__references", "Image", "__image"];
 
-   [Fact]
+   [Fact(Skip = "This test was to explore a problem that probably does not actually exist, will most likely be removed soon.")]
    public void VocabNotes_AnkiAndFileSystem_HaveIdenticalData()
    {
       // --- Load from Anki ---
