@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using JAStudio.PythonInterop;
 using JAStudio.PythonInterop.Utilities;
 
@@ -28,10 +29,10 @@ public static class AnkiFacade
       public static class MenuActions
       {
          /// <summary>Prioritize selected cards (sets card.due based on note type priority).</summary>
-         public static void PrioritizeCards(System.Collections.Generic.List<long> cardIds) => Backend.Use(it => it.browser_prioritize_cards(PythonDotNetShim.LongList.ToPython(cardIds)));
+         public static void PrioritizeCards(IReadOnlyList<long> cardIds) => Backend.Use(it => it.browser_prioritize_cards(PythonDotNetShim.LongList.ToPython(cardIds)));
 
          /// <summary>Spread selected cards over days (distributes due dates across time range).</summary>
-         public static void SpreadCardsOverDays(System.Collections.Generic.List<long> cardIds, int startDay, int daysApart) => Backend.Use(it => it.browser_spread_cards_over_days(PythonDotNetShim.LongList.ToPython(cardIds), startDay, daysApart));
+         public static void SpreadCardsOverDays(IReadOnlyList<long> cardIds, int startDay, int daysApart) => Backend.Use(it => it.browser_spread_cards_over_days(PythonDotNetShim.LongList.ToPython(cardIds), startDay, daysApart));
       }
    }
 

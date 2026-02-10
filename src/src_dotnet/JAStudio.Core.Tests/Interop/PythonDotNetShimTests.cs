@@ -47,4 +47,21 @@ public class PythonDotNetShimTests
          }
       });
    }
+
+   [Fact] public void RoundTrippingLongListResultInIdenticalList()
+   {
+      List<long> expected = [1L, 2L, 3L];
+      List<long> other = (List<long>)PythonDotNetShim.LongList.ToDotNet(
+         PythonDotNetShim.LongList.ToPython(expected));
+
+      other.Must().DeepEqual(expected);
+
+      PythonEnvironment.Use(() =>
+      {
+         for(int i = 0; i < 10000; i++)
+         {
+            other = (List<long>)PythonDotNetShim.LongList.ToDotNet(PythonDotNetShim.LongList.ToPython(expected));
+         }
+      });
+   }
 }

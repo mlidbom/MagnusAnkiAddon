@@ -1,5 +1,5 @@
 import typing, abc
-from System.Collections.Generic import List_1, Dictionary_2
+from System.Collections.Generic import List_1, Dictionary_2, IReadOnlyList_1
 from JAStudio.Core.Note import NoteData, NoteId
 from System import IDisposable, Func_2, Guid
 from Microsoft.Data.Sqlite import SqliteConnection
@@ -52,9 +52,9 @@ class AnkiFacade(abc.ABC):
 
         class MenuActions(abc.ABC):
             @staticmethod
-            def PrioritizeCards(cardIds: List_1[int]) -> None: ...
+            def PrioritizeCards(cardIds: IReadOnlyList_1[int]) -> None: ...
             @staticmethod
-            def SpreadCardsOverDays(cardIds: List_1[int], startDay: int, daysApart: int) -> None: ...
+            def SpreadCardsOverDays(cardIds: IReadOnlyList_1[int], startDay: int, daysApart: int) -> None: ...
 
 
 

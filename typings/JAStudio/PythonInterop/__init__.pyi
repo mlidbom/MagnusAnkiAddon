@@ -1,6 +1,6 @@
 import typing, abc
 from System import Action_1
-from System.Collections.Generic import IReadOnlyList_1, List_1, Dictionary_2, IReadOnlyDictionary_2
+from System.Collections.Generic import List_1, IReadOnlyList_1, Dictionary_2, IReadOnlyDictionary_2
 
 class PythonDotNetShim(abc.ABC):
 
@@ -20,6 +20,8 @@ class PythonDotNetShim(abc.ABC):
 
 
     class LongList(abc.ABC):
+        @staticmethod
+        def ToDotNet(pythonList: typing.Any) -> List_1[int]: ...
         @staticmethod
         def ToPython(items: IReadOnlyList_1[int]) -> typing.Any: ...
 

@@ -10,6 +10,7 @@ using Compze.Utilities.Logging;
 using Compze.Utilities.SystemCE;
 using JAStudio.Core;
 using JAStudio.Core.Anki;
+using JAStudio.PythonInterop;
 using JAStudio.UI.Dialogs;
 using JAStudio.UI.Menus;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
@@ -83,9 +84,9 @@ public class JAStudioAppRoot
 
       // Wait for Avalonia to finish framework initialization
       App.WaitForInitialization(TimeSpan.FromSeconds(30));
-      
+
       var root = new JAStudioAppRoot(app) { _uiThread = uiThread };
-      
+
       // Set up task runner factory
       root.Services.TaskRunner.SetUiTaskRunnerFactory((windowTitle, labelText, allowCancel, modal) =>
                                                          new AvaloniaTaskProgressRunner(windowTitle, labelText, allowCancel));
@@ -132,6 +133,7 @@ public class JAStudioAppRoot
                _reloadTask = Task.Run(() => _app.Collection.ReloadFromAnkiDatabase());
                ObserveReloadTask(_reloadTask);
             }
+
             break;
 
          case AnkiLifecycleEvent.ProfileClosing:
@@ -184,16 +186,16 @@ public class JAStudioAppRoot
    void ObserveReloadTask(Task task)
    {
       task.ContinueWith(t =>
-      {
-         if(t.IsCanceled)
-         {
-            this.Log().Info("Debounced reload cancelled by newer lifecycle event");
-         }
-         else if(t.Exception is { } ex)
-         {
-            this.Log().Error(ex, $"ReloadFromAnkiDatabase failed with exception:");
-         }
-      }, TaskContinuationOptions.NotOnRanToCompletion);
+                        {
+                           if(t.IsCanceled)
+                           {
+                              this.Log().Info("Debounced reload cancelled by newer lifecycle event");
+                           } else if(t.Exception is {} ex)
+                           {
+                              this.Log().Error(ex, $"ReloadFromAnkiDatabase failed with exception:");
+                           }
+                        },
+                        TaskContinuationOptions.NotOnRanToCompletion);
    }
 
    // ── Factory methods for Python-facing objects ──
@@ -337,7 +339,8 @@ public class JAStudioAppRoot
    public SpecMenuItem BuildBrowserMenuSpec(
       dynamic selectedCardIds,
       dynamic selectedNoteIds) =>
-      new BrowserMenus(Services).BuildBrowserMenuSpec(selectedCardIds, selectedNoteIds);
+      new BrowserMenus(Services).BuildBrowserMenuSpec(PythonDotNetShim.LongList.ToDotNet(selectedCardIds),
+                                                      PythonDotNetShim.LongList.ToDotNet(selectedNoteIds));
 
    /// <summary>
    /// Shutdown Avalonia. Call at addon unload.

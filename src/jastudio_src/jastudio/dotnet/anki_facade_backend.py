@@ -79,7 +79,7 @@ def get_note_id_from_card_id(card_id: int) -> int:
 
 def addon_root_dir() -> str:
     """Return the addon root directory (the directory containing __init__.py).
-    
+
     Path: this file is at src/jastudio_src/jastudio/dotnet/anki_facade_backend.py
     Going up 4 levels: dotnet/ → jastudio/ → jastudio_src/ → src/
     """

@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Compze.Utilities.Logging;
 using JAStudio.Core.Anki;
 using JAStudio.Core.Note;
+using JAStudio.PythonInterop;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
 
@@ -32,21 +34,17 @@ public class BrowserMenus
    /// </summary>
    /// <param name="selectedCardIds">List of selected card IDs (from Python/Anki)</param>
    /// <param name="selectedNoteIds">List of selected note IDs (from Python/Anki)</param>
-   public SpecMenuItem BuildBrowserMenuSpec(dynamic selectedCardIds, dynamic selectedNoteIds)
+   public SpecMenuItem BuildBrowserMenuSpec(IReadOnlyList<long> selectedCardIds, IReadOnlyList<long> selectedNoteIds)
    {
-      var cardIds = ConvertToLongList(selectedCardIds);
-      var noteIds = ConvertToLongList(selectedNoteIds);
-
       var items = new List<SpecMenuItem>();
 
       // Single card selected: Prioritize + Note actions
-      if(cardIds.Count == 1)
+      if(selectedCardIds.Count == 1)
       {
-         items.Add(SpecMenuItem.Command("Prioritize selected cards",
-                                        () => OnPrioritizeCards(cardIds)));
+         items.Add(SpecMenuItem.Command("Prioritize selected cards", () => AnkiFacade.Browser.MenuActions.PrioritizeCards(selectedCardIds)));
 
          // Note submenu - uses existing context menu for the selected note
-         var note = GetNoteFromCardId(cardIds[0]);
+         var note = GetNoteFromCardId(selectedCardIds[0]);
          if(note != null)
          {
             items.Add(BuildNoteActionsSubmenu(note));
@@ -54,13 +52,13 @@ public class BrowserMenus
       }
 
       // Any cards selected: Spread submenu
-      if(cardIds.Count > 0)
+      if(selectedCardIds.Count > 0)
       {
-         items.Add(BuildSpreadSubmenu(cardIds));
+         items.Add(BuildSpreadSubmenu(selectedCardIds));
       }
 
       // Selected sentence notes: Reparse action
-      var sentenceNotes = GetSentenceNotes(noteIds);
+      var sentenceNotes = GetSentenceNotes(selectedNoteIds);
       if(sentenceNotes.Any())
       {
          items.Add(SpecMenuItem.Command("Reparse sentence words",
@@ -89,7 +87,7 @@ public class BrowserMenus
       return SpecMenuItem.Submenu(ShortcutFinger.Home3("Note"), new List<SpecMenuItem>());
    }
 
-   private static SpecMenuItem BuildSpreadSubmenu(List<long> cardIds)
+   private static SpecMenuItem BuildSpreadSubmenu(IReadOnlyList<long> cardIds)
    {
       var startDayMenus = new List<SpecMenuItem>();
 
@@ -113,9 +111,9 @@ public class BrowserMenus
    }
 
    // Action handlers
-   private static void OnPrioritizeCards(List<long> cardIds) => AnkiFacade.Browser.MenuActions.PrioritizeCards(cardIds);
+   private static void OnPrioritizeCards(IReadOnlyList<long> cardIds) => AnkiFacade.Browser.MenuActions.PrioritizeCards(cardIds);
 
-   private static void OnSpreadCards(List<long> cardIds, int startDay, int daysApart) => AnkiFacade.Browser.MenuActions.SpreadCardsOverDays(cardIds, startDay, daysApart);
+   private static void OnSpreadCards(IReadOnlyList<long> cardIds, int startDay, int daysApart) => AnkiFacade.Browser.MenuActions.SpreadCardsOverDays(cardIds, startDay, daysApart);
 
    private void OnReparseSentences(List<SentenceNote> sentences)
    {
@@ -125,19 +123,6 @@ public class BrowserMenus
    }
 
    // Helper methods
-   private static List<long> ConvertToLongList(dynamic pythonList)
-   {
-      if(pythonList == null) return new List<long>();
-
-      var result = new List<long>();
-      foreach(var item in pythonList)
-      {
-         result.Add(Convert.ToInt64(item));
-      }
-
-      return result;
-   }
-
    private JPNote? GetNoteFromCardId(long cardId)
    {
       try
@@ -162,7 +147,7 @@ public class BrowserMenus
       }
    }
 
-   private List<SentenceNote> GetSentenceNotes(List<long> ankiNoteIds)
+   private List<SentenceNote> GetSentenceNotes(IReadOnlyList<long> ankiNoteIds)
    {
       var sentences = new List<SentenceNote>();
 

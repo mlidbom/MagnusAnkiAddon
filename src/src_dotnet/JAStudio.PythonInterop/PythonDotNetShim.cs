@@ -67,19 +67,28 @@ public static class PythonDotNetShim
 
    public static class LongList
    {
-      /// <summary>Helper to convert C# list to Python list.</summary>
+      public static List<long> ToDotNet(dynamic pythonList) => PythonEnvironment.Use(() =>
+      {
+         var result = new List<long>();
+
+         foreach(var item in pythonList)
+         {
+            result.Add((long)item);
+         }
+
+         return result;
+      });
+
       public static dynamic ToPython(IReadOnlyList<long> items) => PythonEnvironment.Use(() =>
       {
-         using(Py.GIL())
-         {
-            dynamic pyList = new PyList();
-            foreach(var item in items)
-            {
-               pyList.append(new PyInt(item));
-            }
+         dynamic pyList = new PyList();
 
-            return pyList;
+         foreach(var item in items)
+         {
+            pyList.append(new PyInt(item));
          }
+
+         return pyList;
       });
    }
 }

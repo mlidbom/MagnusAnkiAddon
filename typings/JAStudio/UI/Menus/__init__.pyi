@@ -1,15 +1,15 @@
-import typing, abc
+import abc
 from JAStudio.Core import TemporaryServiceCollection
 from JAStudio.UI.Menus.UIAgnosticMenuStructure import SpecMenuItem
+from System.Collections.Generic import IReadOnlyList_1, List_1
 from JAStudio.UI import JAStudioAppRoot
-from System.Collections.Generic import List_1
 from System import Func_1
 from JAStudio.Core.Note import KanjiNote, NoteId, SentenceNote, VocabNote
 from Avalonia.Controls import MenuItem
 
 class BrowserMenus:
     def __init__(self, services: TemporaryServiceCollection) -> None: ...
-    def BuildBrowserMenuSpec(self, selectedCardIds: typing.Any, selectedNoteIds: typing.Any) -> SpecMenuItem: ...
+    def BuildBrowserMenuSpec(self, selectedCardIds: IReadOnlyList_1[int], selectedNoteIds: IReadOnlyList_1[int]) -> SpecMenuItem: ...
 
 
 class JapaneseMainMenu:
