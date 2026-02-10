@@ -1,41 +1,40 @@
 using System.Collections.Generic;
+using Compze.Utilities.SystemCE.ThreadingCE;
+using Compze.Utilities.SystemCE.ThreadingCE.ResourceAccess;
 
 namespace JAStudio.Core.Note;
 
 public class Tag
 {
-    private static readonly HashSet<int> _usedIds = new();
-    private static readonly Dictionary<int, Tag> _byId = new();
-    private static readonly Dictionary<string, Tag> _byName = new();
+   static readonly IMonitorCE _monitor = IMonitorCE.WithDefaultTimeout();
+   static HashSet<int> _usedIds = new();
+   static Dictionary<int, Tag> _byId = new();
+   static Dictionary<string, Tag> _byName = new();
 
-    public string Name { get; }
-    public int Id { get; }
-    public long Bit { get; }
+   public string Name { get; }
+   public int Id { get; }
+   public long Bit { get; }
 
-    private Tag(string name)
-    {
-        var id = _usedIds.Count;
+   Tag(string name)
+   {
+      var id = _usedIds.Count;
 
-        Name = name;
-        Id = id;
-        Bit = 1L << id;
+      Name = name;
+      Id = id;
+      Bit = 1L << id;
+   }
 
-        _usedIds.Add(id);
-        _byId[id] = this;
-        _byName[name] = this;
-    }
+   static void RegisterTag(string name)
+   {
+      var created = new Tag(name);
+      _usedIds = _usedIds.AddToCopy(created.Id);
+      _byId = _byId.AddToCopy(created.Id, created);
+      _byName = _byName.AddToCopy(name, created);
+   }
 
-    public static Tag FromName(string name)
-    {
-        if (!_byName.TryGetValue(name, out var tag))
-        {
-            tag = new Tag(name);
-        }
-        return tag;
-    }
+   public static Tag FromName(string name) =>
+      _monitor.DoubleCheckedLocking(() => _byName!.GetValueOrDefault(name, null),
+                                    () => RegisterTag(name));
 
-    public static Tag FromId(int id)
-    {
-        return _byId[id];
-    }
+   public static Tag FromId(int id) => _byId[id];
 }
