@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Compze.Utilities.Logging;
 using JAStudio.Core.Anki;
@@ -10,7 +11,7 @@ using JAStudio.Core.Storage;
 
 namespace JAStudio.Core.Note.Collection;
 
-public class JPCollection
+public partial class JPCollection : IDisposable
 {
    public VocabCollection Vocab { get; }
    public KanjiCollection Kanji { get; }
@@ -73,9 +74,13 @@ public class JPCollection
       Kanji = new KanjiCollection(backendNoteCreator, NoteServices);
       Sentences = new SentenceCollection(backendNoteCreator, NoteServices);
 
-      Kanji.Cache.OnNoteUpdated(note => noteRepository.Save(note));
-      Vocab.Cache.OnNoteUpdated(note => noteRepository.Save(note));
-      Sentences.Cache.OnNoteUpdated(note => noteRepository.Save(note));
+      Kanji.Cache.OnNoteUpdated(noteRepository.Save);
+      Vocab.Cache.OnNoteUpdated(noteRepository.Save);
+      Sentences.Cache.OnNoteUpdated(noteRepository.Save);
+
+      Kanji.Cache.OnNoteDeleted(noteRepository.Delete);
+      Vocab.Cache.OnNoteDeleted(noteRepository.Delete);
+      Sentences.Cache.OnNoteDeleted(noteRepository.Delete);
    }
 
    readonly INoteRepository _noteRepository;
@@ -84,7 +89,8 @@ public class JPCollection
    /// <summary>Clear all in-memory caches. Called when the Anki DB is about to become unreliable (e.g. sync starting, profile closing).</summary>
    public void ClearCaches()
    {
-      using var _ = this.Log().Warning().LogMethodExecutionTime();
+      _snapshotter?.StopTimer();
+      this.Log().Info("clearing caches");
       NoteServices.AnkiNoteIdMap.Clear();
       Vocab.Cache.Clear();
       Kanji.Cache.Clear();
@@ -100,13 +106,14 @@ public class JPCollection
       ClearCaches();
       LoadFromRepository();
       LoadAnkiUserData();
+      Snapshotter.StartTimer();
    }
-   
+
    INoteRepository ConfiguredRepository => _config.LoadNotesFromFileSystem.Value ? _noteRepository : new AnkiNoteRepository(NoteServices);
 
    void LoadFromRepository()
    {
-      using var _ = this.Log().Warning().LogMethodExecutionTime();
+      using var _ = this.Log().Info().LogMethodExecutionTime();
 
       var allNotes = ConfiguredRepository.LoadAll();
 
@@ -120,7 +127,7 @@ public class JPCollection
 
    void LoadAnkiUserData()
    {
-      using var _ = this.Log().Warning().LogMethodExecutionTime();
+      using var _ = this.Log().Info().LogMethodExecutionTime();
       var dbPath = AnkiFacade.Col.DbFilePath();
       if(dbPath == null) throw new InvalidOperationException("Anki collection database is not initialized yet");
 
@@ -154,5 +161,13 @@ public class JPCollection
       Vocab.Cache.SetStudyingStatuses(vocabStatuses);
       Kanji.Cache.SetStudyingStatuses(kanjiStatuses);
       Sentences.Cache.SetStudyingStatuses(sentenceStatuses);
+   }
+
+   CollectionSnapshotter? _snapshotter;
+   CollectionSnapshotter Snapshotter => _snapshotter ??= new CollectionSnapshotter(this);
+
+   public void Dispose()
+   {
+      _snapshotter?.Dispose();
    }
 }

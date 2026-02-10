@@ -16,4 +16,6 @@ public class AllNotesData
         Vocab = vocab.OrderBy(n => n.GetId().Value).ToList();
         Sentences = sentences.OrderBy(n => n.GetId().Value).ToList();
     }
+
+    public bool IsEmpty => Kanji.Count == 0 && Vocab.Count == 0 && Sentences.Count == 0;
 }

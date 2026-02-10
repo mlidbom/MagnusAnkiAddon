@@ -49,4 +49,19 @@ public class AnkiNoteRepository : INoteRepository
    {
       throw new NotImplementedException("this should never be called");
    }
+
+   public void Delete(KanjiNote note)
+   {
+      throw new NotImplementedException("this should never be called");
+   }
+
+   public void Delete(VocabNote note)
+   {
+      throw new NotImplementedException("this should never be called");
+   }
+
+   public void Delete(SentenceNote note)
+   {
+      throw new NotImplementedException("this should never be called");
+   }
 }

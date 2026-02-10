@@ -152,6 +152,7 @@ public class JAStudioAppRoot
    public void ShutDown()
    {
       using var _ = this.Log().Info().LogMethodExecutionTime();
+      _app.Collection.Dispose();
       _app.Dispose();
       Dispatcher.UIThread.InvokeShutdown();
    }

@@ -26,6 +26,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
    readonly Type _noteType;
    protected readonly Dictionary<NoteId, TNote> _byId = new();
    readonly List<Action<TNote>> _updateListeners = new();
+   readonly List<Action<TNote>> _deleteListeners = new();
    readonly NoteServices _noteServices;
    protected readonly IMonitorCE _monitor = IMonitorCE.WithDefaultTimeout();
 
@@ -45,6 +46,11 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
    public void OnNoteUpdated(Action<TNote> listener)
    {
       _updateListeners.Add(listener);
+   }
+
+   public void OnNoteDeleted(Action<TNote> listener)
+   {
+      _deleteListeners.Add(listener);
    }
 
    public TNote? WithIdOrNone(NoteId noteId) => _monitor.Read(() => WithIdOrNoneCore(noteId));
@@ -102,14 +108,19 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
    {
       var noteId = _noteServices.AnkiNoteIdMap.FromAnkiId(ankiNoteId);
       if(noteId == null) return;
+      TNote? removed = null;
       _monitor.Update(() =>
       {
          var existing = WithIdOrNoneCore(noteId);
          if(existing != null)
          {
             RemoveFromCacheCore(existing);
+            removed = existing;
          }
       });
+
+      if (removed != null)
+         NotifyDeleteListeners(removed);
 
       _noteServices.AnkiNoteIdMap.Unregister(ankiNoteId);
    }
@@ -137,6 +148,14 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
    void NotifyUpdateListeners(TNote note)
    {
       foreach(var listener in _updateListeners)
+      {
+         listener(note);
+      }
+   }
+
+   void NotifyDeleteListeners(TNote note)
+   {
+      foreach(var listener in _deleteListeners)
       {
          listener(note);
       }

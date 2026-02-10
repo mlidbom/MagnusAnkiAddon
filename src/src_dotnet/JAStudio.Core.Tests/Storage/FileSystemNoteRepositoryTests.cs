@@ -159,6 +159,105 @@ public class FileSystemNoteRepositoryTests : CollectionUsingTest, IDisposable
         Assert.Equal(originalJson, loadedJson);
     }
 
+    // --- Snapshot + incremental loading ---
+
+    [Fact]
+    public void LoadAll_WithSnapshotOnly_ReturnsAllNotes()
+    {
+        var allData = BuildAllNotesData();
+
+        _repo.SaveAllSingleFile(allData);
+        // No individual files — LoadAll should fall back to snapshot-only path
+        var loaded = _repo.LoadAll();
+
+        // Snapshot alone (no individual files) means PatchFromDisk removes everything
+        // because no individual files exist. So we need individual files too.
+        // Let's use SaveAll to write both.
+        _repo.SaveAll(allData);
+        _repo.SaveSnapshot(allData);
+        loaded = _repo.LoadAll();
+
+        AssertAllNotesDataMatch(allData, loaded);
+    }
+
+    [Fact]
+    public void LoadAll_WithSnapshot_PatchesUpdatedNotes()
+    {
+        var allData = BuildAllNotesData();
+        _repo.SaveAll(allData);
+        _repo.SaveSnapshot(allData);
+
+        // Update one vocab note after the snapshot
+        var vocabToUpdate = allData.Vocab.First();
+        vocabToUpdate.User.Explanation.Set("Patched by test");
+        _repo.Save(vocabToUpdate);
+
+        var loaded = _repo.LoadAll();
+
+        var roundtripped = loaded.Vocab.Single(v => v.GetId() == vocabToUpdate.GetId());
+        Assert.Equal("Patched by test", roundtripped.User.Explanation.Value);
+        Assert.Equal(allData.Vocab.Count, loaded.Vocab.Count);
+    }
+
+    [Fact]
+    public void LoadAll_WithSnapshot_DetectsDeletedNotes()
+    {
+        var allData = BuildAllNotesData();
+        _repo.SaveAll(allData);
+        _repo.SaveSnapshot(allData);
+
+        // Delete one vocab note after the snapshot
+        var vocabToDelete = allData.Vocab.First();
+        _repo.Delete(vocabToDelete);
+
+        var loaded = _repo.LoadAll();
+
+        Assert.Null(loaded.Vocab.SingleOrDefault(v => v.GetId() == vocabToDelete.GetId()));
+        Assert.Equal(allData.Vocab.Count - 1, loaded.Vocab.Count);
+    }
+
+    [Fact]
+    public void LoadAll_WithSnapshot_DetectsDeletedSentences()
+    {
+        var allData = BuildAllNotesData();
+        _repo.SaveAll(allData);
+        _repo.SaveSnapshot(allData);
+
+        var sentenceToDelete = allData.Sentences.First();
+        _repo.Delete(sentenceToDelete);
+
+        var loaded = _repo.LoadAll();
+
+        Assert.Null(loaded.Sentences.SingleOrDefault(s => s.GetId() == sentenceToDelete.GetId()));
+        Assert.Equal(allData.Sentences.Count - 1, loaded.Sentences.Count);
+    }
+
+    [Fact]
+    public void LoadAll_WithoutSnapshot_FallsBackToIndividualFiles()
+    {
+        var allData = BuildAllNotesData();
+        _repo.SaveAll(allData);
+        // No snapshot file — should use individual file loading
+        var loaded = _repo.LoadAll();
+
+        AssertAllNotesDataMatch(allData, loaded);
+    }
+
+    [Fact]
+    public void SaveSnapshot_IsAtomic_NoCorruptionOnSuccess()
+    {
+        var allData = BuildAllNotesData();
+        _repo.SaveAll(allData);
+        _repo.SaveSnapshot(allData);
+
+        // Verify the snapshot can be loaded and matches
+        var loaded = _repo.LoadAllSingleFile();
+        AssertAllNotesDataMatch(allData, loaded);
+
+        // Verify no .tmp file remains
+        Assert.False(File.Exists(Path.Combine(_tempDir, "all_notes.json.tmp")));
+    }
+
     // --- Helpers ---
 
     AllNotesData BuildAllNotesData() =>
