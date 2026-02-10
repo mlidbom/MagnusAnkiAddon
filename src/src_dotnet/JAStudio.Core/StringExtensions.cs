@@ -16,7 +16,7 @@ public static class StringExtensions
             return string.Empty;
         }
 
-        return HtmlTagRegex.Replace(input, string.Empty);
+        return HtmlTagRegex.Replace(input.Replace("&nbsp;", " "), string.Empty);
     }
 
     public static List<string> ExtractCommaSeparatedValues(string input)
