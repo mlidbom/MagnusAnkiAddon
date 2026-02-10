@@ -138,10 +138,9 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
       return new List<TOutput>(results);
    }
 
-   public Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
+   public async Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
    {
       var totalItems = items.Count;
-      using var _ = this.Log().Info().LogMethodExecutionTime($"{message} handled {items.Count} items ({threads.Threads} threads)");
 
       Dispatcher.UIThread.Post(() =>
       {
@@ -150,8 +149,9 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
          _panel.SetProgress(0, totalItems);
       });
 
-      return Task.Run(() =>
+      return await Task.Run(() =>
       {
+         using var _ = this.Log().Info().LogMethodExecutionTime($"{message} handled {items.Count} items ({threads.Threads} threads)");
          var results = new TOutput[totalItems];
          int completed = 0;
          var startTime = DateTime.Now;
