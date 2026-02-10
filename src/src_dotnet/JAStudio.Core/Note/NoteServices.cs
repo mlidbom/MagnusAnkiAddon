@@ -1,3 +1,4 @@
+using Compze.Utilities.DependencyInjection.Abstractions;
 using JAStudio.Core.Anki;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JamdictEx;
@@ -9,43 +10,24 @@ namespace JAStudio.Core.Note;
 
 /// <summary>
 /// Bundles all external services that notes and their composed objects need.
-/// Passed to JPNote subclasses via their constructor so that notes and their
-/// sub-objects can access services without going through the static service locator.
+/// Services are resolved lazily from the container, so NoteServices can be
+/// created before all its dependencies are fully wired — breaking circular
+/// dependency chains.
 /// </summary>
 public class NoteServices
 {
-   public JPCollection Collection { get; }
-   public AnkiCardOperations AnkiCardOperations { get; }
-   public Settings Settings { get; }
-   public DictLookup DictLookup { get; }
-   public VocabNoteFactory VocabNoteFactory { get; }
-   public VocabNoteGeneratedData VocabNoteGeneratedData { get; }
-   public KanjiNoteMnemonicMaker KanjiNoteMnemonicMaker { get; }
-   public JapaneseConfig Config { get; }
-   public TaskRunner TaskRunner { get; }
-   public AnkiNoteIdMap AnkiNoteIdMap { get; }
+   readonly IServiceLocator _serviceLocator;
 
-   internal NoteServices(
-      JPCollection collection,
-      AnkiCardOperations ankiCardOperations,
-      Settings settings,
-      DictLookup dictLookup,
-      VocabNoteFactory vocabNoteFactory,
-      VocabNoteGeneratedData vocabNoteGeneratedData,
-      KanjiNoteMnemonicMaker kanjiNoteMnemonicMaker,
-      JapaneseConfig config,
-      TaskRunner taskRunner,
-      AnkiNoteIdMap ankiNoteIdMap)
-   {
-      Collection = collection;
-      AnkiCardOperations = ankiCardOperations;
-      Settings = settings;
-      DictLookup = dictLookup;
-      VocabNoteFactory = vocabNoteFactory;
-      VocabNoteGeneratedData = vocabNoteGeneratedData;
-      KanjiNoteMnemonicMaker = kanjiNoteMnemonicMaker;
-      Config = config;
-      TaskRunner = taskRunner;
-      AnkiNoteIdMap = ankiNoteIdMap;
-   }
+   internal NoteServices(IServiceLocator serviceLocator) => _serviceLocator = serviceLocator;
+
+   public JPCollection Collection => _serviceLocator.Resolve<JPCollection>();
+   public AnkiCardOperations AnkiCardOperations => _serviceLocator.Resolve<AnkiCardOperations>();
+   public Settings Settings => _serviceLocator.Resolve<Settings>();
+   public DictLookup DictLookup => _serviceLocator.Resolve<DictLookup>();
+   public VocabNoteFactory VocabNoteFactory => _serviceLocator.Resolve<VocabNoteFactory>();
+   public VocabNoteGeneratedData VocabNoteGeneratedData => _serviceLocator.Resolve<VocabNoteGeneratedData>();
+   public KanjiNoteMnemonicMaker KanjiNoteMnemonicMaker => _serviceLocator.Resolve<KanjiNoteMnemonicMaker>();
+   public JapaneseConfig Config => _serviceLocator.Resolve<JapaneseConfig>();
+   public TaskRunner TaskRunner => _serviceLocator.Resolve<TaskRunner>();
+   public AnkiNoteIdMap AnkiNoteIdMap => _serviceLocator.Resolve<AnkiNoteIdMap>();
 }

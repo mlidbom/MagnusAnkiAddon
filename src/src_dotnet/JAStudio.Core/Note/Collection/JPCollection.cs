@@ -8,7 +8,6 @@ using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.Storage;
-using JAStudio.Core.TaskRunners;
 
 namespace JAStudio.Core.Note.Collection;
 
@@ -58,24 +57,16 @@ public class JPCollection
 
    public JPCollection(
       IBackendNoteCreator backendNoteCreator,
-      AnkiCardOperations ankiCardOperations,
-      Settings settings,
-      KanjiNoteMnemonicMaker kanjiNoteMnemonicMaker,
+      NoteServices noteServices,
       JapaneseConfig config,
-      TaskRunner taskRunner,
-      INoteRepository noteRepository,
-      AnkiNoteIdMap ankiNoteIdMap)
+      INoteRepository noteRepository)
    {
       this.Log().Info().LogMethodExecutionTime();
 
-      // Create the full service graph internally — no two-phase init needed.
-      // NoteServices references `this` (JPCollection), which is safe because
-      // constructors only store references; they don't call back into us.
+      NoteServices = noteServices;
       DictLookup = new DictLookup(this, config);
       VocabNoteGeneratedData = new VocabNoteGeneratedData(DictLookup);
-      VocabNoteFactory = new VocabNoteFactory(DictLookup, this);
-      NoteServices = new NoteServices(this, ankiCardOperations, settings, DictLookup, VocabNoteFactory, VocabNoteGeneratedData, kanjiNoteMnemonicMaker, config, taskRunner, ankiNoteIdMap);
-      VocabNoteFactory.SetNoteServices(NoteServices);
+      VocabNoteFactory = new VocabNoteFactory(DictLookup, this, noteServices);
 
       Vocab = new VocabCollection(backendNoteCreator, NoteServices);
       Kanji = new KanjiCollection(backendNoteCreator, NoteServices);

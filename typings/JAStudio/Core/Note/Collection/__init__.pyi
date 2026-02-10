@@ -1,8 +1,6 @@
 import typing, abc
-from JAStudio.Core.Note import JPNote, NoteId, NoteData, IBackendNoteCreator, KanjiNoteMnemonicMaker, NoteServices, KanjiNote, SentenceNote, VocabNote
-from JAStudio.Core.Anki import AnkiCardOperations, AnkiNoteIdMap
-from JAStudio.Core.Configuration import Settings, JapaneseConfig
-from JAStudio.Core.TaskRunners import TaskRunner
+from JAStudio.Core.Note import JPNote, NoteId, NoteData, IBackendNoteCreator, NoteServices, KanjiNote, SentenceNote, VocabNote
+from JAStudio.Core.Configuration import JapaneseConfig
 from JAStudio.Core.Storage import INoteRepository
 from JAStudio.Core.LanguageServices.JamdictEx import DictLookup
 from JAStudio.Core.Note.Vocabulary import VocabNoteFactory, VocabNoteGeneratedData
@@ -44,7 +42,7 @@ class IAnkiNoteUpdateHandler(typing.Protocol):
 
 
 class JPCollection:
-    def __init__(self, backendNoteCreator: IBackendNoteCreator, ankiCardOperations: AnkiCardOperations, settings: Settings, kanjiNoteMnemonicMaker: KanjiNoteMnemonicMaker, config: JapaneseConfig, taskRunner: TaskRunner, noteRepository: INoteRepository, ankiNoteIdMap: AnkiNoteIdMap) -> None: ...
+    def __init__(self, backendNoteCreator: IBackendNoteCreator, noteServices: NoteServices, config: JapaneseConfig, noteRepository: INoteRepository) -> None: ...
     @property
     def DictLookup(self) -> DictLookup: ...
     @property

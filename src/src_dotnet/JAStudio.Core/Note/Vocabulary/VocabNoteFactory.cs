@@ -1,7 +1,7 @@
-using JAStudio.Core.Note.Collection;
 using System;
 using System.Collections.Generic;
 using JAStudio.Core.LanguageServices.JamdictEx;
+using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
@@ -9,17 +9,14 @@ public class VocabNoteFactory
 {
    readonly DictLookup _dictLookup;
    readonly JPCollection _collection;
-   NoteServices? _noteServices;
+   readonly NoteServices _noteServices;
 
-   internal VocabNoteFactory(DictLookup dictLookup, JPCollection collection)
+   internal VocabNoteFactory(DictLookup dictLookup, JPCollection collection, NoteServices noteServices)
    {
       _dictLookup = dictLookup;
       _collection = collection;
+      _noteServices = noteServices;
    }
-
-   /// <summary>Called by JPCollection after NoteServices is created to complete the wiring.</summary>
-   internal void SetNoteServices(NoteServices noteServices) => _noteServices = noteServices;
-   NoteServices RequireServices() => _noteServices ?? throw new InvalidOperationException("NoteServices not set on VocabNoteFactory. Call SetNoteServices first.");
 
     public VocabNote CreateWithDictionary(string question)
     {
@@ -37,7 +34,7 @@ public class VocabNoteFactory
 
     public VocabNote Create(string question, string answer, List<string> readings, Action<VocabNote>? initializer = null)
     {
-        var note = new VocabNote(RequireServices());
+        var note = new VocabNote(_noteServices);
         note.Question.Set(question);
         note.SetField(NoteFieldsConstants.Vocab.SourceAnswer, answer);
         note.SetReadings(readings);

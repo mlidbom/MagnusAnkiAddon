@@ -51,8 +51,8 @@ static class AppBootstrapper
          Singleton.For<ConfigurationStore>().CreatedBy((TemporaryServiceCollection services) => new ConfigurationStore(services)),
          Singleton.For<TemporaryServiceCollection>().CreatedBy(() => new TemporaryServiceCollection(container.ServiceLocator)),
          Singleton.For<JapaneseConfig>().CreatedBy((ConfigurationStore store) => store.Config()),
-         Singleton.For<JPCollection>().CreatedBy((AnkiCardOperations ankiCardOps, Settings settings, KanjiNoteMnemonicMaker kanjiMnemonicMaker, JapaneseConfig config, TaskRunner taskRunner, INoteRepository noteRepository, AnkiNoteIdMap ankiNoteIdMap) =>
-                                                    new JPCollection(backendNoteCreator, ankiCardOps, settings, kanjiMnemonicMaker, config, taskRunner, noteRepository, ankiNoteIdMap)),
+         Singleton.For<JPCollection>().CreatedBy((NoteServices noteServices, JapaneseConfig config, INoteRepository noteRepository) =>
+                                                    new JPCollection(backendNoteCreator, noteServices, config, noteRepository)),
          Singleton.For<VocabCollection>().CreatedBy((JPCollection col) => col.Vocab),
          Singleton.For<KanjiCollection>().CreatedBy((JPCollection col) => col.Kanji),
          Singleton.For<SentenceCollection>().CreatedBy((JPCollection col) => col.Sentences),
@@ -69,7 +69,7 @@ static class AppBootstrapper
          Singleton.For<TestApp>().CreatedBy((ConfigurationStore configurationStore) => new TestApp(app, configurationStore)),
 
          // Services owned by JPCollection — registered as property accessors
-         Singleton.For<NoteServices>().CreatedBy((JPCollection col) => col.NoteServices),
+         Singleton.For<NoteServices>().CreatedBy(() => new NoteServices(container.ServiceLocator)),
          Singleton.For<DictLookup>().CreatedBy((JPCollection col) => col.DictLookup),
          Singleton.For<VocabNoteFactory>().CreatedBy((JPCollection col) => col.VocabNoteFactory),
          Singleton.For<VocabNoteGeneratedData>().CreatedBy((JPCollection col) => col.VocabNoteGeneratedData),
