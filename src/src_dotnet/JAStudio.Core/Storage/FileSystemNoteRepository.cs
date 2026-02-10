@@ -93,14 +93,12 @@ public class FileSystemNoteRepository : INoteRepository
    {
       using var scope = _taskRunner.Current("Loading notes from file system");
 
-      var kanjiFiles = scope.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Scanning kanji files", () => GetJsonFiles(KanjiDir));
-      var vocabFiles = scope.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Scanning vocab files", () => GetJsonFiles(VocabDir));
-      var sentenceFiles = scope.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Scanning sentence files", () => GetJsonFiles(SentencesDir));
+      var filesByType = scope.RunOnBackgroundThreadWithSpinningProgressDialog("Scanning note files", ScanAllNoteFiles);
 
       var threads = ThreadCount.FractionOfLogicalCores(0.4);
-      var kanji = scope.ProcessWithProgressAsync(kanjiFiles.Result, path => _serializer.DeserializeKanji(File.ReadAllText(path)), "Loading kanji notes", threads);
-      var vocab = scope.ProcessWithProgressAsync(vocabFiles.Result, path => _serializer.DeserializeVocab(File.ReadAllText(path)), "Loading vocab notes", threads);
-      var sentences = scope.ProcessWithProgressAsync(sentenceFiles.Result, path => _serializer.DeserializeSentence(File.ReadAllText(path)), "Loading sentence notes", threads);
+      var kanji = scope.ProcessWithProgressAsync(filesByType.Kanji, fi => _serializer.DeserializeKanji(File.ReadAllText(fi.Path)), "Loading kanji notes", threads);
+      var vocab = scope.ProcessWithProgressAsync(filesByType.Vocab, fi => _serializer.DeserializeVocab(File.ReadAllText(fi.Path)), "Loading vocab notes", threads);
+      var sentences = scope.ProcessWithProgressAsync(filesByType.Sentences, fi => _serializer.DeserializeSentence(File.ReadAllText(fi.Path)), "Loading sentence notes", threads);
 
       return new AllNotesData(kanji.Result, vocab.Result, sentences.Result);
    }
@@ -132,10 +130,9 @@ public class FileSystemNoteRepository : INoteRepository
          return await _serializer.DeserializeSentenceStreamAsync(stream);
       });
 
-      // Scan individual files for incremental patching (runs in parallel with deserialization)
-      var kanjiFileInfo = scope.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Scanning kanji files", () => GetJsonFileInfo(KanjiDir));
-      var vocabFileInfo = scope.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Scanning vocab files", () => GetJsonFileInfo(VocabDir));
-      var sentenceFileInfo = scope.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Scanning sentence files", () => GetJsonFileInfo(SentencesDir));
+      // Single directory walk from root — partitioned by subdirectory.
+      // Runs in parallel with snapshot deserialization.
+      var filesByType = scope.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Scanning note files", ScanAllNoteFiles);
 
       Task.WaitAll(kanjiTask, vocabTask, sentencesTask);
 
@@ -143,9 +140,10 @@ public class FileSystemNoteRepository : INoteRepository
       var vocabById = vocabTask.Result.ToDictionary(n => n.GetId());
       var sentencesById = sentencesTask.Result.ToDictionary(n => n.GetId());
 
-      PatchFromDisk(kanjiById, kanjiFileInfo.Result, kanjiSnapshotTime, _serializer.DeserializeKanji);
-      PatchFromDisk(vocabById, vocabFileInfo.Result, vocabSnapshotTime, _serializer.DeserializeVocab);
-      PatchFromDisk(sentencesById, sentenceFileInfo.Result, sentencesSnapshotTime, _serializer.DeserializeSentence);
+      var scanned = filesByType.Result;
+      PatchFromDisk(kanjiById, scanned.Kanji, kanjiSnapshotTime, _serializer.DeserializeKanji);
+      PatchFromDisk(vocabById, scanned.Vocab, vocabSnapshotTime, _serializer.DeserializeVocab);
+      PatchFromDisk(sentencesById, scanned.Sentences, sentencesSnapshotTime, _serializer.DeserializeSentence);
 
       return new AllNotesData(kanjiById.Values.ToList(), vocabById.Values.ToList(), sentencesById.Values.ToList());
    }
@@ -239,26 +237,39 @@ public class FileSystemNoteRepository : INoteRepository
    static FileStream OpenSequentialWrite(string path) =>
       new(path, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 65536, FileOptions.SequentialScan);
 
-   static List<string> GetJsonFiles(string dir) =>
-      !Directory.Exists(dir) ? [] : Directory.GetFiles(dir, "*.json", SearchOption.AllDirectories).ToList();
-
-   static List<NoteFileInfo> GetJsonFileInfo(string dir)
+   /// <summary>
+   /// Single directory walk from root — enumerates all *.json note files once,
+   /// partitions them into kanji/vocab/sentences based on which subdirectory they live under.
+   /// One FindNextFile stream instead of three.
+   /// </summary>
+   NoteFilesByType ScanAllNoteFiles()
    {
-      if(!Directory.Exists(dir)) return [];
+      var kanji = new List<NoteFileInfo>();
+      var vocab = new List<NoteFileInfo>();
+      var sentences = new List<NoteFileInfo>();
 
-      // Uses DirectoryInfo.EnumerateFiles — timestamps come from the directory
-      // enumeration data (FindNextFile on Windows), avoiding a separate stat call per file.
-      return new DirectoryInfo(dir)
-            .EnumerateFiles("*.json", SearchOption.AllDirectories)
-            .Select(fi =>
-             {
-                var fileName = Path.GetFileNameWithoutExtension(fi.Name);
-                return Guid.TryParse(fileName, out var guid)
-                          ? new NoteFileInfo(fi.FullName, guid, fi.LastWriteTimeUtc)
-                          : null;
-             })
-            .Where(info => info != null)
-            .ToList()!;
+      var kanjiPrefix = KanjiDir + Path.DirectorySeparatorChar;
+      var vocabPrefix = VocabDir + Path.DirectorySeparatorChar;
+      var sentencesPrefix = SentencesDir + Path.DirectorySeparatorChar;
+
+      if(!Directory.Exists(_rootDir)) return new NoteFilesByType(kanji, vocab, sentences);
+
+      foreach(var fi in new DirectoryInfo(_rootDir).EnumerateFiles("*.json", SearchOption.AllDirectories))
+      {
+         var fileName = Path.GetFileNameWithoutExtension(fi.Name);
+         if(!Guid.TryParse(fileName, out var guid)) continue;
+
+         var info = new NoteFileInfo(fi.FullName, guid, fi.LastWriteTimeUtc);
+
+         if(fi.FullName.StartsWith(kanjiPrefix, StringComparison.OrdinalIgnoreCase))
+            kanji.Add(info);
+         else if(fi.FullName.StartsWith(vocabPrefix, StringComparison.OrdinalIgnoreCase))
+            vocab.Add(info);
+         else if(fi.FullName.StartsWith(sentencesPrefix, StringComparison.OrdinalIgnoreCase))
+            sentences.Add(info);
+      }
+
+      return new NoteFilesByType(kanji, vocab, sentences);
    }
 
    static string Bucket(NoteId id) => id.Value.ToString("N")[..2];
@@ -267,4 +278,5 @@ public class FileSystemNoteRepository : INoteRepository
       Path.Combine(typeDir, Bucket(id), $"{id.Value}.json");
 
    record NoteFileInfo(string Path, Guid NoteGuid, DateTime LastWriteUtc);
+   record NoteFilesByType(List<NoteFileInfo> Kanji, List<NoteFileInfo> Vocab, List<NoteFileInfo> Sentences);
 }
