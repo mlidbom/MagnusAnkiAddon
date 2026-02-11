@@ -56,6 +56,7 @@ This project is actively porting UI from Python/PyQt6 to C#/Avalonia. **Use Pyth
 - ❌ Python should only be a thin integration layer with Anki
 
 ### Directory Structure
+- `dev_docs/` - Development progress notes and porting status documents
 - `src/src_dotnet/` - C# source code (Avalonia UI, Core logic, Python interop)
   - `JAStudio.UI/` - Avalonia UI (porting target)
   - `JAStudio.Core/` - Domain logic (already ported)
