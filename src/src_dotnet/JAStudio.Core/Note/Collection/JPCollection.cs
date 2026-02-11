@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Compze.Utilities.Logging;
+using Compze.Utilities.SystemCE.ThreadingCE.TasksCE;
 using JAStudio.Core.Anki;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JamdictEx;
@@ -102,7 +103,7 @@ public class JPCollection
       using var _ = this.Log().Info().LogMethodExecutionTime("====== Reloading JAStudio data ======");
 
       ClearCaches();
-      var repoLoad = Task.Run(LoadFromRepository);
+      var repoLoad = TaskCE.Run(LoadFromRepository);
 
       var studyingStatuses = LoadAnkiUserDataAsync();
       Task.WaitAll(repoLoad, studyingStatuses);
@@ -140,9 +141,9 @@ public class JPCollection
       using var runner = NoteServices.TaskRunner.Current($"Populating caches from {NoteRepositoryType}");
 
       Task.WaitAll(
-         runner.ProcessWithProgressAsync(allNotes.Kanji, Kanji.Cache.AddToCache, "Pushing kanji notes into cache"),
-         runner.ProcessWithProgressAsync(allNotes.Vocab, Vocab.Cache.AddToCache, "Pushing vocab notes into cache"),
-         runner.ProcessWithProgressAsync(allNotes.Sentences, Sentences.Cache.AddToCache, "Pushing sentence notes into cache"));
+         runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Pushing kanji notes into cache", () => Kanji.Cache.AddAllToCache(allNotes.Kanji)),
+         runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Pushing vocab notes into cache", () => Vocab.Cache.AddAllToCache(allNotes.Vocab)),
+         runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Pushing sentence notes into cache", () => Sentences.Cache.AddAllToCache(allNotes.Sentences)));
    }
 
    async Task<List<CardStudyingStatus>> LoadAnkiUserDataAsync()

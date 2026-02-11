@@ -176,7 +176,7 @@ public class SentenceNote : JPNote
         note.Screenshot.Set(screenshot);
         note.UpdateGeneratedData();
 
-        if (string.IsNullOrWhiteSpace(audio))
+        if(string.IsNullOrWhiteSpace(audio))
         {
             note.Tags.Set(Note.Tags.TTSAudio);
         }
@@ -185,17 +185,17 @@ public class SentenceNote : JPNote
             note.Audio.SetRawValue(audio.Trim());
         }
 
-        if (highlightedVocab != null)
+        if(highlightedVocab != null)
         {
-            foreach (var vocab in highlightedVocab)
+            foreach(var vocab in highlightedVocab)
             {
                 note.Configuration.AddHighlightedWord(vocab);
             }
         }
 
-        if (tags != null)
+        if(tags != null)
         {
-            foreach (var tag in tags)
+            foreach(var tag in tags)
             {
                 note.Tags.Set(tag);
             }

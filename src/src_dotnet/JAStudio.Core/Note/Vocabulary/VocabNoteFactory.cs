@@ -38,12 +38,12 @@ public class VocabNoteFactory
         note.Question.Set(question);
         note.SetField(NoteFieldsConstants.Vocab.SourceAnswer, answer);
         note.SetReadings(readings);
-        
-        if (initializer != null)
+
+        if(initializer != null)
         {
             initializer(note);
         }
-        
+
         _collection.Vocab.Add(note);
         return note;
     }
@@ -53,7 +53,6 @@ public class VocabNoteFactory
         var note = Create(question, answer, readings, initializer);
         note.User.Answer.Set(note.GetField(NoteFieldsConstants.Vocab.SourceAnswer));
         note.SetField(NoteFieldsConstants.Vocab.SourceAnswer, "");
-        
         return note;
     }
 }

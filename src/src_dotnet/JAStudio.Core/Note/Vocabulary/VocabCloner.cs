@@ -87,7 +87,7 @@ public class VocabCloner
 
         CopyVocabTagsTo(clone);
 
-        foreach (var related in clone.RelatedNotes.Synonyms.Strings())
+        foreach(var related in clone.RelatedNotes.Synonyms.Strings())
         {
             clone.RelatedNotes.Synonyms.Add(related);
         }

@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Compze.Utilities.SystemCE.ThreadingCE.TasksCE;
 using JAStudio.Core.Anki;
 using JAStudio.Core.Note;
 
@@ -27,9 +28,9 @@ public class AnkiNoteRepository : INoteRepository
       var sentenceBulk = scope.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Loading sentences from Anki", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Sentence, g => new SentenceId(g)));
 
       // ReSharper disable AccessToDisposedClosure
-      var vocab = Task.Run(async () => scope.ProcessWithProgress((await vocabBulk).Notes, nd => new VocabNote(_noteServices, nd), "Creating vocab notes from anki"));
-      var kanji = Task.Run(async () => scope.ProcessWithProgress((await kanjiBulk).Notes, nd => new KanjiNote(_noteServices, nd), "Creating kanji notes from anki"));
-      var sentences = Task.Run(async () => scope.ProcessWithProgress((await sentenceBulk).Notes, nd => new SentenceNote(_noteServices, nd), "Creating sentence notes from anki"));
+      var vocab = TaskCE.Run(() => scope.ProcessWithProgress(vocabBulk.Result.Notes, nd => new VocabNote(_noteServices, nd), "Creating vocab notes from anki"));
+      var kanji = TaskCE.Run(() => scope.ProcessWithProgress(kanjiBulk.Result.Notes, nd => new KanjiNote(_noteServices, nd), "Creating kanji notes from anki"));
+      var sentences = TaskCE.Run(() => scope.ProcessWithProgress(sentenceBulk.Result.Notes, nd => new SentenceNote(_noteServices, nd), "Creating sentence notes from anki"));
       // ReSharper restore AccessToDisposedClosure
 
       return new AllNotesData(kanji.Result, vocab.Result, sentences.Result);

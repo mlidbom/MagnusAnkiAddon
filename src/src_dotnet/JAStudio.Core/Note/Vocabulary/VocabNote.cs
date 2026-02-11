@@ -108,12 +108,12 @@ public class VocabNote : JPNote
         note.Question.Set(question);
         note.User.Answer.Set(answer);
         note.SetReadings(readings);
-        
-        if (forms.Any())
+
+        if(forms.Any())
         {
             note.Forms.SetList(forms);
         }
-        
+
         note.UpdateGeneratedData();
         services.Collection.Vocab.Add(note);
         return note;

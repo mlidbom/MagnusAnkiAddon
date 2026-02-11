@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Compze.Utilities.SystemCE.LinqCE;
 using Compze.Utilities.SystemCE.ThreadingCE.ResourceAccess;
 using JAStudio.Core.Anki;
 using JAStudio.PythonInterop;
@@ -70,11 +71,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       data.Id = CreateTypedId(Guid.NewGuid());
       _noteServices.AnkiNoteIdMap.Register(ankiNoteId, data.Id);
       var note = _noteConstructor(_noteServices, data);
-      using(note.RecursiveFlushGuard.PauseFlushing())
-      {
-         note.UpdateGeneratedData();
-      }
-
+      note.UpdateGeneratedData();
       AddToCache(note);
    }
 
@@ -89,12 +86,8 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       data.Id = noteId;
       var note = _noteConstructor(_noteServices, data);
       note.CopyStudyingStatusFrom(existing);
-      using(note.RecursiveFlushGuard.PauseFlushing())
-      {
-         note.UpdateGeneratedData();
-      }
-
-      _monitor.Update(() => RefreshInCacheCore(note));
+      note.UpdateGeneratedData();
+      _monitor.Read(() => RefreshInCacheCore(note));
       NotifyUpdateListeners(note);
    }
 
@@ -102,7 +95,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
    {
       var noteId = _noteServices.AnkiNoteIdMap.FromAnkiId(ankiNoteId);
       if(noteId == null) return;
-      _monitor.Update(() =>
+      _monitor.Read(() =>
       {
          var existing = WithIdOrNoneCore(noteId);
          if(existing != null)
@@ -119,16 +112,13 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
 
    public void JpNoteUpdated(TNote note)
    {
-      _monitor.Update(() =>
+      _monitor.Read(() =>
       {
          var existing = WithIdOrNoneCore(note.GetId());
-         if(existing != null)
-         {
-            RefreshInCacheCore(note);
-         } else
-         {
-            AddToCacheCore(note);
-         }
+         if(existing == null)
+            throw new InvalidOperationException($"JpNoteUpdated called for {typeof(TNote).Name} with id {note.GetId()} but it is not in the cache. Only persisted (cached) notes should flush.");
+
+         RefreshInCacheCore(note);
       });
 
       NotifyUpdateListeners(note);
@@ -167,7 +157,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
    }
 
    /// <summary>Removes all notes and ID mappings from the cache. Subclasses must override ClearInheritorIndexes to clear their custom indexes.</summary>
-   public void Clear() => _monitor.Update(() =>
+   public void Clear() => _monitor.Read(() =>
    {
       _byId.Clear();
       ClearInheritorIndexes();
@@ -175,14 +165,11 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
 
    protected abstract void ClearInheritorIndexes();
 
-   /// <summary>Locked entry point: acquires the write lock and calls AddToCacheCore.</summary>
-   public void AddToCache(TNote note) => _monitor.Update(() => AddToCacheCore(note));
-   /// <summary>Locked entry point: acquires the write lock and calls RemoveFromCacheCore.</summary>
-   public void RemoveFromCache(TNote note) => _monitor.Update(() => RemoveFromCacheCore(note));
+   public void AddToCache(TNote note) => _monitor.Read(() => AddToCacheCore(note));
+   public void AddAllToCache(IEnumerable<TNote> notes) => _monitor.Read(() => notes.ForEach(AddToCacheCore));
+   public void RemoveFromCache(TNote note) => _monitor.Read(() => RemoveFromCacheCore(note));
 
-   /// <summary>Adds the note to all indexes. Must be called under the write lock.</summary>
    protected abstract void AddToCacheCore(TNote note);
-   /// <summary>Removes the note from all indexes. Must be called under the write lock.</summary>
    protected abstract void RemoveFromCacheCore(TNote note);
 
    public void SetStudyingStatuses(Dictionary<long, List<CardStudyingStatus>> statusesByAnkiId)
@@ -235,7 +222,7 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
       var id = note.GetId();
 
       if(!_snapshotById.TryGetValue(id, out var cached))
-         return;
+         throw new InvalidOperationException($"Cannot remove {typeof(TNote).Name} with id {id} from cache: not found in snapshot index");
 
       _snapshotById.Remove(id);
       _byId.Remove(id);
@@ -252,18 +239,8 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
    {
       var id = note.GetId();
 
-      // If already in cache, clean up old secondary indexes first (idempotent add)
-      if(_snapshotById.TryGetValue(id, out var existingSnapshot))
-      {
-         _byId.Remove(id);
-         _snapshotById.Remove(id);
-         if(_byQuestion.TryGetValue(existingSnapshot.Question, out var existingQuestionList))
-         {
-            existingQuestionList.Remove(note);
-         }
-
-         InheritorRemoveFromCache(note, existingSnapshot);
-      }
+      if(_snapshotById.ContainsKey(id))
+         throw new InvalidOperationException($"Cannot add {typeof(TNote).Name} with id {id} to cache: already present. Use RefreshInCache for updates.");
 
       var snapshot = CreateSnapshot(note);
       _snapshotById[id] = snapshot;
@@ -277,5 +254,7 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
       _byQuestion[snapshot.Question].Add(note);
 
       InheritorAddToCache(note, snapshot);
+
+      note.MarkAsPersisted();
    }
 }

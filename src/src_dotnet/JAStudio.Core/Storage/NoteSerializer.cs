@@ -15,6 +15,11 @@ public class NoteSerializer
         WriteIndented = true,
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        TypeInfoResolver = new NoteSerializationContext(new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        }),
     };
 
     readonly NoteServices _noteServices;
@@ -73,13 +78,5 @@ public class NoteSerializer
         var sentences = container.Sentences.Select(dto => new SentenceNote(_noteServices, SentenceNoteConverter.FromDto(dto))).ToList();
 
         return new AllNotesData(kanji, vocab, sentences);
-    }
-
-    // Internal container — keeps DTOs out of the public API
-    class AllNotesContainer
-    {
-        public List<KanjiNoteDto> Kanji { get; set; } = [];
-        public List<VocabNoteDto> Vocab { get; set; } = [];
-        public List<SentenceNoteDto> Sentences { get; set; } = [];
     }
 }
