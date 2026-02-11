@@ -31,7 +31,7 @@ public static class PythonEnvironment
    public static void EnsureInitialized(string? venvPath = null)
    {
       if(PythonEngine.IsInitialized) return;
-      Monitor.Update(() =>
+      Monitor.Read(() =>
       {
          if(PythonEngine.IsInitialized) return;
 

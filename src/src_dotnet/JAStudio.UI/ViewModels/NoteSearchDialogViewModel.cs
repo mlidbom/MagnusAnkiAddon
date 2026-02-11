@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Compze.Utilities.SystemCE.ThreadingCE.TasksCE;
 using JAStudio.Core.Anki;
 using JAStudio.Core.LanguageServices;
 using JAStudio.Core.Note;
@@ -60,7 +61,7 @@ public partial class NoteSearchDialogViewModel : ObservableObject
       try
       {
          // Run search in background to avoid blocking UI
-         var results = await Task.Run(() => SearchNotes(searchText));
+         var results = await TaskCE.Run(() => SearchNotes(searchText));
 
          Results.Clear();
          foreach(var result in results)

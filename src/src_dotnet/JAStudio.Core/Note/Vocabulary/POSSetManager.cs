@@ -96,7 +96,7 @@ public class POSSetManager
     {
         if (!_stringInterner.TryGetValue(str, out var interned))
         {
-            _monitor.Update(() => _stringInterner[str] = str);
+            _monitor.Read(() => _stringInterner[str] = str);
             interned = str;
         }
         return interned;
@@ -108,7 +108,7 @@ public class POSSetManager
         if (!_posByStr.TryGetValue(posKey, out var frozenSet))
         {
             var internedList = posValuesSet.Select(AutoIntern).ToFrozenSet();
-            _monitor.Update(() => _posByStr[AutoIntern(posKey)] = internedList);
+            _monitor.Read(() => _posByStr[AutoIntern(posKey)] = internedList);
             frozenSet = internedList;
         }
         return frozenSet;

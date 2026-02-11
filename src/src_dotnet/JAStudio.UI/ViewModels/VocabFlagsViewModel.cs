@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Compze.Utilities.SystemCE.ThreadingCE.TasksCE;
 
 namespace JAStudio.UI.ViewModels;
 
@@ -203,7 +204,7 @@ public partial class VocabFlagsViewModel : ObservableObject
          if(result == ButtonResult.Yes)
          {
             // Trigger reparse using C# batch updater
-            await Task.Run(() =>
+            await TaskCE.Run(() =>
             {
                _services.LocalNoteUpdater.ReparseSentencesForVocab(_vocab);
             });

@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using Compze.Utilities.Logging;
+using Compze.Utilities.SystemCE.ThreadingCE.TasksCE;
 
 namespace JAStudio.UI.Utils;
 
@@ -20,7 +21,7 @@ public static class BackgroundTaskManager
    /// </summary>
    public static void Run(Action action)
    {
-      Task.Run(() =>
+      TaskCE.Run(() =>
       {
          try
          {
@@ -39,7 +40,7 @@ public static class BackgroundTaskManager
    /// </summary>
    public static void RunAsync(Func<Task> action)
    {
-      Task.Run(async () =>
+      TaskCE.Run(async () =>
       {
          try
          {

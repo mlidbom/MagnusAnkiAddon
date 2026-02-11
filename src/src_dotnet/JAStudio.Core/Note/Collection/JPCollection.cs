@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Compze.Utilities.Logging;
+using Compze.Utilities.SystemCE.ThreadingCE.TasksCE;
 using JAStudio.Core.Anki;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JamdictEx;
@@ -102,7 +103,7 @@ public class JPCollection
       using var _ = this.Log().Info().LogMethodExecutionTime("====== Reloading JAStudio data ======");
 
       ClearCaches();
-      var repoLoad = Task.Run(LoadFromRepository);
+      var repoLoad = TaskCE.Run(LoadFromRepository);
 
       var studyingStatuses = LoadAnkiUserDataAsync();
       Task.WaitAll(repoLoad, studyingStatuses);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Compze.Utilities.Logging;
+using Compze.Utilities.SystemCE.ThreadingCE.TasksCE;
 
 namespace JAStudio.Core.TaskRunners;
 
@@ -44,7 +45,7 @@ public class InvisibleTaskRunner : ITaskProgressRunner
 
    public Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
    {
-      return Task.Run(() =>
+      return TaskCE.Run(() =>
       {
          if(threads.IsSequential)
             return ProcessWithProgress(items, processItem, message, threads);
@@ -87,7 +88,7 @@ public class InvisibleTaskRunner : ITaskProgressRunner
 
    public Task<TResult> RunOnBackgroundThreadWithSpinningProgressDialogAsync<TResult>(string message, Func<TResult> action)
    {
-      return Task.Run(() => RunOnBackgroundThreadWithSpinningProgressDialog(message, action));
+      return TaskCE.Run(() => RunOnBackgroundThreadWithSpinningProgressDialog(message, action));
    }
 
    public bool IsHidden() => true;

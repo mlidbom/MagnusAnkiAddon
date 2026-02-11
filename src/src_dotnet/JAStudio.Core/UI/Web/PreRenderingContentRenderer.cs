@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Compze.Utilities.SystemCE.ThreadingCE.TasksCE;
 using JAStudio.Core.Note;
 using JAStudio.Core.SysUtils;
 
@@ -45,7 +46,7 @@ public class PreRenderingContentRenderer<TNote> where TNote : JPNote
     {
         _tasks = _renderMethods.ToDictionary(
             kv => kv.Key,
-            kv => Task.Run(() => RenderWithTiming(kv.Value, note, kv.Key))
+            kv => TaskCE.Run(() => RenderWithTiming(kv.Value, note, kv.Key))
         );
     }
 

@@ -94,7 +94,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
          note.UpdateGeneratedData();
       }
 
-      _monitor.Update(() => RefreshInCacheCore(note));
+      _monitor.Read(() => RefreshInCacheCore(note));
       NotifyUpdateListeners(note);
    }
 
@@ -102,7 +102,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
    {
       var noteId = _noteServices.AnkiNoteIdMap.FromAnkiId(ankiNoteId);
       if(noteId == null) return;
-      _monitor.Update(() =>
+      _monitor.Read(() =>
       {
          var existing = WithIdOrNoneCore(noteId);
          if(existing != null)
@@ -119,7 +119,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
 
    public void JpNoteUpdated(TNote note)
    {
-      _monitor.Update(() =>
+      _monitor.Read(() =>
       {
          var existing = WithIdOrNoneCore(note.GetId());
          if(existing != null)
@@ -167,7 +167,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
    }
 
    /// <summary>Removes all notes and ID mappings from the cache. Subclasses must override ClearInheritorIndexes to clear their custom indexes.</summary>
-   public void Clear() => _monitor.Update(() =>
+   public void Clear() => _monitor.Read(() =>
    {
       _byId.Clear();
       ClearInheritorIndexes();
@@ -176,9 +176,9 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
    protected abstract void ClearInheritorIndexes();
 
    /// <summary>Locked entry point: acquires the write lock and calls AddToCacheCore.</summary>
-   public void AddToCache(TNote note) => _monitor.Update(() => AddToCacheCore(note));
+   public void AddToCache(TNote note) => _monitor.Read(() => AddToCacheCore(note));
    /// <summary>Locked entry point: acquires the write lock and calls RemoveFromCacheCore.</summary>
-   public void RemoveFromCache(TNote note) => _monitor.Update(() => RemoveFromCacheCore(note));
+   public void RemoveFromCache(TNote note) => _monitor.Read(() => RemoveFromCacheCore(note));
 
    /// <summary>Adds the note to all indexes. Must be called under the write lock.</summary>
    protected abstract void AddToCacheCore(TNote note);

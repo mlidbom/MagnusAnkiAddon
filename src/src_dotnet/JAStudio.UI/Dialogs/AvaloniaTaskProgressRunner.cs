@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using Compze.Utilities.Logging;
+using Compze.Utilities.SystemCE.ThreadingCE.TasksCE;
 using JAStudio.Core.TaskRunners;
 
 namespace JAStudio.UI.Dialogs;
@@ -31,7 +32,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
          _panel.SetIndeterminate(true);
       });
 
-      var task = Task.Run(action);
+      var task = TaskCE.Run(action);
 
       // Wait for completion, processing UI events
       while(!task.IsCompleted)
@@ -57,7 +58,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
          _panel.SetIndeterminate(true);
       });
 
-      return await Task.Run(action);
+      return await TaskCE.Run(action);
    }
 
    public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
@@ -149,7 +150,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
          _panel.SetProgress(0, totalItems);
       });
 
-      return await Task.Run(() =>
+      return await TaskCE.Run(() =>
       {
          using var _ = this.Log().Info().LogMethodExecutionTime($"{message} handled {items.Count} items ({threads.Threads} threads)");
          var results = new TOutput[totalItems];
