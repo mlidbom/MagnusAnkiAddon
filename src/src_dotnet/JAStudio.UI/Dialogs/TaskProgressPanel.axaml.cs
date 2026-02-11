@@ -47,6 +47,28 @@ public partial class TaskProgressPanel : UserControl
             bar.Maximum = total;
             bar.Value = current;
         }
+
+        UpdateStatsLabel(current, total, null, null, null);
+    }
+
+    public void SetTimeStats(string elapsed, string remaining, string estimatedTotal)
+    {
+        var bar = this.FindControl<ProgressBar>("ProgressBar");
+        var current = bar != null ? (int)bar.Value : 0;
+        var total = bar != null ? (int)bar.Maximum : 0;
+        UpdateStatsLabel(current, total, elapsed, remaining, estimatedTotal);
+    }
+
+    void UpdateStatsLabel(int current, int total, string? elapsed, string? remaining, string? estimatedTotal)
+    {
+        var label = this.FindControl<TextBlock>("StatsLabel");
+        if (label == null) return;
+
+        var parts = new System.Collections.Generic.List<string> { $"{current}/{total}" };
+        if (elapsed != null) parts.Add($"elapsed: {elapsed}");
+        if (remaining != null) parts.Add($"remaining: {remaining}");
+        if (estimatedTotal != null) parts.Add($"est: {estimatedTotal}");
+        label.Text = string.Join("  \u2022  ", parts);
     }
 
     public void ShowCancelButton(bool show)

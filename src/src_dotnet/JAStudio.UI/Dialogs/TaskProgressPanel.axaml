@@ -5,12 +5,21 @@
              mc:Ignorable="d" d:DesignWidth="560" d:DesignHeight="80"
              x:Class="JAStudio.UI.Dialogs.TaskProgressPanel">
 
-    <StackPanel Margin="0,2" Spacing="2">
-        <!-- Message Label -->
-        <TextBlock x:Name="MessageLabel"
-                   Text="Processing..."
-                   TextWrapping="Wrap"
-                   FontSize="12"/>
+    <StackPanel Margin="0,2" Spacing="1">
+        <!-- Message + stats on same line -->
+        <DockPanel>
+            <TextBlock x:Name="StatsLabel"
+                       DockPanel.Dock="Right"
+                       Text=""
+                       FontSize="11"
+                       Foreground="#AAAAAA"
+                       VerticalAlignment="Center"
+                       Margin="10,0,0,0"/>
+            <TextBlock x:Name="MessageLabel"
+                       Text="Processing..."
+                       TextTrimming="CharacterEllipsis"
+                       FontSize="12"/>
+        </DockPanel>
 
         <!-- Progress Bar + Cancel Button -->
         <DockPanel>

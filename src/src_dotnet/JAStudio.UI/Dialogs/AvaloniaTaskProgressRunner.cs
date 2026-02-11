@@ -74,7 +74,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
 
       Dispatcher.UIThread.Invoke(() =>
       {
-         _panel.SetMessage($"{message} 0 of {totalItems}");
+         _panel.SetMessage(message);
          _panel.SetIndeterminate(false);
          _panel.SetProgress(0, totalItems);
       });
@@ -93,23 +93,22 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
             var elapsed = current > 0 ? (now - startTime).TotalSeconds : 0;
             var estimatedTotal = current > 0 ? (elapsed / current) * totalItems : 0;
             var estimatedRemaining = current > 0 ? estimatedTotal - elapsed : 0;
-            var progressMessage = current > 0
-                                     ? $"{message} {current} of {totalItems} Total: {FormatSeconds(estimatedTotal)} Elapsed: {FormatSeconds(elapsed)} Remaining: {FormatSeconds(estimatedRemaining)}"
-                                     : $"{message} {current} of {totalItems}";
 
             var capturedCurrent = current;
-            var capturedMsg = progressMessage;
+            var capturedElapsed = FormatSeconds(elapsed);
+            var capturedRemaining = FormatSeconds(estimatedRemaining);
+            var capturedTotal = FormatSeconds(estimatedTotal);
             if(Dispatcher.UIThread.CheckAccess())
             {
                _panel.SetProgress(capturedCurrent, totalItems);
-               _panel.SetMessage(capturedMsg);
+               _panel.SetTimeStats(capturedElapsed, capturedRemaining, capturedTotal);
                Dispatcher.UIThread.RunJobs();
             } else
             {
                Dispatcher.UIThread.Post(() =>
                {
                   _panel.SetProgress(capturedCurrent, totalItems);
-                  _panel.SetMessage(capturedMsg);
+                  _panel.SetTimeStats(capturedElapsed, capturedRemaining, capturedTotal);
                });
             }
          }
@@ -150,7 +149,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
 
       Dispatcher.UIThread.Post(() =>
       {
-         _panel.SetMessage($"{message} 0 of {totalItems}");
+         _panel.SetMessage(message);
          _panel.SetIndeterminate(false);
          _panel.SetProgress(0, totalItems);
       });
@@ -173,16 +172,15 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
                var elapsed = current > 0 ? (now - startTime).TotalSeconds : 0;
                var estimatedTotal = current > 0 ? (elapsed / current) * totalItems : 0;
                var estimatedRemaining = current > 0 ? estimatedTotal - elapsed : 0;
-               var progressMessage = current > 0
-                                        ? $"{message} {current} of {totalItems} Total: {FormatSeconds(estimatedTotal)} Elapsed: {FormatSeconds(elapsed)} Remaining: {FormatSeconds(estimatedRemaining)}"
-                                        : $"{message} {current} of {totalItems}";
 
                var capturedCurrent = current;
-               var capturedMsg = progressMessage;
+               var capturedElapsed = FormatSeconds(elapsed);
+               var capturedRemaining = FormatSeconds(estimatedRemaining);
+               var capturedTotal = FormatSeconds(estimatedTotal);
                Dispatcher.UIThread.Post(() =>
                {
                   _panel.SetProgress(capturedCurrent, totalItems);
-                  _panel.SetMessage(capturedMsg);
+                  _panel.SetTimeStats(capturedElapsed, capturedRemaining, capturedTotal);
                });
             }
          }
