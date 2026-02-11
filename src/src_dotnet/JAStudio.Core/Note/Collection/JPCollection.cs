@@ -121,7 +121,7 @@ public class JPCollection
                                              .GroupBy(s => s.AnkiNoteId)
                                              .ToDictionary(g => g.Key, g => g.ToList());
 
-      runner.RunOnBackgroundThreadWithSpinningProgressDialog("Setting studying statuses",
+      runner.RunIndeterminate("Setting studying statuses",
                                                              () =>
                                                              {
                                                                 Vocab.Cache.SetStudyingStatuses(vocabStatuses);
@@ -141,9 +141,9 @@ public class JPCollection
       using var runner = NoteServices.TaskRunner.Current($"Populating caches from {NoteRepositoryType}");
 
       Task.WaitAll(
-         runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Pushing kanji notes into cache", () => Kanji.Cache.AddAllToCache(allNotes.Kanji)),
-         runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Pushing vocab notes into cache", () => Vocab.Cache.AddAllToCache(allNotes.Vocab)),
-         runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Pushing sentence notes into cache", () => Sentences.Cache.AddAllToCache(allNotes.Sentences)));
+         runner.RunIndeterminateAsync("Pushing kanji notes into cache", () => Kanji.Cache.AddAllToCache(allNotes.Kanji)),
+         runner.RunIndeterminateAsync("Pushing vocab notes into cache", () => Vocab.Cache.AddAllToCache(allNotes.Vocab)),
+         runner.RunIndeterminateAsync("Pushing sentence notes into cache", () => Sentences.Cache.AddAllToCache(allNotes.Sentences)));
    }
 
    async Task<List<CardStudyingStatus>> LoadAnkiUserDataAsync()
@@ -154,8 +154,8 @@ public class JPCollection
 
       using var runner = NoteServices.TaskRunner.Current("Loading user data from Anki");
 
-      var ankiIdMapTask = runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Loading Anki ID mappings", () => NoteBulkLoader.LoadAnkiIdMaps(dbPath));
-      var studyingStatusesTask = runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Fetching studying statuses from Anki", () => CardStudyingStatusLoader.FetchAll(dbPath));
+      var ankiIdMapTask = runner.RunIndeterminateAsync("Loading Anki ID mappings", () => NoteBulkLoader.LoadAnkiIdMaps(dbPath));
+      var studyingStatusesTask = runner.RunIndeterminateAsync("Fetching studying statuses from Anki", () => CardStudyingStatusLoader.FetchAll(dbPath));
 
       Task.WaitAll(ankiIdMapTask, studyingStatusesTask);
 

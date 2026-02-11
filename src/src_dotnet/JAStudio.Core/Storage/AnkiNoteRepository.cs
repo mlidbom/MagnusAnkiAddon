@@ -23,14 +23,14 @@ public class AnkiNoteRepository : INoteRepository
 
       using var scope = _noteServices.TaskRunner.Current("Loading notes from Anki database");
 
-      var vocabBulk = scope.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Loading vocab from Anki", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Vocab, g => new VocabId(g)));
-      var kanjiBulk = scope.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Loading kanji from Anki", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Kanji, g => new KanjiId(g)));
-      var sentenceBulk = scope.RunOnBackgroundThreadWithSpinningProgressDialogAsync("Loading sentences from Anki", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Sentence, g => new SentenceId(g)));
+      var vocabBulk = scope.RunIndeterminateAsync("Loading vocab from Anki", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Vocab, g => new VocabId(g)));
+      var kanjiBulk = scope.RunIndeterminateAsync("Loading kanji from Anki", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Kanji, g => new KanjiId(g)));
+      var sentenceBulk = scope.RunIndeterminateAsync("Loading sentences from Anki", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Sentence, g => new SentenceId(g)));
 
       // ReSharper disable AccessToDisposedClosure
-      var vocab = TaskCE.Run(() => scope.ProcessWithProgress(vocabBulk.Result.Notes, nd => new VocabNote(_noteServices, nd), "Creating vocab notes from anki"));
-      var kanji = TaskCE.Run(() => scope.ProcessWithProgress(kanjiBulk.Result.Notes, nd => new KanjiNote(_noteServices, nd), "Creating kanji notes from anki"));
-      var sentences = TaskCE.Run(() => scope.ProcessWithProgress(sentenceBulk.Result.Notes, nd => new SentenceNote(_noteServices, nd), "Creating sentence notes from anki"));
+      var vocab = TaskCE.Run(() => scope.RunBatch(vocabBulk.Result.Notes, nd => new VocabNote(_noteServices, nd), "Creating vocab notes from anki"));
+      var kanji = TaskCE.Run(() => scope.RunBatch(kanjiBulk.Result.Notes, nd => new KanjiNote(_noteServices, nd), "Creating kanji notes from anki"));
+      var sentences = TaskCE.Run(() => scope.RunBatch(sentenceBulk.Result.Notes, nd => new SentenceNote(_noteServices, nd), "Creating sentence notes from anki"));
       // ReSharper restore AccessToDisposedClosure
 
       return new AllNotesData(kanji.Result, vocab.Result, sentences.Result);

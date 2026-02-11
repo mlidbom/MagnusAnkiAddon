@@ -7,21 +7,21 @@ namespace JAStudio.Core.TaskRunners;
 
 public interface ITaskProgressRunner : IDisposable
 {
-   void ProcessWithProgress<TInput>(List<TInput> items, Action<TInput> processItem, string message) => ProcessWithProgress(items, processItem.AsFunc(), message, ThreadCount.One);
-   void ProcessWithProgress<TInput>(List<TInput> items, Action<TInput> processItem, string message, ThreadCount threads) => ProcessWithProgress(items, processItem.AsFunc(), message, threads);
-   public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message) => ProcessWithProgress(items, processItem, message, ThreadCount.One);
-   List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads);
+   void RunBatch<TInput>(List<TInput> items, Action<TInput> processItem, string message) => RunBatch(items, processItem.AsFunc(), message, ThreadCount.One);
+   void RunBatch<TInput>(List<TInput> items, Action<TInput> processItem, string message, ThreadCount threads) => RunBatch(items, processItem.AsFunc(), message, threads);
+   public List<TOutput> RunBatch<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message) => RunBatch(items, processItem, message, ThreadCount.One);
+   List<TOutput> RunBatch<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads);
 
-   Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message) => ProcessWithProgressAsync(items, processItem, message, ThreadCount.One);
-   Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threadCount);
+   Task<List<TOutput>> RunBatchAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message) => RunBatchAsync(items, processItem, message, ThreadCount.One);
+   Task<List<TOutput>> RunBatchAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threadCount);
 
-   Task ProcessWithProgressAsync<TInput>(List<TInput> items, Action<TInput> processItem, string message) => ProcessWithProgressAsync(items, processItem.AsFunc(), message, ThreadCount.One);
-   Task ProcessWithProgressAsync<TInput>(List<TInput> items, Action<TInput> processItem, string message, ThreadCount threadCount) => ProcessWithProgressAsync(items, processItem.AsFunc(), message, threadCount);
+   Task RunBatchAsync<TInput>(List<TInput> items, Action<TInput> processItem, string message) => RunBatchAsync(items, processItem.AsFunc(), message, ThreadCount.One);
+   Task RunBatchAsync<TInput>(List<TInput> items, Action<TInput> processItem, string message, ThreadCount threadCount) => RunBatchAsync(items, processItem.AsFunc(), message, threadCount);
 
-   void RunOnBackgroundThreadWithSpinningProgressDialog(string message, Action action) => RunOnBackgroundThreadWithSpinningProgressDialog(message, action.AsFunc());
-   TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action);
-   Task<TResult> RunOnBackgroundThreadWithSpinningProgressDialogAsync<TResult>(string message, Func<TResult> action);
-   Task RunOnBackgroundThreadWithSpinningProgressDialogAsync(string message, Action action) => RunOnBackgroundThreadWithSpinningProgressDialogAsync(message, action.AsFunc());
+   void RunIndeterminate(string message, Action action) => RunIndeterminate(message, action.AsFunc());
+   TResult RunIndeterminate<TResult>(string message, Func<TResult> action);
+   Task<TResult> RunIndeterminateAsync<TResult>(string message, Func<TResult> action);
+   Task RunIndeterminateAsync(string message, Action action) => RunIndeterminateAsync(message, action.AsFunc());
 
    void SetLabelText(string text);
    bool IsHidden();

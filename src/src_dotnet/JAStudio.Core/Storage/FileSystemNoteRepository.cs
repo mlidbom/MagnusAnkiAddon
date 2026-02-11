@@ -53,9 +53,9 @@ public class FileSystemNoteRepository : INoteRepository
    {
       var threads = ThreadCount.HalfLogicalCores;
       using var scope = _taskRunner.Current("Writing all notes to file system repository");
-      scope.ProcessWithProgress(data.Kanji, Save, "Saving kanji notes", threads);
-      scope.ProcessWithProgress(data.Vocab, Save, "Saving vocab notes", threads);
-      scope.ProcessWithProgress(data.Sentences, Save, "Saving sentence notes", threads);
+      scope.RunBatch(data.Kanji, Save, "Saving kanji notes", threads);
+      scope.RunBatch(data.Vocab, Save, "Saving vocab notes", threads);
+      scope.RunBatch(data.Sentences, Save, "Saving sentence notes", threads);
    }
 
    /// <summary>
@@ -65,7 +65,7 @@ public class FileSystemNoteRepository : INoteRepository
    public NoteFilesByType ScanFiles()
    {
       using var scope = _taskRunner.Current("Scanning note files");
-      return scope.RunOnBackgroundThreadWithSpinningProgressDialog("Scanning note files", ScanAllNoteFiles);
+      return scope.RunIndeterminate("Scanning note files", ScanAllNoteFiles);
    }
 
    public AllNotesData LoadAll()
@@ -73,9 +73,9 @@ public class FileSystemNoteRepository : INoteRepository
       var filesByType = ScanFiles();
 
       using var scope = _taskRunner.Current("Loading notes from file system");
-      var kanji = scope.ProcessWithProgressAsync(filesByType.Kanji, path => _serializer.DeserializeKanji(File.ReadAllText(path)), "Loading kanji notes", ThreadCount.One);
-      var vocab = scope.ProcessWithProgressAsync(filesByType.Vocab, path => _serializer.DeserializeVocab(File.ReadAllText(path)), "Loading vocab notes", ThreadCount.FractionOfLogicalCores(0.3));
-      var sentences = scope.ProcessWithProgressAsync(filesByType.Sentences, path => _serializer.DeserializeSentence(File.ReadAllText(path)), "Loading sentence notes", ThreadCount.FractionOfLogicalCores(0.5));
+      var kanji = scope.RunBatchAsync(filesByType.Kanji, path => _serializer.DeserializeKanji(File.ReadAllText(path)), "Loading kanji notes", ThreadCount.One);
+      var vocab = scope.RunBatchAsync(filesByType.Vocab, path => _serializer.DeserializeVocab(File.ReadAllText(path)), "Loading vocab notes", ThreadCount.FractionOfLogicalCores(0.3));
+      var sentences = scope.RunBatchAsync(filesByType.Sentences, path => _serializer.DeserializeSentence(File.ReadAllText(path)), "Loading sentence notes", ThreadCount.FractionOfLogicalCores(0.5));
 
       return new AllNotesData(kanji.Result, vocab.Result, sentences.Result);
    }

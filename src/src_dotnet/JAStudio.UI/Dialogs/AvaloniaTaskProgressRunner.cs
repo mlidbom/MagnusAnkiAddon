@@ -49,7 +49,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
       if(_viewModel != null) _viewModel.Message = text;
    }
 
-   public TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action)
+   public TResult RunIndeterminate<TResult>(string message, Func<TResult> action)
    {
       using var _ = this.Log().Info().LogMethodExecutionTime(message);
       var vm = EnsureSpinnerViewModel();
@@ -71,7 +71,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
       return task.Result;
    }
 
-   public async Task<TResult> RunOnBackgroundThreadWithSpinningProgressDialogAsync<TResult>(string message, Func<TResult> action)
+   public async Task<TResult> RunIndeterminateAsync<TResult>(string message, Func<TResult> action)
    {
       using var _ = this.Log().Info().LogMethodExecutionTime(message);
       var vm = EnsureSpinnerViewModel();
@@ -80,7 +80,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
       return await TaskCE.Run(action);
    }
 
-   public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
+   public List<TOutput> RunBatch<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
    {
       var totalItems = items.Count;
       var results = new TOutput[totalItems];
@@ -140,8 +140,8 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
       return new List<TOutput>(results);
    }
 
-   public async Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads) =>
-      await TaskCE.Run(() => ProcessWithProgress(items, processItem, message, threads));
+   public async Task<List<TOutput>> RunBatchAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads) =>
+      await TaskCE.Run(() => RunBatch(items, processItem, message, threads));
 
    public void Close()
    {

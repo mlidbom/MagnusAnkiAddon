@@ -14,7 +14,7 @@ public class InvisibleTaskRunner : ITaskProgressRunner
       this.Log().Debug($"##--InvisibleTaskRunner--## Created for {labelText}");
    }
 
-   public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
+   public List<TOutput> RunBatch<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
    {
       var watch = Stopwatch.StartNew();
 
@@ -42,14 +42,14 @@ public class InvisibleTaskRunner : ITaskProgressRunner
       }
    }
 
-   public Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads) =>
-      TaskCE.Run(() => ProcessWithProgress(items, processItem, message, threads));
+   public Task<List<TOutput>> RunBatchAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads) =>
+      TaskCE.Run(() => RunBatch(items, processItem, message, threads));
 
    public void SetLabelText(string labelText) { }
 
    public void Close() { }
 
-   public TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action)
+   public TResult RunIndeterminate<TResult>(string message, Func<TResult> action)
    {
       var watch = Stopwatch.StartNew();
       var result = action();
@@ -58,8 +58,8 @@ public class InvisibleTaskRunner : ITaskProgressRunner
       return result;
    }
 
-   public Task<TResult> RunOnBackgroundThreadWithSpinningProgressDialogAsync<TResult>(string message, Func<TResult> action) =>
-      TaskCE.Run(() => RunOnBackgroundThreadWithSpinningProgressDialog(message, action));
+   public Task<TResult> RunIndeterminateAsync<TResult>(string message, Func<TResult> action) =>
+      TaskCE.Run(() => RunIndeterminate(message, action));
 
    public bool IsHidden() => true;
 

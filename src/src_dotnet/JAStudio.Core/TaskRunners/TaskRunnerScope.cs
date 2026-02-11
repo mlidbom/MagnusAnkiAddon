@@ -36,28 +36,28 @@ public class TaskRunnerScope : ITaskProgressRunner
 
    ITaskProgressRunner CreateRunner(string message) => _taskRunner.Create(_scopePanel, message, _visible, _allowCancel);
 
-   public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
+   public List<TOutput> RunBatch<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
    {
       using var runner = CreateRunner(message);
-      return runner.ProcessWithProgress(items, processItem, message, threads);
+      return runner.RunBatch(items, processItem, message, threads);
    }
 
-   public TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action)
+   public TResult RunIndeterminate<TResult>(string message, Func<TResult> action)
    {
       using var runner = CreateRunner(message);
-      return runner.RunOnBackgroundThreadWithSpinningProgressDialog(message, action);
+      return runner.RunIndeterminate(message, action);
    }
 
-   public async Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threadCount)
+   public async Task<List<TOutput>> RunBatchAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threadCount)
    {
       using var runner = CreateRunner(message);
-      return await runner.ProcessWithProgressAsync(items, processItem, message, threadCount);
+      return await runner.RunBatchAsync(items, processItem, message, threadCount);
    }
 
-   public async Task<TResult> RunOnBackgroundThreadWithSpinningProgressDialogAsync<TResult>(string message, Func<TResult> action)
+   public async Task<TResult> RunIndeterminateAsync<TResult>(string message, Func<TResult> action)
    {
       using var runner = CreateRunner(message);
-      return await runner.RunOnBackgroundThreadWithSpinningProgressDialogAsync(message, action);
+      return await runner.RunIndeterminateAsync(message, action);
    }
 
    public void SetLabelText(string text)

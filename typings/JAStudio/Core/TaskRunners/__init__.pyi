@@ -40,56 +40,56 @@ class InvisibleTaskRunner(ITaskProgressRunner):
     def Dispose(self) -> None: ...
     def IsHidden(self) -> bool: ...
     def SetLabelText(self, labelText: str) -> None: ...
-    # Skipped ProcessWithProgress due to it being static, abstract and generic.
+    # Skipped RunBatch due to it being static, abstract and generic.
 
-    ProcessWithProgress : ProcessWithProgress_MethodGroup
-    class ProcessWithProgress_MethodGroup:
-        def __getitem__(self, t:typing.Tuple[typing.Type[ProcessWithProgress_2_T1], typing.Type[ProcessWithProgress_2_T2]]) -> ProcessWithProgress_2[ProcessWithProgress_2_T1, ProcessWithProgress_2_T2]: ...
+    RunBatch : RunBatch_MethodGroup
+    class RunBatch_MethodGroup:
+        def __getitem__(self, t:typing.Tuple[typing.Type[RunBatch_2_T1], typing.Type[RunBatch_2_T2]]) -> RunBatch_2[RunBatch_2_T1, RunBatch_2_T2]: ...
 
-        ProcessWithProgress_2_T1 = typing.TypeVar('ProcessWithProgress_2_T1')
-        ProcessWithProgress_2_T2 = typing.TypeVar('ProcessWithProgress_2_T2')
-        class ProcessWithProgress_2(typing.Generic[ProcessWithProgress_2_T1, ProcessWithProgress_2_T2]):
-            ProcessWithProgress_2_TInput = InvisibleTaskRunner.ProcessWithProgress_MethodGroup.ProcessWithProgress_2_T1
-            ProcessWithProgress_2_TOutput = InvisibleTaskRunner.ProcessWithProgress_MethodGroup.ProcessWithProgress_2_T2
-            def __call__(self, items: List_1[ProcessWithProgress_2_TInput], processItem: Func_2[ProcessWithProgress_2_TInput, ProcessWithProgress_2_TOutput], message: str, threads: ThreadCount) -> List_1[ProcessWithProgress_2_TOutput]:...
-
-
-    # Skipped ProcessWithProgressAsync due to it being static, abstract and generic.
-
-    ProcessWithProgressAsync : ProcessWithProgressAsync_MethodGroup
-    class ProcessWithProgressAsync_MethodGroup:
-        def __getitem__(self, t:typing.Tuple[typing.Type[ProcessWithProgressAsync_2_T1], typing.Type[ProcessWithProgressAsync_2_T2]]) -> ProcessWithProgressAsync_2[ProcessWithProgressAsync_2_T1, ProcessWithProgressAsync_2_T2]: ...
-
-        ProcessWithProgressAsync_2_T1 = typing.TypeVar('ProcessWithProgressAsync_2_T1')
-        ProcessWithProgressAsync_2_T2 = typing.TypeVar('ProcessWithProgressAsync_2_T2')
-        class ProcessWithProgressAsync_2(typing.Generic[ProcessWithProgressAsync_2_T1, ProcessWithProgressAsync_2_T2]):
-            ProcessWithProgressAsync_2_TInput = InvisibleTaskRunner.ProcessWithProgressAsync_MethodGroup.ProcessWithProgressAsync_2_T1
-            ProcessWithProgressAsync_2_TOutput = InvisibleTaskRunner.ProcessWithProgressAsync_MethodGroup.ProcessWithProgressAsync_2_T2
-            def __call__(self, items: List_1[ProcessWithProgressAsync_2_TInput], processItem: Func_2[ProcessWithProgressAsync_2_TInput, ProcessWithProgressAsync_2_TOutput], message: str, threads: ThreadCount) -> Task_1[List_1[ProcessWithProgressAsync_2_TOutput]]:...
+        RunBatch_2_T1 = typing.TypeVar('RunBatch_2_T1')
+        RunBatch_2_T2 = typing.TypeVar('RunBatch_2_T2')
+        class RunBatch_2(typing.Generic[RunBatch_2_T1, RunBatch_2_T2]):
+            RunBatch_2_TInput = InvisibleTaskRunner.RunBatch_MethodGroup.RunBatch_2_T1
+            RunBatch_2_TOutput = InvisibleTaskRunner.RunBatch_MethodGroup.RunBatch_2_T2
+            def __call__(self, items: List_1[RunBatch_2_TInput], processItem: Func_2[RunBatch_2_TInput, RunBatch_2_TOutput], message: str, threads: ThreadCount) -> List_1[RunBatch_2_TOutput]:...
 
 
-    # Skipped RunOnBackgroundThreadWithSpinningProgressDialog due to it being static, abstract and generic.
+    # Skipped RunBatchAsync due to it being static, abstract and generic.
 
-    RunOnBackgroundThreadWithSpinningProgressDialog : RunOnBackgroundThreadWithSpinningProgressDialog_MethodGroup
-    class RunOnBackgroundThreadWithSpinningProgressDialog_MethodGroup:
-        def __getitem__(self, t:typing.Type[RunOnBackgroundThreadWithSpinningProgressDialog_1_T1]) -> RunOnBackgroundThreadWithSpinningProgressDialog_1[RunOnBackgroundThreadWithSpinningProgressDialog_1_T1]: ...
+    RunBatchAsync : RunBatchAsync_MethodGroup
+    class RunBatchAsync_MethodGroup:
+        def __getitem__(self, t:typing.Tuple[typing.Type[RunBatchAsync_2_T1], typing.Type[RunBatchAsync_2_T2]]) -> RunBatchAsync_2[RunBatchAsync_2_T1, RunBatchAsync_2_T2]: ...
 
-        RunOnBackgroundThreadWithSpinningProgressDialog_1_T1 = typing.TypeVar('RunOnBackgroundThreadWithSpinningProgressDialog_1_T1')
-        class RunOnBackgroundThreadWithSpinningProgressDialog_1(typing.Generic[RunOnBackgroundThreadWithSpinningProgressDialog_1_T1]):
-            RunOnBackgroundThreadWithSpinningProgressDialog_1_TResult = InvisibleTaskRunner.RunOnBackgroundThreadWithSpinningProgressDialog_MethodGroup.RunOnBackgroundThreadWithSpinningProgressDialog_1_T1
-            def __call__(self, message: str, action: Func_1[RunOnBackgroundThreadWithSpinningProgressDialog_1_TResult]) -> RunOnBackgroundThreadWithSpinningProgressDialog_1_TResult:...
+        RunBatchAsync_2_T1 = typing.TypeVar('RunBatchAsync_2_T1')
+        RunBatchAsync_2_T2 = typing.TypeVar('RunBatchAsync_2_T2')
+        class RunBatchAsync_2(typing.Generic[RunBatchAsync_2_T1, RunBatchAsync_2_T2]):
+            RunBatchAsync_2_TInput = InvisibleTaskRunner.RunBatchAsync_MethodGroup.RunBatchAsync_2_T1
+            RunBatchAsync_2_TOutput = InvisibleTaskRunner.RunBatchAsync_MethodGroup.RunBatchAsync_2_T2
+            def __call__(self, items: List_1[RunBatchAsync_2_TInput], processItem: Func_2[RunBatchAsync_2_TInput, RunBatchAsync_2_TOutput], message: str, threads: ThreadCount) -> Task_1[List_1[RunBatchAsync_2_TOutput]]:...
 
 
-    # Skipped RunOnBackgroundThreadWithSpinningProgressDialogAsync due to it being static, abstract and generic.
+    # Skipped RunIndeterminate due to it being static, abstract and generic.
 
-    RunOnBackgroundThreadWithSpinningProgressDialogAsync : RunOnBackgroundThreadWithSpinningProgressDialogAsync_MethodGroup
-    class RunOnBackgroundThreadWithSpinningProgressDialogAsync_MethodGroup:
-        def __getitem__(self, t:typing.Type[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1]) -> RunOnBackgroundThreadWithSpinningProgressDialogAsync_1[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1]: ...
+    RunIndeterminate : RunIndeterminate_MethodGroup
+    class RunIndeterminate_MethodGroup:
+        def __getitem__(self, t:typing.Type[RunIndeterminate_1_T1]) -> RunIndeterminate_1[RunIndeterminate_1_T1]: ...
 
-        RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1 = typing.TypeVar('RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1')
-        class RunOnBackgroundThreadWithSpinningProgressDialogAsync_1(typing.Generic[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1]):
-            RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_TResult = InvisibleTaskRunner.RunOnBackgroundThreadWithSpinningProgressDialogAsync_MethodGroup.RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1
-            def __call__(self, message: str, action: Func_1[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_TResult]) -> Task_1[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_TResult]:...
+        RunIndeterminate_1_T1 = typing.TypeVar('RunIndeterminate_1_T1')
+        class RunIndeterminate_1(typing.Generic[RunIndeterminate_1_T1]):
+            RunIndeterminate_1_TResult = InvisibleTaskRunner.RunIndeterminate_MethodGroup.RunIndeterminate_1_T1
+            def __call__(self, message: str, action: Func_1[RunIndeterminate_1_TResult]) -> RunIndeterminate_1_TResult:...
+
+
+    # Skipped RunIndeterminateAsync due to it being static, abstract and generic.
+
+    RunIndeterminateAsync : RunIndeterminateAsync_MethodGroup
+    class RunIndeterminateAsync_MethodGroup:
+        def __getitem__(self, t:typing.Type[RunIndeterminateAsync_1_T1]) -> RunIndeterminateAsync_1[RunIndeterminateAsync_1_T1]: ...
+
+        RunIndeterminateAsync_1_T1 = typing.TypeVar('RunIndeterminateAsync_1_T1')
+        class RunIndeterminateAsync_1(typing.Generic[RunIndeterminateAsync_1_T1]):
+            RunIndeterminateAsync_1_TResult = InvisibleTaskRunner.RunIndeterminateAsync_MethodGroup.RunIndeterminateAsync_1_T1
+            def __call__(self, message: str, action: Func_1[RunIndeterminateAsync_1_TResult]) -> Task_1[RunIndeterminateAsync_1_TResult]:...
 
 
 
@@ -103,87 +103,87 @@ class ITaskProgressRunner(IDisposable, typing.Protocol):
     def IsHidden(self) -> bool: ...
     @abc.abstractmethod
     def SetLabelText(self, text: str) -> None: ...
-    # Skipped ProcessWithProgress due to it being static, abstract and generic.
+    # Skipped RunBatch due to it being static, abstract and generic.
 
-    ProcessWithProgress : ProcessWithProgress_MethodGroup
-    class ProcessWithProgress_MethodGroup:
+    RunBatch : RunBatch_MethodGroup
+    class RunBatch_MethodGroup:
         @typing.overload
-        def __getitem__(self, t:typing.Type[ProcessWithProgress_1_T1]) -> ProcessWithProgress_1[ProcessWithProgress_1_T1]: ...
+        def __getitem__(self, t:typing.Type[RunBatch_1_T1]) -> RunBatch_1[RunBatch_1_T1]: ...
 
-        ProcessWithProgress_1_T1 = typing.TypeVar('ProcessWithProgress_1_T1')
-        class ProcessWithProgress_1(typing.Generic[ProcessWithProgress_1_T1]):
-            ProcessWithProgress_1_TInput = ITaskProgressRunner.ProcessWithProgress_MethodGroup.ProcessWithProgress_1_T1
+        RunBatch_1_T1 = typing.TypeVar('RunBatch_1_T1')
+        class RunBatch_1(typing.Generic[RunBatch_1_T1]):
+            RunBatch_1_TInput = ITaskProgressRunner.RunBatch_MethodGroup.RunBatch_1_T1
             @typing.overload
-            def __call__(self, items: List_1[ProcessWithProgress_1_TInput], processItem: Action_1[ProcessWithProgress_1_TInput], message: str) -> None:...
+            def __call__(self, items: List_1[RunBatch_1_TInput], processItem: Action_1[RunBatch_1_TInput], message: str) -> None:...
             @typing.overload
-            def __call__(self, items: List_1[ProcessWithProgress_1_TInput], processItem: Action_1[ProcessWithProgress_1_TInput], message: str, threads: ThreadCount) -> None:...
-
-        @typing.overload
-        def __getitem__(self, t:typing.Tuple[typing.Type[ProcessWithProgress_2_T1], typing.Type[ProcessWithProgress_2_T2]]) -> ProcessWithProgress_2[ProcessWithProgress_2_T1, ProcessWithProgress_2_T2]: ...
-
-        ProcessWithProgress_2_T1 = typing.TypeVar('ProcessWithProgress_2_T1')
-        ProcessWithProgress_2_T2 = typing.TypeVar('ProcessWithProgress_2_T2')
-        class ProcessWithProgress_2(typing.Generic[ProcessWithProgress_2_T1, ProcessWithProgress_2_T2]):
-            ProcessWithProgress_2_TInput = ITaskProgressRunner.ProcessWithProgress_MethodGroup.ProcessWithProgress_2_T1
-            ProcessWithProgress_2_TOutput = ITaskProgressRunner.ProcessWithProgress_MethodGroup.ProcessWithProgress_2_T2
-            @typing.overload
-            def __call__(self, items: List_1[ProcessWithProgress_2_TInput], processItem: Func_2[ProcessWithProgress_2_TInput, ProcessWithProgress_2_TOutput], message: str) -> List_1[ProcessWithProgress_2_TOutput]:...
-            @typing.overload
-            def __call__(self, items: List_1[ProcessWithProgress_2_TInput], processItem: Func_2[ProcessWithProgress_2_TInput, ProcessWithProgress_2_TOutput], message: str, threads: ThreadCount) -> List_1[ProcessWithProgress_2_TOutput]:...
-
-
-    # Skipped ProcessWithProgressAsync due to it being static, abstract and generic.
-
-    ProcessWithProgressAsync : ProcessWithProgressAsync_MethodGroup
-    class ProcessWithProgressAsync_MethodGroup:
-        @typing.overload
-        def __getitem__(self, t:typing.Tuple[typing.Type[ProcessWithProgressAsync_2_T1], typing.Type[ProcessWithProgressAsync_2_T2]]) -> ProcessWithProgressAsync_2[ProcessWithProgressAsync_2_T1, ProcessWithProgressAsync_2_T2]: ...
-
-        ProcessWithProgressAsync_2_T1 = typing.TypeVar('ProcessWithProgressAsync_2_T1')
-        ProcessWithProgressAsync_2_T2 = typing.TypeVar('ProcessWithProgressAsync_2_T2')
-        class ProcessWithProgressAsync_2(typing.Generic[ProcessWithProgressAsync_2_T1, ProcessWithProgressAsync_2_T2]):
-            ProcessWithProgressAsync_2_TInput = ITaskProgressRunner.ProcessWithProgressAsync_MethodGroup.ProcessWithProgressAsync_2_T1
-            ProcessWithProgressAsync_2_TOutput = ITaskProgressRunner.ProcessWithProgressAsync_MethodGroup.ProcessWithProgressAsync_2_T2
-            @typing.overload
-            def __call__(self, items: List_1[ProcessWithProgressAsync_2_TInput], processItem: Func_2[ProcessWithProgressAsync_2_TInput, ProcessWithProgressAsync_2_TOutput], message: str) -> Task_1[List_1[ProcessWithProgressAsync_2_TOutput]]:...
-            @typing.overload
-            def __call__(self, items: List_1[ProcessWithProgressAsync_2_TInput], processItem: Func_2[ProcessWithProgressAsync_2_TInput, ProcessWithProgressAsync_2_TOutput], message: str, threadCount: ThreadCount) -> Task_1[List_1[ProcessWithProgressAsync_2_TOutput]]:...
+            def __call__(self, items: List_1[RunBatch_1_TInput], processItem: Action_1[RunBatch_1_TInput], message: str, threads: ThreadCount) -> None:...
 
         @typing.overload
-        def __getitem__(self, t:typing.Type[ProcessWithProgressAsync_1_T1]) -> ProcessWithProgressAsync_1[ProcessWithProgressAsync_1_T1]: ...
+        def __getitem__(self, t:typing.Tuple[typing.Type[RunBatch_2_T1], typing.Type[RunBatch_2_T2]]) -> RunBatch_2[RunBatch_2_T1, RunBatch_2_T2]: ...
 
-        ProcessWithProgressAsync_1_T1 = typing.TypeVar('ProcessWithProgressAsync_1_T1')
-        class ProcessWithProgressAsync_1(typing.Generic[ProcessWithProgressAsync_1_T1]):
-            ProcessWithProgressAsync_1_TInput = ITaskProgressRunner.ProcessWithProgressAsync_MethodGroup.ProcessWithProgressAsync_1_T1
+        RunBatch_2_T1 = typing.TypeVar('RunBatch_2_T1')
+        RunBatch_2_T2 = typing.TypeVar('RunBatch_2_T2')
+        class RunBatch_2(typing.Generic[RunBatch_2_T1, RunBatch_2_T2]):
+            RunBatch_2_TInput = ITaskProgressRunner.RunBatch_MethodGroup.RunBatch_2_T1
+            RunBatch_2_TOutput = ITaskProgressRunner.RunBatch_MethodGroup.RunBatch_2_T2
             @typing.overload
-            def __call__(self, items: List_1[ProcessWithProgressAsync_1_TInput], processItem: Action_1[ProcessWithProgressAsync_1_TInput], message: str) -> Task:...
+            def __call__(self, items: List_1[RunBatch_2_TInput], processItem: Func_2[RunBatch_2_TInput, RunBatch_2_TOutput], message: str) -> List_1[RunBatch_2_TOutput]:...
             @typing.overload
-            def __call__(self, items: List_1[ProcessWithProgressAsync_1_TInput], processItem: Action_1[ProcessWithProgressAsync_1_TInput], message: str, threadCount: ThreadCount) -> Task:...
+            def __call__(self, items: List_1[RunBatch_2_TInput], processItem: Func_2[RunBatch_2_TInput, RunBatch_2_TOutput], message: str, threads: ThreadCount) -> List_1[RunBatch_2_TOutput]:...
 
 
-    # Skipped RunOnBackgroundThreadWithSpinningProgressDialog due to it being static, abstract and generic.
+    # Skipped RunBatchAsync due to it being static, abstract and generic.
 
-    RunOnBackgroundThreadWithSpinningProgressDialog : RunOnBackgroundThreadWithSpinningProgressDialog_MethodGroup
-    class RunOnBackgroundThreadWithSpinningProgressDialog_MethodGroup:
-        def __getitem__(self, t:typing.Type[RunOnBackgroundThreadWithSpinningProgressDialog_1_T1]) -> RunOnBackgroundThreadWithSpinningProgressDialog_1[RunOnBackgroundThreadWithSpinningProgressDialog_1_T1]: ...
+    RunBatchAsync : RunBatchAsync_MethodGroup
+    class RunBatchAsync_MethodGroup:
+        @typing.overload
+        def __getitem__(self, t:typing.Tuple[typing.Type[RunBatchAsync_2_T1], typing.Type[RunBatchAsync_2_T2]]) -> RunBatchAsync_2[RunBatchAsync_2_T1, RunBatchAsync_2_T2]: ...
 
-        RunOnBackgroundThreadWithSpinningProgressDialog_1_T1 = typing.TypeVar('RunOnBackgroundThreadWithSpinningProgressDialog_1_T1')
-        class RunOnBackgroundThreadWithSpinningProgressDialog_1(typing.Generic[RunOnBackgroundThreadWithSpinningProgressDialog_1_T1]):
-            RunOnBackgroundThreadWithSpinningProgressDialog_1_TResult = ITaskProgressRunner.RunOnBackgroundThreadWithSpinningProgressDialog_MethodGroup.RunOnBackgroundThreadWithSpinningProgressDialog_1_T1
-            def __call__(self, message: str, action: Func_1[RunOnBackgroundThreadWithSpinningProgressDialog_1_TResult]) -> RunOnBackgroundThreadWithSpinningProgressDialog_1_TResult:...
+        RunBatchAsync_2_T1 = typing.TypeVar('RunBatchAsync_2_T1')
+        RunBatchAsync_2_T2 = typing.TypeVar('RunBatchAsync_2_T2')
+        class RunBatchAsync_2(typing.Generic[RunBatchAsync_2_T1, RunBatchAsync_2_T2]):
+            RunBatchAsync_2_TInput = ITaskProgressRunner.RunBatchAsync_MethodGroup.RunBatchAsync_2_T1
+            RunBatchAsync_2_TOutput = ITaskProgressRunner.RunBatchAsync_MethodGroup.RunBatchAsync_2_T2
+            @typing.overload
+            def __call__(self, items: List_1[RunBatchAsync_2_TInput], processItem: Func_2[RunBatchAsync_2_TInput, RunBatchAsync_2_TOutput], message: str) -> Task_1[List_1[RunBatchAsync_2_TOutput]]:...
+            @typing.overload
+            def __call__(self, items: List_1[RunBatchAsync_2_TInput], processItem: Func_2[RunBatchAsync_2_TInput, RunBatchAsync_2_TOutput], message: str, threadCount: ThreadCount) -> Task_1[List_1[RunBatchAsync_2_TOutput]]:...
+
+        @typing.overload
+        def __getitem__(self, t:typing.Type[RunBatchAsync_1_T1]) -> RunBatchAsync_1[RunBatchAsync_1_T1]: ...
+
+        RunBatchAsync_1_T1 = typing.TypeVar('RunBatchAsync_1_T1')
+        class RunBatchAsync_1(typing.Generic[RunBatchAsync_1_T1]):
+            RunBatchAsync_1_TInput = ITaskProgressRunner.RunBatchAsync_MethodGroup.RunBatchAsync_1_T1
+            @typing.overload
+            def __call__(self, items: List_1[RunBatchAsync_1_TInput], processItem: Action_1[RunBatchAsync_1_TInput], message: str) -> Task:...
+            @typing.overload
+            def __call__(self, items: List_1[RunBatchAsync_1_TInput], processItem: Action_1[RunBatchAsync_1_TInput], message: str, threadCount: ThreadCount) -> Task:...
+
+
+    # Skipped RunIndeterminate due to it being static, abstract and generic.
+
+    RunIndeterminate : RunIndeterminate_MethodGroup
+    class RunIndeterminate_MethodGroup:
+        def __getitem__(self, t:typing.Type[RunIndeterminate_1_T1]) -> RunIndeterminate_1[RunIndeterminate_1_T1]: ...
+
+        RunIndeterminate_1_T1 = typing.TypeVar('RunIndeterminate_1_T1')
+        class RunIndeterminate_1(typing.Generic[RunIndeterminate_1_T1]):
+            RunIndeterminate_1_TResult = ITaskProgressRunner.RunIndeterminate_MethodGroup.RunIndeterminate_1_T1
+            def __call__(self, message: str, action: Func_1[RunIndeterminate_1_TResult]) -> RunIndeterminate_1_TResult:...
 
         def __call__(self, message: str, action: Action) -> None:...
 
-    # Skipped RunOnBackgroundThreadWithSpinningProgressDialogAsync due to it being static, abstract and generic.
+    # Skipped RunIndeterminateAsync due to it being static, abstract and generic.
 
-    RunOnBackgroundThreadWithSpinningProgressDialogAsync : RunOnBackgroundThreadWithSpinningProgressDialogAsync_MethodGroup
-    class RunOnBackgroundThreadWithSpinningProgressDialogAsync_MethodGroup:
-        def __getitem__(self, t:typing.Type[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1]) -> RunOnBackgroundThreadWithSpinningProgressDialogAsync_1[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1]: ...
+    RunIndeterminateAsync : RunIndeterminateAsync_MethodGroup
+    class RunIndeterminateAsync_MethodGroup:
+        def __getitem__(self, t:typing.Type[RunIndeterminateAsync_1_T1]) -> RunIndeterminateAsync_1[RunIndeterminateAsync_1_T1]: ...
 
-        RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1 = typing.TypeVar('RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1')
-        class RunOnBackgroundThreadWithSpinningProgressDialogAsync_1(typing.Generic[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1]):
-            RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_TResult = ITaskProgressRunner.RunOnBackgroundThreadWithSpinningProgressDialogAsync_MethodGroup.RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1
-            def __call__(self, message: str, action: Func_1[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_TResult]) -> Task_1[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_TResult]:...
+        RunIndeterminateAsync_1_T1 = typing.TypeVar('RunIndeterminateAsync_1_T1')
+        class RunIndeterminateAsync_1(typing.Generic[RunIndeterminateAsync_1_T1]):
+            RunIndeterminateAsync_1_TResult = ITaskProgressRunner.RunIndeterminateAsync_MethodGroup.RunIndeterminateAsync_1_T1
+            def __call__(self, message: str, action: Func_1[RunIndeterminateAsync_1_TResult]) -> Task_1[RunIndeterminateAsync_1_TResult]:...
 
         def __call__(self, message: str, action: Action) -> Task:...
 
@@ -235,56 +235,56 @@ class TaskRunnerScope(ITaskProgressRunner):
     def Dispose(self) -> None: ...
     def IsHidden(self) -> bool: ...
     def SetLabelText(self, text: str) -> None: ...
-    # Skipped ProcessWithProgress due to it being static, abstract and generic.
+    # Skipped RunBatch due to it being static, abstract and generic.
 
-    ProcessWithProgress : ProcessWithProgress_MethodGroup
-    class ProcessWithProgress_MethodGroup:
-        def __getitem__(self, t:typing.Tuple[typing.Type[ProcessWithProgress_2_T1], typing.Type[ProcessWithProgress_2_T2]]) -> ProcessWithProgress_2[ProcessWithProgress_2_T1, ProcessWithProgress_2_T2]: ...
+    RunBatch : RunBatch_MethodGroup
+    class RunBatch_MethodGroup:
+        def __getitem__(self, t:typing.Tuple[typing.Type[RunBatch_2_T1], typing.Type[RunBatch_2_T2]]) -> RunBatch_2[RunBatch_2_T1, RunBatch_2_T2]: ...
 
-        ProcessWithProgress_2_T1 = typing.TypeVar('ProcessWithProgress_2_T1')
-        ProcessWithProgress_2_T2 = typing.TypeVar('ProcessWithProgress_2_T2')
-        class ProcessWithProgress_2(typing.Generic[ProcessWithProgress_2_T1, ProcessWithProgress_2_T2]):
-            ProcessWithProgress_2_TInput = TaskRunnerScope.ProcessWithProgress_MethodGroup.ProcessWithProgress_2_T1
-            ProcessWithProgress_2_TOutput = TaskRunnerScope.ProcessWithProgress_MethodGroup.ProcessWithProgress_2_T2
-            def __call__(self, items: List_1[ProcessWithProgress_2_TInput], processItem: Func_2[ProcessWithProgress_2_TInput, ProcessWithProgress_2_TOutput], message: str, threads: ThreadCount) -> List_1[ProcessWithProgress_2_TOutput]:...
-
-
-    # Skipped ProcessWithProgressAsync due to it being static, abstract and generic.
-
-    ProcessWithProgressAsync : ProcessWithProgressAsync_MethodGroup
-    class ProcessWithProgressAsync_MethodGroup:
-        def __getitem__(self, t:typing.Tuple[typing.Type[ProcessWithProgressAsync_2_T1], typing.Type[ProcessWithProgressAsync_2_T2]]) -> ProcessWithProgressAsync_2[ProcessWithProgressAsync_2_T1, ProcessWithProgressAsync_2_T2]: ...
-
-        ProcessWithProgressAsync_2_T1 = typing.TypeVar('ProcessWithProgressAsync_2_T1')
-        ProcessWithProgressAsync_2_T2 = typing.TypeVar('ProcessWithProgressAsync_2_T2')
-        class ProcessWithProgressAsync_2(typing.Generic[ProcessWithProgressAsync_2_T1, ProcessWithProgressAsync_2_T2]):
-            ProcessWithProgressAsync_2_TInput = TaskRunnerScope.ProcessWithProgressAsync_MethodGroup.ProcessWithProgressAsync_2_T1
-            ProcessWithProgressAsync_2_TOutput = TaskRunnerScope.ProcessWithProgressAsync_MethodGroup.ProcessWithProgressAsync_2_T2
-            def __call__(self, items: List_1[ProcessWithProgressAsync_2_TInput], processItem: Func_2[ProcessWithProgressAsync_2_TInput, ProcessWithProgressAsync_2_TOutput], message: str, threadCount: ThreadCount) -> Task_1[List_1[ProcessWithProgressAsync_2_TOutput]]:...
+        RunBatch_2_T1 = typing.TypeVar('RunBatch_2_T1')
+        RunBatch_2_T2 = typing.TypeVar('RunBatch_2_T2')
+        class RunBatch_2(typing.Generic[RunBatch_2_T1, RunBatch_2_T2]):
+            RunBatch_2_TInput = TaskRunnerScope.RunBatch_MethodGroup.RunBatch_2_T1
+            RunBatch_2_TOutput = TaskRunnerScope.RunBatch_MethodGroup.RunBatch_2_T2
+            def __call__(self, items: List_1[RunBatch_2_TInput], processItem: Func_2[RunBatch_2_TInput, RunBatch_2_TOutput], message: str, threads: ThreadCount) -> List_1[RunBatch_2_TOutput]:...
 
 
-    # Skipped RunOnBackgroundThreadWithSpinningProgressDialog due to it being static, abstract and generic.
+    # Skipped RunBatchAsync due to it being static, abstract and generic.
 
-    RunOnBackgroundThreadWithSpinningProgressDialog : RunOnBackgroundThreadWithSpinningProgressDialog_MethodGroup
-    class RunOnBackgroundThreadWithSpinningProgressDialog_MethodGroup:
-        def __getitem__(self, t:typing.Type[RunOnBackgroundThreadWithSpinningProgressDialog_1_T1]) -> RunOnBackgroundThreadWithSpinningProgressDialog_1[RunOnBackgroundThreadWithSpinningProgressDialog_1_T1]: ...
+    RunBatchAsync : RunBatchAsync_MethodGroup
+    class RunBatchAsync_MethodGroup:
+        def __getitem__(self, t:typing.Tuple[typing.Type[RunBatchAsync_2_T1], typing.Type[RunBatchAsync_2_T2]]) -> RunBatchAsync_2[RunBatchAsync_2_T1, RunBatchAsync_2_T2]: ...
 
-        RunOnBackgroundThreadWithSpinningProgressDialog_1_T1 = typing.TypeVar('RunOnBackgroundThreadWithSpinningProgressDialog_1_T1')
-        class RunOnBackgroundThreadWithSpinningProgressDialog_1(typing.Generic[RunOnBackgroundThreadWithSpinningProgressDialog_1_T1]):
-            RunOnBackgroundThreadWithSpinningProgressDialog_1_TResult = TaskRunnerScope.RunOnBackgroundThreadWithSpinningProgressDialog_MethodGroup.RunOnBackgroundThreadWithSpinningProgressDialog_1_T1
-            def __call__(self, message: str, action: Func_1[RunOnBackgroundThreadWithSpinningProgressDialog_1_TResult]) -> RunOnBackgroundThreadWithSpinningProgressDialog_1_TResult:...
+        RunBatchAsync_2_T1 = typing.TypeVar('RunBatchAsync_2_T1')
+        RunBatchAsync_2_T2 = typing.TypeVar('RunBatchAsync_2_T2')
+        class RunBatchAsync_2(typing.Generic[RunBatchAsync_2_T1, RunBatchAsync_2_T2]):
+            RunBatchAsync_2_TInput = TaskRunnerScope.RunBatchAsync_MethodGroup.RunBatchAsync_2_T1
+            RunBatchAsync_2_TOutput = TaskRunnerScope.RunBatchAsync_MethodGroup.RunBatchAsync_2_T2
+            def __call__(self, items: List_1[RunBatchAsync_2_TInput], processItem: Func_2[RunBatchAsync_2_TInput, RunBatchAsync_2_TOutput], message: str, threadCount: ThreadCount) -> Task_1[List_1[RunBatchAsync_2_TOutput]]:...
 
 
-    # Skipped RunOnBackgroundThreadWithSpinningProgressDialogAsync due to it being static, abstract and generic.
+    # Skipped RunIndeterminate due to it being static, abstract and generic.
 
-    RunOnBackgroundThreadWithSpinningProgressDialogAsync : RunOnBackgroundThreadWithSpinningProgressDialogAsync_MethodGroup
-    class RunOnBackgroundThreadWithSpinningProgressDialogAsync_MethodGroup:
-        def __getitem__(self, t:typing.Type[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1]) -> RunOnBackgroundThreadWithSpinningProgressDialogAsync_1[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1]: ...
+    RunIndeterminate : RunIndeterminate_MethodGroup
+    class RunIndeterminate_MethodGroup:
+        def __getitem__(self, t:typing.Type[RunIndeterminate_1_T1]) -> RunIndeterminate_1[RunIndeterminate_1_T1]: ...
 
-        RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1 = typing.TypeVar('RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1')
-        class RunOnBackgroundThreadWithSpinningProgressDialogAsync_1(typing.Generic[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1]):
-            RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_TResult = TaskRunnerScope.RunOnBackgroundThreadWithSpinningProgressDialogAsync_MethodGroup.RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1
-            def __call__(self, message: str, action: Func_1[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_TResult]) -> Task_1[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_TResult]:...
+        RunIndeterminate_1_T1 = typing.TypeVar('RunIndeterminate_1_T1')
+        class RunIndeterminate_1(typing.Generic[RunIndeterminate_1_T1]):
+            RunIndeterminate_1_TResult = TaskRunnerScope.RunIndeterminate_MethodGroup.RunIndeterminate_1_T1
+            def __call__(self, message: str, action: Func_1[RunIndeterminate_1_TResult]) -> RunIndeterminate_1_TResult:...
+
+
+    # Skipped RunIndeterminateAsync due to it being static, abstract and generic.
+
+    RunIndeterminateAsync : RunIndeterminateAsync_MethodGroup
+    class RunIndeterminateAsync_MethodGroup:
+        def __getitem__(self, t:typing.Type[RunIndeterminateAsync_1_T1]) -> RunIndeterminateAsync_1[RunIndeterminateAsync_1_T1]: ...
+
+        RunIndeterminateAsync_1_T1 = typing.TypeVar('RunIndeterminateAsync_1_T1')
+        class RunIndeterminateAsync_1(typing.Generic[RunIndeterminateAsync_1_T1]):
+            RunIndeterminateAsync_1_TResult = TaskRunnerScope.RunIndeterminateAsync_MethodGroup.RunIndeterminateAsync_1_T1
+            def __call__(self, message: str, action: Func_1[RunIndeterminateAsync_1_TResult]) -> Task_1[RunIndeterminateAsync_1_TResult]:...
 
 
 

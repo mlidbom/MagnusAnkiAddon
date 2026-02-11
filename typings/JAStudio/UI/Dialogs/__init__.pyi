@@ -34,56 +34,56 @@ class AvaloniaTaskProgressRunner(ITaskProgressRunner):
     def Dispose(self) -> None: ...
     def IsHidden(self) -> bool: ...
     def SetLabelText(self, text: str) -> None: ...
-    # Skipped ProcessWithProgress due to it being static, abstract and generic.
+    # Skipped RunBatch due to it being static, abstract and generic.
 
-    ProcessWithProgress : ProcessWithProgress_MethodGroup
-    class ProcessWithProgress_MethodGroup:
-        def __getitem__(self, t:typing.Tuple[typing.Type[ProcessWithProgress_2_T1], typing.Type[ProcessWithProgress_2_T2]]) -> ProcessWithProgress_2[ProcessWithProgress_2_T1, ProcessWithProgress_2_T2]: ...
+    RunBatch : RunBatch_MethodGroup
+    class RunBatch_MethodGroup:
+        def __getitem__(self, t:typing.Tuple[typing.Type[RunBatch_2_T1], typing.Type[RunBatch_2_T2]]) -> RunBatch_2[RunBatch_2_T1, RunBatch_2_T2]: ...
 
-        ProcessWithProgress_2_T1 = typing.TypeVar('ProcessWithProgress_2_T1')
-        ProcessWithProgress_2_T2 = typing.TypeVar('ProcessWithProgress_2_T2')
-        class ProcessWithProgress_2(typing.Generic[ProcessWithProgress_2_T1, ProcessWithProgress_2_T2]):
-            ProcessWithProgress_2_TInput = AvaloniaTaskProgressRunner.ProcessWithProgress_MethodGroup.ProcessWithProgress_2_T1
-            ProcessWithProgress_2_TOutput = AvaloniaTaskProgressRunner.ProcessWithProgress_MethodGroup.ProcessWithProgress_2_T2
-            def __call__(self, items: List_1[ProcessWithProgress_2_TInput], processItem: Func_2[ProcessWithProgress_2_TInput, ProcessWithProgress_2_TOutput], message: str, threads: ThreadCount) -> List_1[ProcessWithProgress_2_TOutput]:...
-
-
-    # Skipped ProcessWithProgressAsync due to it being static, abstract and generic.
-
-    ProcessWithProgressAsync : ProcessWithProgressAsync_MethodGroup
-    class ProcessWithProgressAsync_MethodGroup:
-        def __getitem__(self, t:typing.Tuple[typing.Type[ProcessWithProgressAsync_2_T1], typing.Type[ProcessWithProgressAsync_2_T2]]) -> ProcessWithProgressAsync_2[ProcessWithProgressAsync_2_T1, ProcessWithProgressAsync_2_T2]: ...
-
-        ProcessWithProgressAsync_2_T1 = typing.TypeVar('ProcessWithProgressAsync_2_T1')
-        ProcessWithProgressAsync_2_T2 = typing.TypeVar('ProcessWithProgressAsync_2_T2')
-        class ProcessWithProgressAsync_2(typing.Generic[ProcessWithProgressAsync_2_T1, ProcessWithProgressAsync_2_T2]):
-            ProcessWithProgressAsync_2_TInput = AvaloniaTaskProgressRunner.ProcessWithProgressAsync_MethodGroup.ProcessWithProgressAsync_2_T1
-            ProcessWithProgressAsync_2_TOutput = AvaloniaTaskProgressRunner.ProcessWithProgressAsync_MethodGroup.ProcessWithProgressAsync_2_T2
-            def __call__(self, items: List_1[ProcessWithProgressAsync_2_TInput], processItem: Func_2[ProcessWithProgressAsync_2_TInput, ProcessWithProgressAsync_2_TOutput], message: str, threads: ThreadCount) -> Task_1[List_1[ProcessWithProgressAsync_2_TOutput]]:...
+        RunBatch_2_T1 = typing.TypeVar('RunBatch_2_T1')
+        RunBatch_2_T2 = typing.TypeVar('RunBatch_2_T2')
+        class RunBatch_2(typing.Generic[RunBatch_2_T1, RunBatch_2_T2]):
+            RunBatch_2_TInput = AvaloniaTaskProgressRunner.RunBatch_MethodGroup.RunBatch_2_T1
+            RunBatch_2_TOutput = AvaloniaTaskProgressRunner.RunBatch_MethodGroup.RunBatch_2_T2
+            def __call__(self, items: List_1[RunBatch_2_TInput], processItem: Func_2[RunBatch_2_TInput, RunBatch_2_TOutput], message: str, threads: ThreadCount) -> List_1[RunBatch_2_TOutput]:...
 
 
-    # Skipped RunOnBackgroundThreadWithSpinningProgressDialog due to it being static, abstract and generic.
+    # Skipped RunBatchAsync due to it being static, abstract and generic.
 
-    RunOnBackgroundThreadWithSpinningProgressDialog : RunOnBackgroundThreadWithSpinningProgressDialog_MethodGroup
-    class RunOnBackgroundThreadWithSpinningProgressDialog_MethodGroup:
-        def __getitem__(self, t:typing.Type[RunOnBackgroundThreadWithSpinningProgressDialog_1_T1]) -> RunOnBackgroundThreadWithSpinningProgressDialog_1[RunOnBackgroundThreadWithSpinningProgressDialog_1_T1]: ...
+    RunBatchAsync : RunBatchAsync_MethodGroup
+    class RunBatchAsync_MethodGroup:
+        def __getitem__(self, t:typing.Tuple[typing.Type[RunBatchAsync_2_T1], typing.Type[RunBatchAsync_2_T2]]) -> RunBatchAsync_2[RunBatchAsync_2_T1, RunBatchAsync_2_T2]: ...
 
-        RunOnBackgroundThreadWithSpinningProgressDialog_1_T1 = typing.TypeVar('RunOnBackgroundThreadWithSpinningProgressDialog_1_T1')
-        class RunOnBackgroundThreadWithSpinningProgressDialog_1(typing.Generic[RunOnBackgroundThreadWithSpinningProgressDialog_1_T1]):
-            RunOnBackgroundThreadWithSpinningProgressDialog_1_TResult = AvaloniaTaskProgressRunner.RunOnBackgroundThreadWithSpinningProgressDialog_MethodGroup.RunOnBackgroundThreadWithSpinningProgressDialog_1_T1
-            def __call__(self, message: str, action: Func_1[RunOnBackgroundThreadWithSpinningProgressDialog_1_TResult]) -> RunOnBackgroundThreadWithSpinningProgressDialog_1_TResult:...
+        RunBatchAsync_2_T1 = typing.TypeVar('RunBatchAsync_2_T1')
+        RunBatchAsync_2_T2 = typing.TypeVar('RunBatchAsync_2_T2')
+        class RunBatchAsync_2(typing.Generic[RunBatchAsync_2_T1, RunBatchAsync_2_T2]):
+            RunBatchAsync_2_TInput = AvaloniaTaskProgressRunner.RunBatchAsync_MethodGroup.RunBatchAsync_2_T1
+            RunBatchAsync_2_TOutput = AvaloniaTaskProgressRunner.RunBatchAsync_MethodGroup.RunBatchAsync_2_T2
+            def __call__(self, items: List_1[RunBatchAsync_2_TInput], processItem: Func_2[RunBatchAsync_2_TInput, RunBatchAsync_2_TOutput], message: str, threads: ThreadCount) -> Task_1[List_1[RunBatchAsync_2_TOutput]]:...
 
 
-    # Skipped RunOnBackgroundThreadWithSpinningProgressDialogAsync due to it being static, abstract and generic.
+    # Skipped RunIndeterminate due to it being static, abstract and generic.
 
-    RunOnBackgroundThreadWithSpinningProgressDialogAsync : RunOnBackgroundThreadWithSpinningProgressDialogAsync_MethodGroup
-    class RunOnBackgroundThreadWithSpinningProgressDialogAsync_MethodGroup:
-        def __getitem__(self, t:typing.Type[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1]) -> RunOnBackgroundThreadWithSpinningProgressDialogAsync_1[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1]: ...
+    RunIndeterminate : RunIndeterminate_MethodGroup
+    class RunIndeterminate_MethodGroup:
+        def __getitem__(self, t:typing.Type[RunIndeterminate_1_T1]) -> RunIndeterminate_1[RunIndeterminate_1_T1]: ...
 
-        RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1 = typing.TypeVar('RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1')
-        class RunOnBackgroundThreadWithSpinningProgressDialogAsync_1(typing.Generic[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1]):
-            RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_TResult = AvaloniaTaskProgressRunner.RunOnBackgroundThreadWithSpinningProgressDialogAsync_MethodGroup.RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_T1
-            def __call__(self, message: str, action: Func_1[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_TResult]) -> Task_1[RunOnBackgroundThreadWithSpinningProgressDialogAsync_1_TResult]:...
+        RunIndeterminate_1_T1 = typing.TypeVar('RunIndeterminate_1_T1')
+        class RunIndeterminate_1(typing.Generic[RunIndeterminate_1_T1]):
+            RunIndeterminate_1_TResult = AvaloniaTaskProgressRunner.RunIndeterminate_MethodGroup.RunIndeterminate_1_T1
+            def __call__(self, message: str, action: Func_1[RunIndeterminate_1_TResult]) -> RunIndeterminate_1_TResult:...
+
+
+    # Skipped RunIndeterminateAsync due to it being static, abstract and generic.
+
+    RunIndeterminateAsync : RunIndeterminateAsync_MethodGroup
+    class RunIndeterminateAsync_MethodGroup:
+        def __getitem__(self, t:typing.Type[RunIndeterminateAsync_1_T1]) -> RunIndeterminateAsync_1[RunIndeterminateAsync_1_T1]: ...
+
+        RunIndeterminateAsync_1_T1 = typing.TypeVar('RunIndeterminateAsync_1_T1')
+        class RunIndeterminateAsync_1(typing.Generic[RunIndeterminateAsync_1_T1]):
+            RunIndeterminateAsync_1_TResult = AvaloniaTaskProgressRunner.RunIndeterminateAsync_MethodGroup.RunIndeterminateAsync_1_T1
+            def __call__(self, message: str, action: Func_1[RunIndeterminateAsync_1_TResult]) -> Task_1[RunIndeterminateAsync_1_TResult]:...
 
 
 

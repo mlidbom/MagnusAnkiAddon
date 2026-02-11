@@ -60,19 +60,19 @@ public class LocalNoteUpdater
    public void UpdateSentences()
    {
       using var scope = _taskRunner.Current("Updating sentences");
-      scope.ProcessWithProgress(_sentences.All().ToList(), it => { it.UpdateGeneratedData(); }, "Updating sentences");
+      scope.RunBatch(_sentences.All().ToList(), it => { it.UpdateGeneratedData(); }, "Updating sentences");
    }
 
    public void UpdateKanji()
    {
       using var scope = _taskRunner.Current("Updating kanji");
-      scope.ProcessWithProgress(_kanji.All().ToList(), it => { it.UpdateGeneratedData(); }, "Updating kanji");
+      scope.RunBatch(_kanji.All().ToList(), it => { it.UpdateGeneratedData(); }, "Updating kanji");
    }
 
    public void UpdateVocab()
    {
       using var scope = _taskRunner.Current("Updating vocab");
-      scope.ProcessWithProgress(_vocab.All().ToList(), it => { it.UpdateGeneratedData(); }, "Updating vocab");
+      scope.RunBatch(_vocab.All().ToList(), it => { it.UpdateGeneratedData(); }, "Updating vocab");
    }
 
    public void TagNoteMetadata()
@@ -94,7 +94,7 @@ public class LocalNoteUpdater
       }
 
       using var scope = _taskRunner.Current("Tagging sentence notes");
-      scope.ProcessWithProgress(_sentences.All().ToList(), it => { TagSentence(it); }, "Tagging sentence notes");
+      scope.RunBatch(_sentences.All().ToList(), it => { TagSentence(it); }, "Tagging sentence notes");
    }
 
    public void TagVocabMetadata()
@@ -109,7 +109,7 @@ public class LocalNoteUpdater
       }
 
       using var scope = _taskRunner.Current("Tagging vocab");
-      scope.ProcessWithProgress(_vocab.All().ToList(), it => { TagNote(it); }, "Tag vocab notes");
+      scope.RunBatch(_vocab.All().ToList(), it => { TagNote(it); }, "Tag vocab notes");
    }
 
    public void TagKanjiMetadata()
@@ -249,8 +249,8 @@ public class LocalNoteUpdater
 
       using var scope = _taskRunner.Current("Tagging kanji");
       var allKanji = _kanji.All().ToList();
-      scope.ProcessWithProgress(allKanji, it => { TagKanji(it); }, "Tagging kanji with studying metadata");
-      scope.ProcessWithProgress(allKanji, it => { TagHasSingleKanjiVocabWithReadingDifferentFromKanjiPrimaryReading(it); }, "Tagging kanji with single kanji vocab");
+      scope.RunBatch(allKanji, it => { TagKanji(it); }, "Tagging kanji with studying metadata");
+      scope.RunBatch(allKanji, it => { TagHasSingleKanjiVocabWithReadingDifferentFromKanjiPrimaryReading(it); }, "Tagging kanji with single kanji vocab");
    }
 
    public void ReparseAllSentences()
@@ -291,7 +291,7 @@ public class LocalNoteUpdater
       sentences = sentences.OrderBy(_ => random.Next()).ToList();
 
       using var runner = _taskRunner.Current("Reparse Sentences");
-      runner.ProcessWithProgress(sentences, it => { ReparseSentence(it); }, "Reanalysing sentences.",
+      runner.RunBatch(sentences, it => { ReparseSentence(it); }, "Reanalysing sentences.",
                                  threads: ThreadCount.WithThreads((int)_config.ReanalysisThreads.Value));
    }
 
@@ -300,7 +300,7 @@ public class LocalNoteUpdater
       vocab.UpdateGeneratedData();
       using var scope = _taskRunner.Current("Reanalysing sentences for vocab");
 
-      var sentences = scope.RunOnBackgroundThreadWithSpinningProgressDialog(
+      var sentences = scope.RunIndeterminate(
          "Fetching sentences to reparse",
          () => _sentences.PotentiallyMatchingVocab(vocab).ToHashSet());
 
@@ -318,7 +318,7 @@ public class LocalNoteUpdater
    {
       using var scope = _taskRunner.Current("Creating vocab notes for parsed words with no vocab notes");
 
-      var dictionaryWordsWithNoVocab = scope.RunOnBackgroundThreadWithSpinningProgressDialog(
+      var dictionaryWordsWithNoVocab = scope.RunIndeterminate(
          "Fetching parsed words with no vocab notes from parsing results",
          () => _sentences.All()
                          .SelectMany(sentence => sentence.ParsingResult.Get().ParsedWords
@@ -339,23 +339,23 @@ public class LocalNoteUpdater
          }
       }
 
-      scope.ProcessWithProgress(dictionaryWordsWithNoVocab, it => { CreateVocabIfNotAlreadyCreated(it); }, "Creating vocab notes");
+      scope.RunBatch(dictionaryWordsWithNoVocab, it => { CreateVocabIfNotAlreadyCreated(it); }, "Creating vocab notes");
    }
 
    public void RegenerateJamdictVocabAnswers()
    {
       using var scope = _taskRunner.Current("Regenerating vocab source answers from jamdict");
       var vocabNotes = _vocab.All().ToList();
-      scope.ProcessWithProgress(vocabNotes, it => { it.GenerateAndSetAnswer(); }, "Regenerating vocab source answers from jamdict");
+      scope.RunBatch(vocabNotes, it => { it.GenerateAndSetAnswer(); }, "Regenerating vocab source answers from jamdict");
    }
 
    public void ForceFlushAllNotes()
    {
       using var scope = _taskRunner.Current("Flushing all notes");
 
-      scope.ProcessWithProgress(_kanji.All().ToList(), it => { it.Flush(); }, "Flushing kanji notes");
-      scope.ProcessWithProgress(_vocab.All().ToList(), it => { it.Flush(); }, "Flushing vocab notes");
-      scope.ProcessWithProgress(_sentences.All().ToList(), it => { it.Flush(); }, "Flushing sentence notes");
+      scope.RunBatch(_kanji.All().ToList(), it => { it.Flush(); }, "Flushing kanji notes");
+      scope.RunBatch(_vocab.All().ToList(), it => { it.Flush(); }, "Flushing vocab notes");
+      scope.RunBatch(_sentences.All().ToList(), it => { it.Flush(); }, "Flushing sentence notes");
    }
 
    public void WriteFileSystemRepository()
