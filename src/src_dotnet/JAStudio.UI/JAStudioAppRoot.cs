@@ -10,6 +10,7 @@ using Compze.Utilities.Logging;
 using Compze.Utilities.SystemCE;
 using JAStudio.Core;
 using JAStudio.Core.Anki;
+using JAStudio.Core.TaskRunners;
 using JAStudio.PythonInterop;
 using JAStudio.UI.Dialogs;
 using JAStudio.UI.Menus;
@@ -89,14 +90,15 @@ public class JAStudioAppRoot
       // Set up task runner factories
       root.Services.TaskRunner.SetUiScopePanelFactory((scopeTitle, depth) =>
       {
-         var panel = Dispatcher.UIThread.Invoke(() => MultiTaskProgressDialog.CreateScopePanel(scopeTitle, depth));
-         return new AvaloniaScopePanel(panel);
+         var viewModel = new TaskProgressScopeViewModel(scopeTitle);
+         var panel = Dispatcher.UIThread.Invoke(() => MultiTaskProgressDialog.CreateScopePanel(viewModel, depth));
+         return new AvaloniaScopePanel(viewModel, panel);
       });
 
       root.Services.TaskRunner.SetUiTaskRunnerFactory((scopePanel, labelText, allowCancel) =>
       {
          var avaloniaScope = (AvaloniaScopePanel)scopePanel;
-         return new AvaloniaTaskProgressRunner(avaloniaScope.Panel, labelText, allowCancel);
+         return new AvaloniaTaskProgressRunner(avaloniaScope.ViewModel, labelText, allowCancel);
       });
 
       // Keep the progress dialog window open across nested task scopes

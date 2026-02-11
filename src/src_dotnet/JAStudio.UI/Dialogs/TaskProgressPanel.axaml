@@ -8,36 +8,32 @@
     <StackPanel Margin="0,2" Spacing="1">
         <!-- Message + stats on same line -->
         <DockPanel>
-            <TextBlock x:Name="StatsLabel"
-                       DockPanel.Dock="Right"
-                       Text=""
+            <TextBlock DockPanel.Dock="Right"
+                       Text="{Binding StatsText}"
                        FontSize="11"
                        Foreground="#AAAAAA"
                        VerticalAlignment="Center"
                        Margin="10,0,0,0"/>
-            <TextBlock x:Name="MessageLabel"
-                       Text="Processing..."
+            <TextBlock Text="{Binding Message}"
                        TextTrimming="CharacterEllipsis"
                        FontSize="12"/>
         </DockPanel>
 
         <!-- Progress Bar + Cancel Button -->
         <DockPanel>
-            <Button x:Name="CancelButton"
-                    DockPanel.Dock="Right"
+            <Button DockPanel.Dock="Right"
                     Content="Cancel"
                     Padding="8,2"
                     Margin="6,0,0,0"
                     FontSize="11"
                     VerticalAlignment="Center"
                     Click="OnCancelClick"
-                    IsVisible="False"/>
-            <ProgressBar x:Name="ProgressBar"
-                         Height="14"
-                         IsIndeterminate="True"
+                    IsVisible="{Binding IsCancelVisible}"/>
+            <ProgressBar Height="14"
+                         IsIndeterminate="{Binding IsIndeterminate}"
                          Minimum="0"
-                         Maximum="100"
-                         Value="0"
+                         Maximum="{Binding Total}"
+                         Value="{Binding Current}"
                          VerticalAlignment="Center"/>
         </DockPanel>
     </StackPanel>

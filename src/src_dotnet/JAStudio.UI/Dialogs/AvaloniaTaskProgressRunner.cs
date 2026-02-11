@@ -10,32 +10,27 @@ namespace JAStudio.UI.Dialogs;
 
 public class AvaloniaTaskProgressRunner : ITaskProgressRunner
 {
-   TaskProgressPanel _panel = null!;
-   readonly TaskProgressScopePanel _scopePanel;
+   readonly TaskProgressViewModel _viewModel;
+   readonly TaskProgressScopeViewModel _scopeViewModel;
    readonly bool _allowCancel;
 
-   public AvaloniaTaskProgressRunner(TaskProgressScopePanel scopePanel, string labelText, bool allowCancel)
+   public AvaloniaTaskProgressRunner(TaskProgressScopeViewModel scopeViewModel, string labelText, bool allowCancel)
    {
-      _scopePanel = scopePanel;
+      _scopeViewModel = scopeViewModel;
       _allowCancel = allowCancel;
-      Dispatcher.UIThread.Invoke(() =>
-      {
-         _panel = _scopePanel.CreateChildPanel(labelText, allowCancel);
-      });
-   }
+      _viewModel = new TaskProgressViewModel { Message = labelText, IsCancelVisible = allowCancel };
+      Dispatcher.UIThread.Invoke(() => _scopeViewModel.Children.Add(_viewModel));
+   }  
 
    public bool IsHidden() => false;
 
-   public void SetLabelText(string text) => Dispatcher.UIThread.Post(() => _panel.SetMessage(text));
+   public void SetLabelText(string text) => _viewModel.Message = text;
 
    public TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action)
    {
       using var _ = this.Log().Info().LogMethodExecutionTime(message);
-      Dispatcher.UIThread.Invoke(() =>
-      {
-         _panel.SetMessage(message);
-         _panel.SetIndeterminate(true);
-      });
+      _viewModel.Message = message;
+      _viewModel.IsIndeterminate = true;
 
       var task = TaskCE.Run(action);
 
@@ -56,12 +51,8 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
    public async Task<TResult> RunOnBackgroundThreadWithSpinningProgressDialogAsync<TResult>(string message, Func<TResult> action)
    {
       using var _ = this.Log().Info().LogMethodExecutionTime(message);
-
-      Dispatcher.UIThread.Post(() =>
-      {
-         _panel.SetMessage(message);
-         _panel.SetIndeterminate(true);
-      });
+      _viewModel.Message = message;
+      _viewModel.IsIndeterminate = true;
 
       return await TaskCE.Run(action);
    }
@@ -72,12 +63,8 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
       var results = new TOutput[totalItems];
       using var _ = this.Log().Info().LogMethodExecutionTime($"{message} handled {items.Count} items ({threads.Threads} threads)");
 
-      Dispatcher.UIThread.Invoke(() =>
-      {
-         _panel.SetMessage(message);
-         _panel.SetIndeterminate(false);
-         _panel.SetProgress(0, totalItems);
-      });
+      _viewModel.Message = message;
+      _viewModel.SetProgress(0, totalItems);
 
       int completed = 0;
       var startTime = DateTime.Now;
@@ -90,27 +77,10 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
          if((now - lastRefresh).TotalMilliseconds > 100 || current == totalItems)
          {
             lastRefresh = now;
-            var elapsed = current > 0 ? (now - startTime).TotalSeconds : 0;
-            var estimatedTotal = current > 0 ? (elapsed / current) * totalItems : 0;
-            var estimatedRemaining = current > 0 ? estimatedTotal - elapsed : 0;
+            _viewModel.UpdateProgressWithTiming(current, totalItems, startTime);
 
-            var capturedCurrent = current;
-            var capturedElapsed = FormatSeconds(elapsed);
-            var capturedRemaining = FormatSeconds(estimatedRemaining);
-            var capturedTotal = FormatSeconds(estimatedTotal);
             if(Dispatcher.UIThread.CheckAccess())
-            {
-               _panel.SetProgress(capturedCurrent, totalItems);
-               _panel.SetTimeStats(capturedElapsed, capturedRemaining, capturedTotal);
                Dispatcher.UIThread.RunJobs();
-            } else
-            {
-               Dispatcher.UIThread.Post(() =>
-               {
-                  _panel.SetProgress(capturedCurrent, totalItems);
-                  _panel.SetTimeStats(capturedElapsed, capturedRemaining, capturedTotal);
-               });
-            }
          }
       }
 
@@ -118,7 +88,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
       {
          for(int i = 0; i < totalItems; i++)
          {
-            if(_allowCancel && _panel.WasCanceled)
+            if(_allowCancel && _viewModel.WasCanceled)
             {
                this.Log().Info($"Operation canceled by user after {completed} of {totalItems} items");
                break;
@@ -134,7 +104,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
                       threads.ParallelOptions,
                       i =>
                       {
-                         if(_allowCancel && _panel.WasCanceled) return;
+                         if(_allowCancel && _viewModel.WasCanceled) return;
                          results[i] = processItem(items[i]);
                          UpdateProgress();
                       });
@@ -146,13 +116,8 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
    public async Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
    {
       var totalItems = items.Count;
-
-      Dispatcher.UIThread.Post(() =>
-      {
-         _panel.SetMessage(message);
-         _panel.SetIndeterminate(false);
-         _panel.SetProgress(0, totalItems);
-      });
+      _viewModel.Message = message;
+      _viewModel.SetProgress(0, totalItems);
 
       return await TaskCE.Run(() =>
       {
@@ -169,19 +134,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
             if((now - lastRefresh).TotalMilliseconds > 100 || current == totalItems)
             {
                lastRefresh = now;
-               var elapsed = current > 0 ? (now - startTime).TotalSeconds : 0;
-               var estimatedTotal = current > 0 ? (elapsed / current) * totalItems : 0;
-               var estimatedRemaining = current > 0 ? estimatedTotal - elapsed : 0;
-
-               var capturedCurrent = current;
-               var capturedElapsed = FormatSeconds(elapsed);
-               var capturedRemaining = FormatSeconds(estimatedRemaining);
-               var capturedTotal = FormatSeconds(estimatedTotal);
-               Dispatcher.UIThread.Post(() =>
-               {
-                  _panel.SetProgress(capturedCurrent, totalItems);
-                  _panel.SetTimeStats(capturedElapsed, capturedRemaining, capturedTotal);
-               });
+               _viewModel.UpdateProgressWithTiming(current, totalItems, startTime);
             }
          }
 
@@ -189,7 +142,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
          {
             for(int i = 0; i < totalItems; i++)
             {
-               if(_allowCancel && _panel.WasCanceled)
+               if(_allowCancel && _viewModel.WasCanceled)
                {
                   this.Log().Info($"Operation canceled by user after {completed} of {totalItems} items");
                   break;
@@ -205,7 +158,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
                          threads.ParallelOptions,
                          i =>
                          {
-                            if(_allowCancel && _panel.WasCanceled) return;
+                            if(_allowCancel && _viewModel.WasCanceled) return;
                             results[i] = processItem(items[i]);
                             UpdateProgress(1);
                          });
@@ -215,13 +168,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
       });
    }
 
-   static string FormatSeconds(double seconds)
-   {
-      var timeSpan = TimeSpan.FromSeconds(seconds);
-      return $"{timeSpan.Hours:D2}:{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
-   }
-
-   public void Close() => Dispatcher.UIThread.Post(() => _scopePanel.RemoveChildPanel(_panel));
+   public void Close() => Dispatcher.UIThread.Post(() => _scopeViewModel.Children.Remove(_viewModel));
 
    public void Dispose() => Close();
 }

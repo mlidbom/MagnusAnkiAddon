@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using JAStudio.Core.TaskRunners;
 using JAStudio.UI.Utils;
 
 namespace JAStudio.UI.Dialogs;
@@ -57,13 +58,12 @@ public partial class MultiTaskProgressDialog : Window
     /// Opens the dialog if it is not already visible.
     /// Must be called on the UI thread.
     /// </summary>
-    public static TaskProgressScopePanel CreateScopePanel(string scopeTitle, int depth)
+    public static TaskProgressScopePanel CreateScopePanel(TaskProgressScopeViewModel viewModel, int depth)
     {
         Dispatcher.UIThread.VerifyAccess();
         EnsureVisible();
 
-        var scopePanel = new TaskProgressScopePanel(depth);
-        scopePanel.SetHeading(scopeTitle);
+        var scopePanel = new TaskProgressScopePanel(depth) { DataContext = viewModel };
         _instance!.Container.Children.Add(scopePanel);
         return scopePanel;
     }
