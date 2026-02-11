@@ -8,27 +8,27 @@
     <Border x:Name="ScopeBorder"
             BorderBrush="#50607080"
             BorderThickness="1"
-            CornerRadius="4"
-            Padding="10,6,10,8"
-            Margin="0,2">
-        <StackPanel Spacing="4">
+            CornerRadius="3"
+            Padding="8,3,8,4"
+            Margin="0,1">
+        <StackPanel Spacing="2">
             <!-- Scope heading + elapsed time -->
             <DockPanel>
                 <TextBlock x:Name="ElapsedLabel"
                            DockPanel.Dock="Right"
                            Text=""
-                           FontSize="12"
+                           FontSize="11"
                            Foreground="#999999"
                            VerticalAlignment="Center"
                            Margin="8,0,0,0"/>
                 <TextBlock x:Name="ScopeHeading"
                            Text="Task"
                            FontWeight="SemiBold"
-                           FontSize="14"/>
+                           FontSize="12"/>
             </DockPanel>
 
             <!-- Container for child TaskProgressPanel instances -->
-            <StackPanel x:Name="ChildPanelContainer" Spacing="4" Margin="8,0,0,0"/>
+            <StackPanel x:Name="ChildPanelContainer" Spacing="2" Margin="6,0,0,0"/>
         </StackPanel>
     </Border>
 </UserControl>

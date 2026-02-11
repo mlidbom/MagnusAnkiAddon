@@ -12,6 +12,6 @@
         ShowInTaskbar="False">
 
     <ScrollViewer MaxHeight="600">
-        <StackPanel x:Name="PanelContainer" Spacing="8" Margin="20,15"/>
+        <StackPanel x:Name="PanelContainer" Spacing="4" Margin="10,8"/>
     </ScrollViewer>
 </Window>
