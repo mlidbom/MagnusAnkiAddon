@@ -32,8 +32,4 @@
     </Reference>
   </ItemGroup>
 
-  <Target Name="RegenerateStubs" AfterTargets="Build" Condition="'$(NCrunch)' != '1'">
-    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\regenerate-stubs.ps1&quot; -OnlyTargetTypes -Configuration $(Configuration)" />
-  </Target>
-
 </Project>

@@ -3,10 +3,13 @@
 ### How to Build
 
 ```powershell
-dotnet build src\src_dotnet\JAStudio.slnx -c Debug # Build solution, generates type stubs and copies stubs and dlls to where they need to be for the python integration
+dotnet build src\src_dotnet\JAStudio.slnx -c Debug # Fast build: compiles .NET only
 
-basedpyright-wrapper.bat # Check the python for typing errors.
+.\full-build.ps1                                    # Full build: compiles .NET + regenerates Python type stubs + runs basedpyright
 ```
+
+**Use the full build** when you are done making changes and need to validate everything (Definition of Done).
+The fast build is for quick iteration — the Anki addon copies .NET binaries on its own startup, and stubs only need regenerating when the .NET API surface changes.
 
 ### How to Test
 
@@ -18,7 +21,7 @@ pytest src\tests                                             # Run Python tests
 ### Definition of Done
 
 No task should be considered complete until:
-- `basedpyright-wrapper.bat` reports **0 errors**
+- `.\full-build.ps1` succeeds (compiles .NET, regenerates stubs, **0 basedpyright errors**)
 - All .NET tests pass
 - All Python tests pass
 
