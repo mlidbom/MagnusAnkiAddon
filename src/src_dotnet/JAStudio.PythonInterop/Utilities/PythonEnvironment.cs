@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Compze.Utilities.SystemCE.ActionFuncHarmonization;
 using Compze.Utilities.SystemCE.ThreadingCE.ResourceAccess;
 using Python.Runtime;
@@ -9,6 +10,8 @@ namespace JAStudio.PythonInterop.Utilities;
 
 public static class PythonEnvironment
 {
+   static bool IsLinux => RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+
    public static PythonObjectWrapper Import(string module) => Use(() => new PythonObjectWrapper(Py.Import(module)));
 
    public static TResult Use<TResult>(Func<TResult> func)
@@ -59,11 +62,11 @@ public static class PythonEnvironment
             throw new Exception($"Could not find base Python from {pyvenvCfg}");
          }
 
-         // Find the Python DLL
+         // Find the Python shared library
          var pythonDll = FindPythonDll(venvPath, basePython);
          if(pythonDll == null)
          {
-            throw new Exception($"Could not find Python DLL in {venvPath} or {basePython}");
+            throw new Exception($"Could not find Python shared library in {venvPath} or {basePython}");
          }
 
          Console.WriteLine($"[PythonEnvironment] Using venv: {venvPath}");
@@ -72,13 +75,27 @@ public static class PythonEnvironment
 
          // Configure Python.NET
          Runtime.PythonDLL = pythonDll;
-         PythonEngine.PythonHome = basePython;
-         PythonEngine.PythonPath = string.Join(
-            Path.PathSeparator.ToString(),
-            Path.Combine(basePython, "Lib"),
-            Path.Combine(venvPath, "Lib", "site-packages"),
-            Path.Combine(basePython, "DLLs")
-         );
+         PythonEngine.PythonHome = IsLinux ? Path.GetDirectoryName(basePython)! : basePython;
+
+         if(IsLinux)
+         {
+            var pythonVersion = GetPythonVersionFromConfig(pyvenvCfg);
+            PythonEngine.PythonPath = string.Join(
+               Path.PathSeparator.ToString(),
+               Path.Combine(basePython, "..", "lib", pythonVersion),
+               Path.Combine(basePython, "..", "lib", pythonVersion, "lib-dynload"),
+               Path.Combine(venvPath, "lib", pythonVersion, "site-packages")
+            );
+         }
+         else
+         {
+            PythonEngine.PythonPath = string.Join(
+               Path.PathSeparator.ToString(),
+               Path.Combine(basePython, "Lib"),
+               Path.Combine(venvPath, "Lib", "site-packages"),
+               Path.Combine(basePython, "DLLs")
+            );
+         }
 
          PythonEngine.Initialize();
          PythonEngine.BeginAllowThreads();
@@ -113,7 +130,33 @@ public static class PythonEnvironment
                  .FirstOrDefault();
    }
 
+   private static string GetPythonVersionFromConfig(string pyvenvCfgPath)
+   {
+      var versionLine = File.ReadAllLines(pyvenvCfgPath)
+                            .Where(line => line.StartsWith("version = "))
+                            .Select(line => line[10..].Trim())
+                            .FirstOrDefault();
+
+      if(versionLine != null)
+      {
+         var parts = versionLine.Split('.');
+         if(parts.Length >= 2) return $"python{parts[0]}.{parts[1]}";
+      }
+
+      return "python3";
+   }
+
    private static string? FindPythonDll(string venvPath, string basePython)
+   {
+      if(IsLinux)
+      {
+         return FindPythonSharedLibraryLinux(basePython);
+      }
+
+      return FindPythonDllWindows(venvPath);
+   }
+
+   private static string? FindPythonDllWindows(string venvPath)
    {
       var venvScripts = Path.Combine(venvPath, "Scripts");
 
@@ -126,6 +169,41 @@ public static class PythonEnvironment
          if(venvDll != null)
          {
             return venvDll;
+         }
+      }
+
+      return null;
+   }
+
+   private static string? FindPythonSharedLibraryLinux(string basePython)
+   {
+      // On Linux, basePython from pyvenv.cfg "home" is the bin directory (e.g. /usr/bin)
+      // The shared library is typically in a lib directory like /usr/lib/x86_64-linux-gnu/ or /usr/lib/
+      var prefixDir = Path.GetDirectoryName(basePython);
+      if(prefixDir == null) return null;
+
+      // Search common library paths
+      var searchDirs = new[]
+      {
+         Path.Combine(prefixDir, "lib"),
+         Path.Combine(prefixDir, "lib", "x86_64-linux-gnu"),
+         "/usr/lib",
+         "/usr/lib/x86_64-linux-gnu",
+         "/usr/lib64"
+      };
+
+      foreach(var dir in searchDirs)
+      {
+         if(!Directory.Exists(dir)) continue;
+
+         var so = Directory.GetFiles(dir, "libpython3*.so*")
+                           .Where(f => !f.EndsWith(".a"))
+                           .OrderByDescending(f => f.Length)
+                           .FirstOrDefault();
+
+         if(so != null)
+         {
+            return so;
          }
       }
 
