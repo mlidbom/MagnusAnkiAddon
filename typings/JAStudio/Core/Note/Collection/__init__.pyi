@@ -4,7 +4,7 @@ from JAStudio.Core.Configuration import JapaneseConfig
 from JAStudio.Core.Storage import INoteRepository
 from JAStudio.Core.LanguageServices.JamdictEx import DictLookup
 from JAStudio.Core.Note.Vocabulary import VocabNoteFactory, VocabNoteGeneratedData
-from System.Collections.Generic import List_1, HashSet_1, Dictionary_2, IEnumerable_1
+from System.Collections.Generic import List_1, HashSet_1, IEnumerable_1, Dictionary_2
 from System import Array_1, Action_1
 from System.Threading.Tasks import Task
 
@@ -120,6 +120,7 @@ NoteCacheBase : NoteCacheBase_GenericClasses
 
 NoteCacheBase_1_TNote = typing.TypeVar('NoteCacheBase_1_TNote')
 class NoteCacheBase_1(typing.Generic[NoteCacheBase_1_TNote], IAnkiNoteUpdateHandler, abc.ABC):
+    def AddAllToCache(self, notes: IEnumerable_1[NoteCacheBase_1_TNote]) -> None: ...
     def AddToCache(self, note: NoteCacheBase_1_TNote) -> None: ...
     def AnkiIdToNoteId(self, ankiNoteId: int) -> NoteId: ...
     def AnkiNoteAdded(self, ankiNoteId: int, data: NoteData) -> None: ...

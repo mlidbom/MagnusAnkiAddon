@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Compze.Utilities.SystemCE.LinqCE;
 using Compze.Utilities.SystemCE.ThreadingCE.ResourceAccess;
 using JAStudio.Core.Anki;
 using JAStudio.PythonInterop;
@@ -175,14 +176,11 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
 
    protected abstract void ClearInheritorIndexes();
 
-   /// <summary>Locked entry point: acquires the write lock and calls AddToCacheCore.</summary>
    public void AddToCache(TNote note) => _monitor.Read(() => AddToCacheCore(note));
-   /// <summary>Locked entry point: acquires the write lock and calls RemoveFromCacheCore.</summary>
+   public void AddAllToCache(IEnumerable<TNote> notes) => _monitor.Read(() => notes.ForEach(AddToCacheCore));
    public void RemoveFromCache(TNote note) => _monitor.Read(() => RemoveFromCacheCore(note));
 
-   /// <summary>Adds the note to all indexes. Must be called under the write lock.</summary>
    protected abstract void AddToCacheCore(TNote note);
-   /// <summary>Removes the note from all indexes. Must be called under the write lock.</summary>
    protected abstract void RemoveFromCacheCore(TNote note);
 
    public void SetStudyingStatuses(Dictionary<long, List<CardStudyingStatus>> statusesByAnkiId)
