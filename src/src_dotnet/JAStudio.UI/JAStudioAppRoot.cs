@@ -87,9 +87,9 @@ public class JAStudioAppRoot
       var root = new JAStudioAppRoot(app) { _uiThread = uiThread };
 
       // Set up task runner factories
-      root.Services.TaskRunner.SetUiScopePanelFactory((scopeTitle, _) =>
+      root.Services.TaskRunner.SetUiScopePanelFactory((scopeTitle, depth) =>
       {
-         var panel = Dispatcher.UIThread.Invoke(() => MultiTaskProgressDialog.CreateScopePanel(scopeTitle));
+         var panel = Dispatcher.UIThread.Invoke(() => MultiTaskProgressDialog.CreateScopePanel(scopeTitle, depth));
          return new AvaloniaScopePanel(panel);
       });
 

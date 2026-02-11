@@ -8,7 +8,7 @@ public class TaskRunner
    readonly JapaneseConfig _config;
    internal TaskRunner(JapaneseConfig config) => _config = config;
 
-   Func<string, bool, IScopePanel>? _uiScopePanelFactory;
+   Func<string, int, IScopePanel>? _uiScopePanelFactory;
    Func<IScopePanel, string, bool, ITaskProgressRunner>? _uiTaskRunnerFactory;
 
    /// <summary>
@@ -28,8 +28,9 @@ public class TaskRunner
    /// <summary>
    /// Register the factory that creates a scope-level panel in the UI.
    /// The panel shows a heading and elapsed time for the scope.
+   /// Parameters: (scopeTitle, nestingDepth) → IScopePanel
    /// </summary>
-   public void SetUiScopePanelFactory(Func<string, bool, IScopePanel> factory)
+   public void SetUiScopePanelFactory(Func<string, int, IScopePanel> factory)
    {
       if(_uiScopePanelFactory != null)
       {
@@ -74,7 +75,7 @@ public class TaskRunner
          throw new InvalidOperationException("No UI scope panel factory set. Set it with TaskRunner.SetUiScopePanelFactory().");
       }
 
-      return _uiScopePanelFactory(scopeTitle, true);
+      return _uiScopePanelFactory(scopeTitle, _depth);
    }
 
    int _depth;

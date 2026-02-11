@@ -57,12 +57,12 @@ public partial class MultiTaskProgressDialog : Window
     /// Opens the dialog if it is not already visible.
     /// Must be called on the UI thread.
     /// </summary>
-    public static TaskProgressScopePanel CreateScopePanel(string scopeTitle)
+    public static TaskProgressScopePanel CreateScopePanel(string scopeTitle, int depth)
     {
         Dispatcher.UIThread.VerifyAccess();
         EnsureVisible();
 
-        var scopePanel = new TaskProgressScopePanel();
+        var scopePanel = new TaskProgressScopePanel(depth);
         scopePanel.SetHeading(scopeTitle);
         _instance!.Container.Children.Add(scopePanel);
         return scopePanel;

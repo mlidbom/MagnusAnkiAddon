@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
@@ -13,18 +14,37 @@ namespace JAStudio.UI.Dialogs;
 /// </summary>
 public partial class TaskProgressScopePanel : UserControl
 {
+    static readonly string[] DepthBackgrounds = ["#10808080", "#08606080", "#06404060", "#04303050"];
+
     readonly Stopwatch _stopwatch = Stopwatch.StartNew();
     DispatcherTimer? _timer;
 
-    public TaskProgressScopePanel()
+    public TaskProgressScopePanel() : this(1) { }
+
+    public TaskProgressScopePanel(int depth)
     {
         InitializeComponent();
+        ApplyDepthStyling(depth);
         StartElapsedTimer();
     }
 
     void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
+    }
+
+    void ApplyDepthStyling(int depth)
+    {
+        // depth 1 = outermost scope, indent increases with depth
+        var indent = Math.Max(0, (depth - 1) * 16);
+        Margin = new Avalonia.Thickness(indent, 2, 0, 2);
+
+        var border = this.FindControl<Border>("ScopeBorder");
+        if (border != null)
+        {
+            var bgIndex = Math.Min(depth - 1, DepthBackgrounds.Length - 1);
+            border.Background = Avalonia.Media.Brush.Parse(DepthBackgrounds[Math.Max(0, bgIndex)]);
+        }
     }
 
     public void SetHeading(string text)
