@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+          dotnet-quality: 'preview'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Setup dev environment
+        run: ./setup-dev.sh
+
+      - name: Run .NET tests
+        env:
+          JASTUDIO_VENV_PATH: ${{ github.workspace }}/venv
+        run: >
+          dotnet test src/src_dotnet/JAStudio.slnx
+          --verbosity quiet
+          --filter "FullyQualifiedName!~BulkLoaderTests"
+
+      - name: Run Python tests
+        run: |
+          source venv/bin/activate
+          pytest src/tests/jaspythonutils_tests -v

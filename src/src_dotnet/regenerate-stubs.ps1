@@ -15,16 +15,18 @@ param(
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 Push-Location $ScriptDir
 
-$StubGenRoot = "..\..\src_dotnet\pythonnet-stub-generator"
-$TypingsPath = "..\..\typings"
-$StubGenDll = "$StubGenRoot\csharp\PythonNetStubTool\bin\Debug\net10.0\PythonNetStubGenerator.Tool.dll"
+$Sep = [IO.Path]::DirectorySeparatorChar
+
+$StubGenRoot = Join-Path ".." ".." "src_dotnet" "pythonnet-stub-generator"
+$TypingsPath = Join-Path ".." ".." "typings"
+$StubGenDll = Join-Path $StubGenRoot "csharp" "PythonNetStubTool" "bin" "Debug" "net10.0" "PythonNetStubGenerator.Tool.dll"
 
 try {
     if (Test-Path $StubGenDll) {
         Write-Host "Stub generator already compiled, skipping build..." -ForegroundColor Gray
     } else {
         Write-Host "Building stub generator..." -ForegroundColor Cyan
-        dotnet build "$StubGenRoot\csharp\PythonNetStubTool\PythonNetStubGenerator.Tool.csproj"
+        dotnet build (Join-Path $StubGenRoot "csharp" "PythonNetStubTool" "PythonNetStubGenerator.Tool.csproj")
 
         if ($LASTEXITCODE -ne 0) {
             Write-Host "Build failed!" -ForegroundColor Red
@@ -33,13 +35,13 @@ try {
     }
 
 Write-Host "`nCleaning old JAStudio stubs..." -ForegroundColor Cyan
-$jastudioPath = "$TypingsPath\JAStudio"
+$jastudioPath = Join-Path $TypingsPath "JAStudio"
 if (Test-Path $jastudioPath) {
     Remove-Item -Recurse -Force $jastudioPath
     Write-Host "Removed old JAStudio stubs" -ForegroundColor Yellow
 }
 
-$globalPath = "$TypingsPath\global_"
+$globalPath = Join-Path $TypingsPath "global_"
 if (Test-Path $globalPath) {
     Remove-Item -Recurse -Force $globalPath
     Write-Host "Removed broken global_ stubs" -ForegroundColor Yellow
@@ -47,10 +49,12 @@ if (Test-Path $globalPath) {
 
 Write-Host "`nGenerating stubs..." -ForegroundColor Cyan
 
+$UiRid = if ($IsWindows -or (-not (Test-Path variable:IsWindows))) { "win-x64" } elseif ($IsMacOS) { "osx-x64" } else { "linux-x64" }
+
 $args = @(
     $StubGenDll,
     "--dest-path", $TypingsPath,
-    "--target-dlls", "JAStudio.Core\bin\$Configuration\net10.0\JAStudio.Core.dll,JAStudio.PythonInterop\bin\$Configuration\net10.0\JAStudio.PythonInterop.dll,JAStudio.Anki\bin\$Configuration\net10.0\JAStudio.Anki.dll,JAStudio.UI\bin\$Configuration\net10.0\win-x64\JAStudio.UI.dll"
+    "--target-dlls", "JAStudio.Core${Sep}bin${Sep}${Configuration}${Sep}net10.0${Sep}JAStudio.Core.dll,JAStudio.PythonInterop${Sep}bin${Sep}${Configuration}${Sep}net10.0${Sep}JAStudio.PythonInterop.dll,JAStudio.Anki${Sep}bin${Sep}${Configuration}${Sep}net10.0${Sep}JAStudio.Anki.dll,JAStudio.UI${Sep}bin${Sep}${Configuration}${Sep}net10.0${Sep}${UiRid}${Sep}JAStudio.UI.dll"
 )
 
 if ($OnlyTargetTypes) {
