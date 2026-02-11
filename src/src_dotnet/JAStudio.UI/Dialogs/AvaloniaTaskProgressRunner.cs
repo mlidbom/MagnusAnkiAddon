@@ -10,27 +10,48 @@ namespace JAStudio.UI.Dialogs;
 
 public class AvaloniaTaskProgressRunner : ITaskProgressRunner
 {
-   readonly TaskProgressViewModel _viewModel;
+   TaskProgressViewModel? _viewModel;
    readonly TaskProgressScopeViewModel _scopeViewModel;
    readonly bool _allowCancel;
+   readonly string _labelText;
 
    public AvaloniaTaskProgressRunner(TaskProgressScopeViewModel scopeViewModel, string labelText, bool allowCancel)
    {
       _scopeViewModel = scopeViewModel;
       _allowCancel = allowCancel;
-      _viewModel = new TaskProgressViewModel { Message = labelText, IsCancelVisible = allowCancel };
+      _labelText = labelText;
+   }
+
+   TaskProgressViewModel EnsureSpinnerViewModel()
+   {
+      if(_viewModel != null) return _viewModel;
+      _viewModel = new TaskProgressViewModel { Message = _labelText, IsCancelVisible = _allowCancel };
       Dispatcher.UIThread.Invoke(() => _scopeViewModel.Children.Add(_viewModel));
-   }  
+      return _viewModel;
+   }
+
+   BatchTaskProgressViewModel EnsureBatchViewModel()
+   {
+      if(_viewModel is BatchTaskProgressViewModel batch) return batch;
+      if(_viewModel != null) throw new System.InvalidOperationException("Cannot switch from spinner to batch mode within the same runner.");
+      var batchVm = new BatchTaskProgressViewModel { Message = _labelText, IsCancelVisible = _allowCancel };
+      _viewModel = batchVm;
+      Dispatcher.UIThread.Invoke(() => _scopeViewModel.Children.Add(batchVm));
+      return batchVm;
+   }
 
    public bool IsHidden() => false;
 
-   public void SetLabelText(string text) => _viewModel.Message = text;
+   public void SetLabelText(string text)
+   {
+      if(_viewModel != null) _viewModel.Message = text;
+   }
 
    public TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action)
    {
       using var _ = this.Log().Info().LogMethodExecutionTime(message);
-      _viewModel.Message = message;
-      _viewModel.IsIndeterminate = true;
+      var vm = EnsureSpinnerViewModel();
+      vm.Message = message;
 
       var task = TaskCE.Run(action);
 
@@ -51,8 +72,8 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
    public async Task<TResult> RunOnBackgroundThreadWithSpinningProgressDialogAsync<TResult>(string message, Func<TResult> action)
    {
       using var _ = this.Log().Info().LogMethodExecutionTime(message);
-      _viewModel.Message = message;
-      _viewModel.IsIndeterminate = true;
+      var vm = EnsureSpinnerViewModel();
+      vm.Message = message;
 
       return await TaskCE.Run(action);
    }
@@ -63,8 +84,9 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
       var results = new TOutput[totalItems];
       using var _ = this.Log().Info().LogMethodExecutionTime($"{message} handled {items.Count} items ({threads.Threads} threads)");
 
-      _viewModel.Message = message;
-      _viewModel.SetProgress(0, totalItems);
+      var vm = EnsureBatchViewModel();
+      vm.Message = message;
+      vm.SetProgress(0, totalItems);
 
       int completed = 0;
       var startTime = DateTime.Now;
@@ -77,7 +99,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
          if((now - lastRefresh).TotalMilliseconds > 100 || current == totalItems)
          {
             lastRefresh = now;
-            _viewModel.UpdateProgressWithTiming(current, totalItems, startTime);
+            vm.UpdateProgressWithTiming(current, totalItems, startTime);
 
             if(Dispatcher.UIThread.CheckAccess())
                Dispatcher.UIThread.RunJobs();
@@ -88,7 +110,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
       {
          for(int i = 0; i < totalItems; i++)
          {
-            if(_allowCancel && _viewModel.WasCanceled)
+            if(_allowCancel && vm.WasCanceled)
             {
                this.Log().Info($"Operation canceled by user after {completed} of {totalItems} items");
                break;
@@ -104,7 +126,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
                       threads.ParallelOptions,
                       i =>
                       {
-                         if(_allowCancel && _viewModel.WasCanceled) return;
+                         if(_allowCancel && vm.WasCanceled) return;
                          results[i] = processItem(items[i]);
                          UpdateProgress();
                       });
@@ -116,8 +138,9 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
    public async Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
    {
       var totalItems = items.Count;
-      _viewModel.Message = message;
-      _viewModel.SetProgress(0, totalItems);
+      var vm = EnsureBatchViewModel();
+      vm.Message = message;
+      vm.SetProgress(0, totalItems);
 
       return await TaskCE.Run(() =>
       {
@@ -134,7 +157,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
             if((now - lastRefresh).TotalMilliseconds > 100 || current == totalItems)
             {
                lastRefresh = now;
-               _viewModel.UpdateProgressWithTiming(current, totalItems, startTime);
+               vm.UpdateProgressWithTiming(current, totalItems, startTime);
             }
          }
 
@@ -142,7 +165,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
          {
             for(int i = 0; i < totalItems; i++)
             {
-               if(_allowCancel && _viewModel.WasCanceled)
+               if(_allowCancel && vm.WasCanceled)
                {
                   this.Log().Info($"Operation canceled by user after {completed} of {totalItems} items");
                   break;
@@ -158,7 +181,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
                          threads.ParallelOptions,
                          i =>
                          {
-                            if(_allowCancel && _viewModel.WasCanceled) return;
+                            if(_allowCancel && vm.WasCanceled) return;
                             results[i] = processItem(items[i]);
                             UpdateProgress(1);
                          });
@@ -168,7 +191,11 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
       });
    }
 
-   public void Close() => Dispatcher.UIThread.Post(() => _scopeViewModel.Children.Remove(_viewModel));
+   public void Close()
+   {
+      if(_viewModel != null)
+         Dispatcher.UIThread.Post(() => _scopeViewModel.Children.Remove(_viewModel));
+   }
 
    public void Dispose() => Close();
 }

@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="560" d:DesignHeight="80"
-             x:Class="JAStudio.UI.Dialogs.TaskProgressPanel">
+             x:Class="JAStudio.UI.Dialogs.BatchTaskProgressPanel">
 
     <StackPanel Margin="0,2" Spacing="1">
         <!-- Message + stats on same line -->
@@ -19,7 +19,7 @@
                        FontSize="12"/>
         </DockPanel>
 
-        <!-- Progress Bar + Cancel Button -->
+        <!-- Determinate Progress Bar + Cancel Button -->
         <DockPanel>
             <Button DockPanel.Dock="Right"
                     Content="Cancel"
@@ -30,7 +30,7 @@
                     Click="OnCancelClick"
                     IsVisible="{Binding IsCancelVisible}"/>
             <ProgressBar Height="14"
-                         IsIndeterminate="{Binding IsIndeterminate}"
+                         IsIndeterminate="False"
                          Minimum="0"
                          Maximum="{Binding Total}"
                          Value="{Binding Current}"

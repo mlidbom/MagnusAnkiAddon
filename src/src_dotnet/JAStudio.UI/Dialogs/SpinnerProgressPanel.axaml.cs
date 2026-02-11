@@ -6,12 +6,12 @@ using JAStudio.Core.TaskRunners;
 namespace JAStudio.UI.Dialogs;
 
 /// <summary>
-/// An embeddable progress panel bound to a <see cref="TaskProgressViewModel"/>.
-/// All UI state is driven by data binding; no <c>FindControl</c> calls needed.
+/// A minimal progress panel for indeterminate/spinner operations.
+/// Bound to a <see cref="TaskProgressViewModel"/>.
 /// </summary>
-public partial class TaskProgressPanel : UserControl
+public partial class SpinnerProgressPanel : UserControl
 {
-    public TaskProgressPanel()
+    public SpinnerProgressPanel()
     {
         InitializeComponent();
     }

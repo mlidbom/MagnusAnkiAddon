@@ -1,0 +1,29 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="560" d:DesignHeight="50"
+             x:Class="JAStudio.UI.Dialogs.SpinnerProgressPanel">
+
+    <StackPanel Margin="0,2" Spacing="1">
+        <!-- Message -->
+        <TextBlock Text="{Binding Message}"
+                   TextTrimming="CharacterEllipsis"
+                   FontSize="12"/>
+
+        <!-- Indeterminate Progress Bar + Cancel Button -->
+        <DockPanel>
+            <Button DockPanel.Dock="Right"
+                    Content="Cancel"
+                    Padding="8,2"
+                    Margin="6,0,0,0"
+                    FontSize="11"
+                    VerticalAlignment="Center"
+                    Click="OnCancelClick"
+                    IsVisible="{Binding IsCancelVisible}"/>
+            <ProgressBar Height="14"
+                         IsIndeterminate="True"
+                         VerticalAlignment="Center"/>
+        </DockPanel>
+    </StackPanel>
+</UserControl>
