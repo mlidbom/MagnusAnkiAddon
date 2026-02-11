@@ -20,6 +20,8 @@ public class AvaloniaScopePanel : IScopePanel
 
    public TaskProgressScopeViewModel ViewModel => _viewModel;
 
+   public string GetFinalElapsed() => _viewModel.GetFinalElapsed();
+
    public void Dispose()
    {
       _viewModel.Dispose();

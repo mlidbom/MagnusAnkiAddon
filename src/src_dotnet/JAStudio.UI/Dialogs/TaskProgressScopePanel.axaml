@@ -3,7 +3,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:dialogs="clr-namespace:JAStudio.UI.Dialogs"
-             xmlns:taskRunners="clr-namespace:JAStudio.Core.TaskRunners;assembly=JAStudio.Core"
              mc:Ignorable="d" d:DesignWidth="560" d:DesignHeight="120"
              x:Class="JAStudio.UI.Dialogs.TaskProgressScopePanel">
 
@@ -27,16 +26,13 @@
                            FontSize="12"/>
             </DockPanel>
 
-            <!-- Child progress panels: different templates for spinner vs batch -->
+            <!-- Child progress panels bound to ViewModel.Children -->
             <ItemsControl ItemsSource="{Binding Children}" Margin="6,0,0,0">
-                <ItemsControl.DataTemplates>
-                    <DataTemplate DataType="{x:Type taskRunners:BatchTaskProgressViewModel}">
-                        <dialogs:BatchTaskProgressPanel />
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <dialogs:TaskProgressPanel />
                     </DataTemplate>
-                    <DataTemplate DataType="{x:Type taskRunners:TaskProgressViewModel}">
-                        <dialogs:SpinnerProgressPanel />
-                    </DataTemplate>
-                </ItemsControl.DataTemplates>
+                </ItemsControl.ItemTemplate>
             </ItemsControl>
         </StackPanel>
     </Border>

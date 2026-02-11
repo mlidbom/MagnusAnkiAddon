@@ -9,10 +9,14 @@ using Avalonia.Threading;
 using Compze.Utilities.Logging;
 using Compze.Utilities.SystemCE;
 using JAStudio.Core;
-using JAStudio.Anki;
+using JAStudio.Core.Anki;
 using JAStudio.Core.TaskRunners;
+using JAStudio.PythonInterop;
 using JAStudio.UI.Dialogs;
+using JAStudio.UI.Menus;
+using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
+using JAStudio.UI.Views;
 
 namespace JAStudio.UI;
 
@@ -39,18 +43,7 @@ public class JAStudioAppRoot
    /// </summary>
    public TemporaryServiceCollection Services => _app.Services;
 
-   /// <summary>Dialog show/toggle methods, extracted from this root.</summary>
-   public AppDialogs Dialogs { get; }
-
-   /// <summary>Menu factory methods, extracted from this root.</summary>
-   public AppMenus Menus { get; }
-
-   JAStudioAppRoot(Core.App app)
-   {
-      _app = app;
-      Dialogs = new AppDialogs(app);
-      Menus = new AppMenus(app.Services, Dialogs);
-   }
+   JAStudioAppRoot(Core.App app) => _app = app;
 
    /// <summary>
    /// Bootstrap Core.App, initialize Avalonia, and return the composition root.
@@ -65,11 +58,7 @@ public class JAStudioAppRoot
          Debugger.Launch();
       }
 
-      var app = Core.App.Bootstrap(
-         backendNoteCreator: new AnkiBackendNoteCreator(),
-         backendDataLoader: new AnkiBackendDataLoader(),
-         environmentPaths: new AnkiEnvironmentPaths(),
-         alternateRepositoryFactory: ns => new AnkiNoteRepository(ns));
+      var app = Core.App.Bootstrap();
       CompzeLogger.LogLevel = LogLevel.Info;
 
       // Initialize the C# configuration system with the Anki addon config
@@ -117,8 +106,8 @@ public class JAStudioAppRoot
          () => Dispatcher.UIThread.Invoke(() => MultiTaskProgressDialog.Hold()),
          () => Dispatcher.UIThread.Post(() => MultiTaskProgressDialog.Release()));
 
-      // Register card operations so Core can suspend/unsuspend cards via the backend API
-      root.Services.CardOperations.SetImplementation(new AnkiCardOperationsImpl(root.Services.ExternalNoteIdMap));
+      // Register Anki card operations so Core can suspend/unsuspend cards via Anki API
+      root.Services.AnkiCardOperations.SetImplementation(new AnkiCardOperationsImpl(root.Services.AnkiNoteIdMap));
 
       return root;
    }
@@ -151,7 +140,7 @@ public class JAStudioAppRoot
             if(_profileOpen)
             {
                CancelPendingReload();
-               BackgroundTaskManager.Run(() => _app.Collection.ReloadFromBackend());
+               BackgroundTaskManager.Run(() => _app.Collection.ReloadFromAnkiDatabase());
             }
 
             break;
@@ -187,8 +176,8 @@ public class JAStudioAppRoot
       BackgroundTaskManager.RunAsync(async () =>
       {
          await Task.Delay(ReloadDebounceDelay, cts.Token);
-         this.Log().Info("Debounce elapsed \u2014 reloading from backend");
-         _app.Collection.ReloadFromBackend();
+         this.Log().Info("Debounce elapsed \u2014 reloading from Anki database");
+         _app.Collection.ReloadFromAnkiDatabase();
       });
    }
 
@@ -202,6 +191,14 @@ public class JAStudioAppRoot
       }
    }
 
+   // ── Factory methods for Python-facing objects ──
+
+   /// <summary>Called from Python to build right-click context menus.</summary>
+   public NoteContextMenu CreateNoteContextMenu() => new(Services);
+
+   /// <summary>Called from Python to build the main "Japanese" tools menu.</summary>
+   public JapaneseMainMenu CreateJapaneseMainMenu() => new(this);
+
    // ── UI thread helpers ──
 
    /// <summary>
@@ -211,6 +208,132 @@ public class JAStudioAppRoot
    {
       Dispatcher.UIThread.Post(action);
    }
+
+   /// <summary>
+   /// Show a dialog and wait for it to close.
+   /// </summary>
+   public void ShowDialog<T>() where T : Window, new()
+   {
+      Dispatcher.UIThread.Invoke(() =>
+      {
+         var window = new T();
+         window.Show();
+      });
+   }
+
+   // ── Dialog show methods (called from Python and C# menus) ──
+
+   /// <summary>
+   /// Show the VocabFlagsDialog for editing a vocab note's flags.
+   /// </summary>
+   public void ShowVocabFlagsDialog(long vocabId)
+   {
+      Dispatcher.UIThread.Invoke(() =>
+      {
+         var vocabCache = _app.Collection.Vocab;
+         var vocab = vocabCache.WithAnkiIdOrNone(vocabId);
+         if(vocab == null)
+         {
+            this.Log().Info($"Vocab note with ID {vocabId} not found");
+            return;
+         }
+
+         var window = new VocabFlagsDialog(vocab, Services);
+         WindowPositioner.PositionNearCursor(window);
+         window.Show();
+      });
+   }
+
+   /// <summary>
+   /// Show the About dialog.
+   /// </summary>
+   public void ShowAboutDialog()
+   {
+      Dispatcher.UIThread.Invoke(() =>
+      {
+         var window = new AboutDialog();
+         WindowPositioner.PositionNearCursor(window);
+         window.Show();
+      });
+   }
+
+   /// <summary>
+   /// Show the Options dialog for Japanese configuration settings.
+   /// </summary>
+   public void ShowOptionsDialog()
+   {
+      Dispatcher.UIThread.Invoke(() =>
+      {
+         this.Log().Info("Creating OptionsDialog window...");
+         var window = new OptionsDialog(Services);
+         WindowPositioner.PositionNearCursor(window);
+         this.Log().Info("OptionsDialog created, calling Show()...");
+         window.Show();
+         this.Log().Info("OptionsDialog.Show() completed");
+      });
+   }
+
+   /// <summary>
+   /// Show the Readings Mappings dialog for editing readings mappings.
+   /// </summary>
+   public void ShowReadingsMappingsDialog()
+   {
+      this.Log().Info("ShowReadingsMappingsDialog() called");
+      Dispatcher.UIThread.Invoke(() =>
+      {
+         var window = new ReadingsMappingsDialog(Services);
+         WindowPositioner.PositionNearCursor(window);
+         window.Show();
+      });
+   }
+
+   /// <summary>
+   /// Toggle the Note Search dialog visibility.
+   /// Shows the dialog if hidden, hides it if visible.
+   /// </summary>
+   public void ToggleNoteSearchDialog()
+   {
+      this.Log().Info("ToggleNoteSearchDialog() called");
+      Dispatcher.UIThread.Invoke(() =>
+      {
+         NoteSearchDialog.ToggleVisibility(Services);
+      });
+   }
+
+   /// <summary>
+   /// Toggle the English Word Search dialog visibility.
+   /// Shows the dialog if hidden, hides it if visible.
+   /// </summary>
+   public void ToggleEnglishWordSearchDialog()
+   {
+      this.Log().Info("ToggleEnglishWordSearchDialog() called");
+      Dispatcher.UIThread.Invoke(() =>
+      {
+         EnglishWordSearchDialog.ToggleVisibility();
+      });
+   }
+
+   /// <summary>
+   /// Show the context menu popup at the current cursor position.
+   /// </summary>
+   public void ShowContextMenuPopup(string clipboardContent, string selectionContent, int x, int y)
+   {
+      Dispatcher.UIThread.Invoke(() =>
+      {
+         var menuControl = new ContextMenuPopup(clipboardContent ?? "", selectionContent ?? "");
+         menuControl.ShowAt(x, y);
+      });
+   }
+
+   /// <summary>
+   /// Build browser context menu specification.
+   /// Returns UI-agnostic menu specs that Python can convert to PyQt menus.
+   /// </summary>
+   public SpecMenuItem BuildBrowserMenuSpec(
+      dynamic selectedCardIds,
+      dynamic selectedNoteIds) =>
+      new BrowserMenus(Services).BuildBrowserMenuSpec(PythonDotNetShim.LongList.ToDotNet(selectedCardIds),
+                                                      PythonDotNetShim.LongList.ToDotNet(selectedNoteIds));
 
    /// <summary>
    /// Shutdown Avalonia. Call at addon unload.
