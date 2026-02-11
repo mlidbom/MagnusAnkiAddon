@@ -31,7 +31,6 @@ public class InvisibleTaskRunner : ITaskProgressRunner
          return result;
       } else
       {
-
          var results = new TOutput[items.Count];
          Parallel.For(0,
                       items.Count,
@@ -43,39 +42,12 @@ public class InvisibleTaskRunner : ITaskProgressRunner
       }
    }
 
-   public Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
-   {
-      return TaskCE.Run(() =>
-      {
-         if(threads.IsSequential)
-            return ProcessWithProgress(items, processItem, message, threads);
+   public Task<List<TOutput>> ProcessWithProgressAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads) =>
+      TaskCE.Run(() => ProcessWithProgress(items, processItem, message, threads));
 
-         var watch = Stopwatch.StartNew();
-         var results = new TOutput[items.Count];
-         Parallel.For(0,
-                      items.Count,
-                      threads.ParallelOptions,
-                      i => results[i] = processItem(items[i]));
-         watch.Stop();
-         this.Log().Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g} handled {items.Count} items ({threads.Threads} threads)");
-         return new List<TOutput>(results);
-      });
-   }
+   public void SetLabelText(string labelText) { }
 
-   public void SetLabelText(string labelText)
-   {
-      // Invisible - no-op
-   }
-
-   public void RunGc()
-   {
-      // No-op for invisible runner
-   }
-
-   public void Close()
-   {
-      // Invisible - no-op
-   }
+   public void Close() { }
 
    public TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action)
    {
@@ -86,15 +58,10 @@ public class InvisibleTaskRunner : ITaskProgressRunner
       return result;
    }
 
-   public Task<TResult> RunOnBackgroundThreadWithSpinningProgressDialogAsync<TResult>(string message, Func<TResult> action)
-   {
-      return TaskCE.Run(() => RunOnBackgroundThreadWithSpinningProgressDialog(message, action));
-   }
+   public Task<TResult> RunOnBackgroundThreadWithSpinningProgressDialogAsync<TResult>(string message, Func<TResult> action) =>
+      TaskCE.Run(() => RunOnBackgroundThreadWithSpinningProgressDialog(message, action));
 
    public bool IsHidden() => true;
 
-   public void Dispose()
-   {
-      Close();
-   }
+   public void Dispose() { }
 }

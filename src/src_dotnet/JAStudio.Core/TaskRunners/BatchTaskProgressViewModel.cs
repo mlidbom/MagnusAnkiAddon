@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace JAStudio.Core.TaskRunners;
 
@@ -39,15 +40,14 @@ public class BatchTaskProgressViewModel : TaskProgressViewModel
 
    /// <summary>
    /// Update progress values and compute time estimates in one call.
-   /// Consolidates the progress + timing logic that was previously
-   /// duplicated across sync and async paths in the runner.
+   /// Uses a monotonic <see cref="Stopwatch"/> for accurate elapsed time.
    /// </summary>
-   public void UpdateProgressWithTiming(int current, int total, DateTime startTime)
+   public void UpdateProgressWithTiming(int current, int total, Stopwatch stopwatch)
    {
       Total = total;
       Current = current;
 
-      var elapsedSeconds = (DateTime.Now - startTime).TotalSeconds;
+      var elapsedSeconds = stopwatch.Elapsed.TotalSeconds;
       var estimatedTotalSeconds = current > 0 ? (elapsedSeconds / current) * total : 0;
       var estimatedRemainingSeconds = current > 0 ? estimatedTotalSeconds - elapsedSeconds : 0;
 

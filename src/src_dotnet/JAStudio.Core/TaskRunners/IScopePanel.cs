@@ -9,8 +9,4 @@ namespace JAStudio.Core.TaskRunners;
 /// </summary>
 public interface IScopePanel : IDisposable
 {
-   /// <summary>
-   /// Stop the elapsed timer and return the final elapsed time string.
-   /// </summary>
-   string GetFinalElapsed();
 }

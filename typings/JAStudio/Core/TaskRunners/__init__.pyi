@@ -1,6 +1,7 @@
 import typing, abc
-from System import DateTime, Func_2, Func_1, IDisposable, Action_1, Action, Func_3, Func_4, IEquatable_1
+from System.Diagnostics import Stopwatch
 from System.Collections.Generic import List_1
+from System import Func_2, Func_1, IDisposable, Action_1, Action, Func_3, Func_4, IEquatable_1
 from System.Threading.Tasks import Task_1, Task, ParallelOptions
 from System.ComponentModel import INotifyPropertyChanged
 from System.Collections.ObjectModel import ObservableCollection_1
@@ -30,7 +31,7 @@ class BatchTaskProgressViewModel(TaskProgressViewModel):
     @property
     def WasCanceled(self) -> bool: ...
     def SetProgress(self, current: int, total: int) -> None: ...
-    def UpdateProgressWithTiming(self, current: int, total: int, startTime: DateTime) -> None: ...
+    def UpdateProgressWithTiming(self, current: int, total: int, stopwatch: Stopwatch) -> None: ...
 
 
 class InvisibleTaskRunner(ITaskProgressRunner):
@@ -38,7 +39,6 @@ class InvisibleTaskRunner(ITaskProgressRunner):
     def Close(self) -> None: ...
     def Dispose(self) -> None: ...
     def IsHidden(self) -> bool: ...
-    def RunGc(self) -> None: ...
     def SetLabelText(self, labelText: str) -> None: ...
     # Skipped ProcessWithProgress due to it being static, abstract and generic.
 
@@ -95,8 +95,7 @@ class InvisibleTaskRunner(ITaskProgressRunner):
 
 
 class IScopePanel(IDisposable, typing.Protocol):
-    @abc.abstractmethod
-    def GetFinalElapsed(self) -> str: ...
+    pass
 
 
 class ITaskProgressRunner(IDisposable, typing.Protocol):
@@ -190,7 +189,11 @@ class ITaskProgressRunner(IDisposable, typing.Protocol):
 
 
 
-class TaskProgressScopeViewModel(IDisposable, INotifyPropertyChanged):
+class NotifyPropertyChangedBase(INotifyPropertyChanged, abc.ABC):
+    pass
+
+
+class TaskProgressScopeViewModel(NotifyPropertyChangedBase, IDisposable):
     def __init__(self, heading: str) -> None: ...
     @property
     def Children(self) -> ObservableCollection_1[TaskProgressViewModel]: ...
@@ -203,10 +206,9 @@ class TaskProgressScopeViewModel(IDisposable, INotifyPropertyChanged):
     @Heading.setter
     def Heading(self, value: str) -> str: ...
     def Dispose(self) -> None: ...
-    def GetFinalElapsed(self) -> str: ...
 
 
-class TaskProgressViewModel(INotifyPropertyChanged):
+class TaskProgressViewModel(NotifyPropertyChangedBase):
     def __init__(self) -> None: ...
     @property
     def IsCancelVisible(self) -> bool: ...

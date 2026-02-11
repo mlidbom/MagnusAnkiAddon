@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
 namespace JAStudio.Core.TaskRunners;
 
@@ -13,10 +10,8 @@ namespace JAStudio.Core.TaskRunners;
 /// The elapsed timer uses <see cref="System.Threading.Timer"/> so it works without
 /// any UI framework dependency.
 /// </summary>
-public class TaskProgressScopeViewModel : INotifyPropertyChanged, IDisposable
+public class TaskProgressScopeViewModel : NotifyPropertyChangedBase, IDisposable
 {
-   public event PropertyChangedEventHandler? PropertyChanged;
-
    readonly Stopwatch _stopwatch = Stopwatch.StartNew();
    System.Threading.Timer? _timer;
 
@@ -53,29 +48,10 @@ public class TaskProgressScopeViewModel : INotifyPropertyChanged, IDisposable
       ElapsedText = $"{elapsed.Hours:D2}:{elapsed.Minutes:D2}:{elapsed.Seconds:D2}";
    }
 
-   public string GetFinalElapsed()
+   public void Dispose()
    {
       _stopwatch.Stop();
       _timer?.Dispose();
       _timer = null;
-      var elapsed = _stopwatch.Elapsed;
-      return $"{elapsed.Hours:D2}:{elapsed.Minutes:D2}:{elapsed.Seconds:D2}";
-   }
-
-   public void Dispose()
-   {
-      _timer?.Dispose();
-      _timer = null;
-   }
-
-   void OnPropertyChanged([CallerMemberName] string? propertyName = null) =>
-      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-   bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-   {
-      if(EqualityComparer<T>.Default.Equals(field, value)) return false;
-      field = value;
-      OnPropertyChanged(propertyName);
-      return true;
    }
 }
