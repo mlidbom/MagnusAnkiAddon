@@ -26,27 +26,22 @@ public class VocabNoteFactory
             return Create(question, "", new List<string>());
         }
 
-        var created = Create(question, lookupResult.FormatAnswer(), lookupResult.Readings(), note =>
-        {
-            note.Tags.Set(Tags.Source.Jamdict);
-            note.UpdateGeneratedData();
-        });
+        var created = Create(question, lookupResult.FormatAnswer(), lookupResult.Readings());
+        created.Tags.Set(Tags.Source.Jamdict);
+        created.UpdateGeneratedData();
         return created;
     }
 
     public VocabNote Create(string question, string answer, List<string> readings, Action<VocabNote>? initializer = null)
     {
         var note = new VocabNote(_noteServices);
-        using(note.RecursiveFlushGuard.PauseFlushing())
-        {
-            note.Question.Set(question);
-            note.SetField(NoteFieldsConstants.Vocab.SourceAnswer, answer);
-            note.SetReadings(readings);
+        note.Question.Set(question);
+        note.SetField(NoteFieldsConstants.Vocab.SourceAnswer, answer);
+        note.SetReadings(readings);
 
-            if(initializer != null)
-            {
-                initializer(note);
-            }
+        if(initializer != null)
+        {
+            initializer(note);
         }
 
         _collection.Vocab.Add(note);
@@ -55,24 +50,9 @@ public class VocabNoteFactory
 
     public VocabNote CreateFromUserData(string question, string answer, List<string> readings, Action<VocabNote>? initializer = null)
     {
-        var note = new VocabNote(_noteServices);
-        using(note.RecursiveFlushGuard.PauseFlushing())
-        {
-            note.Question.Set(question);
-            note.SetField(NoteFieldsConstants.Vocab.SourceAnswer, answer);
-            note.SetReadings(readings);
-
-            if(initializer != null)
-            {
-                initializer(note);
-            }
-        }
-
-        _collection.Vocab.Add(note);
-
+        var note = Create(question, answer, readings, initializer);
         note.User.Answer.Set(note.GetField(NoteFieldsConstants.Vocab.SourceAnswer));
         note.SetField(NoteFieldsConstants.Vocab.SourceAnswer, "");
-
         return note;
     }
 }

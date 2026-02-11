@@ -71,11 +71,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       data.Id = CreateTypedId(Guid.NewGuid());
       _noteServices.AnkiNoteIdMap.Register(ankiNoteId, data.Id);
       var note = _noteConstructor(_noteServices, data);
-      using(note.RecursiveFlushGuard.PauseFlushing())
-      {
-         note.UpdateGeneratedData();
-      }
-
+      note.UpdateGeneratedData();
       AddToCache(note);
    }
 
@@ -90,11 +86,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       data.Id = noteId;
       var note = _noteConstructor(_noteServices, data);
       note.CopyStudyingStatusFrom(existing);
-      using(note.RecursiveFlushGuard.PauseFlushing())
-      {
-         note.UpdateGeneratedData();
-      }
-
+      note.UpdateGeneratedData();
       _monitor.Read(() => RefreshInCacheCore(note));
       NotifyUpdateListeners(note);
    }
@@ -123,13 +115,10 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       _monitor.Read(() =>
       {
          var existing = WithIdOrNoneCore(note.GetId());
-         if(existing != null)
-         {
-            RefreshInCacheCore(note);
-         } else
-         {
-            AddToCacheCore(note);
-         }
+         if(existing == null)
+            throw new InvalidOperationException($"JpNoteUpdated called for {typeof(TNote).Name} with id {note.GetId()} but it is not in the cache. Only persisted (cached) notes should flush.");
+
+         RefreshInCacheCore(note);
       });
 
       NotifyUpdateListeners(note);
@@ -265,5 +254,7 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
       _byQuestion[snapshot.Question].Add(note);
 
       InheritorAddToCache(note, snapshot);
+
+      note.MarkAsPersisted();
    }
 }

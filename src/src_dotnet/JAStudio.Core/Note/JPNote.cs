@@ -10,6 +10,7 @@ public abstract class JPNote
    public NoteFlushGuard RecursiveFlushGuard { get; }
    public NoteServices Services { get; }
    int _hashValue;
+   bool _persisted;
 
    // Dictionary tracks card suspend status: true = active/unsuspended, false = suspended
    readonly Dictionary<string, bool> _cardStatus = new();
@@ -168,8 +169,11 @@ public abstract class JPNote
 
    public string GetField(string fieldName) => _fields.TryGetValue(fieldName, out var value) ? value : string.Empty;
 
+   internal void MarkAsPersisted() => _persisted = true;
+
    public void Flush()
    {
+      if(!_persisted) return;
       RecursiveFlushGuard.Flush();
    }
 

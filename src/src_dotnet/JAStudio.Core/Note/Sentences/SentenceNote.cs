@@ -154,13 +154,9 @@ public class SentenceNote : JPNote
     public static SentenceNote CreateTestNote(NoteServices services, string question, string answer)
     {
         var note = new SentenceNote(services);
-        using(note.RecursiveFlushGuard.PauseFlushing())
-        {
-            note.SourceQuestion.Set(question);
-            note.User.Answer.Set(answer);
-            note.UpdateGeneratedData();
-        }
-
+        note.SourceQuestion.Set(question);
+        note.User.Answer.Set(answer);
+        note.UpdateGeneratedData();
         services.Collection.Sentences.Add(note);
         return note;
     }
@@ -175,36 +171,33 @@ public class SentenceNote : JPNote
         HashSet<Tag>? tags = null)
     {
         var note = new SentenceNote(services);
-        using(note.RecursiveFlushGuard.PauseFlushing())
+        note.SourceQuestion.Set(question);
+        note.SourceAnswer.Set(answer);
+        note.Screenshot.Set(screenshot);
+        note.UpdateGeneratedData();
+
+        if(string.IsNullOrWhiteSpace(audio))
         {
-            note.SourceQuestion.Set(question);
-            note.SourceAnswer.Set(answer);
-            note.Screenshot.Set(screenshot);
-            note.UpdateGeneratedData();
+            note.Tags.Set(Note.Tags.TTSAudio);
+        }
+        else
+        {
+            note.Audio.SetRawValue(audio.Trim());
+        }
 
-            if(string.IsNullOrWhiteSpace(audio))
+        if(highlightedVocab != null)
+        {
+            foreach(var vocab in highlightedVocab)
             {
-                note.Tags.Set(Note.Tags.TTSAudio);
+                note.Configuration.AddHighlightedWord(vocab);
             }
-            else
-            {
-                note.Audio.SetRawValue(audio.Trim());
-            }
+        }
 
-            if(highlightedVocab != null)
+        if(tags != null)
+        {
+            foreach(var tag in tags)
             {
-                foreach(var vocab in highlightedVocab)
-                {
-                    note.Configuration.AddHighlightedWord(vocab);
-                }
-            }
-
-            if(tags != null)
-            {
-                foreach(var tag in tags)
-                {
-                    note.Tags.Set(tag);
-                }
+                note.Tags.Set(tag);
             }
         }
 
@@ -215,12 +208,8 @@ public class SentenceNote : JPNote
     public static SentenceNote Create(NoteServices services, string question)
     {
         var note = new SentenceNote(services);
-        using(note.RecursiveFlushGuard.PauseFlushing())
-        {
-            note.SourceQuestion.Set(question);
-            note.UpdateGeneratedData();
-        }
-
+        note.SourceQuestion.Set(question);
+        note.UpdateGeneratedData();
         services.Collection.Sentences.Add(note);
         return note;
     }

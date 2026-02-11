@@ -485,14 +485,10 @@ public class KanjiNote : JPNote
    public static KanjiNote Create(NoteServices services, string question, string answer, string onReadings, string kunReading)
    {
       var note = new KanjiNote(services);
-      using(note.RecursiveFlushGuard.PauseFlushing())
-      {
-         note.SetQuestion(question);
-         note.UserAnswer = answer;
-         note.ReadingOnHtml = onReadings;
-         note.ReadingKunHtml = kunReading;
-      }
-
+      note.SetQuestion(question);
+      note.UserAnswer = answer;
+      note.ReadingOnHtml = onReadings;
+      note.ReadingKunHtml = kunReading;
       services.Collection.Kanji.Add(note);
       return note;
    }
