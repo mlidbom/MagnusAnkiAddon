@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Compze.Utilities.Logging;
@@ -97,11 +98,37 @@ public class JPCollection
    public void ReloadFromAnkiDatabase()
    {
       using var runner = NoteServices.TaskRunner.Current($"Populating caches from {NoteRepositoryType}");
+      // ReSharper disable once ExplicitCallerInfoArgument
+      using var _ = this.Log().Info().LogMethodExecutionTime("====== Reloading JAStudio data ======");
+
       ClearCaches();
-      LoadFromRepository();
-      LoadAnkiUserData();
+      var repoLoad = Task.Run(LoadFromRepository);
+
+      var studyingStatuses = LoadAnkiUserDataAsync();
+      Task.WaitAll(repoLoad, studyingStatuses);
+
+      var vocabStatuses = studyingStatuses.Result
+                                          .Where(s => s.NoteTypeName == NoteTypes.Vocab)
+                                          .GroupBy(s => s.AnkiNoteId)
+                                          .ToDictionary(g => g.Key, g => g.ToList());
+      var kanjiStatuses = studyingStatuses.Result
+                                          .Where(s => s.NoteTypeName == NoteTypes.Kanji)
+                                          .GroupBy(s => s.AnkiNoteId)
+                                          .ToDictionary(g => g.Key, g => g.ToList());
+      var sentenceStatuses = studyingStatuses.Result
+                                             .Where(s => s.NoteTypeName == NoteTypes.Sentence)
+                                             .GroupBy(s => s.AnkiNoteId)
+                                             .ToDictionary(g => g.Key, g => g.ToList());
+
+      runner.RunOnBackgroundThreadWithSpinningProgressDialog("Setting studying statuses",
+                                                             () =>
+                                                             {
+                                                                Vocab.Cache.SetStudyingStatuses(vocabStatuses);
+                                                                Kanji.Cache.SetStudyingStatuses(kanjiStatuses);
+                                                                Sentences.Cache.SetStudyingStatuses(sentenceStatuses);
+                                                             });
    }
-   
+
    INoteRepository ConfiguredRepository => _config.LoadNotesFromFileSystem.Value ? _noteRepository : new AnkiNoteRepository(NoteServices);
 
    void LoadFromRepository()
@@ -118,7 +145,7 @@ public class JPCollection
          runner.ProcessWithProgressAsync(allNotes.Sentences, Sentences.Cache.AddToCache, "Pushing sentence notes into cache"));
    }
 
-   void LoadAnkiUserData()
+   async Task<List<CardStudyingStatus>> LoadAnkiUserDataAsync()
    {
       using var _ = this.Log().Warning().LogMethodExecutionTime();
       var dbPath = AnkiFacade.Col.DbFilePath();
@@ -136,23 +163,6 @@ public class JPCollection
          NoteServices.AnkiNoteIdMap.Register(ankiId, noteId);
       }
 
-      var studyingStatuses = studyingStatusesTask.Result;
-
-      var vocabStatuses = studyingStatuses
-                         .Where(s => s.NoteTypeName == NoteTypes.Vocab)
-                         .GroupBy(s => s.AnkiNoteId)
-                         .ToDictionary(g => g.Key, g => g.ToList());
-      var kanjiStatuses = studyingStatuses
-                         .Where(s => s.NoteTypeName == NoteTypes.Kanji)
-                         .GroupBy(s => s.AnkiNoteId)
-                         .ToDictionary(g => g.Key, g => g.ToList());
-      var sentenceStatuses = studyingStatuses
-                            .Where(s => s.NoteTypeName == NoteTypes.Sentence)
-                            .GroupBy(s => s.AnkiNoteId)
-                            .ToDictionary(g => g.Key, g => g.ToList());
-
-      Vocab.Cache.SetStudyingStatuses(vocabStatuses);
-      Kanji.Cache.SetStudyingStatuses(kanjiStatuses);
-      Sentences.Cache.SetStudyingStatuses(sentenceStatuses);
+      return await studyingStatusesTask;
    }
 }

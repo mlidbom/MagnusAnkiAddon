@@ -138,6 +138,7 @@ class ITaskProgressRunner(IDisposable, typing.Protocol):
             RunOnBackgroundThreadWithSpinningProgressDialog_1_TResult = ITaskProgressRunner.RunOnBackgroundThreadWithSpinningProgressDialog_MethodGroup.RunOnBackgroundThreadWithSpinningProgressDialog_1_T1
             def __call__(self, message: str, action: Func_1[RunOnBackgroundThreadWithSpinningProgressDialog_1_TResult]) -> RunOnBackgroundThreadWithSpinningProgressDialog_1_TResult:...
 
+        def __call__(self, message: str, action: Action) -> None:...
 
     # Skipped RunOnBackgroundThreadWithSpinningProgressDialogAsync due to it being static, abstract and generic.
 

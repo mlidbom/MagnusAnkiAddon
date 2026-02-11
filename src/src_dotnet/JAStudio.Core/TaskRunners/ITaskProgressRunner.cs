@@ -18,6 +18,7 @@ public interface ITaskProgressRunner : IDisposable
    Task ProcessWithProgressAsync<TInput>(List<TInput> items, Action<TInput> processItem, string message) => ProcessWithProgressAsync(items, processItem.AsFunc(), message, ThreadCount.One);
    Task ProcessWithProgressAsync<TInput>(List<TInput> items, Action<TInput> processItem, string message, ThreadCount threadCount) => ProcessWithProgressAsync(items, processItem.AsFunc(), message, threadCount);
 
+   void RunOnBackgroundThreadWithSpinningProgressDialog(string message, Action action) => RunOnBackgroundThreadWithSpinningProgressDialog(message, action.AsFunc());
    TResult RunOnBackgroundThreadWithSpinningProgressDialog<TResult>(string message, Func<TResult> action);
    Task<TResult> RunOnBackgroundThreadWithSpinningProgressDialogAsync<TResult>(string message, Func<TResult> action);
    Task RunOnBackgroundThreadWithSpinningProgressDialogAsync(string message, Action action) => RunOnBackgroundThreadWithSpinningProgressDialogAsync(message, action.AsFunc());
