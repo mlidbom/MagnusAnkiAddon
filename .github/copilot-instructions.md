@@ -29,6 +29,23 @@ No task should be considered complete until:
 
 Do **not** suppress type errors with `# pyright: ignore` or `# type: ignore` comments. The code should almost always be fixed or restructured to satisfy the type checker. If you cannot find a way to make the type checker understand the code, ask for permission before adding a suppression.
 
+## Linux / CI Agent Setup
+
+When developing on Linux (e.g. GitHub Actions runners, Copilot coding agents):
+
+```bash
+./setup-dev.sh                      # One-time: creates venv, installs deps, builds .NET
+
+# Run .NET tests (set JASTUDIO_VENV_PATH so pythonnet can find the venv)
+JASTUDIO_VENV_PATH="$(pwd)/venv" dotnet test src/src_dotnet/JAStudio.slnx --verbosity quiet
+
+# Run Python tests
+source venv/bin/activate && pytest src/tests/jaspythonutils_tests -v
+```
+
+**Note:** The `BulkLoaderTests` require a test Anki database (`src/tests/collection.anki2`) that is not currently available in CI.
+Exclude them with: `--filter "FullyQualifiedName!~BulkLoaderTests"`
+
 ## Project Architecture
 
 ### Python as Thin Layer
@@ -39,20 +56,21 @@ This project is actively porting UI from Python/PyQt6 to C#/Avalonia. **Use Pyth
 - ❌ Python should only be a thin integration layer with Anki
 
 ### Directory Structure
-- `src\src_dotnet\` - C# source code (Avalonia UI, Core logic, Python interop)
-  - `JAStudio.UI\` - Avalonia UI (porting target)
-  - `JAStudio.Core\` - Domain logic (already ported)
-  - `JAStudio.PythonInterop\` - Python ↔ C# bridge
-- `src\jastudio_src\` - Python source (Anki addon, thin wrapper)
-- `src\runtime_binaries\` - Compiled .NET DLLs (auto-generated, don't edit)
-- `typings\` - Python type stubs for C# (auto-generated, don't edit)
+- `src/src_dotnet/` - C# source code (Avalonia UI, Core logic, Python interop)
+  - `JAStudio.UI/` - Avalonia UI (porting target)
+  - `JAStudio.Core/` - Domain logic (already ported)
+  - `JAStudio.PythonInterop/` - Python ↔ C# bridge
+- `src/jastudio_src/` - Python source (Anki addon, thin wrapper)
+- `src/runtime_binaries/` - Compiled .NET DLLs (auto-generated, don't edit)
+- `typings/` - Python type stubs for C# (auto-generated, don't edit)
 
 ### UI Porting Status
 Essentially done now.
 
 ## Python Environment
 
-The project uses a virtual environment at `venv\`. Python dependencies are managed via `requirements.txt`.
+The project uses a virtual environment at `venv/`. Python dependencies are managed via `requirements.txt`.
+On Linux, run `./setup-dev.sh` to create the venv and install all dependencies.
 
 ## Exception Handling
 
