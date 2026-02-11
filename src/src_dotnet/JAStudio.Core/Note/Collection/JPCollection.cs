@@ -102,6 +102,8 @@ public partial class JPCollection : IDisposable
    /// <summary>Clear and reload all caches from the Anki DB. Called after sync or collection reload.</summary>
    public void ReloadFromAnkiDatabase()
    {
+      // ReSharper disable once ExplicitCallerInfoArgument
+      using var _ = this.Log().Info().LogMethodExecutionTime("========== Loading JAStudio data ===========");
       using var runner = NoteServices.TaskRunner.Current($"Populating caches from {NoteRepositoryType}");
       ClearCaches();
       LoadFromRepository();
