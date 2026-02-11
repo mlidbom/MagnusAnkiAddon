@@ -33,16 +33,11 @@ public partial class MultiTaskProgressDialog : Window
     /// Call once when the outermost task scope is entered.
     /// Must be called on the UI thread.
     /// </summary>
-    public static void Hold(string windowTitle)
+    public static void Hold()
     {
         Dispatcher.UIThread.VerifyAccess();
         _holdCount++;
-        if (_instance == null || !_instance.IsVisible)
-        {
-            _instance = new MultiTaskProgressDialog { Title = windowTitle };
-            WindowPositioner.PositionNearCursor(_instance);
-            _instance.Show();
-        }
+        EnsureVisible();
     }
 
     /// <summary>
@@ -58,42 +53,44 @@ public partial class MultiTaskProgressDialog : Window
     }
 
     /// <summary>
-    /// Create a new progress panel and add it to the shared dialog.
+    /// Create a new scope panel and add it to the shared dialog.
     /// Opens the dialog if it is not already visible.
     /// Must be called on the UI thread.
     /// </summary>
-    public static TaskProgressPanel CreatePanel(string windowTitle, string message, bool allowCancel)
+    public static TaskProgressScopePanel CreateScopePanel(string scopeTitle)
     {
         Dispatcher.UIThread.VerifyAccess();
+        EnsureVisible();
 
-        if (_instance == null || !_instance.IsVisible)
-        {
-            _instance = new MultiTaskProgressDialog { Title = windowTitle };
-            WindowPositioner.PositionNearCursor(_instance);
-            _instance.Show();
-        }
-
-        var panel = new TaskProgressPanel();
-        panel.SetMessage(message);
-        panel.ShowCancelButton(allowCancel);
-        _instance.Container.Children.Add(panel);
-
-        return panel;
+        var scopePanel = new TaskProgressScopePanel();
+        scopePanel.SetHeading(scopeTitle);
+        _instance!.Container.Children.Add(scopePanel);
+        return scopePanel;
     }
 
     /// <summary>
-    /// Remove a panel from the shared dialog.
+    /// Remove a scope panel from the shared dialog.
     /// Closes the dialog when the last panel is removed and no holds are active.
     /// Must be called on the UI thread.
     /// </summary>
-    public static void RemovePanel(TaskProgressPanel panel)
+    public static void RemoveScopePanel(TaskProgressScopePanel scopePanel)
     {
         Dispatcher.UIThread.VerifyAccess();
 
         if (_instance == null) return;
 
-        _instance.Container.Children.Remove(panel);
+        _instance.Container.Children.Remove(scopePanel);
         CloseIfEmpty();
+    }
+
+    static void EnsureVisible()
+    {
+        if (_instance == null || !_instance.IsVisible)
+        {
+            _instance = new MultiTaskProgressDialog();
+            WindowPositioner.PositionNearCursor(_instance);
+            _instance.Show();
+        }
     }
 
     static void CloseIfEmpty()

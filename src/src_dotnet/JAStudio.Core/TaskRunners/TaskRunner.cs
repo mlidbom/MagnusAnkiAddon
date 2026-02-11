@@ -8,9 +8,14 @@ public class TaskRunner
    readonly JapaneseConfig _config;
    internal TaskRunner(JapaneseConfig config) => _config = config;
 
-   Func<string, string, bool, bool, ITaskProgressRunner>? _uiTaskRunnerFactory;
+   Func<string, bool, IScopePanel>? _uiScopePanelFactory;
+   Func<IScopePanel, string, bool, ITaskProgressRunner>? _uiTaskRunnerFactory;
 
-   public void SetUiTaskRunnerFactory(Func<string, string, bool, bool, ITaskProgressRunner> factory)
+   /// <summary>
+   /// Register the factory that creates a visible <see cref="ITaskProgressRunner"/>
+   /// whose child panels live inside the given <see cref="IScopePanel"/>.
+   /// </summary>
+   public void SetUiTaskRunnerFactory(Func<IScopePanel, string, bool, ITaskProgressRunner> factory)
    {
       if(_uiTaskRunnerFactory != null)
       {
@@ -20,22 +25,36 @@ public class TaskRunner
       _uiTaskRunnerFactory = factory;
    }
 
-   Action<string>? _holdDialog;
+   /// <summary>
+   /// Register the factory that creates a scope-level panel in the UI.
+   /// The panel shows a heading and elapsed time for the scope.
+   /// </summary>
+   public void SetUiScopePanelFactory(Func<string, bool, IScopePanel> factory)
+   {
+      if(_uiScopePanelFactory != null)
+      {
+         throw new InvalidOperationException("UI scope panel factory already set.");
+      }
+
+      _uiScopePanelFactory = factory;
+   }
+
+   Action? _holdDialog;
    Action? _releaseDialog;
 
-   public void SetDialogLifetimeCallbacks(Action<string> hold, Action release)
+   public void SetDialogLifetimeCallbacks(Action hold, Action release)
    {
       _holdDialog = hold;
       _releaseDialog = release;
    }
 
-   internal ITaskProgressRunner Create(string windowTitle, string labelText, bool? visible = null, bool allowCancel = true, bool modal = false)
+   internal ITaskProgressRunner Create(IScopePanel? scopePanel, string labelText, bool? visible = null, bool allowCancel = true)
    {
       visible ??= !App.IsTesting;
 
-      if(!visible.Value)
+      if(!visible.Value || scopePanel == null)
       {
-         return new InvisibleTaskRunner(windowTitle, labelText);
+         return new InvisibleTaskRunner(labelText);
       }
 
       if(_uiTaskRunnerFactory == null)
@@ -43,7 +62,19 @@ public class TaskRunner
          throw new InvalidOperationException("No UI task runner factory set. Set it with TaskRunner.SetUiTaskRunnerFactory().");
       }
 
-      return _uiTaskRunnerFactory(windowTitle, labelText, allowCancel, modal);
+      return _uiTaskRunnerFactory(scopePanel, labelText, allowCancel);
+   }
+
+   internal IScopePanel? CreateScopePanel(string scopeTitle, bool visible)
+   {
+      if(!visible) return null;
+
+      if(_uiScopePanelFactory == null)
+      {
+         throw new InvalidOperationException("No UI scope panel factory set. Set it with TaskRunner.SetUiScopePanelFactory().");
+      }
+
+      return _uiScopePanelFactory(scopeTitle, true);
    }
 
    int _depth;
@@ -54,17 +85,18 @@ public class TaskRunner
    /// Nested calls share the same progress dialog window which stays open and
    /// in place until the outermost scope is disposed. Each individual method
    /// call on the scope gets its own progress panel within that dialog.
+   /// Each scope gets its own heading panel and logs its total elapsed time.
    /// </summary>
-   public ITaskProgressRunner Current(string windowTitle, bool forceHide = false, bool allowCancel = true, bool modal = false)
+   public ITaskProgressRunner Current(string scopeTitle, bool forceHide = false, bool allowCancel = true)
    {
       var visible = !App.IsTesting && !forceHide;
       _depth++;
       if(_depth == 1 && visible)
       {
-         _holdDialog?.Invoke(windowTitle);
+         _holdDialog?.Invoke();
       }
 
-      return new TaskRunnerScope(this, windowTitle, visible, allowCancel, modal);
+      return new TaskRunnerScope(this, scopeTitle, visible, allowCancel);
    }
 
    internal void OnScopeDisposed()

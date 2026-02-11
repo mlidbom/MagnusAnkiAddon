@@ -9,9 +9,9 @@ namespace JAStudio.Core.TaskRunners;
 
 public class InvisibleTaskRunner : ITaskProgressRunner
 {
-   public InvisibleTaskRunner(string windowTitle, string labelText)
+   public InvisibleTaskRunner(string labelText)
    {
-      this.Log().Debug($"##--InvisibleTaskRunner--## Created for {windowTitle} - {labelText}");
+      this.Log().Debug($"##--InvisibleTaskRunner--## Created for {labelText}");
    }
 
    public List<TOutput> ProcessWithProgress<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)

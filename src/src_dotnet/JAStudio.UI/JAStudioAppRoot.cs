@@ -86,13 +86,22 @@ public class JAStudioAppRoot
 
       var root = new JAStudioAppRoot(app) { _uiThread = uiThread };
 
-      // Set up task runner factory
-      root.Services.TaskRunner.SetUiTaskRunnerFactory((windowTitle, labelText, allowCancel, modal) =>
-                                                         new AvaloniaTaskProgressRunner(windowTitle, labelText, allowCancel));
+      // Set up task runner factories
+      root.Services.TaskRunner.SetUiScopePanelFactory((scopeTitle, _) =>
+      {
+         var panel = Dispatcher.UIThread.Invoke(() => MultiTaskProgressDialog.CreateScopePanel(scopeTitle));
+         return new AvaloniaScopePanel(panel);
+      });
+
+      root.Services.TaskRunner.SetUiTaskRunnerFactory((scopePanel, labelText, allowCancel) =>
+      {
+         var avaloniaScope = (AvaloniaScopePanel)scopePanel;
+         return new AvaloniaTaskProgressRunner(avaloniaScope.Panel, labelText, allowCancel);
+      });
 
       // Keep the progress dialog window open across nested task scopes
       root.Services.TaskRunner.SetDialogLifetimeCallbacks(
-         windowTitle => Dispatcher.UIThread.Invoke(() => MultiTaskProgressDialog.Hold(windowTitle)),
+         () => Dispatcher.UIThread.Invoke(() => MultiTaskProgressDialog.Hold()),
          () => Dispatcher.UIThread.Post(() => MultiTaskProgressDialog.Release()));
 
       // Register Anki card operations so Core can suspend/unsuspend cards via Anki API

@@ -11,12 +11,17 @@ namespace JAStudio.UI.Dialogs;
 public class AvaloniaTaskProgressRunner : ITaskProgressRunner
 {
    TaskProgressPanel _panel = null!;
+   readonly TaskProgressScopePanel _scopePanel;
    readonly bool _allowCancel;
 
-   public AvaloniaTaskProgressRunner(string windowTitle, string labelText, bool allowCancel)
+   public AvaloniaTaskProgressRunner(TaskProgressScopePanel scopePanel, string labelText, bool allowCancel)
    {
+      _scopePanel = scopePanel;
       _allowCancel = allowCancel;
-      Dispatcher.UIThread.Invoke(() => _panel = MultiTaskProgressDialog.CreatePanel(windowTitle, labelText, allowCancel));
+      Dispatcher.UIThread.Invoke(() =>
+      {
+         _panel = _scopePanel.CreateChildPanel(labelText, allowCancel);
+      });
    }
 
    public bool IsHidden() => false;
@@ -218,7 +223,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
       return $"{timeSpan.Hours:D2}:{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
    }
 
-   public void Close() => Dispatcher.UIThread.Post(() => MultiTaskProgressDialog.RemovePanel(_panel));
+   public void Close() => Dispatcher.UIThread.Post(() => _scopePanel.RemoveChildPanel(_panel));
 
    public void Dispose() => Close();
 }
