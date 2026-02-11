@@ -15,13 +15,13 @@ namespace JAStudio.UI.Menus;
 public class JapaneseMainMenu
 {
    readonly Core.TemporaryServiceCollection _services;
-   readonly JAStudioAppRoot _appRoot;
+   readonly AppDialogs _dialogs;
    readonly OpenInAnkiMenus _openInAnkiMenus;
 
-   public JapaneseMainMenu(JAStudioAppRoot appRoot)
+   public JapaneseMainMenu(Core.TemporaryServiceCollection services, AppDialogs dialogs)
    {
-      _appRoot = appRoot;
-      _services = appRoot.Services;
+      _services = services;
+      _dialogs = dialogs;
       _openInAnkiMenus = new OpenInAnkiMenus(_services);
    }
 
@@ -90,12 +90,12 @@ public class JapaneseMainMenu
    {
       this.Log().Info("OnOptions() called!");
       this.Log().Info("Calling ShowOptionsDialog()...");
-      _appRoot.ShowOptionsDialog();
+      _dialogs.ShowOptionsDialog();
       this.Log().Info("ShowOptionsDialog() completed");
    }
 
-   void OnReadingsMappings() => _appRoot.ShowReadingsMappingsDialog();
+   void OnReadingsMappings() => _dialogs.ShowReadingsMappingsDialog();
 
    // Lookup menu actions
-   void OnOpenNote() => _appRoot.ToggleNoteSearchDialog();
+   void OnOpenNote() => _dialogs.ToggleNoteSearchDialog();
 }

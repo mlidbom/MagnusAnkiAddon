@@ -33,7 +33,7 @@ def build_right_click_menu(right_click_menu: QMenu, note: JPNote | None, selecti
 
     from jastudio.qt_adapters import qt_menu_adapter
     from jastudio.ui import dotnet_ui_root
-    menu_builder = dotnet_ui_root.CreateNoteContextMenu()
+    menu_builder = dotnet_ui_root.Menus.CreateNoteContextMenu()
 
     try:
         if note:
