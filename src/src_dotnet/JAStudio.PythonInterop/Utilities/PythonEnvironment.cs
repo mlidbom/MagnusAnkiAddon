@@ -192,13 +192,37 @@ public static class PythonEnvironment
          "/usr/lib64"
       };
 
+      // Try to find exact version match first (e.g. libpython3.12.so)
+      var pythonExe = Directory.GetFiles(basePython, "python3.*")
+                               .Where(f => !f.Contains('-'))
+                               .OrderByDescending(f => f)
+                               .FirstOrDefault();
+
+      string? versionSuffix = null;
+      if(pythonExe != null)
+      {
+         var exeName = Path.GetFileName(pythonExe);
+         // "python3.12" → "3.12"
+         if(exeName.StartsWith("python"))
+            versionSuffix = exeName["python".Length..];
+      }
+
       foreach(var dir in searchDirs)
       {
          if(!Directory.Exists(dir)) continue;
 
-         var so = Directory.GetFiles(dir, "libpython3*.so*")
+         // Prefer exact version match (e.g. libpython3.12.so)
+         if(versionSuffix != null)
+         {
+            var exactMatch = Path.Combine(dir, $"libpython{versionSuffix}.so");
+            if(File.Exists(exactMatch))
+               return exactMatch;
+         }
+
+         // Fallback: find any libpython3.X.so (not the unversioned libpython3.so)
+         var so = Directory.GetFiles(dir, "libpython3.*.so")
                            .Where(f => !f.EndsWith(".a"))
-                           .OrderByDescending(f => f.Length)
+                           .OrderByDescending(f => f)
                            .FirstOrDefault();
 
          if(so != null)
