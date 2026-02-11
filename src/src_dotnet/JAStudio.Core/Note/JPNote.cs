@@ -74,7 +74,7 @@ public abstract class JPNote
 
    public void SuspendAllCards()
    {
-      Services.AnkiCardOperations.SuspendAllCardsForNote(_id);
+      Services.CardOperations.SuspendAllCardsForNote(_id);
       
       // Update local status for all known card types
       var cardTypes = _cardStatus.Keys.ToList();
@@ -88,7 +88,7 @@ public abstract class JPNote
 
    public void UnsuspendAllCards()
    {
-      Services.AnkiCardOperations.UnsuspendAllCardsForNote(_id);
+      Services.CardOperations.UnsuspendAllCardsForNote(_id);
       
       // Update local status for all known card types
       var cardTypes = _cardStatus.Keys.ToList();

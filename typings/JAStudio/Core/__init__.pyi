@@ -2,7 +2,7 @@ import typing, abc
 from System import IDisposable, Action, Func_2
 from JAStudio.Core.Note.Collection import JPCollection, CardStudyingStatus
 from JAStudio.Core.Configuration import JapaneseConfig, ConfigurationStore
-from JAStudio.Core.Note import IBackendNoteCreator, NoteServices, NoteId, AnkiCardOperations, AnkiNoteIdMap
+from JAStudio.Core.Note import IBackendNoteCreator, NoteServices, NoteId, CardOperations, ExternalNoteIdMap
 from JAStudio.Core.Storage import INoteRepository
 from System.Collections.Generic import Dictionary_2, List_1
 from JAStudio.Core.TaskRunners import TaskRunner
@@ -10,7 +10,6 @@ from JAStudio.Core.UI.Web.Kanji import KanjiNoteRenderer
 from JAStudio.Core.UI.Web.Sentence import SentenceNoteRenderer
 from JAStudio.Core.UI.Web.Vocab import VocabNoteRenderer
 from JAStudio.Core.Batches import LocalNoteUpdater
-from JAStudio.Core.AnkiUtils import QueryBuilder
 from Compze.Utilities.DependencyInjection.Abstractions import IServiceLocator
 from JAStudio.Core.Note.Vocabulary import VocabNoteFactory
 
@@ -73,13 +72,13 @@ class StringExtensions(abc.ABC):
 
 class TemporaryServiceCollection(IDisposable):
     @property
-    def AnkiCardOperations(self) -> AnkiCardOperations: ...
-    @property
-    def AnkiNoteIdMap(self) -> AnkiNoteIdMap: ...
-    @property
     def App(self) -> App: ...
     @property
+    def CardOperations(self) -> CardOperations: ...
+    @property
     def ConfigurationStore(self) -> ConfigurationStore: ...
+    @property
+    def ExternalNoteIdMap(self) -> ExternalNoteIdMap: ...
     @classmethod
     @property
     def Instance(cls) -> TemporaryServiceCollection: ...
@@ -90,8 +89,6 @@ class TemporaryServiceCollection(IDisposable):
     def LocalNoteUpdater(self) -> LocalNoteUpdater: ...
     @property
     def NoteServices(self) -> NoteServices: ...
-    @property
-    def QueryBuilder(self) -> QueryBuilder: ...
     @property
     def Renderers(self) -> Renderers: ...
     @property

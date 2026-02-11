@@ -40,7 +40,7 @@ public class AppDialogs
       Dispatcher.UIThread.Invoke(() =>
       {
          var vocabCache = _app.Collection.Vocab;
-         var vocab = vocabCache.WithAnkiIdOrNone(vocabId);
+         var vocab = vocabCache.WithExternalIdOrNone(vocabId);
          if(vocab == null)
          {
             this.Log().Info($"Vocab note with ID {vocabId} not found");

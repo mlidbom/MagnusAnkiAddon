@@ -6,25 +6,24 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
 
-namespace JAStudio.Core.AnkiUtils;
+namespace JAStudio.Anki;
 
 /// <summary>
 /// Builds Anki search query strings for finding notes and cards.
-/// Ported from jastudio/ankiutils/query_builder.py
 /// </summary>
 public class QueryBuilder
 {
    readonly VocabCollection _vocab;
    readonly KanjiCollection _kanji;
    readonly AnalysisServices _analysisServices;
-   readonly AnkiNoteIdMap _ankiNoteIdMap;
+   readonly ExternalNoteIdMap _externalNoteIdMap;
 
-   internal QueryBuilder(VocabCollection vocab, KanjiCollection kanji, AnalysisServices analysisServices, AnkiNoteIdMap ankiNoteIdMap)
+   public QueryBuilder(VocabCollection vocab, KanjiCollection kanji, AnalysisServices analysisServices, ExternalNoteIdMap externalNoteIdMap)
    {
       _vocab = vocab;
       _kanji = kanji;
       _analysisServices = analysisServices;
-      _ankiNoteIdMap = ankiNoteIdMap;
+      _externalNoteIdMap = externalNoteIdMap;
    }
 
    const string ExcludedDeckSubstring = "*Excluded*";
@@ -103,16 +102,16 @@ public class QueryBuilder
 
     /// <summary>
     /// Creates a query to find notes by their domain NoteIds.
-    /// Converts to Anki long IDs for the query string.
+    /// Converts to external long IDs for the query string.
     /// </summary>
     public string NotesByIds(IEnumerable<NoteId> noteIds)
     {
-        var ankiIds = noteIds
-            .Select(id => _ankiNoteIdMap.ToAnkiId(id))
+        var externalIds = noteIds
+            .Select(id => _externalNoteIdMap.ToExternalId(id))
             .Where(id => id.HasValue)
             .Select(id => id!.Value)
             .ToList();
-        return ankiIds.Count > 0 ? $"{NoteFieldsConstants.NoteId}:{string.Join(",", ankiIds)}" : "";
+        return externalIds.Count > 0 ? $"{NoteFieldsConstants.NoteId}:{string.Join(",", externalIds)}" : "";
     }
 
     /// <summary>

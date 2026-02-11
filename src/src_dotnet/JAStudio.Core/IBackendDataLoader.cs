@@ -7,7 +7,7 @@ namespace JAStudio.Core;
 
 /// <summary>
 /// Loads backend-specific data (ID mappings and studying statuses) from the host system.
-/// Implemented by the Anki integration layer.
+/// Implemented by the integration layer (e.g. JAStudio.Anki).
 /// </summary>
 public interface IBackendDataLoader
 {
@@ -15,8 +15,8 @@ public interface IBackendDataLoader
 }
 
 /// <summary>
-/// Data loaded from the backend system (Anki) that is needed to fully populate caches.
-/// Contains the mapping between external (Anki) IDs and domain NoteIds,
+/// Data loaded from the backend system that is needed to fully populate caches.
+/// Contains the mapping between external IDs and domain NoteIds,
 /// plus per-card studying status information.
 /// </summary>
 public class BackendData

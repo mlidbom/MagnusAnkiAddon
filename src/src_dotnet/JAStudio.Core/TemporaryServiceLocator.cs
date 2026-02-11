@@ -1,6 +1,5 @@
 ﻿using System;
 using Compze.Utilities.DependencyInjection.Abstractions;
-using JAStudio.Core.AnkiUtils;
 using JAStudio.Core.Batches;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.Note;
@@ -22,13 +21,12 @@ public class TemporaryServiceCollection : IDisposable
 
    public App App => _serviceLocator.Resolve<App>();
    public ConfigurationStore ConfigurationStore => _serviceLocator.Resolve<ConfigurationStore>();
-   public QueryBuilder QueryBuilder => _serviceLocator.Resolve<QueryBuilder>();
 
    // Core services
    public LocalNoteUpdater LocalNoteUpdater => _serviceLocator.Resolve<LocalNoteUpdater>();
    public TaskRunner TaskRunner => _serviceLocator.Resolve<TaskRunner>();
-   public AnkiCardOperations AnkiCardOperations => _serviceLocator.Resolve<AnkiCardOperations>();
-   public AnkiNoteIdMap AnkiNoteIdMap => _serviceLocator.Resolve<AnkiNoteIdMap>();
+   public CardOperations CardOperations => _serviceLocator.Resolve<CardOperations>();
+   public ExternalNoteIdMap ExternalNoteIdMap => _serviceLocator.Resolve<ExternalNoteIdMap>();
 
    // Note services
    public NoteServices NoteServices => _serviceLocator.Resolve<NoteServices>();

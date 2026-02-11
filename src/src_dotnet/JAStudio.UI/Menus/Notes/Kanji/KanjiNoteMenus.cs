@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using JAStudio.Anki;
 using JAStudio.Core.Note;
+using JAStudio.UI;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
 
@@ -50,16 +51,16 @@ public class KanjiNoteMenus
         var items = new List<SpecMenuItem>
         {
             SpecMenuItem.Command(ShortcutFinger.Home1("Primary Vocabs"), 
-                () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder.VocabsLookupStrings(kanji.PrimaryVocab))),
+                () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder().VocabsLookupStrings(kanji.PrimaryVocab))),
             SpecMenuItem.Command(ShortcutFinger.Home2("Vocabs"), 
-                () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder.VocabWithKanji(kanji))),
+                () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder().VocabWithKanji(kanji))),
             SpecMenuItem.Command(ShortcutFinger.Home3("Radicals"), 
-                () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder.NotesLookup(kanji.GetRadicalsNotes()))),
+                () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder().NotesLookup(kanji.GetRadicalsNotes()))),
             SpecMenuItem.Command(ShortcutFinger.Home4("Kanji"), 
-                () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder.NotesLookup(
+                () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder().NotesLookup(
                                                           _services.App.Collection.Kanji.WithRadical(kanji.GetQuestion())))),
             SpecMenuItem.Command(ShortcutFinger.Home5("Sentences"), 
-                () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder.SentenceSearch(kanji.GetQuestion(), exact: true)))
+                () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder().SentenceSearch(kanji.GetQuestion(), exact: true)))
         };
 
         return SpecMenuItem.Submenu(ShortcutFinger.Home1("Open"), items);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Anki;
 using JAStudio.Core.Note;
+using JAStudio.UI;
 using JAStudio.UI.Utils;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 
@@ -124,7 +125,7 @@ public class NoteContextMenu
    /// </summary>
    public List<Avalonia.Controls.MenuItem> BuildVocabContextMenu(long vocabId, string selection, string clipboard)
    {
-      var noteId = _services.App.Collection.Vocab.AnkiIdToNoteId(vocabId);
+      var noteId = _services.App.Collection.Vocab.ExternalIdToNoteId(vocabId);
       if(noteId == null) return [];
       var specs = BuildVocabContextMenuSpec(noteId, selection, clipboard);
       return ConvertToAvaloniaMenuItems(specs);
@@ -135,7 +136,7 @@ public class NoteContextMenu
    /// </summary>
    public List<Avalonia.Controls.MenuItem> BuildKanjiContextMenu(long kanjiId, string selection, string clipboard)
    {
-      var noteId = _services.App.Collection.Kanji.AnkiIdToNoteId(kanjiId);
+      var noteId = _services.App.Collection.Kanji.ExternalIdToNoteId(kanjiId);
       if(noteId == null) return [];
       var specs = BuildKanjiContextMenuSpec(noteId, selection, clipboard);
       return ConvertToAvaloniaMenuItems(specs);
@@ -146,7 +147,7 @@ public class NoteContextMenu
    /// </summary>
    public List<Avalonia.Controls.MenuItem> BuildSentenceContextMenu(long sentenceId, string selection, string clipboard)
    {
-      var noteId = _services.App.Collection.Sentences.AnkiIdToNoteId(sentenceId);
+      var noteId = _services.App.Collection.Sentences.ExternalIdToNoteId(sentenceId);
       if(noteId == null) return [];
       var specs = BuildSentenceContextMenuSpec(noteId, selection, clipboard);
       return ConvertToAvaloniaMenuItems(specs);
@@ -330,7 +331,7 @@ public class NoteContextMenu
    // Action handlers
    void OnOpenInPreviewer(JPNote note)
    {
-      var query = _services.QueryBuilder.NotesLookup([note]);
+      var query = _services.QueryBuilder().NotesLookup([note]);
       AnkiFacade.Browser.ExecuteLookupAndShowPreviewer(query);
    }
 
@@ -351,7 +352,7 @@ public class NoteContextMenu
          var newVocab = _services.VocabNoteFactory.CreateWithDictionary(text);
          _services.LocalNoteUpdater.ReparseSentencesForVocab(newVocab);
 
-         var query = _services.QueryBuilder.NotesLookup([newVocab]);
+         var query = _services.QueryBuilder().NotesLookup([newVocab]);
          AnkiFacade.Browser.ExecuteLookupAndShowPreviewer(query);
       });
    }
@@ -361,7 +362,7 @@ public class NoteContextMenu
       var noteServices = _services.NoteServices;
       var newSentence = SentenceNote.Create(noteServices, text);
 
-      var query = _services.QueryBuilder.NotesLookup([newSentence]);
+      var query = _services.QueryBuilder().NotesLookup([newSentence]);
       AnkiFacade.Browser.ExecuteLookupAndShowPreviewer(query);
    }
 
@@ -371,7 +372,7 @@ public class NoteContextMenu
       // Create with placeholder values - user will need to fill them in
       var newKanji = KanjiNote.Create(noteServices, text, "TODO", "", "");
 
-      var query = _services.QueryBuilder.NotesLookup([newKanji]);
+      var query = _services.QueryBuilder().NotesLookup([newKanji]);
       AnkiFacade.Browser.ExecuteLookupAndShowPreviewer(query);
    }
 }

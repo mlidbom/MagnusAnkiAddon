@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using JAStudio.Anki;
+using JAStudio.UI;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
 
@@ -56,9 +57,9 @@ public class OpenInAnkiMenus
             new List<SpecMenuItem>
             {
                 CreateLookupSpec(ShortcutFinger.Home1("Open Exact matches | no sentences | reading cards"), 
-                    () => _services.QueryBuilder.ExactMatchesNoSentencesReadingCards(getSearchText())),
+                    () => _services.QueryBuilder().ExactMatchesNoSentencesReadingCards(getSearchText())),
                 CreateLookupSpec(ShortcutFinger.Home2("Open Exact matches with sentences"), 
-                    () => _services.QueryBuilder.ExactMatches(getSearchText()))
+                    () => _services.QueryBuilder().ExactMatches(getSearchText()))
             }
         );
     }
@@ -70,15 +71,15 @@ public class OpenInAnkiMenus
             new List<SpecMenuItem>
             {
                 CreateLookupSpec(ShortcutFinger.Home1("All kanji in string"), 
-                    () => _services.QueryBuilder.KanjiInString(getSearchText())),
+                    () => _services.QueryBuilder().KanjiInString(getSearchText())),
                 CreateLookupSpec(ShortcutFinger.Home2("By reading part"), 
-                    () => _services.QueryBuilder.KanjiWithReadingPart(getSearchText())),
+                    () => _services.QueryBuilder().KanjiWithReadingPart(getSearchText())),
                 CreateLookupSpec(ShortcutFinger.Home3("By reading exact"), 
-                    () => _services.QueryBuilder.NotesLookup(_services.App.Collection.Kanji.WithReading(getSearchText()))),
+                    () => _services.QueryBuilder().NotesLookup(_services.App.Collection.Kanji.WithReading(getSearchText()))),
                 CreateLookupSpec(ShortcutFinger.Home4("With radicals"), 
-                    () => _services.QueryBuilder.KanjiWithRadicalsInString(getSearchText())),
+                    () => _services.QueryBuilder().KanjiWithRadicalsInString(getSearchText())),
                 CreateLookupSpec(ShortcutFinger.Up1("With meaning"), 
-                    () => _services.QueryBuilder.KanjiWithMeaning(getSearchText()))
+                    () => _services.QueryBuilder().KanjiWithMeaning(getSearchText()))
             }
         );
     }
@@ -90,15 +91,15 @@ public class OpenInAnkiMenus
             new List<SpecMenuItem>
             {
                 CreateLookupSpec(ShortcutFinger.Home1("form -"), 
-                    () => _services.QueryBuilder.SingleVocabByFormExact(getSearchText())),
+                    () => _services.QueryBuilder().SingleVocabByFormExact(getSearchText())),
                 CreateLookupSpec(ShortcutFinger.Home2("form - read card only"), 
-                    () => _services.QueryBuilder.SingleVocabByFormExactReadCardOnly(getSearchText())),
+                    () => _services.QueryBuilder().SingleVocabByFormExactReadCardOnly(getSearchText())),
                 CreateLookupSpec(ShortcutFinger.Home3("form, reading or answer"), 
-                    () => _services.QueryBuilder.SingleVocabByQuestionReadingOrAnswerExact(getSearchText())),
+                    () => _services.QueryBuilder().SingleVocabByQuestionReadingOrAnswerExact(getSearchText())),
                 CreateLookupSpec(ShortcutFinger.Home4("Wildcard"), 
-                    () => _services.QueryBuilder.SingleVocabWildcard(getSearchText())),
+                    () => _services.QueryBuilder().SingleVocabWildcard(getSearchText())),
                 CreateLookupSpec(ShortcutFinger.Up1("Text words"), 
-                    () => _services.QueryBuilder.TextVocabLookup(getSearchText()))
+                    () => _services.QueryBuilder().TextVocabLookup(getSearchText()))
             }
         );
     }
@@ -110,9 +111,9 @@ public class OpenInAnkiMenus
             new List<SpecMenuItem>
             {
                 CreateLookupSpec(ShortcutFinger.Home1("Parse Vocabulary"), 
-                    () => _services.QueryBuilder.SentenceSearch(getSearchText(), exact: false)),
+                    () => _services.QueryBuilder().SentenceSearch(getSearchText(), exact: false)),
                 CreateLookupSpec(ShortcutFinger.Home2("Exact String"), 
-                    () => _services.QueryBuilder.SentenceSearch(getSearchText(), exact: true))
+                    () => _services.QueryBuilder().SentenceSearch(getSearchText(), exact: true))
             }
         );
     }

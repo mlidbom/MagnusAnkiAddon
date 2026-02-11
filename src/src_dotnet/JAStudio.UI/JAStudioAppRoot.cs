@@ -117,8 +117,8 @@ public class JAStudioAppRoot
          () => Dispatcher.UIThread.Invoke(() => MultiTaskProgressDialog.Hold()),
          () => Dispatcher.UIThread.Post(() => MultiTaskProgressDialog.Release()));
 
-      // Register Anki card operations so Core can suspend/unsuspend cards via Anki API
-      root.Services.AnkiCardOperations.SetImplementation(new AnkiCardOperationsImpl(root.Services.AnkiNoteIdMap));
+      // Register card operations so Core can suspend/unsuspend cards via the backend API
+      root.Services.CardOperations.SetImplementation(new AnkiCardOperationsImpl(root.Services.ExternalNoteIdMap));
 
       return root;
    }
@@ -151,7 +151,7 @@ public class JAStudioAppRoot
             if(_profileOpen)
             {
                CancelPendingReload();
-               BackgroundTaskManager.Run(() => _app.Collection.ReloadFromAnkiDatabase());
+               BackgroundTaskManager.Run(() => _app.Collection.ReloadFromBackend());
             }
 
             break;
@@ -187,8 +187,8 @@ public class JAStudioAppRoot
       BackgroundTaskManager.RunAsync(async () =>
       {
          await Task.Delay(ReloadDebounceDelay, cts.Token);
-         this.Log().Info("Debounce elapsed \u2014 reloading from Anki database");
-         _app.Collection.ReloadFromAnkiDatabase();
+         this.Log().Info("Debounce elapsed \u2014 reloading from backend");
+         _app.Collection.ReloadFromBackend();
       });
    }
 

@@ -8,7 +8,7 @@ public class VocabCollection
 {
     private readonly IBackendNoteCreator _backendNoteCreator;
     internal readonly VocabCache Cache;
-    public IAnkiNoteUpdateHandler AnkiSyncHandler => Cache;
+    public IExternalNoteUpdateHandler ExternalSyncHandler => Cache;
 
     public VocabCollection(IBackendNoteCreator backendNoteCreator, NoteServices noteServices)
     {
@@ -19,8 +19,8 @@ public class VocabCollection
     public bool IsWord(string form) => Cache.WithForm(form).Any();
     public List<VocabNote> All() => Cache.All();
     public VocabNote? WithIdOrNone(NoteId noteId) => Cache.WithIdOrNone(noteId);
-    public VocabNote? WithAnkiIdOrNone(long ankiNoteId) => Cache.WithAnkiIdOrNone(ankiNoteId);
-    public NoteId? AnkiIdToNoteId(long ankiNoteId) => Cache.AnkiIdToNoteId(ankiNoteId);
+    public VocabNote? WithExternalIdOrNone(long externalNoteId) => Cache.WithExternalIdOrNone(externalNoteId);
+    public NoteId? ExternalIdToNoteId(long externalNoteId) => Cache.ExternalIdToNoteId(externalNoteId);
     public List<VocabNote> WithDisambiguationName(string name) => Cache.WithDisambiguationName(name);
     public List<VocabNote> WithForm(string form) => Cache.WithForm(form);
     public List<VocabNote> WithCompoundPart(string disambiguationName) => Cache.WithCompoundPart(disambiguationName);

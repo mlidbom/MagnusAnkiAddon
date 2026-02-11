@@ -130,17 +130,17 @@ public class BrowserMenus
    {
       try
       {
-         // Get Anki note ID from card ID via AnkiFacade, then look up by Anki ID
+         // Get external note ID from card ID via AnkiFacade, then look up in domain collections
          var ankiNoteId = AnkiFacade.GetNoteIdFromCardId(cardId);
 
-         // Try each note type collection using Anki ID mapping
-         JPNote? vocab = _services.App.Collection.Vocab.WithAnkiIdOrNone(ankiNoteId);
+         // Try each note type collection using external ID mapping
+         JPNote? vocab = _services.App.Collection.Vocab.WithExternalIdOrNone(ankiNoteId);
          if(vocab != null) return vocab;
 
-         JPNote? sentence = _services.App.Collection.Sentences.WithAnkiIdOrNone(ankiNoteId);
+         JPNote? sentence = _services.App.Collection.Sentences.WithExternalIdOrNone(ankiNoteId);
          if(sentence != null) return sentence;
 
-         JPNote? kanji = _services.App.Collection.Kanji.WithAnkiIdOrNone(ankiNoteId);
+         JPNote? kanji = _services.App.Collection.Kanji.WithExternalIdOrNone(ankiNoteId);
          return kanji;
       }
       catch(Exception ex)
@@ -158,7 +158,7 @@ public class BrowserMenus
       {
          try
          {
-            var note = _services.App.Collection.Sentences.WithAnkiIdOrNone(ankiNoteId) as SentenceNote;
+            var note = _services.App.Collection.Sentences.WithExternalIdOrNone(ankiNoteId) as SentenceNote;
             if(note != null)
             {
                sentences.Add(note);

@@ -121,7 +121,7 @@ public class BulkLoaderTests
       var statuses = CardStudyingStatusLoader.FetchAll(TestDbPath);
       Assert.All(statuses, s =>
       {
-         Assert.True(s.AnkiNoteId > 0);
+         Assert.True(s.ExternalNoteId > 0);
          Assert.False(string.IsNullOrEmpty(s.CardType));
          Assert.False(string.IsNullOrEmpty(s.NoteTypeName));
       });

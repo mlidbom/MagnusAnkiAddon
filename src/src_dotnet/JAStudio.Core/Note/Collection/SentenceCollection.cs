@@ -7,7 +7,7 @@ public class SentenceCollection
 {
     private readonly IBackendNoteCreator _backendNoteCreator;
     internal readonly SentenceCache Cache;
-    public IAnkiNoteUpdateHandler AnkiSyncHandler => Cache;
+    public IExternalNoteUpdateHandler ExternalSyncHandler => Cache;
 
     public SentenceCollection(IBackendNoteCreator backendNoteCreator, NoteServices noteServices)
     {
@@ -49,8 +49,8 @@ public class SentenceCollection
     public List<SentenceNote> All() => Cache.All();
 
     public SentenceNote? WithIdOrNone(NoteId noteId) => Cache.WithIdOrNone(noteId);
-    public SentenceNote? WithAnkiIdOrNone(long ankiNoteId) => Cache.WithAnkiIdOrNone(ankiNoteId);
-    public NoteId? AnkiIdToNoteId(long ankiNoteId) => Cache.AnkiIdToNoteId(ankiNoteId);
+    public SentenceNote? WithExternalIdOrNone(long externalNoteId) => Cache.WithExternalIdOrNone(externalNoteId);
+    public NoteId? ExternalIdToNoteId(long externalNoteId) => Cache.ExternalIdToNoteId(externalNoteId);
 
     public List<SentenceNote> WithQuestion(string question) => Cache.WithQuestion(question);
 

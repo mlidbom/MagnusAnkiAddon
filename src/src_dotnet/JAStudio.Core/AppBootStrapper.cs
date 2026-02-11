@@ -2,7 +2,6 @@
 using Compze.Utilities.DependencyInjection;
 using Compze.Utilities.DependencyInjection.Abstractions;
 using Compze.Utilities.DependencyInjection.SimpleInjector;
-using JAStudio.Core.AnkiUtils;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.Batches;
 using JAStudio.Core.LanguageServices.JamdictEx;
@@ -63,12 +62,11 @@ static class AppBootstrapper
          // Core services
          Singleton.For<Settings>().CreatedBy((JapaneseConfig config) => new Settings(config)),
          Singleton.For<AnalysisServices>().CreatedBy((VocabCollection vocab, DictLookup dictLookup, Settings settings) => new AnalysisServices(vocab, dictLookup, settings)),
-         Singleton.For<AnkiNoteIdMap>().CreatedBy(() => new AnkiNoteIdMap()),
-         Singleton.For<QueryBuilder>().CreatedBy((VocabCollection vocab, KanjiCollection kanji, AnalysisServices analysisServices, AnkiNoteIdMap ankiNoteIdMap) => new QueryBuilder(vocab, kanji, analysisServices, ankiNoteIdMap)),
+         Singleton.For<ExternalNoteIdMap>().CreatedBy(() => new ExternalNoteIdMap()),
          Singleton.For<LocalNoteUpdater>().CreatedBy((TaskRunner taskRunner, VocabCollection vocab, KanjiCollection kanji, SentenceCollection sentences, JapaneseConfig config, DictLookup dictLookup, VocabNoteFactory vocabNoteFactory, FileSystemNoteRepository fileSystemNoteRepository) =>
                                                         new LocalNoteUpdater(taskRunner, vocab, kanji, sentences, config, dictLookup, vocabNoteFactory, fileSystemNoteRepository)),
          Singleton.For<TaskRunner>().CreatedBy((JapaneseConfig config) => new TaskRunner(config)),
-         Singleton.For<AnkiCardOperations>().CreatedBy(() => new AnkiCardOperations()),
+         Singleton.For<CardOperations>().CreatedBy(() => new CardOperations()),
          Singleton.For<TestApp>().CreatedBy((ConfigurationStore configurationStore) => new TestApp(app, configurationStore)),
 
          // Services owned by JPCollection — registered as property accessors

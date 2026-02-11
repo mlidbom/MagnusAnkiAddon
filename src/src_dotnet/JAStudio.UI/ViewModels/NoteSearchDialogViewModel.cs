@@ -10,6 +10,7 @@ using JAStudio.Anki;
 using JAStudio.Core.LanguageServices;
 using JAStudio.Core.Note;
 using JAStudio.Core.SysUtils;
+using JAStudio.UI;
 
 namespace JAStudio.UI.ViewModels;
 
@@ -265,7 +266,7 @@ public partial class NoteSearchDialogViewModel : ObservableObject
          return;
 
       var noteId = SelectedResult.NoteId;
-      var query = _services.QueryBuilder.NotesByIds(new[] { noteId });
+      var query = _services.QueryBuilder().NotesByIds(new[] { noteId });
       AnkiFacade.Browser.ExecuteLookup(query);
    }
 }

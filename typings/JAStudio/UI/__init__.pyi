@@ -1,4 +1,6 @@
 import typing, abc
+from JAStudio.Anki import QueryBuilder, AnkiLifecycleEvent
+from JAStudio.Core import TemporaryServiceCollection
 from Avalonia import Application, AvaloniaProperty
 from Avalonia.Styling import ThemeVariant, Styles
 from Avalonia.Controls.ApplicationLifetimes import IApplicationLifetime
@@ -8,10 +10,13 @@ from Avalonia.Controls import IResourceDictionary, MenuItem
 from Avalonia.Data import IndexerDescriptor, IBinding
 from JAStudio.UI.Menus.UIAgnosticMenuStructure import SpecMenuItem
 from JAStudio.UI.Menus import JapaneseMainMenu, NoteContextMenu
-from JAStudio.Core import TemporaryServiceCollection
-from JAStudio.Anki import AnkiLifecycleEvent
 from System import Action_1, Action
 from System.Collections.Generic import IEnumerable_1
+
+class AnkiServiceExtensions(abc.ABC):
+    @staticmethod
+    def QueryBuilder(services: TemporaryServiceCollection) -> QueryBuilder: ...
+
 
 class App(Application):
     def __init__(self) -> None: ...

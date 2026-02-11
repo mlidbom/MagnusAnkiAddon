@@ -20,7 +20,7 @@ public class CachedNote
    }
 }
 
-public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote : JPNote
+public abstract class NoteCacheBase<TNote> : IExternalNoteUpdateHandler where TNote : JPNote
 {
    readonly Func<NoteServices, NoteData, TNote> _noteConstructor;
    readonly Type _noteType;
@@ -50,33 +50,33 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
    public TNote? WithIdOrNone(NoteId noteId) => _monitor.Read(() => WithIdOrNoneCore(noteId));
    protected TNote? WithIdOrNoneCore(NoteId noteId) => _byId.TryGetValue(noteId, out var note) ? note : null;
 
-   /// <summary>Look up a note by its Anki long ID (uses the shared AnkiNoteIdMap).</summary>
-   public TNote? WithAnkiIdOrNone(long ankiNoteId) =>
-      _noteServices.AnkiNoteIdMap.FromAnkiId(ankiNoteId) is {} noteId ? WithIdOrNone(noteId) : null;
+   /// <summary>Look up a note by its external long ID (uses the shared ExternalNoteIdMap).</summary>
+   public TNote? WithExternalIdOrNone(long externalNoteId) =>
+      _noteServices.ExternalNoteIdMap.FromExternalId(externalNoteId) is {} noteId ? WithIdOrNone(noteId) : null;
 
-   TNote? WithAnkiIdOrNoneCore(long ankiNoteId) =>
-      _noteServices.AnkiNoteIdMap.FromAnkiId(ankiNoteId) is {} noteId ? WithIdOrNoneCore(noteId) : null;
+   TNote? WithExternalIdOrNoneCore(long externalNoteId) =>
+      _noteServices.ExternalNoteIdMap.FromExternalId(externalNoteId) is {} noteId ? WithIdOrNoneCore(noteId) : null;
 
-   /// <summary>Converts an Anki long ID to the corresponding domain NoteId.</summary>
-   public NoteId? AnkiIdToNoteId(long ankiNoteId) =>
-      _noteServices.AnkiNoteIdMap.FromAnkiId(ankiNoteId);
+   /// <summary>Converts an external long ID to the corresponding domain NoteId.</summary>
+   public NoteId? ExternalIdToNoteId(long externalNoteId) =>
+      _noteServices.ExternalNoteIdMap.FromExternalId(externalNoteId);
 
-   /// <summary>Returns the Anki long note ID for the given domain NoteId.</summary>
-   public long GetAnkiNoteId(NoteId noteId) =>
-      _noteServices.AnkiNoteIdMap.ToAnkiId(noteId) ?? 0;
+   /// <summary>Returns the external long note ID for the given domain NoteId.</summary>
+   public long GetExternalNoteId(NoteId noteId) =>
+      _noteServices.ExternalNoteIdMap.ToExternalId(noteId) ?? 0;
 
-   public void AnkiNoteAdded(long ankiNoteId, NoteData data)
+   public void ExternalNoteAdded(long externalNoteId, NoteData data)
    {
       data.Id = CreateTypedId(Guid.NewGuid());
-      _noteServices.AnkiNoteIdMap.Register(ankiNoteId, data.Id);
+      _noteServices.ExternalNoteIdMap.Register(externalNoteId, data.Id);
       var note = _noteConstructor(_noteServices, data);
       note.UpdateGeneratedData();
       AddToCache(note);
    }
 
-   public void AnkiNoteWillFlush(long ankiNoteId, NoteData data)
+   public void ExternalNoteWillFlush(long externalNoteId, NoteData data)
    {
-      var noteId = _noteServices.AnkiNoteIdMap.FromAnkiId(ankiNoteId);
+      var noteId = _noteServices.ExternalNoteIdMap.FromExternalId(externalNoteId);
       if(noteId == null) return;
       var existing = WithIdOrNone(noteId);
       if(existing == null) return;
@@ -90,9 +90,9 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
       NotifyUpdateListeners(note);
    }
 
-   public void AnkiNoteRemoved(long ankiNoteId)
+   public void ExternalNoteRemoved(long externalNoteId)
    {
-      var noteId = _noteServices.AnkiNoteIdMap.FromAnkiId(ankiNoteId);
+      var noteId = _noteServices.ExternalNoteIdMap.FromExternalId(externalNoteId);
       if(noteId == null) return;
       _monitor.Read(() =>
       {
@@ -103,7 +103,7 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
          }
       });
 
-      _noteServices.AnkiNoteIdMap.Unregister(ankiNoteId);
+      _noteServices.ExternalNoteIdMap.Unregister(externalNoteId);
    }
 
    /// <summary>Creates the correctly typed NoteId for this cache (VocabId, KanjiId, etc.)</summary>
@@ -153,13 +153,13 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
    protected abstract void AddToCacheCore(TNote note);
    protected abstract void RemoveFromCacheCore(TNote note);
 
-   public void SetStudyingStatuses(Dictionary<long, List<CardStudyingStatus>> statusesByAnkiId)
+   public void SetStudyingStatuses(Dictionary<long, List<CardStudyingStatus>> statusesByExternalId)
    {
       _monitor.Read(() =>
       {
-         foreach(var (ankiId, statuses) in statusesByAnkiId)
+         foreach(var (externalId, statuses) in statusesByExternalId)
          {
-            var note = WithAnkiIdOrNoneCore(ankiId);
+            var note = WithExternalIdOrNoneCore(externalId);
             if(note != null)
             {
                foreach(var status in statuses)

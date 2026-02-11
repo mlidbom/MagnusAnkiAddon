@@ -20,7 +20,7 @@ public class NoteServices
    internal NoteServices(IServiceLocator serviceLocator) => _serviceLocator = serviceLocator;
 
    public JPCollection Collection => _serviceLocator.Resolve<JPCollection>();
-   public AnkiCardOperations AnkiCardOperations => _serviceLocator.Resolve<AnkiCardOperations>();
+   public CardOperations CardOperations => _serviceLocator.Resolve<CardOperations>();
    public Settings Settings => _serviceLocator.Resolve<Settings>();
    public DictLookup DictLookup => _serviceLocator.Resolve<DictLookup>();
    public VocabNoteFactory VocabNoteFactory => _serviceLocator.Resolve<VocabNoteFactory>();
@@ -28,5 +28,5 @@ public class NoteServices
    public KanjiNoteMnemonicMaker KanjiNoteMnemonicMaker => _serviceLocator.Resolve<KanjiNoteMnemonicMaker>();
    public JapaneseConfig Config => _serviceLocator.Resolve<JapaneseConfig>();
    public TaskRunner TaskRunner => _serviceLocator.Resolve<TaskRunner>();
-   public AnkiNoteIdMap AnkiNoteIdMap => _serviceLocator.Resolve<AnkiNoteIdMap>();
+   public ExternalNoteIdMap ExternalNoteIdMap => _serviceLocator.Resolve<ExternalNoteIdMap>();
 }

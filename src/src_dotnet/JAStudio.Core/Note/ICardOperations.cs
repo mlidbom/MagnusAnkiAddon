@@ -4,9 +4,9 @@ namespace JAStudio.Core.Note;
 
 /// <summary>
 /// Interface for card operations (suspend/unsuspend) that must be implemented by the integration layer.
-/// This allows JAStudio.Core to request card operations without depending on the Anki project.
+/// This allows JAStudio.Core to request card operations without depending on any specific backend.
 /// </summary>
-public interface IAnkiCardOperations
+public interface ICardOperations
 {
     /// <summary>Suspend all cards for the given note.</summary>
     void SuspendAllCardsForNote(NoteId noteId);
@@ -19,16 +19,16 @@ public interface IAnkiCardOperations
 /// Service locator for card operations.
 /// The integration layer (e.g. JAStudio.Anki) must call SetImplementation() during initialization.
 /// </summary>
-public class AnkiCardOperations
+public class CardOperations
 {
-    internal AnkiCardOperations() {}
+    internal CardOperations() {}
 
-    static IAnkiCardOperations? _implementation;
+    static ICardOperations? _implementation;
 
     /// <summary>
     /// Set the implementation of card operations (called during initialization).
     /// </summary>
-    public void SetImplementation(IAnkiCardOperations implementation)
+    public void SetImplementation(ICardOperations implementation)
     {
         _implementation = implementation;
     }
@@ -39,7 +39,7 @@ public class AnkiCardOperations
         if (_implementation == null)
         {
             throw new InvalidOperationException(
-                "AnkiCardOperations.SetImplementation() must be called before using card operations");
+                "CardOperations.SetImplementation() must be called before using card operations");
         }
 
         _implementation.SuspendAllCardsForNote(noteId);
@@ -51,7 +51,7 @@ public class AnkiCardOperations
         if (_implementation == null)
         {
             throw new InvalidOperationException(
-                "AnkiCardOperations.SetImplementation() must be called before using card operations");
+                "CardOperations.SetImplementation() must be called before using card operations");
         }
 
         _implementation.UnsuspendAllCardsForNote(noteId);

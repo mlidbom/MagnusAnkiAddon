@@ -1,0 +1,26 @@
+using JAStudio.Anki;
+using JAStudio.Core;
+using JAStudio.Core.LanguageServices.JanomeEx;
+using JAStudio.Core.Note;
+using JAStudio.Core.Note.Collection;
+
+namespace JAStudio.UI;
+
+/// <summary>
+/// Extension methods to access Anki-specific services through the shared service collection.
+/// QueryBuilder lives in JAStudio.Anki (it builds Anki-format search queries),
+/// so Core cannot reference it. UI creates it lazily here.
+/// </summary>
+public static class AnkiServiceExtensions
+{
+   static QueryBuilder? _queryBuilder;
+
+   public static QueryBuilder QueryBuilder(this TemporaryServiceCollection services)
+   {
+      return _queryBuilder ??= new QueryBuilder(
+         services.ServiceLocator.Resolve<VocabCollection>(),
+         services.ServiceLocator.Resolve<KanjiCollection>(),
+         services.ServiceLocator.Resolve<AnalysisServices>(),
+         services.ExternalNoteIdMap);
+   }
+}

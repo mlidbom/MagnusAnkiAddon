@@ -20,7 +20,7 @@ public class NoteData
 
    /// <summary>
    /// Creates NoteData from Python. The domain NoteId is NOT set here — it must be assigned
-   /// by the caller (e.g. the sync handler or bulk loader) since Python only knows Anki IDs.
+   /// by the caller (e.g. the sync handler or bulk loader) since Python only knows external IDs.
    /// </summary>
    public static NoteData FromPythonNoteData(dynamic item)
    {

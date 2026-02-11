@@ -29,21 +29,21 @@ public class JPCollection
    }
 
    /// <summary>
-   /// Look up a note by its Anki long ID. Used at the Python boundary where
-   /// only Anki IDs are available (e.g. from card.nid, note.id).
+   /// Look up a note by its external long ID. Used at the Python boundary where
+   /// only external IDs are available (e.g. from card.nid, note.id).
    /// </summary>
-   public JPNote? NoteFromAnkiNoteId(long ankiNoteId)
+   public JPNote? NoteFromExternalId(long externalNoteId)
    {
-      var noteId = NoteServices.AnkiNoteIdMap.FromAnkiId(ankiNoteId);
+      var noteId = NoteServices.ExternalNoteIdMap.FromExternalId(externalNoteId);
       return noteId != null ? NoteFromNoteId(noteId) : null;
    }
 
    /// <summary>
-   /// Returns the Anki long note ID for the given domain NoteId.
-   /// Used at the Python boundary where Anki's numeric ID is needed.
+   /// Returns the external long note ID for the given domain NoteId.
+   /// Used at the Python boundary where the external numeric ID is needed.
    /// Returns 0 if no mapping found.
    /// </summary>
-   public long GetAnkiNoteId(NoteId noteId) => NoteServices.AnkiNoteIdMap.ToAnkiId(noteId) ?? 0;
+   public long GetExternalNoteId(NoteId noteId) => NoteServices.ExternalNoteIdMap.ToExternalId(noteId) ?? 0;
 
    public NoteServices NoteServices { get; }
    public VocabNoteFactory VocabNoteFactory { get; }
@@ -88,11 +88,11 @@ public class JPCollection
    readonly IBackendDataLoader? _backendDataLoader;
    readonly JapaneseConfig _config;
 
-   /// <summary>Clear all in-memory caches. Called when the Anki DB is about to become unreliable (e.g. sync starting, profile closing).</summary>
+   /// <summary>Clear all in-memory caches. Called when the backend DB is about to become unreliable (e.g. sync starting, profile closing).</summary>
    public void ClearCaches()
    {
       using var _ = this.Log().Warning().LogMethodExecutionTime();
-      NoteServices.AnkiNoteIdMap.Clear();
+      NoteServices.ExternalNoteIdMap.Clear();
       Vocab.Cache.Clear();
       Kanji.Cache.Clear();
       Sentences.Cache.Clear();
@@ -105,7 +105,7 @@ public class JPCollection
    string NoteRepositoryType => _config.LoadNotesFromFileSystem.Value ? "file system" : "alternate";
 
    /// <summary>Clear and reload all caches. Called after sync or collection reload.</summary>
-   public void ReloadFromAnkiDatabase()
+   public void ReloadFromBackend()
    {
       using var runner = NoteServices.TaskRunner.Current($"Populating caches from {NoteRepositoryType}");
       // ReSharper disable once ExplicitCallerInfoArgument
@@ -124,19 +124,19 @@ public class JPCollection
       if(backendData != null)
       {
          foreach(var (externalId, noteId) in backendData.IdMappings)
-            NoteServices.AnkiNoteIdMap.Register(externalId, noteId);
+            NoteServices.ExternalNoteIdMap.Register(externalId, noteId);
 
          var vocabStatuses = backendData.StudyingStatuses
                                         .Where(s => s.NoteTypeName == NoteTypes.Vocab)
-                                        .GroupBy(s => s.AnkiNoteId)
+                                        .GroupBy(s => s.ExternalNoteId)
                                         .ToDictionary(g => g.Key, g => g.ToList());
          var kanjiStatuses = backendData.StudyingStatuses
                                         .Where(s => s.NoteTypeName == NoteTypes.Kanji)
-                                        .GroupBy(s => s.AnkiNoteId)
+                                        .GroupBy(s => s.ExternalNoteId)
                                         .ToDictionary(g => g.Key, g => g.ToList());
          var sentenceStatuses = backendData.StudyingStatuses
                                            .Where(s => s.NoteTypeName == NoteTypes.Sentence)
-                                           .GroupBy(s => s.AnkiNoteId)
+                                           .GroupBy(s => s.ExternalNoteId)
                                            .ToDictionary(g => g.Key, g => g.ToList());
 
          runner.RunIndeterminate("Setting studying statuses",
