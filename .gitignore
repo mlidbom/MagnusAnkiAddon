@@ -34,3 +34,6 @@ CopilotIndices
 /diff_out.tmp
 diag*.txt
 /src/jas_database/
+snapshot_kanji.json
+snapshot_sentences.json
+snapshot_vocab.json
