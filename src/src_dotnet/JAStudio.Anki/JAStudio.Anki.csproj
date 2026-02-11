@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+   <PropertyGroup>
+      <TargetFramework>net10.0</TargetFramework>
+      <ImplicitUsings>disable</ImplicitUsings>
+      <Nullable>enable</Nullable>
+   </PropertyGroup>
+
+   <ItemGroup>
+      <ProjectReference Include="..\JAStudio.Core\JAStudio.Core.csproj" />
+      <ProjectReference Include="..\JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
+   </ItemGroup>
+
+   <ItemGroup>
+      <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.2" />
+   </ItemGroup>
+
+   <ItemGroup>
+      <Reference Include="Compze.Utilities">
+         <HintPath>..\manual_libs\Compze.Utilities.dll</HintPath>
+      </Reference>
+   </ItemGroup>
+
+</Project>

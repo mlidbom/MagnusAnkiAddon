@@ -1,10 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using Compze.Utilities.SystemCE.ThreadingCE.TasksCE;
-using JAStudio.Core.Anki;
 using JAStudio.Core.Note;
+using JAStudio.Core.Storage;
 
-namespace JAStudio.Core.Storage;
+namespace JAStudio.Anki;
 
 /// <summary>
 /// Loads notes directly from Anki's SQLite database instead of from the filesystem.
@@ -27,11 +26,9 @@ public class AnkiNoteRepository : INoteRepository
       var kanjiBulk = scope.RunIndeterminateAsync("Loading kanji from Anki", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Kanji, g => new KanjiId(g)));
       var sentenceBulk = scope.RunIndeterminateAsync("Loading sentences from Anki", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.Sentence, g => new SentenceId(g)));
 
-      // ReSharper disable AccessToDisposedClosure
-      var vocab = TaskCE.Run(() => scope.RunBatch(vocabBulk.Result.Notes, nd => new VocabNote(_noteServices, nd), "Creating vocab notes from anki"));
-      var kanji = TaskCE.Run(() => scope.RunBatch(kanjiBulk.Result.Notes, nd => new KanjiNote(_noteServices, nd), "Creating kanji notes from anki"));
-      var sentences = TaskCE.Run(() => scope.RunBatch(sentenceBulk.Result.Notes, nd => new SentenceNote(_noteServices, nd), "Creating sentence notes from anki"));
-      // ReSharper restore AccessToDisposedClosure
+      var vocab = Task.Run(() => scope.RunBatch(vocabBulk.Result.Notes, nd => new VocabNote(_noteServices, nd), "Creating vocab notes from anki"));
+      var kanji = Task.Run(() => scope.RunBatch(kanjiBulk.Result.Notes, nd => new KanjiNote(_noteServices, nd), "Creating kanji notes from anki"));
+      var sentences = Task.Run(() => scope.RunBatch(sentenceBulk.Result.Notes, nd => new SentenceNote(_noteServices, nd), "Creating sentence notes from anki"));
 
       return new AllNotesData(kanji.Result, vocab.Result, sentences.Result);
    }

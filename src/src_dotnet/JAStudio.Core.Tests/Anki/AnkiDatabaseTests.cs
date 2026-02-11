@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
-using JAStudio.Core.Anki;
+using JAStudio.Anki;
 using JAStudio.Core.Note;
 using Xunit;
 

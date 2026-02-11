@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using JAStudio.Core.Note;
 using Microsoft.Data.Sqlite;
 
-namespace JAStudio.Core.Anki;
+namespace JAStudio.Anki;
 
 /// <summary>
 /// Result from bulk loading notes from Anki's SQLite database.
@@ -145,11 +145,11 @@ public static class NoteBulkLoader
          var tagsRaw = reader.IsDBNull(1) ? "" : reader.GetString(1);
          var tags = string.IsNullOrEmpty(tagsRaw)
             ? new List<string>()
-            : new List<string>(tagsRaw.Split(' ', System.StringSplitOptions.RemoveEmptyEntries));
+            : new List<string>(tagsRaw.Split(' ', StringSplitOptions.RemoveEmptyEntries));
 
          var fldsRaw = reader.IsDBNull(2) ? "" : reader.GetString(2);
          var fieldValues = string.IsNullOrEmpty(fldsRaw)
-            ? System.Array.Empty<string>()
+            ? Array.Empty<string>()
             : fldsRaw.Split(FieldSeparator);
 
          var fields = new Dictionary<string, string>(fieldMap.Count);

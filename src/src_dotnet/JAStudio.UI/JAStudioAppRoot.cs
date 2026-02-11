@@ -9,7 +9,7 @@ using Avalonia.Threading;
 using Compze.Utilities.Logging;
 using Compze.Utilities.SystemCE;
 using JAStudio.Core;
-using JAStudio.Core.Anki;
+using JAStudio.Anki;
 using JAStudio.Core.TaskRunners;
 using JAStudio.UI.Dialogs;
 using JAStudio.UI.Utils;
@@ -65,7 +65,11 @@ public class JAStudioAppRoot
          Debugger.Launch();
       }
 
-      var app = Core.App.Bootstrap();
+      var app = Core.App.Bootstrap(
+         backendNoteCreator: new AnkiBackendNoteCreator(),
+         backendDataLoader: new AnkiBackendDataLoader(),
+         environmentPaths: new AnkiEnvironmentPaths(),
+         alternateRepositoryFactory: ns => new AnkiNoteRepository(ns));
       CompzeLogger.LogLevel = LogLevel.Info;
 
       // Initialize the C# configuration system with the Anki addon config

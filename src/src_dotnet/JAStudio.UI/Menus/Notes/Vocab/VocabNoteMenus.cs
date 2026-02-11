@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JAStudio.Core.Anki;
+using JAStudio.Anki;
 using JAStudio.Core.Note;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using Avalonia.Threading;

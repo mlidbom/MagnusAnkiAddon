@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Compze.Utilities.Logging;
-using JAStudio.Core.Anki;
+using JAStudio.Anki;
 using JAStudio.Core.Note;
 using JAStudio.PythonInterop;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;

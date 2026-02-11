@@ -9,7 +9,7 @@ from Avalonia.Data import IndexerDescriptor, IBinding
 from JAStudio.UI.Menus.UIAgnosticMenuStructure import SpecMenuItem
 from JAStudio.UI.Menus import JapaneseMainMenu, NoteContextMenu
 from JAStudio.Core import TemporaryServiceCollection
-from JAStudio.Core.Anki import AnkiLifecycleEvent
+from JAStudio.Anki import AnkiLifecycleEvent
 from System import Action_1, Action
 from System.Collections.Generic import IEnumerable_1
 

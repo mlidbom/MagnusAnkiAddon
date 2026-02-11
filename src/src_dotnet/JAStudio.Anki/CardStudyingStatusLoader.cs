@@ -3,7 +3,7 @@ using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
 using Microsoft.Data.Sqlite;
 
-namespace JAStudio.Core.Anki;
+namespace JAStudio.Anki;
 
 /// <summary>
 /// Fetches card studying statuses directly from Anki's SQLite database.

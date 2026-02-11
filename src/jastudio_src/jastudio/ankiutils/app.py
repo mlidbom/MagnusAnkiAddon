@@ -11,7 +11,7 @@ from jaspythonutils.sysutils.typed import checked_cast, non_optional
 from jastudio.note.collection.anki_collection_synchronizer import AnkiCollectionSynchronizer
 from jastudio.testutils import ex_pytest
 
-from JAStudio.Core.Anki import AnkiLifecycleEvent
+from JAStudio.Anki import AnkiLifecycleEvent
 from aqt import gui_hooks
 
 is_testing = ex_pytest.is_testing

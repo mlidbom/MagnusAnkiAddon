@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Compze.Utilities.SystemCE.ThreadingCE.TasksCE;
-using JAStudio.Core.Anki;
+using JAStudio.Anki;
 using JAStudio.Core.LanguageServices;
 using JAStudio.Core.Note;
 using JAStudio.Core.SysUtils;

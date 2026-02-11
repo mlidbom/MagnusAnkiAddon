@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Compze.Utilities.SystemCE.LinqCE;
 using Compze.Utilities.SystemCE.ThreadingCE.ResourceAccess;
-using JAStudio.Core.Anki;
 using JAStudio.PythonInterop;
 
 namespace JAStudio.Core.Note.Collection;
@@ -136,24 +135,6 @@ public abstract class NoteCacheBase<TNote> : IAnkiNoteUpdateHandler where TNote 
    {
       RemoveFromCacheCore(note);
       AddToCacheCore(note);
-   }
-
-   public async Task LoadAsync()
-   {
-      var dbPath = AnkiFacade.Col.DbFilePath();
-      if(dbPath == null) throw new InvalidOperationException("Anki collection database is not initialized yet");
-
-      using var runner = _noteServices.TaskRunner.Current($"Loading {_noteType.Name} notes from the anki db");
-      var loadResult = await runner.RunIndeterminateAsync($"Fetching {_noteType.Name} notes from anki db", () => NoteBulkLoader.LoadAllNotesOfType(dbPath, NoteTypes.FromType(_noteType), NoteTypes.IdFactoryFromType(_noteType)));
-
-      foreach(var (ankiId, noteId) in loadResult.AnkiIdMap)
-      {
-         _noteServices.AnkiNoteIdMap.Register(ankiId, noteId);
-      }
-
-      var notes = runner.RunBatch(loadResult.Notes, it => _noteConstructor(_noteServices, it), $"Constructing {_noteType.Name} notes");
-
-      await runner.RunBatchAsync(notes, AddToCache, $"Pushing {_noteType.Name} notes into cache");
    }
 
    /// <summary>Removes all notes and ID mappings from the cache. Subclasses must override ClearInheritorIndexes to clear their custom indexes.</summary>

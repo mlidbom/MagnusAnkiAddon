@@ -1,6 +1,6 @@
 using JAStudio.Core.Note;
 
-namespace JAStudio.Core.Anki;
+namespace JAStudio.Anki;
 
 /// <summary>
 /// Implementation of IAnkiCardOperations that uses AnkiFacade to call Python/Anki APIs.

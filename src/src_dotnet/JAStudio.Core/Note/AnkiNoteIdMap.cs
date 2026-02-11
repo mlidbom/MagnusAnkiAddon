@@ -1,12 +1,12 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using JAStudio.Core.Note;
 
-namespace JAStudio.Core.Anki;
+namespace JAStudio.Core.Note;
 
 /// <summary>
 /// Thread-safe bidirectional mapping between domain NoteIds and Anki long note IDs.
-/// Lives in the Anki integration layer — the domain should not reference this directly.
+/// This is a pure data structure with no external dependencies — it lives in Core
+/// so that caches and collections can use it without depending on the Anki integration layer.
 /// </summary>
 public class AnkiNoteIdMap
 {

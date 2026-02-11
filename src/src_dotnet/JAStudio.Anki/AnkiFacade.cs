@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using JAStudio.PythonInterop;
 using JAStudio.PythonInterop.Utilities;
 
-namespace JAStudio.Core.Anki;
+namespace JAStudio.Anki;
 
 /// <summary>
 /// Facade for calling Anki-specific functionality that cannot be implemented in pure C#.

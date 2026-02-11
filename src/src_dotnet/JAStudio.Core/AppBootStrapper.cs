@@ -2,7 +2,6 @@
 using Compze.Utilities.DependencyInjection;
 using Compze.Utilities.DependencyInjection.Abstractions;
 using Compze.Utilities.DependencyInjection.SimpleInjector;
-using JAStudio.Core.Anki;
 using JAStudio.Core.AnkiUtils;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.Batches;
@@ -23,9 +22,13 @@ namespace JAStudio.Core;
 
 static class AppBootstrapper
 {
-   internal static IServiceLocator Bootstrap(App app)
+   internal static IServiceLocator Bootstrap(
+      App app,
+      IBackendNoteCreator? backendNoteCreator = null,
+      IBackendDataLoader? backendDataLoader = null,
+      Func<NoteServices, INoteRepository>? alternateRepositoryFactory = null)
    {
-      IBackendNoteCreator backendNoteCreator = TestEnvDetector.IsTesting ? new TestingBackendNoteCreator() : new AnkiBackendNoteCreator();
+      backendNoteCreator ??= new TestingBackendNoteCreator();
 
       var container = new SimpleInjectorDependencyInjectionContainer();
       var registrar = container.Register();
@@ -49,7 +52,10 @@ static class AppBootstrapper
          Singleton.For<TemporaryServiceCollection>().CreatedBy(() => new TemporaryServiceCollection(container.ServiceLocator)),
          Singleton.For<JapaneseConfig>().CreatedBy((ConfigurationStore store) => store.Config()),
          Singleton.For<JPCollection>().CreatedBy((NoteServices noteServices, JapaneseConfig config, INoteRepository noteRepository) =>
-                                                    new JPCollection(backendNoteCreator, noteServices, config, noteRepository)),
+         {
+            var alternateRepo = alternateRepositoryFactory?.Invoke(noteServices);
+            return new JPCollection(backendNoteCreator, noteServices, config, noteRepository, alternateRepo, backendDataLoader);
+         }),
          Singleton.For<VocabCollection>().CreatedBy((JPCollection col) => col.Vocab),
          Singleton.For<KanjiCollection>().CreatedBy((JPCollection col) => col.Kanji),
          Singleton.For<SentenceCollection>().CreatedBy((JPCollection col) => col.Sentences),

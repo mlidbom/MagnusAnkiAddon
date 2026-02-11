@@ -1,11 +1,10 @@
 using System;
-using JAStudio.Core.Note;
 
-namespace JAStudio.Core.Anki;
+namespace JAStudio.Core.Note;
 
 /// <summary>
-/// Interface for Anki card operations that must be implemented by the UI layer.
-/// This allows JAStudio.Core to request card operations without depending on JAStudio.UI.
+/// Interface for card operations (suspend/unsuspend) that must be implemented by the integration layer.
+/// This allows JAStudio.Core to request card operations without depending on the Anki project.
 /// </summary>
 public interface IAnkiCardOperations
 {
@@ -17,8 +16,8 @@ public interface IAnkiCardOperations
 }
 
 /// <summary>
-/// Service locator for Anki card operations.
-/// JAStudio.UI must call SetImplementation() during initialization.
+/// Service locator for card operations.
+/// The integration layer (e.g. JAStudio.Anki) must call SetImplementation() during initialization.
 /// </summary>
 public class AnkiCardOperations
 {
@@ -27,7 +26,7 @@ public class AnkiCardOperations
     static IAnkiCardOperations? _implementation;
 
     /// <summary>
-    /// Set the implementation of card operations (called by JAStudio.UI during initialization).
+    /// Set the implementation of card operations (called during initialization).
     /// </summary>
     public void SetImplementation(IAnkiCardOperations implementation)
     {

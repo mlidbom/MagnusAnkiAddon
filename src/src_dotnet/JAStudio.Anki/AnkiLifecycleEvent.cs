@@ -1,4 +1,4 @@
-namespace JAStudio.Core.Anki;
+namespace JAStudio.Anki;
 
 /// <summary>
 /// Events from the Anki host that affect the .NET addon lifecycle.

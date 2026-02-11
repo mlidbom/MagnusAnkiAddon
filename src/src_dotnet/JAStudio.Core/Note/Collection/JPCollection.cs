@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Compze.Utilities.Logging;
 using Compze.Utilities.SystemCE.ThreadingCE.TasksCE;
-using JAStudio.Core.Anki;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.Note.Vocabulary;
@@ -60,12 +59,16 @@ public class JPCollection
       IBackendNoteCreator backendNoteCreator,
       NoteServices noteServices,
       JapaneseConfig config,
-      INoteRepository noteRepository)
+      INoteRepository noteRepository,
+      INoteRepository? alternateRepository = null,
+      IBackendDataLoader? backendDataLoader = null)
    {
       this.Log().Info().LogMethodExecutionTime();
 
       NoteServices = noteServices;
-      _noteRepository = noteRepository;
+      _primaryRepository = noteRepository;
+      _alternateRepository = alternateRepository;
+      _backendDataLoader = backendDataLoader;
       _config = config;
       DictLookup = new DictLookup(this, config);
       VocabNoteGeneratedData = new VocabNoteGeneratedData(DictLookup);
@@ -80,7 +83,9 @@ public class JPCollection
       Sentences.Cache.OnNoteUpdated(note => noteRepository.Save(note));
    }
 
-   readonly INoteRepository _noteRepository;
+   readonly INoteRepository _primaryRepository;
+   readonly INoteRepository? _alternateRepository;
+   readonly IBackendDataLoader? _backendDataLoader;
    readonly JapaneseConfig _config;
 
    /// <summary>Clear all in-memory caches. Called when the Anki DB is about to become unreliable (e.g. sync starting, profile closing).</summary>
@@ -93,9 +98,13 @@ public class JPCollection
       Sentences.Cache.Clear();
    }
 
-   string NoteRepositoryType => _config.LoadNotesFromFileSystem.Value ? "file system" : "anki";
+   INoteRepository ConfiguredRepository => _config.LoadNotesFromFileSystem.Value
+      ? _primaryRepository
+      : (_alternateRepository ?? _primaryRepository);
 
-   /// <summary>Clear and reload all caches from the Anki DB. Called after sync or collection reload.</summary>
+   string NoteRepositoryType => _config.LoadNotesFromFileSystem.Value ? "file system" : "alternate";
+
+   /// <summary>Clear and reload all caches. Called after sync or collection reload.</summary>
    public void ReloadFromAnkiDatabase()
    {
       using var runner = NoteServices.TaskRunner.Current($"Populating caches from {NoteRepositoryType}");
@@ -105,32 +114,40 @@ public class JPCollection
       ClearCaches();
       var repoLoad = TaskCE.Run(LoadFromRepository);
 
-      var studyingStatuses = LoadAnkiUserDataAsync();
-      Task.WaitAll(repoLoad, studyingStatuses);
+      Task<BackendData?> backendDataTask = _backendDataLoader != null
+         ? Task.Run(() => (BackendData?)_backendDataLoader.Load(NoteServices.TaskRunner))
+         : Task.FromResult<BackendData?>(null);
 
-      var vocabStatuses = studyingStatuses.Result
-                                          .Where(s => s.NoteTypeName == NoteTypes.Vocab)
-                                          .GroupBy(s => s.AnkiNoteId)
-                                          .ToDictionary(g => g.Key, g => g.ToList());
-      var kanjiStatuses = studyingStatuses.Result
-                                          .Where(s => s.NoteTypeName == NoteTypes.Kanji)
-                                          .GroupBy(s => s.AnkiNoteId)
-                                          .ToDictionary(g => g.Key, g => g.ToList());
-      var sentenceStatuses = studyingStatuses.Result
-                                             .Where(s => s.NoteTypeName == NoteTypes.Sentence)
-                                             .GroupBy(s => s.AnkiNoteId)
-                                             .ToDictionary(g => g.Key, g => g.ToList());
+      Task.WaitAll(repoLoad, backendDataTask);
 
-      runner.RunIndeterminate("Setting studying statuses",
-                                                             () =>
-                                                             {
-                                                                Vocab.Cache.SetStudyingStatuses(vocabStatuses);
-                                                                Kanji.Cache.SetStudyingStatuses(kanjiStatuses);
-                                                                Sentences.Cache.SetStudyingStatuses(sentenceStatuses);
-                                                             });
+      var backendData = backendDataTask.Result;
+      if(backendData != null)
+      {
+         foreach(var (externalId, noteId) in backendData.IdMappings)
+            NoteServices.AnkiNoteIdMap.Register(externalId, noteId);
+
+         var vocabStatuses = backendData.StudyingStatuses
+                                        .Where(s => s.NoteTypeName == NoteTypes.Vocab)
+                                        .GroupBy(s => s.AnkiNoteId)
+                                        .ToDictionary(g => g.Key, g => g.ToList());
+         var kanjiStatuses = backendData.StudyingStatuses
+                                        .Where(s => s.NoteTypeName == NoteTypes.Kanji)
+                                        .GroupBy(s => s.AnkiNoteId)
+                                        .ToDictionary(g => g.Key, g => g.ToList());
+         var sentenceStatuses = backendData.StudyingStatuses
+                                           .Where(s => s.NoteTypeName == NoteTypes.Sentence)
+                                           .GroupBy(s => s.AnkiNoteId)
+                                           .ToDictionary(g => g.Key, g => g.ToList());
+
+         runner.RunIndeterminate("Setting studying statuses",
+                                                                () =>
+                                                                {
+                                                                   Vocab.Cache.SetStudyingStatuses(vocabStatuses);
+                                                                   Kanji.Cache.SetStudyingStatuses(kanjiStatuses);
+                                                                   Sentences.Cache.SetStudyingStatuses(sentenceStatuses);
+                                                                });
+      }
    }
-
-   INoteRepository ConfiguredRepository => _config.LoadNotesFromFileSystem.Value ? _noteRepository : new AnkiNoteRepository(NoteServices);
 
    void LoadFromRepository()
    {
@@ -144,26 +161,5 @@ public class JPCollection
          runner.RunIndeterminateAsync("Pushing kanji notes into cache", () => Kanji.Cache.AddAllToCache(allNotes.Kanji)),
          runner.RunIndeterminateAsync("Pushing vocab notes into cache", () => Vocab.Cache.AddAllToCache(allNotes.Vocab)),
          runner.RunIndeterminateAsync("Pushing sentence notes into cache", () => Sentences.Cache.AddAllToCache(allNotes.Sentences)));
-   }
-
-   async Task<List<CardStudyingStatus>> LoadAnkiUserDataAsync()
-   {
-      using var _ = this.Log().Warning().LogMethodExecutionTime();
-      var dbPath = AnkiFacade.Col.DbFilePath();
-      if(dbPath == null) throw new InvalidOperationException("Anki collection database is not initialized yet");
-
-      using var runner = NoteServices.TaskRunner.Current("Loading user data from Anki");
-
-      var ankiIdMapTask = runner.RunIndeterminateAsync("Loading Anki ID mappings", () => NoteBulkLoader.LoadAnkiIdMaps(dbPath));
-      var studyingStatusesTask = runner.RunIndeterminateAsync("Fetching studying statuses from Anki", () => CardStudyingStatusLoader.FetchAll(dbPath));
-
-      Task.WaitAll(ankiIdMapTask, studyingStatusesTask);
-
-      foreach(var (ankiId, noteId) in ankiIdMapTask.Result)
-      {
-         NoteServices.AnkiNoteIdMap.Register(ankiId, noteId);
-      }
-
-      return await studyingStatusesTask;
    }
 }

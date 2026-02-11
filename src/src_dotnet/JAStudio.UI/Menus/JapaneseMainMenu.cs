@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Compze.Utilities.Logging;
-using JAStudio.Core.Anki;
+using JAStudio.Anki;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
 

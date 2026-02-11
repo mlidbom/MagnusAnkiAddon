@@ -1,17 +1,17 @@
-import abc
-from System import IDisposable, Action
-from JAStudio.Core.Note.Collection import JPCollection
+import typing, abc
+from System import IDisposable, Action, Func_2
+from JAStudio.Core.Note.Collection import JPCollection, CardStudyingStatus
 from JAStudio.Core.Configuration import JapaneseConfig, ConfigurationStore
+from JAStudio.Core.Note import IBackendNoteCreator, NoteServices, NoteId, AnkiCardOperations, AnkiNoteIdMap
+from JAStudio.Core.Storage import INoteRepository
+from System.Collections.Generic import Dictionary_2, List_1
+from JAStudio.Core.TaskRunners import TaskRunner
 from JAStudio.Core.UI.Web.Kanji import KanjiNoteRenderer
 from JAStudio.Core.UI.Web.Sentence import SentenceNoteRenderer
 from JAStudio.Core.UI.Web.Vocab import VocabNoteRenderer
-from System.Collections.Generic import List_1
-from JAStudio.Core.Anki import AnkiCardOperations, AnkiNoteIdMap
 from JAStudio.Core.Batches import LocalNoteUpdater
-from JAStudio.Core.Note import NoteServices
 from JAStudio.Core.AnkiUtils import QueryBuilder
 from Compze.Utilities.DependencyInjection.Abstractions import IServiceLocator
-from JAStudio.Core.TaskRunners import TaskRunner
 from JAStudio.Core.Note.Vocabulary import VocabNoteFactory
 
 class App(IDisposable):
@@ -26,8 +26,26 @@ class App(IDisposable):
     def Services(self) -> TemporaryServiceCollection: ...
     def AddInitHook(self, hook: Action) -> None: ...
     @staticmethod
-    def Bootstrap() -> App: ...
+    def Bootstrap(backendNoteCreator: IBackendNoteCreator = ..., backendDataLoader: IBackendDataLoader = ..., environmentPaths: IEnvironmentPaths = ..., alternateRepositoryFactory: Func_2[NoteServices, INoteRepository] = ...) -> App: ...
     def Dispose(self) -> None: ...
+
+
+class BackendData:
+    def __init__(self, idMappings: Dictionary_2[int, NoteId], studyingStatuses: List_1[CardStudyingStatus]) -> None: ...
+    @property
+    def IdMappings(self) -> Dictionary_2[int, NoteId]: ...
+    @property
+    def StudyingStatuses(self) -> List_1[CardStudyingStatus]: ...
+
+
+class IBackendDataLoader(typing.Protocol):
+    @abc.abstractmethod
+    def Load(self, taskRunner: TaskRunner) -> BackendData: ...
+
+
+class IEnvironmentPaths(typing.Protocol):
+    @property
+    def AddonRootDir(self) -> str: ...
 
 
 class Renderers:

@@ -40,6 +40,7 @@ try:
         jastudio_dlls = [
                 runtime_binaries / "JAStudio.Core.dll",
                 runtime_binaries / "JAStudio.PythonInterop.dll",
+                runtime_binaries / "JAStudio.Anki.dll",
                 runtime_binaries / "JAStudio.UI.dll",
         ]
 
