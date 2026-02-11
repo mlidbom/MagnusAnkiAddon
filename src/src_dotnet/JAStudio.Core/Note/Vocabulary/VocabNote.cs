@@ -105,16 +105,20 @@ public class VocabNote : JPNote
     public static VocabNote Create(NoteServices services, string question, string answer, List<string> readings, List<string> forms)
     {
         var note = new VocabNote(services);
-        note.Question.Set(question);
-        note.User.Answer.Set(answer);
-        note.SetReadings(readings);
-        
-        if (forms.Any())
+        using(note.RecursiveFlushGuard.PauseFlushing())
         {
-            note.Forms.SetList(forms);
+            note.Question.Set(question);
+            note.User.Answer.Set(answer);
+            note.SetReadings(readings);
+
+            if(forms.Any())
+            {
+                note.Forms.SetList(forms);
+            }
+
+            note.UpdateGeneratedData();
         }
-        
-        note.UpdateGeneratedData();
+
         services.Collection.Vocab.Add(note);
         return note;
     }

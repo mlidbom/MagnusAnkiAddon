@@ -85,11 +85,14 @@ public class VocabCloner
         data.Tags = [];
         var clone = new VocabNote(Note.Services, data);
 
-        CopyVocabTagsTo(clone);
-
-        foreach (var related in clone.RelatedNotes.Synonyms.Strings())
+        using(clone.RecursiveFlushGuard.PauseFlushing())
         {
-            clone.RelatedNotes.Synonyms.Add(related);
+            CopyVocabTagsTo(clone);
+
+            foreach(var related in clone.RelatedNotes.Synonyms.Strings())
+            {
+                clone.RelatedNotes.Synonyms.Add(related);
+            }
         }
 
         Note.Services.Collection.Vocab.Add(clone);

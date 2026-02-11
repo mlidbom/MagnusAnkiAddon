@@ -233,7 +233,7 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
       var id = note.GetId();
 
       if(!_snapshotById.TryGetValue(id, out var cached))
-         return;
+         throw new InvalidOperationException($"Cannot remove {typeof(TNote).Name} with id {id} from cache: not found in snapshot index");
 
       _snapshotById.Remove(id);
       _byId.Remove(id);
@@ -250,18 +250,8 @@ public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
    {
       var id = note.GetId();
 
-      // If already in cache, clean up old secondary indexes first (idempotent add)
-      if(_snapshotById.TryGetValue(id, out var existingSnapshot))
-      {
-         _byId.Remove(id);
-         _snapshotById.Remove(id);
-         if(_byQuestion.TryGetValue(existingSnapshot.Question, out var existingQuestionList))
-         {
-            existingQuestionList.Remove(note);
-         }
-
-         InheritorRemoveFromCache(note, existingSnapshot);
-      }
+      if(_snapshotById.ContainsKey(id))
+         throw new InvalidOperationException($"Cannot add {typeof(TNote).Name} with id {id} to cache: already present. Use RefreshInCache for updates.");
 
       var snapshot = CreateSnapshot(note);
       _snapshotById[id] = snapshot;
