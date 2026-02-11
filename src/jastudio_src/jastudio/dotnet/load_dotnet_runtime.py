@@ -6,6 +6,7 @@ from pathlib import Path
 
 from jaspythonutils.sysutils.timeutil import StopWatch
 from jastudio import mylog
+from jastudio.dotnet.copy_runtime_binaries import copy_binaries
 from pythonnet import load, unload
 
 config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "runtimeconfig.json")
@@ -14,6 +15,10 @@ def _get_workspace_root() -> Path:
     return Path(os.path.abspath(__file__)).parent.parent.parent.parent
 
 try:
+    # Copy fresh binaries from .NET build output before loading the CLR
+    # (DLLs are not locked yet, so the copy always succeeds)
+    copy_binaries(_get_workspace_root())
+
     with StopWatch.log_execution_time("Loading .NET runtime"):
         load("coreclr", runtime_config=config_file)
         atexit.unregister(unload) # without this line shutdown takse forever, and we make sure to clean everything we need up elsewhere.
