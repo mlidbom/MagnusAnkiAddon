@@ -2,6 +2,17 @@
 
 JAStudio is a Japanese language learning tool that runs as an Anki addon. The core logic and UI are in C#/Avalonia, loaded into Anki's Python process via pythonnet. Python serves only as a thin integration layer with Anki's APIs.
 
+## Quick Reference
+
+```powershell
+dotnet build src\src_dotnet\JAStudio.slnx -c Debug   # Fast .NET build (iteration)
+dotnet test src\src_dotnet\JAStudio.slnx -v quiet     # .NET tests
+pytest                                                 # Python tests
+.\full-build.ps1                                       # Full validation (Definition of Done)
+ruff check --fix                                       # Lint + autofix Python
+ruff format                                            # Format Python
+```
+
 ## Tech Stack
 
 **Languages & Frameworks:**
@@ -105,10 +116,11 @@ This project is actively porting UI from Python/PyQt6 to C#/Avalonia. **Use Pyth
 - `dev_docs/` - Development progress notes and porting status documents
 - `src/src_dotnet/` - C# source code (Avalonia UI, Core logic, Python interop)
   - `JAStudio.UI/` - Avalonia UI
+  - `JAStudio.UI.DesktopHost/` - Desktop entry point for running Avalonia UI outside Anki
   - `JAStudio.Core/` - Domain logic
   - `JAStudio.Anki/` - Anki integration utilities (C# side)
   - `JAStudio.PythonInterop/` - Python ↔ C# bridge
-  - `JAStudio.Core.Tests/`, `JAStudio.UI.Tests/` - .NET test projects
+  - `JAStudio.Core.Tests/`, `JAStudio.UI.Tests/` - .NET test projects (xunit)
 - `src/jastudio_src/` - Python source (Anki addon, thin integration layer)
 - `src/jaspythonutils_src/` - Python utility libraries
 - `src/jaslib_src/` - Python libraries (Japanese language processing)
@@ -176,37 +188,12 @@ catch (Exception ex)
 
 **Bottom line**: If you can't handle the error meaningfully, don't catch it. Let it propagate.
 
-## Coding Standards
-
-### C# Style
-- Use modern C# idioms (record types, pattern matching, LINQ)
-- Prefer immutability where practical
-- Use meaningful variable and method names
-- Keep methods focused and small
-
-### Python Style
-- Follow PEP 8
-- Use type hints for all function signatures
-- Maintain compatibility with existing code patterns
-
-### Comments
+## Comments
 - Don't add comments unless they match existing style or explain complex logic
 - Prefer self-documenting code over comments
 - Update comments when changing code
 
-## Development Workflow
-
-### Making Changes
-1. **Understand first**: Explore the codebase before making changes
-2. **Small iterations**: Make minimal, focused changes
-3. **Test early**: Run relevant tests after each change, not just at the end
-4. **Verify builds**: Use `dotnet build` for quick feedback during iteration
-5. **Full validation**: Run `./full-build.ps1` (or `./setup-dev.sh` on Linux) before considering work complete
-
-### Working on Linux/CI
-Run `./setup-dev.sh` first, then use the test commands from "How to Test".
-
-### Dependencies
+## Dependencies
 - **Use existing libraries** whenever possible
 - **Only add/update libraries** if absolutely necessary
 - **Don't update versions** unless required for the task

@@ -3,9 +3,10 @@
 **Scope:** This applies to all C# code in `src/src_dotnet/`:
 - `JAStudio.Core/` - Core business logic, domain models
 - `JAStudio.UI/` - Avalonia UI components and view models
+- `JAStudio.UI.DesktopHost/` - Desktop entry point for running Avalonia UI outside Anki
 - `JAStudio.PythonInterop/` - Python ↔ C# bridge
 - `JAStudio.Anki/` - Anki integration utilities
-- `*.Tests/` - Test projects
+- `*.Tests/` - Test projects (xunit)
 
 ## Architecture Rules
 
@@ -14,6 +15,11 @@
 - Follow **MVVM pattern**: Views (XAML) + ViewModels (C#)
 - ViewModels should not reference Avalonia types (maintain testability)
 - Use **CommunityToolkit.Mvvm** for property change notifications (`[ObservableProperty]`) and commands (`RelayCommand`, `AsyncRelayCommand`)
+- `[ObservableProperty]` fields use `_camelCase` naming — the source generator creates a PascalCase property without the underscore:
+  ```csharp
+  // Field: _isInflectingWord → Generated property: IsInflectingWord
+  [ObservableProperty] bool _isInflectingWord;
+  ```
 
 ### Business Logic (JAStudio.Core)
 - Keep pure domain logic in Core - no UI dependencies
@@ -80,6 +86,8 @@ See main copilot-instructions.md for critical exception handling rules.
 
 ## Testing
 
+Test framework: **xunit** (`JAStudio.Core.Tests` uses xunit v3, `JAStudio.UI.Tests` uses xunit v2 — both use `[Fact]`/`[Theory]` attributes).
+
 ### Test Structure
 ```csharp
 // ✅ GOOD - Clear, focused test
@@ -108,7 +116,7 @@ public void ProcessItems_WithValidInput_ReturnsFilteredResults()
 
 See the main `copilot-instructions.md` for full build, test, and Definition of Done details.
 
-### Common Issues
-- If tests fail due to missing venv, ensure `JASTUDIO_VENV_PATH` is set
-- If build fails with pythonnet errors, run `./setup-dev.sh` first
-- Exclude BulkLoaderTests in CI: `--filter "FullyQualifiedName!~BulkLoaderTests"`
+## Comments
+- Don't add comments unless they match existing style or explain complex logic
+- Prefer self-documenting code over comments
+- Update comments when changing code
