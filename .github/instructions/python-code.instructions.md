@@ -5,6 +5,7 @@
 - `src/jaspythonutils_src/` - Python utilities
 - `src/jaslib_src/` - Python libraries
 - `src/tests/` - Python tests
+- `src/MagnusAddon/`, `src/MagnusAddonTests/` - Legacy (mostly empty, ignore)
 
 ## Critical Rules
 
@@ -42,21 +43,22 @@ When Python needs to call C# code:
 
 **Example:**
 ```python
-from JAStudio.PythonInterop import SomeService  # type: ignore[import-untyped]
+from JAStudio.Core.Note import KanjiNote, SentenceNote, VocabNote
 
-# Use C# service from Python
-result = SomeService.DoSomething()
+# Use C# types from Python — stubs in typings/ provide type info
+note = KanjiNote.Create(data)
 ```
 
 ### Testing
-- Write tests in `src/tests/jaspythonutils_tests/` for Python utilities
+- Python test directories: `src/tests/jaspythonutils_tests/`, `src/tests/jaslib_tests/`, `src/tests/jastudio_tests/` — choose based on what code is under test
 - Follow existing pytest patterns
 - Use type hints in test code too
-- Run: `pytest src/tests/jaspythonutils_tests -v`
+- Run: `pytest`
 
 ## Code Style
 - Follow PEP 8
 - Use 4-space indentation
-- Maximum line length: 120 characters (consistent with existing code)
+- Line length: not strictly enforced (ruff is configured with a very high limit)
 - Use f-strings for string formatting
 - Prefer list/dict comprehensions over map/filter where readable
+- **ruff** is the primary linter and formatter — configured in `pyproject.toml`

@@ -13,7 +13,7 @@
 - Use **Avalonia UI** for all new UI components
 - Follow **MVVM pattern**: Views (XAML) + ViewModels (C#)
 - ViewModels should not reference Avalonia types (maintain testability)
-- Use ReactiveUI for property change notifications and commands
+- Use **CommunityToolkit.Mvvm** for property change notifications (`[ObservableProperty]`) and commands (`RelayCommand`, `AsyncRelayCommand`)
 
 ### Business Logic (JAStudio.Core)
 - Keep pure domain logic in Core - no UI dependencies
@@ -26,6 +26,11 @@
 - Expose clean C# APIs that hide pythonnet complexity
 - Handle Python exceptions and convert to appropriate C# exceptions
 - Document Python type mappings clearly
+
+### Anki Integration (JAStudio.Anki)
+- C#-side utilities for interacting with Anki concepts
+- No direct Python/pythonnet dependencies here — that belongs in PythonInterop
+- Provides C# abstractions that the rest of the solution can consume
 
 ## Code Quality
 
@@ -94,11 +99,6 @@ public void ProcessItems_WithValidInput_ReturnsFilteredResults()
 }
 ```
 
-### Test Naming
-- Use descriptive names: `MethodName_Scenario_ExpectedResult`
-- Group related tests in nested classes if helpful
-- Use `[Theory]` with `[InlineData]` for parameterized tests
-
 ### Test Location
 - Unit tests: Same namespace as code under test, in `*.Tests` project
 - Keep tests close to the code they test
@@ -106,17 +106,7 @@ public void ProcessItems_WithValidInput_ReturnsFilteredResults()
 
 ## Build & Verification
 
-### Before Committing
-```bash
-# Quick build (iteration)
-dotnet build src/src_dotnet/JAStudio.slnx -c Debug
-
-# Run affected tests
-JASTUDIO_VENV_PATH="$(pwd)/venv" dotnet test src/src_dotnet/JAStudio.slnx --verbosity quiet
-
-# Full validation (before PR)
-./full-build.ps1  # or ./setup-dev.sh on Linux
-```
+See the main `copilot-instructions.md` for full build, test, and Definition of Done details.
 
 ### Common Issues
 - If tests fail due to missing venv, ensure `JASTUDIO_VENV_PATH` is set

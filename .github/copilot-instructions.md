@@ -1,15 +1,18 @@
 # JAStudio Workspace Instructions for AI Assistants
 
+JAStudio is a Japanese language learning tool that runs as an Anki addon. The core logic and UI are in C#/Avalonia, loaded into Anki's Python process via pythonnet. Python serves only as a thin integration layer with Anki's APIs.
+
 ## Tech Stack
 
 **Languages & Frameworks:**
 - **C# / .NET 10** - Primary language for UI (Avalonia) and business logic
 - **Python 3.13** - Thin integration layer with Anki, minimal usage preferred
 - **Avalonia UI** - Cross-platform .NET UI framework
-- **PyQt6** - Legacy UI (being phased out in favor of Avalonia)
+- **PyQt6** - Required for Anki addon integration (Anki's UI is Qt-based)
 
 **Key Tools:**
 - **basedpyright** - Python type checker (strict, zero errors required)
+- **ruff** - Python linter and formatter (configured in `pyproject.toml`)
 - **pytest** - Python testing framework
 - **dotnet test** - .NET testing framework
 - **pythonnet** - Python ↔ C# interop bridge
@@ -22,7 +25,7 @@
 
 **DO NOT:**
 - Edit auto-generated files: `runtime_binaries/`, `typings/`
-- Modify `.github/agents/` directory (contains instructions for other agents)
+- Modify `.github/workflows/` directory (CI configuration)
 - Suppress type errors with `# pyright: ignore` or `# type: ignore` without explicit permission
 - Swallow exceptions without re-throwing (see Exception Handling section)
 - Add significant Python logic (prefer C# unless interfacing with Anki)
@@ -48,27 +51,23 @@ The fast build is for quick iteration — the Anki addon copies .NET binaries on
 
 ### How to Test
 
-**Run all tests (Definition of Done):**
-```bash
-# .NET tests (on Linux/CI - set JASTUDIO_VENV_PATH for pythonnet)
-JASTUDIO_VENV_PATH="$(pwd)/venv" dotnet test src/src_dotnet/JAStudio.slnx --verbosity quiet
-
-# Exclude BulkLoaderTests (requires test database not available in CI)
-JASTUDIO_VENV_PATH="$(pwd)/venv" dotnet test src/src_dotnet/JAStudio.slnx --verbosity quiet --filter "FullyQualifiedName!~BulkLoaderTests"
-
-# Python tests
-source venv/bin/activate && pytest src/tests/jaspythonutils_tests -v
-```
-
 **On Windows (PowerShell):**
 ```powershell
 dotnet test src\src_dotnet\JAStudio.slnx --verbosity quiet
-pytest src\tests
+pytest
 ```
 
+**On Linux/CI** (set `JASTUDIO_VENV_PATH` so pythonnet can find the venv):
+```bash
+JASTUDIO_VENV_PATH="$(pwd)/venv" dotnet test src/src_dotnet/JAStudio.slnx --verbosity quiet --filter "FullyQualifiedName!~BulkLoaderTests"
+source venv/bin/activate && pytest
+```
+
+**Note:** `BulkLoaderTests` require a test Anki database (`src/tests/collection.anki2`) not available in CI. Exclude them with `--filter "FullyQualifiedName!~BulkLoaderTests"`.
+
 **Test Guidelines:**
-- Write tests for new C# features in the appropriate test project
-- Write Python tests in `src/tests/jaspythonutils_tests/`
+- Write tests for new C# features in the appropriate `*.Tests` project
+- Python test directories: `src/tests/jaspythonutils_tests/`, `src/tests/jaslib_tests/`, `src/tests/jastudio_tests/` — choose based on what code is under test
 - Follow existing test patterns and naming conventions
 - Run relevant tests after making changes, not just at the end
 
@@ -89,16 +88,9 @@ When developing on Linux (e.g. GitHub Actions runners, Copilot coding agents):
 
 ```bash
 ./setup-dev.sh                      # One-time: creates venv, installs deps, builds .NET
-
-# Run .NET tests (set JASTUDIO_VENV_PATH so pythonnet can find the venv)
-JASTUDIO_VENV_PATH="$(pwd)/venv" dotnet test src/src_dotnet/JAStudio.slnx --verbosity quiet
-
-# Run Python tests
-source venv/bin/activate && pytest src/tests/jaspythonutils_tests -v
 ```
 
-**Note:** The `BulkLoaderTests` require a test Anki database (`src/tests/collection.anki2`) that is not currently available in CI.
-Exclude them with: `--filter "FullyQualifiedName!~BulkLoaderTests"`
+Then use the test commands from the "How to Test" section above.
 
 ## Project Architecture
 
@@ -112,15 +104,21 @@ This project is actively porting UI from Python/PyQt6 to C#/Avalonia. **Use Pyth
 ### Directory Structure
 - `dev_docs/` - Development progress notes and porting status documents
 - `src/src_dotnet/` - C# source code (Avalonia UI, Core logic, Python interop)
-  - `JAStudio.UI/` - Avalonia UI (porting target)
-  - `JAStudio.Core/` - Domain logic (already ported)
+  - `JAStudio.UI/` - Avalonia UI
+  - `JAStudio.Core/` - Domain logic
+  - `JAStudio.Anki/` - Anki integration utilities (C# side)
   - `JAStudio.PythonInterop/` - Python ↔ C# bridge
-- `src/jastudio_src/` - Python source (Anki addon, thin wrapper)
+  - `JAStudio.Core.Tests/`, `JAStudio.UI.Tests/` - .NET test projects
+- `src/jastudio_src/` - Python source (Anki addon, thin integration layer)
+- `src/jaspythonutils_src/` - Python utility libraries
+- `src/jaslib_src/` - Python libraries (Japanese language processing)
+- `src/tests/` - Python tests (`jaspythonutils_tests/`, `jaslib_tests/`, `jastudio_tests/`)
+- `src/jas_database/` - Snapshot data for Japanese language database
+- `src/web/` - HTML templates and styles for Anki card rendering
+- `src/user_files/` - User-specific configuration files
 - `src/runtime_binaries/` - Compiled .NET DLLs (auto-generated, don't edit)
 - `typings/` - Python type stubs for C# (auto-generated, don't edit)
-
-### UI Porting Status
-Essentially done now.
+- `src/MagnusAddon/`, `src/MagnusAddonTests/` - Legacy directories (mostly empty, ignore)
 
 ## Python Environment
 
@@ -206,18 +204,7 @@ catch (Exception ex)
 5. **Full validation**: Run `./full-build.ps1` (or `./setup-dev.sh` on Linux) before considering work complete
 
 ### Working on Linux/CI
-When working in GitHub Actions or coding agent environments:
-```bash
-# First-time setup
-./setup-dev.sh
-
-# Activate Python environment for any Python work
-source venv/bin/activate
-
-# Run tests with proper environment
-JASTUDIO_VENV_PATH="$(pwd)/venv" dotnet test src/src_dotnet/JAStudio.slnx --verbosity quiet --filter "FullyQualifiedName!~BulkLoaderTests"
-pytest src/tests/jaspythonutils_tests -v
-```
+Run `./setup-dev.sh` first, then use the test commands from "How to Test".
 
 ### Dependencies
 - **Use existing libraries** whenever possible
