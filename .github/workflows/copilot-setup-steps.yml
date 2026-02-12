@@ -34,3 +34,9 @@ jobs:
 
       - name: Setup dev environment
         run: ./setup-dev.sh
+
+      - name: Expose venv for subsequent steps
+        run: |
+          echo "JASTUDIO_VENV_PATH=${{ github.workspace }}/venv" >> "$GITHUB_ENV"
+          echo "VIRTUAL_ENV=${{ github.workspace }}/venv" >> "$GITHUB_ENV"
+          echo "${{ github.workspace }}/venv/bin" >> "$GITHUB_PATH"
