@@ -41,10 +41,8 @@ Tests run in parallel. Each test creates its own `App` instance through the base
 ## No noisy comments that are always the same
 - Never Use `// Arrange`, `// Act`, `// Assert` comments. We know how tests are structured
 
-## xunit Versions
-- `JAStudio.Core.Tests` uses **xunit v3**
-- `JAStudio.UI.Tests` uses **xunit v2**
-- Both use `[Fact]` / `[Theory]` / `[InlineData]` — the API is compatible
+## xunit
+All test projects use **xunit v3** (`[Fact]` / `[Theory]` / `[InlineData]`).
 
 ## Test Naming
 - Prefer short, descriptive names: `KanjiAddedCorrectly`, `EmptyObjectSerializesToEmptyString`

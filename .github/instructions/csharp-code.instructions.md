@@ -86,7 +86,7 @@ See main copilot-instructions.md for critical exception handling rules.
 
 See `csharp-tests.instructions.md` for detailed test conventions (base classes, fixture patterns, no-mocking policy, AI test conventions).
 
-Test framework: **xunit** (`JAStudio.Core.Tests` uses xunit v3, `JAStudio.UI.Tests` uses xunit v2 — both use `[Fact]`/`[Theory]` attributes).
+Test framework: **xunit v3** (all test projects use `[Fact]`/`[Theory]` attributes).
 
 ### Test Location
 - Unit tests: Same namespace as code under test, in `*.Tests` project
