@@ -33,11 +33,6 @@ public MyDialog() { InitializeComponent(); }
 #pragma warning restore CS8618
 ```
 
-## Namespace Prefixes
-Use these conventional prefixes:
-- `xmlns:vm="using:JAStudio.UI.ViewModels"` — ViewModels
-- `xmlns:controls="using:JAStudio.UI.Controls"` — Custom controls
-
 ## Commands vs Event Handlers
 - Prefer **command bindings** (`{Binding MyCommand}`) for all user interactions
 - Use **event handlers** only when commands are impractical (e.g., `DoubleTapped`, focus management)
