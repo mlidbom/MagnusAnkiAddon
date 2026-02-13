@@ -6,33 +6,6 @@ applyTo: "**/*.Tests/**/*.cs"
 
 **Scope:** All test code in `JAStudio.Core.Tests` and `JAStudio.UI.Tests`.
 
-## JAStudio BDD Test Example
-
-General BDD-style test conventions are in the shared instructions. Here is an example using this project's domain base classes:
-
-```csharp
-using Compze.Utilities.Testing.XUnit.BDD;
-
-public class After_adding_a_kanji_note : TestStartingWithEmptyCollection
-{
-   readonly KanjiNote _note;
-   public After_adding_a_kanji_note() => _note = CreateKanji("人", "person");
-
-   [XF] public void note_is_in_collection() => Assert.Contains(_note, NoteServices.Collection.KanjiNotes);
-
-   public class and_adding_a_vocab_note_using_that_kanji : After_adding_a_kanji_note
-   {
-      readonly VocabNote _vocab;
-      public and_adding_a_vocab_note_using_that_kanji() => _vocab = CreateVocab("人間", "にんげん", "human");
-
-      [XF] public void vocab_is_in_collection() => Assert.Contains(_vocab, NoteServices.Collection.VocabNotes);
-      [XF] public void kanji_is_still_accessible() => Assert.NotNull(_note);
-   }
-}
-```
-
-Only the **outermost class** inherits the domain base class (`CollectionUsingTest` / `TestStartingWithEmptyCollection`).
-
 ## Test Infrastructure
 
 ### Base Classes (Mandatory)
