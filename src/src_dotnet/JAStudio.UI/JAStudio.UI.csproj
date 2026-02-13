@@ -28,9 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Compze.Utilities">
-      <HintPath>..\manual_libs\Compze.Utilities.dll</HintPath>
-    </Reference>
+    <PackageReference Include="Compze.Utilities.Functional" Version="0.1.0-alpha.3" />
   </ItemGroup>
 
 </Project>

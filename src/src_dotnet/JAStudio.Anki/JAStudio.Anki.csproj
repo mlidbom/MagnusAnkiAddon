@@ -15,10 +15,5 @@
       <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.2" />
    </ItemGroup>
 
-   <ItemGroup>
-      <Reference Include="Compze.Utilities">
-         <HintPath>..\manual_libs\Compze.Utilities.dll</HintPath>
-      </Reference>
-   </ItemGroup>
 
 </Project>

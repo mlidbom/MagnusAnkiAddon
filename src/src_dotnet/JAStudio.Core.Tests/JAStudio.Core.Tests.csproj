@@ -25,20 +25,8 @@
    </ItemGroup>
 
    <ItemGroup>
-      <Reference Include="Compze.Utilities">
-         <HintPath>..\manual_libs\Compze.Utilities.dll</HintPath>
-      </Reference>
-      <Reference Include="Compze.Utilities.Testing.Must">
-        <HintPath>..\manual_libs\Compze.Utilities.Testing.Must.dll</HintPath>
-      </Reference>
-
-      <Reference Include="DiffPlex">
-        <HintPath>..\manual_libs\DiffPlex.dll</HintPath>
-      </Reference>
-
-      <Reference Include="Newtonsoft.Json">
-        <HintPath>..\manual_libs\Newtonsoft.Json.dll</HintPath>
-      </Reference>
+      <PackageReference Include="Compze.Utilities.Testing.Must" Version="0.1.0-alpha.3" />
+      <PackageReference Include="Compze.Utilities.Testing.XUnit" Version="0.1.0-alpha.3" />
    </ItemGroup>
 
 </Project>

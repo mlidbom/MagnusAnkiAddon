@@ -30,12 +30,9 @@
    </ItemGroup>
 
    <ItemGroup>
-      <Reference Include="Compze.Utilities">
-         <HintPath>..\manual_libs\Compze.Utilities.dll</HintPath>
-      </Reference>
-      <Reference Include="Compze.Utilities.DependencyInjection.SimpleInjector">
-         <HintPath>..\manual_libs\Compze.Utilities.DependencyInjection.SimpleInjector.dll</HintPath>
-      </Reference>
+      <PackageReference Include="Compze.Utilities.DependencyInjection.SimpleInjector" Version="0.1.0-alpha.3" />
+      <PackageReference Include="Compze.Utilities.Logging" Version="0.1.0-alpha.3" />
+      <PackageReference Include="Compze.Utilities.SystemCE.ThreadingCE" Version="0.1.0-alpha.3" />
    </ItemGroup>
 
    <!-- Stub regeneration moved to JAStudio.UI project (builds last, has all DLLs) -->
