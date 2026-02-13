@@ -11,6 +11,7 @@ applyTo: "**/*.Tests/**/*.cs"
 Write tests as **nested, inheritable classes** that read like executable specifications. Use `[XF]` (from `Compze.Utilities.Testing.XUnit.BDD`) instead of `[Fact]`.
 
 ### When adding tests to an existing test class that uses the older flat style:
+
 - If it's relatively easy, refactor the existing test class to BDD-style nested structure, then add the new tests in that structure.
 - If refactoring would be complex or risky, create a new test class using BDD-style structure for the new tests instead.
 - Do NOT add new tests to the old flat structure — this only adds to the technical debt
