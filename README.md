@@ -8,4 +8,4 @@ This directory is synced with https://github.com/mlidbom/copilot-code-standards-
 - **Pull** updates from remote: `.\sync-scripts\pull-shared-instructions.ps1`
 - **Push** local changes to remote: `.\sync-scripts\push-shared-instructions.ps1`
 
-The sync-scripts directory is local to this repo and excluded from pushes to the shared repo.
+The sync-scripts are themselves part of the shared repo, so every consumer gets them automatically.
