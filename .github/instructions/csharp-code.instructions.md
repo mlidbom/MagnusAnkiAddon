@@ -1,19 +1,17 @@
+---
+applyTo: "**/*.cs"
+---
+
 # C# Code Guidelines
 
-**Scope:** This applies to all C# code in `src/src_dotnet/`:
-- `JAStudio.Core/` - Core business logic, domain models
-- `JAStudio.UI/` - Avalonia UI components and view models
-- `JAStudio.UI.DesktopHost/` - Desktop entry point for running Avalonia UI outside Anki
-- `JAStudio.PythonInterop/` - Python ↔ C# bridge
-- `JAStudio.Anki/` - Anki integration utilities
-- `*.Tests/` - Test projects (xunit)
+**Scope:** This applies to all C# code:
 
 ## Architecture Rules
 
 ### UI Code (JAStudio.UI)
 - Use **Avalonia UI** for all new UI components
 - Follow **MVVM pattern**: Views (XAML) + ViewModels (C#)
-- ViewModels should not reference Avalonia types (maintain testability)
+- ViewModels should not reference Avalonia types (maintain testability and the ability to use them with other UI frameworks)
 - Use **CommunityToolkit.Mvvm** for property change notifications (`[ObservableProperty]`) and commands (`RelayCommand`, `AsyncRelayCommand`)
 - `[ObservableProperty]` fields use `_camelCase` naming — the source generator creates a PascalCase property without the underscore:
   ```csharp

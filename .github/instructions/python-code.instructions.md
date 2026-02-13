@@ -1,11 +1,10 @@
+---
+applyTo: "**/*.py"
+---
+
 # Python Code Guidelines
 
-**Scope:** This applies to all Python code in:
-- `src/jastudio_src/` - Anki addon integration
-- `src/jaspythonutils_src/` - Python utilities
-- `src/jaslib_src/` - Python libraries
-- `src/tests/` - Python tests
-- `src/MagnusAddon/`, `src/MagnusAddonTests/` - Legacy (mostly empty, ignore)
+**Scope:** This applies to all Python
 
 ## Critical Rules
 
@@ -14,7 +13,7 @@ This project is actively porting from Python to C#. **Do NOT expand Python funct
 - ❌ Don't add new Python business logic
 - ❌ Don't add new Python UI code
 - ✅ Only add Python code when interfacing with Anki APIs
-- ✅ Prefer moving logic to C# (`JAStudio.Core` or `JAStudio.UI`)
+- ✅ Prefer moving logic to C# (`JAStudio.Anki.csproj` `JAStudio.Core` or `JAStudio.UI`)
 
 ### Type Safety is Mandatory
 - ✅ **All functions must have complete type hints** (parameters and return types)
@@ -65,10 +64,8 @@ note = KanjiNote.Create(data)
 - Line length: effectively unlimited (`line-length = 320` in `pyproject.toml`)
 - Use f-strings for string formatting
 - Prefer list/dict comprehensions over map/filter where readable
-- **ruff** is the sole linter and formatter — configured in `pyproject.toml`
+- **ruff** is the sole linter configured in `pyproject.toml`
   - `ruff check --fix` — lint + autofix
-  - `ruff format` — format
-- `beartype` is used sparingly (only in `jaspythonutils`). Don't introduce it elsewhere without reason.
 
 ## Comments
 - Don't add comments unless they match existing style or explain complex logic
