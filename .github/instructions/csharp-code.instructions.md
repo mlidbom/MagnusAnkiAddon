@@ -36,57 +36,7 @@ applyTo: "**/*.cs"
 - No direct Python/pythonnet dependencies here — that belongs in PythonInterop
 - Provides C# abstractions that the rest of the solution can consume
 
-## Code Quality
-
-### Modern C# Features
-```csharp
-// ✅ GOOD - Modern C# idioms
-public record UserData(string Name, int Age);
-
-var result = items switch
-{
-    [] => "empty",
-    [var single] => $"one: {single}",
-    _ => "multiple"
-};
-
-var filtered = data
-    .Where(x => x.IsValid)
-    .Select(x => x.Name)
-    .ToList();
-
-// ❌ AVOID - Old-style verbose code
-public class UserData
-{
-    public string Name { get; set; }
-    public int Age { get; set; }
-}
-
-string result;
-if (items.Length == 0)
-    result = "empty";
-else if (items.Length == 1)
-    result = $"one: {items[0]}";
-else
-    result = "multiple";
-```
-
-### Exception Handling
-See main copilot-instructions.md for critical exception handling rules.
-
-**Key point:** Never catch and log without re-throwing, unless you have a specific recovery strategy.
-
-### Naming Conventions
-- PascalCase for public members, types, methods
-- camelCase for private fields, local variables
-- Prefix private fields with `_` (e.g., `_repository`)
-- Use meaningful names; avoid abbreviations unless standard (ID, UI, etc.)
-
 ## Testing
-
-See `csharp-tests.instructions.md` for detailed test conventions (base classes, fixture patterns, no-mocking policy, AI test conventions).
-
-Test framework: **xunit v3** (all test projects use `[Fact]`/`[Theory]` attributes).
 
 ### Test Location
 - Unit tests: Same namespace as code under test, in `*.Tests` project
@@ -96,8 +46,3 @@ Test framework: **xunit v3** (all test projects use `[Fact]`/`[Theory]` attribut
 ## Build & Verification
 
 See the main `copilot-instructions.md` for full build, test, and Definition of Done details.
-
-## Comments
-- Don't add comments unless they match existing style or explain complex logic
-- Prefer self-documenting code over comments
-- Update comments when changing code
