@@ -84,26 +84,9 @@ See main copilot-instructions.md for critical exception handling rules.
 
 ## Testing
 
-Test framework: **xunit** (`JAStudio.Core.Tests` uses xunit v3, `JAStudio.UI.Tests` uses xunit v2 — both use `[Fact]`/`[Theory]` attributes).
+See `csharp-tests.instructions.md` for detailed test conventions (base classes, fixture patterns, no-mocking policy, AI test conventions).
 
-### Test Structure
-```csharp
-// ✅ GOOD - Clear, focused test
-[Fact]
-public void ProcessItems_WithValidInput_ReturnsFilteredResults()
-{
-    // Arrange
-    var service = new ItemService();
-    var items = new[] { "valid", "invalid", "valid" };
-    
-    // Act
-    var results = service.ProcessItems(items);
-    
-    // Assert
-    Assert.Equal(2, results.Count);
-    Assert.All(results, item => Assert.Equal("valid", item));
-}
-```
+Test framework: **xunit** (`JAStudio.Core.Tests` uses xunit v3, `JAStudio.UI.Tests` uses xunit v2 — both use `[Fact]`/`[Theory]` attributes).
 
 ### Test Location
 - Unit tests: Same namespace as code under test, in `*.Tests` project
