@@ -2,6 +2,9 @@
 $repoRoot = $PSScriptRoot | Split-Path | Split-Path | Split-Path | Split-Path
 Push-Location $repoRoot
 try {
+   # Fix false "working tree has modifications" caused by stat-dirty index entries
+   git update-index --refresh -q 2>$null
+
    # Split with --rejoin caches the split point so future pushes only process new commits.
    # Without this, git subtree push walks the entire repo history every time.
    $branch = git subtree split --prefix .github/instructions/shared-instructions --rejoin
