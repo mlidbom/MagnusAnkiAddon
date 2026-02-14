@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using JAStudio.Core.LanguageServices;
+using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.SysUtils;
 
@@ -57,7 +58,7 @@ public class KanjiNote : JPNote
 
          SetPrimaryVocabAudio(audioString);
 
-         void SetPrimaryVocabAudio(string value) => Audio = value;
+         void SetPrimaryVocabAudio(string value) => Audio.SetRawValue(value);
       }
 
       SetField(NoteFieldsConstants.Kanji.ActiveAnswer, GetAnswer());
@@ -441,11 +442,9 @@ public class KanjiNote : JPNote
       set => SetField(NoteFieldsConstants.Kanji.SourceMeaningMnemonic, value);
    }
 
-   public string Audio
-   {
-      get => GetField(NoteFieldsConstants.Kanji.Audio);
-      set => SetField(NoteFieldsConstants.Kanji.Audio, value);
-   }
+   public WritableAudioField Audio => new(this, NoteFieldsConstants.Kanji.Audio);
+
+   public ImageField Image => new(this, NoteFieldsConstants.Kanji.Image);
 
    public string SourceAnswer
    {
@@ -466,6 +465,13 @@ public class KanjiNote : JPNote
    }
 
    public List<VocabNote> GetVocabNotes() => Services.Collection.Vocab.WithKanjiInAnyForm(this);
+
+   public override List<MediaReference> GetMediaReferences()
+   {
+      var refs = Audio.GetMediaReferences();
+      refs.AddRange(Image.GetMediaReferences());
+      return refs;
+   }
 
    public List<VocabNote> GetVocabNotesSorted() =>
       VocabNoteSorting.SortVocabListByStudyingStatus(

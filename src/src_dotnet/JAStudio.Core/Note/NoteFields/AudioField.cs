@@ -38,6 +38,8 @@ public class AudioField
         return strippedPaths.Select(path => path.Trim()).Where(path => !string.IsNullOrEmpty(path)).ToList();
     }
 
+    public List<MediaReference> GetMediaReferences() => MediaFieldParsing.ParseAudioReferences(_field.Value);
+
     public override string ToString()
     {
         return _field.ToString();

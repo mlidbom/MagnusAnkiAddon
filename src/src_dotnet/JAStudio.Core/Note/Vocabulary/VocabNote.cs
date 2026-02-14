@@ -29,6 +29,8 @@ public class VocabNote : JPNote
     public MutableStringField SourceMnemonic => new(this, NoteFieldsConstants.Vocab.SourceMnemonic);
     public MutableStringField SourceReadingMnemonic => new(this, NoteFieldsConstants.Vocab.SourceReadingMnemonic);
     public MutableStringField TechnicalNotes => new(this, NoteFieldsConstants.Vocab.TechnicalNotes);
+    public ImageField Image => new(this, NoteFieldsConstants.Vocab.Image);
+    public ImageField UserImage => new(this, NoteFieldsConstants.Vocab.UserImage);
 
     public VocabNote(NoteServices services, NoteData? data = null) : base(services, data?.Id as VocabId ?? VocabId.New(), data)
     {
@@ -57,6 +59,16 @@ public class VocabNote : JPNote
     public override string GetQuestion()
     {
         return Question.Raw;
+    }
+
+    public override List<MediaReference> GetMediaReferences()
+    {
+        var refs = Audio.First.GetMediaReferences();
+        refs.AddRange(Audio.Second.GetMediaReferences());
+        refs.AddRange(Audio.Tts.GetMediaReferences());
+        refs.AddRange(Image.GetMediaReferences());
+        refs.AddRange(UserImage.GetMediaReferences());
+        return refs;
     }
 
     public override string GetAnswer()

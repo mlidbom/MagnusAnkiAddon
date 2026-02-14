@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace JAStudio.Core.Note.NoteFields;
 
 public class MutableStringField
@@ -27,6 +29,8 @@ public class MutableStringField
     {
         return !string.IsNullOrEmpty(Value);
     }
+
+    public List<MediaReference> GetImageReferences() => MediaFieldParsing.ParseImageReferences(Value);
 
     public override string ToString()
     {

@@ -39,9 +39,16 @@ public class SentenceNote : JPNote
     public MutableStringField SourceAnswer => new(this, SentenceNoteFields.SourceAnswer);
     public MutableStringField ActiveAnswer => new(this, SentenceNoteFields.ActiveAnswer);
     public MutableStringField SourceComments => new(this, SentenceNoteFields.SourceComments);
-    public MutableStringField Screenshot => new(this, SentenceNoteFields.Screenshot);
+    public WritableImageField Screenshot => new(this, SentenceNoteFields.Screenshot);
     public WritableAudioField Audio => new(this, SentenceNoteFields.Audio);
     public MutableStringField JanomeTokens => new(this, SentenceNoteFields.JanomeTokens);
+
+    public override List<MediaReference> GetMediaReferences()
+    {
+        var refs = Audio.GetMediaReferences();
+        refs.AddRange(Screenshot.GetMediaReferences());
+        return refs;
+    }
 
     public override string GetQuestion()
     {
@@ -173,7 +180,7 @@ public class SentenceNote : JPNote
         var note = new SentenceNote(services);
         note.SourceQuestion.Set(question);
         note.SourceAnswer.Set(answer);
-        note.Screenshot.Set(screenshot);
+        note.Screenshot.SetRawValue(screenshot);
         note.UpdateGeneratedData();
 
         if(string.IsNullOrWhiteSpace(audio))

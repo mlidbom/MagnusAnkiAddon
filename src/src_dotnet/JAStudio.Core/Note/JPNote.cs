@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.Note.Collection;
+using JAStudio.Core.Note.NoteFields;
 
 namespace JAStudio.Core.Note;
 
@@ -166,6 +167,8 @@ public abstract class JPNote
    {
       // Override in subclasses
    }
+
+   public virtual List<MediaReference> GetMediaReferences() => [];
 
    public string GetField(string fieldName) => _fields.TryGetValue(fieldName, out var value) ? value : string.Empty;
 

@@ -56,7 +56,7 @@ public partial class SentenceEditorViewModel : ObservableObject
       SourceComments = _sentence.SourceComments.Value;
 
       Audio = _sentence.Audio.RawValue();
-      Screenshot = _sentence.Screenshot.Value;
+      Screenshot = _sentence.Screenshot.RawValue();
       Id = _sentence.Id.Value;
    }
 
@@ -70,7 +70,7 @@ public partial class SentenceEditorViewModel : ObservableObject
       _sentence.SourceAnswer.Set(SourceAnswer);
       _sentence.SourceComments.Set(SourceComments);
       _sentence.Audio.SetRawValue(Audio);
-      _sentence.Screenshot.Set(Screenshot);
+      _sentence.Screenshot.SetRawValue(Screenshot);
       _sentence.Id.Set(Id);
       _sentence.UpdateGeneratedData();
    }

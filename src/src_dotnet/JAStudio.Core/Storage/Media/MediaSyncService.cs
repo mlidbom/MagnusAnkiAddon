@@ -1,6 +1,7 @@
 using System.IO;
 using Compze.Utilities.Logging;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.NoteFields;
 
 namespace JAStudio.Core.Storage.Media;
 
@@ -19,7 +20,7 @@ public class MediaSyncService : IMediaSyncService
 
    public void SyncMedia(JPNote note)
    {
-      var references = MediaReferenceExtractor.ExtractAll(note);
+      var references = note.GetMediaReferences();
 
       foreach (var reference in references)
       {

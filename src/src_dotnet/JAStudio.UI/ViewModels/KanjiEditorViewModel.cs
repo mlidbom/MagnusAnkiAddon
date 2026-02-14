@@ -62,7 +62,7 @@ public partial class KanjiEditorViewModel : ObservableObject
 
       SourceAnswer = _kanji.SourceAnswer;
       SourceMeaningMnemonic = _kanji.SourceMeaningMnemonic;
-      Audio = _kanji.Audio;
+      Audio = _kanji.Audio.RawValue();
    }
 
    public void Save()
@@ -79,7 +79,7 @@ public partial class KanjiEditorViewModel : ObservableObject
       _kanji.RelatedConfusedWithRaw = ConfusedWith;
       _kanji.SourceAnswer = SourceAnswer;
       _kanji.SourceMeaningMnemonic = SourceMeaningMnemonic;
-      _kanji.Audio = Audio;
+      _kanji.Audio.SetRawValue(Audio);
       _kanji.UpdateGeneratedData();
    }
 
