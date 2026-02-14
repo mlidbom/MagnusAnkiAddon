@@ -62,12 +62,12 @@ These fields have no C# constant or property. They would need to be added to the
 
 #### Sentence: `Source`
 - No constant, no property, no usage anywhere in C#
-- Tags handle source concepts (`Tags.Source.Folder`, `Tags.Source.Jamdict`) but there's no standalone field
-- Investigate whether this Anki field is still in use
+- This usually contains the Anime Series the sentence is from
 
 #### Kanji: `__references`
 - Explicitly ignored in `AnkiVsFileSystemComparisonTests`
 - Web: `{{__references}}` rendered by Anki's native mustache templating
+- Contains links to articles abbout the kanji
 
 #### Kanji: `__explanation`
 - `NoteFieldsConstants.Vocab.UserExplanation = "__explanation"` exists for **Vocab**, not Kanji
@@ -77,6 +77,7 @@ These fields have no C# constant or property. They would need to be added to the
 - Explicitly ignored in comparison tests
 - Web: template usage is **commented out**: `<!--<div id="userImage">{{_image}}</div>-->`
 - Appears to be deprecated/unused
+- Still there are some images I don't want to lose.
 
 #### Kanji: `_primary_readings_tts_audio`
 - No C# code references at all
@@ -85,10 +86,12 @@ These fields have no C# constant or property. They would need to be added to the
 #### Vocab: `__technical_notes`
 - Explicitly ignored in comparison tests
 - Web: `{{__technical_notes}}` in vocab back template
+- This is vital information, what an editor has to say about the vocab.
 
 #### Vocab: `__references`
 - No constant, no property
 - Not referenced in any vocab mustache template
+- Links to articles dealing with the vocab in some way.
 
 #### Vocab: `Image`
 - Explicitly ignored in comparison tests

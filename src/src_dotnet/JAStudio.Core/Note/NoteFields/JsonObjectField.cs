@@ -23,6 +23,12 @@ public class MutableSerializedObjectField<T>
 
     public T Get() => _value;
 
+    public string RawValue
+    {
+        get => _field.Value;
+        set => _field.Set(value);
+    }
+
     public void Set(T value)
     {
         _value = value;

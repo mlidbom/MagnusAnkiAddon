@@ -64,14 +64,14 @@ public partial class VocabEditorViewModel : ObservableObject
       UserCompounds = string.Join(", ", _vocab.CompoundParts.All());
 
       SourceAnswer = _vocab.SourceAnswer.Value;
-      SourceMnemonic = _vocab.GetField(NoteFieldsConstants.Vocab.SourceMnemonic);
-      SourceReadingMnemonic = _vocab.GetField(NoteFieldsConstants.Vocab.SourceReadingMnemonic);
+      SourceMnemonic = _vocab.SourceMnemonic.Value;
+      SourceReadingMnemonic = _vocab.SourceReadingMnemonic.Value;
 
       AudioB = _vocab.Audio.First.RawValue();
       AudioG = _vocab.Audio.Second.RawValue();
       AudioTts = _vocab.Audio.Tts.RawValue();
       SentenceCount = _vocab.MetaData.SentenceCount.Get().ToString();
-      RelatedVocab = _vocab.GetField(NoteFieldsConstants.Vocab.RelatedVocab);
+      RelatedVocab = _vocab.RelatedNotes.RawJson;
    }
 
    public void Save()
@@ -86,13 +86,13 @@ public partial class VocabEditorViewModel : ObservableObject
       _vocab.PartsOfSpeech.SetRawStringValue(PartsOfSpeech);
       _vocab.CompoundParts.Set(SplitCommaSeparated(UserCompounds));
       _vocab.SourceAnswer.Set(SourceAnswer);
-      _vocab.SetField(NoteFieldsConstants.Vocab.SourceMnemonic, SourceMnemonic);
-      _vocab.SetField(NoteFieldsConstants.Vocab.SourceReadingMnemonic, SourceReadingMnemonic);
+      _vocab.SourceMnemonic.Set(SourceMnemonic);
+      _vocab.SourceReadingMnemonic.Set(SourceReadingMnemonic);
       _vocab.Audio.First.SetRawValue(AudioB);
       _vocab.Audio.Second.SetRawValue(AudioG);
       _vocab.Audio.Tts.SetRawValue(AudioTts);
       if (int.TryParse(SentenceCount, out var count)) _vocab.MetaData.SentenceCount.Set(count);
-      _vocab.SetField(NoteFieldsConstants.Vocab.RelatedVocab, RelatedVocab);
+      _vocab.RelatedNotes.RawJson = RelatedVocab;
       _vocab.UpdateGeneratedData();
    }
 

@@ -56,6 +56,8 @@ public class KanjiNote : JPNote
                               : string.Empty;
 
          SetPrimaryVocabAudio(audioString);
+
+         void SetPrimaryVocabAudio(string value) => Audio = value;
       }
 
       SetField(NoteFieldsConstants.Kanji.ActiveAnswer, GetAnswer());
@@ -137,7 +139,11 @@ public class KanjiNote : JPNote
       set => SetField(NoteFieldsConstants.Kanji.ReadingKun, value);
    }
 
-   public string ReadingNanHtml => GetField(NoteFieldsConstants.Kanji.ReadingNan);
+   public string ReadingNanHtml
+   {
+      get => GetField(NoteFieldsConstants.Kanji.ReadingNan);
+      set => SetField(NoteFieldsConstants.Kanji.ReadingNan, value);
+   }
 
    public void AddPrimaryOnReading(string reading)
    {
@@ -429,11 +435,34 @@ public class KanjiNote : JPNote
       set => SetField(NoteFieldsConstants.Kanji.UserMnemonic, value);
    }
 
-   public string SourceMeaningMnemonic => GetField(NoteFieldsConstants.Kanji.SourceMeaningMnemonic);
-
-   void SetPrimaryVocabAudio(string value)
+   public string SourceMeaningMnemonic
    {
-      SetField(NoteFieldsConstants.Kanji.Audio, value);
+      get => GetField(NoteFieldsConstants.Kanji.SourceMeaningMnemonic);
+      set => SetField(NoteFieldsConstants.Kanji.SourceMeaningMnemonic, value);
+   }
+
+   public string Audio
+   {
+      get => GetField(NoteFieldsConstants.Kanji.Audio);
+      set => SetField(NoteFieldsConstants.Kanji.Audio, value);
+   }
+
+   public string SourceAnswer
+   {
+      get => GetField(NoteFieldsConstants.Kanji.SourceAnswer);
+      set => SetField(NoteFieldsConstants.Kanji.SourceAnswer, value);
+   }
+
+   public string UserSimilarMeaningRaw
+   {
+      get => GetField(NoteFieldsConstants.Kanji.UserSimilarMeaning);
+      set => SetField(NoteFieldsConstants.Kanji.UserSimilarMeaning, value);
+   }
+
+   public string RelatedConfusedWithRaw
+   {
+      get => GetField(NoteFieldsConstants.Kanji.RelatedConfusedWith);
+      set => SetField(NoteFieldsConstants.Kanji.RelatedConfusedWith, value);
    }
 
    public List<VocabNote> GetVocabNotes() => Services.Collection.Vocab.WithKanjiInAnyForm(this);

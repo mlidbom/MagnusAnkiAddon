@@ -43,6 +43,12 @@ public class RelatedVocab
     public FieldWrapper<string, RelatedVocabData> DerivedFrom { get; }
     public FieldSetWrapper<string> ConfusedWith { get; }
 
+    public string RawJson
+    {
+        get => _data.RawValue;
+        set => _data.RawValue = value;
+    }
+
     public HashSet<NoteId> InCompoundIds => _inCompoundIds.Value;
 
     public List<VocabNote> InCompounds() => _vocab.Services.Collection.Vocab.WithCompoundPart(_vocab.Question.DisambiguationName);

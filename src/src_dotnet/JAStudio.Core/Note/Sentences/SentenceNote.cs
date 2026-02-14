@@ -36,10 +36,10 @@ public class SentenceNote : JPNote
     public MutableStringField ActiveQuestion => new(this, SentenceNoteFields.ActiveQuestion);
     public SentenceQuestionField Question => new(User.Question, SourceQuestion);
     public StripHtmlOnReadFallbackStringField Answer => new(User.Answer, SourceAnswer);
-    private MutableStringField SourceAnswer => new(this, SentenceNoteFields.SourceAnswer);
+    public MutableStringField SourceAnswer => new(this, SentenceNoteFields.SourceAnswer);
     public MutableStringField ActiveAnswer => new(this, SentenceNoteFields.ActiveAnswer);
     public MutableStringField SourceComments => new(this, SentenceNoteFields.SourceComments);
-    private MutableStringField Screenshot => new(this, SentenceNoteFields.Screenshot);
+    public MutableStringField Screenshot => new(this, SentenceNoteFields.Screenshot);
     public WritableAudioField Audio => new(this, SentenceNoteFields.Audio);
     public MutableStringField JanomeTokens => new(this, SentenceNoteFields.JanomeTokens);
 

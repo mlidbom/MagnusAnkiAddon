@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JAStudio.Core.Note;
-using JAStudio.Core.Note.Sentences;
 using System;
 
 namespace JAStudio.UI.ViewModels;
@@ -53,11 +52,11 @@ public partial class SentenceEditorViewModel : ObservableObject
       Reading = _sentence.Reading.Value;
 
       SourceQuestion = _sentence.SourceQuestion.Value;
-      SourceAnswer = _sentence.GetField(SentenceNoteFields.SourceAnswer);
+      SourceAnswer = _sentence.SourceAnswer.Value;
       SourceComments = _sentence.SourceComments.Value;
 
       Audio = _sentence.Audio.RawValue();
-      Screenshot = _sentence.GetField(SentenceNoteFields.Screenshot);
+      Screenshot = _sentence.Screenshot.Value;
       Id = _sentence.Id.Value;
    }
 
@@ -68,10 +67,10 @@ public partial class SentenceEditorViewModel : ObservableObject
       _sentence.User.Comments.Set(UserComments);
       _sentence.Reading.Set(Reading);
       _sentence.SourceQuestion.Set(SourceQuestion);
-      _sentence.SetField(SentenceNoteFields.SourceAnswer, SourceAnswer);
+      _sentence.SourceAnswer.Set(SourceAnswer);
       _sentence.SourceComments.Set(SourceComments);
       _sentence.Audio.SetRawValue(Audio);
-      _sentence.SetField(SentenceNoteFields.Screenshot, Screenshot);
+      _sentence.Screenshot.Set(Screenshot);
       _sentence.Id.Set(Id);
       _sentence.UpdateGeneratedData();
    }

@@ -60,9 +60,9 @@ public partial class KanjiEditorViewModel : ObservableObject
       SimilarMeaning = string.Join(", ", _kanji.UserSimilarMeaning);
       ConfusedWith = string.Join(", ", _kanji.RelatedConfusedWith);
 
-      SourceAnswer = _kanji.GetField(NoteFieldsConstants.Kanji.SourceAnswer);
+      SourceAnswer = _kanji.SourceAnswer;
       SourceMeaningMnemonic = _kanji.SourceMeaningMnemonic;
-      Audio = _kanji.GetField(NoteFieldsConstants.Kanji.Audio);
+      Audio = _kanji.Audio;
    }
 
    public void Save()
@@ -71,15 +71,15 @@ public partial class KanjiEditorViewModel : ObservableObject
       _kanji.UserAnswer = UserAnswer;
       _kanji.ReadingOnHtml = ReadingOn;
       _kanji.ReadingKunHtml = ReadingKun;
-      _kanji.SetField(NoteFieldsConstants.Kanji.ReadingNan, ReadingNan);
+      _kanji.ReadingNanHtml = ReadingNan;
       _kanji.SetRadicals(Radicals);
       _kanji.PrimaryVocab = SplitCommaSeparated(PrimaryVocab);
       _kanji.UserMnemonic = UserMnemonic;
-      _kanji.SetField(NoteFieldsConstants.Kanji.UserSimilarMeaning, SimilarMeaning);
-      _kanji.SetField(NoteFieldsConstants.Kanji.RelatedConfusedWith, ConfusedWith);
-      _kanji.SetField(NoteFieldsConstants.Kanji.SourceAnswer, SourceAnswer);
-      _kanji.SetField(NoteFieldsConstants.Kanji.SourceMeaningMnemonic, SourceMeaningMnemonic);
-      _kanji.SetField(NoteFieldsConstants.Kanji.Audio, Audio);
+      _kanji.UserSimilarMeaningRaw = SimilarMeaning;
+      _kanji.RelatedConfusedWithRaw = ConfusedWith;
+      _kanji.SourceAnswer = SourceAnswer;
+      _kanji.SourceMeaningMnemonic = SourceMeaningMnemonic;
+      _kanji.Audio = Audio;
       _kanji.UpdateGeneratedData();
    }
 
