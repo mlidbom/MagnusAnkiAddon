@@ -65,19 +65,19 @@ public class VocabNoteMatchingRulesSerializer : IObjectSerializer<VocabNoteMatch
         var jsonDict = new Dictionary<string, object>();
 
         if (instance.SurfaceIsNot.Any())
-            jsonDict["surface_is_not"] = instance.SurfaceIsNot.ToList();
+            jsonDict["surface_is_not"] = instance.SurfaceIsNot.OrderBy(s => s).ToList();
         
         if (instance.PrefixIsNot.Any())
-            jsonDict["prefix_is_not"] = instance.PrefixIsNot.ToList();
+            jsonDict["prefix_is_not"] = instance.PrefixIsNot.OrderBy(s => s).ToList();
         
         if (instance.SuffixIsNot.Any())
-            jsonDict["suffix_is_not"] = instance.SuffixIsNot.ToList();
+            jsonDict["suffix_is_not"] = instance.SuffixIsNot.OrderBy(s => s).ToList();
         
         if (instance.RequiredPrefix.Any())
-            jsonDict["required_prefix"] = instance.RequiredPrefix.ToList();
+            jsonDict["required_prefix"] = instance.RequiredPrefix.OrderBy(s => s).ToList();
         
         if (instance.YieldToSurface.Any())
-            jsonDict["yield_to_surface"] = instance.YieldToSurface.ToList();
+            jsonDict["yield_to_surface"] = instance.YieldToSurface.OrderBy(s => s).ToList();
 
         var json = JsonHelper.DictToJson(jsonDict);
         return json != _emptyObjectJson ? json : string.Empty;

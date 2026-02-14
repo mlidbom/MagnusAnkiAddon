@@ -1,45 +1,37 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.CorpusData;
 using JAStudio.Core.Note.Sentences;
-using JAStudio.Core.Note.Sentences.Serialization;
 
 namespace JAStudio.Core.Storage.Converters;
 
 public static class SentenceNoteConverter
 {
-    static readonly SentenceConfigurationSerializer ConfigSerializer = SentenceConfigurationSerializer.Instance;
-    static readonly ParsingResultSerializer ParsingSerializer = new();
-
     public static SentenceData ToCorpusData(SentenceNote note)
     {
-        var configJson = note.GetField(SentenceNoteFields.Configuration);
-        var config = ConfigSerializer.Deserialize(configJson, () => { });
-
-        var parsingJson = note.GetField(SentenceNoteFields.ParsingResult);
-        var parsingResult = ParsingSerializer.Deserialize(parsingJson);
+        var config = note.Configuration.Configuration;
+        var parsingResult = note.ParsingResult.Get();
 
         return new SentenceData
         {
             Id = note.GetId().Value,
-            SourceQuestion = note.GetField(SentenceNoteFields.SourceQuestion),
-            UserQuestion = note.GetField(SentenceNoteFields.UserQuestion),
-            ActiveQuestion = note.GetField(SentenceNoteFields.ActiveQuestion),
-            SourceAnswer = note.GetField(SentenceNoteFields.SourceAnswer),
-            UserAnswer = note.GetField(SentenceNoteFields.UserAnswer),
-            ActiveAnswer = note.GetField(SentenceNoteFields.ActiveAnswer),
-            SourceComments = note.GetField(SentenceNoteFields.SourceComments),
-            UserComments = note.GetField(SentenceNoteFields.UserComments),
-            Reading = note.GetField(SentenceNoteFields.Reading),
-            ExternalId = note.GetField(SentenceNoteFields.Id),
-            Audio = note.GetField(SentenceNoteFields.Audio),
-            Screenshot = note.GetField(SentenceNoteFields.Screenshot),
+            SourceQuestion = note.SourceQuestion.Value,
+            UserQuestion = note.User.Question.Value,
+            ActiveQuestion = note.ActiveQuestion.Value,
+            SourceAnswer = note.SourceAnswer.Value,
+            UserAnswer = note.User.Answer.Value,
+            ActiveAnswer = note.ActiveAnswer.Value,
+            SourceComments = note.SourceComments.Value,
+            UserComments = note.User.Comments.Value,
+            Reading = note.Reading.Value,
+            ExternalId = note.Id.Value,
+            Audio = note.Audio.RawValue(),
+            Screenshot = note.Screenshot.RawValue(),
             Configuration = ToConfigSubData(config),
             ParsingResult = ToParsingResultSubData(parsingResult),
-            JanomeTokens = note.GetField(SentenceNoteFields.JanomeTokens),
+            JanomeTokens = note.JanomeTokens.Value,
             Tags = note.Tags.ToStringList(),
         };
     }

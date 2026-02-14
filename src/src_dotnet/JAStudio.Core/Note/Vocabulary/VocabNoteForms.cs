@@ -63,6 +63,9 @@ public class VocabNoteForms
     public HashSet<string> AllSet() => _allSet.Value;
     public string AllRawString() => _field.RawStringValue();
 
+    /// Returns all forms with brackets preserved (e.g. "[form]" stays as-is).
+    public List<string> AllRawList() => _field.Get();
+
     public List<VocabNote> AllListNotes()
     {
         return _allList.Value

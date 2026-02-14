@@ -104,6 +104,8 @@ public class VocabSpec : IEquatable<VocabSpec>
             vocabNote.MatchingConfiguration.ConfigurableRules.RequiredPrefix.Add(requiredPrefix);
         }
 
+        vocabNote.MatchingConfiguration.ConfigurableRules.Save();
+
         if (Tos.Count > 0)
         {
             vocabNote.PartsOfSpeech.Set(Tos);

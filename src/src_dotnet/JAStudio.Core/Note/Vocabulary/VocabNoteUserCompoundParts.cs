@@ -36,6 +36,9 @@ public class VocabNoteUserCompoundParts
             .ToList();
     }
 
+    /// Returns all compound parts with brackets preserved (e.g. "[word]" stays as-is).
+    public List<string> AllRaw() => _field.Get();
+
     public void Set(List<string> value)
     {
         _field.Set(value);

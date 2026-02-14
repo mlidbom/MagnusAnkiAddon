@@ -40,6 +40,30 @@ public class KanjiNote : JPNote
       set => SetField(NoteFieldsConstants.Kanji.UserAnswer, value);
    }
 
+   public string ActiveAnswer
+   {
+      get => GetField(NoteFieldsConstants.Kanji.ActiveAnswer);
+      set => SetField(NoteFieldsConstants.Kanji.ActiveAnswer, value);
+   }
+
+   public string MeaningInfo
+   {
+      get => GetField(NoteFieldsConstants.Kanji.MeaningInfo);
+      set => SetField(NoteFieldsConstants.Kanji.MeaningInfo, value);
+   }
+
+   public string ReadingMnemonic
+   {
+      get => GetField(NoteFieldsConstants.Kanji.ReadingMnemonic);
+      set => SetField(NoteFieldsConstants.Kanji.ReadingMnemonic, value);
+   }
+
+   public string ReadingInfo
+   {
+      get => GetField(NoteFieldsConstants.Kanji.ReadingInfo);
+      set => SetField(NoteFieldsConstants.Kanji.ReadingInfo, value);
+   }
+
    public override void UpdateGeneratedData()
    {
       base.UpdateGeneratedData();
@@ -171,11 +195,20 @@ public class KanjiNote : JPNote
    {
       get
       {
-         var radicalsField = GetField(NoteFieldsConstants.Kanji.Radicals);
          var question = GetQuestion();
-         return StringExtensions.ExtractCommaSeparatedValues(radicalsField)
+         return AllRadicals
                                 .Where(r => r != question)
                                 .ToList();
+      }
+   }
+
+   /// Returns all radicals including the kanji's own question character (unfiltered).
+   public List<string> AllRadicals
+   {
+      get
+      {
+         var radicalsField = GetField(NoteFieldsConstants.Kanji.Radicals);
+         return StringExtensions.ExtractCommaSeparatedValues(radicalsField);
       }
    }
 
