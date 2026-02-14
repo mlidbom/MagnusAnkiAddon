@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
+using JAStudio.Anki;
 using JAStudio.Core.Note;
 using JAStudio.UI.ViewModels;
 
@@ -19,6 +20,7 @@ public partial class SentenceEditorDialog : Window
         viewModel.SaveCommand = new RelayCommand(() =>
         {
             viewModel.Save();
+            AnkiFacade.UIUtils.Refresh();
             Close();
         });
 

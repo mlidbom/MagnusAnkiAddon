@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using JAStudio.Anki;
 using JAStudio.Core.Note;
 using JAStudio.UI.ViewModels;
 
@@ -20,6 +21,7 @@ public partial class VocabFlagsDialog : Window
         viewModel.SaveCommand = new CommunityToolkit.Mvvm.Input.AsyncRelayCommand(async () =>
         {
             await viewModel.SaveAsync();
+            AnkiFacade.UIUtils.Refresh();
             Close();
         });
 
