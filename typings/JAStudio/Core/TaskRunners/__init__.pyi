@@ -1,10 +1,19 @@
 import typing, abc
+from System import Action, Func_1, Action_1, Exception, Func_2, IDisposable, Func_3, Func_4, IEquatable_1
+from System.Threading.Tasks import Task, Task_1, ParallelOptions
 from System.Diagnostics import Stopwatch
 from System.Collections.Generic import List_1
-from System import Func_2, Func_1, IDisposable, Action_1, Action, Func_3, Func_4, IEquatable_1
-from System.Threading.Tasks import Task_1, Task, ParallelOptions
 from System.ComponentModel import INotifyPropertyChanged
 from System.Collections.ObjectModel import ObservableCollection_1
+
+class BackgroundTaskManager(abc.ABC):
+    @staticmethod
+    def Run(action: Action) -> None: ...
+    @staticmethod
+    def RunAsync(action: Func_1[Task]) -> None: ...
+    @staticmethod
+    def SetFatalErrorHandler(handler: Action_1[Exception]) -> None: ...
+
 
 class BatchTaskProgressViewModel(TaskProgressViewModel):
     def __init__(self) -> None: ...

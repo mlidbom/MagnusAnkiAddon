@@ -1,6 +1,5 @@
 import typing, abc
-from System import Action, Func_1, Exception
-from System.Threading.Tasks import Task, Task_1
+from System.Threading.Tasks import Task_1
 from Avalonia.Controls import Window, WindowTransparencyLevel, Classes, WindowClosingBehavior, ContextMenu, ITemplate_1, Control, WindowIcon, WindowBase, IResourceDictionary, Screens, SizeToContent, SystemDecorations, WindowStartupLocation, WindowState
 from Avalonia.Styling import ThemeVariant, Styles, ControlTheme
 from Avalonia.Media import IBrush, BackgroundSizing, Geometry, IEffect, FlowDirection, FontFamily, FontFeatureCollection, FontStretch, FontStyle, FontWeight, ITransform
@@ -18,13 +17,12 @@ from Avalonia.Platform.Storage import ILauncher, IStorageProvider
 from Avalonia.Controls.Presenters import ContentPresenter
 from Avalonia.Rendering import RendererDiagnostics
 from Avalonia.Animation import Transitions
+from System import Exception
 from Avalonia.Data import IndexerDescriptor, IBinding
 
-class BackgroundTaskManager(abc.ABC):
+class BackgroundTaskManagerSetup(abc.ABC):
     @staticmethod
-    def Run(action: Action) -> None: ...
-    @staticmethod
-    def RunAsync(action: Func_1[Task]) -> None: ...
+    def Initialize() -> None: ...
 
 
 class BrowserLauncher(abc.ABC):
