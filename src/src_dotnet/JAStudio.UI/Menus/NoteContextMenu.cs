@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Anki;
 using JAStudio.Core.Note;
+using JAStudio.Core.TaskRunners;
 using JAStudio.UI;
 using JAStudio.UI.Utils;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;

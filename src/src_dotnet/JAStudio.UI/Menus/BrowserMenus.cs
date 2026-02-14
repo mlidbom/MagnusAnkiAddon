@@ -4,6 +4,7 @@ using System.Linq;
 using Compze.Utilities.Logging;
 using JAStudio.Anki;
 using JAStudio.Core.Note;
+using JAStudio.Core.TaskRunners;
 using JAStudio.PythonInterop;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;

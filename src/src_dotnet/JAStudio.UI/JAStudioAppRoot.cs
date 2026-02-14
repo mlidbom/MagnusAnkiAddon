@@ -117,6 +117,8 @@ public class JAStudioAppRoot
          () => Dispatcher.UIThread.Invoke(() => MultiTaskProgressDialog.Hold()),
          () => Dispatcher.UIThread.Post(() => MultiTaskProgressDialog.Release()));
 
+      BackgroundTaskManagerSetup.Initialize();
+
       // Register card operations so Core can suspend/unsuspend cards via the backend API
       root.Services.CardOperations.SetImplementation(new AnkiCardOperationsImpl(root.Services.ExternalNoteIdMap));
 

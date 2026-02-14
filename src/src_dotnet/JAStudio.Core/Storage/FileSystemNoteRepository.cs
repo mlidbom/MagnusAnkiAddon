@@ -93,15 +93,24 @@ public class FileSystemNoteRepository : INoteRepository
       using var scope = _taskRunner.Current("Loading notes with snapshot");
 
       var snapshotTimestamp = File.GetLastWriteTimeUtc(SnapshotPath);
-      var container = scope.RunIndeterminate("Loading binary snapshot", () =>
-      {
-         var bytes = File.ReadAllBytes(SnapshotPath);
-         return MemoryPackSerializer.Deserialize<AllNotesContainer>(bytes)
-                ?? throw new InvalidOperationException("Snapshot deserialization returned null");
-      });
+      var container = scope.RunIndeterminate("Loading binary snapshot", () => DeserializeSnapshot());
 
       var filesByType = scope.RunIndeterminate("Scanning note files", ScanAllNoteFiles);
 
+      var changes = scope.RunIndeterminate("Finding changes since snapshot", () => FindChangesSinceSnapshot(container, filesByType, snapshotTimestamp));
+
+      if(changes.HasChanges)
+      {
+         container = scope.RunIndeterminate("Patching snapshot with changes", () => PatchSnapshotWithChanges(container, changes));
+         var snapshotToSave = container;
+         BackgroundTaskManager.Run(() => SaveSnapshotContainer(snapshotToSave));
+      }
+
+      return _serializer.ContainerToAllNotesData(container);
+   }
+
+   SnapshotChanges FindChangesSinceSnapshot(AllNotesContainer container, NoteFilesByType filesByType, DateTime snapshotTimestamp)
+   {
       var currentKanjiIds = filesByType.Kanji.Select(f => f.Id).ToHashSet();
       var currentVocabIds = filesByType.Vocab.Select(f => f.Id).ToHashSet();
       var currentSentenceIds = filesByType.Sentences.Select(f => f.Id).ToHashSet();
@@ -110,43 +119,54 @@ public class FileSystemNoteRepository : INoteRepository
       var changedVocab = filesByType.Vocab.Where(f => f.LastWriteUtc > snapshotTimestamp).ToList();
       var changedSentences = filesByType.Sentences.Where(f => f.LastWriteUtc > snapshotTimestamp).ToList();
 
-      var deletedKanji = container.Kanji.Count(d => !currentKanjiIds.Contains(d.Id));
-      var deletedVocab = container.Vocab.Count(d => !currentVocabIds.Contains(d.Id));
-      var deletedSentences = container.Sentences.Count(d => !currentSentenceIds.Contains(d.Id));
+      var deletedKanjiCount = container.Kanji.Count(d => !currentKanjiIds.Contains(d.Id));
+      var deletedVocabCount = container.Vocab.Count(d => !currentVocabIds.Contains(d.Id));
+      var deletedSentencesCount = container.Sentences.Count(d => !currentSentenceIds.Contains(d.Id));
 
-      var hasChanges = changedKanji.Count + changedVocab.Count + changedSentences.Count + deletedKanji + deletedVocab + deletedSentences > 0;
+      return new SnapshotChanges(
+         changedKanji, changedVocab, changedSentences,
+         currentKanjiIds, currentVocabIds, currentSentenceIds,
+         deletedKanjiCount + deletedVocabCount + deletedSentencesCount);
+   }
 
-      if(hasChanges)
+   AllNotesContainer PatchSnapshotWithChanges(AllNotesContainer container, SnapshotChanges changes)
+   {
+      var kanjiMap = container.Kanji.ToDictionary(d => d.Id);
+      var vocabMap = container.Vocab.ToDictionary(d => d.Id);
+      var sentencesMap = container.Sentences.ToDictionary(d => d.Id);
+
+      foreach(var file in changes.ChangedKanji)
+         kanjiMap[file.Id] = _serializer.DeserializeKanjiToDto(File.ReadAllText(file.Path));
+      foreach(var file in changes.ChangedVocab)
+         vocabMap[file.Id] = _serializer.DeserializeVocabToDto(File.ReadAllText(file.Path));
+      foreach(var file in changes.ChangedSentences)
+         sentencesMap[file.Id] = _serializer.DeserializeSentenceToDto(File.ReadAllText(file.Path));
+
+      foreach(var id in kanjiMap.Keys.Where(id => !changes.CurrentKanjiIds.Contains(id)).ToList())
+         kanjiMap.Remove(id);
+      foreach(var id in vocabMap.Keys.Where(id => !changes.CurrentVocabIds.Contains(id)).ToList())
+         vocabMap.Remove(id);
+      foreach(var id in sentencesMap.Keys.Where(id => !changes.CurrentSentenceIds.Contains(id)).ToList())
+         sentencesMap.Remove(id);
+
+      return new AllNotesContainer
       {
-         var kanjiMap = container.Kanji.ToDictionary(d => d.Id);
-         var vocabMap = container.Vocab.ToDictionary(d => d.Id);
-         var sentencesMap = container.Sentences.ToDictionary(d => d.Id);
+         Kanji = kanjiMap.Values.ToList(),
+         Vocab = vocabMap.Values.ToList(),
+         Sentences = sentencesMap.Values.ToList(),
+      };
+   }
 
-         foreach(var file in changedKanji)
-            kanjiMap[file.Id] = _serializer.DeserializeKanjiToDto(File.ReadAllText(file.Path));
-         foreach(var file in changedVocab)
-            vocabMap[file.Id] = _serializer.DeserializeVocabToDto(File.ReadAllText(file.Path));
-         foreach(var file in changedSentences)
-            sentencesMap[file.Id] = _serializer.DeserializeSentenceToDto(File.ReadAllText(file.Path));
-
-         foreach(var id in kanjiMap.Keys.Where(id => !currentKanjiIds.Contains(id)).ToList())
-            kanjiMap.Remove(id);
-         foreach(var id in vocabMap.Keys.Where(id => !currentVocabIds.Contains(id)).ToList())
-            vocabMap.Remove(id);
-         foreach(var id in sentencesMap.Keys.Where(id => !currentSentenceIds.Contains(id)).ToList())
-            sentencesMap.Remove(id);
-
-         container = new AllNotesContainer
-         {
-            Kanji = kanjiMap.Values.ToList(),
-            Vocab = vocabMap.Values.ToList(),
-            Sentences = sentencesMap.Values.ToList(),
-         };
-
-         scope.RunIndeterminate("Saving updated snapshot", () => SaveSnapshotContainer(container));
-      }
-
-      return _serializer.ContainerToAllNotesData(container);
+   record SnapshotChanges(
+      List<ScannedFile> ChangedKanji,
+      List<ScannedFile> ChangedVocab,
+      List<ScannedFile> ChangedSentences,
+      HashSet<Guid> CurrentKanjiIds,
+      HashSet<Guid> CurrentVocabIds,
+      HashSet<Guid> CurrentSentenceIds,
+      int DeletedCount)
+   {
+      public bool HasChanges => ChangedKanji.Count + ChangedVocab.Count + ChangedSentences.Count + DeletedCount > 0;
    }
 
    AllNotesData LoadAllFromJsonAndSaveSnapshot()
@@ -177,17 +197,18 @@ public class FileSystemNoteRepository : INoteRepository
    void SaveSnapshotContainer(AllNotesContainer container)
    {
       Directory.CreateDirectory(_rootDir);
-      var bytes = MemoryPackSerializer.Serialize(container);
-      File.WriteAllBytes(SnapshotPath, bytes);
+      using var stream = File.Create(SnapshotPath);
+      MemoryPackSerializer.SerializeAsync(stream, container).GetAwaiter().GetResult();
    }
 
-   public AllNotesData LoadSnapshot()
+   AllNotesContainer DeserializeSnapshot()
    {
-      var bytes = File.ReadAllBytes(SnapshotPath);
-      var container = MemoryPackSerializer.Deserialize<AllNotesContainer>(bytes)
-                      ?? throw new InvalidOperationException("Snapshot deserialization returned null");
-      return _serializer.ContainerToAllNotesData(container);
+      using var stream = File.OpenRead(SnapshotPath);
+      return MemoryPackSerializer.DeserializeAsync<AllNotesContainer>(stream).GetAwaiter().GetResult()
+             ?? throw new InvalidOperationException("Snapshot deserialization returned null");
    }
+
+   public AllNotesData LoadSnapshot() => _serializer.ContainerToAllNotesData(DeserializeSnapshot());
 
    /// <summary>
    /// Single directory walk from root — enumerates all *.json note files once,
