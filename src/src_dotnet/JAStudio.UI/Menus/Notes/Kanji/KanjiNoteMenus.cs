@@ -4,6 +4,8 @@ using JAStudio.Core.Note;
 using JAStudio.UI;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
+using JAStudio.UI.Views;
+using Avalonia.Threading;
 
 namespace JAStudio.UI.Menus;
 
@@ -25,6 +27,7 @@ public class KanjiNoteMenus
         var items = new List<SpecMenuItem>
         {
             BuildOpenMenuSpec(kanji),
+            SpecMenuItem.Command(ShortcutFinger.Home2("Edit"), () => OnEditKanji(kanji)),
             SpecMenuItem.Command(ShortcutFinger.Home5("Reset Primary Vocabs"), 
                 () => kanji.PrimaryVocab = new List<string>())
         };
@@ -78,6 +81,16 @@ public class KanjiNoteMenus
     }
 
     // Action handlers
+    void OnEditKanji(KanjiNote kanji)
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var dialog = new KanjiEditorDialog(kanji);
+            WindowPositioner.PositionNearCursor(dialog);
+            dialog.Show();
+        });
+    }
+
     private static void OnAcceptKanjiMeaning(KanjiNote kanji)
     {
         var meaning = FormatKanjiMeaning(kanji.GetAnswer());

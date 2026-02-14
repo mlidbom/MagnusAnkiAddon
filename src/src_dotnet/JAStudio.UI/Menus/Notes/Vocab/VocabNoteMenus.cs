@@ -10,6 +10,7 @@ using Avalonia.Threading;
 using JAStudio.UI.Utils;
 using JAStudio.UI.Views;
 
+// ReSharper disable once CheckNamespace
 namespace JAStudio.UI.Menus;
 
 /// <summary>
@@ -32,7 +33,8 @@ public class VocabNoteMenus
          new List<SpecMenuItem>
          {
             BuildOpenMenuSpec(vocab),
-            SpecMenuItem.Command(ShortcutFinger.Home2("Edit"), () => OnEditVocabFlags(vocab)),
+            SpecMenuItem.Command(ShortcutFinger.Home2("Edit"), () => OnEditVocab(vocab)),
+            SpecMenuItem.Command(ShortcutFinger.Up1("Edit Matching Config"), () => OnEditVocabFlags(vocab)),
             BuildCreateMenuSpec(vocab),
             BuildCopyMenuSpec(vocab),
             BuildMiscMenuSpec(vocab),
@@ -295,6 +297,16 @@ public class VocabNoteMenus
       );
 
    // Action handlers
+   void OnEditVocab(VocabNote vocab)
+   {
+      Dispatcher.UIThread.Invoke(() =>
+      {
+         var dialog = new VocabEditorDialog(vocab);
+         WindowPositioner.PositionNearCursor(dialog);
+         dialog.Show();
+      });
+   }
+
    void OnEditVocabFlags(VocabNote vocab)
    {
       Dispatcher.UIThread.Invoke(() =>
