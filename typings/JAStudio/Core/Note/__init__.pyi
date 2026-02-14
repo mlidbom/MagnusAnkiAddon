@@ -297,6 +297,7 @@ class NoteFieldsConstants(abc.ABC):
     class Kanji(abc.ABC):
         ActiveAnswer : str
         Audio : str
+        Image : str
         MeaningInfo : str
         PrimaryVocab : str
         Question : str
@@ -328,6 +329,7 @@ class NoteFieldsConstants(abc.ABC):
         AudioG : str
         AudioTTS : str
         Forms : str
+        Image : str
         Kanji : str
         MatchingRules : str
         PartsOfSpeech : str
@@ -338,10 +340,12 @@ class NoteFieldsConstants(abc.ABC):
         SourceAnswer : str
         SourceMnemonic : str
         SourceReadingMnemonic : str
+        TechnicalNotes : str
         UserAnswer : str
         UserCompounds : str
         UserExplanation : str
         UserExplanationLong : str
+        UserImage : str
         UserMnemonic : str
 
 
@@ -762,6 +766,8 @@ class VocabNote(JPNote):
     def SourceReadingMnemonic(self) -> MutableStringField: ...
     @property
     def Tags(self) -> NoteTags: ...
+    @property
+    def TechnicalNotes(self) -> MutableStringField: ...
     @property
     def User(self) -> VocabNoteUserFields: ...
     def GenerateAndSetAnswer(self) -> None: ...

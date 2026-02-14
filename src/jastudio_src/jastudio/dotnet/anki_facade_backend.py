@@ -88,3 +88,8 @@ def addon_root_dir() -> str:
     for _ in range(4):
         path = os.path.dirname(path)
     return path
+
+def anki_media_dir() -> str:
+    """Return the Anki collection media directory."""
+    assert mw.col is not None
+    return mw.col.media.dir()

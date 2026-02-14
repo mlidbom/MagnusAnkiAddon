@@ -70,4 +70,7 @@ public static class AnkiFacade
 
    /// <summary>Get the addon root directory from the Python environment.</summary>
    public static string GetAddonRootDir() => Backend.Use(it => (string)it.addon_root_dir());
+
+   /// <summary>Get the Anki media directory from the Python environment.</summary>
+   public static string GetAnkiMediaDir() => Backend.Use(it => (string)it.anki_media_dir());
 }

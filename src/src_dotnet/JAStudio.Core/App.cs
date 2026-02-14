@@ -62,4 +62,13 @@ public class App : IDisposable
    internal static string UserFilesDir => Path.Combine(AddonRootDir, "user_files");
 
    internal static string DatabaseDir => Path.Combine(AddonRootDir, "jas_database");
+
+   internal static string AnkiMediaDir
+   {
+      get
+      {
+         return _environmentPaths?.AnkiMediaDir
+                ?? throw new InvalidOperationException("IEnvironmentPaths must be provided for non-testing mode. Call App.Bootstrap() with an IEnvironmentPaths implementation.");
+      }
+   }
 }

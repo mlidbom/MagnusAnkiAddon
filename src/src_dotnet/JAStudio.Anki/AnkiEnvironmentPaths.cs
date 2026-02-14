@@ -8,4 +8,5 @@ namespace JAStudio.Anki;
 public class AnkiEnvironmentPaths : IEnvironmentPaths
 {
    public string AddonRootDir => AnkiFacade.GetAddonRootDir();
+   public string AnkiMediaDir => AnkiFacade.GetAnkiMediaDir();
 }

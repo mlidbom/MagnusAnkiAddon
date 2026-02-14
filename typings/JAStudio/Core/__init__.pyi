@@ -45,6 +45,8 @@ class IBackendDataLoader(typing.Protocol):
 class IEnvironmentPaths(typing.Protocol):
     @property
     def AddonRootDir(self) -> str: ...
+    @property
+    def AnkiMediaDir(self) -> str: ...
 
 
 class Renderers:

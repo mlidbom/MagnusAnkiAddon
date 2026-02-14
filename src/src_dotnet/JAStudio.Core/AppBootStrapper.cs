@@ -10,6 +10,7 @@ using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.Storage;
+using JAStudio.Core.Storage.Media;
 using JAStudio.Core.TaskRunners;
 using JAStudio.Core.TestUtils;
 using JAStudio.Core.UI.Web.Kanji;
@@ -35,13 +36,16 @@ static class AppBootstrapper
       if (App.IsTesting)
       {
          registrar.Register(
-            Singleton.For<INoteRepository>().CreatedBy(() => (INoteRepository)new InMemoryNoteRepository()));
+            Singleton.For<INoteRepository>().CreatedBy(() => (INoteRepository)new InMemoryNoteRepository()),
+            Singleton.For<IMediaSyncService>().CreatedBy(() => (IMediaSyncService)new NullMediaSyncService()));
       }
       else
       {
          registrar.Register(
-            Singleton.For<INoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner) =>
-               (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, App.DatabaseDir)));
+            Singleton.For<IMediaSyncService>().CreatedBy(() =>
+               (IMediaSyncService)new MediaSyncService(App.AnkiMediaDir, App.DatabaseDir)),
+            Singleton.For<INoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner, IMediaSyncService mediaSyncService) =>
+               (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, App.DatabaseDir, mediaSyncService)));
       }
 
       registrar.Register(
@@ -75,8 +79,8 @@ static class AppBootstrapper
          Singleton.For<VocabNoteFactory>().CreatedBy((JPCollection col) => col.VocabNoteFactory),
          Singleton.For<VocabNoteGeneratedData>().CreatedBy((JPCollection col) => col.VocabNoteGeneratedData),
          Singleton.For<NoteSerializer>().CreatedBy((NoteServices noteServices) => new NoteSerializer(noteServices)),
-         Singleton.For<FileSystemNoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner) =>
-            new FileSystemNoteRepository(serializer, taskRunner, App.DatabaseDir)),
+         Singleton.For<FileSystemNoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner, IMediaSyncService mediaSyncService) =>
+            new FileSystemNoteRepository(serializer, taskRunner, App.DatabaseDir, mediaSyncService)),
          Singleton.For<KanjiNoteMnemonicMaker>().CreatedBy((JapaneseConfig config) => new KanjiNoteMnemonicMaker(config)),
 
          // ViewModels

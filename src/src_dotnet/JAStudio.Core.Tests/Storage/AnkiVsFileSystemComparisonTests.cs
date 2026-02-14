@@ -6,6 +6,7 @@ using JAStudio.Anki;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.Storage;
+using JAStudio.Core.Storage.Media;
 using JAStudio.Core.TaskRunners;
 using JAStudio.Core.Tests.Fixtures;
 using Xunit;
@@ -39,7 +40,7 @@ public class AnkiVsFileSystemComparisonTests : TestStartingWithEmptyCollection
          .ToDictionary(n => n.GetId());
 
       // --- Load from filesystem ---
-      var repo = new FileSystemNoteRepository(serializer, GetService<TaskRunner>(), JasDatabaseDir);
+      var repo = new FileSystemNoteRepository(serializer, GetService<TaskRunner>(), JasDatabaseDir, new NullMediaSyncService());
       var fsNotes = repo.LoadAll().Vocab.ToDictionary(n => n.GetId());
 
       // --- Match and compare ---

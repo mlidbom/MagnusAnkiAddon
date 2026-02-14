@@ -126,6 +126,7 @@ public static class NoteFieldsConstants
         public const string UserMnemonic = "__mnemonic";
         public const string UserSimilarMeaning = "__similar_meaning";
         public const string RelatedConfusedWith = "__confused_with";
+        public const string Image = "_image";
     }
 
     public static class Vocab
@@ -151,6 +152,8 @@ public static class NoteFieldsConstants
         public const string Forms = "F";
         public const string SourceReadingMnemonic = "source_reading_mnemonic";
         public const string TechnicalNotes = "__technical_notes";
+        public const string Image = "Image";
+        public const string UserImage = "__image";
     }
 }
 

@@ -8,4 +8,5 @@ namespace JAStudio.Core;
 public interface IEnvironmentPaths
 {
    string AddonRootDir { get; }
+   string AnkiMediaDir { get; }
 }

@@ -6,6 +6,7 @@ using System.Threading;
 using Compze.Utilities.Logging;
 using JAStudio.Core.Note;
 using JAStudio.Core.Storage.Dto;
+using JAStudio.Core.Storage.Media;
 using JAStudio.Core.TaskRunners;
 using MemoryPack;
 
@@ -16,14 +17,16 @@ public class FileSystemNoteRepository : INoteRepository
    readonly NoteSerializer _serializer;
    readonly TaskRunner _taskRunner;
    readonly string _rootDir;
+   readonly IMediaSyncService _mediaSyncService;
 
    public NoteSerializer Serializer => _serializer;
 
-   public FileSystemNoteRepository(NoteSerializer serializer, TaskRunner taskRunner, string rootDir)
+   public FileSystemNoteRepository(NoteSerializer serializer, TaskRunner taskRunner, string rootDir, IMediaSyncService mediaSyncService)
    {
       _serializer = serializer;
       _taskRunner = taskRunner;
       _rootDir = rootDir;
+      _mediaSyncService = mediaSyncService;
    }
 
    string KanjiDir => Path.Combine(_rootDir, "kanji");
@@ -36,6 +39,7 @@ public class FileSystemNoteRepository : INoteRepository
       var path = NoteFilePath(KanjiDir, note.GetId());
       Directory.CreateDirectory(Path.GetDirectoryName(path)!);
       File.WriteAllText(path, _serializer.Serialize(note));
+      _mediaSyncService.SyncMedia(note);
    }
 
    public void Save(VocabNote note)
@@ -43,6 +47,7 @@ public class FileSystemNoteRepository : INoteRepository
       var path = NoteFilePath(VocabDir, note.GetId());
       Directory.CreateDirectory(Path.GetDirectoryName(path)!);
       File.WriteAllText(path, _serializer.Serialize(note));
+      _mediaSyncService.SyncMedia(note);
    }
 
    public void Save(SentenceNote note)
@@ -50,6 +55,7 @@ public class FileSystemNoteRepository : INoteRepository
       var path = NoteFilePath(SentencesDir, note.GetId());
       Directory.CreateDirectory(Path.GetDirectoryName(path)!);
       File.WriteAllText(path, _serializer.Serialize(note));
+      _mediaSyncService.SyncMedia(note);
    }
 
    public void SaveAll(AllNotesData data)
