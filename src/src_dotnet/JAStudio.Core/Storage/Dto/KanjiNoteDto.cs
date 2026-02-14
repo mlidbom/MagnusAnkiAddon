@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using MemoryPack;
 
 namespace JAStudio.Core.Storage.Dto;
 
-public class KanjiNoteDto
+[MemoryPackable]
+public partial class KanjiNoteDto
 {
     public Guid Id { get; set; }
     public string Kanji { get; set; } = string.Empty;
