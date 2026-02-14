@@ -28,6 +28,7 @@ public class VocabNote : JPNote
     public MutableStringField ActiveAnswer => new(this, NoteFieldsConstants.Vocab.ActiveAnswer);
     public MutableStringField SourceMnemonic => new(this, NoteFieldsConstants.Vocab.SourceMnemonic);
     public MutableStringField SourceReadingMnemonic => new(this, NoteFieldsConstants.Vocab.SourceReadingMnemonic);
+    public MutableStringField TechnicalNotes => new(this, NoteFieldsConstants.Vocab.TechnicalNotes);
 
     public VocabNote(NoteServices services, NoteData? data = null) : base(services, data?.Id as VocabId ?? VocabId.New(), data)
     {

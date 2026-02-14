@@ -24,10 +24,9 @@ Format: `AnkiFieldName` (C# property name)
 
 | # | Anki Field | C# Property | In Logic | In Web | Editor Status | Recommendation |
 |---|-----------|-------------|----------|--------|---------------|----------------|
-| 6 | `__technical_notes` | — | No | Yes (template) | Missing | Not handled in C# |
-| 7 | `__references` | — | No | — | Missing | Not handled in C# |
-| 8 | `Image` | — | No | No | Missing | Not handled at all |
-| 9 | `__image` | — | No | No | Missing | Not handled at all |
+| 6 | `__references` | — | No | — | Missing | Not handled in C# |
+| 7 | `Image` | — | No | No | Missing | Not handled at all |
+| 8 | `__image` | — | No | No | Missing | Not handled at all |
 
 ## Detailed Findings
 
@@ -49,6 +48,7 @@ The following fields have been added to the Avalonia edit dialogs (editable):
 - `Audio_TTS` → `VocabNote.Audio.Tts` (WritableAudioField)
 - `sentence_count` → `VocabNote.MetaData.SentenceCount` (IntegerField)
 - `__related_vocab` → `VocabNote.RelatedNotes` (raw JSON string, editable)
+- `__technical_notes` → `VocabNote.TechnicalNotes` (MutableStringField)
 
 These were previously in the editor:
 - Kanji: `__mnemonic` (UserMnemonic)
@@ -67,11 +67,12 @@ These fields have no C# constant or property. They would need to be added to the
 #### Kanji: `__references`
 - Explicitly ignored in `AnkiVsFileSystemComparisonTests`
 - Web: `{{__references}}` rendered by Anki's native mustache templating
-- Contains links to articles abbout the kanji
+- Contains links to articles abbout the kanji. An HTML string
 
 #### Kanji: `__explanation`
 - `NoteFieldsConstants.Vocab.UserExplanation = "__explanation"` exists for **Vocab**, not Kanji
 - Web: `{{__explanation}}` in kanji template
+- Some notes/explanations about the kanji
 
 #### Kanji: `_image`
 - Explicitly ignored in comparison tests
@@ -82,11 +83,6 @@ These fields have no C# constant or property. They would need to be added to the
 #### Kanji: `_primary_readings_tts_audio`
 - No C# code references at all
 - Web: `{{_primary_readings_tts_audio}}` at top of kanji template for audio playback
-
-#### Vocab: `__technical_notes`
-- Explicitly ignored in comparison tests
-- Web: `{{__technical_notes}}` in vocab back template
-- This is vital information, what an editor has to say about the vocab.
 
 #### Vocab: `__references`
 - No constant, no property

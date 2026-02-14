@@ -39,6 +39,7 @@ public partial class VocabEditorViewModel : ObservableObject
    [ObservableProperty] string _audioTts = "";
    [ObservableProperty] string _sentenceCount = "";
    [ObservableProperty] string _relatedVocab = "";
+   [ObservableProperty] string _technicalNotes = "";
 
    // --- Read-only reference fields ---
 
@@ -72,6 +73,7 @@ public partial class VocabEditorViewModel : ObservableObject
       AudioTts = _vocab.Audio.Tts.RawValue();
       SentenceCount = _vocab.MetaData.SentenceCount.Get().ToString();
       RelatedVocab = _vocab.RelatedNotes.RawJson;
+      TechnicalNotes = _vocab.TechnicalNotes.Value;
    }
 
    public void Save()
@@ -93,6 +95,7 @@ public partial class VocabEditorViewModel : ObservableObject
       _vocab.Audio.Tts.SetRawValue(AudioTts);
       if (int.TryParse(SentenceCount, out var count)) _vocab.MetaData.SentenceCount.Set(count);
       _vocab.RelatedNotes.RawJson = RelatedVocab;
+      _vocab.TechnicalNotes.Set(TechnicalNotes);
       _vocab.UpdateGeneratedData();
    }
 

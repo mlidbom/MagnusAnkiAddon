@@ -96,12 +96,15 @@
                     <StackPanel Spacing="8">
                         <TextBlock Text="Meta" FontWeight="SemiBold" FontSize="14" />
 
-                        <Grid ColumnDefinitions="200,*" RowDefinitions="Auto,Auto">
+                        <Grid ColumnDefinitions="200,*" RowDefinitions="Auto,Auto,Auto">
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Sentence Count (sentence_count)" VerticalAlignment="Center" Margin="0,0,0,6" />
                             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SentenceCount}" Margin="0,0,0,6" />
 
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Related Vocab (__related_vocab)" VerticalAlignment="Top" />
-                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding RelatedVocab}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="80" />
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Related Vocab (__related_vocab)" VerticalAlignment="Top" Margin="0,0,0,6" />
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding RelatedVocab}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="80" Margin="0,0,0,6" />
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Technical Notes (__technical_notes)" VerticalAlignment="Top" />
+                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding TechnicalNotes}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="80" />
                         </Grid>
                     </StackPanel>
                 </Border>
