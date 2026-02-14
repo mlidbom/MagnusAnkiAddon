@@ -33,17 +33,17 @@
                     <StackPanel Spacing="8">
                         <TextBlock Text="Core" FontWeight="SemiBold" FontSize="14" />
 
-                        <Grid ColumnDefinitions="140,*" RowDefinitions="Auto,Auto,Auto,Auto">
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Question" VerticalAlignment="Center" Margin="0,0,0,6" />
+                        <Grid ColumnDefinitions="200,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Question (Q)" VerticalAlignment="Center" Margin="0,0,0,6" />
                             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Question}" Margin="0,0,0,6" />
 
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Readings" VerticalAlignment="Center" Margin="0,0,0,6" />
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Readings (Reading)" VerticalAlignment="Center" Margin="0,0,0,6" />
                             <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Readings}" Watermark="comma separated" Margin="0,0,0,6" />
 
-                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Forms" VerticalAlignment="Center" Margin="0,0,0,6" />
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Forms (F)" VerticalAlignment="Center" Margin="0,0,0,6" />
                             <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Forms}" Watermark="comma separated" Margin="0,0,0,6" />
 
-                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Parts of Speech" VerticalAlignment="Center" />
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Parts of Speech (TOS)" VerticalAlignment="Center" />
                             <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding PartsOfSpeech}" />
                         </Grid>
                     </StackPanel>
@@ -54,38 +54,71 @@
                     <StackPanel Spacing="8">
                         <TextBlock Text="User" FontWeight="SemiBold" FontSize="14" />
 
-                        <Grid ColumnDefinitions="140,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Answer" VerticalAlignment="Top" Margin="0,0,0,6" />
+                        <Grid ColumnDefinitions="200,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Answer (__answer)" VerticalAlignment="Top" Margin="0,0,0,6" />
                             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding UserAnswer}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="50" Margin="0,0,0,6" />
 
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Explanation" VerticalAlignment="Top" Margin="0,0,0,6" />
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Explanation (__explanation)" VerticalAlignment="Top" Margin="0,0,0,6" />
                             <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding UserExplanation}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="50" Margin="0,0,0,6" />
 
-                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Explanation (long)" VerticalAlignment="Top" Margin="0,0,0,6" />
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Explanation long (__explanation_long)" VerticalAlignment="Top" Margin="0,0,0,6" />
                             <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding UserExplanationLong}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="80" Margin="0,0,0,6" />
 
-                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Mnemonic" VerticalAlignment="Top" Margin="0,0,0,6" />
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Mnemonic (__mnemonic)" VerticalAlignment="Top" Margin="0,0,0,6" />
                             <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding UserMnemonic}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="50" Margin="0,0,0,6" />
 
-                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Compounds" VerticalAlignment="Center" />
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Compounds (__compounds)" VerticalAlignment="Center" />
                             <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding UserCompounds}" Watermark="comma separated" />
                         </Grid>
                     </StackPanel>
                 </Border>
 
-                <!-- Source Fields (read-only) -->
+                <!-- Audio Fields -->
+                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Audio" FontWeight="SemiBold" FontSize="14" />
+
+                        <Grid ColumnDefinitions="200,*" RowDefinitions="Auto,Auto,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Audio B (Audio_b)" VerticalAlignment="Center" Margin="0,0,0,6" />
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding AudioB}" Margin="0,0,0,6" />
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Audio G (Audio_g)" VerticalAlignment="Center" Margin="0,0,0,6" />
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding AudioG}" Margin="0,0,0,6" />
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Audio TTS (Audio_TTS)" VerticalAlignment="Center" />
+                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding AudioTts}" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Meta Fields -->
+                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Meta" FontWeight="SemiBold" FontSize="14" />
+
+                        <Grid ColumnDefinitions="200,*" RowDefinitions="Auto,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Sentence Count (sentence_count)" VerticalAlignment="Center" Margin="0,0,0,6" />
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SentenceCount}" Margin="0,0,0,6" />
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Related Vocab (__related_vocab)" VerticalAlignment="Top" />
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding RelatedVocab}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="80" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Source Fields -->
                 <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
                     <StackPanel Spacing="8">
                         <TextBlock Text="Source" FontWeight="SemiBold" FontSize="14" />
 
-                        <Grid ColumnDefinitions="140,*" RowDefinitions="Auto,Auto,Auto">
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Answer" VerticalAlignment="Top" Margin="0,0,0,6" />
+                        <Grid ColumnDefinitions="200,*" RowDefinitions="Auto,Auto,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Answer (source_answer)" VerticalAlignment="Top" Margin="0,0,0,6" />
                             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SourceAnswer}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="50" Margin="0,0,0,6" />
 
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Mnemonic" VerticalAlignment="Top" Margin="0,0,0,6" />
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Mnemonic (source_mnemonic)" VerticalAlignment="Top" Margin="0,0,0,6" />
                             <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SourceMnemonic}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="50" Margin="0,0,0,6" />
 
-                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Reading Mnemonic" VerticalAlignment="Top" />
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Reading Mnemonic (source_reading_mnemonic)" VerticalAlignment="Top" />
                             <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SourceReadingMnemonic}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="50" />
                         </Grid>
                     </StackPanel>

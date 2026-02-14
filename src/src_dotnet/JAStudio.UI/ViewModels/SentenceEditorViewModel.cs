@@ -30,6 +30,9 @@ public partial class SentenceEditorViewModel : ObservableObject
    [ObservableProperty] string _userAnswer = "";
    [ObservableProperty] string _userComments = "";
    [ObservableProperty] string _reading = "";
+   [ObservableProperty] string _audio = "";
+   [ObservableProperty] string _screenshot = "";
+   [ObservableProperty] string _id = "";
 
    // --- Read-only reference fields ---
 
@@ -52,6 +55,10 @@ public partial class SentenceEditorViewModel : ObservableObject
       SourceQuestion = _sentence.SourceQuestion.Value;
       SourceAnswer = _sentence.GetField(SentenceNoteFields.SourceAnswer);
       SourceComments = _sentence.SourceComments.Value;
+
+      Audio = _sentence.Audio.RawValue();
+      Screenshot = _sentence.GetField(SentenceNoteFields.Screenshot);
+      Id = _sentence.Id.Value;
    }
 
    public void Save()
@@ -63,6 +70,9 @@ public partial class SentenceEditorViewModel : ObservableObject
       _sentence.SourceQuestion.Set(SourceQuestion);
       _sentence.SetField(SentenceNoteFields.SourceAnswer, SourceAnswer);
       _sentence.SourceComments.Set(SourceComments);
+      _sentence.Audio.SetRawValue(Audio);
+      _sentence.SetField(SentenceNoteFields.Screenshot, Screenshot);
+      _sentence.Id.Set(Id);
       _sentence.UpdateGeneratedData();
    }
 }

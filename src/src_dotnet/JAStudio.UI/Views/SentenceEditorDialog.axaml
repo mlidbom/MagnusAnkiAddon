@@ -33,36 +33,54 @@
                     <StackPanel Spacing="8">
                         <TextBlock Text="User" FontWeight="SemiBold" FontSize="14" />
 
-                        <Grid ColumnDefinitions="140,*" RowDefinitions="Auto,Auto,Auto,Auto">
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Question" VerticalAlignment="Top" Margin="0,0,0,6" />
+                        <Grid ColumnDefinitions="200,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Question (__question)" VerticalAlignment="Top" Margin="0,0,0,6" />
                             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding UserQuestion}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="50" Margin="0,0,0,6" />
 
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Answer" VerticalAlignment="Top" Margin="0,0,0,6" />
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Answer (__answer)" VerticalAlignment="Top" Margin="0,0,0,6" />
                             <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding UserAnswer}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="50" Margin="0,0,0,6" />
 
-                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Comments" VerticalAlignment="Top" Margin="0,0,0,6" />
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Comments (__comments)" VerticalAlignment="Top" Margin="0,0,0,6" />
                             <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding UserComments}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="50" Margin="0,0,0,6" />
 
-                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Reading" VerticalAlignment="Center" />
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Reading (Reading)" VerticalAlignment="Center" />
                             <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Reading}" />
                         </Grid>
                     </StackPanel>
                 </Border>
 
-                <!-- Source Fields (read-only) -->
+                <!-- Source Fields -->
                 <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
                     <StackPanel Spacing="8">
                         <TextBlock Text="Source" FontWeight="SemiBold" FontSize="14" />
 
-                        <Grid ColumnDefinitions="140,*" RowDefinitions="Auto,Auto,Auto">
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Question" VerticalAlignment="Top" Margin="0,0,0,6" />
+                        <Grid ColumnDefinitions="200,*" RowDefinitions="Auto,Auto,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Question (source_question)" VerticalAlignment="Top" Margin="0,0,0,6" />
                             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SourceQuestion}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="50" Margin="0,0,0,6" />
 
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Answer" VerticalAlignment="Top" Margin="0,0,0,6" />
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Answer (source_answer)" VerticalAlignment="Top" Margin="0,0,0,6" />
                             <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SourceAnswer}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="50" Margin="0,0,0,6" />
 
-                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Comments" VerticalAlignment="Top" />
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Comments (Comments)" VerticalAlignment="Top" />
                             <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SourceComments}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="50" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Other Fields -->
+                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Other" FontWeight="SemiBold" FontSize="14" />
+
+                        <Grid ColumnDefinitions="200,*" RowDefinitions="Auto,Auto,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Audio (Audio Sentence)" VerticalAlignment="Center" Margin="0,0,0,6" />
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Audio}" Margin="0,0,0,6" />
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Screenshot (Screenshot)" VerticalAlignment="Center" Margin="0,0,0,6" />
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Screenshot}" Margin="0,0,0,6" />
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="ID (ID)" VerticalAlignment="Center" />
+                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Id}" />
                         </Grid>
                     </StackPanel>
                 </Border>
