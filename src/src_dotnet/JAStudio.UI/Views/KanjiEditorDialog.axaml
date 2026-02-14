@@ -1,0 +1,114 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:JAStudio.UI.ViewModels"
+        x:Class="JAStudio.UI.Views.KanjiEditorDialog"
+        x:DataType="vm:KanjiEditorViewModel"
+        Title="{Binding Title}"
+        SizeToContent="WidthAndHeight"
+        MinWidth="700" MinHeight="400"
+        Design.Width="800" Design.Height="900"
+        WindowStartupLocation="Manual">
+
+    <Design.DataContext>
+        <vm:KanjiEditorViewModel />
+    </Design.DataContext>
+
+    <LayoutTransformControl>
+        <LayoutTransformControl.LayoutTransform>
+            <ScaleTransform ScaleX="0.85" ScaleY="0.85" />
+        </LayoutTransformControl.LayoutTransform>
+    <DockPanel Margin="10">
+        <!-- Button bar at bottom -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0" Spacing="10">
+            <Button Content="OK" Command="{Binding SaveCommand}" Width="80" />
+            <Button Content="Cancel" Command="{Binding CancelCommand}" Width="80" />
+        </StackPanel>
+
+        <!-- Scrollable content -->
+        <ScrollViewer>
+            <StackPanel Spacing="10" Margin="5" Width="700">
+
+                <!-- Core Fields -->
+                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Core" FontWeight="SemiBold" FontSize="14" />
+
+                        <Grid ColumnDefinitions="140,*" RowDefinitions="Auto,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Question" VerticalAlignment="Center" Margin="0,0,0,6" />
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Question}" Margin="0,0,0,6" />
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="User Answer" VerticalAlignment="Center" />
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding UserAnswer}" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Readings -->
+                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Readings" FontWeight="SemiBold" FontSize="14" />
+
+                        <Grid ColumnDefinitions="140,*" RowDefinitions="Auto,Auto,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="On" VerticalAlignment="Center" Margin="0,0,0,6" />
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding ReadingOn}" Watermark="comma separated, use &lt;primary&gt; tags" Margin="0,0,0,6" />
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Kun" VerticalAlignment="Center" Margin="0,0,0,6" />
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding ReadingKun}" Watermark="comma separated, use &lt;primary&gt; tags" Margin="0,0,0,6" />
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Nanori" VerticalAlignment="Center" />
+                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding ReadingNan}" Watermark="comma separated" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Related -->
+                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Related" FontWeight="SemiBold" FontSize="14" />
+
+                        <Grid ColumnDefinitions="140,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Radicals" VerticalAlignment="Center" Margin="0,0,0,6" />
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Radicals}" Watermark="comma separated" Margin="0,0,0,6" />
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Primary Vocab" VerticalAlignment="Center" Margin="0,0,0,6" />
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding PrimaryVocab}" Watermark="comma separated" Margin="0,0,0,6" />
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Similar Meaning" VerticalAlignment="Center" Margin="0,0,0,6" />
+                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SimilarMeaning}" Watermark="comma separated" Margin="0,0,0,6" />
+
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Confused With" VerticalAlignment="Center" />
+                            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding ConfusedWith}" Watermark="comma separated" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Mnemonic -->
+                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Mnemonic" FontWeight="SemiBold" FontSize="14" />
+
+                        <TextBox Text="{Binding UserMnemonic}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="80" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Source Fields (read-only) -->
+                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Source" FontWeight="SemiBold" FontSize="14" />
+
+                        <Grid ColumnDefinitions="140,*" RowDefinitions="Auto,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Answer" VerticalAlignment="Top" Margin="0,0,0,6" />
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SourceAnswer}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="50" Margin="0,0,0,6" />
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Meaning Mnemonic" VerticalAlignment="Top" />
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SourceMeaningMnemonic}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="50" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+
+    </DockPanel>
+    </LayoutTransformControl>
+</Window>

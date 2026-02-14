@@ -54,6 +54,66 @@ public class AppDialogs
    }
 
    /// <summary>
+   /// Show the VocabEditorDialog for editing a vocab note's fields.
+   /// </summary>
+   public void ShowVocabEditorDialog(long vocabId)
+   {
+      Dispatcher.UIThread.Invoke(() =>
+      {
+         var vocab = _app.Collection.Vocab.WithExternalIdOrNone(vocabId);
+         if(vocab == null)
+         {
+            this.Log().Info($"Vocab note with ID {vocabId} not found");
+            return;
+         }
+
+         var window = new VocabEditorDialog(vocab);
+         WindowPositioner.PositionNearCursor(window);
+         window.Show();
+      });
+   }
+
+   /// <summary>
+   /// Show the KanjiEditorDialog for editing a kanji note's fields.
+   /// </summary>
+   public void ShowKanjiEditorDialog(long kanjiId)
+   {
+      Dispatcher.UIThread.Invoke(() =>
+      {
+         var kanji = _app.Collection.Kanji.WithExternalIdOrNone(kanjiId);
+         if(kanji == null)
+         {
+            this.Log().Info($"Kanji note with ID {kanjiId} not found");
+            return;
+         }
+
+         var window = new KanjiEditorDialog(kanji);
+         WindowPositioner.PositionNearCursor(window);
+         window.Show();
+      });
+   }
+
+   /// <summary>
+   /// Show the SentenceEditorDialog for editing a sentence note's fields.
+   /// </summary>
+   public void ShowSentenceEditorDialog(long sentenceId)
+   {
+      Dispatcher.UIThread.Invoke(() =>
+      {
+         var sentence = _app.Collection.Sentences.WithExternalIdOrNone(sentenceId);
+         if(sentence == null)
+         {
+            this.Log().Info($"Sentence note with ID {sentenceId} not found");
+            return;
+         }
+
+         var window = new SentenceEditorDialog(sentence);
+         WindowPositioner.PositionNearCursor(window);
+         window.Show();
+      });
+   }
+
+   /// <summary>
    /// Show the About dialog.
    /// </summary>
    public void ShowAboutDialog()

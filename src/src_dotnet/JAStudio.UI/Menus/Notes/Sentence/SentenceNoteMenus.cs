@@ -5,6 +5,8 @@ using JAStudio.Core.Note;
 using JAStudio.UI;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
+using JAStudio.UI.Views;
+using Avalonia.Threading;
 
 namespace JAStudio.UI.Menus;
 
@@ -28,6 +30,7 @@ public class SentenceNoteMenus
             new List<SpecMenuItem>
             {
                 BuildOpenMenuSpec(sentence),
+                SpecMenuItem.Command(ShortcutFinger.Home2("Edit"), () => OnEditSentence(sentence)),
                 BuildRemoveMenuSpec(sentence),
                 BuildRemoveUserMenuSpec(sentence)
             }
@@ -49,6 +52,16 @@ public class SentenceNoteMenus
         };
 
         return SpecMenuItem.Submenu(ShortcutFinger.Home1("Open"), items);
+    }
+
+    void OnEditSentence(SentenceNote sentence)
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var dialog = new SentenceEditorDialog(sentence);
+            WindowPositioner.PositionNearCursor(dialog);
+            dialog.Show();
+        });
     }
 
     private static SpecMenuItem BuildRemoveMenuSpec(SentenceNote sentence)
