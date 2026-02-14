@@ -15,7 +15,6 @@ public partial class SentenceEditorDialog : Window
     public SentenceEditorDialog(SentenceNote sentence) : this()
     {
         var viewModel = new SentenceEditorViewModel(sentence);
-        DataContext = viewModel;
 
         viewModel.SaveCommand = new RelayCommand(() =>
         {
@@ -27,5 +26,7 @@ public partial class SentenceEditorDialog : Window
         {
             Close();
         });
+
+        DataContext = viewModel;
     }
 }

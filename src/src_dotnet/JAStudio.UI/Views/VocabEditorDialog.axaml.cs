@@ -15,7 +15,6 @@ public partial class VocabEditorDialog : Window
     public VocabEditorDialog(VocabNote vocab) : this()
     {
         var viewModel = new VocabEditorViewModel(vocab);
-        DataContext = viewModel;
 
         viewModel.SaveCommand = new RelayCommand(() =>
         {
@@ -27,5 +26,7 @@ public partial class VocabEditorDialog : Window
         {
             Close();
         });
+
+        DataContext = viewModel;
     }
 }

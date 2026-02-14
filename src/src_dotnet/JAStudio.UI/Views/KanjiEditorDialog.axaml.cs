@@ -15,7 +15,6 @@ public partial class KanjiEditorDialog : Window
     public KanjiEditorDialog(KanjiNote kanji) : this()
     {
         var viewModel = new KanjiEditorViewModel(kanji);
-        DataContext = viewModel;
 
         viewModel.SaveCommand = new RelayCommand(() =>
         {
@@ -27,5 +26,7 @@ public partial class KanjiEditorDialog : Window
         {
             Close();
         });
+
+        DataContext = viewModel;
     }
 }
