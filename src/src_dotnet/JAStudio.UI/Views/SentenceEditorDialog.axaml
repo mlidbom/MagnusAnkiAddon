@@ -4,8 +4,8 @@
         x:Class="JAStudio.UI.Views.SentenceEditorDialog"
         x:DataType="vm:SentenceEditorViewModel"
         Title="{Binding Title}"
-        SizeToContent="WidthAndHeight"
-        MinWidth="700" MinHeight="300"
+        SizeToContent="Height"
+        Width="800" MinWidth="700" MinHeight="300"
         Design.Width="800" Design.Height="700"
         WindowStartupLocation="Manual">
 
@@ -26,7 +26,7 @@
 
         <!-- Scrollable content -->
         <ScrollViewer>
-            <StackPanel Spacing="10" Margin="5" Width="700">
+            <StackPanel Spacing="10" Margin="5">
 
                 <!-- User Fields -->
                 <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">

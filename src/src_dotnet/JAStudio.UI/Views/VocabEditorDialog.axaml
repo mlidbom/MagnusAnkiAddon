@@ -4,8 +4,8 @@
         x:Class="JAStudio.UI.Views.VocabEditorDialog"
         x:DataType="vm:VocabEditorViewModel"
         Title="{Binding Title}"
-        SizeToContent="WidthAndHeight"
-        MinWidth="700" MinHeight="400"
+        SizeToContent="Height"
+        Width="800" MinWidth="700" MinHeight="400"
         Design.Width="800" Design.Height="900"
         WindowStartupLocation="Manual">
 
@@ -26,7 +26,7 @@
 
         <!-- Scrollable content -->
         <ScrollViewer>
-            <StackPanel Spacing="10" Margin="5" Width="700">
+            <StackPanel Spacing="10" Margin="5">
 
                 <!-- Core Fields -->
                 <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
