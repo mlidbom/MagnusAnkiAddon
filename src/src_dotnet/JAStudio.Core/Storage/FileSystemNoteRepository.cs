@@ -146,7 +146,7 @@ public class FileSystemNoteRepository : INoteRepository
          scope.RunIndeterminate("Saving updated snapshot", () => SaveSnapshotContainer(container));
       }
 
-      return scope.RunIndeterminate("Converting snapshot to notes", () => _serializer.ContainerToAllNotesData(container));
+      return _serializer.ContainerToAllNotesData(container);
    }
 
    AllNotesData LoadAllFromJsonAndSaveSnapshot()
