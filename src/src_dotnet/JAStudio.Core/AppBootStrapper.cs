@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Compze.Utilities.DependencyInjection;
 using Compze.Utilities.DependencyInjection.Abstractions;
 using Compze.Utilities.DependencyInjection.SimpleInjector;
@@ -36,16 +37,13 @@ static class AppBootstrapper
       if (App.IsTesting)
       {
          registrar.Register(
-            Singleton.For<INoteRepository>().CreatedBy(() => (INoteRepository)new InMemoryNoteRepository()),
-            Singleton.For<IMediaSyncService>().CreatedBy(() => (IMediaSyncService)new NullMediaSyncService()));
+            Singleton.For<INoteRepository>().CreatedBy(() => (INoteRepository)new InMemoryNoteRepository()));
       }
       else
       {
          registrar.Register(
-            Singleton.For<IMediaSyncService>().CreatedBy(() =>
-               (IMediaSyncService)new MediaSyncService(() => App.AnkiMediaDir, App.DatabaseDir)),
-            Singleton.For<INoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner, IMediaSyncService mediaSyncService) =>
-               (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, App.DatabaseDir, mediaSyncService)));
+            Singleton.For<INoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner) =>
+               (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, App.DatabaseDir)));
       }
 
       registrar.Register(
@@ -63,6 +61,13 @@ static class AppBootstrapper
          Singleton.For<KanjiCollection>().CreatedBy((JPCollection col) => col.Kanji),
          Singleton.For<SentenceCollection>().CreatedBy((JPCollection col) => col.Sentences),
 
+         // Media storage
+         Singleton.For<MediaFileIndex>().CreatedBy(() =>
+            new MediaFileIndex(Path.Combine(App.DatabaseDir, "files"))),
+         Singleton.For<MediaRoutingConfig>().CreatedBy(() => MediaRoutingConfig.Default()),
+         Singleton.For<MediaStorageService>().CreatedBy((MediaFileIndex index, MediaRoutingConfig routingConfig) =>
+            new MediaStorageService(Path.Combine(App.DatabaseDir, "files"), index, routingConfig)),
+
          // Core services
          Singleton.For<Settings>().CreatedBy((JapaneseConfig config) => new Settings(config)),
          Singleton.For<AnalysisServices>().CreatedBy((VocabCollection vocab, DictLookup dictLookup, Settings settings) => new AnalysisServices(vocab, dictLookup, settings)),
@@ -79,8 +84,8 @@ static class AppBootstrapper
          Singleton.For<VocabNoteFactory>().CreatedBy((JPCollection col) => col.VocabNoteFactory),
          Singleton.For<VocabNoteGeneratedData>().CreatedBy((JPCollection col) => col.VocabNoteGeneratedData),
          Singleton.For<NoteSerializer>().CreatedBy((NoteServices noteServices) => new NoteSerializer(noteServices)),
-         Singleton.For<FileSystemNoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner, IMediaSyncService mediaSyncService) =>
-            new FileSystemNoteRepository(serializer, taskRunner, App.DatabaseDir, mediaSyncService)),
+         Singleton.For<FileSystemNoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner) =>
+            new FileSystemNoteRepository(serializer, taskRunner, App.DatabaseDir)),
          Singleton.For<KanjiNoteMnemonicMaker>().CreatedBy((JapaneseConfig config) => new KanjiNoteMnemonicMaker(config)),
 
          // ViewModels
