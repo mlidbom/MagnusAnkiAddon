@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Compze.Utilities.Logging;
 using JAStudio.Core.Note;
@@ -7,11 +8,11 @@ namespace JAStudio.Core.Storage.Media;
 
 public class MediaSyncService : IMediaSyncService
 {
-   readonly string _ankiMediaDir;
+   readonly Func<string> _ankiMediaDir;
    readonly string _audioDir;
    readonly string _imagesDir;
 
-   public MediaSyncService(string ankiMediaDir, string databaseDir)
+   public MediaSyncService(Func<string> ankiMediaDir, string databaseDir)
    {
       _ankiMediaDir = ankiMediaDir;
       _audioDir = Path.Combine(databaseDir, "files", "audio");
@@ -21,10 +22,13 @@ public class MediaSyncService : IMediaSyncService
    public void SyncMedia(JPNote note)
    {
       var references = note.GetMediaReferences();
+      if (references.Count == 0) return;
+
+      var ankiMediaDir = _ankiMediaDir();
 
       foreach (var reference in references)
       {
-         var sourcePath = Path.Combine(_ankiMediaDir, reference.FileName);
+         var sourcePath = Path.Combine(ankiMediaDir, reference.FileName);
          var destDir = reference.Type == MediaType.Audio ? _audioDir : _imagesDir;
          var destPath = Path.Combine(destDir, reference.FileName);
 
