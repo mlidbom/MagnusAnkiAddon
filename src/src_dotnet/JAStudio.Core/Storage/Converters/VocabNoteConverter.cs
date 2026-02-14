@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.CorpusData;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.Note.Vocabulary.RelatedVocab;
 using JAStudio.Core.Storage.Dto;
@@ -47,31 +48,33 @@ public static class VocabNoteConverter
 
     public static NoteData FromDto(VocabNoteDto dto)
     {
-        var fields = new Dictionary<string, string>
-        {
-            [NoteFieldsConstants.Vocab.Question] = dto.Question,
-            [NoteFieldsConstants.Vocab.SourceAnswer] = dto.SourceAnswer,
-            [NoteFieldsConstants.Vocab.UserAnswer] = dto.UserAnswer,
-            [NoteFieldsConstants.Vocab.ActiveAnswer] = dto.ActiveAnswer,
-            [NoteFieldsConstants.Vocab.UserExplanation] = dto.UserExplanation,
-            [NoteFieldsConstants.Vocab.UserExplanationLong] = dto.UserExplanationLong,
-            [NoteFieldsConstants.Vocab.UserMnemonic] = dto.UserMnemonic,
-            [NoteFieldsConstants.Vocab.UserCompounds] = string.Join(", ", dto.UserCompounds),
-            [NoteFieldsConstants.Vocab.Reading] = string.Join(", ", dto.Readings),
-            [NoteFieldsConstants.Vocab.PartsOfSpeech] = dto.PartsOfSpeech,
-            [NoteFieldsConstants.Vocab.SourceMnemonic] = dto.SourceMnemonic,
-            [NoteFieldsConstants.Vocab.SourceReadingMnemonic] = dto.SourceReadingMnemonic,
-            [NoteFieldsConstants.Vocab.AudioB] = dto.AudioB,
-            [NoteFieldsConstants.Vocab.AudioG] = dto.AudioG,
-            [NoteFieldsConstants.Vocab.AudioTTS] = dto.AudioTTS,
-            [NoteFieldsConstants.Vocab.Forms] = string.Join(", ", dto.Forms),
-            [NoteFieldsConstants.Vocab.SentenceCount] = dto.SentenceCount.ToString(),
-            [NoteFieldsConstants.Vocab.MatchingRules] = MatchingRulesSerializer.Serialize(FromMatchingRulesDto(dto.MatchingRules)),
-            [NoteFieldsConstants.Vocab.RelatedVocab] = RelatedVocabSerializer.Serialize(FromRelatedVocabDto(dto.RelatedVocab)),
-            [MyNoteFields.JasNoteId] = dto.Id.ToString(),
-        };
+        return FromDtoToCorpusData(dto).ToNoteData();
+    }
 
-        return new NoteData(new VocabId(dto.Id), fields, dto.Tags.ToList());
+    public static VocabData FromDtoToCorpusData(VocabNoteDto dto)
+    {
+        return new VocabData(new VocabId(dto.Id), dto.Tags.ToList())
+        {
+            Question = dto.Question,
+            SourceAnswer = dto.SourceAnswer,
+            UserAnswer = dto.UserAnswer,
+            ActiveAnswer = dto.ActiveAnswer,
+            UserExplanation = dto.UserExplanation,
+            UserExplanationLong = dto.UserExplanationLong,
+            UserMnemonic = dto.UserMnemonic,
+            UserCompounds = string.Join(", ", dto.UserCompounds),
+            Reading = string.Join(", ", dto.Readings),
+            PartsOfSpeech = dto.PartsOfSpeech,
+            SourceMnemonic = dto.SourceMnemonic,
+            SourceReadingMnemonic = dto.SourceReadingMnemonic,
+            AudioB = dto.AudioB,
+            AudioG = dto.AudioG,
+            AudioTTS = dto.AudioTTS,
+            Forms = string.Join(", ", dto.Forms),
+            SentenceCount = dto.SentenceCount.ToString(),
+            MatchingRules = MatchingRulesSerializer.Serialize(FromMatchingRulesDto(dto.MatchingRules)),
+            RelatedVocab = RelatedVocabSerializer.Serialize(FromRelatedVocabDto(dto.RelatedVocab)),
+        };
     }
 
     static VocabMatchingRulesDto ToMatchingRulesDto(VocabNoteMatchingRulesData data)

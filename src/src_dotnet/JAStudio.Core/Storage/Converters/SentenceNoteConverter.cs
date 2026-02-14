@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.CorpusData;
 using JAStudio.Core.Note.Sentences;
 using JAStudio.Core.Note.Sentences.Serialization;
 using JAStudio.Core.Storage.Dto;
@@ -46,27 +47,29 @@ public static class SentenceNoteConverter
 
     public static NoteData FromDto(SentenceNoteDto dto)
     {
-        var fields = new Dictionary<string, string>
-        {
-            [SentenceNoteFields.SourceQuestion] = dto.SourceQuestion,
-            [SentenceNoteFields.UserQuestion] = dto.UserQuestion,
-            [SentenceNoteFields.ActiveQuestion] = dto.ActiveQuestion,
-            [SentenceNoteFields.SourceAnswer] = dto.SourceAnswer,
-            [SentenceNoteFields.UserAnswer] = dto.UserAnswer,
-            [SentenceNoteFields.ActiveAnswer] = dto.ActiveAnswer,
-            [SentenceNoteFields.SourceComments] = dto.SourceComments,
-            [SentenceNoteFields.UserComments] = dto.UserComments,
-            [SentenceNoteFields.Reading] = dto.Reading,
-            [SentenceNoteFields.Id] = dto.ExternalId,
-            [SentenceNoteFields.Audio] = dto.Audio,
-            [SentenceNoteFields.Screenshot] = dto.Screenshot,
-            [SentenceNoteFields.Configuration] = SerializeConfiguration(dto.Configuration),
-            [SentenceNoteFields.ParsingResult] = SerializeParsingResult(dto.ParsingResult),
-            [SentenceNoteFields.JanomeTokens] = dto.JanomeTokens,
-            [MyNoteFields.JasNoteId] = dto.Id.ToString(),
-        };
+        return FromDtoToCorpusData(dto).ToNoteData();
+    }
 
-        return new NoteData(new SentenceId(dto.Id), fields, dto.Tags.ToList());
+    public static SentenceData FromDtoToCorpusData(SentenceNoteDto dto)
+    {
+        return new SentenceData(new SentenceId(dto.Id), dto.Tags.ToList())
+        {
+            SourceQuestion = dto.SourceQuestion,
+            UserQuestion = dto.UserQuestion,
+            ActiveQuestion = dto.ActiveQuestion,
+            SourceAnswer = dto.SourceAnswer,
+            UserAnswer = dto.UserAnswer,
+            ActiveAnswer = dto.ActiveAnswer,
+            SourceComments = dto.SourceComments,
+            UserComments = dto.UserComments,
+            Reading = dto.Reading,
+            ExternalId = dto.ExternalId,
+            Audio = dto.Audio,
+            Screenshot = dto.Screenshot,
+            Configuration = SerializeConfiguration(dto.Configuration),
+            ParsingResult = SerializeParsingResult(dto.ParsingResult),
+            JanomeTokens = dto.JanomeTokens,
+        };
     }
 
     static SentenceConfigurationDto ToConfigurationDto(SentenceConfiguration config)

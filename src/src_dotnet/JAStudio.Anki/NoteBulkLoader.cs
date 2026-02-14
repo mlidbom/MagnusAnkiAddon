@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using JAStudio.Core.Anki;
 using JAStudio.Core.Note;
 using Microsoft.Data.Sqlite;
 
@@ -54,7 +55,7 @@ public static class NoteBulkLoader
          var idFactory = NoteTypes.IdFactoryFromName(noteTypeName);
          var (noteTypeId, fieldMap, _) = GetNoteTypeInfo(db.Connection, noteTypeName);
 
-         if(!fieldMap.TryGetValue(MyNoteFields.JasNoteId, out var jasNoteIdOrdinal))
+         if(!fieldMap.TryGetValue(AnkiFieldNames.JasNoteId, out var jasNoteIdOrdinal))
             continue;
 
          using var cmd = db.Connection.CreateCommand();
@@ -160,7 +161,7 @@ public static class NoteBulkLoader
 
          // Read persisted jas_note_id from the note's fields, or generate a new one.
          // A new GUID is written back to the jas_note_id field on next flush.
-         var jasNoteIdStr = fields.GetValueOrDefault(MyNoteFields.JasNoteId, "");
+         var jasNoteIdStr = fields.GetValueOrDefault(AnkiFieldNames.JasNoteId, "");
          var noteId = Guid.TryParse(jasNoteIdStr, out var guid)
             ? idFactory(guid)
             : idFactory(Guid.NewGuid());

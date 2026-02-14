@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.CorpusData;
 using JAStudio.Core.Storage.Dto;
 
 namespace JAStudio.Core.Storage.Converters;
@@ -35,28 +36,30 @@ public static class KanjiNoteConverter
 
     public static NoteData FromDto(KanjiNoteDto dto)
     {
-        var fields = new Dictionary<string, string>
-        {
-            [NoteFieldsConstants.Kanji.Question] = dto.Kanji,
-            [NoteFieldsConstants.Kanji.SourceAnswer] = dto.SourceAnswer,
-            [NoteFieldsConstants.Kanji.UserAnswer] = dto.UserAnswer,
-            [NoteFieldsConstants.Kanji.ActiveAnswer] = dto.ActiveAnswer,
-            [NoteFieldsConstants.Kanji.ReadingOn] = dto.ReadingOnHtml,
-            [NoteFieldsConstants.Kanji.ReadingKun] = dto.ReadingKunHtml,
-            [NoteFieldsConstants.Kanji.ReadingNan] = dto.ReadingNanHtml,
-            [NoteFieldsConstants.Kanji.Radicals] = string.Join(", ", dto.Radicals),
-            [NoteFieldsConstants.Kanji.SourceMeaningMnemonic] = dto.SourceMeaningMnemonic,
-            [NoteFieldsConstants.Kanji.MeaningInfo] = dto.MeaningInfo,
-            [NoteFieldsConstants.Kanji.ReadingMnemonic] = dto.ReadingMnemonic,
-            [NoteFieldsConstants.Kanji.ReadingInfo] = dto.ReadingInfo,
-            [NoteFieldsConstants.Kanji.PrimaryVocab] = string.Join(", ", dto.PrimaryVocab),
-            [NoteFieldsConstants.Kanji.Audio] = dto.Audio,
-            [NoteFieldsConstants.Kanji.UserMnemonic] = dto.UserMnemonic,
-            [NoteFieldsConstants.Kanji.UserSimilarMeaning] = string.Join(", ", dto.SimilarMeaning),
-            [NoteFieldsConstants.Kanji.RelatedConfusedWith] = string.Join(", ", dto.ConfusedWith),
-            [MyNoteFields.JasNoteId] = dto.Id.ToString(),
-        };
+        return FromDtoToCorpusData(dto).ToNoteData();
+    }
 
-        return new NoteData(new KanjiId(dto.Id), fields, dto.Tags.ToList());
+    public static KanjiData FromDtoToCorpusData(KanjiNoteDto dto)
+    {
+        return new KanjiData(new KanjiId(dto.Id), dto.Tags.ToList())
+        {
+            Question = dto.Kanji,
+            SourceAnswer = dto.SourceAnswer,
+            UserAnswer = dto.UserAnswer,
+            ActiveAnswer = dto.ActiveAnswer,
+            ReadingOn = dto.ReadingOnHtml,
+            ReadingKun = dto.ReadingKunHtml,
+            ReadingNan = dto.ReadingNanHtml,
+            Radicals = string.Join(", ", dto.Radicals),
+            SourceMeaningMnemonic = dto.SourceMeaningMnemonic,
+            MeaningInfo = dto.MeaningInfo,
+            ReadingMnemonic = dto.ReadingMnemonic,
+            ReadingInfo = dto.ReadingInfo,
+            PrimaryVocab = string.Join(", ", dto.PrimaryVocab),
+            Audio = dto.Audio,
+            UserMnemonic = dto.UserMnemonic,
+            UserSimilarMeaning = string.Join(", ", dto.SimilarMeaning),
+            RelatedConfusedWith = string.Join(", ", dto.ConfusedWith),
+        };
     }
 }
