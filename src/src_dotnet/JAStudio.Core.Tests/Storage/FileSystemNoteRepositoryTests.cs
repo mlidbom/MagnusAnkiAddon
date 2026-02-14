@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using JAStudio.Core.Note;
 using JAStudio.Core.Storage;
 using JAStudio.Core.TaskRunners;
@@ -132,31 +133,81 @@ public class FileSystemNoteRepositoryTests : CollectionUsingTest, IDisposable
         Assert.Equal(allData.Sentences.Count, loaded.Sentences.Count);
     }
 
-    // --- AllNotesData save/load single file ---
+    // --- Snapshot save/load ---
 
     [Fact]
-    public void SaveAllSingleFile_And_LoadAllSingleFile_PreservesAllFields()
+    public void SaveSnapshot_And_LoadSnapshot_PreservesAllFields()
     {
         var allData = BuildAllNotesData();
 
-        _repo.SaveAllSingleFile(allData);
-        var loaded = _repo.LoadAllSingleFile();
+        _repo.SaveSnapshot(allData);
+        var loaded = _repo.LoadSnapshot();
 
         AssertAllNotesDataMatch(allData, loaded);
     }
 
     [Fact]
-    public void SaveAllSingleFile_And_LoadAllSingleFile_ProducesIdenticalJson()
+    public void SaveSnapshot_And_LoadSnapshot_ProducesIdenticalJson()
     {
         var allData = BuildAllNotesData();
 
-        _repo.SaveAllSingleFile(allData);
-        var loaded = _repo.LoadAllSingleFile();
+        _repo.SaveSnapshot(allData);
+        var loaded = _repo.LoadSnapshot();
 
         var originalJson = _serializer.Serialize(allData);
         var loadedJson = _serializer.Serialize(loaded);
 
         Assert.Equal(originalJson, loadedJson);
+    }
+
+    // --- Snapshot-aware incremental loading ---
+
+    [Fact]
+    public void LoadAll_WithSnapshot_MergesChangedFiles()
+    {
+        var allData = BuildAllNotesData();
+        _repo.SaveAll(allData);
+        _repo.SaveSnapshot(allData);
+
+        // Modify one vocab note's JSON file (touch it newer than the snapshot)
+        var vocab = allData.Vocab.First();
+        Thread.Sleep(50); // ensure file timestamp is after snapshot
+        _repo.Save(vocab);
+
+        var loaded = _repo.LoadAll();
+        Assert.Equal(allData.Vocab.Count, loaded.Vocab.Count);
+    }
+
+    [Fact]
+    public void LoadAll_WithSnapshot_TracksDeletes()
+    {
+        var allData = BuildAllNotesData();
+        _repo.SaveAll(allData);
+        _repo.SaveSnapshot(allData);
+
+        // Delete one kanji note's JSON file
+        var kanjiToDelete = allData.Kanji.First();
+        var kanjiDir = Path.Combine(_tempDir, "kanji");
+        var bucket = kanjiToDelete.GetId().Value.ToString("N")[..2];
+        var filePath = Path.Combine(kanjiDir, bucket, $"{kanjiToDelete.GetId().Value}.json");
+        File.Delete(filePath);
+
+        var loaded = _repo.LoadAll();
+        Assert.Equal(allData.Kanji.Count - 1, loaded.Kanji.Count);
+        Assert.DoesNotContain(loaded.Kanji, k => k.GetId() == kanjiToDelete.GetId());
+    }
+
+    [Fact]
+    public void LoadAll_WithoutSnapshot_FallsBackToJsonAndCreatesSnapshot()
+    {
+        var allData = BuildAllNotesData();
+        _repo.SaveAll(allData);
+
+        var loaded = _repo.LoadAll();
+        AssertAllNotesDataMatch(allData, loaded);
+
+        // Snapshot should have been created
+        Assert.True(File.Exists(Path.Combine(_tempDir, "snapshot.bin")));
     }
 
     // --- Helpers ---

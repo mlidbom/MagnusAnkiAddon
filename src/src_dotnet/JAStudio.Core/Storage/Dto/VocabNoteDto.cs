@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using MemoryPack;
 
 namespace JAStudio.Core.Storage.Dto;
 
-public class VocabNoteDto
+[MemoryPackable]
+public partial class VocabNoteDto
 {
     public Guid Id { get; set; }
     public string Question { get; set; } = string.Empty;
@@ -31,7 +33,8 @@ public class VocabNoteDto
     public List<string> Tags { get; set; } = new();
 }
 
-public class VocabMatchingRulesDto
+[MemoryPackable]
+public partial class VocabMatchingRulesDto
 {
     public List<string> PrefixIsNot { get; set; } = new();
     public List<string> SuffixIsNot { get; set; } = new();
@@ -40,7 +43,8 @@ public class VocabMatchingRulesDto
     public List<string> RequiredPrefix { get; set; } = new();
 }
 
-public class VocabRelatedDataDto
+[MemoryPackable]
+public partial class VocabRelatedDataDto
 {
     public string ErgativeTwin { get; set; } = string.Empty;
     public string DerivedFrom { get; set; } = string.Empty;

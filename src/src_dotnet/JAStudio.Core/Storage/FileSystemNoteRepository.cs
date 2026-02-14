@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Compze.Utilities.Logging;
 using JAStudio.Core.Note;
+using JAStudio.Core.Storage.Dto;
 using JAStudio.Core.TaskRunners;
+using MemoryPack;
 
 namespace JAStudio.Core.Storage;
 
@@ -26,7 +29,7 @@ public class FileSystemNoteRepository : INoteRepository
    string KanjiDir => Path.Combine(_rootDir, "kanji");
    string VocabDir => Path.Combine(_rootDir, "vocab");
    string SentencesDir => Path.Combine(_rootDir, "sentences");
-   string AllNotesPath => Path.Combine(_rootDir, "all_notes.json");
+   string SnapshotPath => Path.Combine(_rootDir, "snapshot.bin");
 
    public void Save(KanjiNote note)
    {
@@ -70,6 +73,91 @@ public class FileSystemNoteRepository : INoteRepository
 
    public AllNotesData LoadAll()
    {
+      if(File.Exists(SnapshotPath))
+      {
+         try
+         {
+            return LoadWithSnapshotMerge();
+         }
+         catch(Exception ex)
+         {
+            this.Log().Error(ex, "Failed to load notes snapshot falling back to full rebuild");
+         }
+      }
+
+      return LoadAllFromJsonAndSaveSnapshot();
+   }
+
+   AllNotesData LoadWithSnapshotMerge()
+   {
+      using var scope = _taskRunner.Current("Loading notes with snapshot");
+
+      var snapshotTimestamp = File.GetLastWriteTimeUtc(SnapshotPath);
+      var container = scope.RunIndeterminate("Loading binary snapshot", () =>
+      {
+         var bytes = File.ReadAllBytes(SnapshotPath);
+         return MemoryPackSerializer.Deserialize<AllNotesContainer>(bytes)
+                ?? throw new InvalidOperationException("Snapshot deserialization returned null");
+      });
+
+      var filesByType = scope.RunIndeterminate("Scanning note files", ScanAllNoteFiles);
+
+      var currentKanjiIds = filesByType.Kanji.Select(ExtractGuidFromPath).ToHashSet();
+      var currentVocabIds = filesByType.Vocab.Select(ExtractGuidFromPath).ToHashSet();
+      var currentSentenceIds = filesByType.Sentences.Select(ExtractGuidFromPath).ToHashSet();
+
+      var changedKanji = filesByType.Kanji.Where(f => File.GetLastWriteTimeUtc(f) > snapshotTimestamp).ToList();
+      var changedVocab = filesByType.Vocab.Where(f => File.GetLastWriteTimeUtc(f) > snapshotTimestamp).ToList();
+      var changedSentences = filesByType.Sentences.Where(f => File.GetLastWriteTimeUtc(f) > snapshotTimestamp).ToList();
+
+      var deletedKanji = container.Kanji.Count(d => !currentKanjiIds.Contains(d.Id));
+      var deletedVocab = container.Vocab.Count(d => !currentVocabIds.Contains(d.Id));
+      var deletedSentences = container.Sentences.Count(d => !currentSentenceIds.Contains(d.Id));
+
+      var hasChanges = changedKanji.Count + changedVocab.Count + changedSentences.Count + deletedKanji + deletedVocab + deletedSentences > 0;
+
+      if(hasChanges)
+      {
+         var kanjiMap = container.Kanji.ToDictionary(d => d.Id);
+         var vocabMap = container.Vocab.ToDictionary(d => d.Id);
+         var sentencesMap = container.Sentences.ToDictionary(d => d.Id);
+
+         foreach(var path in changedKanji)
+            kanjiMap[ExtractGuidFromPath(path)] = _serializer.DeserializeKanjiToDto(File.ReadAllText(path));
+         foreach(var path in changedVocab)
+            vocabMap[ExtractGuidFromPath(path)] = _serializer.DeserializeVocabToDto(File.ReadAllText(path));
+         foreach(var path in changedSentences)
+            sentencesMap[ExtractGuidFromPath(path)] = _serializer.DeserializeSentenceToDto(File.ReadAllText(path));
+
+         foreach(var id in kanjiMap.Keys.Where(id => !currentKanjiIds.Contains(id)).ToList())
+            kanjiMap.Remove(id);
+         foreach(var id in vocabMap.Keys.Where(id => !currentVocabIds.Contains(id)).ToList())
+            vocabMap.Remove(id);
+         foreach(var id in sentencesMap.Keys.Where(id => !currentSentenceIds.Contains(id)).ToList())
+            sentencesMap.Remove(id);
+
+         container = new AllNotesContainer
+         {
+            Kanji = kanjiMap.Values.ToList(),
+            Vocab = vocabMap.Values.ToList(),
+            Sentences = sentencesMap.Values.ToList(),
+         };
+
+         scope.RunIndeterminate("Saving updated snapshot", () => SaveSnapshotContainer(container));
+      }
+
+      return scope.RunIndeterminate("Converting snapshot to notes", () => _serializer.ContainerToAllNotesData(container));
+   }
+
+   AllNotesData LoadAllFromJsonAndSaveSnapshot()
+   {
+      var allNotes = LoadAllFromJson();
+      SaveSnapshot(allNotes);
+      return allNotes;
+   }
+
+   AllNotesData LoadAllFromJson()
+   {
       var filesByType = ScanFiles();
 
       using var scope = _taskRunner.Current("Loading notes from file system");
@@ -80,13 +168,26 @@ public class FileSystemNoteRepository : INoteRepository
       return new AllNotesData(kanji.Result, vocab.Result, sentences.Result);
    }
 
-   public void SaveAllSingleFile(AllNotesData data)
+   public void SaveSnapshot(AllNotesData data)
    {
-      Directory.CreateDirectory(_rootDir);
-      File.WriteAllText(AllNotesPath, _serializer.Serialize(data));
+      var container = _serializer.AllNotesDataToContainer(data);
+      SaveSnapshotContainer(container);
    }
 
-   public AllNotesData LoadAllSingleFile() => _serializer.DeserializeAll(File.ReadAllText(AllNotesPath));
+   void SaveSnapshotContainer(AllNotesContainer container)
+   {
+      Directory.CreateDirectory(_rootDir);
+      var bytes = MemoryPackSerializer.Serialize(container);
+      File.WriteAllBytes(SnapshotPath, bytes);
+   }
+
+   public AllNotesData LoadSnapshot()
+   {
+      var bytes = File.ReadAllBytes(SnapshotPath);
+      var container = MemoryPackSerializer.Deserialize<AllNotesContainer>(bytes)
+                      ?? throw new InvalidOperationException("Snapshot deserialization returned null");
+      return _serializer.ContainerToAllNotesData(container);
+   }
 
    /// <summary>
    /// Single directory walk from root — enumerates all *.json note files once,
@@ -122,6 +223,9 @@ public class FileSystemNoteRepository : INoteRepository
 
    static string NoteFilePath(string typeDir, NoteId id) =>
       Path.Combine(typeDir, Bucket(id), $"{id.Value}.json");
+
+   static Guid ExtractGuidFromPath(string path) =>
+      Guid.Parse(Path.GetFileNameWithoutExtension(path));
 
    public record NoteFilesByType(List<string> Kanji, List<string> Vocab, List<string> Sentences);
 }
