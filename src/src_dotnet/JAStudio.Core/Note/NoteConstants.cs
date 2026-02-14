@@ -123,6 +123,8 @@ public static class NoteFieldsConstants
         public const string ReadingInfo = "Reading_Info";
         public const string PrimaryVocab = "__primary_Vocab";
         public const string Audio = "__audio";
+        public const string PrimaryReadingsTtsAudio = "_primary_readings_tts_audio";
+        public const string References = "__references";
         public const string UserMnemonic = "__mnemonic";
         public const string UserSimilarMeaning = "__similar_meaning";
         public const string RelatedConfusedWith = "__confused_with";
@@ -152,6 +154,7 @@ public static class NoteFieldsConstants
         public const string Forms = "F";
         public const string SourceReadingMnemonic = "source_reading_mnemonic";
         public const string TechnicalNotes = "__technical_notes";
+        public const string References = "__references";
         public const string Image = "Image";
         public const string UserImage = "__image";
     }

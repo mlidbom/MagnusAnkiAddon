@@ -45,6 +45,7 @@ public static class AnkiFieldNames
       public const string Forms = "F"; //Remove
       public const string SourceReadingMnemonic = "source_reading_mnemonic"; //Remove
       public const string TechnicalNotes = "__technical_notes"; //Not imported into our store yet. Once we have it can be removed.
+      public const string References = "__references"; //Remove
       public const string Image = "Image";  //Remove
       public const string UserImage = "__image"; //Remove
    }
@@ -65,6 +66,8 @@ public static class AnkiFieldNames
       public const string ReadingInfo = "Reading_Info"; //Remove
       public const string PrimaryVocab = "__primary_Vocab"; //Remove
       public const string Audio = "__audio";
+      public const string PrimaryReadingsTtsAudio = "_primary_readings_tts_audio"; //Sync from anki (TTS addon writes here)
+      public const string References = "__references"; //Remove
       public const string UserMnemonic = "__mnemonic"; //Remove
       public const string UserSimilarMeaning = "__similar_meaning"; //Remove
       public const string RelatedConfusedWith = "__confused_with"; //Remove
@@ -73,7 +76,7 @@ public static class AnkiFieldNames
 
    public static class Sentence
    {
-      public const string Reading = "Reading"; //Remove
+      public const string Reading = "Reading"; //Read only on first import, then sync only to anki
       public const string Id = "ID"; //Read only on first import, then can be ignored, We may want to importd directly from other note types and not have this at all
       public const string ActiveQuestion = AnkiFieldNames.Question; //Remove
       public const string SourceQuestion = "source_question"; //Read only on first import, then can be ignored, We may want to importd directly from other note types and not have this at all

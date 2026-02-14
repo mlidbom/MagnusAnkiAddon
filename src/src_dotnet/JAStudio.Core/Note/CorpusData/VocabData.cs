@@ -32,6 +32,8 @@ public partial class VocabData : CorpusDataBase
    public string AudioTTS { get; init; } = string.Empty;
    public List<string> Forms { get; init; } = [];
    public int SentenceCount { get; init; }
+   public string TechnicalNotes { get; init; } = string.Empty;
+   public string References { get; init; } = string.Empty;
    public VocabMatchingRulesSubData MatchingRules { get; init; } = new();
    public VocabRelatedSubData RelatedVocab { get; init; } = new();
 
@@ -56,6 +58,8 @@ public partial class VocabData : CorpusDataBase
       fields[NoteFieldsConstants.Vocab.AudioTTS] = AudioTTS;
       fields[NoteFieldsConstants.Vocab.Forms] = string.Join(", ", Forms);
       fields[NoteFieldsConstants.Vocab.SentenceCount] = SentenceCount.ToString();
+      fields[NoteFieldsConstants.Vocab.TechnicalNotes] = TechnicalNotes;
+      fields[NoteFieldsConstants.Vocab.References] = References;
       fields[NoteFieldsConstants.Vocab.MatchingRules] = SerializeMatchingRules();
       fields[NoteFieldsConstants.Vocab.RelatedVocab] = SerializeRelatedVocab();
    }
@@ -105,6 +109,8 @@ public partial class VocabData : CorpusDataBase
          AudioB = anki.AudioB,
          AudioG = anki.AudioG,
          AudioTTS = anki.AudioTTS,
+         TechnicalNotes = anki.TechnicalNotes,
+         References = anki.References,
          Forms = StringExtensions.ExtractCommaSeparatedValues(anki.Forms),
          SentenceCount = int.TryParse(anki.SentenceCount, out var sc) ? sc : 0,
          MatchingRules = new VocabMatchingRulesSubData

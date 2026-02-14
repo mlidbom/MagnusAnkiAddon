@@ -32,6 +32,8 @@ public static class VocabNoteConverter
             AudioTTS = note.Audio.Tts.RawValue(),
             Forms = note.Forms.AllRawList(),
             SentenceCount = note.MetaData.SentenceCount.Get(),
+            TechnicalNotes = note.TechnicalNotes.Value,
+            References = note.GetField(NoteFieldsConstants.Vocab.References),
             MatchingRules = new VocabMatchingRulesSubData
             {
                 PrefixIsNot = rules.PrefixIsNot.OrderBy(s => s).ToList(),

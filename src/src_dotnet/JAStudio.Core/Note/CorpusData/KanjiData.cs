@@ -22,6 +22,8 @@ public partial class KanjiData : CorpusDataBase
    public string ReadingInfo { get; init; } = string.Empty;
    public List<string> PrimaryVocab { get; init; } = [];
    public string Audio { get; init; } = string.Empty;
+   public string PrimaryReadingsTtsAudio { get; init; } = string.Empty;
+   public string References { get; init; } = string.Empty;
    public string UserMnemonic { get; init; } = string.Empty;
    public List<string> SimilarMeaning { get; init; } = [];
    public List<string> ConfusedWith { get; init; } = [];
@@ -44,6 +46,8 @@ public partial class KanjiData : CorpusDataBase
       fields[NoteFieldsConstants.Kanji.ReadingInfo] = ReadingInfo;
       fields[NoteFieldsConstants.Kanji.PrimaryVocab] = string.Join(", ", PrimaryVocab);
       fields[NoteFieldsConstants.Kanji.Audio] = Audio;
+      fields[NoteFieldsConstants.Kanji.PrimaryReadingsTtsAudio] = PrimaryReadingsTtsAudio;
+      fields[NoteFieldsConstants.Kanji.References] = References;
       fields[NoteFieldsConstants.Kanji.UserMnemonic] = UserMnemonic;
       fields[NoteFieldsConstants.Kanji.UserSimilarMeaning] = string.Join(", ", SimilarMeaning);
       fields[NoteFieldsConstants.Kanji.RelatedConfusedWith] = string.Join(", ", ConfusedWith);
@@ -71,6 +75,8 @@ public partial class KanjiData : CorpusDataBase
          ReadingInfo = anki.ReadingInfo,
          PrimaryVocab = StringExtensions.ExtractCommaSeparatedValues(anki.PrimaryVocab),
          Audio = anki.Audio,
+         PrimaryReadingsTtsAudio = anki.PrimaryReadingsTtsAudio,
+         References = anki.References,
          UserMnemonic = anki.UserMnemonic,
          SimilarMeaning = StringExtensions.ExtractCommaSeparatedValues(anki.UserSimilarMeaning),
          ConfusedWith = StringExtensions.ExtractCommaSeparatedValues(anki.RelatedConfusedWith),

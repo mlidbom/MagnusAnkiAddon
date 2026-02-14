@@ -36,6 +36,7 @@ public class AnkiVocabNote
    public string MatchingRules => Field(AnkiFieldNames.Vocab.MatchingRules);
    public string RelatedVocab => Field(AnkiFieldNames.Vocab.RelatedVocab);
    public string TechnicalNotes => Field(AnkiFieldNames.Vocab.TechnicalNotes);
+   public string References => Field(AnkiFieldNames.Vocab.References);
    public string Image => Field(AnkiFieldNames.Vocab.Image);
    public string UserImage => Field(AnkiFieldNames.Vocab.UserImage);
 
@@ -68,6 +69,8 @@ public class AnkiKanjiNote
    public string ReadingInfo => Field(AnkiFieldNames.Kanji.ReadingInfo);
    public string PrimaryVocab => Field(AnkiFieldNames.Kanji.PrimaryVocab);
    public string Audio => Field(AnkiFieldNames.Kanji.Audio);
+   public string PrimaryReadingsTtsAudio => Field(AnkiFieldNames.Kanji.PrimaryReadingsTtsAudio);
+   public string References => Field(AnkiFieldNames.Kanji.References);
    public string UserMnemonic => Field(AnkiFieldNames.Kanji.UserMnemonic);
    public string UserSimilarMeaning => Field(AnkiFieldNames.Kanji.UserSimilarMeaning);
    public string RelatedConfusedWith => Field(AnkiFieldNames.Kanji.RelatedConfusedWith);

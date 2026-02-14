@@ -27,7 +27,7 @@ public class AnkiVsFileSystemComparisonTests : TestStartingWithEmptyCollection
       Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "jas_database"));
 
    // Fields that only exist in Anki and are not serialized to the DTO — benign
-   static readonly HashSet<string> IgnoredFields = ["__technical_notes", "__references", "Image", "__image"];
+   static readonly HashSet<string> IgnoredFields = ["Image", "__image"];
 
    [Fact(Skip = "This test was to explore a problem that probably does not actually exist, will most likely be removed soon.")]
    public void VocabNotes_AnkiAndFileSystem_HaveIdenticalData()
