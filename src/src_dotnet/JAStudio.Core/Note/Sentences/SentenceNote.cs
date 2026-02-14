@@ -1,5 +1,6 @@
 using JAStudio.Core.LanguageServices.JanomeEx;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
+using JAStudio.Core.Note.CorpusData;
 using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.Sentences;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ public class SentenceNote : JPNote
     public CachingSentenceConfigurationField Configuration { get; private set; }
     public MutableSerializedObjectField<ParsingResult> ParsingResult { get; }
 
-    public SentenceNote(NoteServices services, NoteData? data = null) : base(services, data?.Id as SentenceId ?? SentenceId.New(), data)
+    public SentenceNote(NoteServices services, SentenceData? data = null) : base(services, data != null ? new SentenceId(data.Id) : SentenceId.New(), data?.ToNoteData())
     {
         Configuration = new CachingSentenceConfigurationField(this);
         ParsingResult = new MutableSerializedObjectField<ParsingResult>(

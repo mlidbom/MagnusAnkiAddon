@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using JAStudio.Core.Note.CorpusData;
 using MemoryPack;
 
 namespace JAStudio.Core.Storage.Dto;
@@ -7,7 +8,7 @@ namespace JAStudio.Core.Storage.Dto;
 [MemoryPackable]
 internal partial class AllNotesContainer
 {
-   public List<KanjiNoteDto> Kanji { get; set; } = [];
-   public List<VocabNoteDto> Vocab { get; set; } = [];
-   public List<SentenceNoteDto> Sentences { get; set; } = [];
+   public List<KanjiData> Kanji { get; set; } = [];
+   public List<VocabData> Vocab { get; set; } = [];
+   public List<SentenceData> Sentences { get; set; } = [];
 }

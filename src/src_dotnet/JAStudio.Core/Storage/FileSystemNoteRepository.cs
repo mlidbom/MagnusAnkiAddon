@@ -136,11 +136,11 @@ public class FileSystemNoteRepository : INoteRepository
       var sentencesMap = container.Sentences.ToDictionary(d => d.Id);
 
       foreach(var file in changes.ChangedKanji)
-         kanjiMap[file.Id] = _serializer.DeserializeKanjiToDto(File.ReadAllText(file.Path));
+         kanjiMap[file.Id] = _serializer.DeserializeKanjiToData(File.ReadAllText(file.Path));
       foreach(var file in changes.ChangedVocab)
-         vocabMap[file.Id] = _serializer.DeserializeVocabToDto(File.ReadAllText(file.Path));
+         vocabMap[file.Id] = _serializer.DeserializeVocabToData(File.ReadAllText(file.Path));
       foreach(var file in changes.ChangedSentences)
-         sentencesMap[file.Id] = _serializer.DeserializeSentenceToDto(File.ReadAllText(file.Path));
+         sentencesMap[file.Id] = _serializer.DeserializeSentenceToData(File.ReadAllText(file.Path));
 
       foreach(var id in kanjiMap.Keys.Where(id => !changes.CurrentKanjiIds.Contains(id)).ToList())
          kanjiMap.Remove(id);

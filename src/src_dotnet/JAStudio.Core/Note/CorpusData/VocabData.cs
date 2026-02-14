@@ -1,10 +1,20 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using JAStudio.Core.Anki;
+using JAStudio.Core.Note.NoteFields.AutoSaveWrappers;
+using JAStudio.Core.Note.Vocabulary;
+using JAStudio.Core.Note.Vocabulary.RelatedVocab;
+using MemoryPack;
 
 namespace JAStudio.Core.Note.CorpusData;
 
-public class VocabData : CorpusDataBase
+[MemoryPackable]
+public partial class VocabData : CorpusDataBase
 {
+   static readonly VocabNoteMatchingRulesSerializer MatchingRulesSerializer = new();
+   static readonly RelatedVocabDataSerializer RelatedVocabSerializer = RelatedVocabData.Serializer();
+
    public string Question { get; init; } = string.Empty;
    public string SourceAnswer { get; init; } = string.Empty;
    public string UserAnswer { get; init; } = string.Empty;
@@ -12,23 +22,20 @@ public class VocabData : CorpusDataBase
    public string UserExplanation { get; init; } = string.Empty;
    public string UserExplanationLong { get; init; } = string.Empty;
    public string UserMnemonic { get; init; } = string.Empty;
-   public string UserCompounds { get; init; } = string.Empty;
-   public string Reading { get; init; } = string.Empty;
+   public List<string> UserCompounds { get; init; } = [];
+   public List<string> Readings { get; init; } = [];
    public string PartsOfSpeech { get; init; } = string.Empty;
    public string SourceMnemonic { get; init; } = string.Empty;
    public string SourceReadingMnemonic { get; init; } = string.Empty;
    public string AudioB { get; init; } = string.Empty;
    public string AudioG { get; init; } = string.Empty;
    public string AudioTTS { get; init; } = string.Empty;
-   public string Forms { get; init; } = string.Empty;
-   public string SentenceCount { get; init; } = string.Empty;
-   public string MatchingRules { get; init; } = string.Empty;
-   public string RelatedVocab { get; init; } = string.Empty;
-   public string TechnicalNotes { get; init; } = string.Empty;
-   public string Image { get; init; } = string.Empty;
-   public string UserImage { get; init; } = string.Empty;
+   public List<string> Forms { get; init; } = [];
+   public int SentenceCount { get; init; }
+   public VocabMatchingRulesSubData MatchingRules { get; init; } = new();
+   public VocabRelatedSubData RelatedVocab { get; init; } = new();
 
-   public VocabData(VocabId id, List<string> tags) : base(id, tags) { }
+   protected override NoteId CreateTypedId() => new VocabId(Id);
 
    protected override void PopulateFields(Dictionary<string, string> fields)
    {
@@ -39,27 +46,50 @@ public class VocabData : CorpusDataBase
       fields[NoteFieldsConstants.Vocab.UserExplanation] = UserExplanation;
       fields[NoteFieldsConstants.Vocab.UserExplanationLong] = UserExplanationLong;
       fields[NoteFieldsConstants.Vocab.UserMnemonic] = UserMnemonic;
-      fields[NoteFieldsConstants.Vocab.UserCompounds] = UserCompounds;
-      fields[NoteFieldsConstants.Vocab.Reading] = Reading;
+      fields[NoteFieldsConstants.Vocab.UserCompounds] = string.Join(", ", UserCompounds);
+      fields[NoteFieldsConstants.Vocab.Reading] = string.Join(", ", Readings);
       fields[NoteFieldsConstants.Vocab.PartsOfSpeech] = PartsOfSpeech;
       fields[NoteFieldsConstants.Vocab.SourceMnemonic] = SourceMnemonic;
       fields[NoteFieldsConstants.Vocab.SourceReadingMnemonic] = SourceReadingMnemonic;
       fields[NoteFieldsConstants.Vocab.AudioB] = AudioB;
       fields[NoteFieldsConstants.Vocab.AudioG] = AudioG;
       fields[NoteFieldsConstants.Vocab.AudioTTS] = AudioTTS;
-      fields[NoteFieldsConstants.Vocab.Forms] = Forms;
-      fields[NoteFieldsConstants.Vocab.SentenceCount] = SentenceCount;
-      fields[NoteFieldsConstants.Vocab.MatchingRules] = MatchingRules;
-      fields[NoteFieldsConstants.Vocab.RelatedVocab] = RelatedVocab;
-      fields[NoteFieldsConstants.Vocab.TechnicalNotes] = TechnicalNotes;
-      fields[NoteFieldsConstants.Vocab.Image] = Image;
-      fields[NoteFieldsConstants.Vocab.UserImage] = UserImage;
+      fields[NoteFieldsConstants.Vocab.Forms] = string.Join(", ", Forms);
+      fields[NoteFieldsConstants.Vocab.SentenceCount] = SentenceCount.ToString();
+      fields[NoteFieldsConstants.Vocab.MatchingRules] = SerializeMatchingRules();
+      fields[NoteFieldsConstants.Vocab.RelatedVocab] = SerializeRelatedVocab();
    }
 
-   /// Creates VocabData from an AnkiVocabNote, mapping Anki field names to corpus properties.
-   public static VocabData FromAnki(Anki.AnkiVocabNote anki) =>
-      new(anki.Id as VocabId ?? VocabId.New(), new List<string>(anki.Tags))
+   string SerializeMatchingRules() =>
+      MatchingRulesSerializer.Serialize(new VocabNoteMatchingRulesData(
+         MatchingRules.SurfaceIsNot.ToHashSet(),
+         MatchingRules.PrefixIsNot.ToHashSet(),
+         MatchingRules.SuffixIsNot.ToHashSet(),
+         MatchingRules.RequiredPrefix.ToHashSet(),
+         MatchingRules.YieldToSurface.ToHashSet()));
+
+   string SerializeRelatedVocab() =>
+      RelatedVocabSerializer.Serialize(new RelatedVocabData(
+         RelatedVocab.ErgativeTwin,
+         new ValueWrapper<string>(RelatedVocab.DerivedFrom),
+         RelatedVocab.PerfectSynonyms.ToHashSet(),
+         RelatedVocab.Synonyms.ToHashSet(),
+         RelatedVocab.Antonyms.ToHashSet(),
+         RelatedVocab.ConfusedWith.ToHashSet(),
+         RelatedVocab.SeeAlso.ToHashSet()));
+
+   /// Creates VocabData from raw Anki NoteData (for NoteCache and Python interop paths).
+   public static VocabData FromAnkiNoteData(NoteData data) => FromAnki(new AnkiVocabNote(data));
+
+   public static VocabData FromAnki(AnkiVocabNote anki)
+   {
+      var matchingRulesData = MatchingRulesSerializer.Deserialize(anki.MatchingRules);
+      var relatedVocabData = RelatedVocabSerializer.Deserialize(anki.RelatedVocab);
+
+      return new VocabData
       {
+         Id = (anki.Id ?? VocabId.New()).Value,
+         Tags = new List<string>(anki.Tags),
          Question = anki.Question,
          SourceAnswer = anki.SourceAnswer,
          UserAnswer = anki.UserAnswer,
@@ -67,20 +97,58 @@ public class VocabData : CorpusDataBase
          UserExplanation = anki.UserExplanation,
          UserExplanationLong = anki.UserExplanationLong,
          UserMnemonic = anki.UserMnemonic,
-         UserCompounds = anki.UserCompounds,
-         Reading = anki.Reading,
+         UserCompounds = StringExtensions.ExtractCommaSeparatedValues(anki.UserCompounds),
+         Readings = StringExtensions.ExtractCommaSeparatedValues(anki.Reading),
          PartsOfSpeech = anki.PartsOfSpeech,
          SourceMnemonic = anki.SourceMnemonic,
          SourceReadingMnemonic = anki.SourceReadingMnemonic,
          AudioB = anki.AudioB,
          AudioG = anki.AudioG,
          AudioTTS = anki.AudioTTS,
-         Forms = anki.Forms,
-         SentenceCount = anki.SentenceCount,
-         MatchingRules = anki.MatchingRules,
-         RelatedVocab = anki.RelatedVocab,
-         TechnicalNotes = anki.TechnicalNotes,
-         Image = anki.Image,
-         UserImage = anki.UserImage,
+         Forms = StringExtensions.ExtractCommaSeparatedValues(anki.Forms),
+         SentenceCount = int.TryParse(anki.SentenceCount, out var sc) ? sc : 0,
+         MatchingRules = new VocabMatchingRulesSubData
+         {
+            PrefixIsNot = matchingRulesData.PrefixIsNot.ToList(),
+            SuffixIsNot = matchingRulesData.SuffixIsNot.ToList(),
+            SurfaceIsNot = matchingRulesData.SurfaceIsNot.ToList(),
+            YieldToSurface = matchingRulesData.YieldToSurface.ToList(),
+            RequiredPrefix = matchingRulesData.RequiredPrefix.ToList(),
+         },
+         RelatedVocab = new VocabRelatedSubData
+         {
+            ErgativeTwin = relatedVocabData.ErgativeTwin,
+            DerivedFrom = relatedVocabData.DerivedFrom.Get(),
+            PerfectSynonyms = relatedVocabData.PerfectSynonyms.ToList(),
+            Synonyms = relatedVocabData.Synonyms.ToList(),
+            Antonyms = relatedVocabData.Antonyms.ToList(),
+            ConfusedWith = relatedVocabData.ConfusedWith.ToList(),
+            SeeAlso = relatedVocabData.SeeAlso.ToList(),
+         },
       };
+   }
+}
+
+/// Matching rules sub-data for vocab word matching (serialized in JSON).
+[MemoryPackable]
+public partial class VocabMatchingRulesSubData
+{
+   public List<string> PrefixIsNot { get; init; } = [];
+   public List<string> SuffixIsNot { get; init; } = [];
+   public List<string> SurfaceIsNot { get; init; } = [];
+   public List<string> YieldToSurface { get; init; } = [];
+   public List<string> RequiredPrefix { get; init; } = [];
+}
+
+/// Related vocab sub-data (serialized in JSON).
+[MemoryPackable]
+public partial class VocabRelatedSubData
+{
+   public string ErgativeTwin { get; init; } = string.Empty;
+   public string DerivedFrom { get; init; } = string.Empty;
+   public List<string> PerfectSynonyms { get; init; } = [];
+   public List<string> Synonyms { get; init; } = [];
+   public List<string> Antonyms { get; init; } = [];
+   public List<string> ConfusedWith { get; init; } = [];
+   public List<string> SeeAlso { get; init; } = [];
 }

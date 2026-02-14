@@ -2,15 +2,14 @@ using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.CorpusData;
-using JAStudio.Core.Storage.Dto;
 
 namespace JAStudio.Core.Storage.Converters;
 
 public static class KanjiNoteConverter
 {
-    public static KanjiNoteDto ToDto(KanjiNote note)
+    public static KanjiData ToCorpusData(KanjiNote note)
     {
-        return new KanjiNoteDto
+        return new KanjiData
         {
             Id = note.GetId().Value,
             Kanji = note.GetField(NoteFieldsConstants.Kanji.Question),
@@ -31,35 +30,6 @@ public static class KanjiNoteConverter
             SimilarMeaning = StringExtensions.ExtractCommaSeparatedValues(note.GetField(NoteFieldsConstants.Kanji.UserSimilarMeaning)),
             ConfusedWith = StringExtensions.ExtractCommaSeparatedValues(note.GetField(NoteFieldsConstants.Kanji.RelatedConfusedWith)),
             Tags = note.Tags.ToStringList(),
-        };
-    }
-
-    public static NoteData FromDto(KanjiNoteDto dto)
-    {
-        return FromDtoToCorpusData(dto).ToNoteData();
-    }
-
-    public static KanjiData FromDtoToCorpusData(KanjiNoteDto dto)
-    {
-        return new KanjiData(new KanjiId(dto.Id), dto.Tags.ToList())
-        {
-            Question = dto.Kanji,
-            SourceAnswer = dto.SourceAnswer,
-            UserAnswer = dto.UserAnswer,
-            ActiveAnswer = dto.ActiveAnswer,
-            ReadingOn = dto.ReadingOnHtml,
-            ReadingKun = dto.ReadingKunHtml,
-            ReadingNan = dto.ReadingNanHtml,
-            Radicals = string.Join(", ", dto.Radicals),
-            SourceMeaningMnemonic = dto.SourceMeaningMnemonic,
-            MeaningInfo = dto.MeaningInfo,
-            ReadingMnemonic = dto.ReadingMnemonic,
-            ReadingInfo = dto.ReadingInfo,
-            PrimaryVocab = string.Join(", ", dto.PrimaryVocab),
-            Audio = dto.Audio,
-            UserMnemonic = dto.UserMnemonic,
-            UserSimilarMeaning = string.Join(", ", dto.SimilarMeaning),
-            RelatedConfusedWith = string.Join(", ", dto.ConfusedWith),
         };
     }
 }

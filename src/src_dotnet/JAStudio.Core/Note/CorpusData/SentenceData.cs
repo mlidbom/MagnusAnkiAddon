@@ -1,9 +1,20 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using JAStudio.Core.Anki;
+using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
+using JAStudio.Core.Note.Sentences;
+using JAStudio.Core.Note.Sentences.Serialization;
+using MemoryPack;
 
 namespace JAStudio.Core.Note.CorpusData;
 
-public class SentenceData : CorpusDataBase
+[MemoryPackable]
+public partial class SentenceData : CorpusDataBase
 {
+   static readonly SentenceConfigurationSerializer ConfigSerializer = SentenceConfigurationSerializer.Instance;
+   static readonly ParsingResultSerializer ParsingSerializer = new();
+
    public string SourceQuestion { get; init; } = string.Empty;
    public string UserQuestion { get; init; } = string.Empty;
    public string ActiveQuestion { get; init; } = string.Empty;
@@ -16,11 +27,11 @@ public class SentenceData : CorpusDataBase
    public string ExternalId { get; init; } = string.Empty;
    public string Audio { get; init; } = string.Empty;
    public string Screenshot { get; init; } = string.Empty;
-   public string Configuration { get; init; } = string.Empty;
-   public string ParsingResult { get; init; } = string.Empty;
+   public SentenceConfigSubData Configuration { get; init; } = new();
+   public SentenceParsingResultSubData? ParsingResult { get; init; }
    public string JanomeTokens { get; init; } = string.Empty;
 
-   public SentenceData(SentenceId id, List<string> tags) : base(id, tags) { }
+   protected override NoteId CreateTypedId() => new SentenceId(Id);
 
    protected override void PopulateFields(Dictionary<string, string> fields)
    {
@@ -36,14 +47,49 @@ public class SentenceData : CorpusDataBase
       fields[SentenceNoteFields.Id] = ExternalId;
       fields[SentenceNoteFields.Audio] = Audio;
       fields[SentenceNoteFields.Screenshot] = Screenshot;
-      fields[SentenceNoteFields.Configuration] = Configuration;
-      fields[SentenceNoteFields.ParsingResult] = ParsingResult;
+      fields[SentenceNoteFields.Configuration] = SerializeConfiguration();
+      fields[SentenceNoteFields.ParsingResult] = SerializeParsingResult();
       fields[SentenceNoteFields.JanomeTokens] = JanomeTokens;
    }
 
-   public static SentenceData FromAnki(Anki.AnkiSentenceNote anki) =>
-      new(anki.Id as SentenceId ?? SentenceId.New(), new List<string>(anki.Tags))
+   string SerializeConfiguration()
+   {
+      var config = new SentenceConfiguration(
+         Configuration.HighlightedWords.ToList(),
+         new WordExclusionSet(() => { }, Configuration.IncorrectMatches.Select(FromExclusionSubData).ToList()),
+         new WordExclusionSet(() => { }, Configuration.HiddenMatches.Select(FromExclusionSubData).ToList()));
+      return ConfigSerializer.Serialize(config);
+   }
+
+   string SerializeParsingResult()
+   {
+      if (ParsingResult == null) return string.Empty;
+
+      var result = new Sentences.ParsingResult(
+         ParsingResult.ParsedWords.Select(FromParsedMatchSubData).ToList(),
+         ParsingResult.Sentence,
+         ParsingResult.ParserVersion);
+      return ParsingSerializer.Serialize(result);
+   }
+
+   static WordExclusion FromExclusionSubData(WordExclusionSubData d) =>
+      d.Index == -1 ? WordExclusion.Global(d.Word) : WordExclusion.AtIndex(d.Word, d.Index);
+
+   static ParsedMatch FromParsedMatchSubData(ParsedMatchSubData d) =>
+      new(d.Variant, d.StartIndex, d.IsDisplayed, d.ParsedForm, d.VocabId.HasValue ? new VocabId(d.VocabId.Value) : null);
+
+   /// Creates SentenceData from raw Anki NoteData (for NoteCache and Python interop paths).
+   public static SentenceData FromAnkiNoteData(NoteData data) => FromAnki(new AnkiSentenceNote(data));
+
+   public static SentenceData FromAnki(AnkiSentenceNote anki)
+   {
+      var config = ConfigSerializer.Deserialize(anki.Configuration, () => { });
+      var parsingResult = ParsingSerializer.Deserialize(anki.ParsingResult);
+
+      return new SentenceData
       {
+         Id = (anki.Id ?? SentenceId.New()).Value,
+         Tags = new List<string>(anki.Tags),
          SourceQuestion = anki.SourceQuestion,
          UserQuestion = anki.UserQuestion,
          ActiveQuestion = anki.ActiveQuestion,
@@ -56,8 +102,78 @@ public class SentenceData : CorpusDataBase
          ExternalId = anki.ExternalId,
          Audio = anki.Audio,
          Screenshot = anki.Screenshot,
-         Configuration = anki.Configuration,
-         ParsingResult = anki.ParsingResult,
+         Configuration = ToConfigSubData(config),
+         ParsingResult = ToParsingResultSubData(parsingResult),
          JanomeTokens = anki.JanomeTokens,
       };
+   }
+
+   static SentenceConfigSubData ToConfigSubData(SentenceConfiguration config) =>
+      new()
+      {
+         HighlightedWords = config.HighlightedWords.ToList(),
+         IncorrectMatches = config.IncorrectMatches.Get().Select(ToExclusionSubData).ToList(),
+         HiddenMatches = config.HiddenMatches.Get().Select(ToExclusionSubData).ToList(),
+      };
+
+   static WordExclusionSubData ToExclusionSubData(WordExclusion ex) =>
+      new() { Word = ex.Word, Index = ex.Index };
+
+   static SentenceParsingResultSubData? ToParsingResultSubData(Sentences.ParsingResult? result)
+   {
+      if (result == null || string.IsNullOrEmpty(result.Sentence)) return null;
+      return new SentenceParsingResultSubData
+      {
+         Sentence = result.Sentence,
+         ParserVersion = result.ParserVersion,
+         ParsedWords = result.ParsedWords.Select(ToParsedMatchSubData).ToList(),
+      };
+   }
+
+   static ParsedMatchSubData ToParsedMatchSubData(ParsedMatch match) =>
+      new()
+      {
+         Variant = match.Variant,
+         StartIndex = match.StartIndex,
+         IsDisplayed = match.IsDisplayed,
+         ParsedForm = match.ParsedForm,
+         VocabId = match.VocabId?.Value,
+      };
+}
+
+/// Sentence configuration sub-data (serialized in JSON).
+[MemoryPackable]
+public partial class SentenceConfigSubData
+{
+   public List<string> HighlightedWords { get; init; } = [];
+   public List<WordExclusionSubData> IncorrectMatches { get; init; } = [];
+   public List<WordExclusionSubData> HiddenMatches { get; init; } = [];
+}
+
+/// Word exclusion sub-data.
+[MemoryPackable]
+public partial class WordExclusionSubData
+{
+   public string Word { get; init; } = string.Empty;
+   public int Index { get; init; } = -1;
+}
+
+/// Sentence parsing result sub-data (serialized in JSON).
+[MemoryPackable]
+public partial class SentenceParsingResultSubData
+{
+   public string Sentence { get; init; } = string.Empty;
+   public string ParserVersion { get; init; } = string.Empty;
+   public List<ParsedMatchSubData> ParsedWords { get; init; } = [];
+}
+
+/// Individual parsed match sub-data.
+[MemoryPackable]
+public partial class ParsedMatchSubData
+{
+   public string Variant { get; init; } = string.Empty;
+   public int StartIndex { get; init; }
+   public bool IsDisplayed { get; init; }
+   public string ParsedForm { get; init; } = string.Empty;
+   public Guid? VocabId { get; init; }
 }

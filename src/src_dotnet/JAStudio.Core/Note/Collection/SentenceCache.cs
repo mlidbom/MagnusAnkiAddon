@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.Note.CorpusData;
 
 namespace JAStudio.Core.Note.Collection;
 
@@ -11,7 +12,7 @@ public class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
    private readonly Dictionary<string, HashSet<SentenceNote>> _byUserMarkedInvalidVocab = new();
    private readonly Dictionary<NoteId, HashSet<SentenceNote>> _byVocabId = new();
 
-   public SentenceCache(NoteServices noteServices) : base(typeof(SentenceNote), (services, data) => new SentenceNote(services, data), noteServices)
+   public SentenceCache(NoteServices noteServices) : base(typeof(SentenceNote), (services, data) => new SentenceNote(services, SentenceData.FromAnkiNoteData(data)), noteServices)
    {
    }
 

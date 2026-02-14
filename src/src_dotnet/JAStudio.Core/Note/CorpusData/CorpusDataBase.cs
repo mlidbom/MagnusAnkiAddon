@@ -1,29 +1,31 @@
 using System;
 using System.Collections.Generic;
+using MemoryPack;
 
 namespace JAStudio.Core.Note.CorpusData;
 
-/// Base for corpus data types. Provides the bridge to the internal Dictionary&lt;string, string&gt;
-/// that JPNote still requires.
-public abstract class CorpusDataBase
+/// Base for corpus data types. Provides the bridge to the flat NoteData
+/// that JPNote still requires internally.
+/// MemoryPack needs [MemoryPackUnion] for polymorphic base types.
+[MemoryPackable(GenerateType.NoGenerate)]
+[MemoryPackUnion(0, typeof(VocabData))]
+[MemoryPackUnion(1, typeof(KanjiData))]
+[MemoryPackUnion(2, typeof(SentenceData))]
+public abstract partial class CorpusDataBase
 {
-   public NoteId Id { get; }
-   public List<string> Tags { get; }
+   public Guid Id { get; init; }
+   public List<string> Tags { get; init; } = [];
 
-   protected CorpusDataBase(NoteId id, List<string> tags)
-   {
-      Id = id;
-      Tags = tags;
-   }
+   protected abstract NoteId CreateTypedId();
+
+   protected abstract void PopulateFields(Dictionary<string, string> fields);
 
    /// Converts this typed data into the flat NoteData that JPNote constructors consume.
    public NoteData ToNoteData()
    {
       var fields = new Dictionary<string, string>();
       PopulateFields(fields);
-      fields[MyNoteFields.JasNoteId] = Id.Value.ToString();
-      return new NoteData(Id, fields, Tags);
+      fields[MyNoteFields.JasNoteId] = Id.ToString();
+      return new NoteData(CreateTypedId(), fields, Tags);
    }
-
-   protected abstract void PopulateFields(Dictionary<string, string> fields);
 }

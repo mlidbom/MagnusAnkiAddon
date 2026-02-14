@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using JAStudio.Core.LanguageServices;
+using JAStudio.Core.Note.CorpusData;
 using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.SysUtils;
@@ -12,7 +13,7 @@ public class KanjiNote : JPNote
 {
    static readonly Regex PrimaryReadingPattern = new(@"<primary>(.*?)</primary>", RegexOptions.Compiled);
 
-   public KanjiNote(NoteServices services, NoteData? data = null) : base(services, data?.Id as KanjiId ?? KanjiId.New(), data) {}
+   public KanjiNote(NoteServices services, KanjiData? data = null) : base(services, data != null ? new KanjiId(data.Id) : KanjiId.New(), data?.ToNoteData()) {}
 
    public override HashSet<JPNote> GetDirectDependencies() => GetRadicalsNotes().Cast<JPNote>().ToHashSet();
 

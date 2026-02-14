@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.LanguageServices;
+using JAStudio.Core.Note.CorpusData;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
@@ -83,7 +84,7 @@ public class VocabCloner
         var data = Note.GetData();
         data.Id = null;
         data.Tags = [];
-        var clone = new VocabNote(Note.Services, data);
+        var clone = new VocabNote(Note.Services, VocabData.FromAnkiNoteData(data));
 
         CopyVocabTagsTo(clone);
 

@@ -1,71 +1,78 @@
+using System;
 using System.Collections.Generic;
+using JAStudio.Core.Anki;
+using MemoryPack;
 
 namespace JAStudio.Core.Note.CorpusData;
 
-public class KanjiData : CorpusDataBase
+[MemoryPackable]
+public partial class KanjiData : CorpusDataBase
 {
-   public string Question { get; init; } = string.Empty;
+   public string Kanji { get; init; } = string.Empty;
    public string SourceAnswer { get; init; } = string.Empty;
    public string UserAnswer { get; init; } = string.Empty;
    public string ActiveAnswer { get; init; } = string.Empty;
-   public string ReadingOn { get; init; } = string.Empty;
-   public string ReadingKun { get; init; } = string.Empty;
-   public string ReadingNan { get; init; } = string.Empty;
-   public string Radicals { get; init; } = string.Empty;
+   public string ReadingOnHtml { get; init; } = string.Empty;
+   public string ReadingKunHtml { get; init; } = string.Empty;
+   public string ReadingNanHtml { get; init; } = string.Empty;
+   public List<string> Radicals { get; init; } = [];
    public string SourceMeaningMnemonic { get; init; } = string.Empty;
    public string MeaningInfo { get; init; } = string.Empty;
    public string ReadingMnemonic { get; init; } = string.Empty;
    public string ReadingInfo { get; init; } = string.Empty;
-   public string PrimaryVocab { get; init; } = string.Empty;
+   public List<string> PrimaryVocab { get; init; } = [];
    public string Audio { get; init; } = string.Empty;
    public string UserMnemonic { get; init; } = string.Empty;
-   public string UserSimilarMeaning { get; init; } = string.Empty;
-   public string RelatedConfusedWith { get; init; } = string.Empty;
-   public string Image { get; init; } = string.Empty;
+   public List<string> SimilarMeaning { get; init; } = [];
+   public List<string> ConfusedWith { get; init; } = [];
 
-   public KanjiData(KanjiId id, List<string> tags) : base(id, tags) { }
+   protected override NoteId CreateTypedId() => new KanjiId(Id);
 
    protected override void PopulateFields(Dictionary<string, string> fields)
    {
-      fields[NoteFieldsConstants.Kanji.Question] = Question;
+      fields[NoteFieldsConstants.Kanji.Question] = Kanji;
       fields[NoteFieldsConstants.Kanji.SourceAnswer] = SourceAnswer;
       fields[NoteFieldsConstants.Kanji.UserAnswer] = UserAnswer;
       fields[NoteFieldsConstants.Kanji.ActiveAnswer] = ActiveAnswer;
-      fields[NoteFieldsConstants.Kanji.ReadingOn] = ReadingOn;
-      fields[NoteFieldsConstants.Kanji.ReadingKun] = ReadingKun;
-      fields[NoteFieldsConstants.Kanji.ReadingNan] = ReadingNan;
-      fields[NoteFieldsConstants.Kanji.Radicals] = Radicals;
+      fields[NoteFieldsConstants.Kanji.ReadingOn] = ReadingOnHtml;
+      fields[NoteFieldsConstants.Kanji.ReadingKun] = ReadingKunHtml;
+      fields[NoteFieldsConstants.Kanji.ReadingNan] = ReadingNanHtml;
+      fields[NoteFieldsConstants.Kanji.Radicals] = string.Join(", ", Radicals);
       fields[NoteFieldsConstants.Kanji.SourceMeaningMnemonic] = SourceMeaningMnemonic;
       fields[NoteFieldsConstants.Kanji.MeaningInfo] = MeaningInfo;
       fields[NoteFieldsConstants.Kanji.ReadingMnemonic] = ReadingMnemonic;
       fields[NoteFieldsConstants.Kanji.ReadingInfo] = ReadingInfo;
-      fields[NoteFieldsConstants.Kanji.PrimaryVocab] = PrimaryVocab;
+      fields[NoteFieldsConstants.Kanji.PrimaryVocab] = string.Join(", ", PrimaryVocab);
       fields[NoteFieldsConstants.Kanji.Audio] = Audio;
       fields[NoteFieldsConstants.Kanji.UserMnemonic] = UserMnemonic;
-      fields[NoteFieldsConstants.Kanji.UserSimilarMeaning] = UserSimilarMeaning;
-      fields[NoteFieldsConstants.Kanji.RelatedConfusedWith] = RelatedConfusedWith;
+      fields[NoteFieldsConstants.Kanji.UserSimilarMeaning] = string.Join(", ", SimilarMeaning);
+      fields[NoteFieldsConstants.Kanji.RelatedConfusedWith] = string.Join(", ", ConfusedWith);
    }
 
-   public static KanjiData FromAnki(Anki.AnkiKanjiNote anki) =>
-      new(anki.Id as KanjiId ?? KanjiId.New(), new List<string>(anki.Tags))
+   /// Creates KanjiData from raw Anki NoteData (for NoteCache and Python interop paths).
+   public static KanjiData FromAnkiNoteData(NoteData data) => FromAnki(new AnkiKanjiNote(data));
+
+   public static KanjiData FromAnki(AnkiKanjiNote anki) =>
+      new()
       {
-         Question = anki.Question,
+         Id = (anki.Id ?? KanjiId.New()).Value,
+         Tags = new List<string>(anki.Tags),
+         Kanji = anki.Question,
          SourceAnswer = anki.SourceAnswer,
          UserAnswer = anki.UserAnswer,
          ActiveAnswer = anki.ActiveAnswer,
-         ReadingOn = anki.ReadingOn,
-         ReadingKun = anki.ReadingKun,
-         ReadingNan = anki.ReadingNan,
-         Radicals = anki.Radicals,
+         ReadingOnHtml = anki.ReadingOn,
+         ReadingKunHtml = anki.ReadingKun,
+         ReadingNanHtml = anki.ReadingNan,
+         Radicals = StringExtensions.ExtractCommaSeparatedValues(anki.Radicals),
          SourceMeaningMnemonic = anki.SourceMeaningMnemonic,
          MeaningInfo = anki.MeaningInfo,
          ReadingMnemonic = anki.ReadingMnemonic,
          ReadingInfo = anki.ReadingInfo,
-         PrimaryVocab = anki.PrimaryVocab,
+         PrimaryVocab = StringExtensions.ExtractCommaSeparatedValues(anki.PrimaryVocab),
          Audio = anki.Audio,
          UserMnemonic = anki.UserMnemonic,
-         UserSimilarMeaning = anki.UserSimilarMeaning,
-         RelatedConfusedWith = anki.RelatedConfusedWith,
-         Image = anki.Image,
+         SimilarMeaning = StringExtensions.ExtractCommaSeparatedValues(anki.UserSimilarMeaning),
+         ConfusedWith = StringExtensions.ExtractCommaSeparatedValues(anki.RelatedConfusedWith),
       };
 }

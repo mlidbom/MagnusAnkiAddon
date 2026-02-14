@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using JAStudio.Anki;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.CorpusData;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.Storage;
 using JAStudio.Core.TaskRunners;
@@ -35,7 +36,7 @@ public class AnkiVsFileSystemComparisonTests : TestStartingWithEmptyCollection
       var ankiBulk = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Vocab, g => new VocabId(g));
       var serializer = GetService<NoteSerializer>();
       var ankiNotes = ankiBulk.Notes
-         .Select(nd => new VocabNote(NoteServices, nd))
+         .Select(nd => new VocabNote(NoteServices, VocabData.FromAnkiNoteData(nd)))
          .ToDictionary(n => n.GetId());
 
       // --- Load from filesystem ---

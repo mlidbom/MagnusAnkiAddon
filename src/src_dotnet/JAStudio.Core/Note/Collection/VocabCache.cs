@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.Note.CorpusData;
 
 namespace JAStudio.Core.Note.Collection;
 
@@ -15,7 +16,7 @@ public class VocabCache : NoteCache<VocabNote, VocabSnapshot>
    private readonly Dictionary<string, HashSet<VocabNote>> _byReading = new();
    private readonly Dictionary<string, HashSet<VocabNote>> _byStem = new();
 
-   public VocabCache(NoteServices noteServices) : base(typeof(VocabNote), (services, data) => new VocabNote(services, data), noteServices)
+   public VocabCache(NoteServices noteServices) : base(typeof(VocabNote), (services, data) => new VocabNote(services, VocabData.FromAnkiNoteData(data)), noteServices)
    {
    }
 

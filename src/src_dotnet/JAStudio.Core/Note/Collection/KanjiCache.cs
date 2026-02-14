@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.Note.CorpusData;
 
 namespace JAStudio.Core.Note.Collection;
 
@@ -9,7 +10,7 @@ public class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
    private readonly Dictionary<string, HashSet<KanjiNote>> _byRadical = new();
    private readonly Dictionary<string, HashSet<KanjiNote>> _byReading = new();
 
-   public KanjiCache(NoteServices noteServices) : base(typeof(KanjiNote), (services, data) => new KanjiNote(services, data), noteServices)
+   public KanjiCache(NoteServices noteServices) : base(typeof(KanjiNote), (services, data) => new KanjiNote(services, KanjiData.FromAnkiNoteData(data)), noteServices)
    {
    }
 

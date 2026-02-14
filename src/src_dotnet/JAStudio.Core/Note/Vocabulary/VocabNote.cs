@@ -1,3 +1,4 @@
+using JAStudio.Core.Note.CorpusData;
 using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.Vocabulary;
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ public class VocabNote : JPNote
     public ImageField Image => new(this, NoteFieldsConstants.Vocab.Image);
     public ImageField UserImage => new(this, NoteFieldsConstants.Vocab.UserImage);
 
-    public VocabNote(NoteServices services, NoteData? data = null) : base(services, data?.Id as VocabId ?? VocabId.New(), data)
+    public VocabNote(NoteServices services, VocabData? data = null) : base(services, data != null ? new VocabId(data.Id) : VocabId.New(), data?.ToNoteData())
     {
         Question = new VocabNoteQuestion(this);
         Readings = new MutableCommaSeparatedStringsListField(this, NoteFieldsConstants.Vocab.Reading);
