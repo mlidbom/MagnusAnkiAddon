@@ -102,13 +102,13 @@ public class FileSystemNoteRepository : INoteRepository
 
       var filesByType = scope.RunIndeterminate("Scanning note files", ScanAllNoteFiles);
 
-      var currentKanjiIds = filesByType.Kanji.Select(ExtractGuidFromPath).ToHashSet();
-      var currentVocabIds = filesByType.Vocab.Select(ExtractGuidFromPath).ToHashSet();
-      var currentSentenceIds = filesByType.Sentences.Select(ExtractGuidFromPath).ToHashSet();
+      var currentKanjiIds = filesByType.Kanji.Select(f => f.Id).ToHashSet();
+      var currentVocabIds = filesByType.Vocab.Select(f => f.Id).ToHashSet();
+      var currentSentenceIds = filesByType.Sentences.Select(f => f.Id).ToHashSet();
 
-      var changedKanji = filesByType.Kanji.Where(f => File.GetLastWriteTimeUtc(f) > snapshotTimestamp).ToList();
-      var changedVocab = filesByType.Vocab.Where(f => File.GetLastWriteTimeUtc(f) > snapshotTimestamp).ToList();
-      var changedSentences = filesByType.Sentences.Where(f => File.GetLastWriteTimeUtc(f) > snapshotTimestamp).ToList();
+      var changedKanji = filesByType.Kanji.Where(f => f.LastWriteUtc > snapshotTimestamp).ToList();
+      var changedVocab = filesByType.Vocab.Where(f => f.LastWriteUtc > snapshotTimestamp).ToList();
+      var changedSentences = filesByType.Sentences.Where(f => f.LastWriteUtc > snapshotTimestamp).ToList();
 
       var deletedKanji = container.Kanji.Count(d => !currentKanjiIds.Contains(d.Id));
       var deletedVocab = container.Vocab.Count(d => !currentVocabIds.Contains(d.Id));
@@ -122,12 +122,12 @@ public class FileSystemNoteRepository : INoteRepository
          var vocabMap = container.Vocab.ToDictionary(d => d.Id);
          var sentencesMap = container.Sentences.ToDictionary(d => d.Id);
 
-         foreach(var path in changedKanji)
-            kanjiMap[ExtractGuidFromPath(path)] = _serializer.DeserializeKanjiToDto(File.ReadAllText(path));
-         foreach(var path in changedVocab)
-            vocabMap[ExtractGuidFromPath(path)] = _serializer.DeserializeVocabToDto(File.ReadAllText(path));
-         foreach(var path in changedSentences)
-            sentencesMap[ExtractGuidFromPath(path)] = _serializer.DeserializeSentenceToDto(File.ReadAllText(path));
+         foreach(var file in changedKanji)
+            kanjiMap[file.Id] = _serializer.DeserializeKanjiToDto(File.ReadAllText(file.Path));
+         foreach(var file in changedVocab)
+            vocabMap[file.Id] = _serializer.DeserializeVocabToDto(File.ReadAllText(file.Path));
+         foreach(var file in changedSentences)
+            sentencesMap[file.Id] = _serializer.DeserializeSentenceToDto(File.ReadAllText(file.Path));
 
          foreach(var id in kanjiMap.Keys.Where(id => !currentKanjiIds.Contains(id)).ToList())
             kanjiMap.Remove(id);
@@ -161,9 +161,9 @@ public class FileSystemNoteRepository : INoteRepository
       var filesByType = ScanFiles();
 
       using var scope = _taskRunner.Current("Loading notes from file system");
-      var kanji = scope.RunBatchAsync(filesByType.Kanji, path => _serializer.DeserializeKanji(File.ReadAllText(path)), "Loading kanji notes", ThreadCount.One);
-      var vocab = scope.RunBatchAsync(filesByType.Vocab, path => _serializer.DeserializeVocab(File.ReadAllText(path)), "Loading vocab notes", ThreadCount.FractionOfLogicalCores(0.3));
-      var sentences = scope.RunBatchAsync(filesByType.Sentences, path => _serializer.DeserializeSentence(File.ReadAllText(path)), "Loading sentence notes", ThreadCount.FractionOfLogicalCores(0.5));
+      var kanji = scope.RunBatchAsync(filesByType.Kanji, f => _serializer.DeserializeKanji(File.ReadAllText(f.Path)), "Loading kanji notes", ThreadCount.One);
+      var vocab = scope.RunBatchAsync(filesByType.Vocab, f => _serializer.DeserializeVocab(File.ReadAllText(f.Path)), "Loading vocab notes", ThreadCount.FractionOfLogicalCores(0.3));
+      var sentences = scope.RunBatchAsync(filesByType.Sentences, f => _serializer.DeserializeSentence(File.ReadAllText(f.Path)), "Loading sentence notes", ThreadCount.FractionOfLogicalCores(0.5));
 
       return new AllNotesData(kanji.Result, vocab.Result, sentences.Result);
    }
@@ -195,9 +195,9 @@ public class FileSystemNoteRepository : INoteRepository
    /// </summary>
    NoteFilesByType ScanAllNoteFiles()
    {
-      var kanji = new List<string>();
-      var vocab = new List<string>();
-      var sentences = new List<string>();
+      var kanji = new List<ScannedFile>();
+      var vocab = new List<ScannedFile>();
+      var sentences = new List<ScannedFile>();
 
       if(!Directory.Exists(_rootDir)) return new NoteFilesByType(kanji, vocab, sentences);
 
@@ -208,12 +208,13 @@ public class FileSystemNoteRepository : INoteRepository
       foreach(var fi in new DirectoryInfo(_rootDir).EnumerateFiles("*.json", SearchOption.AllDirectories))
       {
          var fullName = fi.FullName;
+         var scanned = new ScannedFile(fullName, Guid.Parse(Path.GetFileNameWithoutExtension(fullName)), fi.LastWriteTimeUtc);
          if(fullName.StartsWith(kanjiPrefix, StringComparison.OrdinalIgnoreCase))
-            kanji.Add(fullName);
+            kanji.Add(scanned);
          else if(fullName.StartsWith(vocabPrefix, StringComparison.OrdinalIgnoreCase))
-            vocab.Add(fullName);
+            vocab.Add(scanned);
          else if(fullName.StartsWith(sentencesPrefix, StringComparison.OrdinalIgnoreCase))
-            sentences.Add(fullName);
+            sentences.Add(scanned);
       }
 
       return new NoteFilesByType(kanji, vocab, sentences);
@@ -224,8 +225,6 @@ public class FileSystemNoteRepository : INoteRepository
    static string NoteFilePath(string typeDir, NoteId id) =>
       Path.Combine(typeDir, Bucket(id), $"{id.Value}.json");
 
-   static Guid ExtractGuidFromPath(string path) =>
-      Guid.Parse(Path.GetFileNameWithoutExtension(path));
-
-   public record NoteFilesByType(List<string> Kanji, List<string> Vocab, List<string> Sentences);
+   public record ScannedFile(string Path, Guid Id, DateTime LastWriteUtc);
+   public record NoteFilesByType(List<ScannedFile> Kanji, List<ScannedFile> Vocab, List<ScannedFile> Sentences);
 }
