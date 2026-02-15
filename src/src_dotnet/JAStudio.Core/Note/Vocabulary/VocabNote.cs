@@ -49,7 +49,7 @@ public class VocabNote : JPNote
         RelatedNotes = new Vocabulary.RelatedVocab.RelatedVocab(this, GetField, SetField);
         MetaData = new VocabNoteMetaData(this, GetField, SetField);
         Register = new VocabNoteRegister(this);
-        Audio = new VocabNoteAudio(this, GetField, SetField);
+        Audio = new VocabNoteAudio(data, Guard);
         MatchingConfiguration = new VocabNoteMatchingConfiguration(this, GetField, SetField);
         Cloner = new VocabCloner(this);
     }

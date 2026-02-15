@@ -1,24 +1,28 @@
-using System;
-using JAStudio.Core.Note.NoteFields;
+using JAStudio.Core.Note.CorpusData;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteAudio
 {
-    private readonly VocabNote _vocab;
-    public WritableAudioField First { get; }
-    public WritableAudioField Second { get; }
-    public WritableAudioField Tts { get; }
+    readonly NoteGuard _guard;
+    string _first;
+    string _second;
+    string _tts;
 
-    public VocabNoteAudio(VocabNote vocab, Func<string, string> getField, Action<string, string> setField)
+    public WritableAudioValue First { get; }
+    public WritableAudioValue Second { get; }
+    public WritableAudioValue Tts { get; }
+
+    public VocabNoteAudio(VocabData? data, NoteGuard guard)
     {
-        _vocab = vocab;
-        First = new WritableAudioField(new MutableStringField(NoteFieldsConstants.Vocab.AudioB, getField, setField));
-        Second = new WritableAudioField(new MutableStringField(NoteFieldsConstants.Vocab.AudioG, getField, setField));
-        Tts = new WritableAudioField(new MutableStringField(NoteFieldsConstants.Vocab.AudioTTS, getField, setField));
+        _guard = guard;
+        _first = data?.AudioB ?? string.Empty;
+        _second = data?.AudioG ?? string.Empty;
+        _tts = data?.AudioTTS ?? string.Empty;
+        First = new WritableAudioValue(() => _first, value => _guard.Update(() => _first = value));
+        Second = new WritableAudioValue(() => _second, value => _guard.Update(() => _second = value));
+        Tts = new WritableAudioValue(() => _tts, value => _guard.Update(() => _tts = value));
     }
-
-    private VocabNote Vocab => _vocab;
 
     public string PrimaryAudioPath
     {
