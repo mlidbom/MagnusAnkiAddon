@@ -82,7 +82,7 @@ public class InputDialog : Window
       Content = stack;
 
       // Focus textbox when shown
-      Opened += (s, e) => _textBox.Focus();
+      Opened += (_, _) => _textBox.Focus();
    }
 
    void OnTextBoxKeyDown(object? sender, KeyEventArgs e)

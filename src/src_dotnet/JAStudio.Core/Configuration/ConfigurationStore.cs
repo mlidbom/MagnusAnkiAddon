@@ -18,7 +18,7 @@ public class ConfigurationStore
    public void InitForTesting()
    {
       if(_configDict != null) return;
-      InitJson("{}", s => {});
+      InitJson("{}", _ => {});
       _readingsMappingsOverride = new Dictionary<string, string>();
    }
 

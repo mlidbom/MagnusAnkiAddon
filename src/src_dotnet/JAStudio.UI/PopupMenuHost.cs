@@ -17,7 +17,9 @@ public static class PopupMenuHost
 
    static PopupMenuHost() =>
       // Set menu delay to zero for snappy submenu opening
+#pragma warning disable CS0618 // Type or member is obsolete
       DefaultMenuInteractionHandler.MenuShowDelay = TimeSpan.Zero;
+#pragma warning restore CS0618 // Type or member is obsolete
 
    /// <summary>
    /// Show a complete Menu at the specified screen coordinates.
@@ -63,7 +65,7 @@ public static class PopupMenuHost
                           Topmost = true
                        };
 
-      hostWindow.Opened += (s, e) =>
+      hostWindow.Opened += (_, _) =>
       {
          // Get the actual height of the menu bar and adjust for DPI
          var menuHeight = (int)(hostWindow.Bounds.Height * 1.25); // Convert logical to physical pixels at 125% DPI
@@ -79,7 +81,7 @@ public static class PopupMenuHost
       };
 
       // Close when the submenu closes or window loses focus
-      topMenuItem.PropertyChanged += (s, e) =>
+      topMenuItem.PropertyChanged += (_, e) =>
       {
          if(e.Property.Name == nameof(MenuItem.IsSubMenuOpen) && !topMenuItem.IsSubMenuOpen)
          {
@@ -87,7 +89,7 @@ public static class PopupMenuHost
          }
       };
 
-      hostWindow.Deactivated += (s, e) => hostWindow.Close();
+      hostWindow.Deactivated += (_, _) => hostWindow.Close();
 
       hostWindow.Show();
    }

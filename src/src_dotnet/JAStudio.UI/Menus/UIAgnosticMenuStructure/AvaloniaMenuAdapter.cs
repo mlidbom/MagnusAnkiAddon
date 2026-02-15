@@ -42,7 +42,7 @@ public static class AvaloniaMenuAdapter
       switch(spec.Kind)
       {
          case SpecMenuItemKind.Command:
-            avaloniaItem.Click += (sender, args) => { spec.Action(); };
+            avaloniaItem.Click += (_, _) => { spec.Action(); };
             break;
 
          case SpecMenuItemKind.Submenu:

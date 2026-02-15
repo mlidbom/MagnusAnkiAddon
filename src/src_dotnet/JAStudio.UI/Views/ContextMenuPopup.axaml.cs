@@ -51,7 +51,7 @@ public partial class ContextMenuPopup : UserControl
                         };
 
       // Close the host window when the context menu closes
-      contextMenu.Closed += (s, e) => _hostWindow?.Close();
+      contextMenu.Closed += (_, _) => _hostWindow?.Close();
 
       return contextMenu;
    }
@@ -88,7 +88,7 @@ public partial class ContextMenuPopup : UserControl
                          {
                             Header = $"Dummy Entry {i}"
                          };
-         dummyItem.Click += (s, e) => this.Log().Info($"Dummy item clicked: {((MenuItem)s!).Header}");
+         dummyItem.Click += (s, _) => this.Log().Info($"Dummy item clicked: {((MenuItem)s!).Header}");
          menuItems.Add(dummyItem);
       }
 
@@ -128,7 +128,7 @@ public partial class ContextMenuPopup : UserControl
                        Topmost = true
                     };
 
-      _hostWindow.Opened += (s, e) =>
+      _hostWindow.Opened += (_, _) =>
       {
          // Get the actual height of the menu bar
          var menuHeight = (int)(_hostWindow.Bounds.Height * 1.25); // Convert logical to physical pixels at 125% DPI
@@ -145,7 +145,7 @@ public partial class ContextMenuPopup : UserControl
       };
 
       // Close when the submenu closes or window loses focus
-      topMenuItem.PropertyChanged += (s, e) =>
+      topMenuItem.PropertyChanged += (_, e) =>
       {
          if(e.Property.Name == nameof(MenuItem.IsSubMenuOpen) && !topMenuItem.IsSubMenuOpen)
          {
@@ -153,7 +153,7 @@ public partial class ContextMenuPopup : UserControl
          }
       };
 
-      _hostWindow.Deactivated += (s, e) => _hostWindow.Close();
+      _hostWindow.Deactivated += (_, _) => _hostWindow.Close();
 
       _hostWindow.Show();
    }

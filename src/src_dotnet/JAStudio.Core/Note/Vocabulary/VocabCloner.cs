@@ -201,7 +201,7 @@ public class VocabCloner
 
    public VocabNote SuffixToChopped(string formSuffix, int chopCharacters)
    {
-      return CloneToDerivedForm(formSuffix, (it, form) => form.Substring(0, form.Length - chopCharacters));
+      return CloneToDerivedForm(formSuffix, (_, form) => form.Substring(0, form.Length - chopCharacters));
    }
 
    public string SuffixToChoppedPreview(string formSuffix, int chopCharacters) => Note.GetQuestion().Substring(0, Math.Max(0, Note.GetQuestion().Length - chopCharacters)) + formSuffix;

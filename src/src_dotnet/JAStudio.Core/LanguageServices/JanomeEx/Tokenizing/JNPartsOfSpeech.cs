@@ -1,5 +1,10 @@
 using System.Collections.Generic;
 
+// ReSharper disable MemberHidesStaticFromOuterClass
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable MemberCanBePrivate.Global
+
 namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;
 
 public class PartOfSpeechDescription

@@ -135,11 +135,11 @@ public class TextInputDialog : Window
                         };
 
       var okButton = new Button { Content = "OK", Width = 80 };
-      okButton.Click += (s, e) => Close(_inputTextBox.Text);
+      okButton.Click += (_, _) => Close(_inputTextBox.Text);
       buttonPanel.Children.Add(okButton);
 
       var cancelButton = new Button { Content = "Cancel", Width = 80 };
-      cancelButton.Click += (s, e) => Close(null);
+      cancelButton.Click += (_, _) => Close(null);
       buttonPanel.Children.Add(cancelButton);
 
       panel.Children.Add(buttonPanel);
