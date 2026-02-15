@@ -1,5 +1,4 @@
 using JAStudio.Core.Configuration;
-using JAStudio.Core.Note;
 using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.Sentences;
 

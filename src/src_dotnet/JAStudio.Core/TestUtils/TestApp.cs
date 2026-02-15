@@ -1,5 +1,4 @@
 using JAStudio.Core.Configuration;
-using JAStudio.Core.Note;
 
 namespace JAStudio.Core.TestUtils;
 

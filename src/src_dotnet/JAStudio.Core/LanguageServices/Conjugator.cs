@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Compze.Utilities.Logging;
-using JAStudio.Core.Note;
 using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.LanguageServices;

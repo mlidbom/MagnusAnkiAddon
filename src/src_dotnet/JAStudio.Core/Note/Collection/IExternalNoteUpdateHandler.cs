@@ -1,5 +1,3 @@
-using JAStudio.Core.Note;
-
 namespace JAStudio.Core.Note.Collection;
 
 public interface IExternalNoteUpdateHandler

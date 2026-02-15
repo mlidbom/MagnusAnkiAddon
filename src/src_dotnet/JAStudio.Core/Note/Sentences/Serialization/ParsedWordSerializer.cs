@@ -1,6 +1,4 @@
 using System;
-using JAStudio.Core.Note;
-using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.Note.Sentences.Serialization;
 

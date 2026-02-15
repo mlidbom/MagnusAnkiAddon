@@ -1,8 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using JAStudio.Core;
-using JAStudio.Core.Note;
-using JAStudio.Core.Note.Collection;
 using JAStudio.Core.TaskRunners;
 
 namespace JAStudio.Anki;

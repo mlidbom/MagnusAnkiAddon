@@ -1,7 +1,6 @@
 using JAStudio.Anki;
 using JAStudio.Core;
 using JAStudio.Core.LanguageServices.JanomeEx;
-using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.UI;

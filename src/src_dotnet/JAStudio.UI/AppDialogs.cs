@@ -1,9 +1,7 @@
-using System;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Compze.Utilities.Logging;
 using JAStudio.Core;
-using JAStudio.UI.Dialogs;
 using JAStudio.UI.Utils;
 using JAStudio.UI.Views;
 

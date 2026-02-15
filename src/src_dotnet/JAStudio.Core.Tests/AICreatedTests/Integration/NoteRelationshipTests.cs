@@ -1,4 +1,3 @@
-using JAStudio.Core.Note;
 using Xunit;
 
 namespace JAStudio.Core.Tests.AICreatedTests.Integration;

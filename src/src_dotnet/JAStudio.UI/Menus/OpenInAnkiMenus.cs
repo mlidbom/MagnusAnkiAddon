@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using JAStudio.Anki;
-using JAStudio.UI;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
 

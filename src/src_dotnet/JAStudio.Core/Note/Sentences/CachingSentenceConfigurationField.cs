@@ -1,6 +1,5 @@
 using System;
 using JAStudio.Core.Note.CorpusData;
-using JAStudio.Core.Note.Sentences.Serialization;
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.Note.Vocabulary;

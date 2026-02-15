@@ -5,7 +5,6 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Requirement
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.Head;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.Tail;
-using JAStudio.Core.Note;
 using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches;

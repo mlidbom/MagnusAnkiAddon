@@ -1,4 +1,3 @@
-using JAStudio.Core.Note;
 using JAStudio.Core.Note.Sentences;
 using Xunit;
 

@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using JAStudio.PythonInterop;
-using JAStudio.PythonInterop.Utilities;
 
 namespace JAStudio.Core.Note;
 

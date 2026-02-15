@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
-using Microsoft.Data.Sqlite;
 
 namespace JAStudio.Anki;
 

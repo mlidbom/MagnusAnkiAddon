@@ -1,6 +1,5 @@
 using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;
-using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
 using JAStudio.Core.ViewModels.KanjiList;
 using System;

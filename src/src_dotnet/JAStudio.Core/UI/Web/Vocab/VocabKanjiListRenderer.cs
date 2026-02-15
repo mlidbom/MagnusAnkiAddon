@@ -1,4 +1,3 @@
-using JAStudio.Core.Note;
 using JAStudio.Core.ViewModels.KanjiList;
 using System.Collections.Generic;
 using System.Linq;

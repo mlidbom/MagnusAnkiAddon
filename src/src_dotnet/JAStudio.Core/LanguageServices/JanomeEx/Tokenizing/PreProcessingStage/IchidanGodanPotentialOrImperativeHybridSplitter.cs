@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using JAStudio.Core.LanguageServices.JamdictEx;
-using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Note.Vocabulary;
 

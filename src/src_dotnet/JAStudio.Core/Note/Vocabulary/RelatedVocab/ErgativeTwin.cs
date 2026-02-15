@@ -1,5 +1,3 @@
-using JAStudio.Core.Note.NoteFields;
-
 namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 
 public class ErgativeTwin

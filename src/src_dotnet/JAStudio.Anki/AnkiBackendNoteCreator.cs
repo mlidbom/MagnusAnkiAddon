@@ -2,7 +2,6 @@ using System;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Sentences;
 using JAStudio.Core.Note.Vocabulary;
-using JAStudio.PythonInterop;
 using JAStudio.PythonInterop.Utilities;
 using Python.Runtime;
 

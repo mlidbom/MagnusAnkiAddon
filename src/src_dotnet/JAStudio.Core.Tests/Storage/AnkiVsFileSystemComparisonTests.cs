@@ -8,7 +8,6 @@ using JAStudio.Core.Note.CorpusData;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.Storage;
 using JAStudio.Core.TaskRunners;
-using JAStudio.Core.Tests.Fixtures;
 using Xunit;
 
 namespace JAStudio.Core.Tests.Storage;

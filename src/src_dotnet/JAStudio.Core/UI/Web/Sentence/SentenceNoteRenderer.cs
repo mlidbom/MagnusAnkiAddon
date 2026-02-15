@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using JAStudio.Core.Note;
 using JAStudio.Core.Note.Sentences;
 
 namespace JAStudio.Core.UI.Web.Sentence;
