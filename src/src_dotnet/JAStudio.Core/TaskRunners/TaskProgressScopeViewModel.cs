@@ -15,7 +15,7 @@ public class TaskProgressScopeViewModel : NotifyPropertyChangedBase, IDisposable
    readonly Stopwatch _stopwatch = Stopwatch.StartNew();
    System.Threading.Timer? _timer;
 
-   string _heading = "Task";
+   string _heading;
 
    public string Heading
    {

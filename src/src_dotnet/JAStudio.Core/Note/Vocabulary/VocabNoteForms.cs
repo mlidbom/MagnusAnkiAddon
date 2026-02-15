@@ -10,11 +10,11 @@ public class VocabNoteForms
    readonly VocabNote _vocab;
    readonly NoteGuard _guard;
    List<string> _rawParts;
-   LazyCE<HashSet<string>> _allRawSet;
-   LazyCE<List<string>> _allList;
-   LazyCE<HashSet<string>> _allSet;
-   LazyCE<HashSet<string>> _ownedForms;
-   LazyCE<HashSet<string>> _notOwnedByOtherVocab;
+   readonly LazyCE<HashSet<string>> _allRawSet;
+   readonly LazyCE<List<string>> _allList;
+   readonly LazyCE<HashSet<string>> _allSet;
+   readonly LazyCE<HashSet<string>> _ownedForms;
+   readonly LazyCE<HashSet<string>> _notOwnedByOtherVocab;
 
    public VocabNoteForms(VocabNote vocab, VocabData? data, NoteGuard guard)
    {

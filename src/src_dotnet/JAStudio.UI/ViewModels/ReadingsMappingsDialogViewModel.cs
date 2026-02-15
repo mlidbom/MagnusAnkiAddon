@@ -14,7 +14,7 @@ public partial class ReadingsMappingsDialogViewModel : ObservableObject
    readonly Window _window;
    readonly Core.TemporaryServiceCollection _services;
 
-   [ObservableProperty] string _mappingsText = string.Empty;
+   [ObservableProperty] string _mappingsText;
 
    [ObservableProperty] string _searchText = string.Empty;
 

@@ -110,7 +110,6 @@ public class TextInputDialog : Window
    }
 
    readonly TextBlock _promptTextBlock;
-   readonly TextBox _inputTextBox;
 
    public TextInputDialog()
    {
@@ -124,8 +123,8 @@ public class TextInputDialog : Window
       _promptTextBlock = new TextBlock();
       panel.Children.Add(_promptTextBlock);
 
-      _inputTextBox = new TextBox();
-      panel.Children.Add(_inputTextBox);
+      var inputTextBox = new TextBox();
+      panel.Children.Add(inputTextBox);
 
       var buttonPanel = new StackPanel
                         {
@@ -135,7 +134,7 @@ public class TextInputDialog : Window
                         };
 
       var okButton = new Button { Content = "OK", Width = 80 };
-      okButton.Click += (_, _) => Close(_inputTextBox.Text);
+      okButton.Click += (_, _) => Close(inputTextBox.Text);
       buttonPanel.Children.Add(okButton);
 
       var cancelButton = new Button { Content = "Cancel", Width = 80 };

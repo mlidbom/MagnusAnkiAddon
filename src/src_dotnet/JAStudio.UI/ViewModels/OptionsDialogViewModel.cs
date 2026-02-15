@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Compze.Utilities.Logging;
+using JAStudio.Core;
 using JAStudio.Core.Configuration;
 
 namespace JAStudio.UI.ViewModels;
@@ -16,7 +17,6 @@ public partial class OptionsDialogViewModel : ObservableObject
 {
    readonly Window _window;
    readonly JapaneseConfig _config;
-   readonly Core.TemporaryServiceCollection _services;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
    [Obsolete("Parameterless constructor is only for XAML designer support and should not be used directly.")]
@@ -27,13 +27,12 @@ public partial class OptionsDialogViewModel : ObservableObject
    {
       this.Log().Info("OptionsDialogViewModel constructor: starting...");
       _window = window;
-      _services = services;
       if(Design.IsDesignMode)
       {
-         _services.ConfigurationStore.InitForTesting();
+         services.ConfigurationStore.InitForTesting();
       }
 
-      _config = _services.App.Config;
+      _config = services.App.Config;
       this.Log().Info("OptionsDialogViewModel constructor: calling LoadFromConfig()...");
       LoadFromConfig();
       this.Log().Info("OptionsDialogViewModel constructor: completed");

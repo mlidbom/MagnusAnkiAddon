@@ -9,7 +9,7 @@ namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 
 public class RelatedVocabDataSerializer : IObjectSerializer<RelatedVocabData>
 {
-   string _emptyObjectJson = string.Empty;
+   readonly string _emptyObjectJson;
 
    public RelatedVocabDataSerializer() => _emptyObjectJson = Serialize(Deserialize(string.Empty));
 

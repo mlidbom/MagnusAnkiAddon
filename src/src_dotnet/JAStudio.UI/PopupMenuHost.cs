@@ -13,7 +13,7 @@ namespace JAStudio.UI;
 /// </summary>
 public static class PopupMenuHost
 {
-   static ILogger Log = CompzeLogger.For(typeof(PopupMenuHost));
+   static readonly ILogger Log = CompzeLogger.For(typeof(PopupMenuHost));
 
    static PopupMenuHost() =>
       // Set menu delay to zero for snappy submenu opening
