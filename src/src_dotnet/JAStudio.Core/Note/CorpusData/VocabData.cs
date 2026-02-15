@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.Anki;
+using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.NoteFields.AutoSaveWrappers;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.Note.Vocabulary.RelatedVocab;
@@ -12,7 +13,7 @@ namespace JAStudio.Core.Note.CorpusData;
 public partial class VocabData : CorpusDataBase
 {
    static readonly VocabNoteMatchingRulesSerializer MatchingRulesSerializer = new();
-   static readonly RelatedVocabDataSerializer RelatedVocabSerializer = RelatedVocabData.Serializer();
+   static readonly IObjectSerializer<RelatedVocabData> RelatedVocabSerializer = RelatedVocabData.Serializer();
 
    public string Question { get; init; } = string.Empty;
    public string SourceAnswer { get; init; } = string.Empty;

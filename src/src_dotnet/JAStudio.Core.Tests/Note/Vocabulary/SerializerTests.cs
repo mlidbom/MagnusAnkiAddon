@@ -1,3 +1,4 @@
+using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.NoteFields.AutoSaveWrappers;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.Note.Vocabulary.RelatedVocab;
@@ -7,7 +8,7 @@ namespace JAStudio.Core.Tests.Note.Vocabulary;
 
 public class RelatedVocabDataSerializerTests : TestStartingWithEmptyCollection
 {
-   readonly RelatedVocabDataSerializer _serializer = RelatedVocabData.Serializer();
+   readonly IObjectSerializer<RelatedVocabData> _serializer = RelatedVocabData.Serializer();
 
    [Fact]
    public void EmptyObjectSerializesToEmptyString()

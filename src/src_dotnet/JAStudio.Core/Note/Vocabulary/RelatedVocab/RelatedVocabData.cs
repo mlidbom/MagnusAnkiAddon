@@ -1,14 +1,15 @@
-using System;
 using System.Collections.Generic;
+using Compze.Utilities.SystemCE;
+using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.NoteFields.AutoSaveWrappers;
 
 namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 
 public class RelatedVocabData
 {
-   static readonly Lazy<RelatedVocabDataSerializer> SerializerInstance = new(() => new RelatedVocabDataSerializer());
+   static readonly LazyCE<IObjectSerializer<RelatedVocabData>> SerializerInstance = new(() => new RelatedVocabDataSerializer());
 
-   public static RelatedVocabDataSerializer Serializer() => SerializerInstance.Value;
+   public static IObjectSerializer<RelatedVocabData> Serializer() => SerializerInstance.Value;
 
    public string ErgativeTwin { get; set; }
    public ValueWrapper<string> DerivedFrom { get; set; }
