@@ -12,10 +12,10 @@ public class CachingSentenceConfigurationField
     public readonly MutableStringField Field;
     private SentenceConfiguration _value;
 
-    public CachingSentenceConfigurationField(SentenceNote sentence)
+    public CachingSentenceConfigurationField(SentenceNote sentence, MutableStringField field)
     {
         _sentence = sentence;
-        Field = new MutableStringField(sentence, SentenceNoteFields.Configuration);
+        Field = field;
         _value = SentenceConfigurationSerializer.Instance.Deserialize(Field.Value, Save);
     }
 

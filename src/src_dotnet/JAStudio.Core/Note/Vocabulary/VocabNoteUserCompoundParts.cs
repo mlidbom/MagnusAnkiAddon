@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.LanguageServices.JanomeEx;
@@ -13,10 +14,10 @@ public class VocabNoteUserCompoundParts
     private readonly VocabNote _vocab;
     private readonly MutableCommaSeparatedStringsListField _field;
 
-    public VocabNoteUserCompoundParts(VocabNote vocab)
+    public VocabNoteUserCompoundParts(VocabNote vocab, Func<string, string> getField, Action<string, string> setField)
     {
         _vocab = vocab;
-        _field = new MutableCommaSeparatedStringsListField(vocab, NoteFieldsConstants.Vocab.UserCompounds);
+        _field = new MutableCommaSeparatedStringsListField(new CachingMutableStringField(NoteFieldsConstants.Vocab.UserCompounds, getField, setField));
     }
 
     private VocabNote Vocab => _vocab;

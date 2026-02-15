@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -95,12 +96,11 @@ public class VocabNoteMatchingRules
     public HashSet<string> SuffixIsNot => _field.Get().SuffixIsNot;
     public HashSet<string> RequiredPrefix => _field.Get().RequiredPrefix;
 
-    public VocabNoteMatchingRules(VocabNote vocab)
+    public VocabNoteMatchingRules(VocabNote vocab, Func<string, string> getField, Action<string, string> setField)
     {
         _vocab = vocab;
         _field = new MutableSerializedObjectField<VocabNoteMatchingRulesData>(
-            vocab, 
-            NoteFieldsConstants.Vocab.MatchingRules, 
+            new MutableStringField(NoteFieldsConstants.Vocab.MatchingRules, getField, setField), 
             new VocabNoteMatchingRulesSerializer());
     }
 

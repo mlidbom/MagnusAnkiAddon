@@ -10,9 +10,9 @@ public class MutableCommaSeparatedStringsListField
     private readonly CachingMutableStringField _field;
     private readonly LazyCE<List<string>> _value;
 
-    public MutableCommaSeparatedStringsListField(JPNote note, string fieldName)
+    public MutableCommaSeparatedStringsListField(CachingMutableStringField field)
     {
-        _field = new CachingMutableStringField(note, fieldName);
+        _field = field;
         _value = _field.LazyReader(ParseValue);
     }
 

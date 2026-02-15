@@ -1,3 +1,4 @@
+using System;
 using JAStudio.Core.Note.NoteFields;
 
 namespace JAStudio.Core.Note.Vocabulary;
@@ -9,12 +10,12 @@ public class VocabNoteAudio
     public WritableAudioField Second { get; }
     public WritableAudioField Tts { get; }
 
-    public VocabNoteAudio(VocabNote vocab)
+    public VocabNoteAudio(VocabNote vocab, Func<string, string> getField, Action<string, string> setField)
     {
         _vocab = vocab;
-        First = new WritableAudioField(vocab, NoteFieldsConstants.Vocab.AudioB);
-        Second = new WritableAudioField(vocab, NoteFieldsConstants.Vocab.AudioG);
-        Tts = new WritableAudioField(vocab, NoteFieldsConstants.Vocab.AudioTTS);
+        First = new WritableAudioField(new MutableStringField(NoteFieldsConstants.Vocab.AudioB, getField, setField));
+        Second = new WritableAudioField(new MutableStringField(NoteFieldsConstants.Vocab.AudioG, getField, setField));
+        Tts = new WritableAudioField(new MutableStringField(NoteFieldsConstants.Vocab.AudioTTS, getField, setField));
     }
 
     private VocabNote Vocab => _vocab;

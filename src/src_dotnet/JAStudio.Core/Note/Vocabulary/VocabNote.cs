@@ -25,31 +25,31 @@ public class VocabNote : JPNote
     public VocabCloner Cloner { get; }
 
     // Property accessors for fields
-    public MutableStringField SourceAnswer => new(this, NoteFieldsConstants.Vocab.SourceAnswer);
-    public MutableStringField ActiveAnswer => new(this, NoteFieldsConstants.Vocab.ActiveAnswer);
-    public MutableStringField SourceMnemonic => new(this, NoteFieldsConstants.Vocab.SourceMnemonic);
-    public MutableStringField SourceReadingMnemonic => new(this, NoteFieldsConstants.Vocab.SourceReadingMnemonic);
-    public MutableStringField TechnicalNotes => new(this, NoteFieldsConstants.Vocab.TechnicalNotes);
-    public MutableStringField References => new(this, NoteFieldsConstants.Vocab.References);
-    public ImageField Image => new(this, NoteFieldsConstants.Vocab.Image);
-    public ImageField UserImage => new(this, NoteFieldsConstants.Vocab.UserImage);
+    public MutableStringField SourceAnswer => StringField(NoteFieldsConstants.Vocab.SourceAnswer);
+    public MutableStringField ActiveAnswer => StringField(NoteFieldsConstants.Vocab.ActiveAnswer);
+    public MutableStringField SourceMnemonic => StringField(NoteFieldsConstants.Vocab.SourceMnemonic);
+    public MutableStringField SourceReadingMnemonic => StringField(NoteFieldsConstants.Vocab.SourceReadingMnemonic);
+    public MutableStringField TechnicalNotes => StringField(NoteFieldsConstants.Vocab.TechnicalNotes);
+    public MutableStringField References => StringField(NoteFieldsConstants.Vocab.References);
+    public ImageField Image => new(StringField(NoteFieldsConstants.Vocab.Image));
+    public ImageField UserImage => new(StringField(NoteFieldsConstants.Vocab.UserImage));
 
     public VocabNote(NoteServices services, VocabData? data = null) : base(services, data != null ? new VocabId(data.Id) : VocabId.New(), data?.ToNoteData())
     {
-        Question = new VocabNoteQuestion(this);
-        Readings = new MutableCommaSeparatedStringsListField(this, NoteFieldsConstants.Vocab.Reading);
-        User = new VocabNoteUserFields(this);
-        Forms = new VocabNoteForms(this);
+        Question = new VocabNoteQuestion(this, GetField, SetField);
+        Readings = new MutableCommaSeparatedStringsListField(CachingStringField(NoteFieldsConstants.Vocab.Reading));
+        User = new VocabNoteUserFields(this, GetField, SetField);
+        Forms = new VocabNoteForms(this, GetField, SetField);
         Kanji = new VocabNoteKanji(this);
-        PartsOfSpeech = new VocabNotePartsOfSpeech(this);
+        PartsOfSpeech = new VocabNotePartsOfSpeech(this, GetField, SetField);
         Conjugator = new VocabNoteConjugator(this);
         Sentences = new VocabNoteSentences(this);
-        CompoundParts = new VocabNoteUserCompoundParts(this);
-        RelatedNotes = new Vocabulary.RelatedVocab.RelatedVocab(this);
-        MetaData = new VocabNoteMetaData(this);
+        CompoundParts = new VocabNoteUserCompoundParts(this, GetField, SetField);
+        RelatedNotes = new Vocabulary.RelatedVocab.RelatedVocab(this, GetField, SetField);
+        MetaData = new VocabNoteMetaData(this, GetField, SetField);
         Register = new VocabNoteRegister(this);
-        Audio = new VocabNoteAudio(this);
-        MatchingConfiguration = new VocabNoteMatchingConfiguration(this);
+        Audio = new VocabNoteAudio(this, GetField, SetField);
+        MatchingConfiguration = new VocabNoteMatchingConfiguration(this, GetField, SetField);
         Cloner = new VocabCloner(this);
     }
 
@@ -87,7 +87,7 @@ public class VocabNote : JPNote
 
     public override void OnTagsUpdated()
     {
-        MatchingConfiguration = new VocabNoteMatchingConfiguration(this);
+        MatchingConfiguration = new VocabNoteMatchingConfiguration(this, GetField, SetField);
     }
 
     public override void UpdateGeneratedData()

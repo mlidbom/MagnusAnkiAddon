@@ -476,11 +476,11 @@ public class KanjiNote : JPNote
       set => SetField(NoteFieldsConstants.Kanji.SourceMeaningMnemonic, value);
    }
 
-   public WritableAudioField Audio => new(this, NoteFieldsConstants.Kanji.Audio);
-   public MutableStringField PrimaryReadingsTtsAudio => new(this, NoteFieldsConstants.Kanji.PrimaryReadingsTtsAudio);
-   public MutableStringField KanjiReferences => new(this, NoteFieldsConstants.Kanji.References);
+   public WritableAudioField Audio => new(StringField(NoteFieldsConstants.Kanji.Audio));
+   public MutableStringField PrimaryReadingsTtsAudio => StringField(NoteFieldsConstants.Kanji.PrimaryReadingsTtsAudio);
+   public MutableStringField KanjiReferences => StringField(NoteFieldsConstants.Kanji.References);
 
-   public ImageField Image => new(this, NoteFieldsConstants.Kanji.Image);
+   public ImageField Image => new(StringField(NoteFieldsConstants.Kanji.Image));
 
    public string SourceAnswer
    {

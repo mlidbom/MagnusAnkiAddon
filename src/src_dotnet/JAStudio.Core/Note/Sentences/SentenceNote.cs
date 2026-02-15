@@ -17,10 +17,9 @@ public class SentenceNote : JPNote
 
     public SentenceNote(NoteServices services, SentenceData? data = null) : base(services, data != null ? new SentenceId(data.Id) : SentenceId.New(), data?.ToNoteData())
     {
-        Configuration = new CachingSentenceConfigurationField(this);
+        Configuration = new CachingSentenceConfigurationField(this, StringField(SentenceNoteFields.Configuration));
         ParsingResult = new MutableSerializedObjectField<ParsingResult>(
-            this,
-            SentenceNoteFields.ParsingResult,
+            StringField(SentenceNoteFields.ParsingResult),
             new ParsingResultSerializer());
     }
 
@@ -30,19 +29,19 @@ public class SentenceNote : JPNote
     }
 
     // Property accessors
-    public MutableStringField Id => new(this, SentenceNoteFields.Id);
-    public MutableStringField Reading => new(this, SentenceNoteFields.Reading);
-    public SentenceUserFields User => new(this);
-    public MutableStringField SourceQuestion => new(this, SentenceNoteFields.SourceQuestion);
-    public MutableStringField ActiveQuestion => new(this, SentenceNoteFields.ActiveQuestion);
+    public MutableStringField Id => StringField(SentenceNoteFields.Id);
+    public MutableStringField Reading => StringField(SentenceNoteFields.Reading);
+    public SentenceUserFields User => new(this, GetField, SetField);
+    public MutableStringField SourceQuestion => StringField(SentenceNoteFields.SourceQuestion);
+    public MutableStringField ActiveQuestion => StringField(SentenceNoteFields.ActiveQuestion);
     public SentenceQuestionField Question => new(User.Question, SourceQuestion);
     public StripHtmlOnReadFallbackStringField Answer => new(User.Answer, SourceAnswer);
-    public MutableStringField SourceAnswer => new(this, SentenceNoteFields.SourceAnswer);
-    public MutableStringField ActiveAnswer => new(this, SentenceNoteFields.ActiveAnswer);
-    public MutableStringField SourceComments => new(this, SentenceNoteFields.SourceComments);
-    public WritableImageField Screenshot => new(this, SentenceNoteFields.Screenshot);
-    public WritableAudioField Audio => new(this, SentenceNoteFields.Audio);
-    public MutableStringField JanomeTokens => new(this, SentenceNoteFields.JanomeTokens);
+    public MutableStringField SourceAnswer => StringField(SentenceNoteFields.SourceAnswer);
+    public MutableStringField ActiveAnswer => StringField(SentenceNoteFields.ActiveAnswer);
+    public MutableStringField SourceComments => StringField(SentenceNoteFields.SourceComments);
+    public WritableImageField Screenshot => new(StringField(SentenceNoteFields.Screenshot));
+    public WritableAudioField Audio => new(StringField(SentenceNoteFields.Audio));
+    public MutableStringField JanomeTokens => StringField(SentenceNoteFields.JanomeTokens);
 
     public override List<MediaReference> GetMediaReferences()
     {

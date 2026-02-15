@@ -12,13 +12,12 @@ public class RelatedVocab
    readonly MutableSerializedObjectField<RelatedVocabData> _data;
    readonly Lazy<HashSet<NoteId>> _inCompoundIds;
 
-    public RelatedVocab(VocabNote vocab)
+    public RelatedVocab(VocabNote vocab, Func<string, string> getField, Action<string, string> setField)
     {
         _vocab = vocab;
 
         _data = new MutableSerializedObjectField<RelatedVocabData>(
-            vocab,
-            NoteFieldsConstants.Vocab.RelatedVocab,
+            new MutableStringField(NoteFieldsConstants.Vocab.RelatedVocab, getField, setField),
             RelatedVocabData.Serializer());
 
         ErgativeTwin = new ErgativeTwin(vocab, _data);

@@ -1,3 +1,4 @@
+using System;
 using JAStudio.Core.LanguageServices;
 using System.Collections.Generic;
 
@@ -25,12 +26,16 @@ public class VocabNoteQuestion
     public const string InvalidQuestionMessage = "INVALID QUESTION FORMAT. If you need to specify disambiguation, use question:disambiguation if not do NOT use : characters. More than one is invalid";
 
     private readonly VocabNote _vocab;
+    private readonly Func<string, string> _getField;
+    private readonly Action<string, string> _setField;
     public string Raw { get; private set; }
     public string DisambiguationName { get; private set; }
 
-    public VocabNoteQuestion(VocabNote vocab)
+    public VocabNoteQuestion(VocabNote vocab, Func<string, string> getField, Action<string, string> setField)
     {
         _vocab = vocab;
+        _getField = getField;
+        _setField = setField;
         Raw = string.Empty;
         DisambiguationName = string.Empty;
         InitValueRaw();
@@ -38,7 +43,7 @@ public class VocabNoteQuestion
 
     private void InitValueRaw()
     {
-        var value = _vocab.GetField(NoteFieldsConstants.Vocab.Question);
+        var value = _getField(NoteFieldsConstants.Vocab.Question);
         
         if (value.Contains(DisambiguationMarker))
         {
@@ -75,7 +80,7 @@ public class VocabNoteQuestion
 
     public void Set(string value)
     {
-        _vocab.SetField(NoteFieldsConstants.Vocab.Question, value);
+        _setField(NoteFieldsConstants.Vocab.Question, value);
         InitValueRaw();
         
         if (!_vocab.Forms.AllSet().Contains(Raw))

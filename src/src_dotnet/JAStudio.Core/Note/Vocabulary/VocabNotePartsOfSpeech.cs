@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
@@ -8,21 +9,25 @@ public class VocabNotePartsOfSpeech
 {
    const string FieldName = NoteFieldsConstants.Vocab.PartsOfSpeech;
    readonly VocabNote _vocab;
+   readonly Func<string, string> _getField;
+   readonly Action<string, string> _setField;
 
-    public VocabNotePartsOfSpeech(VocabNote vocab)
+    public VocabNotePartsOfSpeech(VocabNote vocab, Func<string, string> getField, Action<string, string> setField)
     {
         _vocab = vocab;
+        _getField = getField;
+        _setField = setField;
         // Initialize with current value
         SetRawStringValue(RawStringValue());
     }
 
     VocabNote Vocab => _vocab;
 
-    public string RawStringValue() => Vocab.GetField(FieldName);
+    public string RawStringValue() => _getField(FieldName);
 
     public void SetRawStringValue(string value)
     {
-        Vocab.SetField(FieldName, POSSetManager.InternAndHarmonize(value));
+        _setField(FieldName, POSSetManager.InternAndHarmonize(value));
     }
 
     public void Set(IEnumerable<string> value)

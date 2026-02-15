@@ -2,13 +2,11 @@ namespace JAStudio.Core.Note.NoteFields;
 
 public class IntegerField
 {
-    private readonly JPNote _note;
     private readonly MutableStringField _field;
 
-    public IntegerField(JPNote note, string fieldName)
+    public IntegerField(MutableStringField field)
     {
-        _note = note;
-        _field = new MutableStringField(note, fieldName);
+        _field = field;
     }
 
     public int Get()

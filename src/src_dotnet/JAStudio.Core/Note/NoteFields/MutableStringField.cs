@@ -1,23 +1,26 @@
+using System;
 using System.Collections.Generic;
 
 namespace JAStudio.Core.Note.NoteFields;
 
 public class MutableStringField
 {
-    private readonly JPNote _note;
-    private readonly string _fieldName;
+    readonly string _fieldName;
+    readonly Func<string, string> _getter;
+    readonly Action<string, string> _setter;
 
-    public MutableStringField(JPNote note, string fieldName)
+    public MutableStringField(string fieldName, Func<string, string> getter, Action<string, string> setter)
     {
-        _note = note;
         _fieldName = fieldName;
+        _getter = getter;
+        _setter = setter;
     }
 
-    public string Value => _note.GetField(_fieldName);
+    public string Value => _getter(_fieldName);
 
     public void Set(string value)
     {
-        _note.SetField(_fieldName, value);
+        _setter(_fieldName, value);
     }
 
     public void Empty()

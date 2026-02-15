@@ -6,22 +6,19 @@ namespace JAStudio.Core.Note.NoteFields;
 
 public class CachingMutableStringField
 {
-    private readonly JPNote _note;
-    private readonly string _fieldName;
-    private List<Action>? _resetCallbacks;
-    private string _value;
+    readonly string _fieldName;
+    readonly Func<string, string> _getter;
+    readonly Action<string, string> _setter;
+    List<Action>? _resetCallbacks;
+    string _value;
 
-    public CachingMutableStringField(JPNote note, string fieldName)
+    public CachingMutableStringField(string fieldName, Func<string, string> getter, Action<string, string> setter)
     {
-        _note = note;
         _fieldName = fieldName;
+        _getter = getter;
+        _setter = setter;
         _resetCallbacks = null;
-        _value = GetInitialValueForCaching();
-    }
-
-    private string GetInitialValueForCaching()
-    {
-        return _note.GetField(_fieldName);
+        _value = _getter(_fieldName);
     }
 
     public string Value => _value;
@@ -31,7 +28,7 @@ public class CachingMutableStringField
         var newValue = value.Trim();
         if (newValue != _value)
         {
-            _note.SetField(_fieldName, value.Trim());
+            _setter(_fieldName, value.Trim());
             _value = newValue;
             
             if (_resetCallbacks != null)

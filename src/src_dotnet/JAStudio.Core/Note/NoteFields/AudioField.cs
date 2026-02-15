@@ -7,9 +7,9 @@ public class AudioField
 {
     protected readonly MutableStringField _field;
 
-    public AudioField(JPNote note, string fieldName)
+    public AudioField(MutableStringField field)
     {
-        _field = new MutableStringField(note, fieldName);
+        _field = field;
     }
 
     public bool HasAudio()
@@ -48,7 +48,7 @@ public class AudioField
 
 public class WritableAudioField : AudioField
 {
-    public WritableAudioField(JPNote note, string fieldName) : base(note, fieldName)
+    public WritableAudioField(MutableStringField field) : base(field)
     {
     }
 

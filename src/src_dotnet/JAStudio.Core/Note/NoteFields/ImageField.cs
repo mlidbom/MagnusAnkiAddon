@@ -6,9 +6,9 @@ public class ImageField
 {
     protected readonly MutableStringField _field;
 
-    public ImageField(JPNote note, string fieldName)
+    public ImageField(MutableStringField field)
     {
-        _field = new MutableStringField(note, fieldName);
+        _field = field;
     }
 
     public bool HasImage() => !string.IsNullOrWhiteSpace(_field.Value) && _field.Value.Contains("<img");
@@ -25,7 +25,7 @@ public class ImageField
 
 public class WritableImageField : ImageField
 {
-    public WritableImageField(JPNote note, string fieldName) : base(note, fieldName)
+    public WritableImageField(MutableStringField field) : base(field)
     {
     }
 
