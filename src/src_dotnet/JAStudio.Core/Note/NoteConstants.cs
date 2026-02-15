@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using JAStudio.Core.Note.Sentences;
-using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.Note;
 
@@ -48,26 +46,9 @@ public static class NoteTypes
 
    public static readonly IReadOnlyList<string> AllList = [Kanji, Vocab, Sentence];
 
-   public static string FromType(Type noteType) => Map[noteType];
-
-   public static Func<Guid, NoteId> IdFactoryFromType(Type noteType) => IDFactories[noteType];
-
    public static Func<Guid, NoteId> IdFactoryFromName(string noteTypeName) => IDFactoriesByName[noteTypeName];
 
    //create a dictionary from type to string for our supported type her
-   static readonly Dictionary<Type, string> Map = new()
-                                                  {
-                                                     [typeof(KanjiNote)] = Kanji,
-                                                     [typeof(VocabNote)] = Vocab,
-                                                     [typeof(SentenceNote)] = Sentence,
-                                                  };
-
-   static readonly Dictionary<Type, Func<Guid, NoteId>> IDFactories = new()
-                                                                      {
-                                                                         [typeof(KanjiNote)] = g => new KanjiId(g),
-                                                                         [typeof(VocabNote)] = g => new VocabId(g),
-                                                                         [typeof(SentenceNote)] = g => new SentenceId(g),
-                                                                      };
 
    static readonly Dictionary<string, Func<Guid, NoteId>> IDFactoriesByName = new()
                                                                               {

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.Note;
@@ -20,10 +19,6 @@ public class App : IDisposable
       Services = AppBootstrapper.Bootstrap(this, backendNoteCreator, backendDataLoader).Resolve<TemporaryServiceCollection>();
 
    public static bool IsTesting => TestEnvDetector.IsTesting;
-
-   readonly List<Action> _initHooks = new();
-
-   public void AddInitHook(Action hook) => _initHooks.Add(hook);
 
    public void Dispose() => Services.Dispose();
 

@@ -108,7 +108,7 @@ public class FileSystemNoteRepository : INoteRepository
       return _serializer.ContainerToAllNotesData(container);
    }
 
-   SnapshotChanges FindChangesSinceSnapshot(AllNotesContainer container, NoteFilesByType filesByType, DateTime snapshotTimestamp)
+   static SnapshotChanges FindChangesSinceSnapshot(AllNotesContainer container, NoteFilesByType filesByType, DateTime snapshotTimestamp)
    {
       var currentKanjiIds = filesByType.Kanji.Select(f => f.Id).ToHashSet();
       var currentVocabIds = filesByType.Vocab.Select(f => f.Id).ToHashSet();

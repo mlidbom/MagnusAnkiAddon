@@ -122,25 +122,6 @@ public abstract class JPNote
       // Called when tags are modified. Subclasses can override to invalidate cached state.
    }
 
-   HashSet<JPNote> GetDependenciesRecursive(HashSet<JPNote> found)
-   {
-      if(found.Contains(this))
-      {
-         return found;
-      }
-
-      found.Add(this);
-
-      foreach(var dependency in GetDirectDependencies())
-      {
-         dependency.GetDependenciesRecursive(found);
-      }
-
-      return found;
-   }
-
-   public HashSet<JPNote> GetDependenciesRecursive() => GetDependenciesRecursive(new HashSet<JPNote>());
-
    public NoteId GetId() => _id;
 
    public virtual void UpdateGeneratedData()
