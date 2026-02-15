@@ -20,6 +20,8 @@ public class AnkiVocabNote
    public string AudioB => Field(AnkiFieldNames.Vocab.AudioB);
    public string AudioG => Field(AnkiFieldNames.Vocab.AudioG);
    public string AudioTTS => Field(AnkiFieldNames.Vocab.AudioTTS);
+   public string Image => Field(AnkiFieldNames.Vocab.Image);
+   public string UserImage => Field(AnkiFieldNames.Vocab.UserImage);
 
    string Field(string name) => _data.Fields.TryGetValue(name, out var value) ? value : string.Empty;
 }
@@ -41,6 +43,7 @@ public class AnkiKanjiNote
    public string ActiveAnswer => Field(AnkiFieldNames.Kanji.ActiveAnswer);
    public string Audio => Field(AnkiFieldNames.Kanji.Audio);
    public string PrimaryReadingsTtsAudio => Field(AnkiFieldNames.Kanji.PrimaryReadingsTtsAudio);
+   public string Image => Field(AnkiFieldNames.Kanji.Image);
 
    string Field(string name) => _data.Fields.TryGetValue(name, out var value) ? value : string.Empty;
 }

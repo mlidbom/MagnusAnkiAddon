@@ -27,7 +27,6 @@ public partial class KanjiData : CorpusDataBase
    public string UserMnemonic { get; init; } = string.Empty;
    public List<string> SimilarMeaning { get; init; } = [];
    public List<string> ConfusedWith { get; init; } = [];
-   // TODO: Batch extract Image from Anki — this field exists in Anki but was never imported into the data store.
    public string Image { get; init; } = string.Empty;
 
    protected override NoteId CreateTypedId() => new KanjiId(Id);
@@ -69,5 +68,6 @@ public partial class KanjiData : CorpusDataBase
          ActiveAnswer = anki.ActiveAnswer,
          Audio = anki.Audio,
          PrimaryReadingsTtsAudio = anki.PrimaryReadingsTtsAudio,
+         Image = anki.Image,
       };
 }

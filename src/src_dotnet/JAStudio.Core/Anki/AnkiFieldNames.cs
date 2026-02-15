@@ -29,6 +29,8 @@ public static class AnkiFieldNames
       public const string AudioB = "Audio_b"; //Sync only to anki, not from
       public const string AudioG = "Audio_g"; //Sync only to anki, not from
       public const string AudioTTS = "Audio_TTS"; //Sync only to anki, not from
+      public const string Image = "Image";
+      public const string UserImage = "__image";
 
       // Kept for QueryBuilder Anki search queries until the Anki fields are actually removed
       public const string Reading = "Reading";
@@ -42,6 +44,7 @@ public static class AnkiFieldNames
       public const string SourceAnswer = "source_answer"; //Sync only to anki, not from
       public const string Audio = "__audio";
       public const string PrimaryReadingsTtsAudio = "_primary_readings_tts_audio"; //Sync from anki (TTS addon writes here)
+      public const string Image = "_image";
 
       // Kept for QueryBuilder Anki search queries until the Anki fields are actually removed
       public const string ReadingOn = "Reading_On";
