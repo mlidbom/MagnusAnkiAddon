@@ -18,8 +18,6 @@ public class FileSystemNoteRepository : INoteRepository
    readonly TaskRunner _taskRunner;
    readonly string _rootDir;
 
-   public NoteSerializer Serializer => _serializer;
-
    public FileSystemNoteRepository(NoteSerializer serializer, TaskRunner taskRunner, string rootDir)
    {
       _serializer = serializer;

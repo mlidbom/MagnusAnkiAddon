@@ -396,7 +396,7 @@ public class KanjiNote : JPNote
 
    public bool ReadingInVocabReading(string kanjiReading, string vocabReading, string vocabForm)
    {
-      vocabForm = ExStr.StripHtmlAndBracketMarkupAndNoiseCharacters(vocabForm);
+      vocabForm = vocabForm.StripHtmlAndBracketMarkupAndNoiseCharacters();
 
       var coveringReadings = ReadingsClean
                             .Where(r => kanjiReading != r && r.Contains(kanjiReading))
