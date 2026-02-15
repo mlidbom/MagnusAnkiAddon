@@ -1,9 +1,8 @@
 import typing, abc
-from System import IDisposable, Action, Func_2
+from System import IDisposable, Action
 from JAStudio.Core.Note.Collection import JPCollection, CardStudyingStatus
 from JAStudio.Core.Configuration import JapaneseConfig, ConfigurationStore
-from JAStudio.Core.Note import IBackendNoteCreator, NoteServices, NoteId, CardOperations, ExternalNoteIdMap
-from JAStudio.Core.Storage import INoteRepository
+from JAStudio.Core.Note import IBackendNoteCreator, NoteId, CardOperations, ExternalNoteIdMap, NoteServices
 from System.Collections.Generic import Dictionary_2, List_1
 from JAStudio.Core.TaskRunners import TaskRunner
 from JAStudio.Core.UI.Web.Kanji import KanjiNoteRenderer
@@ -25,7 +24,7 @@ class App(IDisposable):
     def Services(self) -> TemporaryServiceCollection: ...
     def AddInitHook(self, hook: Action) -> None: ...
     @staticmethod
-    def Bootstrap(backendNoteCreator: IBackendNoteCreator = ..., backendDataLoader: IBackendDataLoader = ..., environmentPaths: IEnvironmentPaths = ..., alternateRepositoryFactory: Func_2[NoteServices, INoteRepository] = ...) -> App: ...
+    def Bootstrap(backendNoteCreator: IBackendNoteCreator = ..., backendDataLoader: IBackendDataLoader = ..., environmentPaths: IEnvironmentPaths = ...) -> App: ...
     def Dispose(self) -> None: ...
 
 

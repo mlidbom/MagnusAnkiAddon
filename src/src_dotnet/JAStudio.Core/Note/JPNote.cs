@@ -54,7 +54,17 @@ public abstract class JPNote
       _cardStatus[status.CardType] = !status.IsSuspended;
    }
 
-   public NoteData GetData() => new(GetId(), _fields, Tags.ToStringList());
+   protected Dictionary<string, string> GetFieldsDictionary() => _fields;
+
+   public NoteData GetData()
+   {
+      SyncFieldsFromSubObjects();
+      return new(GetId(), _fields, Tags.ToStringList());
+   }
+
+   /// Syncs migrated sub-object owned data back into the _fields dictionary.
+   /// Override in subclasses to sync fields that are no longer backed by the dictionary.
+   protected virtual void SyncFieldsFromSubObjects() { }
 
    public override bool Equals(object? obj)
    {

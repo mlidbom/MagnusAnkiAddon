@@ -4,10 +4,10 @@ public class SentenceQuestionField
 {
     public const string WordBreakTag = "<wbr>";
     
-    private readonly MutableStringField _userField;
-    private readonly MutableStringField _sourceField;
+    private readonly IWritableStringValue _userField;
+    private readonly IWritableStringValue _sourceField;
 
-    public SentenceQuestionField(MutableStringField primaryField, MutableStringField fallbackField)
+    public SentenceQuestionField(IWritableStringValue primaryField, IWritableStringValue fallbackField)
     {
         _userField = primaryField;
         _sourceField = fallbackField;

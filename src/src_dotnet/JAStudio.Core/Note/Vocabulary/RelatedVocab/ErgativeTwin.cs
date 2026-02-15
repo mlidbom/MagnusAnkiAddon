@@ -5,19 +5,21 @@ namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 public class ErgativeTwin
 {
     private readonly VocabNote _vocab;
-    private readonly MutableSerializedObjectField<RelatedVocabData> _data;
+    private readonly RelatedVocabData _data;
+    private readonly NoteGuard _guard;
 
-    public ErgativeTwin(VocabNote vocab, MutableSerializedObjectField<RelatedVocabData> data)
+    public ErgativeTwin(VocabNote vocab, RelatedVocabData data, NoteGuard guard)
     {
         _vocab = vocab;
         _data = data;
+        _guard = guard;
     }
 
-    public string Get() => _data.Get().ErgativeTwin;
+    public string Get() => _data.ErgativeTwin;
 
     public void Set(string value)
     {
-        _data.Get().ErgativeTwin = value;
+        _guard.Update(() => _data.ErgativeTwin = value);
 
         foreach (var twin in _vocab.Services.Collection.Vocab.WithQuestion(value))
         {
@@ -26,8 +28,6 @@ public class ErgativeTwin
                 twin.RelatedNotes.ErgativeTwin.Set(_vocab.GetQuestion());
             }
         }
-
-        _data.Save();
     }
 
     public void Remove()
@@ -40,8 +40,6 @@ public class ErgativeTwin
             }
         }
 
-        _data.Get().ErgativeTwin = string.Empty;
-
-        _data.Save();
+        _guard.Update(() => _data.ErgativeTwin = string.Empty);
     }
 }

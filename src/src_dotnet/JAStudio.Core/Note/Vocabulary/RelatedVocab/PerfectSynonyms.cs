@@ -1,24 +1,25 @@
 using System.Collections.Generic;
 using System.Linq;
-using JAStudio.Core.Note.NoteFields.AutoSaveWrappers;
 
 namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 
 public class PerfectSynonyms
 {
     private readonly VocabNote _vocab;
-    private readonly FieldSetWrapper<string> _value;
+    private readonly RelatedVocabData _data;
+    private readonly NoteGuard _guard;
 
-    public PerfectSynonyms(VocabNote vocab, FieldSetWrapper<string> data)
+    public PerfectSynonyms(VocabNote vocab, RelatedVocabData data, NoteGuard guard)
     {
         _vocab = vocab;
-        _value = data;
+        _data = data;
+        _guard = guard;
         vocab.User.Answer.OnChange(PushAnswerToOtherSynonyms);
     }
 
     public List<VocabNote> Notes()
     {
-        return _vocab.Services.Collection.Vocab.WithAnyDisambiguationNameIn(_value.Get()).ToList();
+        return _vocab.Services.Collection.Vocab.WithAnyDisambiguationNameIn(_data.PerfectSynonyms).ToList();
     }
 
     public void PushAnswerToOtherSynonyms()
@@ -29,20 +30,20 @@ public class PerfectSynonyms
         }
     }
 
-    public HashSet<string> Get() => _value.Get();
+    public HashSet<string> Get() => _data.PerfectSynonyms;
 
-    private void RemoveInternal(string synonym)
+    private void RemoveInternal(string synonym) => _guard.Update(() =>
     {
-        _value.Discard(synonym);
-        _vocab.RelatedNotes.Synonyms.Add(synonym);
-    }
+       _data.PerfectSynonyms.Remove(synonym);
+       _vocab.RelatedNotes.Synonyms.Add(synonym);
+    });
 
-    private void AddInternal(string synonym)
+    private void AddInternal(string synonym) => _guard.Update(() =>
     {
-        if (synonym == _vocab.GetQuestion()) return;
-        _value.Add(synonym);
-        _vocab.RelatedNotes.Synonyms.Add(synonym);
-    }
+       if(synonym == _vocab.GetQuestion()) return;
+       _data.PerfectSynonyms.Add(synonym);
+       _vocab.RelatedNotes.Synonyms.Add(synonym);
+    });
 
     private HashSet<VocabNote> ResolveWholeWeb()
     {
@@ -94,7 +95,7 @@ public class PerfectSynonyms
     {
         foreach (var toRemove in _vocab.Services.Collection.Vocab.WithQuestion(synonymToRemove))
         {
-            toRemove.RelatedNotes.PerfectSynonyms._value.Clear();
+            toRemove.RelatedNotes.PerfectSynonyms._data.PerfectSynonyms.Clear();
         }
         foreach (var syn in ResolveWholeWeb())
         {
@@ -104,6 +105,6 @@ public class PerfectSynonyms
 
     public override string ToString()
     {
-        return _value.ToString();
+        return string.Join(", ", _data.PerfectSynonyms);
     }
 }

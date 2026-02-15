@@ -1,33 +1,30 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
+using JAStudio.Core.Note.CorpusData;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNotePartsOfSpeech
 {
-   const string FieldName = NoteFieldsConstants.Vocab.PartsOfSpeech;
    readonly VocabNote _vocab;
-   readonly Func<string, string> _getField;
-   readonly Action<string, string> _setField;
+   readonly NoteGuard _guard;
+   string _value;
 
-    public VocabNotePartsOfSpeech(VocabNote vocab, Func<string, string> getField, Action<string, string> setField)
+    public VocabNotePartsOfSpeech(VocabNote vocab, VocabData? data, NoteGuard guard)
     {
         _vocab = vocab;
-        _getField = getField;
-        _setField = setField;
-        // Initialize with current value
-        SetRawStringValue(RawStringValue());
+        _guard = guard;
+        _value = POSSetManager.InternAndHarmonize(data?.PartsOfSpeech ?? string.Empty);
     }
 
     VocabNote Vocab => _vocab;
 
-    public string RawStringValue() => _getField(FieldName);
+    public string RawStringValue() => _value;
 
     public void SetRawStringValue(string value)
     {
-        _setField(FieldName, POSSetManager.InternAndHarmonize(value));
+        _guard.Update(() => _value = POSSetManager.InternAndHarmonize(value));
     }
 
     public void Set(IEnumerable<string> value)

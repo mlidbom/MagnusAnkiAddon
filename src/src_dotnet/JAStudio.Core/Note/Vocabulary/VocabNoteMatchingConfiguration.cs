@@ -1,44 +1,36 @@
-using System;
+using JAStudio.Core.Note.CorpusData;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteMatchingConfiguration
 {
     private readonly VocabNote _vocab;
-    private readonly Func<string, string> _getField;
-    private readonly Action<string, string> _setField;
-    private VocabNoteMatchingRules? _rules;
     private int? _customRequirementsWeight;
 
-    public VocabMatchingRulesConfigurationRequiresForbidsFlags RequiresForbids { get; }
-    public VocabMatchingRulesConfigurationBoolFlags BoolFlags { get; }
+    public VocabNoteMatchingRules ConfigurableRules { get; }
+    public VocabMatchingRulesConfigurationRequiresForbidsFlags RequiresForbids { get; private set; }
+    public VocabMatchingRulesConfigurationBoolFlags BoolFlags { get; private set; }
 
-    public VocabNoteMatchingConfiguration(VocabNote vocab, Func<string, string> getField, Action<string, string> setField)
+    public VocabNoteMatchingConfiguration(VocabNote vocab, VocabData? data, NoteGuard guard)
     {
         _vocab = vocab;
-        _getField = getField;
-        _setField = setField;
+        ConfigurableRules = new VocabNoteMatchingRules(vocab, data?.MatchingRules, guard);
         RequiresForbids = new VocabMatchingRulesConfigurationRequiresForbidsFlags(vocab);
         BoolFlags = new VocabMatchingRulesConfigurationBoolFlags(vocab);
     }
 
-    public VocabNoteMatchingRules ConfigurableRules
+    public void RefreshTagBasedFlags()
     {
-        get
-        {
-            _rules ??= new VocabNoteMatchingRules(_vocab, _getField, _setField);
-            return _rules;
-        }
+        RequiresForbids = new VocabMatchingRulesConfigurationRequiresForbidsFlags(_vocab);
+        BoolFlags = new VocabMatchingRulesConfigurationBoolFlags(_vocab);
+        _customRequirementsWeight = null;
     }
 
     public int CustomRequirementsWeight
     {
         get
         {
-            if (_customRequirementsWeight == null)
-            {
-                _customRequirementsWeight = RequiresForbids.MatchWeight + ConfigurableRules.MatchWeight;
-            }
+            _customRequirementsWeight ??= RequiresForbids.MatchWeight + ConfigurableRules.MatchWeight;
             return _customRequirementsWeight.Value;
         }
     }

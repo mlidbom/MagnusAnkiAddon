@@ -1,95 +1,84 @@
-using System;
-using JAStudio.Core.LanguageServices;
 using System.Collections.Generic;
+using JAStudio.Core.LanguageServices;
+using JAStudio.Core.Note.CorpusData;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabStems
 {
-    private readonly VocabNote _vocab;
+   readonly VocabNote _vocab;
 
-    public VocabStems(VocabNote vocab)
-    {
-        _vocab = vocab;
-    }
+   public VocabStems(VocabNote vocab) => _vocab = vocab;
 
-    public string? MasuStem()
-    {
-        var masuStem = Conjugator.GetIStemVocab(_vocab);
-        return masuStem != _vocab.Question.Raw ? masuStem : null;
-    }
+   public string? MasuStem()
+   {
+      var masuStem = Conjugator.GetIStemVocab(_vocab);
+      return masuStem != _vocab.Question.Raw ? masuStem : null;
+   }
 }
 
 public class VocabNoteQuestion
 {
-    public const string DisambiguationMarker = ":";
-    public const string InvalidQuestionMessage = "INVALID QUESTION FORMAT. If you need to specify disambiguation, use question:disambiguation if not do NOT use : characters. More than one is invalid";
+   public const string DisambiguationMarker = ":";
+   public const string InvalidQuestionMessage = "INVALID QUESTION FORMAT. If you need to specify disambiguation, use question:disambiguation if not do NOT use : characters. More than one is invalid";
 
-    private readonly VocabNote _vocab;
-    private readonly Func<string, string> _getField;
-    private readonly Action<string, string> _setField;
-    public string Raw { get; private set; }
-    public string DisambiguationName { get; private set; }
+   readonly VocabNote _vocab;
+   readonly NoteGuard _guard;
+   public string Raw { get; private set; }
+   public string DisambiguationName { get; private set; }
 
-    public VocabNoteQuestion(VocabNote vocab, Func<string, string> getField, Action<string, string> setField)
-    {
-        _vocab = vocab;
-        _getField = getField;
-        _setField = setField;
-        Raw = string.Empty;
-        DisambiguationName = string.Empty;
-        InitValueRaw();
-    }
+   public VocabNoteQuestion(VocabNote vocab, VocabData? data, NoteGuard guard)
+   {
+      _vocab = vocab;
+      _guard = guard;
+      Raw = string.Empty;
+      DisambiguationName = string.Empty;
+      InitValueRaw(data?.Question ?? string.Empty);
+   }
 
-    private void InitValueRaw()
-    {
-        var value = _getField(NoteFieldsConstants.Vocab.Question);
-        
-        if (value.Contains(DisambiguationMarker))
-        {
-            DisambiguationName = value;
-            var parts = DisambiguationName.Split(DisambiguationMarker);
-            
-            if (parts.Length != 2)
-            {
-                Raw = InvalidQuestionMessage;
-            }
-            else
-            {
-                Raw = parts[0];
-            }
-        }
-        else
-        {
-            Raw = value;
-            DisambiguationName = value;
-        }
+   void InitValueRaw(string value)
+   {
+      if(value.Contains(DisambiguationMarker))
+      {
+         DisambiguationName = value;
+         var parts = DisambiguationName.Split(DisambiguationMarker);
 
-        if (string.IsNullOrEmpty(Raw))
-        {
-            Raw = "[EMPTY]";
-        }
-    }
+         if(parts.Length != 2)
+         {
+            Raw = InvalidQuestionMessage;
+         } else
+         {
+            Raw = parts[0];
+         }
+      } else
+      {
+         Raw = value;
+         DisambiguationName = value;
+      }
 
-    public bool IsValid => Raw != InvalidQuestionMessage;
-    public bool IsDisambiguated => DisambiguationName.Contains(DisambiguationMarker);
+      if(string.IsNullOrEmpty(Raw))
+      {
+         Raw = "[EMPTY]";
+      }
+   }
 
-    public string WithoutNoiseCharacters => Raw.Replace(Mine.VocabPrefixSuffixMarker, "");
+   public bool IsValid => Raw != InvalidQuestionMessage;
+   public bool IsDisambiguated => DisambiguationName.Contains(DisambiguationMarker);
 
-    public VocabStems Stems() => new VocabStems(_vocab);
+   public string WithoutNoiseCharacters => Raw.Replace(Mine.VocabPrefixSuffixMarker, "");
 
-    public void Set(string value)
-    {
-        _setField(NoteFieldsConstants.Vocab.Question, value);
-        InitValueRaw();
-        
-        if (!_vocab.Forms.AllSet().Contains(Raw))
-        {
-            var updatedForms = new HashSet<string>(_vocab.Forms.AllSet()) { Raw };
-            _vocab.Forms.SetSet(updatedForms);
-        }
-    }
+   public VocabStems Stems() => new VocabStems(_vocab);
 
-    public override string ToString() => Raw;
+   public void Set(string value) => _guard.Update(() =>
+   {
+      InitValueRaw(value);
+
+      if(!_vocab.Forms.AllSet().Contains(Raw))
+      {
+         var updatedForms = new HashSet<string>(_vocab.Forms.AllSet()) { Raw };
+         _vocab.Forms.SetSet(updatedForms);
+      }
+   });
+
+   public override string ToString() => Raw;
 }
-

@@ -16,8 +16,11 @@ public class SentenceNote : JPNote
     public CachingSentenceConfigurationField Configuration { get; private set; }
     public MutableSerializedObjectField<ParsingResult> ParsingResult { get; }
 
+    public SentenceUserFields User { get; }
+
     public SentenceNote(NoteServices services, SentenceData? data = null) : base(services, data != null ? new SentenceId(data.Id) : SentenceId.New(), data?.ToNoteData())
     {
+        User = new SentenceUserFields(data, Guard);
         Configuration = new CachingSentenceConfigurationField(this, StringField(SentenceNoteFields.Configuration));
         ParsingResult = new MutableSerializedObjectField<ParsingResult>(
             StringField(SentenceNoteFields.ParsingResult),
@@ -29,12 +32,17 @@ public class SentenceNote : JPNote
         Services.Collection.Sentences.Cache.JpNoteUpdated(this);
     }
 
+    protected override void SyncFieldsFromSubObjects()
+    {
+        var data = SentenceNoteConverter.ToCorpusData(this);
+        data.PopulateInto(GetFieldsDictionary());
+    }
+
     public override CorpusDataBase ToCorpusData() => SentenceNoteConverter.ToCorpusData(this);
 
     // Property accessors
     public MutableStringField Id => StringField(SentenceNoteFields.Id);
     public MutableStringField Reading => StringField(SentenceNoteFields.Reading);
-    public SentenceUserFields User => new(this, GetField, SetField);
     public MutableStringField SourceQuestion => StringField(SentenceNoteFields.SourceQuestion);
     public MutableStringField ActiveQuestion => StringField(SentenceNoteFields.ActiveQuestion);
     public SentenceQuestionField Question => new(User.Question, SourceQuestion);

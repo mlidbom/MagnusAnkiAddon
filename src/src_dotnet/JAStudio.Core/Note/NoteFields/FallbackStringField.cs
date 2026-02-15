@@ -2,10 +2,10 @@ namespace JAStudio.Core.Note.NoteFields;
 
 public class FallbackStringField
 {
-    private readonly MutableStringField _field;
-    private readonly MutableStringField _fallbackField;
+    private readonly IStringValue _field;
+    private readonly IStringValue _fallbackField;
 
-    public FallbackStringField(MutableStringField primaryField, MutableStringField fallbackField)
+    public FallbackStringField(IStringValue primaryField, IStringValue fallbackField)
     {
         _field = primaryField;
         _fallbackField = fallbackField;

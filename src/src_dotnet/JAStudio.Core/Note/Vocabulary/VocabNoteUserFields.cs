@@ -1,26 +1,42 @@
-using System;
+using JAStudio.Core.Note.CorpusData;
 using JAStudio.Core.Note.NoteFields;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteUserFields
 {
-    private readonly VocabNote _vocab;
-    private readonly Func<string, string> _getField;
-    private readonly Action<string, string> _setField;
-    public readonly CachingMutableStringField Answer;
+    readonly NoteGuard _guard;
+    string _answer;
+    string _mnemonic;
+    string _explanation;
+    string _explanationLong;
 
-    public VocabNoteUserFields(VocabNote vocab, Func<string, string> getField, Action<string, string> setField)
+    public WritableStringValue Answer { get; }
+    public WritableStringValue Mnemonic { get; }
+    public WritableStringValue Explanation { get; }
+    public WritableStringValue ExplanationLong { get; }
+
+    public VocabNoteUserFields(VocabData? data, NoteGuard guard)
     {
-        _vocab = vocab;
-        _getField = getField;
-        _setField = setField;
-        Answer = new CachingMutableStringField(NoteFieldsConstants.Vocab.UserAnswer, getField, setField);
-    }
+        _guard = guard;
+        _answer = data?.UserAnswer ?? string.Empty;
+        _mnemonic = data?.UserMnemonic ?? string.Empty;
+        _explanation = data?.UserExplanation ?? string.Empty;
+        _explanationLong = data?.UserExplanationLong ?? string.Empty;
 
-    public MutableStringField Mnemonic => new(NoteFieldsConstants.Vocab.UserMnemonic, _getField, _setField);
-    public MutableStringField Explanation => new(NoteFieldsConstants.Vocab.UserExplanation, _getField, _setField);
-    public MutableStringField ExplanationLong => new(NoteFieldsConstants.Vocab.UserExplanationLong, _getField, _setField);
+        Answer = new WritableStringValue(
+            () => _answer,
+            value => _guard.Update(() => { _answer = value; Answer!.NotifyChanged(); }));
+        Mnemonic = new WritableStringValue(
+            () => _mnemonic,
+            value => _guard.Update(() => _mnemonic = value));
+        Explanation = new WritableStringValue(
+            () => _explanation,
+            value => _guard.Update(() => _explanation = value));
+        ExplanationLong = new WritableStringValue(
+            () => _explanationLong,
+            value => _guard.Update(() => _explanationLong = value));
+    }
 
     public override string ToString()
     {

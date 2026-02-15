@@ -1,22 +1,34 @@
-using System;
+using JAStudio.Core.Note.CorpusData;
 using JAStudio.Core.Note.NoteFields;
 
 namespace JAStudio.Core.Note.Sentences;
 
 public class SentenceUserFields
 {
-    private readonly SentenceNote _sentence;
-    private readonly Func<string, string> _getField;
-    private readonly Action<string, string> _setField;
+    readonly NoteGuard _guard;
+    string _comments;
+    string _answer;
+    string _question;
 
-    public SentenceUserFields(SentenceNote sentence, Func<string, string> getField, Action<string, string> setField)
+    public WritableStringValue Comments { get; }
+    public WritableStringValue Answer { get; }
+    public WritableStringValue Question { get; }
+
+    public SentenceUserFields(SentenceData? data, NoteGuard guard)
     {
-        _sentence = sentence;
-        _getField = getField;
-        _setField = setField;
-    }
+        _guard = guard;
+        _comments = data?.UserComments ?? string.Empty;
+        _answer = data?.UserAnswer ?? string.Empty;
+        _question = data?.UserQuestion ?? string.Empty;
 
-    public MutableStringField Comments => new(SentenceNoteFields.UserComments, _getField, _setField);
-    public MutableStringField Answer => new(SentenceNoteFields.UserAnswer, _getField, _setField);
-    public MutableStringField Question => new(SentenceNoteFields.UserQuestion, _getField, _setField);
+        Comments = new WritableStringValue(
+            () => _comments,
+            value => _guard.Update(() => _comments = value));
+        Answer = new WritableStringValue(
+            () => _answer,
+            value => _guard.Update(() => _answer = value));
+        Question = new WritableStringValue(
+            () => _question,
+            value => _guard.Update(() => _question = value));
+    }
 }

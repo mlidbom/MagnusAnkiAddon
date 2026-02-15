@@ -2,7 +2,6 @@ import typing, clr, abc
 from System.Collections.Generic import List_1
 from JAStudio.Core.Note import KanjiNote, VocabNote, SentenceNote, NoteServices
 from JAStudio.Core.TaskRunners import TaskRunner
-from JAStudio.Core.Storage.Media import IMediaSyncService
 from System import IEquatable_1, Guid, DateTime
 
 class AllNotesData:
@@ -16,7 +15,7 @@ class AllNotesData:
 
 
 class FileSystemNoteRepository(INoteRepository):
-    def __init__(self, serializer: NoteSerializer, taskRunner: TaskRunner, rootDir: str, mediaSyncService: IMediaSyncService) -> None: ...
+    def __init__(self, serializer: NoteSerializer, taskRunner: TaskRunner, rootDir: str) -> None: ...
     @property
     def Serializer(self) -> NoteSerializer: ...
     def LoadAll(self) -> AllNotesData: ...

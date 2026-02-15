@@ -12,7 +12,7 @@ public class VocabNoteGeneratedData
 
    public void UpdateGeneratedData(VocabNote vocab)
    {
-      vocab.MetaData.SentenceCount.Set(vocab.Sentences.All().Count);
+      vocab.MetaData.SetSentenceCount(vocab.Sentences.All().Count);
       vocab.ActiveAnswer.Set(vocab.GetAnswer());
       vocab.RelatedNotes.PerfectSynonyms.PushAnswerToOtherSynonyms();
 

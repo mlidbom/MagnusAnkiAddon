@@ -4,7 +4,7 @@ public class StripHtmlOnReadFallbackStringField
 {
     private readonly FallbackStringField _field;
 
-    public StripHtmlOnReadFallbackStringField(MutableStringField primaryField, MutableStringField fallbackField)
+    public StripHtmlOnReadFallbackStringField(IStringValue primaryField, IStringValue fallbackField)
     {
         _field = new FallbackStringField(primaryField, fallbackField);
     }

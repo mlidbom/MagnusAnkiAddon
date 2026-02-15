@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace JAStudio.Core.Note.NoteFields;
 
-public class MutableStringField
+public class MutableStringField : IWritableStringValue
 {
     readonly string _fieldName;
     readonly Func<string, string> _getter;

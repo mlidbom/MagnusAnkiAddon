@@ -1,11 +1,10 @@
 import typing, abc
 from JAStudio.Core import IBackendDataLoader, BackendData, IEnvironmentPaths
 from JAStudio.Core.TaskRunners import TaskRunner
-from JAStudio.Core.Note import IBackendNoteCreator, KanjiNote, SentenceNote, VocabNote, NoteData, NoteId, ICardOperations, ExternalNoteIdMap, NoteServices, JPNote
+from JAStudio.Core.Note import IBackendNoteCreator, KanjiNote, SentenceNote, VocabNote, NoteData, NoteId, ICardOperations, ExternalNoteIdMap, JPNote
 from System import Action, IDisposable, Func_2, Guid
 from System.Collections.Generic import List_1, Dictionary_2, IReadOnlyList_1, IEnumerable_1
 from Microsoft.Data.Sqlite import SqliteConnection
-from JAStudio.Core.Storage import INoteRepository, AllNotesData
 from JAStudio.Core.Note.Collection import CardStudyingStatus, VocabCollection, KanjiCollection
 from JAStudio.Core.LanguageServices.JanomeEx import AnalysisServices
 
@@ -111,22 +110,6 @@ class AnkiLifecycleEvent(typing.SupportsInt):
     SyncStarting : AnkiLifecycleEvent # 2
     SyncCompleted : AnkiLifecycleEvent # 3
     CollectionLoaded : AnkiLifecycleEvent # 4
-
-
-class AnkiNoteRepository(INoteRepository):
-    def __init__(self, noteServices: NoteServices) -> None: ...
-    def LoadAll(self) -> AllNotesData: ...
-    # Skipped Save due to it being static, abstract and generic.
-
-    Save : Save_MethodGroup
-    class Save_MethodGroup:
-        @typing.overload
-        def __call__(self, note: KanjiNote) -> None:...
-        @typing.overload
-        def __call__(self, note: VocabNote) -> None:...
-        @typing.overload
-        def __call__(self, note: SentenceNote) -> None:...
-
 
 
 class CardStudyingStatusLoader(abc.ABC):

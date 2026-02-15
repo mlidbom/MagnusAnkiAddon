@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.LanguageServices.JanomeEx;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 using JAStudio.Core.Note.Collection;
-using JAStudio.Core.Note.NoteFields;
+using JAStudio.Core.Note.CorpusData;
 using JAStudio.Core.Note.Sentences;
 
 namespace JAStudio.Core.Note.Vocabulary;
@@ -12,12 +11,14 @@ namespace JAStudio.Core.Note.Vocabulary;
 public class VocabNoteUserCompoundParts
 {
     private readonly VocabNote _vocab;
-    private readonly MutableCommaSeparatedStringsListField _field;
+    private readonly NoteGuard _guard;
+    private List<string> _parts;
 
-    public VocabNoteUserCompoundParts(VocabNote vocab, Func<string, string> getField, Action<string, string> setField)
+    public VocabNoteUserCompoundParts(VocabNote vocab, VocabData? data, NoteGuard guard)
     {
         _vocab = vocab;
-        _field = new MutableCommaSeparatedStringsListField(new CachingMutableStringField(NoteFieldsConstants.Vocab.UserCompounds, getField, setField));
+        _guard = guard;
+        _parts = data?.UserCompounds != null ? new List<string>(data.UserCompounds) : [];
     }
 
     private VocabNote Vocab => _vocab;
@@ -25,25 +26,22 @@ public class VocabNoteUserCompoundParts
 
     public List<string> Primary()
     {
-        return _field.Get()
+        return _parts
             .Where(part => !part.StartsWith("["))
             .ToList();
     }
 
     public List<string> All()
     {
-        return _field.Get()
+        return _parts
             .Select(StripBrackets)
             .ToList();
     }
 
     /// Returns all compound parts with brackets preserved (e.g. "[word]" stays as-is).
-    public List<string> AllRaw() => _field.Get();
+    public List<string> AllRaw() => _parts.ToList();
 
-    public void Set(List<string> value)
-    {
-        _field.Set(value);
-    }
+    public void Set(List<string> value) => _guard.Update(() => _parts = new List<string>(value));
 
     public HashSet<VocabNote> AllNotes()
     {
@@ -116,6 +114,6 @@ public class VocabNoteUserCompoundParts
 
     public override string ToString()
     {
-        return _field.ToString() ?? string.Empty;
+        return string.Join(", ", _parts);
     }
 }

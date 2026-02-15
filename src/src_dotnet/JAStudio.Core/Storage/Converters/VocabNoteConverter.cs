@@ -31,7 +31,7 @@ public static class VocabNoteConverter
             AudioG = note.Audio.Second.RawValue(),
             AudioTTS = note.Audio.Tts.RawValue(),
             Forms = note.Forms.AllRawList(),
-            SentenceCount = note.MetaData.SentenceCount.Get(),
+            SentenceCount = note.MetaData.SentenceCount,
             TechnicalNotes = note.TechnicalNotes.Value,
             References = note.References.Value,
             MatchingRules = new VocabMatchingRulesSubData

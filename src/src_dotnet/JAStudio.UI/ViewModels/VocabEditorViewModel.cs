@@ -71,7 +71,7 @@ public partial class VocabEditorViewModel : ObservableObject
       AudioB = _vocab.Audio.First.RawValue();
       AudioG = _vocab.Audio.Second.RawValue();
       AudioTts = _vocab.Audio.Tts.RawValue();
-      SentenceCount = _vocab.MetaData.SentenceCount.Get().ToString();
+      SentenceCount = _vocab.MetaData.SentenceCount.ToString();
       RelatedVocab = _vocab.RelatedNotes.RawJson;
       TechnicalNotes = _vocab.TechnicalNotes.Value;
    }
@@ -93,7 +93,7 @@ public partial class VocabEditorViewModel : ObservableObject
       _vocab.Audio.First.SetRawValue(AudioB);
       _vocab.Audio.Second.SetRawValue(AudioG);
       _vocab.Audio.Tts.SetRawValue(AudioTts);
-      if (int.TryParse(SentenceCount, out var count)) _vocab.MetaData.SentenceCount.Set(count);
+      if (int.TryParse(SentenceCount, out var count)) _vocab.MetaData.SetSentenceCount(count);
       _vocab.RelatedNotes.RawJson = RelatedVocab;
       _vocab.TechnicalNotes.Set(TechnicalNotes);
       _vocab.UpdateGeneratedData();

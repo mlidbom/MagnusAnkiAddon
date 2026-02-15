@@ -1,27 +1,26 @@
-using System;
-using JAStudio.Core.Note.NoteFields;
+using JAStudio.Core.Note.CorpusData;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteMetaData
 {
-    private readonly VocabNote _vocab;
-    private readonly Func<string, string> _getField;
-    private readonly Action<string, string> _setField;
+    readonly VocabNote _vocab;
+    readonly NoteGuard _guard;
+    int _sentenceCount;
 
-    public VocabNoteMetaData(VocabNote vocab, Func<string, string> getField, Action<string, string> setField)
+    public VocabNoteMetaData(VocabNote vocab, VocabData? data, NoteGuard guard)
     {
         _vocab = vocab;
-        _getField = getField;
-        _setField = setField;
+        _guard = guard;
+        _sentenceCount = data?.SentenceCount ?? 0;
     }
 
-    private VocabNote Vocab => _vocab;
+    public int SentenceCount => _sentenceCount;
 
-    public IntegerField SentenceCount => new(new MutableStringField(NoteFieldsConstants.Vocab.SentenceCount, _getField, _setField));
+    public void SetSentenceCount(int value) => _guard.Update(() => _sentenceCount = value);
 
     public string MetaTagsHtml(bool displayExtendedSentenceStatistics = true, bool noSentenceStatistics = false)
     {
-        return VocabNoteMetaTagFormatter.GetMetaTagsHtml(Vocab, displayExtendedSentenceStatistics, noSentenceStatistics);
+        return VocabNoteMetaTagFormatter.GetMetaTagsHtml(_vocab, displayExtendedSentenceStatistics, noSentenceStatistics);
     }
 }

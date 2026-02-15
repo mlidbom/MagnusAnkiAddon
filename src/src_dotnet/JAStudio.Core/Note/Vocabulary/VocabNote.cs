@@ -37,26 +37,32 @@ public class VocabNote : JPNote
 
     public VocabNote(NoteServices services, VocabData? data = null) : base(services, data != null ? new VocabId(data.Id) : VocabId.New(), data?.ToNoteData())
     {
-        Question = new VocabNoteQuestion(this, GetField, SetField);
+        Question = new VocabNoteQuestion(this, data, Guard);
         Readings = new MutableCommaSeparatedStringsListField(CachingStringField(NoteFieldsConstants.Vocab.Reading));
-        User = new VocabNoteUserFields(this, GetField, SetField);
-        Forms = new VocabNoteForms(this, GetField, SetField);
+        User = new VocabNoteUserFields(data, Guard);
+        Forms = new VocabNoteForms(this, data, Guard);
         Kanji = new VocabNoteKanji(this);
-        PartsOfSpeech = new VocabNotePartsOfSpeech(this, GetField, SetField);
+        PartsOfSpeech = new VocabNotePartsOfSpeech(this, data, Guard);
         Conjugator = new VocabNoteConjugator(this);
         Sentences = new VocabNoteSentences(this);
-        CompoundParts = new VocabNoteUserCompoundParts(this, GetField, SetField);
-        RelatedNotes = new Vocabulary.RelatedVocab.RelatedVocab(this, GetField, SetField);
-        MetaData = new VocabNoteMetaData(this, GetField, SetField);
+        CompoundParts = new VocabNoteUserCompoundParts(this, data, Guard);
+        RelatedNotes = new Vocabulary.RelatedVocab.RelatedVocab(this, data?.RelatedVocab, Guard);
+        MetaData = new VocabNoteMetaData(this, data, Guard);
         Register = new VocabNoteRegister(this);
         Audio = new VocabNoteAudio(data, Guard);
-        MatchingConfiguration = new VocabNoteMatchingConfiguration(this, GetField, SetField);
+        MatchingConfiguration = new VocabNoteMatchingConfiguration(this, data, Guard);
         Cloner = new VocabCloner(this);
     }
 
     public override void UpdateInCache()
     {
         Services.Collection.Vocab.Cache.JpNoteUpdated(this);
+    }
+
+    protected override void SyncFieldsFromSubObjects()
+    {
+        var data = VocabNoteConverter.ToCorpusData(this);
+        data.PopulateInto(GetFieldsDictionary());
     }
 
     public override CorpusDataBase ToCorpusData() => VocabNoteConverter.ToCorpusData(this);
@@ -90,7 +96,7 @@ public class VocabNote : JPNote
 
     public override void OnTagsUpdated()
     {
-        MatchingConfiguration = new VocabNoteMatchingConfiguration(this, GetField, SetField);
+        MatchingConfiguration.RefreshTagBasedFlags();
     }
 
     public override void UpdateGeneratedData()
