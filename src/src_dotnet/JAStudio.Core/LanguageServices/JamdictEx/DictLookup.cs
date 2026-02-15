@@ -83,11 +83,11 @@ public class DictLookup
 
    public DictLookupResult LookupVocabWordOrName(VocabNote vocab)
    {
-      if(vocab.Readings.Get().Any())
+      if(vocab.GetReadings().Any())
       {
          return LookupWordOrNameWithMatchingReading(
             vocab.Question.WithoutNoiseCharacters,
-            vocab.Readings.Get()
+            vocab.GetReadings()
          );
       }
 

@@ -22,6 +22,6 @@ public class VocabNoteMiscTests : TestStartingWithEmptyCollection
         var vocab = GetService<VocabNoteFactory>().CreateWithDictionary("やる気満々");
         Assert.Equal("やる気満々", vocab.GetQuestion());
         Assert.Equal("totally-willing/fully-motivated", vocab.GetAnswer());
-        Assert.Equal(["やるきまんまん"], vocab.Readings.Get());
+        Assert.Equal(["やるきまんまん"], vocab.GetReadings());
     }
 }

@@ -21,7 +21,7 @@ public class RelatedVocabsRenderer
     {
         string RenderReadings(VocabNote vocabNote)
         {
-            var readings = string.Join(", ", vocabNote.Readings.Get());
+            var readings = string.Join(", ", vocabNote.GetReadings());
             return (reading && readings != vocabNote.GetQuestion()) 
                 ? $"""<span class="clipboard vocabReading">{readings}</span>""" 
                 : "";

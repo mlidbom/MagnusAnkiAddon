@@ -30,7 +30,7 @@ public static class CompoundPartsRenderer
         string RenderReadings(CompoundPart vocabWrapper)
         {
             var vocabNote = vocabWrapper.VocabNote;
-            var readings = string.Join(", ", vocabNote.Readings.Get());
+            var readings = string.Join(", ", vocabNote.GetReadings());
             return (reading && readings != vocabNote.Question.Raw) 
                 ? $"""<span class="clipboard vocabReading">{readings}</span>""" 
                 : "";

@@ -3,6 +3,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 using JAStudio.Core.Note.CorpusData;
 using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.Sentences;
+using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.Storage.Converters;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,8 +19,33 @@ public class SentenceNote : JPNote
 
     public SentenceUserFields User { get; }
 
+    public WritableStringValue ExternalId { get; }
+    public WritableStringValue Reading { get; }
+    public WritableStringValue SourceQuestion { get; }
+    public WritableStringValue ActiveQuestion { get; }
+    public WritableStringValue SourceAnswer { get; }
+    public WritableStringValue ActiveAnswer { get; }
+    public WritableStringValue SourceComments { get; }
+    public WritableStringValue JanomeTokens { get; }
+    public WritableImageValue Screenshot { get; }
+    public WritableAudioValue Audio { get; }
+
+    public SentenceQuestionField Question => new(User.Question, SourceQuestion);
+    public StripHtmlOnReadFallbackStringField Answer => new(User.Answer, SourceAnswer);
+
     public SentenceNote(NoteServices services, SentenceData? data = null) : base(services, data != null ? new SentenceId(data.Id) : SentenceId.New(), data?.ToNoteData())
     {
+        ExternalId = new WritableStringValue(data?.ExternalId ?? string.Empty, Guard);
+        Reading = new WritableStringValue(data?.Reading ?? string.Empty, Guard);
+        SourceQuestion = new WritableStringValue(data?.SourceQuestion ?? string.Empty, Guard);
+        ActiveQuestion = new WritableStringValue(data?.ActiveQuestion ?? string.Empty, Guard);
+        SourceAnswer = new WritableStringValue(data?.SourceAnswer ?? string.Empty, Guard);
+        ActiveAnswer = new WritableStringValue(data?.ActiveAnswer ?? string.Empty, Guard);
+        SourceComments = new WritableStringValue(data?.SourceComments ?? string.Empty, Guard);
+        JanomeTokens = new WritableStringValue(data?.JanomeTokens ?? string.Empty, Guard);
+        Screenshot = new WritableImageValue(data?.Screenshot ?? string.Empty, Guard);
+        Audio = new WritableAudioValue(data?.Audio ?? string.Empty, Guard);
+
         User = new SentenceUserFields(data, Guard);
         Configuration = new CachingSentenceConfigurationField(this, StringField(SentenceNoteFields.Configuration));
         ParsingResult = new MutableSerializedObjectField<ParsingResult>(
@@ -39,20 +65,6 @@ public class SentenceNote : JPNote
     }
 
     public override CorpusDataBase ToCorpusData() => SentenceNoteConverter.ToCorpusData(this);
-
-    // Property accessors
-    public MutableStringField Id => StringField(SentenceNoteFields.Id);
-    public MutableStringField Reading => StringField(SentenceNoteFields.Reading);
-    public MutableStringField SourceQuestion => StringField(SentenceNoteFields.SourceQuestion);
-    public MutableStringField ActiveQuestion => StringField(SentenceNoteFields.ActiveQuestion);
-    public SentenceQuestionField Question => new(User.Question, SourceQuestion);
-    public StripHtmlOnReadFallbackStringField Answer => new(User.Answer, SourceAnswer);
-    public MutableStringField SourceAnswer => StringField(SentenceNoteFields.SourceAnswer);
-    public MutableStringField ActiveAnswer => StringField(SentenceNoteFields.ActiveAnswer);
-    public MutableStringField SourceComments => StringField(SentenceNoteFields.SourceComments);
-    public WritableImageField Screenshot => new(StringField(SentenceNoteFields.Screenshot));
-    public WritableAudioField Audio => new(StringField(SentenceNoteFields.Audio));
-    public MutableStringField JanomeTokens => StringField(SentenceNoteFields.JanomeTokens);
 
     public override List<MediaReference> GetMediaReferences()
     {
@@ -134,8 +146,8 @@ public class SentenceNote : JPNote
         
         UpdateParsedWords();
         
-        SetField(SentenceNoteFields.ActiveAnswer, GetAnswer());
-        SetField(SentenceNoteFields.ActiveQuestion, GetQuestion());
+        ActiveAnswer.Set(GetAnswer());
+        ActiveQuestion.Set(GetQuestion());
     }
 
     public void UpdateParsedWords(bool force = false)

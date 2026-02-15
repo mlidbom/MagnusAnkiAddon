@@ -22,15 +22,3 @@ public class ImageField
 
     public override string ToString() => _field.ToString();
 }
-
-public class WritableImageField : ImageField
-{
-    public WritableImageField(MutableStringField field) : base(field)
-    {
-    }
-
-    public void SetRawValue(string value)
-    {
-        _field.Set(value);
-    }
-}

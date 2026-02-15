@@ -157,7 +157,7 @@ public class VocabCloner
         var clone = CreateNewVocabWithSomeDataCopied(CreateFullForm(Note.GetQuestion()), Note.GetAnswer(), []);
         clone.Forms.SetList(Note.Forms.AllList().Select(CreateFullForm).ToList());
         var readings = Note.GetReadings().Select(CreateFullForm).ToList();
-        clone.Readings.Set(readings);
+        clone.SetReadings(readings);
         clone.PartsOfSpeech.SetRawStringValue(POS.Expression);
         var compounds = new List<string> { Note.Question.DisambiguationName, formSuffix };
         clone.CompoundParts.Set(compounds);
@@ -218,7 +218,7 @@ public class VocabCloner
         var clone = CreateNewVocabWithSomeDataCopied(CreateImperativeForm(Note.GetQuestion()), Note.GetAnswer(), []);
         clone.Forms.SetList(Note.Forms.AllList().Select(CreateImperativeForm).ToList());
         var readings = Note.GetReadings().Select(CreateImperativeForm).ToList();
-        clone.Readings.Set(readings);
+        clone.SetReadings(readings);
         clone.PartsOfSpeech.SetRawStringValue(POS.Expression);
         return clone;
     }

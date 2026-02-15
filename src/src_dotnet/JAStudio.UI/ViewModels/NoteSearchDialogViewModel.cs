@@ -120,8 +120,8 @@ public partial class NoteSearchDialogViewModel : ObservableObject
                           searchText,
                           note => new Dictionary<string, Func<string>>
                                   {
-                                     ["vocab_readings"] = () => string.Join(" ", note.Readings.Get()),
-                                     ["vocab_romaji_readings"] = () => KanaUtils.Romanize(string.Join(" ", note.Readings.Get())),
+                                     ["vocab_readings"] = () => string.Join(" ", note.GetReadings()),
+                                     ["vocab_romaji_readings"] = () => KanaUtils.Romanize(string.Join(" ", note.GetReadings())),
                                      ["forms"] = () => string.Join(" ", note.Forms.WithoutNoiseCharacters()),
                                      ["question"] = () => StripHtml(note.GetQuestion()),
                                      ["answer"] = () => StripHtml(note.GetAnswer())

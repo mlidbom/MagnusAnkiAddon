@@ -23,7 +23,7 @@ public static class VocabNoteConverter
             UserExplanationLong = note.User.ExplanationLong.Value,
             UserMnemonic = note.User.Mnemonic.Value,
             UserCompounds = note.CompoundParts.AllRaw(),
-            Readings = note.Readings.Get(),
+            Readings = note.GetReadings(),
             PartsOfSpeech = note.PartsOfSpeech.RawStringValue(),
             SourceMnemonic = note.SourceMnemonic.Value,
             SourceReadingMnemonic = note.SourceReadingMnemonic.Value,

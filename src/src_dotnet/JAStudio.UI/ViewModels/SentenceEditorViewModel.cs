@@ -57,7 +57,7 @@ public partial class SentenceEditorViewModel : ObservableObject
 
       Audio = _sentence.Audio.RawValue();
       Screenshot = _sentence.Screenshot.RawValue();
-      Id = _sentence.Id.Value;
+      Id = _sentence.ExternalId.Value;
    }
 
    public void Save()
@@ -71,7 +71,7 @@ public partial class SentenceEditorViewModel : ObservableObject
       _sentence.SourceComments.Set(SourceComments);
       _sentence.Audio.SetRawValue(Audio);
       _sentence.Screenshot.SetRawValue(Screenshot);
-      _sentence.Id.Set(Id);
+      _sentence.ExternalId.Set(Id);
       _sentence.UpdateGeneratedData();
    }
 }

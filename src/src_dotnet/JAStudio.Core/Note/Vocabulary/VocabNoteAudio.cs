@@ -4,24 +4,15 @@ namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteAudio
 {
-    readonly NoteGuard _guard;
-    string _first;
-    string _second;
-    string _tts;
-
     public WritableAudioValue First { get; }
     public WritableAudioValue Second { get; }
     public WritableAudioValue Tts { get; }
 
     public VocabNoteAudio(VocabData? data, NoteGuard guard)
     {
-        _guard = guard;
-        _first = data?.AudioB ?? string.Empty;
-        _second = data?.AudioG ?? string.Empty;
-        _tts = data?.AudioTTS ?? string.Empty;
-        First = new WritableAudioValue(() => _first, value => _guard.Update(() => _first = value));
-        Second = new WritableAudioValue(() => _second, value => _guard.Update(() => _second = value));
-        Tts = new WritableAudioValue(() => _tts, value => _guard.Update(() => _tts = value));
+        First = new WritableAudioValue(data?.AudioB ?? string.Empty, guard);
+        Second = new WritableAudioValue(data?.AudioG ?? string.Empty, guard);
+        Tts = new WritableAudioValue(data?.AudioTTS ?? string.Empty, guard);
     }
 
     public string PrimaryAudioPath

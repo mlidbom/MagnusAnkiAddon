@@ -134,13 +134,13 @@ public class LocalNoteUpdater
                                    .ToList();
          kanji.Tags.Toggle(Tags.Kanji.WithStudyingVocab, studyingReadingVocab.Any());
 
-         var readingsHtml = $"{kanji.ReadingOnHtml} {kanji.ReadingKunHtml} {kanji.ReadingNanHtml}";
+         var readingsHtml = $"{kanji.ReadingOnHtml.Value} {kanji.ReadingKunHtml.Value} {kanji.ReadingNanHtml.Value}";
          var primaryReadings = primaryReadingPattern.Matches(readingsHtml)
                                                     .Select(m => m.Groups[1].Value)
                                                     .ToList();
          kanji.Tags.Toggle(Tags.Kanji.WithNoPrimaryReadings, !primaryReadings.Any());
 
-         var primaryOnReadings = primaryReadingPattern.Matches(kanji.ReadingOnHtml)
+         var primaryOnReadings = primaryReadingPattern.Matches(kanji.ReadingOnHtml.Value)
                                                       .Select(m => m.Groups[1].Value)
                                                       .ToList();
          var nonPrimaryOnReadings = kanji.ReadingsOn
@@ -226,7 +226,7 @@ public class LocalNoteUpdater
 
          if(singleKanjiVocab.Any())
          {
-            var readingsHtml = $"{kanji.ReadingOnHtml} {kanji.ReadingKunHtml} {kanji.ReadingNanHtml}";
+            var readingsHtml = $"{kanji.ReadingOnHtml.Value} {kanji.ReadingKunHtml.Value} {kanji.ReadingNanHtml.Value}";
             var primaryReadings = primaryReadingPattern.Matches(readingsHtml)
                                                        .Select(m => m.Groups[1].Value)
                                                        .ToList();

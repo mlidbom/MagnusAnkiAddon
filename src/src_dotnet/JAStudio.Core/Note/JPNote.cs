@@ -220,7 +220,6 @@ public abstract class JPNote
    }
 
    protected MutableStringField StringField(string fieldName) => new(fieldName, GetField, SetField);
-   protected CachingMutableStringField CachingStringField(string fieldName) => new(fieldName, GetField, SetField);
 
    public int PriorityTagValue()
    {

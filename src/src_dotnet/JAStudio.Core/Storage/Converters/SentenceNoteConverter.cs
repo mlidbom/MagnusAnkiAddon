@@ -26,7 +26,7 @@ public static class SentenceNoteConverter
             SourceComments = note.SourceComments.Value,
             UserComments = note.User.Comments.Value,
             Reading = note.Reading.Value,
-            ExternalId = note.Id.Value,
+            ExternalId = note.ExternalId.Value,
             Audio = note.Audio.RawValue(),
             Screenshot = note.Screenshot.RawValue(),
             Configuration = ToConfigSubData(config),

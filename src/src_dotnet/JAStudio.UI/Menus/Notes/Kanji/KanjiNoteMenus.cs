@@ -33,7 +33,7 @@ public class KanjiNoteMenus
         };
 
         // Add conditional "Accept meaning" if no user answer exists
-        if (string.IsNullOrEmpty(kanji.UserAnswer))
+        if (string.IsNullOrEmpty(kanji.UserAnswer.Value))
         {
             items.Add(SpecMenuItem.Command(ShortcutFinger.Up1("Accept meaning"), 
                 () => OnAcceptKanjiMeaning(kanji)));
@@ -44,7 +44,7 @@ public class KanjiNoteMenus
         items.Add(SpecMenuItem.Command(ShortcutFinger.Up3("Bootstrap mnemonic from radicals"), 
             () => kanji.BootstrapMnemonicFromRadicals()));
         items.Add(SpecMenuItem.Command(ShortcutFinger.Up4("Reset mnemonic"), 
-            () => kanji.UserMnemonic = ""));
+            () => kanji.UserMnemonic.Set("")));
 
         return SpecMenuItem.Submenu(ShortcutFinger.Home3("Note actions"), items);
     }
@@ -94,7 +94,7 @@ public class KanjiNoteMenus
     private static void OnAcceptKanjiMeaning(KanjiNote kanji)
     {
         var meaning = FormatKanjiMeaning(kanji.GetAnswer());
-        kanji.UserAnswer = meaning;
+        kanji.UserAnswer.Set(meaning);
     }
 
     private static string FormatKanjiMeaning(string meaning)

@@ -50,35 +50,35 @@ public partial class KanjiEditorViewModel : ObservableObject
    void LoadFromNote()
    {
       Question = _kanji.GetQuestion();
-      UserAnswer = _kanji.UserAnswer;
-      ReadingOn = _kanji.ReadingOnHtml;
-      ReadingKun = _kanji.ReadingKunHtml;
-      ReadingNan = _kanji.ReadingNanHtml;
+      UserAnswer = _kanji.UserAnswer.Value;
+      ReadingOn = _kanji.ReadingOnHtml.Value;
+      ReadingKun = _kanji.ReadingKunHtml.Value;
+      ReadingNan = _kanji.ReadingNanHtml.Value;
       Radicals = string.Join(", ", _kanji.Radicals);
       PrimaryVocab = string.Join(", ", _kanji.PrimaryVocab);
-      UserMnemonic = _kanji.UserMnemonic;
+      UserMnemonic = _kanji.UserMnemonic.Value;
       SimilarMeaning = string.Join(", ", _kanji.UserSimilarMeaning);
       ConfusedWith = string.Join(", ", _kanji.RelatedConfusedWith);
 
-      SourceAnswer = _kanji.SourceAnswer;
-      SourceMeaningMnemonic = _kanji.SourceMeaningMnemonic;
+      SourceAnswer = _kanji.SourceAnswer.Value;
+      SourceMeaningMnemonic = _kanji.SourceMeaningMnemonic.Value;
       Audio = _kanji.Audio.RawValue();
    }
 
    public void Save()
    {
       _kanji.SetQuestion(Question.Trim());
-      _kanji.UserAnswer = UserAnswer;
-      _kanji.ReadingOnHtml = ReadingOn;
-      _kanji.ReadingKunHtml = ReadingKun;
-      _kanji.ReadingNanHtml = ReadingNan;
+      _kanji.UserAnswer.Set(UserAnswer);
+      _kanji.ReadingOnHtml.Set(ReadingOn);
+      _kanji.ReadingKunHtml.Set(ReadingKun);
+      _kanji.ReadingNanHtml.Set(ReadingNan);
       _kanji.SetRadicals(Radicals);
       _kanji.PrimaryVocab = SplitCommaSeparated(PrimaryVocab);
-      _kanji.UserMnemonic = UserMnemonic;
+      _kanji.UserMnemonic.Set(UserMnemonic);
       _kanji.UserSimilarMeaningRaw = SimilarMeaning;
       _kanji.RelatedConfusedWithRaw = ConfusedWith;
-      _kanji.SourceAnswer = SourceAnswer;
-      _kanji.SourceMeaningMnemonic = SourceMeaningMnemonic;
+      _kanji.SourceAnswer.Set(SourceAnswer);
+      _kanji.SourceMeaningMnemonic.Set(SourceMeaningMnemonic);
       _kanji.Audio.SetRawValue(Audio);
       _kanji.UpdateGeneratedData();
    }

@@ -1,41 +1,37 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.Note.NoteFields;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
-public class AudioValue
+public class WritableAudioValue
 {
-   readonly Func<string> _getValue;
+   readonly NoteGuard _guard;
+   string _value;
 
-   public AudioValue(Func<string> getValue) => _getValue = getValue;
+   public WritableAudioValue(string initialValue, NoteGuard guard)
+   {
+      _value = initialValue;
+      _guard = guard;
+   }
 
-   public string RawValue() => _getValue();
+   public string RawValue() => _value;
 
-   public bool HasAudio() => _getValue().Trim().StartsWith("[sound:");
+   public bool HasAudio() => _value.Trim().StartsWith("[sound:");
 
    public string FirstAudioFilePath() => HasAudio() ? AudioFilesPaths()[0] : string.Empty;
 
    public List<string> AudioFilesPaths()
    {
-      var value = _getValue();
-      if (!value.Trim().StartsWith("[sound:")) return [];
+      if (!_value.Trim().StartsWith("[sound:")) return [];
 
-      var strippedPaths = value.Trim().Replace("[sound:", "").Split(']');
+      var strippedPaths = _value.Trim().Replace("[sound:", "").Split(']');
       return strippedPaths.Select(path => path.Trim()).Where(path => !string.IsNullOrEmpty(path)).ToList();
    }
 
-   public List<MediaReference> GetMediaReferences() => MediaFieldParsing.ParseAudioReferences(_getValue());
+   public List<MediaReference> GetMediaReferences() => MediaFieldParsing.ParseAudioReferences(_value);
 
-   public override string ToString() => _getValue();
-}
+   public void SetRawValue(string value) => _guard.Update(() => _value = value);
 
-public class WritableAudioValue : AudioValue
-{
-   readonly Action<string> _setValue;
-
-   public WritableAudioValue(Func<string> getValue, Action<string> setValue) : base(getValue) => _setValue = setValue;
-
-   public void SetRawValue(string value) => _setValue(value);
+   public override string ToString() => _value;
 }

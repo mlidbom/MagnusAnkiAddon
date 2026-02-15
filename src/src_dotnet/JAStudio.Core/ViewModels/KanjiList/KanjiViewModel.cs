@@ -24,10 +24,10 @@ public class KanjiViewModel
 
     public string Readings()
     {
-        var readings = $"{KanaUtils.HiraganaToKatakana(Kanji.ReadingOnHtml)} <span class=\"readingsSeparator\">|</span> {Kanji.ReadingKunHtml}";
-        if (!string.IsNullOrEmpty(Kanji.ReadingNanHtml))
+        var readings = $"{KanaUtils.HiraganaToKatakana(Kanji.ReadingOnHtml.Value)} <span class=\"readingsSeparator\">|</span> {Kanji.ReadingKunHtml.Value}";
+        if (!string.IsNullOrEmpty(Kanji.ReadingNanHtml.Value))
         {
-            readings += $" <span class=\"readingsSeparator\">|</span> {Kanji.ReadingNanHtml}";
+            readings += $" <span class=\"readingsSeparator\">|</span> {Kanji.ReadingNanHtml.Value}";
         }
         return readings;
     }

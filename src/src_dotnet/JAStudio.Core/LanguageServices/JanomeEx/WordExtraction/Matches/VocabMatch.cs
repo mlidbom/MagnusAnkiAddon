@@ -151,7 +151,7 @@ public sealed class VocabMatch : Match
    public VocabNoteMatchingConfiguration MatchingConfiguration => Vocab.MatchingConfiguration;
    public override string MatchForm => Vocab.GetQuestion();
    public override string Answer => Vocab.GetAnswer();
-   public override List<string> Readings => Vocab.Readings.Get();
+   public override List<string> Readings => Vocab.GetReadings();
 
    public override string ParsedForm =>
       MatchingConfiguration.BoolFlags.QuestionOverridesForm.IsSet()

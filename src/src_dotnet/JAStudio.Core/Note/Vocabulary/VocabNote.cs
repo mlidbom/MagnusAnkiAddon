@@ -10,7 +10,6 @@ namespace JAStudio.Core.Note;
 public class VocabNote : JPNote
 {
     public VocabNoteQuestion Question { get; private set; }
-    public MutableCommaSeparatedStringsListField Readings { get; }
     public VocabNoteUserFields User { get; }
     public VocabNoteForms Forms { get; }
     public VocabNoteKanji Kanji { get; }
@@ -25,20 +24,28 @@ public class VocabNote : JPNote
     public VocabNoteMatchingConfiguration MatchingConfiguration { get; private set; }
     public VocabCloner Cloner { get; }
 
-    // Property accessors for fields
-    public MutableStringField SourceAnswer => StringField(NoteFieldsConstants.Vocab.SourceAnswer);
-    public MutableStringField ActiveAnswer => StringField(NoteFieldsConstants.Vocab.ActiveAnswer);
-    public MutableStringField SourceMnemonic => StringField(NoteFieldsConstants.Vocab.SourceMnemonic);
-    public MutableStringField SourceReadingMnemonic => StringField(NoteFieldsConstants.Vocab.SourceReadingMnemonic);
-    public MutableStringField TechnicalNotes => StringField(NoteFieldsConstants.Vocab.TechnicalNotes);
-    public MutableStringField References => StringField(NoteFieldsConstants.Vocab.References);
+    public WritableStringValue SourceAnswer { get; }
+    public WritableStringValue ActiveAnswer { get; }
+    public WritableStringValue SourceMnemonic { get; }
+    public WritableStringValue SourceReadingMnemonic { get; }
+    public WritableStringValue TechnicalNotes { get; }
+    public WritableStringValue References { get; }
     public ImageField Image => new(StringField(NoteFieldsConstants.Vocab.Image));
     public ImageField UserImage => new(StringField(NoteFieldsConstants.Vocab.UserImage));
 
+    readonly List<string> _readings;
+
     public VocabNote(NoteServices services, VocabData? data = null) : base(services, data != null ? new VocabId(data.Id) : VocabId.New(), data?.ToNoteData())
     {
+        SourceAnswer = new WritableStringValue(data?.SourceAnswer ?? string.Empty, Guard);
+        ActiveAnswer = new WritableStringValue(data?.ActiveAnswer ?? string.Empty, Guard);
+        SourceMnemonic = new WritableStringValue(data?.SourceMnemonic ?? string.Empty, Guard);
+        SourceReadingMnemonic = new WritableStringValue(data?.SourceReadingMnemonic ?? string.Empty, Guard);
+        TechnicalNotes = new WritableStringValue(data?.TechnicalNotes ?? string.Empty, Guard);
+        References = new WritableStringValue(data?.References ?? string.Empty, Guard);
+        _readings = data?.Readings != null ? new List<string>(data.Readings) : [];
+
         Question = new VocabNoteQuestion(this, data, Guard);
-        Readings = new MutableCommaSeparatedStringsListField(CachingStringField(NoteFieldsConstants.Vocab.Reading));
         User = new VocabNoteUserFields(data, Guard);
         Forms = new VocabNoteForms(this, data, Guard);
         Kanji = new VocabNoteKanji(this);
@@ -108,13 +115,14 @@ public class VocabNote : JPNote
 
     public List<string> GetReadings()
     {
-        return Readings.Get();
+        return _readings.ToList();
     }
 
-    public void SetReadings(List<string> readings)
+    public void SetReadings(List<string> readings) => Guard.Update(() =>
     {
-        Readings.Set(readings);
-    }
+        _readings.Clear();
+        _readings.AddRange(readings);
+    });
 
     public void GenerateAndSetAnswer()
     {

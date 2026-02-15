@@ -18,8 +18,8 @@ public class CollectionFactoryTests : CollectionUsingTest
                                           new KanjiSpec(
                                              kanji.GetQuestion(),
                                              kanji.GetAnswer(),
-                                             kanji.ReadingKunHtml,
-                                             kanji.ReadingOnHtml
+                                             kanji.ReadingKunHtml.Value,
+                                             kanji.ReadingOnHtml.Value
                                           )
       ).ToHashSet();
 
@@ -32,7 +32,7 @@ public class CollectionFactoryTests : CollectionUsingTest
       var expectedVocab = VocabLists.TestSpecialVocab.OrderBy(x => x.Question).ToList();
       var vocabAll = GetService<VocabCollection>().All();
       var savedVocab = vocabAll
-                      .Select(vocab => new VocabSpec(vocab.GetQuestion(), vocab.GetAnswer(), vocab.Readings.Get()))
+                      .Select(vocab => new VocabSpec(vocab.GetQuestion(), vocab.GetAnswer(), vocab.GetReadings()))
                       .OrderBy(x => x.Question)
                       .ToList();
 

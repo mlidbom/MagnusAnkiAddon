@@ -53,10 +53,8 @@ public class KanjiNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void KanjiNote_GetPrimaryReadings_ExtractsMarkedReadings()
    {
       // Arrange
-      var kanji = new KanjiNote(NoteServices)
-                  {
-                     ReadingOnHtml = "<primary>カン</primary>, ケン"
-                  };
+      var kanji = new KanjiNote(NoteServices);
+      kanji.ReadingOnHtml.Set("<primary>カン</primary>, ケン");
 
       // Act
       var primaryReadings = kanji.PrimaryReadingsOn;
@@ -70,32 +68,28 @@ public class KanjiNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
    public void KanjiNote_AddPrimaryReading_MarksReading()
    {
       // Arrange
-      var kanji = new KanjiNote(NoteServices)
-                  {
-                     ReadingOnHtml = "カン, ケン"
-                  };
+      var kanji = new KanjiNote(NoteServices);
+      kanji.ReadingOnHtml.Set("カン, ケン");
 
       // Act
       kanji.AddPrimaryOnReading("カン");
 
       // Assert
-      Assert.Contains("<primary>カン</primary>", kanji.ReadingOnHtml);
+      Assert.Contains("<primary>カン</primary>", kanji.ReadingOnHtml.Value);
    }
 
    [Fact]
    public void KanjiNote_RemovePrimaryReading_UnmarksReading()
    {
       // Arrange
-      var kanji = new KanjiNote(NoteServices)
-                  {
-                     ReadingOnHtml = "<primary>カン</primary>, ケン"
-                  };
+      var kanji = new KanjiNote(NoteServices);
+      kanji.ReadingOnHtml.Set("<primary>カン</primary>, ケン");
 
       // Act
       kanji.RemovePrimaryOnReading("カン");
 
       // Assert
-      Assert.DoesNotContain("<primary>カン</primary>", kanji.ReadingOnHtml);
-      Assert.Contains("カン", kanji.ReadingOnHtml);
+      Assert.DoesNotContain("<primary>カン</primary>", kanji.ReadingOnHtml.Value);
+      Assert.Contains("カン", kanji.ReadingOnHtml.Value);
    }
 }

@@ -14,7 +14,7 @@ public static class VocabListRenderer
         {
             var classes = string.Join(" ", vocab.GetMetaTags());
 
-            var vocabReadings = vocab.Readings.Get();
+            var vocabReadings = vocab.GetReadings();
             if (primaryVocab.Contains(vocab.GetQuestion()) || 
                 (vocabReadings.Count > 0 && kanji.PrimaryVocab.Contains(vocabReadings[0])))
             {
