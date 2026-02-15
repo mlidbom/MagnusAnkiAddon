@@ -22,7 +22,8 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
    readonly OpenInAnkiMenus _openInAnkiMenus = new(services);
    readonly VocabStringMenus _vocabStringMenus = new(services);
 
-   List<SpecMenuItem> BuildVocabContextMenuSpec(NoteId vocabId, string selection, string clipboard)
+   // ReSharper disable once MemberCanBePrivate.Global used from python
+   public List<SpecMenuItem> BuildVocabContextMenuSpec(NoteId vocabId, string selection, string clipboard)
    {
       var vocab = _services.App.Collection.Vocab.WithIdOrNone(vocabId);
       if(vocab == null)
@@ -43,7 +44,8 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
       return menuItems;
    }
 
-   List<SpecMenuItem> BuildKanjiContextMenuSpec(NoteId kanjiId, string selection, string clipboard)
+   // ReSharper disable once MemberCanBePrivate.Global used from python
+   public List<SpecMenuItem> BuildKanjiContextMenuSpec(NoteId kanjiId, string selection, string clipboard)
    {
       var kanji = _services.App.Collection.Kanji.WithIdOrNone(kanjiId);
       if(kanji == null)
@@ -64,7 +66,8 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
       return menuItems;
    }
 
-   List<SpecMenuItem> BuildSentenceContextMenuSpec(NoteId sentenceId, string selection, string clipboard)
+   // ReSharper disable once MemberCanBePrivate.Global used from python
+   public List<SpecMenuItem> BuildSentenceContextMenuSpec(NoteId sentenceId, string selection, string clipboard)
    {
       var sentence = _services.App.Collection.Sentences.WithIdOrNone(sentenceId);
       if(sentence == null)
@@ -85,7 +88,8 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
       return menuItems;
    }
 
-   List<SpecMenuItem> BuildGenericContextMenuSpec(string selection, string clipboard)
+   // ReSharper disable once MemberCanBePrivate.Global used from python
+   public List<SpecMenuItem> BuildGenericContextMenuSpec(string selection, string clipboard)
    {
       var menuItems = new List<SpecMenuItem>();
 

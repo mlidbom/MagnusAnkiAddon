@@ -37,7 +37,8 @@ public class AppDialogs
       });
    }
 
-   internal void ToggleNoteSearchDialog()
+   // ReSharper disable once MemberCanBeInternal used from python
+   public void ToggleNoteSearchDialog()
    {
       this.Log().Info("ToggleNoteSearchDialog() called");
       Dispatcher.UIThread.Invoke(() =>
