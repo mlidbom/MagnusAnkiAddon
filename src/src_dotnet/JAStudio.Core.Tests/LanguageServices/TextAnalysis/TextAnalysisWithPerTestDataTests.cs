@@ -18,7 +18,7 @@ public class TextAnalysisWithPerTestDataTests : CollectionUsingTest
    public void InvisibleSpaceBreakup(string sentence, params string[] expectedOutput)
    {
       var sentenceNote = CreateTestSentence(sentence, "");
-      var rootWords = sentenceNote.ParsingResult.Get().ParsedWords
+      var rootWords = sentenceNote.GetParsingResult().ParsedWords
                                   .Select(w => w.ParsedForm)
                                   .ToList();
       Assert.Equal(expectedOutput.ToList(), rootWords);

@@ -12,7 +12,7 @@ public class SentenceSnapshot : CachedNote
    public SentenceSnapshot(SentenceNote note) : base(note)
    {
       Words = note.GetWords().ToArray();
-      DetectedVocab = note.ParsingResult.Get().MatchedVocabIds.ToArray();
+      DetectedVocab = note.GetParsingResult().MatchedVocabIds.ToArray();
       UserHighlightedVocab = note.Configuration.HighlightedWords.ToArray();
       MarkedIncorrectVocab = note.Configuration.IncorrectMatches.Words().ToArray();
    }

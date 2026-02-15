@@ -321,7 +321,7 @@ public class LocalNoteUpdater
       var dictionaryWordsWithNoVocab = scope.RunIndeterminate(
          "Fetching parsed words with no vocab notes from parsing results",
          () => _sentences.All()
-                         .SelectMany(sentence => sentence.ParsingResult.Get().ParsedWords
+                         .SelectMany(sentence => sentence.GetParsingResult().ParsedWords
                                                          .Where(word => word.VocabId == null)
                                                          .Select(word => word.ParsedForm))
                          .Distinct()

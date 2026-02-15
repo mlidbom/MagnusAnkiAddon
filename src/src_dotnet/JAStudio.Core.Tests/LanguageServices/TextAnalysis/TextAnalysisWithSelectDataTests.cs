@@ -40,7 +40,7 @@ public class TextAnalysisWithSelectDataTests : CollectionUsingTest
    public void IdentifyWords(string sentence, params string[] expectedOutput)
    {
       var sentenceNote = CreateTestSentence(sentence, "");
-      var words = sentenceNote.ParsingResult.Get().ParsedWords
+      var words = sentenceNote.GetParsingResult().ParsedWords
                               .Select(w => w.ParsedForm)
                               .ToHashSet()
                               .OrderBy(w => w)
@@ -57,7 +57,7 @@ public class TextAnalysisWithSelectDataTests : CollectionUsingTest
    public void ExcludedSurfaces(string sentence, params string[] expectedOutput)
    {
       var sentenceNote = CreateTestSentence(sentence, "");
-      var words = sentenceNote.ParsingResult.Get().ParsedWords
+      var words = sentenceNote.GetParsingResult().ParsedWords
                               .Select(w => w.ParsedForm)
                               .ToList();
       Assert.Equal(expectedOutput.ToList(), words);
@@ -68,7 +68,7 @@ public class TextAnalysisWithSelectDataTests : CollectionUsingTest
    public void StrictlySuffix(string sentence, params string[] expectedOutput)
    {
       var sentenceNote = CreateTestSentence(sentence, "");
-      var words = sentenceNote.ParsingResult.Get().ParsedWords
+      var words = sentenceNote.GetParsingResult().ParsedWords
                               .Select(w => w.ParsedForm)
                               .ToList();
       Assert.Equal(expectedOutput.ToList(), words);
@@ -80,7 +80,7 @@ public class TextAnalysisWithSelectDataTests : CollectionUsingTest
    public void RequiresAStem(string sentence, params string[] expectedOutput)
    {
       var sentenceNote = CreateTestSentence(sentence, "");
-      var rootWords = sentenceNote.ParsingResult.Get().ParsedWords
+      var rootWords = sentenceNote.GetParsingResult().ParsedWords
                                   .Select(w => w.ParsedForm)
                                   .ToList();
       Assert.Equal(expectedOutput.ToList(), rootWords);
@@ -93,7 +93,7 @@ public class TextAnalysisWithSelectDataTests : CollectionUsingTest
       var expected = new HashSet<string> { "ー" };
 
       var sentenceNote = CreateTestSentence(sentence, "");
-      var words = sentenceNote.ParsingResult.Get().ParsedWords
+      var words = sentenceNote.GetParsingResult().ParsedWords
                               .Select(w => w.ParsedForm)
                               .ToHashSet();
       Assert.Equal(expected, words);
@@ -105,7 +105,7 @@ public class TextAnalysisWithSelectDataTests : CollectionUsingTest
       var sentence = CreateTestSentence("勝つんだ", "");
       sentence.Configuration.AddHighlightedWord("んだ");
       sentence.UpdateParsedWords(force: true);
-      var parsingResult = sentence.ParsingResult.Get();
+      var parsingResult = sentence.GetParsingResult();
       var words = parsingResult.ParsedWords
                                .Select(w => w.ParsedForm)
                                .Distinct()

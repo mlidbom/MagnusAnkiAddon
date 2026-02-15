@@ -75,7 +75,7 @@ public class VocabSentenceViewModel
     {
         Vocab = vocabNote;
         Sentence = sentenceNote;
-        Result = sentenceNote.ParsingResult.Get();
+        Result = sentenceNote.GetParsingResult();
         Matches = Result.ParsedWords
             .Where(match => match.VocabId == vocabNote.GetId())
             .Select(match => new VocabSentenceMatchViewModel(match, this))

@@ -12,7 +12,7 @@ public static class SentenceNoteConverter
     public static SentenceData ToCorpusData(SentenceNote note)
     {
         var config = note.Configuration.Configuration;
-        var parsingResult = note.ParsingResult.Get();
+        var parsingResult = note.GetParsingResult();
 
         return new SentenceData
         {

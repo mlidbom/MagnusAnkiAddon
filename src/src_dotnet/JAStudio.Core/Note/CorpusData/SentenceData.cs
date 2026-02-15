@@ -98,6 +98,27 @@ public partial class SentenceData : CorpusDataBase
    /// Merges Anki-owned fields into existing data, preserving all fields Anki does not store.
    public SentenceData MergeAnkiData(NoteData ankiData) => this; //There are no fields where Anki owns the data
 
+   public static ParsingResult CreateParsingResult(SentenceParsingResultSubData? data)
+   {
+      if (data == null) return new ParsingResult(new List<ParsedMatch>(), "", "");
+      return new ParsingResult(
+         data.ParsedWords.Select(FromParsedMatchSubData).ToList(),
+         data.Sentence,
+         data.ParserVersion);
+   }
+
+   public static SentenceConfiguration CreateConfiguration(SentenceConfigSubData? data, Action saveCallback)
+   {
+      if (data == null) return new SentenceConfiguration(
+         new List<string>(),
+         WordExclusionSet.Empty(saveCallback),
+         WordExclusionSet.Empty(saveCallback));
+      return new SentenceConfiguration(
+         data.HighlightedWords.ToList(),
+         new WordExclusionSet(saveCallback, data.IncorrectMatches.Select(FromExclusionSubData).ToList()),
+         new WordExclusionSet(saveCallback, data.HiddenMatches.Select(FromExclusionSubData).ToList()));
+   }
+
    static SentenceConfigSubData ToConfigSubData(SentenceConfiguration config) =>
       new()
       {

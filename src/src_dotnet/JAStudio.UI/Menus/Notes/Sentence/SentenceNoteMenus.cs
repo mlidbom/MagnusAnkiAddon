@@ -130,7 +130,7 @@ public class SentenceNoteMenus
 
     private static IEnumerable<NoteId> GetParsedWordsNoteIds(SentenceNote sentence)
     {
-        var parsingResult = sentence.ParsingResult.Get();
+        var parsingResult = sentence.GetParsingResult();
         var vocabIds = parsingResult.ParsedWords
             .Where(p => p.VocabId != null)
             .Select(p => p.VocabId!)

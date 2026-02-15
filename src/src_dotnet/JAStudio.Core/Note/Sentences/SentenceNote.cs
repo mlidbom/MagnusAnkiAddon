@@ -8,14 +8,12 @@ using JAStudio.Core.Storage.Converters;
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.LanguageServices;
-using JAStudio.Core.Note.Sentences.Serialization;
 
 namespace JAStudio.Core.Note;
 
 public class SentenceNote : JPNote
 {
     public CachingSentenceConfigurationField Configuration { get; private set; }
-    public MutableSerializedObjectField<ParsingResult> ParsingResult { get; }
 
     public SentenceUserFields User { get; }
 
@@ -29,6 +27,8 @@ public class SentenceNote : JPNote
     public WritableStringValue JanomeTokens { get; }
     public WritableImageValue Screenshot { get; }
     public WritableAudioValue Audio { get; }
+
+    ParsingResult _parsingResult;
 
     public SentenceQuestionField Question => new(User.Question, SourceQuestion);
     public StripHtmlOnReadFallbackStringField Answer => new(User.Answer, SourceAnswer);
@@ -47,10 +47,8 @@ public class SentenceNote : JPNote
         Audio = new WritableAudioValue(data?.Audio ?? string.Empty, Guard);
 
         User = new SentenceUserFields(data, Guard);
-        Configuration = new CachingSentenceConfigurationField(this, StringField(SentenceNoteFields.Configuration));
-        ParsingResult = new MutableSerializedObjectField<ParsingResult>(
-            StringField(SentenceNoteFields.ParsingResult),
-            new ParsingResultSerializer());
+        Configuration = new CachingSentenceConfigurationField(this, data?.Configuration, Guard);
+        _parsingResult = SentenceData.CreateParsingResult(data?.ParsingResult);
     }
 
     public override void UpdateInCache()
@@ -91,9 +89,13 @@ public class SentenceNote : JPNote
         return new TextAnalysis(AnalysisServices, Question.WithInvisibleSpace(), Configuration.Configuration, forUI, cachedTokens);
     }
 
+    public ParsingResult GetParsingResult() => _parsingResult;
+
+    public void SetParsingResult(ParsingResult value) => Guard.Update(() => _parsingResult = value);
+
     public List<string> GetWords()
     {
-        var parsedWords = ParsingResult.Get().ParsedWordsStrings();
+        var parsedWords = GetParsingResult().ParsedWordsStrings();
         var highlightedWords = Configuration.HighlightedWords;
         var incorrectWords = Configuration.IncorrectMatches.Words();
 
@@ -115,8 +117,7 @@ public class SentenceNote : JPNote
             dependencies.Add(vocab);
         }
 
-        // Add displayed parsed words
-        var parsingResult = ParsingResult.Get();
+        var parsingResult = GetParsingResult();
         if (parsingResult != null)
         {
             foreach (var match in parsingResult.ParsedWords.Where(p => p.IsDisplayed && p.VocabId != null))
@@ -152,7 +153,7 @@ public class SentenceNote : JPNote
 
     public void UpdateParsedWords(bool force = false)
     {
-        var parsingResult = ParsingResult.Get();
+        var parsingResult = GetParsingResult();
         var questionText = Question.WithoutInvisibleSpace();
         
         if (!force && parsingResult != null && 
@@ -170,7 +171,7 @@ public class SentenceNote : JPNote
 
         var analysis = CreateAnalysis();
         JanomeTokens.Set(analysis.SerializedJanomeTokens);
-        ParsingResult.Set(Sentences.ParsingResult.FromAnalysis(analysis));
+        SetParsingResult(Sentences.ParsingResult.FromAnalysis(analysis));
     }
 
     public List<string> ExtractKanji()

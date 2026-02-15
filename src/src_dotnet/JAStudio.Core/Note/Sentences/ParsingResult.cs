@@ -1,5 +1,4 @@
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
-using JAStudio.Core.Note.Sentences.Serialization;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,8 +6,6 @@ namespace JAStudio.Core.Note.Sentences;
 
 public class ParsingResult
 {
-    public static readonly ParsingResultSerializer Serializer = new();
-
     public List<ParsedMatch> ParsedWords { get; }
     public string Sentence { get; }
     public string ParserVersion { get; }
