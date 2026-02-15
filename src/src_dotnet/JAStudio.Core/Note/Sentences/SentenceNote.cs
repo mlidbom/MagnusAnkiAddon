@@ -3,6 +3,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 using JAStudio.Core.Note.CorpusData;
 using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.Sentences;
+using JAStudio.Core.Storage.Converters;
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.LanguageServices;
@@ -27,6 +28,8 @@ public class SentenceNote : JPNote
     {
         Services.Collection.Sentences.Cache.JpNoteUpdated(this);
     }
+
+    public override CorpusDataBase ToCorpusData() => SentenceNoteConverter.ToCorpusData(this);
 
     // Property accessors
     public MutableStringField Id => StringField(SentenceNoteFields.Id);

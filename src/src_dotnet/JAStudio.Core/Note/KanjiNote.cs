@@ -5,6 +5,7 @@ using JAStudio.Core.LanguageServices;
 using JAStudio.Core.Note.CorpusData;
 using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.Vocabulary;
+using JAStudio.Core.Storage.Converters;
 using JAStudio.Core.SysUtils;
 
 namespace JAStudio.Core.Note;
@@ -21,6 +22,8 @@ public class KanjiNote : JPNote
    {
       Services.Collection.Kanji.Cache.JpNoteUpdated(this);
    }
+
+   public override CorpusDataBase ToCorpusData() => KanjiNoteConverter.ToCorpusData(this);
 
    public override string GetQuestion() => GetField(NoteFieldsConstants.Kanji.Question);
 

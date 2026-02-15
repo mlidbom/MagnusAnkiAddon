@@ -1,6 +1,7 @@
 using JAStudio.Core.Note.CorpusData;
 using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Note.Vocabulary;
+using JAStudio.Core.Storage.Converters;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -57,6 +58,8 @@ public class VocabNote : JPNote
     {
         Services.Collection.Vocab.Cache.JpNoteUpdated(this);
     }
+
+    public override CorpusDataBase ToCorpusData() => VocabNoteConverter.ToCorpusData(this);
 
     public override string GetQuestion()
     {

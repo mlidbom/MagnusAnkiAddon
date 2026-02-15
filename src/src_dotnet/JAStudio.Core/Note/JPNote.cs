@@ -2,16 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.Note.Collection;
+using JAStudio.Core.Note.CorpusData;
 using JAStudio.Core.Note.NoteFields;
+using MemoryPack;
 
 namespace JAStudio.Core.Note;
 
 public abstract class JPNote
 {
    public NoteFlushGuard RecursiveFlushGuard { get; }
+   public NoteGuard Guard { get; }
    public NoteServices Services { get; }
    int _hashValue;
    bool _persisted;
+   byte[]? _lastPersistedSnapshot;
 
    // Dictionary tracks card suspend status: true = active/unsuspended, false = suspended
    readonly Dictionary<string, bool> _cardStatus = new();
@@ -32,6 +36,7 @@ public abstract class JPNote
    {
       Services = services;
       RecursiveFlushGuard = new NoteFlushGuard(this);
+      Guard = new NoteGuard(Flush);
       _hashValue = 0;
 
       Tags = new NoteTags(this, data);
@@ -172,11 +177,25 @@ public abstract class JPNote
 
    protected string GetField(string fieldName) => _fields.TryGetValue(fieldName, out var value) ? value : string.Empty;
 
-   internal void MarkAsPersisted() => _persisted = true;
+   public abstract CorpusDataBase ToCorpusData();
+
+   byte[] TakeSnapshot() => MemoryPackSerializer.Serialize(ToCorpusData());
+
+   internal void MarkAsPersisted()
+   {
+      _persisted = true;
+      _lastPersistedSnapshot = TakeSnapshot();
+   }
 
    public void Flush()
    {
       if(!_persisted) return;
+
+      var currentSnapshot = TakeSnapshot();
+      if(_lastPersistedSnapshot != null && currentSnapshot.AsSpan().SequenceEqual(_lastPersistedSnapshot))
+         return;
+
+      _lastPersistedSnapshot = currentSnapshot;
       RecursiveFlushGuard.Flush();
    }
 
