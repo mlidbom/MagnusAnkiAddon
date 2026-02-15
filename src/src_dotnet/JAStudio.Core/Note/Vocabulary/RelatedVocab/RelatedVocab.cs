@@ -44,8 +44,7 @@ public class RelatedVocab
       DerivedFrom = new DerivedFromField(_data, guard);
       ConfusedWith = new ConfusedWithField(_data, guard);
 
-      _inCompoundIds = new Lazy<HashSet<NoteId>>(() =>
-                                                    InCompounds().Select(voc => voc.GetId()).ToHashSet());
+      _inCompoundIds = new Lazy<HashSet<NoteId>>(() => InCompounds().Select(voc => voc.GetId()).ToHashSet());
    }
 
    public ErgativeTwin ErgativeTwin { get; }
@@ -92,25 +91,6 @@ public class RelatedVocab
       return _vocab.Conjugator.GetStemsForPrimaryForm()
                    .SelectMany(stem => _vocab.Services.Collection.Vocab.WithQuestion(stem))
                    .ToHashSet();
-   }
-
-   HashSet<KanjiNote> MainFormKanjiNotes => _vocab.Services.Collection.Kanji.WithAnyKanjiIn(_vocab.Kanji.ExtractMainFormKanji()).ToHashSet();
-
-   public HashSet<JPNote> GetDirectDependencies()
-   {
-      var dependencies = new HashSet<JPNote>();
-
-      foreach(var kanji in MainFormKanjiNotes)
-      {
-         dependencies.Add(kanji);
-      }
-
-      foreach(var compoundPart in _vocab.CompoundParts.AllNotes())
-      {
-         dependencies.Add(compoundPart);
-      }
-
-      return dependencies;
    }
 }
 

@@ -60,8 +60,6 @@ public class KanjiNote : JPNote
       Image = new WritableImageValue(data?.Image ?? string.Empty, Guard);
    }
 
-   public override HashSet<JPNote> GetDirectDependencies() => GetRadicalsNotes().Cast<JPNote>().ToHashSet();
-
    public override void UpdateInCache()
    {
       Services.Collection.Kanji.Cache.JpNoteUpdated(this);

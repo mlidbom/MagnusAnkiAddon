@@ -93,41 +93,6 @@ public class SentenceNote : JPNote
       return allWords.Distinct().ToList();
    }
 
-   public override HashSet<JPNote> GetDirectDependencies()
-   {
-      var dependencies = new HashSet<JPNote>();
-
-      // Add highlighted vocab
-      var highlightedVocab = Configuration.HighlightedVocab();
-      foreach(var vocab in highlightedVocab)
-      {
-         dependencies.Add(vocab);
-      }
-
-      var parsingResult = GetParsingResult();
-      if(parsingResult != null)
-      {
-         foreach(var match in parsingResult.ParsedWords.Where(p => p.IsDisplayed && p.VocabId != null))
-         {
-            var vocab = Services.Collection.Vocab.WithIdOrNone(match.VocabId!);
-            if(vocab != null)
-            {
-               dependencies.Add(vocab);
-            }
-         }
-      }
-
-      // Add kanji
-      var kanjiList = ExtractKanji();
-      var kanjiNotes = Services.Collection.Kanji.WithAnyKanjiIn(kanjiList);
-      foreach(var kanjiNote in kanjiNotes)
-      {
-         dependencies.Add(kanjiNote);
-      }
-
-      return dependencies;
-   }
-
    public override void UpdateGeneratedData()
    {
       base.UpdateGeneratedData();

@@ -115,8 +115,6 @@ public abstract class JPNote
 
    public abstract string GetAnswer();
 
-   public virtual HashSet<JPNote> GetDirectDependencies() => new();
-
    public virtual void OnTagsUpdated()
    {
       // Called when tags are modified. Subclasses can override to invalidate cached state.

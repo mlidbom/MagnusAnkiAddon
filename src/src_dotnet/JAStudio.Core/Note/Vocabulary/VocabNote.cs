@@ -88,8 +88,6 @@ public class VocabNote : JPNote
       return !string.IsNullOrEmpty(userAnswer) ? userAnswer : sourceAnswer;
    }
 
-   public override HashSet<JPNote> GetDirectDependencies() => RelatedNotes.GetDirectDependencies();
-
    public override void OnTagsUpdated()
    {
       MatchingConfiguration.RefreshTagBasedFlags();
