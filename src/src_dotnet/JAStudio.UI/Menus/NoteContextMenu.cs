@@ -13,33 +13,16 @@ using JAStudio.UI.Utils;
 
 namespace JAStudio.UI.Menus;
 
-/// <summary>
-/// Main context menu coordinator - delegates to note-type-specific menu builders.
-/// Corresponds to common.py in Python.
-/// </summary>
-public class NoteContextMenu
+public class NoteContextMenu(Core.TemporaryServiceCollection services)
 {
-   readonly Core.TemporaryServiceCollection _services;
-   readonly VocabNoteMenus _vocabNoteMenus;
-   readonly KanjiNoteMenus _kanjiNoteMenus;
-   readonly SentenceNoteMenus _sentenceNoteMenus;
-   readonly OpenInAnkiMenus _openInAnkiMenus;
-   readonly VocabStringMenus _vocabStringMenus;
+   readonly Core.TemporaryServiceCollection _services = services;
+   readonly VocabNoteMenus _vocabNoteMenus = new(services);
+   readonly KanjiNoteMenus _kanjiNoteMenus = new(services);
+   readonly SentenceNoteMenus _sentenceNoteMenus = new(services);
+   readonly OpenInAnkiMenus _openInAnkiMenus = new(services);
+   readonly VocabStringMenus _vocabStringMenus = new(services);
 
-   public NoteContextMenu(Core.TemporaryServiceCollection services)
-   {
-      _services = services;
-      _vocabNoteMenus = new VocabNoteMenus(services);
-      _kanjiNoteMenus = new KanjiNoteMenus(services);
-      _sentenceNoteMenus = new SentenceNoteMenus(services);
-      _openInAnkiMenus = new OpenInAnkiMenus(services);
-      _vocabStringMenus = new VocabStringMenus(services);
-   }
-
-   /// <summary>
-   /// Build context menu for a vocab note as UI-agnostic specifications.
-   /// </summary>
-   public List<SpecMenuItem> BuildVocabContextMenuSpec(NoteId vocabId, string selection, string clipboard)
+   List<SpecMenuItem> BuildVocabContextMenuSpec(NoteId vocabId, string selection, string clipboard)
    {
       var vocab = _services.App.Collection.Vocab.WithIdOrNone(vocabId);
       if(vocab == null)
@@ -60,10 +43,7 @@ public class NoteContextMenu
       return menuItems;
    }
 
-   /// <summary>
-   /// Build context menu for a kanji note as UI-agnostic specifications.
-   /// </summary>
-   public List<SpecMenuItem> BuildKanjiContextMenuSpec(NoteId kanjiId, string selection, string clipboard)
+   List<SpecMenuItem> BuildKanjiContextMenuSpec(NoteId kanjiId, string selection, string clipboard)
    {
       var kanji = _services.App.Collection.Kanji.WithIdOrNone(kanjiId);
       if(kanji == null)
@@ -84,10 +64,7 @@ public class NoteContextMenu
       return menuItems;
    }
 
-   /// <summary>
-   /// Build context menu for a sentence note as UI-agnostic specifications.
-   /// </summary>
-   public List<SpecMenuItem> BuildSentenceContextMenuSpec(NoteId sentenceId, string selection, string clipboard)
+   List<SpecMenuItem> BuildSentenceContextMenuSpec(NoteId sentenceId, string selection, string clipboard)
    {
       var sentence = _services.App.Collection.Sentences.WithIdOrNone(sentenceId);
       if(sentence == null)
@@ -108,10 +85,7 @@ public class NoteContextMenu
       return menuItems;
    }
 
-   /// <summary>
-   /// Build context menu when no note is available as UI-agnostic specifications.
-   /// </summary>
-   public List<SpecMenuItem> BuildGenericContextMenuSpec(string selection, string clipboard)
+   List<SpecMenuItem> BuildGenericContextMenuSpec(string selection, string clipboard)
    {
       var menuItems = new List<SpecMenuItem>();
 
@@ -124,9 +98,6 @@ public class NoteContextMenu
       return menuItems;
    }
 
-   /// <summary>
-   /// Build context menu for a vocab note and convert to Avalonia MenuItems.
-   /// </summary>
    public List<Avalonia.Controls.MenuItem> BuildVocabContextMenu(long vocabId, string selection, string clipboard)
    {
       var noteId = _services.App.Collection.Vocab.ExternalIdToNoteId(vocabId);
@@ -135,9 +106,6 @@ public class NoteContextMenu
       return ConvertToAvaloniaMenuItems(specs);
    }
 
-   /// <summary>
-   /// Build context menu for a kanji note and convert to Avalonia MenuItems.
-   /// </summary>
    public List<Avalonia.Controls.MenuItem> BuildKanjiContextMenu(long kanjiId, string selection, string clipboard)
    {
       var noteId = _services.App.Collection.Kanji.ExternalIdToNoteId(kanjiId);
@@ -146,9 +114,6 @@ public class NoteContextMenu
       return ConvertToAvaloniaMenuItems(specs);
    }
 
-   /// <summary>
-   /// Build context menu for a sentence note and convert to Avalonia MenuItems.
-   /// </summary>
    public List<Avalonia.Controls.MenuItem> BuildSentenceContextMenu(long sentenceId, string selection, string clipboard)
    {
       var noteId = _services.App.Collection.Sentences.ExternalIdToNoteId(sentenceId);
@@ -157,9 +122,6 @@ public class NoteContextMenu
       return ConvertToAvaloniaMenuItems(specs);
    }
 
-   /// <summary>
-   /// Build generic context menu and convert to Avalonia MenuItems.
-   /// </summary>
    public List<Avalonia.Controls.MenuItem> BuildGenericContextMenu(string selection, string clipboard)
    {
       var specs = BuildGenericContextMenuSpec(selection, clipboard);
@@ -235,12 +197,12 @@ public class NoteContextMenu
             SpecMenuItem.Command(ShortcutFinger.Home1("Open in previewer"),
                                  () => OnOpenInPreviewer(note)),
             SpecMenuItem.Command(ShortcutFinger.Home3("Unsuspend all cards"),
-                                 () => note.UnsuspendAllCards(),
+                                 note.UnsuspendAllCards,
                                  null,
                                  null,
                                  hasSuspendedCards),
             SpecMenuItem.Command(ShortcutFinger.Home4("Suspend all cards"),
-                                 () => note.SuspendAllCards(),
+                                 note.SuspendAllCards,
                                  null,
                                  null,
                                  hasActiveCards)
