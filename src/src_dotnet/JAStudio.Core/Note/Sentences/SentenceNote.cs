@@ -137,9 +137,9 @@ public class SentenceNote : JPNote
     public override void UpdateGeneratedData()
     {
         base.UpdateGeneratedData();
-        
+
         UpdateParsedWords();
-        
+
         ActiveAnswer.Set(GetAnswer());
         ActiveQuestion.Set(GetQuestion());
     }
@@ -148,8 +148,8 @@ public class SentenceNote : JPNote
     {
         var parsingResult = GetParsingResult();
         var questionText = Question.WithoutInvisibleSpace();
-        
-        if (!force && parsingResult != null && 
+
+        if (!force && parsingResult != null &&
             parsingResult.Sentence == questionText &&
             parsingResult.ParserVersion == TextAnalysis.Version)
         {

@@ -78,28 +78,28 @@ public abstract class JPNote
    public void SuspendAllCards()
    {
       Services.CardOperations.SuspendAllCardsForNote(_id);
-      
+
       // Update local status for all known card types
       var cardTypes = _cardStatus.Keys.ToList();
       foreach (var cardType in cardTypes)
       {
          _cardStatus[cardType] = false; // false = suspended
       }
-      
+
       Flush();
    }
 
    public void UnsuspendAllCards()
    {
       Services.CardOperations.UnsuspendAllCardsForNote(_id);
-      
+
       // Update local status for all known card types
       var cardTypes = _cardStatus.Keys.ToList();
       foreach (var cardType in cardTypes)
       {
          _cardStatus[cardType] = true; // true = active/unsuspended
       }
-      
+
       Flush();
    }
 

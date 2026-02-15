@@ -104,7 +104,7 @@ public class VocabNote : JPNote
     public override void UpdateGeneratedData()
     {
         base.UpdateGeneratedData();
-        
+
         Services.VocabNoteGeneratedData.UpdateGeneratedData(this);
     }
 

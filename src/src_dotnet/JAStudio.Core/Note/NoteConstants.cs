@@ -55,9 +55,9 @@ public static class NoteTypes
     public const string Sentence = "_japanese_sentence";
 
     public static readonly HashSet<string> All = [Kanji, Vocab, Sentence];
-    
+
     public static readonly IReadOnlyList<string> AllList = [Kanji, Vocab, Sentence];
-    
+
     public static string FromType(Type noteType) => _map[noteType];
 
     public static Func<Guid, NoteId> IdFactoryFromType(Type noteType) => _idFactories[noteType];
