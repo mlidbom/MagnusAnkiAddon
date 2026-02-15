@@ -71,14 +71,17 @@ public class VocabNote : JPNote
 
    public override string GetQuestion() => Question.Raw;
 
-   public override List<MediaReference> GetMediaReferences()
+   public override List<MediaReference> MediaReferences
    {
-      var refs = Audio.First.GetMediaReferences();
-      refs.AddRange(Audio.Second.GetMediaReferences());
-      refs.AddRange(Audio.Tts.GetMediaReferences());
-      refs.AddRange(Image.GetMediaReferences());
-      refs.AddRange(UserImage.GetMediaReferences());
-      return refs;
+      get
+      {
+         var refs = Audio.First.GetMediaReferences();
+         refs.AddRange(Audio.Second.GetMediaReferences());
+         refs.AddRange(Audio.Tts.GetMediaReferences());
+         refs.AddRange(Image.GetMediaReferences());
+         refs.AddRange(UserImage.GetMediaReferences());
+         return refs;
+      }
    }
 
    public override string GetAnswer()

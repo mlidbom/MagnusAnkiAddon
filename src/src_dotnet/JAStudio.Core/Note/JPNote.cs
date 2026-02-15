@@ -126,8 +126,8 @@ public abstract class JPNote
    {
       // Override in subclasses
    }
-
-   public virtual List<MediaReference> GetMediaReferences() => [];
+   
+   public abstract List<MediaReference> MediaReferences { get; }
 
    public abstract CorpusDataBase ToCorpusData();
 

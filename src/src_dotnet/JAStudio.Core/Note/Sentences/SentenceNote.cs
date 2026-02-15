@@ -57,11 +57,14 @@ public class SentenceNote : JPNote
 
    public override CorpusDataBase ToCorpusData() => SentenceNoteConverter.ToCorpusData(this);
 
-   public override List<MediaReference> GetMediaReferences()
+   public override List<MediaReference> MediaReferences
    {
-      var refs = Audio.GetMediaReferences();
-      refs.AddRange(Screenshot.GetMediaReferences());
-      return refs;
+      get
+      {
+         var refs = Audio.GetMediaReferences();
+         refs.AddRange(Screenshot.GetMediaReferences());
+         return refs;
+      }
    }
 
    public override string GetQuestion() => Question.WithoutInvisibleSpace();

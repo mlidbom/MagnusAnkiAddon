@@ -452,11 +452,14 @@ public class KanjiNote : JPNote
 
    public List<VocabNote> GetVocabNotes() => Services.Collection.Vocab.WithKanjiInAnyForm(this);
 
-   public override List<MediaReference> GetMediaReferences()
+   public override List<MediaReference> MediaReferences
    {
-      var refs = Audio.GetMediaReferences();
-      refs.AddRange(Image.GetMediaReferences());
-      return refs;
+      get
+      {
+         var refs = Audio.GetMediaReferences();
+         refs.AddRange(Image.GetMediaReferences());
+         return refs;
+      }
    }
 
    public List<VocabNote> GetVocabNotesSorted() =>
