@@ -29,21 +29,18 @@ public abstract class JPNote
    }
    public NoteTags Tags { get; }
 
-   readonly Dictionary<string, string> _fields;
    NoteId _id;
 
-   protected JPNote(NoteServices services, NoteId id, NoteData? data = null)
+   protected JPNote(NoteServices services, NoteId id, List<string>? tags = null)
    {
       Services = services;
       RecursiveFlushGuard = new NoteFlushGuard(this);
       Guard = new NoteGuard(Flush);
       _hashValue = 0;
 
-      Tags = new NoteTags(this, data);
+      Tags = new NoteTags(this, tags);
 
-      _fields = data?.Fields ?? new Dictionary<string, string>();
       _id = id;
-      _fields[MyNoteFields.JasNoteId] = id.Value.ToString();
    }
 
    public bool IsFlushing => RecursiveFlushGuard.IsFlushing;
@@ -54,17 +51,7 @@ public abstract class JPNote
       _cardStatus[status.CardType] = !status.IsSuspended;
    }
 
-   protected Dictionary<string, string> GetFieldsDictionary() => _fields;
-
-   public NoteData GetData()
-   {
-      SyncFieldsFromSubObjects();
-      return new(GetId(), _fields, Tags.ToStringList());
-   }
-
-   /// Syncs migrated sub-object owned data back into the _fields dictionary.
-   /// Override in subclasses to sync fields that are no longer backed by the dictionary.
-   protected virtual void SyncFieldsFromSubObjects() { }
+   public NoteData GetData() => ToCorpusData().ToNoteData();
 
    public override bool Equals(object? obj)
    {
@@ -142,13 +129,9 @@ public abstract class JPNote
 
    public JPCollection Collection => Services.Collection;
 
-   public virtual string GetQuestion()
-   {
-      var value = GetField(MyNoteFields.Question);
-      return !string.IsNullOrEmpty(value) ? value : "[EMPTY]";
-   }
+   public abstract string GetQuestion();
 
-   public virtual string GetAnswer() => GetField(MyNoteFields.Answer);
+   public abstract string GetAnswer();
 
    public virtual HashSet<JPNote> GetDirectDependencies() => new();
 
@@ -185,8 +168,6 @@ public abstract class JPNote
 
    public virtual List<MediaReference> GetMediaReferences() => [];
 
-   protected string GetField(string fieldName) => _fields.TryGetValue(fieldName, out var value) ? value : string.Empty;
-
    public abstract CorpusDataBase ToCorpusData();
 
    byte[] TakeSnapshot() => MemoryPackSerializer.Serialize(ToCorpusData());
@@ -208,18 +189,6 @@ public abstract class JPNote
       _lastPersistedSnapshot = currentSnapshot;
       RecursiveFlushGuard.Flush();
    }
-
-   protected void SetField(string fieldName, string value)
-   {
-      var fieldValue = GetField(fieldName);
-      if(fieldValue != value)
-      {
-         _fields[fieldName] = value;
-         Flush();
-      }
-   }
-
-   protected MutableStringField StringField(string fieldName) => new(fieldName, GetField, SetField);
 
    public int PriorityTagValue()
    {

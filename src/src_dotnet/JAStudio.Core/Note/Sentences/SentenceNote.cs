@@ -33,7 +33,7 @@ public class SentenceNote : JPNote
     public SentenceQuestionField Question => new(User.Question, SourceQuestion);
     public StripHtmlOnReadFallbackStringField Answer => new(User.Answer, SourceAnswer);
 
-    public SentenceNote(NoteServices services, SentenceData? data = null) : base(services, data != null ? new SentenceId(data.Id) : SentenceId.New(), data?.ToNoteData())
+    public SentenceNote(NoteServices services, SentenceData? data = null) : base(services, data != null ? new SentenceId(data.Id) : SentenceId.New(), data?.Tags)
     {
         ExternalId = new WritableStringValue(data?.ExternalId ?? string.Empty, Guard);
         Reading = new WritableStringValue(data?.Reading ?? string.Empty, Guard);
@@ -54,12 +54,6 @@ public class SentenceNote : JPNote
     public override void UpdateInCache()
     {
         Services.Collection.Sentences.Cache.JpNoteUpdated(this);
-    }
-
-    protected override void SyncFieldsFromSubObjects()
-    {
-        var data = SentenceNoteConverter.ToCorpusData(this);
-        data.PopulateInto(GetFieldsDictionary());
     }
 
     public override CorpusDataBase ToCorpusData() => SentenceNoteConverter.ToCorpusData(this);

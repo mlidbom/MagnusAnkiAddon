@@ -9,13 +9,13 @@ public class NoteTags : IEnumerable<Tag>
    readonly JPNote _note;
    readonly HashSet<Tag> _tags = new();
 
-   public NoteTags(JPNote note, NoteData? data = null)
+   public NoteTags(JPNote note, List<string>? tags = null)
    {
       _note = note;
 
-      if(data != null)
+      if(tags != null)
       {
-         foreach(var tagName in data.Tags)
+         foreach(var tagName in tags)
          {
             _tags.Add(Tag.FromName(tagName));
          }

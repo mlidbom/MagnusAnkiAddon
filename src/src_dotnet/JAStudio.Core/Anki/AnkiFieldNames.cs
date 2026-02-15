@@ -65,6 +65,7 @@ public static class AnkiFieldNames
       public const string ParsingResult = "__parsing_result";
    }
 
+   //Do not remove, we will be restoring the ImmersionKit import functionality
    public static class ImmersionKit
    {
       public const string Audio = "Audio Sentence"; //Read only once to do conversion to our sentence type

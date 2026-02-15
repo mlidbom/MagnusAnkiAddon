@@ -28,7 +28,4 @@ public abstract partial class CorpusDataBase
       fields[MyNoteFields.JasNoteId] = Id.ToString();
       return new NoteData(CreateTypedId(), fields, Tags);
    }
-
-   /// Populates an existing dictionary with the current field values.
-   public void PopulateInto(Dictionary<string, string> fields) => PopulateFields(fields);
 }

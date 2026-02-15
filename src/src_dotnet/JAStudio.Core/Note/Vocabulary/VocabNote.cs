@@ -35,7 +35,7 @@ public class VocabNote : JPNote
 
     readonly List<string> _readings;
 
-    public VocabNote(NoteServices services, VocabData? data = null) : base(services, data != null ? new VocabId(data.Id) : VocabId.New(), data?.ToNoteData())
+    public VocabNote(NoteServices services, VocabData? data = null) : base(services, data != null ? new VocabId(data.Id) : VocabId.New(), data?.Tags)
     {
         SourceAnswer = new WritableStringValue(data?.SourceAnswer ?? string.Empty, Guard);
         ActiveAnswer = new WritableStringValue(data?.ActiveAnswer ?? string.Empty, Guard);
@@ -66,12 +66,6 @@ public class VocabNote : JPNote
     public override void UpdateInCache()
     {
         Services.Collection.Vocab.Cache.JpNoteUpdated(this);
-    }
-
-    protected override void SyncFieldsFromSubObjects()
-    {
-        var data = VocabNoteConverter.ToCorpusData(this);
-        data.PopulateInto(GetFieldsDictionary());
     }
 
     public override CorpusDataBase ToCorpusData() => VocabNoteConverter.ToCorpusData(this);

@@ -36,7 +36,7 @@ public class KanjiNote : JPNote
    readonly WritableStringValue _similarMeaningRaw;
    readonly WritableStringValue _confusedWithRaw;
 
-   public KanjiNote(NoteServices services, KanjiData? data = null) : base(services, data != null ? new KanjiId(data.Id) : KanjiId.New(), data?.ToNoteData())
+   public KanjiNote(NoteServices services, KanjiData? data = null) : base(services, data != null ? new KanjiId(data.Id) : KanjiId.New(), data?.Tags)
    {
       _question = new WritableStringValue(data?.Kanji ?? string.Empty, Guard);
       SourceAnswer = new WritableStringValue(data?.SourceAnswer ?? string.Empty, Guard);
@@ -65,12 +65,6 @@ public class KanjiNote : JPNote
    public override void UpdateInCache()
    {
       Services.Collection.Kanji.Cache.JpNoteUpdated(this);
-   }
-
-   protected override void SyncFieldsFromSubObjects()
-   {
-      var data = KanjiNoteConverter.ToCorpusData(this);
-      data.PopulateInto(GetFieldsDictionary());
    }
 
    public override CorpusDataBase ToCorpusData() => KanjiNoteConverter.ToCorpusData(this);
