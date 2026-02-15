@@ -68,8 +68,7 @@ public class JAStudioAppRoot
       var app = Core.App.Bootstrap(
          backendNoteCreator: new AnkiBackendNoteCreator(),
          backendDataLoader: new AnkiBackendDataLoader(),
-         environmentPaths: new AnkiEnvironmentPaths(),
-         alternateRepositoryFactory: ns => new AnkiNoteRepository(ns));
+         environmentPaths: new AnkiEnvironmentPaths());
       CompzeLogger.LogLevel = LogLevel.Info;
 
       // Initialize the C# configuration system with the Anki addon config

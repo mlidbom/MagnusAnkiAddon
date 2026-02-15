@@ -60,16 +60,13 @@ public class JPCollection
       NoteServices noteServices,
       JapaneseConfig config,
       INoteRepository noteRepository,
-      INoteRepository? alternateRepository = null,
       IBackendDataLoader? backendDataLoader = null)
    {
       this.Log().Info().LogMethodExecutionTime();
 
       NoteServices = noteServices;
-      _primaryRepository = noteRepository;
-      _alternateRepository = alternateRepository;
+      _repository = noteRepository;
       _backendDataLoader = backendDataLoader;
-      _config = config;
       DictLookup = new DictLookup(this, config);
       VocabNoteGeneratedData = new VocabNoteGeneratedData(DictLookup);
       VocabNoteFactory = new VocabNoteFactory(DictLookup, this, noteServices);
@@ -78,15 +75,13 @@ public class JPCollection
       Kanji = new KanjiCollection(backendNoteCreator, NoteServices);
       Sentences = new SentenceCollection(backendNoteCreator, NoteServices);
 
-      Kanji.Cache.OnNoteUpdated(note => noteRepository.Save(note));
-      Vocab.Cache.OnNoteUpdated(note => noteRepository.Save(note));
-      Sentences.Cache.OnNoteUpdated(note => noteRepository.Save(note));
+      Kanji.Cache.OnNoteUpdated(note => _repository.Save(note));
+      Vocab.Cache.OnNoteUpdated(note => _repository.Save(note));
+      Sentences.Cache.OnNoteUpdated(note => _repository.Save(note));
    }
 
-   readonly INoteRepository _primaryRepository;
-   readonly INoteRepository? _alternateRepository;
+   readonly INoteRepository _repository;
    readonly IBackendDataLoader? _backendDataLoader;
-   readonly JapaneseConfig _config;
 
    /// <summary>Clear all in-memory caches. Called when the backend DB is about to become unreliable (e.g. sync starting, profile closing).</summary>
    public void ClearCaches()
@@ -98,16 +93,12 @@ public class JPCollection
       Sentences.Cache.Clear();
    }
 
-   INoteRepository ConfiguredRepository => _config.LoadNotesFromFileSystem.Value
-      ? _primaryRepository
-      : (_alternateRepository ?? _primaryRepository);
 
-   string NoteRepositoryType => _config.LoadNotesFromFileSystem.Value ? "file system" : "alternate";
 
    /// <summary>Clear and reload all caches. Called after sync or collection reload.</summary>
    public void ReloadFromBackend()
    {
-      using var runner = NoteServices.TaskRunner.Current($"Populating caches from {NoteRepositoryType}");
+      using var runner = NoteServices.TaskRunner.Current("Populating caches from file system");
       // ReSharper disable once ExplicitCallerInfoArgument
       using var _ = this.Log().Info().LogMethodExecutionTime("====== Reloading JAStudio data ======");
 
@@ -153,9 +144,9 @@ public class JPCollection
    {
       using var _ = this.Log().Warning().LogMethodExecutionTime();
 
-      var allNotes = ConfiguredRepository.LoadAll();
+      var allNotes = _repository.LoadAll();
 
-      using var runner = NoteServices.TaskRunner.Current($"Populating caches from {NoteRepositoryType}");
+      using var runner = NoteServices.TaskRunner.Current("Populating caches from file system");
 
       Task.WaitAll(
          runner.RunIndeterminateAsync("Pushing kanji notes into cache", () => Kanji.Cache.AddAllToCache(allNotes.Kanji)),

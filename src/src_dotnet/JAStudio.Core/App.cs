@@ -4,7 +4,6 @@ using System.IO;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
-using JAStudio.Core.Storage;
 using JAStudio.Core.TestUtils;
 
 namespace JAStudio.Core;
@@ -17,10 +16,9 @@ public class App : IDisposable
 
    internal App(
       IBackendNoteCreator? backendNoteCreator = null,
-      IBackendDataLoader? backendDataLoader = null,
-      Func<NoteServices, INoteRepository>? alternateRepositoryFactory = null)
+      IBackendDataLoader? backendDataLoader = null)
    {
-      Services = AppBootstrapper.Bootstrap(this, backendNoteCreator, backendDataLoader, alternateRepositoryFactory).Resolve<TemporaryServiceCollection>();
+      Services = AppBootstrapper.Bootstrap(this, backendNoteCreator, backendDataLoader).Resolve<TemporaryServiceCollection>();
    }
 
    public static bool IsTesting => TestEnvDetector.IsTesting;
@@ -34,11 +32,10 @@ public class App : IDisposable
    public static App Bootstrap(
       IBackendNoteCreator? backendNoteCreator = null,
       IBackendDataLoader? backendDataLoader = null,
-      IEnvironmentPaths? environmentPaths = null,
-      Func<NoteServices, INoteRepository>? alternateRepositoryFactory = null)
+      IEnvironmentPaths? environmentPaths = null)
    {
       if(environmentPaths != null) _environmentPaths = environmentPaths;
-      return new App(backendNoteCreator, backendDataLoader, alternateRepositoryFactory);
+      return new App(backendNoteCreator, backendDataLoader);
    }
 
    public JapaneseConfig Config => Services.ConfigurationStore.Config();

@@ -26,8 +26,7 @@ static class AppBootstrapper
    internal static IServiceLocator Bootstrap(
       App app,
       IBackendNoteCreator? backendNoteCreator = null,
-      IBackendDataLoader? backendDataLoader = null,
-      Func<NoteServices, INoteRepository>? alternateRepositoryFactory = null)
+      IBackendDataLoader? backendDataLoader = null)
    {
       backendNoteCreator ??= new TestingBackendNoteCreator();
 
@@ -53,10 +52,7 @@ static class AppBootstrapper
          Singleton.For<TemporaryServiceCollection>().CreatedBy(() => new TemporaryServiceCollection(container.ServiceLocator)),
          Singleton.For<JapaneseConfig>().CreatedBy((ConfigurationStore store) => store.Config()),
          Singleton.For<JPCollection>().CreatedBy((NoteServices noteServices, JapaneseConfig config, INoteRepository noteRepository) =>
-         {
-            var alternateRepo = alternateRepositoryFactory?.Invoke(noteServices);
-            return new JPCollection(backendNoteCreator, noteServices, config, noteRepository, alternateRepo, backendDataLoader);
-         }),
+            new JPCollection(backendNoteCreator, noteServices, config, noteRepository, backendDataLoader)),
          Singleton.For<VocabCollection>().CreatedBy((JPCollection col) => col.Vocab),
          Singleton.For<KanjiCollection>().CreatedBy((JPCollection col) => col.Kanji),
          Singleton.For<SentenceCollection>().CreatedBy((JPCollection col) => col.Sentences),
