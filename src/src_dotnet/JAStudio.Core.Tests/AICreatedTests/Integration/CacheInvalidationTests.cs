@@ -1,109 +1,109 @@
-using Xunit;
 using JAStudio.Core.Note.Collection;
+using Xunit;
 
 namespace JAStudio.Core.Tests.AICreatedTests.Integration;
 
 public class CacheInvalidationTests : TestStartingWithEmptyCollection, IAIGeneratedTestClass
 {
-    [Fact]
-    public void UpdatingVocabQuestion_UpdatesCache()
-    {
-        // Arrange
-        var vocab = CreateVocab("食べる", "to eat", "たべる");
-        var originalQuestion = vocab.GetQuestion();
+   [Fact]
+   public void UpdatingVocabQuestion_UpdatesCache()
+   {
+      // Arrange
+      var vocab = CreateVocab("食べる", "to eat", "たべる");
+      var originalQuestion = vocab.GetQuestion();
 
-        // Act
-        vocab.Question.Set("飲む");
-        vocab.UpdateGeneratedData(); // Trigger cache update
+      // Act
+      vocab.Question.Set("飲む");
+      vocab.UpdateGeneratedData(); // Trigger cache update
 
-        // Assert - Old question should not find it
-        var oldResults = GetService<VocabCollection>().WithQuestion("食べる");
-        Assert.Empty(oldResults);
+      // Assert - Old question should not find it
+      var oldResults = GetService<VocabCollection>().WithQuestion("食べる");
+      Assert.Empty(oldResults);
 
-        // New question should find it
-        var newResults = GetService<VocabCollection>().WithQuestion("飲む");
-        Assert.Single(newResults);
-        Assert.Equal(vocab, newResults[0]);
-    }
+      // New question should find it
+      var newResults = GetService<VocabCollection>().WithQuestion("飲む");
+      Assert.Single(newResults);
+      Assert.Equal(vocab, newResults[0]);
+   }
 
-    [Fact]
-    public void AddingVocabForm_DoesNotMakeItFindableByWithQuestion()
-    {
-        // Arrange
-        var vocab = CreateVocab("食べる", "to eat", "たべる");
+   [Fact]
+   public void AddingVocabForm_DoesNotMakeItFindableByWithQuestion()
+   {
+      // Arrange
+      var vocab = CreateVocab("食べる", "to eat", "たべる");
 
-        // Act - Add a form that doesn't exist as another vocab's question
-        vocab.Forms.Add("taberu-form");
+      // Act - Add a form that doesn't exist as another vocab's question
+      vocab.Forms.Add("taberu-form");
 
-        // Assert - Forms are not questions, so WithQuestion should NOT find it
-        var results = GetService<VocabCollection>().WithQuestion("taberu-form");
-        Assert.Empty(results);
+      // Assert - Forms are not questions, so WithQuestion should NOT find it
+      var results = GetService<VocabCollection>().WithQuestion("taberu-form");
+      Assert.Empty(results);
 
-        // But it should still be findable by its actual question
-        var byQuestion = GetService<VocabCollection>().WithQuestion("\u98df\u3079\u308b");
-        Assert.Single(byQuestion);
-    }
+      // But it should still be findable by its actual question
+      var byQuestion = GetService<VocabCollection>().WithQuestion("\u98df\u3079\u308b");
+      Assert.Single(byQuestion);
+   }
 
-    [Fact]
-    public void RemovingVocabForm_StillFindableByQuestion()
-    {
-        // Arrange
-        var vocab = CreateVocab("食べる", "to eat", "たべる");
-        vocab.Forms.Add("食う");
+   [Fact]
+   public void RemovingVocabForm_StillFindableByQuestion()
+   {
+      // Arrange
+      var vocab = CreateVocab("食べる", "to eat", "たべる");
+      vocab.Forms.Add("食う");
 
-        // Verify forms are stored
-        Assert.Contains("食う", vocab.Forms.AllSet());
+      // Verify forms are stored
+      Assert.Contains("食う", vocab.Forms.AllSet());
 
-        // Act - Remove the form
-        vocab.Forms.Remove("食う");
+      // Act - Remove the form
+      vocab.Forms.Remove("食う");
 
-        // Assert - Form should be removed
-        Assert.DoesNotContain("食う", vocab.Forms.AllSet());
+      // Assert - Form should be removed
+      Assert.DoesNotContain("食う", vocab.Forms.AllSet());
 
-        // But still findable by its question
-        var results = GetService<VocabCollection>().WithQuestion("食べる");
-        Assert.Single(results);
-    }
+      // But still findable by its question
+      var results = GetService<VocabCollection>().WithQuestion("食べる");
+      Assert.Single(results);
+   }
 
-    [Fact]
-    public void UpdatingKanjiQuestion_UpdatesCache()
-    {
-        // Arrange
-        var kanji = CreateKanji("食", "eat", "ショク", "た");
+   [Fact]
+   public void UpdatingKanjiQuestion_UpdatesCache()
+   {
+      // Arrange
+      var kanji = CreateKanji("食", "eat", "ショク", "た");
 
-        // Act
-        kanji.SetQuestion("飲");
-        kanji.UpdateGeneratedData();
+      // Act
+      kanji.SetQuestion("飲");
+      kanji.UpdateGeneratedData();
 
-        // Assert
-        Assert.Null(GetService<KanjiCollection>().WithKanji("食"));
-        Assert.NotNull(GetService<KanjiCollection>().WithKanji("飲"));
-        Assert.Equal(kanji, GetService<KanjiCollection>().WithKanji("飲"));
-    }
+      // Assert
+      Assert.Null(GetService<KanjiCollection>().WithKanji("食"));
+      Assert.NotNull(GetService<KanjiCollection>().WithKanji("飲"));
+      Assert.Equal(kanji, GetService<KanjiCollection>().WithKanji("飲"));
+   }
 
-    [Fact]
-    public void MultipleUpdates_MaintainCacheConsistency()
-    {
-        // Arrange
-        var vocab = CreateVocab("走る", "to run", "はしる");
+   [Fact]
+   public void MultipleUpdates_MaintainCacheConsistency()
+   {
+      // Arrange
+      var vocab = CreateVocab("走る", "to run", "はしる");
 
-        // Act - Multiple updates
-        vocab.Forms.Add("駆ける");
-        vocab.Forms.Add("ダッシュする");
-        vocab.Question.Set("疾走する");
-        vocab.UpdateGeneratedData();
-        vocab.Forms.Remove("駆ける");
+      // Act - Multiple updates
+      vocab.Forms.Add("駆ける");
+      vocab.Forms.Add("ダッシュする");
+      vocab.Question.Set("疾走する");
+      vocab.UpdateGeneratedData();
+      vocab.Forms.Remove("駆ける");
 
-        // Assert - Cache should reflect final state
-        var byNewQuestion = GetService<VocabCollection>().WithQuestion("疾走する");
-        Assert.Single(byNewQuestion);
+      // Assert - Cache should reflect final state
+      var byNewQuestion = GetService<VocabCollection>().WithQuestion("疾走する");
+      Assert.Single(byNewQuestion);
 
-        // Old question should not find it
-        var byOldQuestion = GetService<VocabCollection>().WithQuestion("走る");
-        Assert.Empty(byOldQuestion);
+      // Old question should not find it
+      var byOldQuestion = GetService<VocabCollection>().WithQuestion("走る");
+      Assert.Empty(byOldQuestion);
 
-        // Forms should be stored correctly
-        Assert.DoesNotContain("駆ける", vocab.Forms.AllSet());
-        Assert.Contains("ダッシュする", vocab.Forms.AllSet());
-    }
+      // Forms should be stored correctly
+      Assert.DoesNotContain("駆ける", vocab.Forms.AllSet());
+      Assert.Contains("ダッシュする", vocab.Forms.AllSet());
+   }
 }

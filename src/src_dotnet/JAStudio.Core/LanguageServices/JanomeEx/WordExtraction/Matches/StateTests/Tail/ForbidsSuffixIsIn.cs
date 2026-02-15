@@ -6,14 +6,14 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTe
 
 public static class ForbidsSuffixIsIn
 {
-    public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
-    {
-        var suffixes = inspector.Match.Rules.SuffixIsNot;
-        if (suffixes.Any() && suffixes.Any(suffix => inspector.Suffix.StartsWith(suffix)))
-        {
-            return FailedMatchRequirement.Forbids($"suffix_in:{string.Join(",", suffixes)}");
-        }
+   public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
+   {
+      var suffixes = inspector.Match.Rules.SuffixIsNot;
+      if(suffixes.Any() && suffixes.Any(suffix => inspector.Suffix.StartsWith(suffix)))
+      {
+         return FailedMatchRequirement.Forbids($"suffix_in:{string.Join(",", suffixes)}");
+      }
 
-        return null;
-    }
+      return null;
+   }
 }

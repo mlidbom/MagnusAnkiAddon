@@ -17,20 +17,16 @@ namespace JAStudio.UI.ViewModels;
 
 public partial class NoteSearchDialogViewModel : ObservableObject
 {
-   private const int MaxResults = 100;
-   private readonly Core.TemporaryServiceCollection _services;
+   const int MaxResults = 100;
+   readonly Core.TemporaryServiceCollection _services;
 
-   [ObservableProperty]
-   private string _searchText = string.Empty;
+   [ObservableProperty] string _searchText = string.Empty;
 
-   [ObservableProperty]
-   private string _statusText = "Hit enter to search";
+   [ObservableProperty] string _statusText = "Hit enter to search";
 
-   [ObservableProperty]
-   private bool _isSearching = false;
+   [ObservableProperty] bool _isSearching = false;
 
-   [ObservableProperty]
-   private NoteSearchResultViewModel? _selectedResult;
+   [ObservableProperty] NoteSearchResultViewModel? _selectedResult;
 
    public ObservableCollection<NoteSearchResultViewModel> Results { get; } = new();
 
@@ -47,7 +43,7 @@ public partial class NoteSearchDialogViewModel : ObservableObject
       // Execute search when Enter is pressed (handled via command binding)
    }
 
-   private async Task PerformSearchAsync()
+   async Task PerformSearchAsync()
    {
       var searchText = SearchText.Trim();
       if(string.IsNullOrWhiteSpace(searchText))
@@ -89,7 +85,7 @@ public partial class NoteSearchDialogViewModel : ObservableObject
       }
    }
 
-   private List<NoteSearchResultViewModel> SearchNotes(string searchText)
+   List<NoteSearchResultViewModel> SearchNotes(string searchText)
    {
       var results = new List<NoteSearchResultViewModel>();
 
@@ -150,7 +146,7 @@ public partial class NoteSearchDialogViewModel : ObservableObject
       return results.Take(MaxResults).ToList();
    }
 
-   private List<NoteSearchResultViewModel> SearchInNotes<TNote>(
+   List<NoteSearchResultViewModel> SearchInNotes<TNote>(
       List<TNote> notes,
       string searchText,
       Func<TNote, Dictionary<string, Func<string>>> extractorsFactory)
@@ -255,11 +251,9 @@ public partial class NoteSearchDialogViewModel : ObservableObject
       return results;
    }
 
-   private static string StripHtml(string html)
-   {
+   static string StripHtml(string html) =>
       // Strip HTML tags and bracket markup
-      return ExStr.StripHtmlAndBracketMarkupAndNoiseCharacters(html);
-   }
+      ExStr.StripHtmlAndBracketMarkupAndNoiseCharacters(html);
 
    public void OpenSelectedNote()
    {
@@ -287,7 +281,7 @@ public class NoteSearchResultViewModel
       Answer = ExStr.StripHtmlAndBracketMarkupAndNoiseCharacters(note.GetAnswer());
    }
 
-   private static string GetNoteTypeDisplay(JPNote note)
+   static string GetNoteTypeDisplay(JPNote note)
    {
       return note switch
       {

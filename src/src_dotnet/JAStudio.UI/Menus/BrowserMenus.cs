@@ -72,7 +72,7 @@ public class BrowserMenus
       return SpecMenuItem.Submenu("&Magnus", items);
    }
 
-   private SpecMenuItem BuildNoteActionsSubmenu(JPNote note)
+   SpecMenuItem BuildNoteActionsSubmenu(JPNote note)
    {
       // Build note-specific context menu using existing infrastructure
       // Just return their note actions submenu for the specific note type
@@ -91,7 +91,7 @@ public class BrowserMenus
       return SpecMenuItem.Submenu(ShortcutFinger.Home3("Note"), new List<SpecMenuItem>());
    }
 
-   private static SpecMenuItem BuildSpreadSubmenu(IReadOnlyList<long> cardIds)
+   static SpecMenuItem BuildSpreadSubmenu(IReadOnlyList<long> cardIds)
    {
       var startDayMenus = new List<SpecMenuItem>();
 
@@ -115,11 +115,11 @@ public class BrowserMenus
    }
 
    // Action handlers
-   private static void OnPrioritizeCards(IReadOnlyList<long> cardIds) => AnkiFacade.Browser.MenuActions.PrioritizeCards(cardIds);
+   static void OnPrioritizeCards(IReadOnlyList<long> cardIds) => AnkiFacade.Browser.MenuActions.PrioritizeCards(cardIds);
 
-   private static void OnSpreadCards(IReadOnlyList<long> cardIds, int startDay, int daysApart) => AnkiFacade.Browser.MenuActions.SpreadCardsOverDays(cardIds, startDay, daysApart);
+   static void OnSpreadCards(IReadOnlyList<long> cardIds, int startDay, int daysApart) => AnkiFacade.Browser.MenuActions.SpreadCardsOverDays(cardIds, startDay, daysApart);
 
-   private void OnReparseSentences(List<SentenceNote> sentences)
+   void OnReparseSentences(List<SentenceNote> sentences)
    {
       BackgroundTaskManager.Run(() =>
       {
@@ -130,7 +130,7 @@ public class BrowserMenus
    }
 
    // Helper methods
-   private JPNote? GetNoteFromCardId(long cardId)
+   JPNote? GetNoteFromCardId(long cardId)
    {
       try
       {
@@ -154,7 +154,7 @@ public class BrowserMenus
       }
    }
 
-   private List<SentenceNote> GetSentenceNotes(IReadOnlyList<long> ankiNoteIds)
+   List<SentenceNote> GetSentenceNotes(IReadOnlyList<long> ankiNoteIds)
    {
       var sentences = new List<SentenceNote>();
 

@@ -11,14 +11,12 @@ namespace JAStudio.UI.ViewModels;
 
 public partial class ReadingsMappingsDialogViewModel : ObservableObject
 {
-   private readonly Window _window;
-   private readonly Core.TemporaryServiceCollection _services;
+   readonly Window _window;
+   readonly Core.TemporaryServiceCollection _services;
 
-   [ObservableProperty]
-   private string _mappingsText = string.Empty;
+   [ObservableProperty] string _mappingsText = string.Empty;
 
-   [ObservableProperty]
-   private string _searchText = string.Empty;
+   [ObservableProperty] string _searchText = string.Empty;
 
    public RelayCommand SaveCommand { get; }
    public RelayCommand CancelCommand { get; }
@@ -34,7 +32,7 @@ public partial class ReadingsMappingsDialogViewModel : ObservableObject
       CancelCommand = new RelayCommand(Cancel);
    }
 
-   private void Save()
+   void Save()
    {
       // Parse, deduplicate, and sort mappings
       var sorted = SortedValueLinesWithoutDuplicatesOrBlankLines();
@@ -49,12 +47,12 @@ public partial class ReadingsMappingsDialogViewModel : ObservableObject
       AnkiFacade.UIUtils.Refresh();
    }
 
-   private void Cancel()
+   void Cancel()
    {
       _window.Close(false);
    }
 
-   private string SortedValueLinesWithoutDuplicatesOrBlankLines()
+   string SortedValueLinesWithoutDuplicatesOrBlankLines()
    {
       var lines = MappingsText.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 

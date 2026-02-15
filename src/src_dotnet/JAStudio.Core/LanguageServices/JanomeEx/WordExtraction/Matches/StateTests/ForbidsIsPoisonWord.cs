@@ -5,14 +5,15 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTe
 
 public static class ForbidsIsPoisonWord
 {
-    private static readonly FailedMatchRequirement Failed = FailedMatchRequirement.Forbids("poison_word");
+   static readonly FailedMatchRequirement Failed = FailedMatchRequirement.Forbids("poison_word");
 
-    public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
-    {
-        if (inspector.Match.Vocab.MatchingConfiguration.BoolFlags.IsPoisonWord.IsSet())
-        {
-            return Failed;
-        }
-        return null;
-    }
+   public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
+   {
+      if(inspector.Match.Vocab.MatchingConfiguration.BoolFlags.IsPoisonWord.IsSet())
+      {
+         return Failed;
+      }
+
+      return null;
+   }
 }

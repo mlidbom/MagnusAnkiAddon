@@ -1,7 +1,7 @@
 using System.Linq;
+using JAStudio.Core.Note.Collection;
 using JAStudio.Core.ViewModels.KanjiList;
 using Xunit;
-using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.Tests.ViewModels;
 

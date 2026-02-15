@@ -6,44 +6,40 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing.PreProcessingStage;
 
 public abstract class WordInfoEntry
 {
-    public string Word { get; }
-    public FrozenSet<string> PartsOfSpeech { get; }
+   public string Word { get; }
+   public FrozenSet<string> PartsOfSpeech { get; }
 
-    protected WordInfoEntry(string word, FrozenSet<string> partsOfSpeech)
-    {
-        Word = word;
-        PartsOfSpeech = partsOfSpeech;
-    }
+   protected WordInfoEntry(string word, FrozenSet<string> partsOfSpeech)
+   {
+      Word = word;
+      PartsOfSpeech = partsOfSpeech;
+   }
 
-    public bool IsIchidan => PartsOfSpeech.Contains(POS.IchidanVerb);
-    public bool IsGodan => PartsOfSpeech.Contains(POS.GodanVerb);
-    public bool IsIntransitive => PartsOfSpeech.Contains(POS.Intransitive);
+   public bool IsIchidan => PartsOfSpeech.Contains(POS.IchidanVerb);
+   public bool IsGodan => PartsOfSpeech.Contains(POS.GodanVerb);
+   public bool IsIntransitive => PartsOfSpeech.Contains(POS.Intransitive);
 
-    public abstract string Answer { get; }
+   public abstract string Answer { get; }
 }
 
 public class VocabWordInfoEntry : WordInfoEntry
 {
-    private readonly VocabNote _vocab;
+   readonly VocabNote _vocab;
 
-    public VocabWordInfoEntry(string word, VocabNote vocab)
-        : base(word, vocab.PartsOfSpeech.Get().ToFrozenSet())
-    {
-        _vocab = vocab;
-    }
+   public VocabWordInfoEntry(string word, VocabNote vocab)
+      : base(word, vocab.PartsOfSpeech.Get().ToFrozenSet()) =>
+      _vocab = vocab;
 
-    public override string Answer => _vocab.GetAnswer();
+   public override string Answer => _vocab.GetAnswer();
 }
 
 public class DictWordInfoEntry : WordInfoEntry
 {
-    private readonly DictLookupResult _dictResult;
+   readonly DictLookupResult _dictResult;
 
-    public DictWordInfoEntry(string word, DictLookupResult dictResult)
-        : base(word, dictResult.PartsOfSpeech().ToFrozenSet())
-    {
-        _dictResult = dictResult;
-    }
+   public DictWordInfoEntry(string word, DictLookupResult dictResult)
+      : base(word, dictResult.PartsOfSpeech().ToFrozenSet()) =>
+      _dictResult = dictResult;
 
-    public override string Answer => _dictResult.FormatAnswer();
+   public override string Answer => _dictResult.FormatAnswer();
 }

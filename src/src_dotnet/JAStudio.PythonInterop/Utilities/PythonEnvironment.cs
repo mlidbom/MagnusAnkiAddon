@@ -28,7 +28,7 @@ public static class PythonEnvironment
       return Py.GIL();
    }
 
-   private static readonly IMonitorCE Monitor = IMonitorCE.WithDefaultTimeout();
+   static readonly IMonitorCE Monitor = IMonitorCE.WithDefaultTimeout();
 
    /// <param name="venvPath">Optional path to venv. If not provided, uses JASTUDIO_VENV_PATH environment variable or auto-detects.</param>
    public static void EnsureInitialized(string? venvPath = null)
@@ -86,8 +86,7 @@ public static class PythonEnvironment
                Path.Combine(basePython, "..", "lib", pythonVersion, "lib-dynload"),
                Path.Combine(venvPath, "lib", pythonVersion, "site-packages")
             );
-         }
-         else
+         } else
          {
             PythonEngine.PythonPath = string.Join(
                Path.PathSeparator.ToString(),
@@ -102,7 +101,7 @@ public static class PythonEnvironment
       });
    }
 
-   private static string GetVenvPath()
+   static string GetVenvPath()
    {
       var envPath = Environment.GetEnvironmentVariable("JASTUDIO_VENV_PATH");
       if(!string.IsNullOrEmpty(envPath))
@@ -122,7 +121,7 @@ public static class PythonEnvironment
       return Path.Combine(projectRoot, "venv");
    }
 
-   private static string? GetBasePythonFromConfig(string pyvenvCfgPath)
+   static string? GetBasePythonFromConfig(string pyvenvCfgPath)
    {
       return File.ReadAllLines(pyvenvCfgPath)
                  .Where(line => line.StartsWith("home = "))
@@ -130,7 +129,7 @@ public static class PythonEnvironment
                  .FirstOrDefault();
    }
 
-   private static string GetPythonVersionFromConfig(string pyvenvCfgPath)
+   static string GetPythonVersionFromConfig(string pyvenvCfgPath)
    {
       var versionLine = File.ReadAllLines(pyvenvCfgPath)
                             .Where(line => line.StartsWith("version = "))
@@ -146,7 +145,7 @@ public static class PythonEnvironment
       return "python3";
    }
 
-   private static string? FindPythonDll(string venvPath, string basePython)
+   static string? FindPythonDll(string venvPath, string basePython)
    {
       if(IsLinux)
       {
@@ -156,7 +155,7 @@ public static class PythonEnvironment
       return FindPythonDllWindows(venvPath);
    }
 
-   private static string? FindPythonDllWindows(string venvPath)
+   static string? FindPythonDllWindows(string venvPath)
    {
       var venvScripts = Path.Combine(venvPath, "Scripts");
 
@@ -175,7 +174,7 @@ public static class PythonEnvironment
       return null;
    }
 
-   private static string? FindPythonSharedLibraryLinux(string basePython)
+   static string? FindPythonSharedLibraryLinux(string basePython)
    {
       // On Linux, basePython from pyvenv.cfg "home" is the bin directory (e.g. /usr/bin)
       // The shared library is typically in a lib directory like /usr/lib/x86_64-linux-gnu/ or /usr/lib/
@@ -184,13 +183,13 @@ public static class PythonEnvironment
 
       // Search common library paths
       var searchDirs = new[]
-      {
-         Path.Combine(prefixDir, "lib"),
-         Path.Combine(prefixDir, "lib", "x86_64-linux-gnu"),
-         "/usr/lib",
-         "/usr/lib/x86_64-linux-gnu",
-         "/usr/lib64"
-      };
+                       {
+                          Path.Combine(prefixDir, "lib"),
+                          Path.Combine(prefixDir, "lib", "x86_64-linux-gnu"),
+                          "/usr/lib",
+                          "/usr/lib/x86_64-linux-gnu",
+                          "/usr/lib64"
+                       };
 
       // Try to find exact version match first (e.g. libpython3.12.so)
       var pythonExe = Directory.GetFiles(basePython, "python3.*")

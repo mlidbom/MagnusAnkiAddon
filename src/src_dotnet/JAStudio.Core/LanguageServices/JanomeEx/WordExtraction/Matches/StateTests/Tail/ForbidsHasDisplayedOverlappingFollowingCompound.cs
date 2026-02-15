@@ -21,7 +21,7 @@ public sealed class ForbidsHasDisplayedOverlappingFollowingCompound : CustomForb
       var yieldLastToken = inspector.RequiresForbids.YieldLastToken;
       if(yieldLastToken.IsRequired) return true;
 
-      if(!inspector.Word.Analysis.ForUI || yieldLastToken.IsForbidden) 
+      if(!inspector.Word.Analysis.ForUI || yieldLastToken.IsForbidden)
          return false;
 
       var pos = inspector.Match.Vocab.PartsOfSpeech;

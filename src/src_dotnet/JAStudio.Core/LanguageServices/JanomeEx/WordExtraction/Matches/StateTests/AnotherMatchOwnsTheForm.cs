@@ -5,14 +5,15 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTe
 
 public static class ForbidsAnotherMatchIsHigherPriority
 {
-    private static readonly FailedMatchRequirement Failed = FailedMatchRequirement.Forbids("another_match_owns_the_form_or_is_higher_priority_due_to_custom_requirements_weight");
+   static readonly FailedMatchRequirement Failed = FailedMatchRequirement.Forbids("another_match_owns_the_form_or_is_higher_priority_due_to_custom_requirements_weight");
 
-    public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
-    {
-        if (inspector.Match.AnotherMatchIsHigherPriority)
-        {
-            return Failed;
-        }
-        return null;
-    }
+   public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
+   {
+      if(inspector.Match.AnotherMatchIsHigherPriority)
+      {
+         return Failed;
+      }
+
+      return null;
+   }
 }

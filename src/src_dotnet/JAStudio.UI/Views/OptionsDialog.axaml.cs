@@ -10,12 +10,12 @@ public partial class OptionsDialog : Window
    [Obsolete("For XAML designer/previever only")]
    public OptionsDialog() {}
 
-    public OptionsDialog(Core.TemporaryServiceCollection services)
-    {
-        this.Log().Info("OptionsDialog constructor: calling InitializeComponent()...");
-        InitializeComponent();
-        this.Log().Info("OptionsDialog constructor: creating ViewModel...");
-        DataContext = new OptionsDialogViewModel(this, services);
-        this.Log().Info("OptionsDialog constructor: completed");
-    }
+   public OptionsDialog(Core.TemporaryServiceCollection services)
+   {
+      this.Log().Info("OptionsDialog constructor: calling InitializeComponent()...");
+      InitializeComponent();
+      this.Log().Info("OptionsDialog constructor: creating ViewModel...");
+      DataContext = new OptionsDialogViewModel(this, services);
+      this.Log().Info("OptionsDialog constructor: completed");
+   }
 }

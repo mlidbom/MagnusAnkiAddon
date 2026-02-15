@@ -6,96 +6,75 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 
 public sealed class WordExclusion
 {
-    private const string Secret = "aoesunth9cgrcgf";
-    private const int NoIndex = -1;
+   const string Secret = "aoesunth9cgrcgf";
+   const int NoIndex = -1;
 
-    public string Word { get; }
-    public int Index { get; }
-    private readonly string _matchPart;
+   public string Word { get; }
+   public int Index { get; }
+   readonly string _matchPart;
 
-    private WordExclusion(string word, int index, string secret)
-    {
-        if (secret != Secret)
-        {
-            throw new InvalidOperationException("please use the factory methods instead of this private constructor");
-        }
-        
-        Word = word;
-        Index = index;
-        _matchPart = word.Split('｜')[0]; // VocabNoteQuestion.DISAMBIGUATION_MARKER
-    }
+   WordExclusion(string word, int index, string secret)
+   {
+      if(secret != Secret)
+      {
+         throw new InvalidOperationException("please use the factory methods instead of this private constructor");
+      }
 
-    public bool ExcludesFormAtIndex(string form, int index)
-    {
-        return form == Word && (Index == NoIndex || Index == index);
-    }
+      Word = word;
+      Index = index;
+      _matchPart = word.Split('｜')[0]; // VocabNoteQuestion.DISAMBIGUATION_MARKER
+   }
 
-    public static WordExclusion Global(string exclusion)
-    {
-        return new WordExclusion(exclusion.Trim(), NoIndex, Secret);
-    }
+   public bool ExcludesFormAtIndex(string form, int index) => form == Word && (Index == NoIndex || Index == index);
 
-    public static WordExclusion AtIndex(string exclusion, int index)
-    {
-        return new WordExclusion(exclusion.Trim(), index, Secret);
-    }
+   public static WordExclusion Global(string exclusion) => new(exclusion.Trim(), NoIndex, Secret);
 
-    /// <summary>
-    /// Creates a WordExclusion from a string in the format "word:index" or "word" for global exclusions.
-    /// </summary>
-    public static WordExclusion FromString(string value)
-    {
-        var parts = value.Split(':');
-        if (parts.Length == 1)
-        {
-            return Global(parts[0]);
-        }
-        else if (parts.Length == 2)
-        {
-            return AtIndex(parts[0], int.Parse(parts[1]));
-        }
-        throw new ArgumentException($"Invalid exclusion format: {value}");
-    }
+   public static WordExclusion AtIndex(string exclusion, int index) => new(exclusion.Trim(), index, Secret);
 
-    public override bool Equals(object? obj)
-    {
-        if (obj is WordExclusion other)
-        {
-            return Word == other.Word && Index == other.Index;
-        }
-        return false;
-    }
+   /// <summary>
+   /// Creates a WordExclusion from a string in the format "word:index" or "word" for global exclusions.
+   /// </summary>
+   public static WordExclusion FromString(string value)
+   {
+      var parts = value.Split(':');
+      if(parts.Length == 1)
+      {
+         return Global(parts[0]);
+      } else if(parts.Length == 2)
+      {
+         return AtIndex(parts[0], int.Parse(parts[1]));
+      }
 
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(Word, Index);
-    }
+      throw new ArgumentException($"Invalid exclusion format: {value}");
+   }
 
-    public override string ToString()
-    {
-        return $"WordExclusion('{Word}', {Index})";
-    }
+   public override bool Equals(object? obj)
+   {
+      if(obj is WordExclusion other)
+      {
+         return Word == other.Word && Index == other.Index;
+      }
 
-    public bool ExcludesAllWordsExcludedBy(WordExclusion other)
-    {
-        return Word == other.Word && (Index == NoIndex || Index == other.Index);
-    }
+      return false;
+   }
 
-    public Dictionary<string, object> ToDict()
-    {
-        return new Dictionary<string, object>
-        {
-            { "word", Word },
-            { "index", Index }
-        };
-    }
+   public override int GetHashCode() => HashCode.Combine(Word, Index);
 
-    public static WordExclusion FromReader(JsonReader reader)
-    {
-        return new WordExclusion(
-            reader.GetString("word"),
-            reader.GetInt("index"),
-            Secret
-        );
-    }
+   public override string ToString() => $"WordExclusion('{Word}', {Index})";
+
+   public bool ExcludesAllWordsExcludedBy(WordExclusion other) => Word == other.Word && (Index == NoIndex || Index == other.Index);
+
+   public Dictionary<string, object> ToDict() =>
+      new()
+      {
+         { "word", Word },
+         { "index", Index }
+      };
+
+   public static WordExclusion FromReader(JsonReader reader) =>
+      new(
+         reader.GetString("word"),
+         reader.GetInt("index"),
+         Secret
+      );
 }

@@ -10,7 +10,7 @@ public readonly record struct MediaFileId(Guid Value)
 
    public static bool TryParse(string? value, out MediaFileId result)
    {
-      if (Guid.TryParse(value, out var guid))
+      if(Guid.TryParse(value, out var guid))
       {
          result = new MediaFileId(guid);
          return true;

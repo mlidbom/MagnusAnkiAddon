@@ -16,7 +16,7 @@ public partial class ReadingsMappingsDialog : Window
       DataContext = new ReadingsMappingsDialogViewModel(this, services);
    }
 
-   private void InitializeComponent()
+   void InitializeComponent()
    {
       AvaloniaXamlLoader.Load(this);
    }

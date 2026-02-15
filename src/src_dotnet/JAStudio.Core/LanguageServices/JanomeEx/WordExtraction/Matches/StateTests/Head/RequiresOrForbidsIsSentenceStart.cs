@@ -7,22 +7,24 @@ public static class RequiresOrForbidsIsSentenceStart
    static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("sentence_start");
    static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("sentence_start");
 
-    public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
-    {
-        var requirement = inspector.Match.MatchingConfiguration.RequiresForbids.SentenceStart;
-        if (requirement.IsActive)
-        {
-            var isInState = inspector.Prefix.Length == 0 || 
-                           AnalysisConstants.SentenceStartCharacters.Contains(inspector.Prefix[^1].ToString());
-            if (requirement.IsRequired && !isInState)
-            {
-                return RequiredFailure;
-            }
-            if (requirement.IsForbidden && isInState)
-            {
-                return ForbiddenFailure;
-            }
-        }
-        return null;
-    }
+   public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
+   {
+      var requirement = inspector.Match.MatchingConfiguration.RequiresForbids.SentenceStart;
+      if(requirement.IsActive)
+      {
+         var isInState = inspector.Prefix.Length == 0 ||
+                         AnalysisConstants.SentenceStartCharacters.Contains(inspector.Prefix[^1].ToString());
+         if(requirement.IsRequired && !isInState)
+         {
+            return RequiredFailure;
+         }
+
+         if(requirement.IsForbidden && isInState)
+         {
+            return ForbiddenFailure;
+         }
+      }
+
+      return null;
+   }
 }

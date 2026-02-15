@@ -5,15 +5,16 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTe
 
 public static class ForbidsIsConfiguredIncorrect
 {
-    private static readonly FailedMatchRequirement Failed = FailedMatchRequirement.Forbids("configured_incorrect");
+   static readonly FailedMatchRequirement Failed = FailedMatchRequirement.Forbids("configured_incorrect");
 
-    public static FailedMatchRequirement? ApplyTo(MatchInspector inspector)
-    {
-        if (inspector.Configuration.IncorrectMatches.ExcludesAtIndex(inspector.Match.ExclusionForm,
-                                                                     inspector.Match.StartIndex))
-        {
-            return Failed;
-        }
-        return null;
-    }
+   public static FailedMatchRequirement? ApplyTo(MatchInspector inspector)
+   {
+      if(inspector.Configuration.IncorrectMatches.ExcludesAtIndex(inspector.Match.ExclusionForm,
+                                                                  inspector.Match.StartIndex))
+      {
+         return Failed;
+      }
+
+      return null;
+   }
 }

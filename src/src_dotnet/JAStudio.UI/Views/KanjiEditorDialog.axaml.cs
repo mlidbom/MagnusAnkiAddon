@@ -8,27 +8,27 @@ namespace JAStudio.UI.Views;
 
 public partial class KanjiEditorDialog : Window
 {
-    public KanjiEditorDialog()
-    {
-        InitializeComponent();
-    }
+   public KanjiEditorDialog()
+   {
+      InitializeComponent();
+   }
 
-    public KanjiEditorDialog(KanjiNote kanji) : this()
-    {
-        var viewModel = new KanjiEditorViewModel(kanji);
+   public KanjiEditorDialog(KanjiNote kanji) : this()
+   {
+      var viewModel = new KanjiEditorViewModel(kanji);
 
-        viewModel.SaveCommand = new RelayCommand(() =>
-        {
-            viewModel.Save();
-            AnkiFacade.UIUtils.Refresh();
-            Close();
-        });
+      viewModel.SaveCommand = new RelayCommand(() =>
+      {
+         viewModel.Save();
+         AnkiFacade.UIUtils.Refresh();
+         Close();
+      });
 
-        viewModel.CancelCommand = new RelayCommand(() =>
-        {
-            Close();
-        });
+      viewModel.CancelCommand = new RelayCommand(() =>
+      {
+         Close();
+      });
 
-        DataContext = viewModel;
-    }
+      DataContext = viewModel;
+   }
 }

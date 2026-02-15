@@ -5,24 +5,26 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTe
 
 public static class RequiresOrForbidsIsSentenceEnd
 {
-    private static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("sentence_end");
-    private static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("sentence_end");
+   static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("sentence_end");
+   static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("sentence_end");
 
-    public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
-    {
-        var requirement = inspector.Match.RequiresForbids.SentenceEnd;
-        if (requirement.IsActive)
-        {
-            var isInState = inspector.IsEndOfStatement;
-            if (requirement.IsRequired && !isInState)
-            {
-                return RequiredFailure;
-            }
-            if (requirement.IsForbidden && isInState)
-            {
-                return ForbiddenFailure;
-            }
-        }
-        return null;
-    }
+   public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
+   {
+      var requirement = inspector.Match.RequiresForbids.SentenceEnd;
+      if(requirement.IsActive)
+      {
+         var isInState = inspector.IsEndOfStatement;
+         if(requirement.IsRequired && !isInState)
+         {
+            return RequiredFailure;
+         }
+
+         if(requirement.IsForbidden && isInState)
+         {
+            return ForbiddenFailure;
+         }
+      }
+
+      return null;
+   }
 }

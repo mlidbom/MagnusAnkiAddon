@@ -69,28 +69,27 @@ public partial class VocabData : CorpusDataBase
 
    string SerializeMatchingRules() =>
       MatchingRulesSerializer.Serialize(new VocabNoteMatchingRulesData(
-         MatchingRules.SurfaceIsNot.ToHashSet(),
-         MatchingRules.PrefixIsNot.ToHashSet(),
-         MatchingRules.SuffixIsNot.ToHashSet(),
-         MatchingRules.RequiredPrefix.ToHashSet(),
-         MatchingRules.YieldToSurface.ToHashSet()));
+                                           MatchingRules.SurfaceIsNot.ToHashSet(),
+                                           MatchingRules.PrefixIsNot.ToHashSet(),
+                                           MatchingRules.SuffixIsNot.ToHashSet(),
+                                           MatchingRules.RequiredPrefix.ToHashSet(),
+                                           MatchingRules.YieldToSurface.ToHashSet()));
 
    string SerializeRelatedVocab() =>
       RelatedVocabSerializer.Serialize(new RelatedVocabData(
-         RelatedVocab.ErgativeTwin,
-         new ValueWrapper<string>(RelatedVocab.DerivedFrom),
-         RelatedVocab.PerfectSynonyms.ToHashSet(),
-         RelatedVocab.Synonyms.ToHashSet(),
-         RelatedVocab.Antonyms.ToHashSet(),
-         RelatedVocab.ConfusedWith.ToHashSet(),
-         RelatedVocab.SeeAlso.ToHashSet()));
+                                          RelatedVocab.ErgativeTwin,
+                                          new ValueWrapper<string>(RelatedVocab.DerivedFrom),
+                                          RelatedVocab.PerfectSynonyms.ToHashSet(),
+                                          RelatedVocab.Synonyms.ToHashSet(),
+                                          RelatedVocab.Antonyms.ToHashSet(),
+                                          RelatedVocab.ConfusedWith.ToHashSet(),
+                                          RelatedVocab.SeeAlso.ToHashSet()));
 
    /// Creates VocabData from raw Anki NoteData (for NoteCache and Python interop paths).
    public static VocabData FromAnkiNoteData(NoteData data) => FromAnki(new AnkiVocabNote(data));
 
-   public static VocabData FromAnki(AnkiVocabNote anki)
-   {
-      return new VocabData
+   public static VocabData FromAnki(AnkiVocabNote anki) =>
+      new()
       {
          Id = (anki.Id ?? VocabId.New()).Value,
          Tags = new List<string>(anki.Tags),
@@ -102,7 +101,6 @@ public partial class VocabData : CorpusDataBase
          Image = anki.Image,
          UserImage = anki.UserImage,
       };
-   }
 
    /// Merges Anki-owned fields into existing data, preserving all fields Anki does not store.
    public VocabData MergeAnkiData(NoteData ankiData) => this; //There are no fields where Anki owns the data

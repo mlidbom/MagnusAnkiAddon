@@ -9,13 +9,11 @@ namespace JAStudio.UI.ViewModels;
 
 public partial class EnglishWordSearchDialogViewModel : ObservableObject
 {
-   private const int MaxResults = 100;
+   const int MaxResults = 100;
 
-   [ObservableProperty]
-   private string _searchText = string.Empty;
+   [ObservableProperty] string _searchText = string.Empty;
 
-   [ObservableProperty]
-   private EnglishWordResultViewModel? _selectedResult;
+   [ObservableProperty] EnglishWordResultViewModel? _selectedResult;
 
    public ObservableCollection<EnglishWordResultViewModel> Results { get; } = new();
 
@@ -24,7 +22,7 @@ public partial class EnglishWordSearchDialogViewModel : ObservableObject
       PerformSearch();
    }
 
-   private void PerformSearch()
+   void PerformSearch()
    {
       var searchText = SearchText.Trim();
       Results.Clear();
@@ -41,7 +39,7 @@ public partial class EnglishWordSearchDialogViewModel : ObservableObject
       }
    }
 
-   private List<EnglishWordResultViewModel> SearchEnglishWords(string searchText)
+   List<EnglishWordResultViewModel> SearchEnglishWords(string searchText)
    {
       var dictionary = EnglishDictionary.Instance;
       var matchingWords = dictionary.WordsContainingStartingWithFirstThenByShortestFirst(searchText);

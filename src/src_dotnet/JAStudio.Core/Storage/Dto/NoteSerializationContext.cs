@@ -23,4 +23,4 @@ namespace JAStudio.Core.Storage.Dto;
 [JsonSourceGenerationOptions(
    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
    GenerationMode = JsonSourceGenerationMode.Default)]
-internal partial class NoteSerializationContext : JsonSerializerContext;
+partial class NoteSerializationContext : JsonSerializerContext;

@@ -4,38 +4,41 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTe
 
 public static class RequiresOrForbidsHasGodanImperativePrefix
 {
-    private static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("godan_imperative_prefix");
-    private static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("godan_imperative_prefix");
+   static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("godan_imperative_prefix");
+   static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("godan_imperative_prefix");
 
-    public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
-    {
-        var requirement = inspector.Match.RequiresForbids.GodanImperativePrefix;
-        if (requirement.IsActive)
-        {
-            var isInState = InternalIsInState(inspector);
-            if (requirement.IsRequired && !isInState)
-            {
-                return RequiredFailure;
-            }
-            if (requirement.IsForbidden && isInState)
-            {
-                return ForbiddenFailure;
-            }
-        }
-        return null;
-    }
+   public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
+   {
+      var requirement = inspector.Match.RequiresForbids.GodanImperativePrefix;
+      if(requirement.IsActive)
+      {
+         var isInState = InternalIsInState(inspector);
+         if(requirement.IsRequired && !isInState)
+         {
+            return RequiredFailure;
+         }
 
-    private static bool InternalIsInState(VocabMatchInspector inspector)
-    {
-        if (inspector.PreviousLocation == null)
-        {
-            return false;
-        }
+         if(requirement.IsForbidden && isInState)
+         {
+            return ForbiddenFailure;
+         }
+      }
 
-        if (inspector.PreviousLocation.Token.IsGodanImperativeInflection)
-        {
-            return true;
-        }
-        return false;
-    }
+      return null;
+   }
+
+   static bool InternalIsInState(VocabMatchInspector inspector)
+   {
+      if(inspector.PreviousLocation == null)
+      {
+         return false;
+      }
+
+      if(inspector.PreviousLocation.Token.IsGodanImperativeInflection)
+      {
+         return true;
+      }
+
+      return false;
+   }
 }

@@ -8,8 +8,8 @@ using JAStudio.Core.TaskRunners;
 using JAStudio.UI.Menus.Notes.Kanji;
 using JAStudio.UI.Menus.Notes.Sentence;
 using JAStudio.UI.Menus.Notes.Vocab;
-using JAStudio.UI.Utils;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
+using JAStudio.UI.Utils;
 
 namespace JAStudio.UI.Menus;
 

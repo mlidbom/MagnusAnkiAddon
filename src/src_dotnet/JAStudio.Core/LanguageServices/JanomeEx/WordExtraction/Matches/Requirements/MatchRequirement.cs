@@ -2,8 +2,8 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Require
 
 public abstract class MatchRequirement
 {
-    public abstract bool IsFulfilled { get; }
-    public abstract string FailureReason { get; }
+   public abstract bool IsFulfilled { get; }
+   public abstract string FailureReason { get; }
 
-    public override string ToString() => FailureReason;
+   public override string ToString() => FailureReason;
 }

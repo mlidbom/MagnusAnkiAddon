@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using System.Collections.Frozen;
+using System.Collections.Generic;
 using System.Linq;
 using Compze.Utilities.SystemCE.ThreadingCE.ResourceAccess;
 
@@ -76,65 +76,67 @@ public class POSSetManager
                                                                   };
 
    static HashSet<string> Harmonize(IEnumerable<string> pos)
-    {
-        var result = new HashSet<string>();
-        foreach (var item in pos)
-        {
-            if (_remappings.TryGetValue(item.ToLower(), out var mapped))
-            {
-                result.UnionWith(mapped);
-            }
-            else
-            {
-                result.Add(item);
-            }
-        }
-        return result;
-    }
+   {
+      var result = new HashSet<string>();
+      foreach(var item in pos)
+      {
+         if(_remappings.TryGetValue(item.ToLower(), out var mapped))
+         {
+            result.UnionWith(mapped);
+         } else
+         {
+            result.Add(item);
+         }
+      }
+
+      return result;
+   }
 
    static string AutoIntern(string str)
-    {
-        if (!_stringInterner.TryGetValue(str, out var interned))
-        {
-            _monitor.Read(() => _stringInterner[str] = str);
-            interned = str;
-        }
-        return interned;
-    }
+   {
+      if(!_stringInterner.TryGetValue(str, out var interned))
+      {
+         _monitor.Read(() => _stringInterner[str] = str);
+         interned = str;
+      }
+
+      return interned;
+   }
 
    static FrozenSet<string> InternFrozenSet(HashSet<string> posValuesSet)
-    {
-        var posKey = string.Join(", ", posValuesSet.OrderBy(s => s));
-        if (!_posByStr.TryGetValue(posKey, out var frozenSet))
-        {
-            var internedList = posValuesSet.Select(AutoIntern).ToFrozenSet();
-            _monitor.Read(() => _posByStr[AutoIntern(posKey)] = internedList);
-            frozenSet = internedList;
-        }
-        return frozenSet;
-    }
+   {
+      var posKey = string.Join(", ", posValuesSet.OrderBy(s => s));
+      if(!_posByStr.TryGetValue(posKey, out var frozenSet))
+      {
+         var internedList = posValuesSet.Select(AutoIntern).ToFrozenSet();
+         _monitor.Read(() => _posByStr[AutoIntern(posKey)] = internedList);
+         frozenSet = internedList;
+      }
 
-    public static string InternAndHarmonize(string pos)
-    {
-        var posValuesList = pos.Split(',')
-            .Select(s => s.Trim().ToLower())
-            .ToList();
-        var posValuesSet = Harmonize(posValuesList);
-        InternFrozenSet(posValuesSet);
-        return string.Join(", ", posValuesSet.OrderBy(s => s));
-    }
+      return frozenSet;
+   }
 
-    public static FrozenSet<string> InternAndHarmonizeFromList(List<string> posList)
-    {
-        var posValuesSet = Harmonize(posList.Select(p => p.ToLower()));
-        return InternFrozenSet(posValuesSet);
-    }
+   public static string InternAndHarmonize(string pos)
+   {
+      var posValuesList = pos.Split(',')
+                             .Select(s => s.Trim().ToLower())
+                             .ToList();
+      var posValuesSet = Harmonize(posValuesList);
+      InternFrozenSet(posValuesSet);
+      return string.Join(", ", posValuesSet.OrderBy(s => s));
+   }
 
-    public static FrozenSet<string> Get(string pos) => _posByStr[pos];
+   public static FrozenSet<string> InternAndHarmonizeFromList(List<string> posList)
+   {
+      var posValuesSet = Harmonize(posList.Select(p => p.ToLower()));
+      return InternFrozenSet(posValuesSet);
+   }
 
-    public static bool IsTransitiveVerb(FrozenSet<string> posSet) => posSet.Contains(POS.Transitive);
+   public static FrozenSet<string> Get(string pos) => _posByStr[pos];
 
-    public static bool IsIntransitiveVerb(FrozenSet<string> posSet) => posSet.Contains(POS.Intransitive);
+   public static bool IsTransitiveVerb(FrozenSet<string> posSet) => posSet.Contains(POS.Transitive);
 
-    public static bool IsVerb(FrozenSet<string> posSet) => posSet.Overlaps(POS.AllVerbPoses);
+   public static bool IsIntransitiveVerb(FrozenSet<string> posSet) => posSet.Contains(POS.Intransitive);
+
+   public static bool IsVerb(FrozenSet<string> posSet) => posSet.Overlaps(POS.AllVerbPoses);
 }

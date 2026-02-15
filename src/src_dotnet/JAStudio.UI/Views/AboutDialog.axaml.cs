@@ -5,13 +5,13 @@ namespace JAStudio.UI.Views;
 
 public partial class AboutDialog : Window
 {
-    public AboutDialog()
-    {
-        InitializeComponent();
-    }
+   public AboutDialog()
+   {
+      InitializeComponent();
+   }
 
-    private void OnOkClick(object? sender, RoutedEventArgs e)
-    {
-        Close();
-    }
+   void OnOkClick(object? sender, RoutedEventArgs e)
+   {
+      Close();
+   }
 }

@@ -1,7 +1,7 @@
 using System.Linq;
+using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Tests.Fixtures.BaseData.SampleData;
 using Xunit;
-using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.Tests.Fixtures;
 
@@ -44,8 +44,8 @@ public class CollectionFactoryTests : CollectionUsingTest
    {
       var expectedSentences = SentenceSpec.TestSentenceList.OrderBy(x => x.Question).ToList();
       var sentencesAll = GetService<SentenceCollection>().All()
-                            .OrderBy(x => x.Question.WithoutInvisibleSpace())
-                            .ToList();
+                                                         .OrderBy(x => x.Question.WithoutInvisibleSpace())
+                                                         .ToList();
       var savedSentences = sentencesAll
                           .Select(sentence => new SentenceSpec(
                                      sentence.Question.WithoutInvisibleSpace(),

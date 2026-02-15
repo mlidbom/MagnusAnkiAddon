@@ -9,34 +9,33 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Require
 /// </summary>
 public class VocabMatchInspector : MatchInspector
 {
-    private VocabMatchingRulesConfigurationRequiresForbidsFlags? _requiresForbids;
+   VocabMatchingRulesConfigurationRequiresForbidsFlags? _requiresForbids;
 
-    public VocabMatchInspector(VocabMatch match) : base(match)
-    {
-    }
+   public VocabMatchInspector(VocabMatch match) : base(match) {}
 
-    public new VocabMatch Match => (VocabMatch)base.Match;
+   public new VocabMatch Match => (VocabMatch)base.Match;
 
-    public VocabMatchingRulesConfigurationRequiresForbidsFlags RequiresForbids
-    {
-        get
-        {
-            if (_requiresForbids == null)
-            {
-                _requiresForbids = Match.RequiresForbids;
-            }
-            return _requiresForbids;
-        }
-    }
+   public VocabMatchingRulesConfigurationRequiresForbidsFlags RequiresForbids
+   {
+      get
+      {
+         if(_requiresForbids == null)
+         {
+            _requiresForbids = Match.RequiresForbids;
+         }
 
-    public bool PreviousLocationIsIrrealis => 
-        PreviousLocation != null && PreviousLocation.Token.IsIrrealis;
+         return _requiresForbids;
+      }
+   }
 
-    public bool PreviousLocationIsGodan => 
-        PreviousLocation != null && PreviousLocation.Token.IsGodanVerb;
+   public bool PreviousLocationIsIrrealis =>
+      PreviousLocation != null && PreviousLocation.Token.IsIrrealis;
 
-    public bool PreviousLocationIsIchidan => 
-        PreviousLocation != null && PreviousLocation.Token.IsIchidanVerb;
+   public bool PreviousLocationIsGodan =>
+      PreviousLocation != null && PreviousLocation.Token.IsGodanVerb;
 
-    public bool BaseEqualsSurface => Word.SurfaceForm == Word.BaseForm;
+   public bool PreviousLocationIsIchidan =>
+      PreviousLocation != null && PreviousLocation.Token.IsIchidanVerb;
+
+   public bool BaseEqualsSurface => Word.SurfaceForm == Word.BaseForm;
 }

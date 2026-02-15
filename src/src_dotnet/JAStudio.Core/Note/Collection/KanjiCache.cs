@@ -8,12 +8,10 @@ namespace JAStudio.Core.Note.Collection;
 
 public class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
 {
-   private readonly Dictionary<string, HashSet<KanjiNote>> _byRadical = new();
-   private readonly Dictionary<string, HashSet<KanjiNote>> _byReading = new();
+   readonly Dictionary<string, HashSet<KanjiNote>> _byRadical = new();
+   readonly Dictionary<string, HashSet<KanjiNote>> _byReading = new();
 
-   public KanjiCache(NoteServices noteServices) : base(typeof(KanjiNote), (services, data) => new KanjiNote(services, KanjiData.FromAnkiNoteData(data)), noteServices)
-   {
-   }
+   public KanjiCache(NoteServices noteServices) : base(typeof(KanjiNote), (services, data) => new KanjiNote(services, KanjiData.FromAnkiNoteData(data)), noteServices) {}
 
    protected override KanjiNote CreateNoteByMergingAnkiData(NoteServices services, KanjiNote existing, NoteData ankiData)
    {
@@ -29,23 +27,21 @@ public class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
 
    protected override NoteId CreateTypedId(Guid value) => new KanjiId(value);
 
-   protected override KanjiSnapshot CreateSnapshot(KanjiNote note)
-   {
-      return new KanjiSnapshot(note);
-   }
+   protected override KanjiSnapshot CreateSnapshot(KanjiNote note) => new(note);
 
    protected override void InheritorRemoveFromCache(KanjiNote note, KanjiSnapshot snapshot)
    {
-      foreach (var form in snapshot.Radicals)
+      foreach(var form in snapshot.Radicals)
       {
-         if (_byRadical.TryGetValue(form, out var set))
+         if(_byRadical.TryGetValue(form, out var set))
          {
             set.Remove(note);
          }
       }
-      foreach (var reading in snapshot.Readings)
+
+      foreach(var reading in snapshot.Readings)
       {
-         if (_byReading.TryGetValue(reading, out var set))
+         if(_byReading.TryGetValue(reading, out var set))
          {
             set.Remove(note);
          }
@@ -54,20 +50,23 @@ public class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
 
    protected override void InheritorAddToCache(KanjiNote note, KanjiSnapshot snapshot)
    {
-      foreach (var form in snapshot.Radicals)
+      foreach(var form in snapshot.Radicals)
       {
-         if (!_byRadical.ContainsKey(form))
+         if(!_byRadical.ContainsKey(form))
          {
             _byRadical[form] = new HashSet<KanjiNote>();
          }
+
          _byRadical[form].Add(note);
       }
-      foreach (var reading in snapshot.Readings)
+
+      foreach(var reading in snapshot.Readings)
       {
-         if (!_byReading.ContainsKey(reading))
+         if(!_byReading.ContainsKey(reading))
          {
             _byReading[reading] = new HashSet<KanjiNote>();
          }
+
          _byReading[reading].Add(note);
       }
    }

@@ -11,7 +11,7 @@ public class BulkLoaderTests
 {
    static readonly string TestDbPath =
       Environment.GetEnvironmentVariable("ANKI_TEST_DB_PATH")
-      ?? Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "tests", "collection.anki2"));
+   ?? Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "tests", "collection.anki2"));
 
    // ── AnkiDatabase ──
 
@@ -39,11 +39,12 @@ public class BulkLoaderTests
    {
       var result = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Vocab, g => new VocabId(g));
       Assert.NotEmpty(result.Notes);
-      Assert.All(result.Notes, n =>
-      {
-         Assert.NotNull(n.Id);
-         Assert.NotEmpty(n.Fields);
-      });
+      Assert.All(result.Notes,
+                 n =>
+                 {
+                    Assert.NotNull(n.Id);
+                    Assert.NotEmpty(n.Fields);
+                 });
    }
 
    [Fact]
@@ -65,8 +66,7 @@ public class BulkLoaderTests
    [Fact]
    public void LoadAllNotesOfType_throws_for_unknown_note_type()
    {
-      Assert.Throws<System.Collections.Generic.KeyNotFoundException>(
-         () => NoteBulkLoader.LoadAllNotesOfType(TestDbPath, "NonExistentNoteType", g => new VocabId(g)));
+      Assert.Throws<System.Collections.Generic.KeyNotFoundException>(() => NoteBulkLoader.LoadAllNotesOfType(TestDbPath, "NonExistentNoteType", g => new VocabId(g)));
    }
 
    [Fact]
@@ -119,11 +119,12 @@ public class BulkLoaderTests
    public void FetchAll_statuses_have_valid_data()
    {
       var statuses = CardStudyingStatusLoader.FetchAll(TestDbPath);
-      Assert.All(statuses, s =>
-      {
-         Assert.True(s.ExternalNoteId > 0);
-         Assert.False(string.IsNullOrEmpty(s.CardType));
-         Assert.False(string.IsNullOrEmpty(s.NoteTypeName));
-      });
+      Assert.All(statuses,
+                 s =>
+                 {
+                    Assert.True(s.ExternalNoteId > 0);
+                    Assert.False(string.IsNullOrEmpty(s.CardType));
+                    Assert.False(string.IsNullOrEmpty(s.NoteTypeName));
+                 });
    }
 }

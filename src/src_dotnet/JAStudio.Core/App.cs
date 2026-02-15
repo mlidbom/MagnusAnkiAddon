@@ -43,14 +43,14 @@ public class App : IDisposable
    {
       get
       {
-         if (IsTesting)
+         if(IsTesting)
          {
             var assemblyLocation = typeof(App).Assembly.Location;
             return Path.GetDirectoryName(Path.GetDirectoryName(assemblyLocation)) ?? string.Empty;
          }
 
          return _environmentPaths?.AddonRootDir
-                ?? throw new InvalidOperationException("IEnvironmentPaths must be provided for non-testing mode. Call App.Bootstrap() with an IEnvironmentPaths implementation.");
+             ?? throw new InvalidOperationException("IEnvironmentPaths must be provided for non-testing mode. Call App.Bootstrap() with an IEnvironmentPaths implementation.");
       }
    }
 

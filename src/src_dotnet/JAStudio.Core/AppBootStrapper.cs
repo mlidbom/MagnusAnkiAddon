@@ -2,8 +2,8 @@
 using Compze.Utilities.DependencyInjection;
 using Compze.Utilities.DependencyInjection.Abstractions;
 using Compze.Utilities.DependencyInjection.SimpleInjector;
-using JAStudio.Core.Configuration;
 using JAStudio.Core.Batches;
+using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.LanguageServices.JanomeEx;
 using JAStudio.Core.Note;
@@ -32,16 +32,15 @@ static class AppBootstrapper
       var container = new SimpleInjectorDependencyInjectionContainer();
       var registrar = container.Register();
 
-      if (App.IsTesting)
+      if(App.IsTesting)
       {
          registrar.Register(
             Singleton.For<INoteRepository>().CreatedBy(() => (INoteRepository)new InMemoryNoteRepository()));
-      }
-      else
+      } else
       {
          registrar.Register(
             Singleton.For<INoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner) =>
-               (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, App.DatabaseDir)));
+                                                          (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, App.DatabaseDir)));
       }
 
       registrar.Register(
@@ -51,17 +50,17 @@ static class AppBootstrapper
          Singleton.For<TemporaryServiceCollection>().CreatedBy(() => new TemporaryServiceCollection(container.ServiceLocator)),
          Singleton.For<JapaneseConfig>().CreatedBy((ConfigurationStore store) => store.Config()),
          Singleton.For<JPCollection>().CreatedBy((NoteServices noteServices, JapaneseConfig config, INoteRepository noteRepository) =>
-            new JPCollection(backendNoteCreator, noteServices, config, noteRepository, backendDataLoader)),
+                                                    new JPCollection(backendNoteCreator, noteServices, config, noteRepository, backendDataLoader)),
          Singleton.For<VocabCollection>().CreatedBy((JPCollection col) => col.Vocab),
          Singleton.For<KanjiCollection>().CreatedBy((JPCollection col) => col.Kanji),
          Singleton.For<SentenceCollection>().CreatedBy((JPCollection col) => col.Sentences),
 
          // Media storage
          Singleton.For<MediaFileIndex>().CreatedBy(() =>
-            new MediaFileIndex(Path.Combine(App.DatabaseDir, "files"))),
+                                                      new MediaFileIndex(Path.Combine(App.DatabaseDir, "files"))),
          Singleton.For<MediaRoutingConfig>().CreatedBy(MediaRoutingConfig.Default),
          Singleton.For<MediaStorageService>().CreatedBy((MediaFileIndex index, MediaRoutingConfig routingConfig) =>
-            new MediaStorageService(Path.Combine(App.DatabaseDir, "files"), index, routingConfig)),
+                                                           new MediaStorageService(Path.Combine(App.DatabaseDir, "files"), index, routingConfig)),
 
          // Core services
          Singleton.For<Settings>().CreatedBy((JapaneseConfig config) => new Settings(config)),
@@ -80,7 +79,7 @@ static class AppBootstrapper
          Singleton.For<VocabNoteGeneratedData>().CreatedBy((JPCollection col) => col.VocabNoteGeneratedData),
          Singleton.For<NoteSerializer>().CreatedBy((NoteServices noteServices) => new NoteSerializer(noteServices)),
          Singleton.For<FileSystemNoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner) =>
-            new FileSystemNoteRepository(serializer, taskRunner, App.DatabaseDir)),
+                                                                new FileSystemNoteRepository(serializer, taskRunner, App.DatabaseDir)),
          Singleton.For<KanjiNoteMnemonicMaker>().CreatedBy((JapaneseConfig config) => new KanjiNoteMnemonicMaker(config)),
 
          // ViewModels

@@ -6,23 +6,15 @@ namespace JAStudio.Core.UI.Web.Sentence;
 
 public class QuestionRenderer
 {
-    readonly JapaneseConfig _config;
+   readonly JapaneseConfig _config;
    internal QuestionRenderer(JapaneseConfig config) => _config = config;
 
-    public string RenderWbr(string question)
-    {
-        return _config.ShowSentenceBreakdownInEditMode.Value
-            ? question.Replace(SentenceQuestionField.WordBreakTag, "<span class='wbr_tag'>&lt;wbr&gt;</span>")
-            : question;
-    }
+   public string RenderWbr(string question) =>
+      _config.ShowSentenceBreakdownInEditMode.Value
+         ? question.Replace(SentenceQuestionField.WordBreakTag, "<span class='wbr_tag'>&lt;wbr&gt;</span>")
+         : question;
 
-    public string RenderUserQuestion(SentenceNote note)
-    {
-        return RenderWbr(note.User.Question.Value);
-    }
+   public string RenderUserQuestion(SentenceNote note) => RenderWbr(note.User.Question.Value);
 
-    public string RenderSourceQuestion(SentenceNote note)
-    {
-        return RenderWbr(note.SourceQuestion.Value);
-    }
+   public string RenderSourceQuestion(SentenceNote note) => RenderWbr(note.SourceQuestion.Value);
 }

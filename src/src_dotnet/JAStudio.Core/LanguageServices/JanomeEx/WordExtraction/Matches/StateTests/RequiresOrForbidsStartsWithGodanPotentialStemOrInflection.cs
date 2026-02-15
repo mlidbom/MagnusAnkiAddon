@@ -5,34 +5,37 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTe
 
 public static class RequiresOrForbidsStartsWithGodanPotentialStemOrInflection
 {
-    private static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("godan_potential");
-    private static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("godan_potential");
+   static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("godan_potential");
+   static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("godan_potential");
 
-    public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
-    {
-        var requirement = inspector.Match.RequiresForbids.GodanPotential;
-        if (requirement.IsActive)
-        {
-            var isInState = InternalIsInState(inspector);
-            if (requirement.IsRequired && !isInState)
-            {
-                return RequiredFailure;
-            }
-            if (requirement.IsForbidden && isInState)
-            {
-                return ForbiddenFailure;
-            }
-        }
-        return null;
-    }
+   public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
+   {
+      var requirement = inspector.Match.RequiresForbids.GodanPotential;
+      if(requirement.IsActive)
+      {
+         var isInState = InternalIsInState(inspector);
+         if(requirement.IsRequired && !isInState)
+         {
+            return RequiredFailure;
+         }
 
-    private static bool InternalIsInState(VocabMatchInspector inspector)
-    {
-        if (inspector.Word.StartLocation.Token.IsGodanPotentialInflection || 
-            inspector.Word.StartLocation.Token.IsGodanPotentialStem)
-        {
-            return true;
-        }
-        return false;
-    }
+         if(requirement.IsForbidden && isInState)
+         {
+            return ForbiddenFailure;
+         }
+      }
+
+      return null;
+   }
+
+   static bool InternalIsInState(VocabMatchInspector inspector)
+   {
+      if(inspector.Word.StartLocation.Token.IsGodanPotentialInflection ||
+         inspector.Word.StartLocation.Token.IsGodanPotentialStem)
+      {
+         return true;
+      }
+
+      return false;
+   }
 }

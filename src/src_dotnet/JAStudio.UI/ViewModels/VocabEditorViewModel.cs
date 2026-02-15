@@ -1,6 +1,6 @@
+using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
 using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.UI.ViewModels;
@@ -93,7 +93,7 @@ public partial class VocabEditorViewModel : ObservableObject
       _vocab.Audio.First.SetRawValue(AudioB);
       _vocab.Audio.Second.SetRawValue(AudioG);
       _vocab.Audio.Tts.SetRawValue(AudioTts);
-      if (int.TryParse(SentenceCount, out var count)) _vocab.MetaData.SetSentenceCount(count);
+      if(int.TryParse(SentenceCount, out var count)) _vocab.MetaData.SetSentenceCount(count);
       _vocab.RelatedNotes.RawJson = RelatedVocab;
       _vocab.TechnicalNotes.Set(TechnicalNotes);
       _vocab.UpdateGeneratedData();

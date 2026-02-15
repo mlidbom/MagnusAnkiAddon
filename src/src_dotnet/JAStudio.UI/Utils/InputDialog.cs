@@ -16,8 +16,8 @@ namespace JAStudio.UI.Utils;
 /// </summary>
 public class InputDialog : Window
 {
-   private readonly TextBox _textBox;
-   private readonly TaskCompletionSource<string?> _resultSource;
+   readonly TextBox _textBox;
+   readonly TaskCompletionSource<string?> _resultSource;
 
    public InputDialog(string prompt, string initialValue = "")
    {
@@ -85,7 +85,7 @@ public class InputDialog : Window
       Opened += (s, e) => _textBox.Focus();
    }
 
-   private void OnTextBoxKeyDown(object? sender, KeyEventArgs e)
+   void OnTextBoxKeyDown(object? sender, KeyEventArgs e)
    {
       if(e.Key == Key.Enter)
       {
@@ -98,17 +98,17 @@ public class InputDialog : Window
       }
    }
 
-   private void OnOkClicked(object? sender, RoutedEventArgs e)
+   void OnOkClicked(object? sender, RoutedEventArgs e)
    {
       CompleteWithResult(_textBox.Text);
    }
 
-   private void OnCancelClicked(object? sender, RoutedEventArgs e)
+   void OnCancelClicked(object? sender, RoutedEventArgs e)
    {
       CompleteWithResult(null);
    }
 
-   private void CompleteWithResult(string? result)
+   void CompleteWithResult(string? result)
    {
       _resultSource.TrySetResult(result);
       Close();
@@ -141,9 +141,9 @@ public class InputDialog : Window
       return result ?? GetClipboardText();
    }
 
-   private static string GetClipboardText()
+   static string GetClipboardText()
    {
-      var topLevel = Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
+      var topLevel = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
                         ? desktop.MainWindow
                         : null;
 

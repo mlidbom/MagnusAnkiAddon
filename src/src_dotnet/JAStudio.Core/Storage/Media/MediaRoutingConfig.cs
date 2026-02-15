@@ -22,9 +22,9 @@ public class MediaRoutingConfig
 
    public string ResolveDirectory(string sourceTag)
    {
-      foreach (var rule in _rules)
+      foreach(var rule in _rules)
       {
-         if (sourceTag.StartsWith(rule.SourceTagPrefix, StringComparison.Ordinal))
+         if(sourceTag.StartsWith(rule.SourceTagPrefix, StringComparison.Ordinal))
             return rule.TargetDirectory;
       }
 

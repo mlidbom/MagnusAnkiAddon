@@ -5,25 +5,27 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTe
 
 public static class RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection
 {
-    private static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("ichidan_imperative");
-    private static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("ichidan_imperative");
+   static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("ichidan_imperative");
+   static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("ichidan_imperative");
 
-    public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
-    {
-        var requirement = inspector.Match.RequiresForbids.IchidanImperative;
-        if (requirement.IsActive)
-        {
-            var isInState = inspector.Word.StartLocation.Token.IsIchidanImperativeStem || 
-                           inspector.Word.StartLocation.Token.IsIchidanImperativeInflection;
-            if (requirement.IsRequired && !isInState)
-            {
-                return RequiredFailure;
-            }
-            if (requirement.IsForbidden && isInState)
-            {
-                return ForbiddenFailure;
-            }
-        }
-        return null;
-    }
+   public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
+   {
+      var requirement = inspector.Match.RequiresForbids.IchidanImperative;
+      if(requirement.IsActive)
+      {
+         var isInState = inspector.Word.StartLocation.Token.IsIchidanImperativeStem ||
+                         inspector.Word.StartLocation.Token.IsIchidanImperativeInflection;
+         if(requirement.IsRequired && !isInState)
+         {
+            return RequiredFailure;
+         }
+
+         if(requirement.IsForbidden && isInState)
+         {
+            return ForbiddenFailure;
+         }
+      }
+
+      return null;
+   }
 }

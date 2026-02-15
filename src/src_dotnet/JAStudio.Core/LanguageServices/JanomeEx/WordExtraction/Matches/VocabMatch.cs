@@ -64,7 +64,6 @@ public sealed class VocabMatch : Match
       RequiresOrForbidsSurface.ApplyTo,
       RequiresOrForbidsIsSingleToken.ApplyTo,
       ForbidsSurfaceIsIn.ApplyTo
-
    ];
 
    static readonly List<Func<VocabMatchInspector, FailedMatchRequirement?>> CombinedRequirements;
@@ -162,7 +161,7 @@ public sealed class VocabMatch : Match
       get
       {
          var question = Vocab.Question;
-         var tokenizedForm = base.TokenizedForm;
+         var tokenizedForm = TokenizedForm;
          if(question.Raw == tokenizedForm && question.IsDisambiguated)
          {
             return question.DisambiguationName;

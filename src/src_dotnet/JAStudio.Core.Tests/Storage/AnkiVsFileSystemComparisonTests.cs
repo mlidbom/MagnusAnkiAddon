@@ -20,7 +20,7 @@ public class AnkiVsFileSystemComparisonTests : TestStartingWithEmptyCollection
 {
    static readonly string TestDbPath =
       Environment.GetEnvironmentVariable("ANKI_TEST_DB_PATH")
-      ?? Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "tests", "collection.anki2"));
+   ?? Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "tests", "collection.anki2"));
 
    static readonly string JasDatabaseDir =
       Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "jas_database"));
@@ -34,8 +34,8 @@ public class AnkiVsFileSystemComparisonTests : TestStartingWithEmptyCollection
       var ankiBulk = NoteBulkLoader.LoadAllNotesOfType(TestDbPath, NoteTypes.Vocab, g => new VocabId(g));
       var serializer = GetService<NoteSerializer>();
       var ankiNotes = ankiBulk.Notes
-         .Select(nd => new VocabNote(NoteServices, VocabData.FromAnkiNoteData(nd)))
-         .ToDictionary(n => n.GetId());
+                              .Select(nd => new VocabNote(NoteServices, VocabData.FromAnkiNoteData(nd)))
+                              .ToDictionary(n => n.GetId());
 
       // --- Load from filesystem ---
       var repo = new FileSystemNoteRepository(serializer, GetService<TaskRunner>(), JasDatabaseDir);
@@ -45,7 +45,7 @@ public class AnkiVsFileSystemComparisonTests : TestStartingWithEmptyCollection
       var commonIds = ankiNotes.Keys.Intersect(fsNotes.Keys).OrderBy(id => id.Value).ToList();
       var differences = new List<string>();
 
-      foreach (var id in commonIds)
+      foreach(var id in commonIds)
       {
          var anki = ankiNotes[id];
          var fs = fsNotes[id];
@@ -55,19 +55,19 @@ public class AnkiVsFileSystemComparisonTests : TestStartingWithEmptyCollection
          var ankiData = anki.GetData();
          var fsData = fs.GetData();
 
-         foreach (var kvp in ankiData.Fields)
+         foreach(var kvp in ankiData.Fields)
          {
-            if (IgnoredFields.Contains(kvp.Key)) continue;
+            if(IgnoredFields.Contains(kvp.Key)) continue;
             var ankiVal = kvp.Value;
             var fsVal = fsData.Fields.TryGetValue(kvp.Key, out var v) ? v : "<MISSING>";
-            if (ankiVal != fsVal && !(kvp.Key == "sentence_count" && IsEffectivelyEmpty(ankiVal) && IsEffectivelyEmpty(fsVal)))
+            if(ankiVal != fsVal && !(kvp.Key == "sentence_count" && IsEffectivelyEmpty(ankiVal) && IsEffectivelyEmpty(fsVal)))
                differences.Add($"[{id}] {q}: FIELD '{kvp.Key}'\n  Anki: [{Truncate(ankiVal, 200)}]\n  FS:   [{Truncate(fsVal, 200)}]");
          }
 
          // --- Tags ---
          var ankiTags = ankiData.Tags.OrderBy(t => t).ToList();
          var fsTags = fsData.Tags.OrderBy(t => t).ToList();
-         if (!ankiTags.SequenceEqual(fsTags))
+         if(!ankiTags.SequenceEqual(fsTags))
             differences.Add($"[{id}] {q}: TAGS\n  Anki: [{string.Join(", ", ankiTags)}]\n  FS:   [{string.Join(", ", fsTags)}]");
 
          // --- Parsed structured data ---
@@ -100,22 +100,26 @@ public class AnkiVsFileSystemComparisonTests : TestStartingWithEmptyCollection
          CompareSet(differences, $"[{id}] {q}", "Related.SeeAlso", anki.RelatedNotes.SeeAlso.Strings(), fs.RelatedNotes.SeeAlso.Strings());
 
          // --- RequireForbid flags (the critical matching data) ---
-         foreach (var (ankiFlag, fsFlag) in anki.MatchingConfiguration.RequiresForbids.AllFlags
-                     .Zip(fs.MatchingConfiguration.RequiresForbids.AllFlags))
+         foreach(var (ankiFlag, fsFlag) in anki.MatchingConfiguration.RequiresForbids.AllFlags
+                                               .Zip(fs.MatchingConfiguration.RequiresForbids.AllFlags))
          {
-            if (ankiFlag.IsRequired != fsFlag.IsRequired || ankiFlag.IsForbidden != fsFlag.IsForbidden)
+            if(ankiFlag.IsRequired != fsFlag.IsRequired || ankiFlag.IsForbidden != fsFlag.IsForbidden)
                differences.Add($"[{id}] {q}: RequireForbid '{ankiFlag.Name}'\n" +
-                              $"  Anki: Required={ankiFlag.IsRequired} Forbidden={ankiFlag.IsForbidden}\n" +
-                              $"  FS:   Required={fsFlag.IsRequired} Forbidden={fsFlag.IsForbidden}");
+                               $"  Anki: Required={ankiFlag.IsRequired} Forbidden={ankiFlag.IsForbidden}\n" +
+                               $"  FS:   Required={fsFlag.IsRequired} Forbidden={fsFlag.IsForbidden}");
          }
 
          // --- BoolFlags ---
-         CompareBool(differences, $"[{id}] {q}", "IsInflectingWord",
-            anki.MatchingConfiguration.BoolFlags.IsInflectingWord.IsSet(),
-            fs.MatchingConfiguration.BoolFlags.IsInflectingWord.IsSet());
-         CompareBool(differences, $"[{id}] {q}", "IsPoisonWord",
-            anki.MatchingConfiguration.BoolFlags.IsPoisonWord.IsSet(),
-            fs.MatchingConfiguration.BoolFlags.IsPoisonWord.IsSet());
+         CompareBool(differences,
+                     $"[{id}] {q}",
+                     "IsInflectingWord",
+                     anki.MatchingConfiguration.BoolFlags.IsInflectingWord.IsSet(),
+                     fs.MatchingConfiguration.BoolFlags.IsInflectingWord.IsSet());
+         CompareBool(differences,
+                     $"[{id}] {q}",
+                     "IsPoisonWord",
+                     anki.MatchingConfiguration.BoolFlags.IsPoisonWord.IsSet(),
+                     fs.MatchingConfiguration.BoolFlags.IsPoisonWord.IsSet());
       }
 
       var reportPath = Path.Combine(Path.GetTempPath(), "anki_vs_fs_diff.txt");
@@ -130,13 +134,13 @@ public class AnkiVsFileSystemComparisonTests : TestStartingWithEmptyCollection
 
    static void CompareString(List<string> diffs, string ctx, string label, string anki, string fs)
    {
-      if (anki != fs)
+      if(anki != fs)
          diffs.Add($"{ctx}: {label}\n  Anki: [{Truncate(anki, 200)}]\n  FS:   [{Truncate(fs, 200)}]");
    }
 
    static void CompareList(List<string> diffs, string ctx, string label, List<string> anki, List<string> fs)
    {
-      if (!anki.SequenceEqual(fs))
+      if(!anki.SequenceEqual(fs))
          diffs.Add($"{ctx}: {label}\n  Anki: [{string.Join(", ", anki)}]\n  FS:   [{string.Join(", ", fs)}]");
    }
 
@@ -144,13 +148,13 @@ public class AnkiVsFileSystemComparisonTests : TestStartingWithEmptyCollection
    {
       var ankiSorted = anki.OrderBy(s => s).ToList();
       var fsSorted = fs.OrderBy(s => s).ToList();
-      if (!ankiSorted.SequenceEqual(fsSorted))
+      if(!ankiSorted.SequenceEqual(fsSorted))
          diffs.Add($"{ctx}: {label}\n  Anki: [{string.Join(", ", ankiSorted)}]\n  FS:   [{string.Join(", ", fsSorted)}]");
    }
 
    static void CompareBool(List<string> diffs, string ctx, string label, bool anki, bool fs)
    {
-      if (anki != fs)
+      if(anki != fs)
          diffs.Add($"{ctx}: {label}\n  Anki: {anki}\n  FS:   {fs}");
    }
 

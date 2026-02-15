@@ -10,14 +10,12 @@ namespace JAStudio.Core.Note.Collection;
 
 public class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
 {
-   private readonly Dictionary<string, HashSet<SentenceNote>> _byVocabForm = new();
-   private readonly Dictionary<string, HashSet<SentenceNote>> _byUserHighlightedVocab = new();
-   private readonly Dictionary<string, HashSet<SentenceNote>> _byUserMarkedInvalidVocab = new();
-   private readonly Dictionary<NoteId, HashSet<SentenceNote>> _byVocabId = new();
+   readonly Dictionary<string, HashSet<SentenceNote>> _byVocabForm = new();
+   readonly Dictionary<string, HashSet<SentenceNote>> _byUserHighlightedVocab = new();
+   readonly Dictionary<string, HashSet<SentenceNote>> _byUserMarkedInvalidVocab = new();
+   readonly Dictionary<NoteId, HashSet<SentenceNote>> _byVocabId = new();
 
-   public SentenceCache(NoteServices noteServices) : base(typeof(SentenceNote), (services, data) => new SentenceNote(services, SentenceData.FromAnkiNoteData(data)), noteServices)
-   {
-   }
+   public SentenceCache(NoteServices noteServices) : base(typeof(SentenceNote), (services, data) => new SentenceNote(services, SentenceData.FromAnkiNoteData(data)), noteServices) {}
 
    protected override SentenceNote CreateNoteByMergingAnkiData(NoteServices services, SentenceNote existing, NoteData ankiData)
    {
@@ -35,10 +33,7 @@ public class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
 
    protected override NoteId CreateTypedId(Guid value) => new SentenceId(value);
 
-   protected override SentenceSnapshot CreateSnapshot(SentenceNote note)
-   {
-      return new SentenceSnapshot(note);
-   }
+   protected override SentenceSnapshot CreateSnapshot(SentenceNote note) => new(note);
 
    public List<SentenceNote> WithVocab(VocabNote vocab)
    {
@@ -62,30 +57,33 @@ public class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
 
    protected override void InheritorRemoveFromCache(SentenceNote note, SentenceSnapshot snapshot)
    {
-      foreach (var vocabForm in snapshot.Words)
+      foreach(var vocabForm in snapshot.Words)
       {
-         if (_byVocabForm.TryGetValue(vocabForm, out var set))
+         if(_byVocabForm.TryGetValue(vocabForm, out var set))
          {
             set.Remove(note);
          }
       }
-      foreach (var vocabForm in snapshot.UserHighlightedVocab)
+
+      foreach(var vocabForm in snapshot.UserHighlightedVocab)
       {
-         if (_byUserHighlightedVocab.TryGetValue(vocabForm, out var set))
+         if(_byUserHighlightedVocab.TryGetValue(vocabForm, out var set))
          {
             set.Remove(note);
          }
       }
-      foreach (var vocabForm in snapshot.MarkedIncorrectVocab)
+
+      foreach(var vocabForm in snapshot.MarkedIncorrectVocab)
       {
-         if (_byUserMarkedInvalidVocab.TryGetValue(vocabForm, out var set))
+         if(_byUserMarkedInvalidVocab.TryGetValue(vocabForm, out var set))
          {
             set.Remove(note);
          }
       }
-      foreach (var vocabId in snapshot.DetectedVocab)
+
+      foreach(var vocabId in snapshot.DetectedVocab)
       {
-         if (_byVocabId.TryGetValue(vocabId, out var set))
+         if(_byVocabId.TryGetValue(vocabId, out var set))
          {
             set.Remove(note);
          }
@@ -94,36 +92,43 @@ public class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
 
    protected override void InheritorAddToCache(SentenceNote note, SentenceSnapshot snapshot)
    {
-      foreach (var vocabForm in snapshot.Words)
+      foreach(var vocabForm in snapshot.Words)
       {
-         if (!_byVocabForm.ContainsKey(vocabForm))
+         if(!_byVocabForm.ContainsKey(vocabForm))
          {
             _byVocabForm[vocabForm] = new HashSet<SentenceNote>();
          }
+
          _byVocabForm[vocabForm].Add(note);
       }
-      foreach (var vocabForm in snapshot.UserHighlightedVocab)
+
+      foreach(var vocabForm in snapshot.UserHighlightedVocab)
       {
-         if (!_byUserHighlightedVocab.ContainsKey(vocabForm))
+         if(!_byUserHighlightedVocab.ContainsKey(vocabForm))
          {
             _byUserHighlightedVocab[vocabForm] = new HashSet<SentenceNote>();
          }
+
          _byUserHighlightedVocab[vocabForm].Add(note);
       }
-      foreach (var vocabForm in snapshot.MarkedIncorrectVocab)
+
+      foreach(var vocabForm in snapshot.MarkedIncorrectVocab)
       {
-         if (!_byUserMarkedInvalidVocab.ContainsKey(vocabForm))
+         if(!_byUserMarkedInvalidVocab.ContainsKey(vocabForm))
          {
             _byUserMarkedInvalidVocab[vocabForm] = new HashSet<SentenceNote>();
          }
+
          _byUserMarkedInvalidVocab[vocabForm].Add(note);
       }
-      foreach (var vocabId in snapshot.DetectedVocab)
+
+      foreach(var vocabId in snapshot.DetectedVocab)
       {
-         if (!_byVocabId.ContainsKey(vocabId))
+         if(!_byVocabId.ContainsKey(vocabId))
          {
             _byVocabId[vocabId] = new HashSet<SentenceNote>();
          }
+
          _byVocabId[vocabId].Add(note);
       }
    }

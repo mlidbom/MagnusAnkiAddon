@@ -5,25 +5,27 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTe
 
 public static class RequiresOrForbidsStartsWithGodanImperativeStemOrInflection
 {
-    private static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("godan_imperative");
-    private static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("godan_imperative");
+   static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("godan_imperative");
+   static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("godan_imperative");
 
-    public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
-    {
-        var requirement = inspector.Match.RequiresForbids.GodanImperative;
-        if (requirement.IsActive)
-        {
-            var isInState = inspector.Word.StartLocation.Token.IsGodanImperativeInflection || 
-                           inspector.Word.StartLocation.Token.IsGodanImperativeStem;
-            if (requirement.IsRequired && !isInState)
-            {
-                return RequiredFailure;
-            }
-            if (requirement.IsForbidden && isInState)
-            {
-                return ForbiddenFailure;
-            }
-        }
-        return null;
-    }
+   public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
+   {
+      var requirement = inspector.Match.RequiresForbids.GodanImperative;
+      if(requirement.IsActive)
+      {
+         var isInState = inspector.Word.StartLocation.Token.IsGodanImperativeInflection ||
+                         inspector.Word.StartLocation.Token.IsGodanImperativeStem;
+         if(requirement.IsRequired && !isInState)
+         {
+            return RequiredFailure;
+         }
+
+         if(requirement.IsForbidden && isInState)
+         {
+            return ForbiddenFailure;
+         }
+      }
+
+      return null;
+   }
 }

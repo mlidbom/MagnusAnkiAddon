@@ -6,13 +6,13 @@
    </PropertyGroup>
 
    <ItemGroup>
-      <PackageReference Include="JetBrains.Annotations" Version="2025.2.4" />
-      <PackageReference Include="pythonnet" Version="3.0.5" />
+      <PackageReference Include="JetBrains.Annotations" Version="2025.2.4"/>
+      <PackageReference Include="pythonnet" Version="3.0.5"/>
    </ItemGroup>
 
    <ItemGroup>
-      <PackageReference Include="Compze.Utilities.SystemCE" Version="0.1.0-alpha.3" />
-      <PackageReference Include="Compze.Utilities.SystemCE.ThreadingCE" Version="0.1.0-alpha.3" />
+      <PackageReference Include="Compze.Utilities.SystemCE" Version="0.1.0-alpha.3"/>
+      <PackageReference Include="Compze.Utilities.SystemCE.ThreadingCE" Version="0.1.0-alpha.3"/>
    </ItemGroup>
 
 </Project>

@@ -23,19 +23,19 @@ public static class CardStudyingStatusLoader
 
       // First get the note type IDs for our known types by scanning in C# (avoids unicase collation issues)
       var noteTypeIds = new Dictionary<long, string>();
-      using (var ntCmd = db.Connection.CreateCommand())
+      using(var ntCmd = db.Connection.CreateCommand())
       {
          ntCmd.CommandText = "SELECT id, name FROM notetypes";
          using var ntReader = ntCmd.ExecuteReader();
-         while (ntReader.Read())
+         while(ntReader.Read())
          {
             var name = ntReader.GetString(1);
-            if (NoteTypes.All.Contains(name))
+            if(NoteTypes.All.Contains(name))
                noteTypeIds[ntReader.GetInt64(0)] = name;
          }
       }
 
-      if (noteTypeIds.Count == 0)
+      if(noteTypeIds.Count == 0)
          return [];
 
       // Build the IN clause with the numeric IDs (no collation needed)
@@ -55,7 +55,7 @@ public static class CardStudyingStatusLoader
       using var reader = cmd.ExecuteReader();
       var results = new List<CardStudyingStatus>();
 
-      while (reader.Read())
+      while(reader.Read())
       {
          var noteId = reader.GetInt64(0);
          var cardType = reader.GetString(1);

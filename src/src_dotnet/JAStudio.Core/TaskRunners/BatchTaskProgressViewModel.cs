@@ -11,6 +11,7 @@ namespace JAStudio.Core.TaskRunners;
 public class BatchTaskProgressViewModel : TaskProgressViewModel
 {
    int _current;
+
    public int Current
    {
       get => _current;
@@ -18,6 +19,7 @@ public class BatchTaskProgressViewModel : TaskProgressViewModel
    }
 
    int _total;
+
    public int Total
    {
       get => _total;
@@ -25,6 +27,7 @@ public class BatchTaskProgressViewModel : TaskProgressViewModel
    }
 
    string _statsText = "";
+
    public string StatsText
    {
       get => _statsText;

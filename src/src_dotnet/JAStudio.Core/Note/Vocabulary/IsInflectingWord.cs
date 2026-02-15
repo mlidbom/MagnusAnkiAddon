@@ -4,18 +4,13 @@ namespace JAStudio.Core.Note.Vocabulary;
 
 public class IsInflectingWord : TagFlagField
 {
-    private readonly VocabNote _vocab;
+   readonly VocabNote _vocab;
 
-    public IsInflectingWord(VocabNote vocab) 
-        : base(vocab, Tags.Vocab.Matching.IsInflectingWord)
-    {
-        _vocab = vocab;
-    }
+   public IsInflectingWord(VocabNote vocab)
+      : base(vocab, Tags.Vocab.Matching.IsInflectingWord) =>
+      _vocab = vocab;
 
-    public bool IsActive => IsSet() || _vocab.PartsOfSpeech.IsInflectingWordType();
+   public bool IsActive => IsSet() || _vocab.PartsOfSpeech.IsInflectingWordType();
 
-    public override string ToString()
-    {
-        return $"{Tag}: {IsActive}";
-    }
+   public override string ToString() => $"{Tag}: {IsActive}";
 }

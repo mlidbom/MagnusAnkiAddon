@@ -16,12 +16,12 @@ public static partial class MediaFieldParsing
    public static List<MediaReference> ParseAudioReferences(string rawValue)
    {
       var results = new List<MediaReference>();
-      if (string.IsNullOrWhiteSpace(rawValue)) return results;
+      if(string.IsNullOrWhiteSpace(rawValue)) return results;
 
-      foreach (Match match in SoundTagRegex().Matches(rawValue))
+      foreach(Match match in SoundTagRegex().Matches(rawValue))
       {
          var fileName = match.Groups[1].Value.Trim();
-         if (!string.IsNullOrEmpty(fileName))
+         if(!string.IsNullOrEmpty(fileName))
             results.Add(new MediaReference(fileName, MediaType.Audio));
       }
 
@@ -31,12 +31,12 @@ public static partial class MediaFieldParsing
    public static List<MediaReference> ParseImageReferences(string rawValue)
    {
       var results = new List<MediaReference>();
-      if (string.IsNullOrWhiteSpace(rawValue)) return results;
+      if(string.IsNullOrWhiteSpace(rawValue)) return results;
 
-      foreach (Match match in ImgSrcRegex().Matches(rawValue))
+      foreach(Match match in ImgSrcRegex().Matches(rawValue))
       {
          var fileName = match.Groups[1].Value.Trim();
-         if (!string.IsNullOrEmpty(fileName))
+         if(!string.IsNullOrEmpty(fileName))
             results.Add(new MediaReference(fileName, MediaType.Image));
       }
 

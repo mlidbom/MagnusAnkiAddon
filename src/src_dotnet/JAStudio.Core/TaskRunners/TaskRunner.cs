@@ -5,7 +5,7 @@ namespace JAStudio.Core.TaskRunners;
 
 public class TaskRunner
 {
-   internal TaskRunner(JapaneseConfig _) { }
+   internal TaskRunner(JapaneseConfig _) {}
 
    Func<string, int, IScopePanel>? _uiScopePanelFactory;
    Func<IScopePanel, string, bool, ITaskProgressRunner>? _uiTaskRunnerFactory;

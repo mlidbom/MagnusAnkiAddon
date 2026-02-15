@@ -1,9 +1,9 @@
+using System;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using JAStudio.Core.Configuration;
-using System;
 using Compze.Utilities.Logging;
+using JAStudio.Core.Configuration;
 
 namespace JAStudio.UI.ViewModels;
 

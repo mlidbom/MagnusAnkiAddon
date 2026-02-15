@@ -16,104 +16,102 @@ public sealed class CandidateWordVariant
    IEnumerable<Match> _validMatches;
    List<Match> _displayMatches;
 
-    public CandidateWord Word { get; }
-    public string Form { get; }
-    public List<VocabMatch> VocabMatches { get; }
-    public List<Match> Matches { get; private set; }
+   public CandidateWord Word { get; }
+   public string Form { get; }
+   public List<VocabMatch> VocabMatches { get; }
+   public List<Match> Matches { get; private set; }
 
-    public CandidateWordVariant(CandidateWord word, string form)
-    {
-        Word = word;
-        Form = form;
+   public CandidateWordVariant(CandidateWord word, string form)
+   {
+      Word = word;
+      Form = form;
 
-        var services = word.Analysis.Services;
-        _dictLookup = new LazyCE<DictLookupResult>(() => services.DictLookup.LookupWord(form));
-        VocabMatches = services.Vocab.WithForm(form)
-            .Select(vocab => new VocabMatch(this, vocab))
-            .ToList();
+      var services = word.Analysis.Services;
+      _dictLookup = new LazyCE<DictLookupResult>(() => services.DictLookup.LookupWord(form));
+      VocabMatches = services.Vocab.WithForm(form)
+                             .Select(vocab => new VocabMatch(this, vocab))
+                             .ToList();
 
-        Matches = new List<Match>();
-        _validMatches = Enumerable.Empty<Match>();
-        _displayMatches = new List<Match>();
-    }
+      Matches = new List<Match>();
+      _validMatches = Enumerable.Empty<Match>();
+      _displayMatches = new List<Match>();
+   }
 
-    public bool IsSurface => Form == Word.SurfaceForm;
+   public bool IsSurface => Form == Word.SurfaceForm;
 
-    public bool VocabsControlMatchStatus =>
-        FormOwningVocabMatches.Any() ||
-        (VocabMatches.Any() && !_dictLookup.Value.FoundWords() && Word.IsCompound);
+   public bool VocabsControlMatchStatus =>
+      FormOwningVocabMatches.Any() ||
+      (VocabMatches.Any() && !_dictLookup.Value.FoundWords() && Word.IsCompound);
 
-    public void RunValidityAnalysis()
-    {
-        JAAssert.That(!_completedValidityAnalysis);
+   public void RunValidityAnalysis()
+   {
+      JAAssert.That(!_completedValidityAnalysis);
 
-        if (VocabMatches.Any())
-        {
-            Matches = VocabMatches.Cast<Match>().ToList();
-            ValidVocabMatches = VocabMatches.Where(vm => vm.IsValid).ToList();
-        }
+      if(VocabMatches.Any())
+      {
+         Matches = VocabMatches.Cast<Match>().ToList();
+         ValidVocabMatches = VocabMatches.Where(vm => vm.IsValid).ToList();
+      }
 
-        if (ValidVocabMatches.Any() || VocabsControlMatchStatus)
-        {
-            _validMatches = ValidVocabMatches;
-        }
-        else
-        {
-            if (_dictLookup.Value.FoundWords())
-            {
-                Matches.Add(new DictionaryMatch(this, _dictLookup.Value.Entries[0]));
-            }
-            else if (!Word.IsCompound)
-            {
-                Matches.Add(new MissingMatch(this));
-            }
+      if(ValidVocabMatches.Any() || VocabsControlMatchStatus)
+      {
+         _validMatches = ValidVocabMatches;
+      } else
+      {
+         if(_dictLookup.Value.FoundWords())
+         {
+            Matches.Add(new DictionaryMatch(this, _dictLookup.Value.Entries[0]));
+         } else if(!Word.IsCompound)
+         {
+            Matches.Add(new MissingMatch(this));
+         }
 
-            _validMatches = Matches.Where(match => match.IsValid);
-        }
+         _validMatches = Matches.Where(match => match.IsValid);
+      }
 
-        _isValid = _validMatches.Any();
-        _completedValidityAnalysis = true;
-    }
+      _isValid = _validMatches.Any();
+      _completedValidityAnalysis = true;
+   }
 
-    public void RunVisibilityAnalysis()
-    {
-        _displayMatches = OnceValidityAnalyzed.Matches.Where(match => match.IsDisplayed).ToList();
-    }
+   public void RunVisibilityAnalysis()
+   {
+      _displayMatches = OnceValidityAnalyzed.Matches.Where(match => match.IsDisplayed).ToList();
+   }
 
-    public int StartIndex => Word.StartLocation.CharacterStartIndex;
-    public SentenceConfiguration Configuration => Word.Analysis.Configuration;
-    public bool IsKnownWord => VocabMatches.Count > 0 || _dictLookup.Value.FoundWords();
+   public int StartIndex => Word.StartLocation.CharacterStartIndex;
+   public SentenceConfiguration Configuration => Word.Analysis.Configuration;
+   public bool IsKnownWord => VocabMatches.Count > 0 || _dictLookup.Value.FoundWords();
 
-    List<VocabMatch> FormOwningVocabMatches =>
-        VocabMatches.Where(vm => vm.Vocab.Forms.IsOwnedForm(Form)).ToList();
+   List<VocabMatch> FormOwningVocabMatches =>
+      VocabMatches.Where(vm => vm.Vocab.Forms.IsOwnedForm(Form)).ToList();
 
-    public bool HasValidMatch => OnceValidityAnalyzed._isValid;
-    public IEnumerable<Match> ValidMatches => OnceValidityAnalyzed._validMatches;
-    public List<Match> DisplayMatches => OnceVisibilityAnalyzed._displayMatches;
+   public bool HasValidMatch => OnceValidityAnalyzed._isValid;
+   public IEnumerable<Match> ValidMatches => OnceValidityAnalyzed._validMatches;
+   public List<Match> DisplayMatches => OnceVisibilityAnalyzed._displayMatches;
 
-    List<VocabMatch> ValidVocabMatches { get; set; } = new();
+   List<VocabMatch> ValidVocabMatches { get; set; } = new();
 
-    CandidateWordVariant OnceValidityAnalyzed
-    {
-        get
-        {
-            if (!_completedValidityAnalysis)
-                throw new System.Exception("Analysis not completed yet");
-            return this;
-        }
-    }
+   CandidateWordVariant OnceValidityAnalyzed
+   {
+      get
+      {
+         if(!_completedValidityAnalysis)
+            throw new System.Exception("Analysis not completed yet");
+         return this;
+      }
+   }
 
-    CandidateWordVariant OnceVisibilityAnalyzed
-    {
-        get
-        {
-            if (!_completedValidityAnalysis)
-                throw new System.Exception("Analysis not completed yet");
-            return this;
-        }
-    }
+   CandidateWordVariant OnceVisibilityAnalyzed
+   {
+      get
+      {
+         if(!_completedValidityAnalysis)
+            throw new System.Exception("Analysis not completed yet");
+         return this;
+      }
+   }
 
-    public WordExclusion ToExclusion() => WordExclusion.AtIndex(Form, StartIndex);
+   public WordExclusion ToExclusion() => WordExclusion.AtIndex(Form, StartIndex);
 
-    public override string ToString() => $"{Form}, is_valid_candidate:{HasValidMatch}";
+   public override string ToString() => $"{Form}, is_valid_candidate:{HasValidMatch}";
 }

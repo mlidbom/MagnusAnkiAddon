@@ -7,14 +7,14 @@ namespace JAStudio.Core.UI.Web.Sentence;
 
 public class SentenceViewModel
 {
-    public SentenceNote Sentence { get; }
-    public TextAnalysisViewModel Analysis { get; }
-    public List<MatchViewModel> DisplayedMatches { get; }
+   public SentenceNote Sentence { get; }
+   public TextAnalysisViewModel Analysis { get; }
+   public List<MatchViewModel> DisplayedMatches { get; }
 
-    public SentenceViewModel(SentenceNote sentence, Settings settings, VocabCollection vocab)
-    {
-        Sentence = sentence;
-        Analysis = new TextAnalysisViewModel(sentence.CreateAnalysis(forUI: true), settings, vocab);
-        DisplayedMatches = Analysis.DisplayedMatches;
-    }
+   public SentenceViewModel(SentenceNote sentence, Settings settings, VocabCollection vocab)
+   {
+      Sentence = sentence;
+      Analysis = new TextAnalysisViewModel(sentence.CreateAnalysis(forUI: true), settings, vocab);
+      DisplayedMatches = Analysis.DisplayedMatches;
+   }
 }

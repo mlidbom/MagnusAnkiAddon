@@ -6,8 +6,8 @@ namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabMatchingRulesConfigurationRequiresForbidsFlags
 {
-   private readonly VocabNote _vocab;
-   private readonly List<RequireForbidFlagField> _allFlags = new();
+   readonly VocabNote _vocab;
+   readonly List<RequireForbidFlagField> _allFlags = new();
 
    public RequireForbidFlagField MasuStem { get; }
    public RequireForbidFlagField Godan { get; }
@@ -57,7 +57,7 @@ public class VocabMatchingRulesConfigurationRequiresForbidsFlags
       _allFlags.Add(YieldLastToken);
    }
 
-   private RequireForbidFlagField AddFlag(int requiredWeight, int forbiddenWeight, Tag requiredTag, Tag forbiddenTag)
+   RequireForbidFlagField AddFlag(int requiredWeight, int forbiddenWeight, Tag requiredTag, Tag forbiddenTag)
    {
       var flag = new RequireForbidFlagField(_vocab, requiredWeight, forbiddenWeight, requiredTag, forbiddenTag);
       _allFlags.Add(flag);
@@ -71,7 +71,7 @@ public class VocabMatchingRulesConfigurationRequiresForbidsFlags
 
 public class VocabMatchingRulesConfigurationBoolFlags
 {
-   private readonly VocabNote _vocab;
+   readonly VocabNote _vocab;
    public IsInflectingWord IsInflectingWord { get; }
 
    public VocabMatchingRulesConfigurationBoolFlags(VocabNote vocab)

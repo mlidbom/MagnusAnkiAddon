@@ -5,19 +5,20 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTe
 
 public static class ForbidsCompositionallyTransparentCompound
 {
-    private static readonly FailedMatchRequirement Failed = FailedMatchRequirement.Forbids("configured_to_hide_compositionally_transparent_compounds");
+   static readonly FailedMatchRequirement Failed = FailedMatchRequirement.Forbids("configured_to_hide_compositionally_transparent_compounds");
 
-    public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
-    {
-        var match = inspector.Match;
-        if (inspector.Settings.HideTransparentCompounds() &&
-            match.Word.Analysis.ForUI &&
-            match.Word.IsCompound &&
-            inspector.CompoundLocationsAllHaveValidNonCompoundMatches &&
-            match.Vocab.MatchingConfiguration.BoolFlags.IsCompositionallyTransparentCompound.IsSet())
-        {
-            return Failed;
-        }
-        return null;
-    }
+   public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
+   {
+      var match = inspector.Match;
+      if(inspector.Settings.HideTransparentCompounds() &&
+         match.Word.Analysis.ForUI &&
+         match.Word.IsCompound &&
+         inspector.CompoundLocationsAllHaveValidNonCompoundMatches &&
+         match.Vocab.MatchingConfiguration.BoolFlags.IsCompositionallyTransparentCompound.IsSet())
+      {
+         return Failed;
+      }
+
+      return null;
+   }
 }

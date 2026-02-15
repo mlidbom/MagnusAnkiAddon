@@ -9,22 +9,22 @@ namespace JAStudio.Core.UI.Web.Sentence;
 /// </summary>
 public class SentenceNoteRenderer
 {
-    readonly SentenceRenderer _sentenceRenderer;
-    readonly UdSentenceBreakdownRenderer _udSentenceBreakdownRenderer;
+   readonly SentenceRenderer _sentenceRenderer;
+   readonly UdSentenceBreakdownRenderer _udSentenceBreakdownRenderer;
 
-    internal SentenceNoteRenderer(SentenceRenderer sentenceRenderer, UdSentenceBreakdownRenderer udSentenceBreakdownRenderer)
-    {
-        _sentenceRenderer = sentenceRenderer;
-        _udSentenceBreakdownRenderer = udSentenceBreakdownRenderer;
-    }
+   internal SentenceNoteRenderer(SentenceRenderer sentenceRenderer, UdSentenceBreakdownRenderer udSentenceBreakdownRenderer)
+   {
+      _sentenceRenderer = sentenceRenderer;
+      _udSentenceBreakdownRenderer = udSentenceBreakdownRenderer;
+   }
 
-    public PreRenderingContentRenderer<SentenceNote> CreateRenderer()
-    {
-        return new PreRenderingContentRenderer<SentenceNote>(new Dictionary<string, Func<SentenceNote, string>>
-        {
-            ["##USER_QUESTION##"] = note => _sentenceRenderer.RenderUserQuestion(note),
-            ["##SOURCE_QUESTION##"] = note => _sentenceRenderer.RenderSourceQuestion(note),
-            ["##SENTENCE_ANALYSIS##"] = note => _udSentenceBreakdownRenderer.RenderSentenceAnalysis(note),
-        });
-    }
+   public PreRenderingContentRenderer<SentenceNote> CreateRenderer()
+   {
+      return new PreRenderingContentRenderer<SentenceNote>(new Dictionary<string, Func<SentenceNote, string>>
+                                                           {
+                                                              ["##USER_QUESTION##"] = note => _sentenceRenderer.RenderUserQuestion(note),
+                                                              ["##SOURCE_QUESTION##"] = note => _sentenceRenderer.RenderSourceQuestion(note),
+                                                              ["##SENTENCE_ANALYSIS##"] = note => _udSentenceBreakdownRenderer.RenderSentenceAnalysis(note),
+                                                           });
+   }
 }

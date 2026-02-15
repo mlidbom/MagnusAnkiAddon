@@ -92,8 +92,6 @@ public class JPCollection
       Sentences.Cache.Clear();
    }
 
-
-
    /// <summary>Clear and reload all caches. Called after sync or collection reload.</summary>
    public void ReloadFromBackend()
    {
@@ -105,8 +103,8 @@ public class JPCollection
       var repoLoad = TaskCE.Run(LoadFromRepository);
 
       Task<BackendData?> backendDataTask = _backendDataLoader != null
-         ? Task.Run(() => (BackendData?)_backendDataLoader.Load(NoteServices.TaskRunner))
-         : Task.FromResult<BackendData?>(null);
+                                              ? Task.Run(() => (BackendData?)_backendDataLoader.Load(NoteServices.TaskRunner))
+                                              : Task.FromResult<BackendData?>(null);
 
       Task.WaitAll(repoLoad, backendDataTask);
 
@@ -130,12 +128,12 @@ public class JPCollection
                                            .ToDictionary(g => g.Key, g => g.ToList());
 
          runner.RunIndeterminate("Setting studying statuses",
-                                                                () =>
-                                                                {
-                                                                   Vocab.Cache.SetStudyingStatuses(vocabStatuses);
-                                                                   Kanji.Cache.SetStudyingStatuses(kanjiStatuses);
-                                                                   Sentences.Cache.SetStudyingStatuses(sentenceStatuses);
-                                                                });
+                                 () =>
+                                 {
+                                    Vocab.Cache.SetStudyingStatuses(vocabStatuses);
+                                    Kanji.Cache.SetStudyingStatuses(kanjiStatuses);
+                                    Sentences.Cache.SetStudyingStatuses(sentenceStatuses);
+                                 });
       }
    }
 

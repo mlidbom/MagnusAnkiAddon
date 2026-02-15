@@ -26,4 +26,3 @@ public interface ITaskProgressRunner : IDisposable
    void SetLabelText(string text);
    bool IsHidden();
 }
-   

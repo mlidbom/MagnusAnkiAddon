@@ -1,6 +1,6 @@
+using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Tests.Fixtures;
 using Xunit;
-using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.Tests.Note;
 

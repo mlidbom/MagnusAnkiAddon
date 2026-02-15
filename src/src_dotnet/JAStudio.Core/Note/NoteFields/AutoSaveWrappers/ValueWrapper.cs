@@ -2,25 +2,16 @@ namespace JAStudio.Core.Note.NoteFields.AutoSaveWrappers;
 
 public class ValueWrapper<TValue>
 {
-    private TValue _value;
+   TValue _value;
 
-    public ValueWrapper(TValue value)
-    {
-        _value = value;
-    }
+   public ValueWrapper(TValue value) => _value = value;
 
-    public void Set(TValue value)
-    {
-        _value = value;
-    }
+   public void Set(TValue value)
+   {
+      _value = value;
+   }
 
-    public TValue Get()
-    {
-        return _value;
-    }
+   public TValue Get() => _value;
 
-    public override string ToString()
-    {
-        return _value?.ToString() ?? string.Empty;
-    }
+   public override string ToString() => _value?.ToString() ?? string.Empty;
 }

@@ -8,27 +8,27 @@ namespace JAStudio.UI.Views;
 
 public partial class VocabEditorDialog : Window
 {
-    public VocabEditorDialog()
-    {
-        InitializeComponent();
-    }
+   public VocabEditorDialog()
+   {
+      InitializeComponent();
+   }
 
-    public VocabEditorDialog(VocabNote vocab) : this()
-    {
-        var viewModel = new VocabEditorViewModel(vocab);
+   public VocabEditorDialog(VocabNote vocab) : this()
+   {
+      var viewModel = new VocabEditorViewModel(vocab);
 
-        viewModel.SaveCommand = new RelayCommand(() =>
-        {
-            viewModel.Save();
-            AnkiFacade.UIUtils.Refresh();
-            Close();
-        });
+      viewModel.SaveCommand = new RelayCommand(() =>
+      {
+         viewModel.Save();
+         AnkiFacade.UIUtils.Refresh();
+         Close();
+      });
 
-        viewModel.CancelCommand = new RelayCommand(() =>
-        {
-            Close();
-        });
+      viewModel.CancelCommand = new RelayCommand(() =>
+      {
+         Close();
+      });
 
-        DataContext = viewModel;
-    }
+      DataContext = viewModel;
+   }
 }

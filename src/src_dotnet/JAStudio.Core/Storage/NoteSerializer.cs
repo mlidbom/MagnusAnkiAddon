@@ -47,21 +47,21 @@ public class NoteSerializer
    public KanjiNote DeserializeKanji(string json)
    {
       var data = JsonSerializer.Deserialize<KanjiData>(json, JsonOptions)
-             ?? throw new JsonException("Failed to deserialize KanjiData");
+              ?? throw new JsonException("Failed to deserialize KanjiData");
       return new KanjiNote(_noteServices, data);
    }
 
    public VocabNote DeserializeVocab(string json)
    {
       var data = JsonSerializer.Deserialize<VocabData>(json, JsonOptions)
-             ?? throw new JsonException("Failed to deserialize VocabData");
+              ?? throw new JsonException("Failed to deserialize VocabData");
       return new VocabNote(_noteServices, data);
    }
 
    public SentenceNote DeserializeSentence(string json)
    {
       var data = JsonSerializer.Deserialize<SentenceData>(json, JsonOptions)
-             ?? throw new JsonException("Failed to deserialize SentenceData");
+              ?? throw new JsonException("Failed to deserialize SentenceData");
       return new SentenceNote(_noteServices, data);
    }
 

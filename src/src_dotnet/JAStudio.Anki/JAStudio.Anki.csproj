@@ -7,12 +7,12 @@
    </PropertyGroup>
 
    <ItemGroup>
-      <ProjectReference Include="..\JAStudio.Core\JAStudio.Core.csproj" />
-      <ProjectReference Include="..\JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
+      <ProjectReference Include="..\JAStudio.Core\JAStudio.Core.csproj"/>
+      <ProjectReference Include="..\JAStudio.PythonInterop\JAStudio.PythonInterop.csproj"/>
    </ItemGroup>
 
    <ItemGroup>
-      <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.2" />
+      <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.2"/>
    </ItemGroup>
 
 

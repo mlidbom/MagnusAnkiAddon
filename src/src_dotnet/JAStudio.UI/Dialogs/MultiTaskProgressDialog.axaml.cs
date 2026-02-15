@@ -14,91 +14,91 @@ namespace JAStudio.UI.Dialogs;
 /// </summary>
 public partial class MultiTaskProgressDialog : Window
 {
-    static MultiTaskProgressDialog? _instance;
-    static int _holdCount;
+   static MultiTaskProgressDialog? _instance;
+   static int _holdCount;
 
-    public MultiTaskProgressDialog()
-    {
-        InitializeComponent();
-    }
+   public MultiTaskProgressDialog()
+   {
+      InitializeComponent();
+   }
 
-    void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
-    }
+   void InitializeComponent()
+   {
+      AvaloniaXamlLoader.Load(this);
+   }
 
-    StackPanel Container => this.FindControl<StackPanel>("PanelContainer")!;
+   StackPanel Container => this.FindControl<StackPanel>("PanelContainer")!;
 
-    /// <summary>
-    /// Hold the dialog open even when all panels have been removed.
-    /// Call once when the outermost task scope is entered.
-    /// Must be called on the UI thread.
-    /// </summary>
-    public static void Hold()
-    {
-        Dispatcher.UIThread.VerifyAccess();
-        _holdCount++;
-        EnsureVisible();
-    }
+   /// <summary>
+   /// Hold the dialog open even when all panels have been removed.
+   /// Call once when the outermost task scope is entered.
+   /// Must be called on the UI thread.
+   /// </summary>
+   public static void Hold()
+   {
+      Dispatcher.UIThread.VerifyAccess();
+      _holdCount++;
+      EnsureVisible();
+   }
 
-    /// <summary>
-    /// Release a hold. When the hold count reaches zero and no panels remain,
-    /// the dialog is closed.
-    /// Must be called on the UI thread.
-    /// </summary>
-    public static void Release()
-    {
-        Dispatcher.UIThread.VerifyAccess();
-        _holdCount--;
-        CloseIfEmpty();
-    }
+   /// <summary>
+   /// Release a hold. When the hold count reaches zero and no panels remain,
+   /// the dialog is closed.
+   /// Must be called on the UI thread.
+   /// </summary>
+   public static void Release()
+   {
+      Dispatcher.UIThread.VerifyAccess();
+      _holdCount--;
+      CloseIfEmpty();
+   }
 
-    /// <summary>
-    /// Create a new scope panel and add it to the shared dialog.
-    /// Opens the dialog if it is not already visible.
-    /// Must be called on the UI thread.
-    /// </summary>
-    public static TaskProgressScopePanel CreateScopePanel(TaskProgressScopeViewModel viewModel, int depth)
-    {
-        Dispatcher.UIThread.VerifyAccess();
-        EnsureVisible();
+   /// <summary>
+   /// Create a new scope panel and add it to the shared dialog.
+   /// Opens the dialog if it is not already visible.
+   /// Must be called on the UI thread.
+   /// </summary>
+   public static TaskProgressScopePanel CreateScopePanel(TaskProgressScopeViewModel viewModel, int depth)
+   {
+      Dispatcher.UIThread.VerifyAccess();
+      EnsureVisible();
 
-        var scopePanel = new TaskProgressScopePanel(depth) { DataContext = viewModel };
-        _instance!.Container.Children.Add(scopePanel);
-        return scopePanel;
-    }
+      var scopePanel = new TaskProgressScopePanel(depth) { DataContext = viewModel };
+      _instance!.Container.Children.Add(scopePanel);
+      return scopePanel;
+   }
 
-    /// <summary>
-    /// Remove a scope panel from the shared dialog.
-    /// Closes the dialog when the last panel is removed and no holds are active.
-    /// Must be called on the UI thread.
-    /// </summary>
-    public static void RemoveScopePanel(TaskProgressScopePanel scopePanel)
-    {
-        Dispatcher.UIThread.VerifyAccess();
+   /// <summary>
+   /// Remove a scope panel from the shared dialog.
+   /// Closes the dialog when the last panel is removed and no holds are active.
+   /// Must be called on the UI thread.
+   /// </summary>
+   public static void RemoveScopePanel(TaskProgressScopePanel scopePanel)
+   {
+      Dispatcher.UIThread.VerifyAccess();
 
-        if (_instance == null) return;
+      if(_instance == null) return;
 
-        _instance.Container.Children.Remove(scopePanel);
-        CloseIfEmpty();
-    }
+      _instance.Container.Children.Remove(scopePanel);
+      CloseIfEmpty();
+   }
 
-    static void EnsureVisible()
-    {
-        if (_instance == null || !_instance.IsVisible)
-        {
-            _instance = new MultiTaskProgressDialog();
-            WindowPositioner.PositionNearCursor(_instance);
-            _instance.Show();
-        }
-    }
+   static void EnsureVisible()
+   {
+      if(_instance == null || !_instance.IsVisible)
+      {
+         _instance = new MultiTaskProgressDialog();
+         WindowPositioner.PositionNearCursor(_instance);
+         _instance.Show();
+      }
+   }
 
-    static void CloseIfEmpty()
-    {
-        if (_instance != null && _holdCount <= 0 && _instance.Container.Children.Count == 0)
-        {
-            _instance.Close();
-            _instance = null;
-        }
-    }
+   static void CloseIfEmpty()
+   {
+      if(_instance != null && _holdCount <= 0 && _instance.Container.Children.Count == 0)
+      {
+         _instance.Close();
+         _instance = null;
+      }
+   }
 }

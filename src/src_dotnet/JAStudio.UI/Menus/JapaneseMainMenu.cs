@@ -43,9 +43,8 @@ public class JapaneseMainMenu
          }
       );
 
-   SpecMenuItem BuildLookupMenuSpec(Func<string> getClipboardContent)
-   {
-      return SpecMenuItem.Submenu(
+   SpecMenuItem BuildLookupMenuSpec(Func<string> getClipboardContent) =>
+      SpecMenuItem.Submenu(
          ShortcutFinger.Home2("Lookup"),
          new List<SpecMenuItem>
          {
@@ -54,7 +53,6 @@ public class JapaneseMainMenu
             WebSearchMenus.BuildWebSearchMenuSpec(getClipboardContent)
          }
       );
-   }
 
    SpecMenuItem BuildLocalActionsMenuSpec() =>
       SpecMenuItem.Submenu(

@@ -8,29 +8,26 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Require
 /// </summary>
 public abstract class CustomForbidsNoCache : MatchRequirement
 {
-    protected VocabMatchInspector Inspector { get; }
+   protected VocabMatchInspector Inspector { get; }
 
-    protected CustomForbidsNoCache(VocabMatchInspector inspector)
-    {
-        Inspector = inspector;
-    }
+   protected CustomForbidsNoCache(VocabMatchInspector inspector) => Inspector = inspector;
 
-    /// <summary>
-    /// Whether the match is currently in this state. NOT cached!
-    /// </summary>
-    public bool IsInState => InternalIsInState();
+   /// <summary>
+   /// Whether the match is currently in this state. NOT cached!
+   /// </summary>
+   public bool IsInState => InternalIsInState();
 
-    /// <summary>
-    /// Description of this state for error messages.
-    /// </summary>
-    public abstract string Description { get; }
+   /// <summary>
+   /// Description of this state for error messages.
+   /// </summary>
+   public abstract string Description { get; }
 
-    public override bool IsFulfilled => !IsInState;
+   public override bool IsFulfilled => !IsInState;
 
-    public override string FailureReason => !IsFulfilled ? $"forbids::{Description}" : "";
+   public override string FailureReason => !IsFulfilled ? $"forbids::{Description}" : "";
 
-    /// <summary>
-    /// Internal implementation of state checking. Override this in subclasses.
-    /// </summary>
-    protected abstract bool InternalIsInState();
+   /// <summary>
+   /// Internal implementation of state checking. Override this in subclasses.
+   /// </summary>
+   protected abstract bool InternalIsInState();
 }

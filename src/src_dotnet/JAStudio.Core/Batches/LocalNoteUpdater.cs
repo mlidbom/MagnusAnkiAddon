@@ -292,8 +292,10 @@ public class LocalNoteUpdater
       sentences = sentences.OrderBy(_ => random.Next()).ToList();
 
       using var runner = _taskRunner.Current("Reparse Sentences");
-      runner.RunBatch(sentences, it => { ReparseSentence(it); }, "Reanalysing sentences.",
-                                 threads: ThreadCount.WithThreads((int)_config.ReanalysisThreads.Value));
+      runner.RunBatch(sentences,
+                      it => { ReparseSentence(it); },
+                      "Reanalysing sentences.",
+                      threads: ThreadCount.WithThreads((int)_config.ReanalysisThreads.Value));
    }
 
    public void ReparseSentencesForVocab(VocabNote vocab)

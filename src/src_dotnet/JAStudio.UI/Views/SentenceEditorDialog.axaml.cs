@@ -8,27 +8,27 @@ namespace JAStudio.UI.Views;
 
 public partial class SentenceEditorDialog : Window
 {
-    public SentenceEditorDialog()
-    {
-        InitializeComponent();
-    }
+   public SentenceEditorDialog()
+   {
+      InitializeComponent();
+   }
 
-    public SentenceEditorDialog(SentenceNote sentence) : this()
-    {
-        var viewModel = new SentenceEditorViewModel(sentence);
+   public SentenceEditorDialog(SentenceNote sentence) : this()
+   {
+      var viewModel = new SentenceEditorViewModel(sentence);
 
-        viewModel.SaveCommand = new RelayCommand(() =>
-        {
-            viewModel.Save();
-            AnkiFacade.UIUtils.Refresh();
-            Close();
-        });
+      viewModel.SaveCommand = new RelayCommand(() =>
+      {
+         viewModel.Save();
+         AnkiFacade.UIUtils.Refresh();
+         Close();
+      });
 
-        viewModel.CancelCommand = new RelayCommand(() =>
-        {
-            Close();
-        });
+      viewModel.CancelCommand = new RelayCommand(() =>
+      {
+         Close();
+      });
 
-        DataContext = viewModel;
-    }
+      DataContext = viewModel;
+   }
 }

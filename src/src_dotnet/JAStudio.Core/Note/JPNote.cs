@@ -26,6 +26,7 @@ public abstract class JPNote
          _cardStatus[kvp.Key] = kvp.Value;
       }
    }
+
    public NoteTags Tags { get; }
 
    readonly NoteId _id;
@@ -74,7 +75,7 @@ public abstract class JPNote
 
       // Update local status for all known card types
       var cardTypes = _cardStatus.Keys.ToList();
-      foreach (var cardType in cardTypes)
+      foreach(var cardType in cardTypes)
       {
          _cardStatus[cardType] = false; // false = suspended
       }
@@ -88,7 +89,7 @@ public abstract class JPNote
 
       // Update local status for all known card types
       var cardTypes = _cardStatus.Keys.ToList();
-      foreach (var cardType in cardTypes)
+      foreach(var cardType in cardTypes)
       {
          _cardStatus[cardType] = true; // true = active/unsuspended
       }

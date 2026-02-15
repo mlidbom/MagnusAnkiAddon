@@ -8,6 +8,7 @@ namespace JAStudio.Core.TaskRunners;
 public class TaskProgressViewModel : NotifyPropertyChangedBase
 {
    string _message = "Processing...";
+
    public string Message
    {
       get => _message;
@@ -15,6 +16,7 @@ public class TaskProgressViewModel : NotifyPropertyChangedBase
    }
 
    bool _isCancelVisible;
+
    public bool IsCancelVisible
    {
       get => _isCancelVisible;

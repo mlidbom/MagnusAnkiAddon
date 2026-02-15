@@ -75,7 +75,7 @@ public class VocabNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTestC
 
       // Assert
       Assert.False(vocab.Question.IsValid);
-      Assert.Equal(JAStudio.Core.Note.Vocabulary.VocabNoteQuestion.InvalidQuestionMessage, vocab.Question.Raw);
+      Assert.Equal(VocabNoteQuestion.InvalidQuestionMessage, vocab.Question.Raw);
    }
 
    [Fact]

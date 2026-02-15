@@ -23,7 +23,7 @@ public class WritableAudioValue
 
    public List<string> AudioFilesPaths()
    {
-      if (!_value.Trim().StartsWith("[sound:")) return [];
+      if(!_value.Trim().StartsWith("[sound:")) return [];
 
       var strippedPaths = _value.Trim().Replace("[sound:", "").Split(']');
       return strippedPaths.Select(path => path.Trim()).Where(path => !string.IsNullOrEmpty(path)).ToList();

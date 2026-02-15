@@ -12,7 +12,6 @@ public static class BackgroundTaskManagerSetup
 {
    public static void Initialize()
    {
-      Core.TaskRunners.BackgroundTaskManager.SetFatalErrorHandler(
-         ex => Dispatcher.UIThread.Post(() => FatalErrorDialog.Show(ex)));
+      Core.TaskRunners.BackgroundTaskManager.SetFatalErrorHandler(ex => Dispatcher.UIThread.Post(() => FatalErrorDialog.Show(ex)));
    }
 }

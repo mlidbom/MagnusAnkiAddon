@@ -7,66 +7,66 @@ namespace JAStudio.Core;
 
 public static class StringExtensions
 {
-    private static readonly Regex HtmlTagRegex = new(@"<[^>]*>", RegexOptions.Compiled);
+   static readonly Regex HtmlTagRegex = new(@"<[^>]*>", RegexOptions.Compiled);
 
-    public static string StripHtmlMarkup(string input)
-    {
-        if (string.IsNullOrEmpty(input))
-        {
-            return string.Empty;
-        }
+   public static string StripHtmlMarkup(string input)
+   {
+      if(string.IsNullOrEmpty(input))
+      {
+         return string.Empty;
+      }
 
-        return HtmlTagRegex.Replace(input.Replace("&nbsp;", " "), string.Empty);
-    }
+      return HtmlTagRegex.Replace(input.Replace("&nbsp;", " "), string.Empty);
+   }
 
-    public static List<string> ExtractCommaSeparatedValues(string input)
-    {
-        if (string.IsNullOrWhiteSpace(input))
-        {
-            return new List<string>();
-        }
+   public static List<string> ExtractCommaSeparatedValues(string input)
+   {
+      if(string.IsNullOrWhiteSpace(input))
+      {
+         return new List<string>();
+      }
 
-        // Support both comma and Japanese comma
-        var separators = new[] { ',', '、' };
-        return input.Split(separators, StringSplitOptions.RemoveEmptyEntries)
-            .Select(s => s.Trim())
-            .Where(s => !string.IsNullOrEmpty(s))
-            .ToList();
-    }
+      // Support both comma and Japanese comma
+      var separators = new[] { ',', '、' };
+      return input.Split(separators, StringSplitOptions.RemoveEmptyEntries)
+                  .Select(s => s.Trim())
+                  .Where(s => !string.IsNullOrEmpty(s))
+                  .ToList();
+   }
 
-    public static string ReplaceWord(string word, string replacement, string text)
-    {
-        if (string.IsNullOrEmpty(text))
-        {
-            return text;
-        }
+   public static string ReplaceWord(string word, string replacement, string text)
+   {
+      if(string.IsNullOrEmpty(text))
+      {
+         return text;
+      }
 
-        // Use word boundary detection to match whole words only (matching Python's implementation)
-        var pattern = $@"\b{Regex.Escape(word)}\b";
-        return Regex.Replace(text, pattern, replacement);
-    }
+      // Use word boundary detection to match whole words only (matching Python's implementation)
+      var pattern = $@"\b{Regex.Escape(word)}\b";
+      return Regex.Replace(text, pattern, replacement);
+   }
 
-    public static string PadToLength(string value, int targetLength, double spaceScaling = 1.0)
-    {
-        if (string.IsNullOrEmpty(value))
-        {
-            value = string.Empty;
-        }
+   public static string PadToLength(string value, int targetLength, double spaceScaling = 1.0)
+   {
+      if(string.IsNullOrEmpty(value))
+      {
+         value = string.Empty;
+      }
 
-        var padding = Math.Max(0, targetLength - value.Length);
-        return value + new string(' ', (int)(padding * spaceScaling));
-    }
+      var padding = Math.Max(0, targetLength - value.Length);
+      return value + new string(' ', (int)(padding * spaceScaling));
+   }
 
-    public static string FirstNumber(string input)
-    {
-        if (string.IsNullOrEmpty(input))
-        {
-            return string.Empty;
-        }
+   public static string FirstNumber(string input)
+   {
+      if(string.IsNullOrEmpty(input))
+      {
+         return string.Empty;
+      }
 
-        var match = Regex.Match(input, @"\d+");
-        return match.Success ? match.Value : string.Empty;
-    }
+      var match = Regex.Match(input, @"\d+");
+      return match.Success ? match.Value : string.Empty;
+   }
 
-    public const string InvisibleSpace = "\u200B"; // Zero-width space
+   public const string InvisibleSpace = "\u200B"; // Zero-width space
 }

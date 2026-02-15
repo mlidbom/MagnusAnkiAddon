@@ -10,224 +10,225 @@ namespace JAStudio.UI.Tests;
 /// </summary>
 public class MenuSpecificationTests
 {
-    [Fact]
-    public void WebSearchMenu_ContainsKanjiSubmenu()
-    {
-        // Arrange
-        var searchText = "漢字";
-        
-        // Act - Build the menu spec (no Avalonia needed!)
-        var menuSpec = WebSearchMenus.BuildWebSearchMenuSpec(() => searchText);
+   [Fact]
+   public void WebSearchMenu_ContainsKanjiSubmenu()
+   {
+      // Arrange
+      var searchText = "漢字";
 
-        // Assert - Verify structure
-        Assert.Equal("_o Web", menuSpec.Name); // ShortcutFinger.Home3("Web") = "_o Web"
-        Assert.NotNull(menuSpec.Children);
-        Assert.Equal(SpecMenuItemKind.Submenu, menuSpec.Kind);
-        
-        var kanjiSubmenu = menuSpec.Children.FirstOrDefault(c => c.Name.Contains("Kanji"));
-        Assert.NotNull(kanjiSubmenu);
-        Assert.Equal(SpecMenuItemKind.Submenu, kanjiSubmenu!.Kind);
-        Assert.Equal(3, kanjiSubmenu.Children!.Count); // Kanji explosion, Kanshudo, Kanji map
-    }
+      // Act - Build the menu spec (no Avalonia needed!)
+      var menuSpec = WebSearchMenus.BuildWebSearchMenuSpec(() => searchText);
 
-    [Fact]
-    public void WebSearchMenu_KanjiExplosion_OpensCorrectUrl()
-    {
-        // Arrange
-        var searchText = "漢字";
-        
-        // Act - Build menu and find the "Kanji explosion" action
-        var menuSpec = WebSearchMenus.BuildWebSearchMenuSpec(() => searchText);
+      // Assert - Verify structure
+      Assert.Equal("_o Web", menuSpec.Name); // ShortcutFinger.Home3("Web") = "_o Web"
+      Assert.NotNull(menuSpec.Children);
+      Assert.Equal(SpecMenuItemKind.Submenu, menuSpec.Kind);
 
-        var kanjiSubmenu = menuSpec.Children!.First(c => c.Name.Contains("Kanji"));
-        var kanjiExplosionItem = kanjiSubmenu.Children!.First();
-        
-        Assert.Equal("_u Kanji explosion", kanjiExplosionItem.Name); // ShortcutFinger.Home1("Kanji explosion")
-        // Note: Can't test execution since it calls AnkiFacade.OpenUrl
-        Assert.NotNull(kanjiExplosionItem.Action);
-    }
+      var kanjiSubmenu = menuSpec.Children.FirstOrDefault(c => c.Name.Contains("Kanji"));
+      Assert.NotNull(kanjiSubmenu);
+      Assert.Equal(SpecMenuItemKind.Submenu, kanjiSubmenu!.Kind);
+      Assert.Equal(3, kanjiSubmenu.Children!.Count); // Kanji explosion, Kanshudo, Kanji map
+   }
 
-    [Fact]
-    public void WebSearchMenu_AllLeafNodes_HaveActions()
-    {
-        // Arrange & Act
-        var menuSpec = WebSearchMenus.BuildWebSearchMenuSpec(() => "test");
+   [Fact]
+   public void WebSearchMenu_KanjiExplosion_OpensCorrectUrl()
+   {
+      // Arrange
+      var searchText = "漢字";
 
-        // Assert - Recursively verify all leaf nodes have actions
-        var leafItems = GetAllLeafItems(menuSpec);
-        Assert.NotEmpty(leafItems);
-        Assert.All(leafItems, item => Assert.NotNull(item.Action));
-    }
+      // Act - Build menu and find the "Kanji explosion" action
+      var menuSpec = WebSearchMenus.BuildWebSearchMenuSpec(() => searchText);
 
-    [Fact]
-    public void MenuItem_Separator_HasCorrectProperties()
-    {
-        // Act
-        var separator = SpecMenuItem.Separator();
+      var kanjiSubmenu = menuSpec.Children!.First(c => c.Name.Contains("Kanji"));
+      var kanjiExplosionItem = kanjiSubmenu.Children!.First();
 
-        // Assert
-        Assert.Equal(SpecMenuItemKind.Separator, separator.Kind);
-        Assert.Throws<InvalidOperationException>(() => separator.Action);
-        Assert.Throws<InvalidOperationException>(() => separator.Children);
-        Assert.Throws<InvalidOperationException>(() => separator.HasVisibleChildren);
-    }
+      Assert.Equal("_u Kanji explosion", kanjiExplosionItem.Name); // ShortcutFinger.Home1("Kanji explosion")
+      // Note: Can't test execution since it calls AnkiFacade.OpenUrl
+      Assert.NotNull(kanjiExplosionItem.Action);
+   }
 
-    [Fact]
-    public void MenuItem_Command_HasCorrectProperties()
-    {
-        // Arrange
-        var executed = false;
-        
-        // Act
-        var command = SpecMenuItem.Command(
-            "Test Command",
-            () => executed = true,
-            acceleratorKey: 'T',
-            shortcut: "Ctrl+T"
-        );
+   [Fact]
+   public void WebSearchMenu_AllLeafNodes_HaveActions()
+   {
+      // Arrange & Act
+      var menuSpec = WebSearchMenus.BuildWebSearchMenuSpec(() => "test");
 
-        // Assert
-        Assert.Equal(SpecMenuItemKind.Command, command.Kind);
-        Assert.Equal("Test Command", command.Name);
-        Assert.Equal('T', command.AcceleratorKey);
-        Assert.Equal("Ctrl+T", command.KeyboardShortcut);
-        
-        command.Action!();
-        Assert.True(executed);
-    }
+      // Assert - Recursively verify all leaf nodes have actions
+      var leafItems = GetAllLeafItems(menuSpec);
+      Assert.NotEmpty(leafItems);
+      Assert.All(leafItems, item => Assert.NotNull(item.Action));
+   }
 
-    [Fact]
-    public void MenuItem_Submenu_HasCorrectProperties()
-    {
-        // Act
-        var submenu = SpecMenuItem.Submenu(
-            "Test Menu",
-            new List<SpecMenuItem>
-            {
-                SpecMenuItem.Command("Item 1", () => { }),
-                SpecMenuItem.Separator(),
-                SpecMenuItem.Command("Item 2", () => { })
-            },
-            acceleratorKey: 'M'
-        );
+   [Fact]
+   public void MenuItem_Separator_HasCorrectProperties()
+   {
+      // Act
+      var separator = SpecMenuItem.Separator();
 
-        // Assert
-        Assert.Equal(SpecMenuItemKind.Submenu, submenu.Kind);
-        Assert.Equal("Test Menu", submenu.Name);
-        Assert.Equal('M', submenu.AcceleratorKey);
-        Assert.Equal(3, submenu.Children!.Count);
-    }
+      // Assert
+      Assert.Equal(SpecMenuItemKind.Separator, separator.Kind);
+      Assert.Throws<InvalidOperationException>(() => separator.Action);
+      Assert.Throws<InvalidOperationException>(() => separator.Children);
+      Assert.Throws<InvalidOperationException>(() => separator.HasVisibleChildren);
+   }
 
-    [Fact]
-    public void MenuItem_ConditionalVisibility_WorksCorrectly()
-    {
-        // Arrange
-        var showItem = false;
-        var conditionalItem = SpecMenuItem.Command("Conditionally Hidden", () => { });
-        conditionalItem.IsVisible = showItem;
-        
-        // Act
-        var menu = SpecMenuItem.Submenu(
-            "Menu",
-            new List<SpecMenuItem>
-            {
-                SpecMenuItem.Command("Always Visible", () => { }),
-                conditionalItem
-            }
-        );
+   [Fact]
+   public void MenuItem_Command_HasCorrectProperties()
+   {
+      // Arrange
+      var executed = false;
 
-        // Assert - Only visible items should be counted
-        var visibleItems = menu.Children!.Where(c => c.IsVisible).ToList();
-        Assert.Single(visibleItems);
-        Assert.Equal("Always Visible", visibleItems[0].Name);
-    }
+      // Act
+      var command = SpecMenuItem.Command(
+         "Test Command",
+         () => executed = true,
+         acceleratorKey: 'T',
+         shortcut: "Ctrl+T"
+      );
 
-    [Fact]
-    public void MenuItem_EmptySubmenu_IsStillSubmenu()
-    {
-        // Act
-        var submenu = SpecMenuItem.Submenu("Empty Menu", new List<SpecMenuItem>());
+      // Assert
+      Assert.Equal(SpecMenuItemKind.Command, command.Kind);
+      Assert.Equal("Test Command", command.Name);
+      Assert.Equal('T', command.AcceleratorKey);
+      Assert.Equal("Ctrl+T", command.KeyboardShortcut);
 
-        // Assert - It's a submenu even with no children
-        Assert.Equal(SpecMenuItemKind.Submenu, submenu.Kind);
-    }
+      command.Action!();
+      Assert.True(executed);
+   }
 
-    [Fact]
-    public void MenuItem_EmptySubmenu_IsAutoDisabled()
-    {
-        // Act
-        var submenu = SpecMenuItem.Submenu("Empty Menu", new List<SpecMenuItem>());
-
-        // Assert - Empty submenu should be disabled
-        Assert.False(submenu.IsEnabled);
-        Assert.False(submenu.HasVisibleChildren);
-    }
-
-    [Fact]
-    public void MenuItem_SubmenuWithAllInvisibleChildren_IsAutoDisabled()
-    {
-        // Arrange
-        var child1 = SpecMenuItem.Command("Hidden 1", () => { });
-        child1.IsVisible = false;
-        var child2 = SpecMenuItem.Command("Hidden 2", () => { });
-        child2.IsVisible = false;
-
-        // Act
-        var submenu = SpecMenuItem.Submenu("Menu", new List<SpecMenuItem> { child1, child2 });
-
-        // Assert
-        Assert.Equal(SpecMenuItemKind.Submenu, submenu.Kind);
-        Assert.False(submenu.IsEnabled);
-        Assert.False(submenu.HasVisibleChildren);
-    }
-
-    [Fact]
-    public void MenuItem_SubmenuWithOnlySeparators_IsAutoDisabled()
-    {
-        // A submenu containing only separators is effectively empty
-        var submenu = SpecMenuItem.Submenu("Menu", new List<SpecMenuItem>
-        {
+   [Fact]
+   public void MenuItem_Submenu_HasCorrectProperties()
+   {
+      // Act
+      var submenu = SpecMenuItem.Submenu(
+         "Test Menu",
+         new List<SpecMenuItem>
+         {
+            SpecMenuItem.Command("Item 1", () => {}),
             SpecMenuItem.Separator(),
-            SpecMenuItem.Separator()
-        });
+            SpecMenuItem.Command("Item 2", () => {})
+         },
+         acceleratorKey: 'M'
+      );
 
-        Assert.Equal(SpecMenuItemKind.Submenu, submenu.Kind);
-        Assert.False(submenu.IsEnabled);
-        Assert.False(submenu.HasVisibleChildren);
-    }
+      // Assert
+      Assert.Equal(SpecMenuItemKind.Submenu, submenu.Kind);
+      Assert.Equal("Test Menu", submenu.Name);
+      Assert.Equal('M', submenu.AcceleratorKey);
+      Assert.Equal(3, submenu.Children!.Count);
+   }
 
-    [Fact]
-    public void MenuItem_SubmenuWithVisibleChildren_IsEnabled()
-    {
-        var submenu = SpecMenuItem.Submenu("Menu", new List<SpecMenuItem>
-        {
-            SpecMenuItem.Command("Item", () => { })
-        });
+   [Fact]
+   public void MenuItem_ConditionalVisibility_WorksCorrectly()
+   {
+      // Arrange
+      var showItem = false;
+      var conditionalItem = SpecMenuItem.Command("Conditionally Hidden", () => {});
+      conditionalItem.IsVisible = showItem;
 
-        Assert.Equal(SpecMenuItemKind.Submenu, submenu.Kind);
-        Assert.True(submenu.IsEnabled);
-        Assert.True(submenu.HasVisibleChildren);
-    }
+      // Act
+      var menu = SpecMenuItem.Submenu(
+         "Menu",
+         new List<SpecMenuItem>
+         {
+            SpecMenuItem.Command("Always Visible", () => {}),
+            conditionalItem
+         }
+      );
 
-    /// <summary>
-    /// Helper to recursively extract all leaf (command) items from a menu tree.
-    /// </summary>
-    private List<SpecMenuItem> GetAllLeafItems(SpecMenuItem menu)
-    {
-        var result = new List<SpecMenuItem>();
-        
-        if (menu.Kind == SpecMenuItemKind.Command)
-        {
-            result.Add(menu);
-        }
-        else if (menu.Kind == SpecMenuItemKind.Submenu)
-        {
-            foreach (var child in menu.Children)
-            {
-                result.AddRange(GetAllLeafItems(child));
-            }
-        }
-        
-        return result;
-    }
+      // Assert - Only visible items should be counted
+      var visibleItems = menu.Children!.Where(c => c.IsVisible).ToList();
+      Assert.Single(visibleItems);
+      Assert.Equal("Always Visible", visibleItems[0].Name);
+   }
+
+   [Fact]
+   public void MenuItem_EmptySubmenu_IsStillSubmenu()
+   {
+      // Act
+      var submenu = SpecMenuItem.Submenu("Empty Menu", new List<SpecMenuItem>());
+
+      // Assert - It's a submenu even with no children
+      Assert.Equal(SpecMenuItemKind.Submenu, submenu.Kind);
+   }
+
+   [Fact]
+   public void MenuItem_EmptySubmenu_IsAutoDisabled()
+   {
+      // Act
+      var submenu = SpecMenuItem.Submenu("Empty Menu", new List<SpecMenuItem>());
+
+      // Assert - Empty submenu should be disabled
+      Assert.False(submenu.IsEnabled);
+      Assert.False(submenu.HasVisibleChildren);
+   }
+
+   [Fact]
+   public void MenuItem_SubmenuWithAllInvisibleChildren_IsAutoDisabled()
+   {
+      // Arrange
+      var child1 = SpecMenuItem.Command("Hidden 1", () => {});
+      child1.IsVisible = false;
+      var child2 = SpecMenuItem.Command("Hidden 2", () => {});
+      child2.IsVisible = false;
+
+      // Act
+      var submenu = SpecMenuItem.Submenu("Menu", new List<SpecMenuItem> { child1, child2 });
+
+      // Assert
+      Assert.Equal(SpecMenuItemKind.Submenu, submenu.Kind);
+      Assert.False(submenu.IsEnabled);
+      Assert.False(submenu.HasVisibleChildren);
+   }
+
+   [Fact]
+   public void MenuItem_SubmenuWithOnlySeparators_IsAutoDisabled()
+   {
+      // A submenu containing only separators is effectively empty
+      var submenu = SpecMenuItem.Submenu("Menu",
+                                         new List<SpecMenuItem>
+                                         {
+                                            SpecMenuItem.Separator(),
+                                            SpecMenuItem.Separator()
+                                         });
+
+      Assert.Equal(SpecMenuItemKind.Submenu, submenu.Kind);
+      Assert.False(submenu.IsEnabled);
+      Assert.False(submenu.HasVisibleChildren);
+   }
+
+   [Fact]
+   public void MenuItem_SubmenuWithVisibleChildren_IsEnabled()
+   {
+      var submenu = SpecMenuItem.Submenu("Menu",
+                                         new List<SpecMenuItem>
+                                         {
+                                            SpecMenuItem.Command("Item", () => {})
+                                         });
+
+      Assert.Equal(SpecMenuItemKind.Submenu, submenu.Kind);
+      Assert.True(submenu.IsEnabled);
+      Assert.True(submenu.HasVisibleChildren);
+   }
+
+   /// <summary>
+   /// Helper to recursively extract all leaf (command) items from a menu tree.
+   /// </summary>
+   List<SpecMenuItem> GetAllLeafItems(SpecMenuItem menu)
+   {
+      var result = new List<SpecMenuItem>();
+
+      if(menu.Kind == SpecMenuItemKind.Command)
+      {
+         result.Add(menu);
+      } else if(menu.Kind == SpecMenuItemKind.Submenu)
+      {
+         foreach(var child in menu.Children)
+         {
+            result.AddRange(GetAllLeafItems(child));
+         }
+      }
+
+      return result;
+   }
 }

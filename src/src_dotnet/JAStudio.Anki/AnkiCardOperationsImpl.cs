@@ -8,20 +8,17 @@ namespace JAStudio.Anki;
 /// </summary>
 public class AnkiCardOperationsImpl : ICardOperations
 {
-    readonly ExternalNoteIdMap _idMap;
+   readonly ExternalNoteIdMap _idMap;
 
-    public AnkiCardOperationsImpl(ExternalNoteIdMap idMap)
-    {
-        _idMap = idMap;
-    }
+   public AnkiCardOperationsImpl(ExternalNoteIdMap idMap) => _idMap = idMap;
 
-    public void SuspendAllCardsForNote(NoteId noteId)
-    {
-        AnkiFacade.NoteEx.SuspendAllCardsForNote(_idMap.RequireExternalId(noteId));
-    }
+   public void SuspendAllCardsForNote(NoteId noteId)
+   {
+      AnkiFacade.NoteEx.SuspendAllCardsForNote(_idMap.RequireExternalId(noteId));
+   }
 
-    public void UnsuspendAllCardsForNote(NoteId noteId)
-    {
-        AnkiFacade.NoteEx.UnsuspendAllCardsForNote(_idMap.RequireExternalId(noteId));
-    }
+   public void UnsuspendAllCardsForNote(NoteId noteId)
+   {
+      AnkiFacade.NoteEx.UnsuspendAllCardsForNote(_idMap.RequireExternalId(noteId));
+   }
 }

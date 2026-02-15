@@ -6,34 +6,36 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTe
 
 public sealed class RequiresOrForbids
 {
-    private readonly Func<VocabMatchInspector, RequireForbidFlagField> _getRequirement;
-    private readonly Func<VocabMatchInspector, bool> _isInState;
-    private readonly FailedMatchRequirement _requiredFailure;
-    private readonly FailedMatchRequirement _forbiddenFailure;
+   readonly Func<VocabMatchInspector, RequireForbidFlagField> _getRequirement;
+   readonly Func<VocabMatchInspector, bool> _isInState;
+   readonly FailedMatchRequirement _requiredFailure;
+   readonly FailedMatchRequirement _forbiddenFailure;
 
-    public RequiresOrForbids(
-        string name,
-        Func<VocabMatchInspector, RequireForbidFlagField> getRequirement,
-        Func<VocabMatchInspector, bool> isInState)
-    {
-        _getRequirement = getRequirement;
-        _isInState = isInState;
-        _requiredFailure = FailedMatchRequirement.Required(name);
-        _forbiddenFailure = FailedMatchRequirement.Forbids(name);
-    }
+   public RequiresOrForbids(
+      string name,
+      Func<VocabMatchInspector, RequireForbidFlagField> getRequirement,
+      Func<VocabMatchInspector, bool> isInState)
+   {
+      _getRequirement = getRequirement;
+      _isInState = isInState;
+      _requiredFailure = FailedMatchRequirement.Required(name);
+      _forbiddenFailure = FailedMatchRequirement.Forbids(name);
+   }
 
-    public FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
-    {
-        var requirement = _getRequirement(inspector);
+   public FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
+   {
+      var requirement = _getRequirement(inspector);
 
-        if (requirement.IsRequired && !_isInState(inspector))
-        {
-            return _requiredFailure;
-        }
-        if (requirement.IsForbidden && _isInState(inspector))
-        {
-            return _forbiddenFailure;
-        }
-        return null;
-    }
+      if(requirement.IsRequired && !_isInState(inspector))
+      {
+         return _requiredFailure;
+      }
+
+      if(requirement.IsForbidden && _isInState(inspector))
+      {
+         return _forbiddenFailure;
+      }
+
+      return null;
+   }
 }

@@ -11,18 +11,18 @@ namespace JAStudio.UI.Dialogs;
 /// </summary>
 public partial class SpinnerProgressPanel : UserControl
 {
-    public SpinnerProgressPanel()
-    {
-        InitializeComponent();
-    }
+   public SpinnerProgressPanel()
+   {
+      InitializeComponent();
+   }
 
-    void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
-    }
+   void InitializeComponent()
+   {
+      AvaloniaXamlLoader.Load(this);
+   }
 
-    void OnCancelClick(object? sender, RoutedEventArgs e)
-    {
-        (DataContext as TaskProgressViewModel)?.RequestCancel();
-    }
+   void OnCancelClick(object? sender, RoutedEventArgs e)
+   {
+      (DataContext as TaskProgressViewModel)?.RequestCancel();
+   }
 }

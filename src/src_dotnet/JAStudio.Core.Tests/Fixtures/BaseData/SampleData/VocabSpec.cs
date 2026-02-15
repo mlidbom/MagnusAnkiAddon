@@ -8,107 +8,107 @@ namespace JAStudio.Core.Tests.Fixtures.BaseData.SampleData;
 
 public class VocabSpec : IEquatable<VocabSpec>
 {
-    public VocabSpec(
-        string question,
-        string? answer = null,
-        List<string>? readings = null,
-        List<string>? forms = null,
-        List<Tag>? tags = null,
-        List<string>? compounds = null,
-        IEnumerable<string>? surfaceNot = null,
-        IEnumerable<string>? yieldToSurface = null,
-        IEnumerable<string>? prefixIn = null,
-        IEnumerable<string>? prefixNot = null,
-        IEnumerable<string>? suffixNot = null,
-        IEnumerable<string>? tos = null)
-    {
-        DisambiguationName = question;
-        Question = question.Split(VocabNoteQuestion.DisambiguationMarker)[0];
-        Answer = answer ?? question;
-        Readings = readings ?? [Question];
-        ExtraForms = forms != null ? [..forms] : [];
-        Tags = tags != null ? [..tags] : [];
-        Compounds = compounds ?? [];
-        SurfaceIsNot = surfaceNot != null ? [..surfaceNot] : [];
-        YieldToSurface = yieldToSurface != null ? [..yieldToSurface] : [];
-        PrefixIsNot = prefixNot != null ? [..prefixNot] : [];
-        SuffixIsNot = suffixNot != null ? [..suffixNot] : [];
-        Tos = tos != null ? [..tos] : [];
-        RequiredPrefix = prefixIn != null ? [..prefixIn] : [];
-    }
+   public VocabSpec(
+      string question,
+      string? answer = null,
+      List<string>? readings = null,
+      List<string>? forms = null,
+      List<Tag>? tags = null,
+      List<string>? compounds = null,
+      IEnumerable<string>? surfaceNot = null,
+      IEnumerable<string>? yieldToSurface = null,
+      IEnumerable<string>? prefixIn = null,
+      IEnumerable<string>? prefixNot = null,
+      IEnumerable<string>? suffixNot = null,
+      IEnumerable<string>? tos = null)
+   {
+      DisambiguationName = question;
+      Question = question.Split(VocabNoteQuestion.DisambiguationMarker)[0];
+      Answer = answer ?? question;
+      Readings = readings ?? [Question];
+      ExtraForms = forms != null ? [..forms] : [];
+      Tags = tags != null ? [..tags] : [];
+      Compounds = compounds ?? [];
+      SurfaceIsNot = surfaceNot != null ? [..surfaceNot] : [];
+      YieldToSurface = yieldToSurface != null ? [..yieldToSurface] : [];
+      PrefixIsNot = prefixNot != null ? [..prefixNot] : [];
+      SuffixIsNot = suffixNot != null ? [..suffixNot] : [];
+      Tos = tos != null ? [..tos] : [];
+      RequiredPrefix = prefixIn != null ? [..prefixIn] : [];
+   }
 
-    public string DisambiguationName { get; }
-    public string Question { get; }
-    public string Answer { get; }
-    public List<string> Readings { get; }
-    public HashSet<string> ExtraForms { get; }
-    public HashSet<Tag> Tags { get; }
-    public List<string> Compounds { get; }
-    public HashSet<string> SurfaceIsNot { get; }
-    public HashSet<string> YieldToSurface { get; }
-    public HashSet<string> PrefixIsNot { get; }
-    public HashSet<string> SuffixIsNot { get; }
-    public HashSet<string> Tos { get; }
-    public HashSet<string> RequiredPrefix { get; }
+   public string DisambiguationName { get; }
+   public string Question { get; }
+   public string Answer { get; }
+   public List<string> Readings { get; }
+   public HashSet<string> ExtraForms { get; }
+   public HashSet<Tag> Tags { get; }
+   public List<string> Compounds { get; }
+   public HashSet<string> SurfaceIsNot { get; }
+   public HashSet<string> YieldToSurface { get; }
+   public HashSet<string> PrefixIsNot { get; }
+   public HashSet<string> SuffixIsNot { get; }
+   public HashSet<string> Tos { get; }
+   public HashSet<string> RequiredPrefix { get; }
 
-    public override string ToString() => $"""VocabSpec("{Question}", "{Answer}", [{string.Join(", ", Readings.Select(r => $"\"{r}\""))}])""";
+   public override string ToString() => $"""VocabSpec("{Question}", "{Answer}", [{string.Join(", ", Readings.Select(r => $"\"{r}\""))}])""";
 
-    public override bool Equals(object? obj) => Equals(obj as VocabSpec);
+   public override bool Equals(object? obj) => Equals(obj as VocabSpec);
 
-    public bool Equals(VocabSpec? other) =>
-        other is not null
-        && other.Question == Question
-        && other.Answer == Answer
-        && other.Readings.SequenceEqual(Readings);
+   public bool Equals(VocabSpec? other) =>
+      other is not null
+   && other.Question == Question
+   && other.Answer == Answer
+   && other.Readings.SequenceEqual(Readings);
 
-    public override int GetHashCode() => Question.GetHashCode();
+   public override int GetHashCode() => Question.GetHashCode();
 
-    public void InitializeNote(VocabNote vocabNote)
-    {
-        vocabNote.CompoundParts.Set(Compounds);
+   public void InitializeNote(VocabNote vocabNote)
+   {
+      vocabNote.CompoundParts.Set(Compounds);
 
-        if (ExtraForms.Count > 0)
-        {
-            var allForms = new HashSet<string>(vocabNote.Forms.AllSet());
-            allForms.UnionWith(ExtraForms);
-            vocabNote.Forms.SetSet(allForms);
-        }
+      if(ExtraForms.Count > 0)
+      {
+         var allForms = new HashSet<string>(vocabNote.Forms.AllSet());
+         allForms.UnionWith(ExtraForms);
+         vocabNote.Forms.SetSet(allForms);
+      }
 
-        foreach (var tag in Tags)
-        {
-            vocabNote.Tags.Set(tag);
-        }
+      foreach(var tag in Tags)
+      {
+         vocabNote.Tags.Set(tag);
+      }
 
-        foreach (var excludedSurface in SurfaceIsNot)
-        {
-            vocabNote.MatchingConfiguration.ConfigurableRules.SurfaceIsNot.Add(excludedSurface);
-        }
+      foreach(var excludedSurface in SurfaceIsNot)
+      {
+         vocabNote.MatchingConfiguration.ConfigurableRules.SurfaceIsNot.Add(excludedSurface);
+      }
 
-        foreach (var yieldSurface in YieldToSurface)
-        {
-            vocabNote.MatchingConfiguration.ConfigurableRules.YieldToSurface.Add(yieldSurface);
-        }
+      foreach(var yieldSurface in YieldToSurface)
+      {
+         vocabNote.MatchingConfiguration.ConfigurableRules.YieldToSurface.Add(yieldSurface);
+      }
 
-        foreach (var forbiddenPrefix in PrefixIsNot)
-        {
-            vocabNote.MatchingConfiguration.ConfigurableRules.PrefixIsNot.Add(forbiddenPrefix);
-        }
+      foreach(var forbiddenPrefix in PrefixIsNot)
+      {
+         vocabNote.MatchingConfiguration.ConfigurableRules.PrefixIsNot.Add(forbiddenPrefix);
+      }
 
-        foreach (var forbiddenSuffix in SuffixIsNot)
-        {
-            vocabNote.MatchingConfiguration.ConfigurableRules.SuffixIsNot.Add(forbiddenSuffix);
-        }
+      foreach(var forbiddenSuffix in SuffixIsNot)
+      {
+         vocabNote.MatchingConfiguration.ConfigurableRules.SuffixIsNot.Add(forbiddenSuffix);
+      }
 
-        foreach (var requiredPrefix in RequiredPrefix)
-        {
-            vocabNote.MatchingConfiguration.ConfigurableRules.RequiredPrefix.Add(requiredPrefix);
-        }
+      foreach(var requiredPrefix in RequiredPrefix)
+      {
+         vocabNote.MatchingConfiguration.ConfigurableRules.RequiredPrefix.Add(requiredPrefix);
+      }
 
-        vocabNote.MatchingConfiguration.ConfigurableRules.Save();
+      vocabNote.MatchingConfiguration.ConfigurableRules.Save();
 
-        if (Tos.Count > 0)
-        {
-            vocabNote.PartsOfSpeech.Set(Tos);
-        }
-    }
+      if(Tos.Count > 0)
+      {
+         vocabNote.PartsOfSpeech.Set(Tos);
+      }
+   }
 }

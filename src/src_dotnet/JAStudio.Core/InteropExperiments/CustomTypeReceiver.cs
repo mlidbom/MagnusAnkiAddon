@@ -2,5 +2,5 @@
 
 public class CustomTypeReceiver
 {
-    public string ReceiveClass(dynamic instance) => instance.a_value;
+   public string ReceiveClass(dynamic instance) => instance.a_value;
 }

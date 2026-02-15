@@ -28,17 +28,17 @@ public abstract class SentenceAnalysisViewModelCommon : CollectionUsingTest
    }
 
    protected void AssertDisplayWordsEqualAndThatAnalysisInternalStateIsValid(string sentence,
-                                                                                 List<WordExclusion> incorrect,
-                                                                                 List<WordExclusion> hidden,
-                                                                                 List<string> expectedOutput)
+                                                                             List<WordExclusion> incorrect,
+                                                                             List<WordExclusion> hidden,
+                                                                             List<string> expectedOutput)
    {
       var sentenceNote = CreateSentence(sentence);
       hidden.ForEach(sentenceNote.Configuration.HiddenMatches.Add);
       incorrect.ForEach(sentenceNote.Configuration.IncorrectMatches.Add);
 
       var sentenceViewModel = new SentenceViewModel(sentenceNote,
-         GetService<Settings>(),
-         GetService<VocabCollection>());
+                                                    GetService<Settings>(),
+                                                    GetService<VocabCollection>());
 
       void RunNoteAssertions(string message)
       {
@@ -66,8 +66,8 @@ public abstract class SentenceAnalysisViewModelCommon : CollectionUsingTest
    {
       var sentenceNote = CreateSentence(sentence);
       var analysis = new SentenceViewModel(sentenceNote,
-         GetService<Settings>(),
-         GetService<VocabCollection>());
+                                           GetService<Settings>(),
+                                           GetService<VocabCollection>());
       var candidateWords = analysis.Analysis.CandidateWords;
       var matches = candidateWords
                    .SelectMany(it => it.Matches)

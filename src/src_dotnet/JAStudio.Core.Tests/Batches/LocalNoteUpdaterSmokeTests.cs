@@ -8,9 +8,9 @@ namespace JAStudio.Core.Tests.Batches;
 /// </summary>
 public class LocalNoteUpdaterSmokeTests : CollectionUsingTest
 {
-    [Fact]
-    public void SmokeFullRebuild()
-    {
-        GetService<LocalNoteUpdater>().FullRebuild();
-    }
+   [Fact]
+   public void SmokeFullRebuild()
+   {
+      GetService<LocalNoteUpdater>().FullRebuild();
+   }
 }

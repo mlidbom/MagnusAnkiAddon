@@ -5,21 +5,23 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTe
 
 public static class RequiresOrForbidsSurface
 {
-    private static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("surface");
-    private static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("surface");
+   static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("surface");
+   static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("surface");
 
-    public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
-    {
-        var requirement = inspector.Match.RequiresForbids.Surface;
+   public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
+   {
+      var requirement = inspector.Match.RequiresForbids.Surface;
 
-        if (requirement.IsRequired && !inspector.Variant.IsSurface)
-        {
-            return RequiredFailure;
-        }
-        if (requirement.IsForbidden && inspector.Variant.IsSurface && !inspector.BaseEqualsSurface)
-        {
-            return ForbiddenFailure;
-        }
-        return null;
-    }
+      if(requirement.IsRequired && !inspector.Variant.IsSurface)
+      {
+         return RequiredFailure;
+      }
+
+      if(requirement.IsForbidden && inspector.Variant.IsSurface && !inspector.BaseEqualsSurface)
+      {
+         return ForbiddenFailure;
+      }
+
+      return null;
+   }
 }

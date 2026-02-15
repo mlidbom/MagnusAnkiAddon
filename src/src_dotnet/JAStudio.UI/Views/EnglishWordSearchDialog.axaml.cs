@@ -8,78 +8,76 @@ namespace JAStudio.UI.Views;
 
 public partial class EnglishWordSearchDialog : Window
 {
-    private static EnglishWordSearchDialog? _instance;
+   static EnglishWordSearchDialog? _instance;
 
-    /// <summary>
-    /// Get the singleton instance of the dialog.
-    /// </summary>
-    public static EnglishWordSearchDialog Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = new EnglishWordSearchDialog();
-            }
-            return _instance;
-        }
-    }
+   /// <summary>
+   /// Get the singleton instance of the dialog.
+   /// </summary>
+   public static EnglishWordSearchDialog Instance
+   {
+      get
+      {
+         if(_instance == null)
+         {
+            _instance = new EnglishWordSearchDialog();
+         }
 
-    public EnglishWordSearchDialog()
-    {
-        InitializeComponent();
-        DataContext = new EnglishWordSearchDialogViewModel();
-        
-        // Focus search input when dialog is shown
-        Opened += (_, _) =>
-        {
-            var searchInput = this.FindControl<TextBox>("SearchInput");
-            searchInput?.Focus();
-        };
-    }
+         return _instance;
+      }
+   }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
-    }
+   public EnglishWordSearchDialog()
+   {
+      InitializeComponent();
+      DataContext = new EnglishWordSearchDialogViewModel();
 
-    private void OnResultDoubleClick(object? sender, TappedEventArgs e)
-    {
-        var viewModel = DataContext as EnglishWordSearchDialogViewModel;
-        
-        // Check for modifier keys
-        var modifiers = e.KeyModifiers;
-        
-        if (modifiers.HasFlag(KeyModifiers.Control))
-        {
-            viewModel?.OpenInMerriamWebster();
-        }
-        else if (modifiers.HasFlag(KeyModifiers.Shift))
-        {
-            viewModel?.OpenInGoogle();
-        }
-        else
-        {
-            viewModel?.OpenInOED();
-        }
-    }
+      // Focus search input when dialog is shown
+      Opened += (_, _) =>
+      {
+         var searchInput = this.FindControl<TextBox>("SearchInput");
+         searchInput?.Focus();
+      };
+   }
 
-    /// <summary>
-    /// Toggle the visibility of the dialog (show if hidden, hide if shown).
-    /// </summary>
-    public static void ToggleVisibility()
-    {
-        if (Instance.IsVisible)
-        {
-            Instance.Hide();
-        }
-        else
-        {
-            WindowPositioner.RepositionNearCursor(Instance);
-            Instance.Show();
-            Instance.Activate();
-            var searchInput = Instance.FindControl<TextBox>("SearchInput");
-            searchInput?.Focus();
-        }
-    }
+   void InitializeComponent()
+   {
+      AvaloniaXamlLoader.Load(this);
+   }
+
+   void OnResultDoubleClick(object? sender, TappedEventArgs e)
+   {
+      var viewModel = DataContext as EnglishWordSearchDialogViewModel;
+
+      // Check for modifier keys
+      var modifiers = e.KeyModifiers;
+
+      if(modifiers.HasFlag(KeyModifiers.Control))
+      {
+         viewModel?.OpenInMerriamWebster();
+      } else if(modifiers.HasFlag(KeyModifiers.Shift))
+      {
+         viewModel?.OpenInGoogle();
+      } else
+      {
+         viewModel?.OpenInOED();
+      }
+   }
+
+   /// <summary>
+   /// Toggle the visibility of the dialog (show if hidden, hide if shown).
+   /// </summary>
+   public static void ToggleVisibility()
+   {
+      if(Instance.IsVisible)
+      {
+         Instance.Hide();
+      } else
+      {
+         WindowPositioner.RepositionNearCursor(Instance);
+         Instance.Show();
+         Instance.Activate();
+         var searchInput = Instance.FindControl<TextBox>("SearchInput");
+         searchInput?.Focus();
+      }
+   }
 }

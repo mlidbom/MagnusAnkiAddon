@@ -16,7 +16,7 @@ public record ThreadCount
    public int Threads { get; }
 
    public bool IsSequential => Threads == 1;
-   
+
    public ParallelOptions ParallelOptions => new() { MaxDegreeOfParallelism = Threads };
 
    ThreadCount(int threads)

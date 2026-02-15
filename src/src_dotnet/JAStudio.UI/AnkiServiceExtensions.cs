@@ -17,9 +17,9 @@ public static class AnkiServiceExtensions
    public static QueryBuilder QueryBuilder(this TemporaryServiceCollection services)
    {
       return _queryBuilder ??= new QueryBuilder(
-         services.ServiceLocator.Resolve<VocabCollection>(),
-         services.ServiceLocator.Resolve<KanjiCollection>(),
-         services.ServiceLocator.Resolve<AnalysisServices>(),
-         services.ExternalNoteIdMap);
+                services.ServiceLocator.Resolve<VocabCollection>(),
+                services.ServiceLocator.Resolve<KanjiCollection>(),
+                services.ServiceLocator.Resolve<AnalysisServices>(),
+                services.ExternalNoteIdMap);
    }
 }

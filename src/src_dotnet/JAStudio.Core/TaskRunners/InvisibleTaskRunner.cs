@@ -45,9 +45,9 @@ public class InvisibleTaskRunner : ITaskProgressRunner
    public Task<List<TOutput>> RunBatchAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads) =>
       TaskCE.Run(() => RunBatch(items, processItem, message, threads));
 
-   public void SetLabelText(string labelText) { }
+   public void SetLabelText(string labelText) {}
 
-   public void Close() { }
+   public void Close() {}
 
    public TResult RunIndeterminate<TResult>(string message, Func<TResult> action)
    {
@@ -63,5 +63,5 @@ public class InvisibleTaskRunner : ITaskProgressRunner
 
    public bool IsHidden() => true;
 
-   public void Dispose() { }
+   public void Dispose() {}
 }

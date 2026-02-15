@@ -12,32 +12,29 @@ public class MediaFileIndex
    readonly string _mediaRoot;
    bool _initialized;
 
-   public MediaFileIndex(string mediaRoot)
-   {
-      _mediaRoot = mediaRoot;
-   }
+   public MediaFileIndex(string mediaRoot) => _mediaRoot = mediaRoot;
 
    public void Build()
    {
       _index.Clear();
 
-      if (!Directory.Exists(_mediaRoot))
+      if(!Directory.Exists(_mediaRoot))
       {
          _initialized = true;
          return;
       }
 
-      foreach (var file in Directory.EnumerateFiles(_mediaRoot, "*.*", SearchOption.AllDirectories))
+      foreach(var file in Directory.EnumerateFiles(_mediaRoot, "*.*", SearchOption.AllDirectories))
       {
          var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
-         if (!MediaFileId.TryParse(fileNameWithoutExtension, out var mediaFileId)) continue;
+         if(!MediaFileId.TryParse(fileNameWithoutExtension, out var mediaFileId)) continue;
 
          var extension = Path.GetExtension(file);
          var originalFileName = Path.GetFileName(Path.GetDirectoryName(file)) ?? string.Empty;
 
          var info = new MediaFileInfo(mediaFileId, file, originalFileName, extension);
 
-         if (!_index.TryAdd(mediaFileId, info))
+         if(!_index.TryAdd(mediaFileId, info))
          {
             this.Log().Warning($"Duplicate media file ID {mediaFileId} found at {file} — already indexed at {_index[mediaFileId].FullPath}");
          }
@@ -49,7 +46,7 @@ public class MediaFileIndex
 
    void EnsureInitialized()
    {
-      if (!_initialized) Build();
+      if(!_initialized) Build();
    }
 
    public string? TryResolve(MediaFileId id)

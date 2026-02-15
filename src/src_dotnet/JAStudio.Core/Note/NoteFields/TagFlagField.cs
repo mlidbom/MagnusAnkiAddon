@@ -2,37 +2,30 @@ namespace JAStudio.Core.Note.NoteFields;
 
 public class TagFlagField
 {
-    private readonly JPNote _note;
-    public readonly Tag Tag;
-    private readonly bool _cachedIsSet;
+   readonly JPNote _note;
+   public readonly Tag Tag;
+   readonly bool _cachedIsSet;
 
-    public TagFlagField(JPNote note, Tag tag)
-    {
-        _note = note;
-        Tag = tag;
-        // Cache tag state during construction - invalidated when matching_configuration is recreated
-        _cachedIsSet = note.Tags.Contains(tag);
-    }
+   public TagFlagField(JPNote note, Tag tag)
+   {
+      _note = note;
+      Tag = tag;
+      // Cache tag state during construction - invalidated when matching_configuration is recreated
+      _cachedIsSet = note.Tags.Contains(tag);
+   }
 
-    public bool IsSet()
-    {
-        return _cachedIsSet;
-    }
+   public bool IsSet() => _cachedIsSet;
 
-    public void SetTo(bool set)
-    {
-        if (set)
-        {
-            _note.Tags.Set(Tag);
-        }
-        else
-        {
-            _note.Tags.Unset(Tag);
-        }
-    }
+   public void SetTo(bool set)
+   {
+      if(set)
+      {
+         _note.Tags.Set(Tag);
+      } else
+      {
+         _note.Tags.Unset(Tag);
+      }
+   }
 
-    public override string ToString()
-    {
-        return $"{Tag.Name}: {IsSet()}";
-    }
+   public override string ToString() => $"{Tag.Name}: {IsSet()}";
 }

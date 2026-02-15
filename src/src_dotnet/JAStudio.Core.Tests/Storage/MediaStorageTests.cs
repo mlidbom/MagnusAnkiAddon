@@ -290,4 +290,3 @@ public class When_storing_a_media_file : IDisposable
       [XF] public void the_original_filename_is_recoverable() => _freshIndex.TryGetInfo(_id)!.OriginalFileName.Must().Be("ep01.mp3");
    }
 }
-

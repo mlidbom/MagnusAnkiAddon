@@ -5,21 +5,22 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTe
 
 public sealed class Forbids
 {
-    private readonly Func<MatchInspector, bool> _isInState;
-    private readonly FailedMatchRequirement _requiredFailure;
+   readonly Func<MatchInspector, bool> _isInState;
+   readonly FailedMatchRequirement _requiredFailure;
 
-    public Forbids(string name, Func<MatchInspector, bool> isInState)
-    {
-        _isInState = isInState;
-        _requiredFailure = FailedMatchRequirement.Forbids(name);
-    }
+   public Forbids(string name, Func<MatchInspector, bool> isInState)
+   {
+      _isInState = isInState;
+      _requiredFailure = FailedMatchRequirement.Forbids(name);
+   }
 
-    public FailedMatchRequirement? ApplyTo(MatchInspector inspector)
-    {
-        if (_isInState(inspector))
-        {
-            return _requiredFailure;
-        }
-        return null;
-    }
+   public FailedMatchRequirement? ApplyTo(MatchInspector inspector)
+   {
+      if(_isInState(inspector))
+      {
+         return _requiredFailure;
+      }
+
+      return null;
+   }
 }

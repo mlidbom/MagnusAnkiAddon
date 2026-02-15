@@ -53,6 +53,7 @@ public static class PythonDotNetShim
          {
             pythonList.Append(new PyString(item));
          }
+
          return pythonList;
       });
    }

@@ -4,34 +4,36 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTe
 
 public static class RequiresOrForbidsDictionaryFormPrefix
 {
-    private static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("dictionary_form_prefix");
-    private static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("dictionary_form_prefix");
+   static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("dictionary_form_prefix");
+   static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("dictionary_form_prefix");
 
-    public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
-    {
-        var requirement = inspector.Match.RequiresForbids.DictionaryFormPrefix;
-        if (requirement.IsActive)
-        {
-            var isInState = InternalIsInState(inspector);
-            if (requirement.IsRequired && !isInState)
-            {
-                return RequiredFailure;
-            }
-            if (requirement.IsForbidden && isInState)
-            {
-                return ForbiddenFailure;
-            }
-        }
-        return null;
-    }
+   public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
+   {
+      var requirement = inspector.Match.RequiresForbids.DictionaryFormPrefix;
+      if(requirement.IsActive)
+      {
+         var isInState = InternalIsInState(inspector);
+         if(requirement.IsRequired && !isInState)
+         {
+            return RequiredFailure;
+         }
 
-    private static bool InternalIsInState(VocabMatchInspector inspector)
-    {
-        if (inspector.PreviousLocation != null && inspector.PreviousLocation.Token.IsDictionaryVerbInflection)
-        {
-            return true;
-        }
+         if(requirement.IsForbidden && isInState)
+         {
+            return ForbiddenFailure;
+         }
+      }
 
-        return false;
-    }
+      return null;
+   }
+
+   static bool InternalIsInState(VocabMatchInspector inspector)
+   {
+      if(inspector.PreviousLocation != null && inspector.PreviousLocation.Token.IsDictionaryVerbInflection)
+      {
+         return true;
+      }
+
+      return false;
+   }
 }

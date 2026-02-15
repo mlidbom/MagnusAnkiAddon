@@ -19,7 +19,6 @@ public abstract class Match
       ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb.ApplyTo,
       new Forbids("compound_ending_on_dictionary_form_where_surface_differs_from_base",
                   it => it.IsCompoundEndingOnDictionaryFormWhereSurfaceDiffersFromBase).ApplyTo
-
    ];
 
    static readonly List<Func<MatchInspector, FailedMatchRequirement?>> MatchStaticDisplayRequirements =
@@ -28,190 +27,196 @@ public abstract class Match
       ForbidsConfiguredToHideAllCompounds.ApplyTo
    ];
 
-    public MatchInspector Inspector { get; }
-    public CandidateWordVariant Variant { get; }
+   public MatchInspector Inspector { get; }
+   public CandidateWordVariant Variant { get; }
 
-    bool? _isPrimarilyValidInternalCache;
-    bool? _isValidInternalCache;
-    bool? _isValidCache;
-    int? _startIndexCache;
-    bool? _staticDisplayRequirementsFulfilledCache;
-    List<MatchRequirement>? _displayRequirementsCache;
+   bool? _isPrimarilyValidInternalCache;
+   bool? _isValidInternalCache;
+   bool? _isValidCache;
+   int? _startIndexCache;
+   bool? _staticDisplayRequirementsFulfilledCache;
+   List<MatchRequirement>? _displayRequirementsCache;
 
-    protected Match(CandidateWordVariant wordVariant)
-    {
-        Variant = wordVariant;
-        Inspector = new MatchInspector(this);
-    }
+   protected Match(CandidateWordVariant wordVariant)
+   {
+      Variant = wordVariant;
+      Inspector = new MatchInspector(this);
+   }
 
-    protected virtual List<MatchRequirement> DynamicDisplayRequirements
-    {
-        get
-        {
-            if (_displayRequirementsCache == null)
-            {
-                var requirements = new List<MatchRequirement?>
-                {
-                    new ForbidsIsShadowed(Inspector)
-                };
-                requirements.AddRange(CreateDynamicDisplayRequirements());
-                _displayRequirementsCache = requirements.Where(r => r != null).Cast<MatchRequirement>().ToList();
-            }
-            return _displayRequirementsCache;
-        }
-    }
+   protected virtual List<MatchRequirement> DynamicDisplayRequirements
+   {
+      get
+      {
+         if(_displayRequirementsCache == null)
+         {
+            var requirements = new List<MatchRequirement?>
+                               {
+                                  new ForbidsIsShadowed(Inspector)
+                               };
+            requirements.AddRange(CreateDynamicDisplayRequirements());
+            _displayRequirementsCache = requirements.Where(r => r != null).Cast<MatchRequirement>().ToList();
+         }
 
-    protected virtual List<FailedMatchRequirement> CreatePrimaryValidityFailures()
-    {
-        return MatchPrimaryValidityRequirements
+         return _displayRequirementsCache;
+      }
+   }
+
+   protected virtual List<FailedMatchRequirement> CreatePrimaryValidityFailures()
+   {
+      return MatchPrimaryValidityRequirements
             .Select(requirement => requirement(Inspector))
             .Where(failure => failure != null)
             .Cast<FailedMatchRequirement>()
             .ToList();
-    }
+   }
 
-    protected virtual bool IsPrimarilyValid()
-    {
-        return !MatchPrimaryValidityRequirements
-            .Select(requirement => requirement(Inspector))
-            .Any(failure => failure != null);
-    }
+   protected virtual bool IsPrimarilyValid()
+   {
+      return !MatchPrimaryValidityRequirements
+             .Select(requirement => requirement(Inspector))
+             .Any(failure => failure != null);
+   }
 
-    protected virtual bool IsInterdependentlyValid() => true;
+   protected virtual bool IsInterdependentlyValid() => true;
 
-    protected virtual List<FailedMatchRequirement> CreateInterdependentValidityFailures() => [];
+   protected virtual List<FailedMatchRequirement> CreateInterdependentValidityFailures() => [];
 
-    protected virtual List<FailedMatchRequirement> CreateStaticDisplayRequirementFailures()
-    {
-        return MatchStaticDisplayRequirements
+   protected virtual List<FailedMatchRequirement> CreateStaticDisplayRequirementFailures()
+   {
+      return MatchStaticDisplayRequirements
             .Select(requirement => requirement(Inspector))
             .Where(failure => failure != null)
             .Cast<FailedMatchRequirement>()
             .ToList();
-    }
+   }
 
-    public bool StaticDisplayRequirementsFulfilled
-    {
-        get
-        {
-            if (_staticDisplayRequirementsFulfilledCache == null)
-            {
-                _staticDisplayRequirementsFulfilledCache = StaticDisplayRequirementsFulfilledInternal();
-            }
-            return _staticDisplayRequirementsFulfilledCache.Value;
-        }
-    }
+   public bool StaticDisplayRequirementsFulfilled
+   {
+      get
+      {
+         if(_staticDisplayRequirementsFulfilledCache == null)
+         {
+            _staticDisplayRequirementsFulfilledCache = StaticDisplayRequirementsFulfilledInternal();
+         }
 
-    protected virtual bool StaticDisplayRequirementsFulfilledInternal()
-    {
-        return !MatchStaticDisplayRequirements
-            .Select(requirement => requirement(Inspector))
-            .Any(failure => failure != null);
-    }
+         return _staticDisplayRequirementsFulfilledCache.Value;
+      }
+   }
 
-    protected virtual IEnumerable<MatchRequirement?> CreateDynamicDisplayRequirements() => [];
+   protected virtual bool StaticDisplayRequirementsFulfilledInternal()
+   {
+      return !MatchStaticDisplayRequirements
+             .Select(requirement => requirement(Inspector))
+             .Any(failure => failure != null);
+   }
 
-    public abstract string Answer { get; }
-    public abstract List<string> Readings { get; }
-    public virtual string TokenizedForm => Variant.Form;
-    public virtual string MatchForm => TokenizedForm;
-    public virtual string ParsedForm => TokenizedForm;
-    public virtual string ExclusionForm => Variant.Form;
+   protected virtual IEnumerable<MatchRequirement?> CreateDynamicDisplayRequirements() => [];
 
-    public CandidateWord Word => Variant.Word;
+   public abstract string Answer { get; }
+   public abstract List<string> Readings { get; }
+   public virtual string TokenizedForm => Variant.Form;
+   public virtual string MatchForm => TokenizedForm;
+   public virtual string ParsedForm => TokenizedForm;
+   public virtual string ExclusionForm => Variant.Form;
 
-    public virtual bool IsValid
-    {
-        get
-        {
-            if (_isValidCache == null)
-            {
-                _isValidCache = IsValidInternal();
-            }
-            return _isValidCache.Value;
-        }
-    }
+   public CandidateWord Word => Variant.Word;
 
-    bool IsValidInternal() => IsValidInternalProperty || IsHighlighted;
+   public virtual bool IsValid
+   {
+      get
+      {
+         if(_isValidCache == null)
+         {
+            _isValidCache = IsValidInternal();
+         }
 
-    public bool IsPrimarilyValidProperty
-    {
-        get
-        {
-            if (_isPrimarilyValidInternalCache == null)
-            {
-                _isPrimarilyValidInternalCache = IsPrimarilyValid();
-            }
-            return _isPrimarilyValidInternalCache.Value;
-        }
-    }
+         return _isValidCache.Value;
+      }
+   }
 
-    bool IsValidInternalProperty
-    {
-        get
-        {
-            if (_isValidInternalCache == null)
-            {
-                _isValidInternalCache = IsPrimarilyValidProperty && IsInterdependentlyValid();
-            }
-            return _isValidInternalCache.Value;
-        }
-    }
+   bool IsValidInternal() => IsValidInternalProperty || IsHighlighted;
 
-    public bool IsHighlighted => Variant.Configuration.HighlightedWords.Contains(ExclusionForm);
-    public bool IsDisplayed => IsValidForDisplay || IsEmergencyDisplayed;
+   public bool IsPrimarilyValidProperty
+   {
+      get
+      {
+         if(_isPrimarilyValidInternalCache == null)
+         {
+            _isPrimarilyValidInternalCache = IsPrimarilyValid();
+         }
 
-    public int StartIndex
-    {
-        get
-        {
-            if (_startIndexCache == null)
-            {
-                _startIndexCache = StartIndexInternal();
-            }
-            return _startIndexCache.Value;
-        }
-    }
+         return _isPrimarilyValidInternalCache.Value;
+      }
+   }
 
-    protected virtual int StartIndexInternal() => Variant.StartIndex;
+   bool IsValidInternalProperty
+   {
+      get
+      {
+         if(_isValidInternalCache == null)
+         {
+            _isValidInternalCache = IsPrimarilyValidProperty && IsInterdependentlyValid();
+         }
 
-    public bool IsValidForDisplay =>
-        IsValid &&
-        StaticDisplayRequirementsFulfilled &&
-        DynamicDisplayRequirements.All(requirement => requirement.IsFulfilled);
+         return _isValidInternalCache.Value;
+      }
+   }
 
-    public bool IsEmergencyDisplayed =>
-        !IsValid &&
-        Variant.IsSurface &&
-        SurfaceIsSeeminglyValidSingleToken &&
-        !BaseIsValidWord &&
-        !IsShadowed &&
-        !HasValidForDisplaySibling;
+   public bool IsHighlighted => Variant.Configuration.HighlightedWords.Contains(ExclusionForm);
+   public bool IsDisplayed => IsValidForDisplay || IsEmergencyDisplayed;
 
-    bool HasValidForDisplaySibling =>
-        Variant.Matches.Any(otherMatch => otherMatch != this && otherMatch.IsValidForDisplay);
+   public int StartIndex
+   {
+      get
+      {
+         if(_startIndexCache == null)
+         {
+            _startIndexCache = StartIndexInternal();
+         }
 
-    bool BaseIsValidWord => Word.BaseVariant != null && Word.BaseVariant.HasValidMatch;
-    bool SurfaceIsSeeminglyValidSingleToken => Word.HasSeeminglyValidSingleToken;
-    public bool IsShadowed => Word.IsShadowed;
+         return _startIndexCache.Value;
+      }
+   }
 
-    public virtual List<string> FailureReasons =>
-        !IsValid
-            ? CreatePrimaryValidityFailures().Select(r => r.FailureReason).Concat(
-                CreateInterdependentValidityFailures().Select(r => r.FailureReason)).ToList()
-            : [];
+   protected virtual int StartIndexInternal() => Variant.StartIndex;
 
-    public List<string> HidingReasons =>
-        DynamicDisplayRequirements
-            .Where(requirement => !requirement.IsFulfilled)
-            .Select(requirement => requirement.FailureReason)
-            .Concat(CreateStaticDisplayRequirementFailures().Select(r => r.FailureReason))
-            .ToList();
+   public bool IsValidForDisplay =>
+      IsValid &&
+      StaticDisplayRequirementsFulfilled &&
+      DynamicDisplayRequirements.All(requirement => requirement.IsFulfilled);
 
-    public WordExclusion ToExclusion() => WordExclusion.AtIndex(ExclusionForm, StartIndex);
+   public bool IsEmergencyDisplayed =>
+      !IsValid &&
+      Variant.IsSurface &&
+      SurfaceIsSeeminglyValidSingleToken &&
+      !BaseIsValidWord &&
+      !IsShadowed &&
+      !HasValidForDisplaySibling;
 
-    public override string ToString() =>
-        $"{ParsedForm}, {MatchForm[..Math.Min(10, MatchForm.Length)]}: " +
-        $"failure_reasons: {string.Join(" ", FailureReasons) ?? "None"} " +
-        $"## hiding_reasons: {string.Join(" ", HidingReasons) ?? "None"}";
+   bool HasValidForDisplaySibling =>
+      Variant.Matches.Any(otherMatch => otherMatch != this && otherMatch.IsValidForDisplay);
+
+   bool BaseIsValidWord => Word.BaseVariant != null && Word.BaseVariant.HasValidMatch;
+   bool SurfaceIsSeeminglyValidSingleToken => Word.HasSeeminglyValidSingleToken;
+   public bool IsShadowed => Word.IsShadowed;
+
+   public virtual List<string> FailureReasons =>
+      !IsValid
+         ? CreatePrimaryValidityFailures().Select(r => r.FailureReason).Concat(
+            CreateInterdependentValidityFailures().Select(r => r.FailureReason)).ToList()
+         : [];
+
+   public List<string> HidingReasons =>
+      DynamicDisplayRequirements
+        .Where(requirement => !requirement.IsFulfilled)
+        .Select(requirement => requirement.FailureReason)
+        .Concat(CreateStaticDisplayRequirementFailures().Select(r => r.FailureReason))
+        .ToList();
+
+   public WordExclusion ToExclusion() => WordExclusion.AtIndex(ExclusionForm, StartIndex);
+
+   public override string ToString() =>
+      $"{ParsedForm}, {MatchForm[..Math.Min(10, MatchForm.Length)]}: " +
+      $"failure_reasons: {string.Join(" ", FailureReasons) ?? "None"} " +
+      $"## hiding_reasons: {string.Join(" ", HidingReasons) ?? "None"}";
 }

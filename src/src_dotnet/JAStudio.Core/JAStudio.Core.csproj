@@ -7,7 +7,7 @@
    </PropertyGroup>
 
    <ItemGroup>
-      <ProjectReference Include="..\JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
+      <ProjectReference Include="..\JAStudio.PythonInterop\JAStudio.PythonInterop.csproj"/>
    </ItemGroup>
 
    <ItemGroup>
@@ -20,20 +20,20 @@
    </ItemGroup>
 
    <ItemGroup>
-      <InternalsVisibleTo Include="JAStudio.Anki" />
-      <InternalsVisibleTo Include="JAStudio.Core.Tests" />
+      <InternalsVisibleTo Include="JAStudio.Anki"/>
+      <InternalsVisibleTo Include="JAStudio.Core.Tests"/>
    </ItemGroup>
 
    <ItemGroup>
-      <PackageReference Include="MemoryPack" Version="1.21.4" />
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-      <PackageReference Include="SimpleInjector" Version="5.5.0" />
+      <PackageReference Include="MemoryPack" Version="1.21.4"/>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
+      <PackageReference Include="SimpleInjector" Version="5.5.0"/>
    </ItemGroup>
 
    <ItemGroup>
-      <PackageReference Include="Compze.Utilities.DependencyInjection.SimpleInjector" Version="0.1.0-alpha.3" />
-      <PackageReference Include="Compze.Utilities.Logging" Version="0.1.0-alpha.3" />
-      <PackageReference Include="Compze.Utilities.SystemCE.ThreadingCE" Version="0.1.0-alpha.3" />
+      <PackageReference Include="Compze.Utilities.DependencyInjection.SimpleInjector" Version="0.1.0-alpha.3"/>
+      <PackageReference Include="Compze.Utilities.Logging" Version="0.1.0-alpha.3"/>
+      <PackageReference Include="Compze.Utilities.SystemCE.ThreadingCE" Version="0.1.0-alpha.3"/>
    </ItemGroup>
 
    <!-- Stub regeneration moved to JAStudio.UI project (builds last, has all DLLs) -->

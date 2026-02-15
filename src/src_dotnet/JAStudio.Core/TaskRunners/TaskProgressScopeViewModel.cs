@@ -16,6 +16,7 @@ public class TaskProgressScopeViewModel : NotifyPropertyChangedBase, IDisposable
    System.Threading.Timer? _timer;
 
    string _heading = "Task";
+
    public string Heading
    {
       get => _heading;
@@ -23,6 +24,7 @@ public class TaskProgressScopeViewModel : NotifyPropertyChangedBase, IDisposable
    }
 
    string _elapsedText = "";
+
    public string ElapsedText
    {
       get => _elapsedText;

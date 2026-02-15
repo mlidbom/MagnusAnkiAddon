@@ -24,8 +24,8 @@ public class ExternalNoteIdMap
    public long? ToExternalId(NoteId noteId) => _noteIdToExternal.TryGetValue(noteId, out var externalId) ? externalId : null;
 
    public long RequireExternalId(NoteId noteId) => _noteIdToExternal.TryGetValue(noteId, out var externalId)
-      ? externalId
-      : throw new KeyNotFoundException($"No external ID mapping found for NoteId {noteId}");
+                                                      ? externalId
+                                                      : throw new KeyNotFoundException($"No external ID mapping found for NoteId {noteId}");
 
    public List<long> AllExternalIds() => _externalToNoteId.Keys.ToList();
 

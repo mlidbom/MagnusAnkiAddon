@@ -5,15 +5,15 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTe
 
 public static class ForbidsYieldsToValidSurfaceSurface
 {
-    public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
-    {
-        var surfaces = inspector.Match.Rules.YieldToSurface;
-        var surfaceVariant = inspector.SurfaceVariant;
-        if (surfaceVariant.HasValidMatch && surfaces.Contains(surfaceVariant.Form))
-        {
-            return FailedMatchRequirement.Forbids($"valid_surface_in:{string.Join(",", surfaces)}");
-        }
+   public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
+   {
+      var surfaces = inspector.Match.Rules.YieldToSurface;
+      var surfaceVariant = inspector.SurfaceVariant;
+      if(surfaceVariant.HasValidMatch && surfaces.Contains(surfaceVariant.Form))
+      {
+         return FailedMatchRequirement.Forbids($"valid_surface_in:{string.Join(",", surfaces)}");
+      }
 
-        return null;
-    }
+      return null;
+   }
 }

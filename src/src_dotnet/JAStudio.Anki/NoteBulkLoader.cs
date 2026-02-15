@@ -94,16 +94,16 @@ public static class NoteBulkLoader
       using var ntReader = ntCmd.ExecuteReader();
 
       long? noteTypeId = null;
-      while (ntReader.Read())
+      while(ntReader.Read())
       {
-         if (string.Equals(ntReader.GetString(1), noteTypeName, StringComparison.Ordinal))
+         if(string.Equals(ntReader.GetString(1), noteTypeName, StringComparison.Ordinal))
          {
             noteTypeId = ntReader.GetInt64(0);
             break;
          }
       }
 
-      if (noteTypeId == null)
+      if(noteTypeId == null)
          throw new KeyNotFoundException($"Note type '{noteTypeName}' not found in Anki database.");
 
       // Get field name → ordinal mapping
@@ -113,7 +113,7 @@ public static class NoteBulkLoader
 
       var fieldMap = new Dictionary<string, int>();
       using var reader = fCmd.ExecuteReader();
-      while (reader.Read())
+      while(reader.Read())
       {
          var name = reader.GetString(0);
          var ord = reader.GetInt32(1);
@@ -139,22 +139,22 @@ public static class NoteBulkLoader
       var results = new List<NoteData>();
       var ankiIdMap = new Dictionary<long, NoteId>();
 
-      while (reader.Read())
+      while(reader.Read())
       {
          var ankiId = reader.GetInt64(0);
 
          var tagsRaw = reader.IsDBNull(1) ? "" : reader.GetString(1);
          var tags = string.IsNullOrEmpty(tagsRaw)
-            ? new List<string>()
-            : new List<string>(tagsRaw.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+                       ? new List<string>()
+                       : new List<string>(tagsRaw.Split(' ', StringSplitOptions.RemoveEmptyEntries));
 
          var fldsRaw = reader.IsDBNull(2) ? "" : reader.GetString(2);
          var fieldValues = string.IsNullOrEmpty(fldsRaw)
-            ? Array.Empty<string>()
-            : fldsRaw.Split(FieldSeparator);
+                              ? Array.Empty<string>()
+                              : fldsRaw.Split(FieldSeparator);
 
          var fields = new Dictionary<string, string>(fieldMap.Count);
-         foreach (var (name, ordinal) in fieldMap)
+         foreach(var (name, ordinal) in fieldMap)
          {
             fields[name] = ordinal < fieldValues.Length ? fieldValues[ordinal] : "";
          }
@@ -163,8 +163,8 @@ public static class NoteBulkLoader
          // A new GUID is written back to the jas_note_id field on next flush.
          var jasNoteIdStr = fields.GetValueOrDefault(AnkiFieldNames.JasNoteId, "");
          var noteId = Guid.TryParse(jasNoteIdStr, out var guid)
-            ? idFactory(guid)
-            : idFactory(Guid.NewGuid());
+                         ? idFactory(guid)
+                         : idFactory(Guid.NewGuid());
 
          ankiIdMap[ankiId] = noteId;
          results.Add(new NoteData(noteId, fields, tags));

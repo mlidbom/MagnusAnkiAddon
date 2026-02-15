@@ -18,41 +18,41 @@ public class VocabNoteFactory
       _noteServices = noteServices;
    }
 
-    public VocabNote CreateWithDictionary(string question)
-    {
-        var lookupResult = _dictLookup.LookupWord(question);
-        if (!lookupResult.FoundWords())
-        {
-            return Create(question, "", new List<string>());
-        }
+   public VocabNote CreateWithDictionary(string question)
+   {
+      var lookupResult = _dictLookup.LookupWord(question);
+      if(!lookupResult.FoundWords())
+      {
+         return Create(question, "", new List<string>());
+      }
 
-        var created = Create(question, lookupResult.FormatAnswer(), lookupResult.Readings());
-        created.Tags.Set(Tags.Source.Jamdict);
-        created.UpdateGeneratedData();
-        return created;
-    }
+      var created = Create(question, lookupResult.FormatAnswer(), lookupResult.Readings());
+      created.Tags.Set(Tags.Source.Jamdict);
+      created.UpdateGeneratedData();
+      return created;
+   }
 
-    public VocabNote Create(string question, string answer, List<string> readings, Action<VocabNote>? initializer = null)
-    {
-        var note = new VocabNote(_noteServices);
-        note.Question.Set(question);
-        note.SourceAnswer.Set(answer);
-        note.SetReadings(readings);
+   public VocabNote Create(string question, string answer, List<string> readings, Action<VocabNote>? initializer = null)
+   {
+      var note = new VocabNote(_noteServices);
+      note.Question.Set(question);
+      note.SourceAnswer.Set(answer);
+      note.SetReadings(readings);
 
-        if(initializer != null)
-        {
-            initializer(note);
-        }
+      if(initializer != null)
+      {
+         initializer(note);
+      }
 
-        _collection.Vocab.Add(note);
-        return note;
-    }
+      _collection.Vocab.Add(note);
+      return note;
+   }
 
-    public VocabNote CreateFromUserData(string question, string answer, List<string> readings, Action<VocabNote>? initializer = null)
-    {
-        var note = Create(question, answer, readings, initializer);
-        note.User.Answer.Set(note.SourceAnswer.Value);
-        note.SourceAnswer.Empty();
-        return note;
-    }
+   public VocabNote CreateFromUserData(string question, string answer, List<string> readings, Action<VocabNote>? initializer = null)
+   {
+      var note = Create(question, answer, readings, initializer);
+      note.User.Answer.Set(note.SourceAnswer.Value);
+      note.SourceAnswer.Empty();
+      return note;
+   }
 }

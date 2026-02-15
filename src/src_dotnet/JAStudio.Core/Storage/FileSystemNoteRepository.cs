@@ -125,8 +125,12 @@ public class FileSystemNoteRepository : INoteRepository
       var deletedSentencesCount = container.Sentences.Count(d => !currentSentenceIds.Contains(d.Id));
 
       return new SnapshotChanges(
-         changedKanji, changedVocab, changedSentences,
-         currentKanjiIds, currentVocabIds, currentSentenceIds,
+         changedKanji,
+         changedVocab,
+         changedSentences,
+         currentKanjiIds,
+         currentVocabIds,
+         currentSentenceIds,
          deletedKanjiCount + deletedVocabCount + deletedSentencesCount);
    }
 
@@ -151,11 +155,11 @@ public class FileSystemNoteRepository : INoteRepository
          sentencesMap.Remove(id);
 
       return new AllNotesContainer
-      {
-         Kanji = kanjiMap.Values.ToList(),
-         Vocab = vocabMap.Values.ToList(),
-         Sentences = sentencesMap.Values.ToList(),
-      };
+             {
+                Kanji = kanjiMap.Values.ToList(),
+                Vocab = vocabMap.Values.ToList(),
+                Sentences = sentencesMap.Values.ToList(),
+             };
    }
 
    record SnapshotChanges(
@@ -206,7 +210,7 @@ public class FileSystemNoteRepository : INoteRepository
    {
       using var stream = File.OpenRead(SnapshotPath);
       return MemoryPackSerializer.DeserializeAsync<AllNotesContainer>(stream).GetAwaiter().GetResult()
-             ?? throw new InvalidOperationException("Snapshot deserialization returned null");
+          ?? throw new InvalidOperationException("Snapshot deserialization returned null");
    }
 
    public AllNotesData LoadSnapshot() => _serializer.ContainerToAllNotesData(DeserializeSnapshot());
