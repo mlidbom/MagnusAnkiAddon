@@ -28,12 +28,12 @@ public static class WindowPositioner
    /// Must be called after the window is constructed but before <see cref="Window.Show"/>.
    /// Sets <see cref="Window.WindowStartupLocation"/> to <see cref="WindowStartupLocation.Manual"/>.
    /// </summary>
-   public static void PositionNearCursor(Window window)
+   public static Window PositionNearCursor(this Window window)
    {
       window.WindowStartupLocation = WindowStartupLocation.Manual;
 
       if(!GetCursorPos(out var cursor))
-         return;
+         return window;
 
       // Position is refined in the Opened event so we know the actual rendered size.
       // Set an initial position at the cursor to avoid a flash at (0,0).
@@ -46,6 +46,8 @@ public static class WindowPositioner
          window.Opened -= OnOpened;
          ApplyPosition(window, cursor.X, cursor.Y);
       }
+
+      return window;
    }
 
    /// <summary>

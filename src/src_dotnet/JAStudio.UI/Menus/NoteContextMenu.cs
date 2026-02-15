@@ -55,7 +55,7 @@ public class NoteContextMenu
 
       menuItems.Add(_vocabNoteMenus.BuildNoteActionsMenuSpec(vocab));
       menuItems.Add(BuildUniversalNoteActionsMenuSpec(vocab));
-      menuItems.Add(_vocabNoteMenus.BuildViewMenuSpec());
+      menuItems.Add(SpecMenuItem.Submenu(ShortcutFinger.Home5("View"), new List<SpecMenuItem>()));
 
       return menuItems;
    }

@@ -8,5 +8,5 @@ public static partial class ExStr
    [GeneratedRegex(@"<.*?>|\[.*?\]|[〜]")]
    private static partial Regex HtmlBracketNoisePattern();
 
-   public static string StripHtmlAndBracketMarkupAndNoiseCharacters(string input) => HtmlBracketNoisePattern().Replace(input, "");
+   public static string StripHtmlAndBracketMarkupAndNoiseCharacters(this string input) => HtmlBracketNoisePattern().Replace(input, "");
 }
