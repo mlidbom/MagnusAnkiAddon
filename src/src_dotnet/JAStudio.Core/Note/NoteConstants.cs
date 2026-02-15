@@ -12,16 +12,6 @@ public static class MyNoteFields
     public const string JasNoteId = "jas_note_id";
 }
 
-public static class ImmersionKitSentenceNoteFields
-{
-    public const string Audio = "Audio Sentence";
-    public const string Id = "ID";
-    public const string Screenshot = "Screenshot";
-    public const string Reading = "Reading";
-    public const string Answer = "English";
-    public const string Question = "Expression";
-}
-
 public static class SentenceNoteFields
 {
     public const string Reading = "Reading";
@@ -173,6 +163,7 @@ public static class Builtin
 public static class Mine
 {
     public const string AppName = "JA-Studio";
+    // ReSharper disable once UnusedMember.Global - Used from Python (dotnet_rendering_content_renderer_anki_shim.py, common.py)
     public static readonly string AppStillLoadingMessage = $"{AppName} still loading, the view will refresh when done...";
     public const string VocabPrefixSuffixMarker = "〜";
 }

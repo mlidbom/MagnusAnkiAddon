@@ -2,15 +2,15 @@
 
 Analysis of all warnings and suggestions reported across the JAStudio workspace, grouped by type.
 
-**Total: 40 problems across 12 files**
+**Total: 38 problems across 12 files** (2 suppressed as used from Python)
 
 ---
 
-## 1. Dead Code — Never Used Members (17 occurrences)
+## 1. Dead Code — Never Used Members (15 unsuppressed + 2 suppressed)
 
 Methods, properties, constants, and fields that are declared but never referenced.
 
-### Never-Used Methods (11)
+### Never-Used Methods (10 + 1 suppressed)
 
 | File | Member | Line |
 |------|--------|------|
@@ -20,7 +20,7 @@ Methods, properties, constants, and fields that are declared but never reference
 | `src/src_dotnet/JAStudio.UI/AppDialogs.cs` | `ShowKanjiEditorDialog()` | 77 |
 | `src/src_dotnet/JAStudio.UI/AppDialogs.cs` | `ShowSentenceEditorDialog()` | 97 |
 | `src/src_dotnet/JAStudio.UI/AppDialogs.cs` | `ShowAboutDialog()` | 117 |
-| `src/src_dotnet/JAStudio.UI/AppDialogs.cs` | `ToggleEnglishWordSearchDialog()` | 174 |
+| `src/src_dotnet/JAStudio.UI/AppDialogs.cs` | ~~`ToggleEnglishWordSearchDialog()`~~ **SUPPRESSED** — called from Python (`global_shortcuts.py`) | 175 |
 | `src/src_dotnet/JAStudio.Core/App.cs` | `AddInitHook()` | 26 |
 | `src/src_dotnet/JAStudio.Core/Note/NoteConstants.cs` | `FromType()` | 61 |
 | `src/src_dotnet/JAStudio.Core/Note/NoteConstants.cs` | `IdFactoryFromType()` | 63 |
@@ -33,14 +33,14 @@ Methods, properties, constants, and fields that are declared but never reference
 | `src/src_dotnet/JAStudio.Core/Storage/FileSystemNoteRepository.cs` | `Serializer` | 21 |
 | `src/src_dotnet/JAStudio.Core/App.cs` | `AnkiMediaDir` | 61 |
 
-### Never-Used Constants/Fields (4)
+### Never-Used Constants/Fields (3 + 1 suppressed)
 
 | File | Member | Line |
 |------|--------|------|
 | `src/src_dotnet/JAStudio.Core/Note/NoteConstants.cs` | `SentenceFields.Audio` | 17 |
 | `src/src_dotnet/JAStudio.Core/Note/NoteConstants.cs` | `SentenceFields.Screenshot` | 19 |
 | `src/src_dotnet/JAStudio.Core/Note/NoteConstants.cs` | `VocabCards.Listening` | 108 |
-| `src/src_dotnet/JAStudio.Core/Note/NoteConstants.cs` | `AppStillLoadingMessage` | 176 |
+| `src/src_dotnet/JAStudio.Core/Note/NoteConstants.cs` | ~~`AppStillLoadingMessage`~~ **SUPPRESSED** — used from Python (`dotnet_rendering_content_renderer_anki_shim.py`, `common.py`) | 177 |
 
 ### Virtual Methods Never Used (2)
 
@@ -147,7 +147,7 @@ A nested constant has the same name as a class visible in the outer scope.
 
 | Category | Count | Severity | Fix Effort |
 |----------|-------|----------|------------|
-| Dead Code (never used) | 17 | Medium | Low (verify Python interop first) |
+| Dead Code (never used) | 15 (+2 suppressed) | Medium | Low (verify Python interop first) |
 | Method Can Be Static | 10 | Low | Low (add `static` keyword) |
 | Captured Variable in Outer Scope | 2 | Medium | Medium (restructure lambda captures) |
 | Expression Always True | 2 | Low | Low (remove redundant checks) |
@@ -155,7 +155,7 @@ A nested constant has the same name as a class visible in the outer scope.
 | Unnecessary Whitespace | 1 | Low | Trivial (auto-format) |
 | Possible Reference Comparison | 1 | Medium | Low (use Equals or verify operator overload) |
 | Name Hiding | 1 | Low | Low (rename constant) |
-| **Total** | **40** | | |
+| **Total** | **38** (+2 suppressed) | | |
 
 ## Files Most Affected
 

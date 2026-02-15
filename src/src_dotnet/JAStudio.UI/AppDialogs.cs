@@ -171,6 +171,7 @@ public class AppDialogs
    /// Toggle the English Word Search dialog visibility.
    /// Shows the dialog if hidden, hides it if visible.
    /// </summary>
+   // ReSharper disable once UnusedMember.Global - Called from Python (global_shortcuts.py)
    public void ToggleEnglishWordSearchDialog()
    {
       this.Log().Info("ToggleEnglishWordSearchDialog() called");
