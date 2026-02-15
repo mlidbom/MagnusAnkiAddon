@@ -17,8 +17,10 @@ from Avalonia.Controls.Presenters import ContentPresenter
 from Avalonia.Rendering import RendererDiagnostics
 from Avalonia.Animation import Transitions
 from Avalonia.Data import IndexerDescriptor, IBinding
-from JAStudio.Core.Note import KanjiNote, SentenceNote, VocabNote
+from JAStudio.Core.Note import KanjiNote
 from JAStudio.Core import TemporaryServiceCollection
+from JAStudio.Core.Note.Sentences import SentenceNote
+from JAStudio.Core.Note.Vocabulary import VocabNote
 
 class AboutDialog(Window):
     def __init__(self) -> None: ...

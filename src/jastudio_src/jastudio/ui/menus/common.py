@@ -5,7 +5,9 @@ import typing
 import pyperclip
 from aqt import gui_hooks
 from jaspythonutils.sysutils.typed import non_optional
-from JAStudio.Core.Note import KanjiNote, Mine, SentenceNote, VocabNote
+from JAStudio.Core.Note import JPNote, KanjiNote, Mine
+from JAStudio.Core.Note.Sentences import SentenceNote
+from JAStudio.Core.Note.Vocabulary import VocabNote
 
 from jastudio.qt_utils.ex_qmenu import ExQmenu
 

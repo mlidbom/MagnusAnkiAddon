@@ -2,8 +2,9 @@ from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction import CandidateWord
 from JAStudio.Core.Configuration import Settings
 from JAStudio.Core.Note.Collection import VocabCollection
 from System.Collections.Generic import List_1, HashSet_1
-from JAStudio.Core.Note import VocabNote, NoteId, SentenceNote
-from JAStudio.Core.Note.Sentences import SentenceConfiguration
+from JAStudio.Core.Note.Vocabulary import VocabNote
+from JAStudio.Core.Note.Sentences import SentenceConfiguration, SentenceNote
+from JAStudio.Core.Note import NoteId
 from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches import Match, VocabMatch
 from JAStudio.Core.UI.Web import PreRenderingContentRenderer_1
 

@@ -3,7 +3,7 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;
 // Base class for split tokens
 public abstract class SplitTokenBase : IAnalysisToken
 {
-    public JNToken Source { get; }
+   JNToken Source { get; }
     private readonly string _surface;
     private readonly string _baseForm;
 

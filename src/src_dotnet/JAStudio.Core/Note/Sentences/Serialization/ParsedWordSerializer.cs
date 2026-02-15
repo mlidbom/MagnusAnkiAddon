@@ -4,7 +4,7 @@ namespace JAStudio.Core.Note.Sentences.Serialization;
 
 public class ParsedWordSerializer
 {
-    public static readonly string Separator = $" {StringExtensions.InvisibleSpace} ";
+   static readonly string Separator = $" {StringExtensions.InvisibleSpace} ";
 
     public static string ToRow(ParsedMatch parsedWord)
     {

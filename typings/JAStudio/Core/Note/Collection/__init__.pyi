@@ -1,12 +1,13 @@
 import typing, abc
-from JAStudio.Core.Note import JPNote, NoteId, NoteData, IBackendNoteCreator, NoteServices, KanjiNote, SentenceNote, VocabNote
+from JAStudio.Core.Note import JPNote, NoteId, NoteData, IBackendNoteCreator, NoteServices, KanjiNote
 from JAStudio.Core.Configuration import JapaneseConfig
 from JAStudio.Core.Storage import INoteRepository
 from JAStudio.Core import IBackendDataLoader
 from JAStudio.Core.LanguageServices.JamdictEx import DictLookup
-from JAStudio.Core.Note.Vocabulary import VocabNoteFactory, VocabNoteGeneratedData
+from JAStudio.Core.Note.Vocabulary import VocabNoteFactory, VocabNoteGeneratedData, VocabNote
 from System.Collections.Generic import List_1, HashSet_1, IEnumerable_1, Dictionary_2
 from System import Array_1, Action_1
+from JAStudio.Core.Note.Sentences import SentenceNote
 
 class CachedNote:
     def __init__(self, note: JPNote) -> None: ...

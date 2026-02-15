@@ -1,8 +1,9 @@
 import abc
-from JAStudio.Core.Note import VocabNote, SentenceNote, NoteId
+from JAStudio.Core.Note.Vocabulary import VocabNote
 from System.Collections.Generic import List_1, HashSet_1
 from JAStudio.Core.UI.Web import PreRenderingContentRenderer_1
-from JAStudio.Core.Note.Sentences import ParsedMatch, ParsingResult
+from JAStudio.Core.Note.Sentences import ParsedMatch, SentenceNote, ParsingResult
+from JAStudio.Core.Note import NoteId
 
 class CompoundPart:
     def __init__(self, vocabNote: VocabNote, depth: int = ...) -> None: ...

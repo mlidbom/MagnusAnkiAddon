@@ -7,7 +7,7 @@ from jastudio.note.ankijpnote import AnkiJPNote
 
 if TYPE_CHECKING:
     from anki.notes import Note
-    from JAStudio.Core.Note import SentenceNote
+    from JAStudio.Core.Note.Sentences import SentenceNote
 
 class AnkiSentenceNote(AnkiJPNote, Slots):
     @classmethod

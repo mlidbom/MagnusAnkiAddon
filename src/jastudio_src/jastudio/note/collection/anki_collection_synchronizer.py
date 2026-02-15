@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from jastudio.ankiutils import app
-from JAStudio.Core.Note import KanjiNote, NoteTypes, SentenceNote, VocabNote
+from JAStudio.Core.Note import KanjiNote, NoteTypes
+from JAStudio.Core.Note.Sentences import SentenceNote
+from JAStudio.Core.Note.Vocabulary import VocabNote
 from jastudio.note.collection.anki_collection_sync_runner import AnkiCollectionSyncRunner
 from jastudio.note.collection.anki_single_collection_syncer import AnkiSingleCollectionSyncer
 

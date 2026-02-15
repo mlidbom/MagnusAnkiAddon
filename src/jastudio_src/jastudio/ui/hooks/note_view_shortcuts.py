@@ -5,7 +5,9 @@ from typing import TYPE_CHECKING
 from aqt import gui_hooks
 from jaspythonutils.sysutils import typed
 from jaspythonutils.sysutils.typed import try_cast
-from JAStudio.Core.Note import KanjiNote, SentenceNote, VocabNote
+from JAStudio.Core.Note import KanjiNote
+from JAStudio.Core.Note.Sentences import SentenceNote
+from JAStudio.Core.Note.Vocabulary import VocabNote
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtGui import QKeySequence, QShortcut
 
@@ -27,7 +29,7 @@ def init() -> None:
     def remove_mnemonic() -> None:
         kanji = try_get_review_note_of_type(KanjiNote)
         if kanji:
-            kanji.UserMnemonic = ""
+            kanji.UserMnemonic.Set("")
             refresh_shallow()
 
         vocab = try_get_review_note_of_type(VocabNote)

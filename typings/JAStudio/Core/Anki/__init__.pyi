@@ -20,6 +20,7 @@ class AnkiFieldNames(abc.ABC):
     class Kanji(abc.ABC):
         ActiveAnswer : str
         Audio : str
+        Image : str
         PrimaryReadingsTtsAudio : str
         Question : str
         ReadingKun : str
@@ -49,8 +50,10 @@ class AnkiFieldNames(abc.ABC):
         AudioG : str
         AudioTTS : str
         Forms : str
+        Image : str
         Question : str
         Reading : str
+        UserImage : str
 
 
     class VocabCard(abc.ABC):
@@ -67,6 +70,8 @@ class AnkiKanjiNote:
     def Audio(self) -> str: ...
     @property
     def Id(self) -> NoteId: ...
+    @property
+    def Image(self) -> str: ...
     @property
     def PrimaryReadingsTtsAudio(self) -> str: ...
     @property
@@ -116,9 +121,13 @@ class AnkiVocabNote:
     @property
     def Id(self) -> NoteId: ...
     @property
+    def Image(self) -> str: ...
+    @property
     def Question(self) -> str: ...
     @property
     def Raw(self) -> NoteData: ...
     @property
     def Tags(self) -> List_1[str]: ...
+    @property
+    def UserImage(self) -> str: ...
 

@@ -1,5 +1,7 @@
-from JAStudio.Core.Note import KanjiNote, SentenceNote, VocabNote
+from JAStudio.Core.Note import KanjiNote
 from System.Collections.Generic import List_1
+from JAStudio.Core.Note.Sentences import SentenceNote
+from JAStudio.Core.Note.Vocabulary import VocabNote
 
 class LocalNoteUpdater:
     def CreateMissingVocabWithDictionaryEntries(self) -> None: ...

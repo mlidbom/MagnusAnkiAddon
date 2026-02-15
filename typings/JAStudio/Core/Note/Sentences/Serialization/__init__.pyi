@@ -4,7 +4,6 @@ from System import Action
 
 class ParsedWordSerializer:
     def __init__(self) -> None: ...
-    Separator : str
     @staticmethod
     def FromRow(serialized: str) -> ParsedMatch: ...
     @staticmethod

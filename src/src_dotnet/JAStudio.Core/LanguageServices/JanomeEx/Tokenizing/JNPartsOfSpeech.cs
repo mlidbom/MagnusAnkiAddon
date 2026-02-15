@@ -20,8 +20,8 @@ public class PartOfSpeechDescription
 
 public class JNPartsOfSpeech
 {
-    private static readonly Dictionary<string, PartOfSpeechDescription> JapaneseToPartOfSpeech = new();
-    private static readonly Dictionary<string, JNPartsOfSpeech> FullPartsOfSpeechDictionary = new();
+   static readonly Dictionary<string, PartOfSpeechDescription> JapaneseToPartOfSpeech = new();
+   static readonly Dictionary<string, JNPartsOfSpeech> FullPartsOfSpeechDictionary = new();
 
     public PartOfSpeechDescription Level1 { get; }
     public PartOfSpeechDescription Level2 { get; }
@@ -43,7 +43,7 @@ public class JNPartsOfSpeech
         ];
     }
 
-    private JNPartsOfSpeech(string level1, string level2 = "*", string level3 = "*", string level4 = "*")
+    JNPartsOfSpeech(string level1, string level2 = "*", string level3 = "*", string level4 = "*")
     {
         Level1 = JapaneseToPartOfSpeech[level1];
         Level2 = JapaneseToPartOfSpeech[level2];
@@ -69,7 +69,7 @@ public class JNPartsOfSpeech
         );
     }
 
-    private static void AddDescription(PartOfSpeechDescription desc)
+    static void AddDescription(PartOfSpeechDescription desc)
     {
         JapaneseToPartOfSpeech[desc.Japanese] = desc;
     }
@@ -82,7 +82,7 @@ public class JNPartsOfSpeech
         return partsOfSpeech;
     }
 
-    private static void InitializeDescriptions()
+    static void InitializeDescriptions()
     {
         // Level 1
         AddDescription(new PartOfSpeechDescription("名詞", "noun", "Names things or ideas"));

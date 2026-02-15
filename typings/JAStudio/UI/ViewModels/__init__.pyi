@@ -1,10 +1,12 @@
 import typing
 from CommunityToolkit.Mvvm.ComponentModel import ObservableObject
 from System.Collections.ObjectModel import ObservableCollection_1
-from JAStudio.Core.Note import KanjiNote, JPNote, NoteId, SentenceNote, VocabNote
+from JAStudio.Core.Note import KanjiNote, JPNote, NoteId
 from CommunityToolkit.Mvvm.Input import IRelayCommand, AsyncRelayCommand, RelayCommand, IAsyncRelayCommand
 from JAStudio.Core import TemporaryServiceCollection
 from Avalonia.Controls import Window
+from JAStudio.Core.Note.Sentences import SentenceNote
+from JAStudio.Core.Note.Vocabulary import VocabNote
 from JAStudio.UI.Controls import RequireForbidControlViewModel, StringSetControlViewModel
 from System.Threading.Tasks import Task
 

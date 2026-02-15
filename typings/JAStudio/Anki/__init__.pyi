@@ -1,8 +1,10 @@
 import typing, abc
 from JAStudio.Core import IBackendDataLoader, BackendData, IEnvironmentPaths
 from JAStudio.Core.TaskRunners import TaskRunner
-from JAStudio.Core.Note import IBackendNoteCreator, KanjiNote, SentenceNote, VocabNote, NoteData, NoteId, ICardOperations, ExternalNoteIdMap, JPNote
+from JAStudio.Core.Note import IBackendNoteCreator, KanjiNote, NoteData, NoteId, ICardOperations, ExternalNoteIdMap, JPNote
 from System import Action, IDisposable, Func_2, Guid
+from JAStudio.Core.Note.Sentences import SentenceNote
+from JAStudio.Core.Note.Vocabulary import VocabNote
 from System.Collections.Generic import List_1, Dictionary_2, IReadOnlyList_1, IEnumerable_1
 from Microsoft.Data.Sqlite import SqliteConnection
 from JAStudio.Core.Note.Collection import CardStudyingStatus, VocabCollection, KanjiCollection
@@ -61,6 +63,8 @@ class AnkiFacade(abc.ABC):
     class Batches(abc.ABC):
         @staticmethod
         def ConvertImmersionKitSentences() -> None: ...
+        @staticmethod
+        def FlushAnkiNote(externalNoteId: int) -> None: ...
 
 
     class Browser(abc.ABC):

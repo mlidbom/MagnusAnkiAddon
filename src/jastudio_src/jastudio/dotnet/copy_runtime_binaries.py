@@ -7,9 +7,12 @@ from __future__ import annotations
 
 import hashlib
 import shutil
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from jastudio import mylog
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 _FILE_PATTERNS = ("*.dll", "*.deps.json", "*.runtimeconfig.json")
 

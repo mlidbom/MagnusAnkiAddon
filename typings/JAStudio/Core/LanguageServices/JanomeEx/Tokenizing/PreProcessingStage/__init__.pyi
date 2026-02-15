@@ -3,7 +3,7 @@ from System.Collections.Generic import List_1
 from JAStudio.Core.LanguageServices.JanomeEx.Tokenizing import IAnalysisToken, JNToken
 from JAStudio.Core.LanguageServices.JamdictEx import DictLookupResult, DictLookup
 from System.Collections.Frozen import FrozenSet_1
-from JAStudio.Core.Note import VocabNote
+from JAStudio.Core.Note.Vocabulary import VocabNote
 from JAStudio.Core.Note.Collection import VocabCollection
 
 class DictionaryFormVerbSplitter(abc.ABC):

@@ -17,7 +17,6 @@ class AnalysisConstants(abc.ABC):
     Periods : HashSet_1[str]
     PseudoQuoteCharacters : HashSet_1[str]
     QuestionMarks : HashSet_1[str]
-    RealQuoteCharacters : HashSet_1[str]
     SentenceEndCharacters : HashSet_1[str]
     SentenceStartCharacters : HashSet_1[str]
     SpaceCharacters : HashSet_1[str]

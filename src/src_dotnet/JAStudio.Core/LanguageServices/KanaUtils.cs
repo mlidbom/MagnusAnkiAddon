@@ -6,7 +6,7 @@ namespace JAStudio.Core.LanguageServices;
 
 public static class KanaUtils
 {
-    public const string FullWidthSpace = "　";
+   const string FullWidthSpace = "　";
     
     private static readonly Lazy<PykakasiWrapper> _pykakasi = new(() => new PykakasiWrapper());
     private static readonly Lazy<RomkanWrapper> _romkan = new(() => new RomkanWrapper());

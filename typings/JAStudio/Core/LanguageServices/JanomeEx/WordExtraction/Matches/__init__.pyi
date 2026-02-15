@@ -3,8 +3,7 @@ from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction import CandidateWord
 from JAStudio.Core.LanguageServices.JamdictEx import DictEntry
 from System.Collections.Generic import List_1
 from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Requirements import MatchInspector, VocabMatchInspector
-from JAStudio.Core.Note import VocabNote
-from JAStudio.Core.Note.Vocabulary import VocabNoteMatchingConfiguration, VocabMatchingRulesConfigurationRequiresForbidsFlags, VocabNoteMatchingRules
+from JAStudio.Core.Note.Vocabulary import VocabNote, VocabNoteMatchingConfiguration, VocabMatchingRulesConfigurationRequiresForbidsFlags, VocabNoteMatchingRules
 
 class DictionaryMatch(Match):
     def __init__(self, wordVariant: CandidateWordVariant, dictionaryEntry: DictEntry) -> None: ...

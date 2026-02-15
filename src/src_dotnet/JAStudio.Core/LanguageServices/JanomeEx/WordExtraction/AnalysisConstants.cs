@@ -4,7 +4,7 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 
 public static class AnalysisConstants
 {
-    public static readonly HashSet<string> RealQuoteCharacters = ["「", "」", "\""];
+   static readonly HashSet<string> RealQuoteCharacters = ["「", "」", "\""];
     public static readonly HashSet<string> PseudoQuoteCharacters = ["と", "って"];
     public static readonly HashSet<string> AllQuoteCharacters;
 

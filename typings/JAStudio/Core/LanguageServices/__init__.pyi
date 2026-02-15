@@ -1,6 +1,6 @@
 import abc
 from System.Collections.Generic import HashSet_1, Dictionary_2, List_1
-from JAStudio.Core.Note import VocabNote
+from JAStudio.Core.Note.Vocabulary import VocabNote
 from System import Array_1
 
 class Conjugator(abc.ABC):
@@ -60,7 +60,6 @@ class HiraganaChart(abc.ABC):
 
 
 class KanaUtils(abc.ABC):
-    FullWidthSpace : str
     @staticmethod
     def AnythingToHiragana(text: str) -> str: ...
     @staticmethod

@@ -1,4 +1,5 @@
-from JAStudio.Core.Note import VocabNote, NoteGuard, NoteId, JPNote
+from JAStudio.Core.Note.Vocabulary import VocabNote
+from JAStudio.Core.Note import NoteGuard, NoteId, JPNote
 from System.Collections.Generic import List_1, HashSet_1
 from JAStudio.Core.Note.CorpusData import VocabRelatedSubData
 from JAStudio.Core.Note.NoteFields.AutoSaveWrappers import ValueWrapper_1

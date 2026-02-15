@@ -4,8 +4,8 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTe
 
 public static class RequiresOrForbidsIsSentenceStart
 {
-    private static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("sentence_start");
-    private static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("sentence_start");
+   static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("sentence_start");
+   static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("sentence_start");
 
     public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
     {

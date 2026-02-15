@@ -1,6 +1,8 @@
 import abc
 from JAStudio.Core.Note.CorpusData import KanjiData, SentenceData, VocabData
-from JAStudio.Core.Note import KanjiNote, SentenceNote, VocabNote
+from JAStudio.Core.Note import KanjiNote
+from JAStudio.Core.Note.Sentences import SentenceNote
+from JAStudio.Core.Note.Vocabulary import VocabNote
 
 class KanjiNoteConverter(abc.ABC):
     @staticmethod

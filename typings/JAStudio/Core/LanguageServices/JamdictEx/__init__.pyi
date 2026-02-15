@@ -1,6 +1,6 @@
 import typing
 from System.Collections.Generic import List_1, IEnumerable_1, HashSet_1
-from JAStudio.Core.Note import VocabNote
+from JAStudio.Core.Note.Vocabulary import VocabNote
 from JAStudio.Core.Configuration import JapaneseConfig
 from System.Collections.Frozen import FrozenSet_1
 

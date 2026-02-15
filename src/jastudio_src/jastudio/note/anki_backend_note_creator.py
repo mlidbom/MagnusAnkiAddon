@@ -11,9 +11,12 @@ from jastudio.note.jpnotedata_shim import JPNoteDataShim
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from JAStudio.Core.Note import JPNote, KanjiNote, SentenceNote, VocabNote
+    from JAStudio.Core.Note import JPNote, KanjiNote
+    from JAStudio.Core.Note.Sentences import SentenceNote
+    from JAStudio.Core.Note.Vocabulary import VocabNote
 
-
+# used from C#
+# noinspection PyUnusedClass,PyUnusedFunction
 class AnkiBackendNoteCreator:
     @classmethod
     def _create_note(cls, note: JPNote, note_type: str, callback: Callable[[], None]) -> None:

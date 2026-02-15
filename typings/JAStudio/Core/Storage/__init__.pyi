@@ -1,6 +1,8 @@
 import typing, clr, abc
 from System.Collections.Generic import List_1
-from JAStudio.Core.Note import KanjiNote, VocabNote, SentenceNote, NoteServices
+from JAStudio.Core.Note import KanjiNote, NoteServices
+from JAStudio.Core.Note.Vocabulary import VocabNote
+from JAStudio.Core.Note.Sentences import SentenceNote
 from JAStudio.Core.TaskRunners import TaskRunner
 from System import IEquatable_1, Guid, DateTime
 

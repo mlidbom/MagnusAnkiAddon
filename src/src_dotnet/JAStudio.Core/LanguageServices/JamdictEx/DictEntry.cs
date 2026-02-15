@@ -40,7 +40,7 @@ public class SenseEX
     public bool IsTransitiveVerb() => POSSetManager.IsTransitiveVerb(Pos);
     public bool IsIntransitiveVerb() => POSSetManager.IsIntransitiveVerb(Pos);
 
-    private bool AllGlossesStartWith(string prefix) => Glosses.All(it => it.StartsWith(prefix));
+    bool AllGlossesStartWith(string prefix) => Glosses.All(it => it.StartsWith(prefix));
 
     public bool IsToBeVerb() => AllGlossesStartWith("to-be-");
 
@@ -74,7 +74,7 @@ public class SenseEX
         return string.Join("/", Glosses);
     }
 
-    private static string RemovePrefix(string text, string prefix)
+    static string RemovePrefix(string text, string prefix)
     {
         return text.StartsWith(prefix) ? text.Substring(prefix.Length) : text;
     }
