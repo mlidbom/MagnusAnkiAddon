@@ -5,30 +5,34 @@ namespace JAStudio.Core.Note.NoteFields;
 
 public class WritableStringValue : IWritableStringValue
 {
-   readonly Func<string> _getValue;
-   readonly Action<string> _setValue;
+   readonly NoteGuard _guard;
+   string _value;
    List<Action>? _changeCallbacks;
 
-   public WritableStringValue(Func<string> getValue, Action<string> setValue)
+   public WritableStringValue(string initialValue, NoteGuard guard)
    {
-      _getValue = getValue;
-      _setValue = setValue;
+      _value = initialValue;
+      _guard = guard;
    }
 
-   public string Value => _getValue();
+   public string Value => _value;
 
    public void Set(string value)
    {
       var trimmed = value.Trim();
-      if (trimmed != Value)
+      if(trimmed != _value)
       {
-         _setValue(trimmed);
+         _guard.Update(() =>
+         {
+            _value = trimmed;
+            NotifyChanged();
+         });
       }
    }
 
    public void Empty() => Set(string.Empty);
 
-   public bool HasValue() => !string.IsNullOrEmpty(Value);
+   public bool HasValue() => !string.IsNullOrEmpty(_value);
 
    public void OnChange(Action callback)
    {
@@ -36,14 +40,14 @@ public class WritableStringValue : IWritableStringValue
       _changeCallbacks.Add(callback);
    }
 
-   internal void NotifyChanged()
+   void NotifyChanged()
    {
-      if (_changeCallbacks == null) return;
-      foreach (var callback in _changeCallbacks)
+      if(_changeCallbacks == null) return;
+      foreach(var callback in _changeCallbacks)
       {
          callback();
       }
    }
 
-   public override string ToString() => Value;
+   public override string ToString() => _value;
 }
