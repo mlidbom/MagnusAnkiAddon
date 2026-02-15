@@ -162,7 +162,7 @@ public class BrowserMenus
       {
          try
          {
-            var note = _services.App.Collection.Sentences.WithExternalIdOrNone(ankiNoteId) as SentenceNote;
+            var note = _services.App.Collection.Sentences.WithExternalIdOrNone(ankiNoteId);
             if(note != null)
             {
                sentences.Add(note);

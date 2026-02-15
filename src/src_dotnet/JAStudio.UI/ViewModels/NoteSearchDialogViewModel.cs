@@ -38,11 +38,6 @@ public partial class NoteSearchDialogViewModel : ObservableObject
       SearchCommand = new AsyncRelayCommand(PerformSearchAsync);
    }
 
-   partial void OnSearchTextChanged(string value)
-   {
-      // Execute search when Enter is pressed (handled via command binding)
-   }
-
    async Task PerformSearchAsync()
    {
       var searchText = SearchText.Trim();

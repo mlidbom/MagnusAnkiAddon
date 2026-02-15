@@ -1,19 +1,16 @@
 using System.Collections.Generic;
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable MemberCanBePrivate.Global
 
 #pragma warning disable IDE0051 //unused members
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;
 
-public class InflectionForm
+public class InflectionForm(string name, string description)
 {
-   public string Name { get; }
-   public string Description { get; }
-
-   public InflectionForm(string name, string description)
-   {
-      Name = name;
-      Description = description;
-   }
+   public string Name { get; } = name;
+   public string Description { get; } = description;
 
    public override string ToString() => $"{Name} - {Description}";
 
