@@ -17,7 +17,7 @@ Push-Location $ScriptDir
 
 $Sep = [IO.Path]::DirectorySeparatorChar
 
-$StubGenRoot = Join-Path ".." ".." "src_dotnet" "pythonnet-stub-generator"
+$StubGenRoot = Join-Path ".." ".." "submodules" "pythonnet-stub-generator"
 $TypingsPath = Join-Path ".." ".." "typings"
 $StubGenDll = Join-Path $StubGenRoot "csharp" "PythonNetStubTool" "bin" "Debug" "net10.0" "PythonNetStubGenerator.Tool.dll"
 
