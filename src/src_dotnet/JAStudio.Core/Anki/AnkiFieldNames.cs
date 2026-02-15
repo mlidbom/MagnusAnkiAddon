@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace JAStudio.Core.Anki;
 
 /// Field names as they exist in Anki's note type definitions.
@@ -66,7 +68,7 @@ public static class AnkiFieldNames
    }
 
    //Do not remove, we will be restoring the ImmersionKit import functionality
-   public static class ImmersionKit
+   [SuppressMessage("ReSharper", "UnusedMember.Global")] public static class ImmersionKit
    {
       public const string Audio = "Audio Sentence"; //Read only once to do conversion to our sentence type
       public const string Id = "ID";//Read only once to do conversion to our sentence type
