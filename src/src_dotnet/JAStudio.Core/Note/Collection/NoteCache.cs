@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Compze.Utilities.SystemCE.LinqCE;
 using Compze.Utilities.SystemCE.ThreadingCE.ResourceAccess;
 using JAStudio.PythonInterop;
@@ -74,8 +73,15 @@ public abstract class NoteCacheBase<TNote> : IExternalNoteUpdateHandler where TN
       AddToCache(note);
    }
 
+   // ReSharper disable once FieldCanBeMadeReadOnly.Local
+   bool _ankiStillOwnsNoFields = true;
+
    public void ExternalNoteWillFlush(long externalNoteId, NoteData data)
    {
+      // TODO: Currently disabled: Anki owns no note fields (all authoritative data is in the file system repository). Consider whether to remove this and related code entirely
+      if(_ankiStillOwnsNoFields) //Keeping the code below around and not detected as unreachable through this little hack
+         return;
+
       var noteId = _noteServices.ExternalNoteIdMap.FromExternalId(externalNoteId);
       if(noteId == null) return;
       var existing = WithIdOrNone(noteId);
