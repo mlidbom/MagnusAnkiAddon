@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Compze.Utilities.SystemCE.ReactiveCE;
 
 namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 
@@ -14,7 +15,7 @@ public class PerfectSynonyms
         _vocab = vocab;
         _data = data;
         _guard = guard;
-        vocab.User.Answer.OnChange(PushAnswerToOtherSynonyms);
+        vocab.User.Answer.Subscribe(_ => PushAnswerToOtherSynonyms());
     }
 
     public List<VocabNote> Notes()

@@ -1,13 +1,13 @@
 using System;
-using System.Collections.Generic;
+using Compze.Utilities.SystemCE.ReactiveCE;
 
 namespace JAStudio.Core.Note.NoteFields;
 
-public class WritableStringValue : IWritableStringValue
+public class WritableStringValue : IWritableStringValue, IObservable<string>
 {
    readonly NoteGuard _guard;
+   readonly SimpleObservable<string> _observable = new();
    string _value;
-   List<Action>? _changeCallbacks;
 
    public WritableStringValue(string initialValue, NoteGuard guard)
    {
@@ -25,7 +25,7 @@ public class WritableStringValue : IWritableStringValue
          _guard.Update(() =>
          {
             _value = trimmed;
-            NotifyChanged();
+            _observable.OnNext(trimmed);
          });
       }
    }
@@ -34,20 +34,7 @@ public class WritableStringValue : IWritableStringValue
 
    public bool HasValue() => !string.IsNullOrEmpty(_value);
 
-   public void OnChange(Action callback)
-   {
-      _changeCallbacks ??= [];
-      _changeCallbacks.Add(callback);
-   }
-
-   void NotifyChanged()
-   {
-      if(_changeCallbacks == null) return;
-      foreach(var callback in _changeCallbacks)
-      {
-         callback();
-      }
-   }
+   public IDisposable Subscribe(IObserver<string> observer) => _observable.Subscribe(observer);
 
    public override string ToString() => _value;
 }
