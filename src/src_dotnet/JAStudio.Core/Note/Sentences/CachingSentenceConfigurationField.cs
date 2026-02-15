@@ -16,7 +16,7 @@ public class CachingSentenceConfigurationField
     {
         _sentence = sentence;
         _guard = guard;
-        _value = SentenceData.CreateConfiguration(data, OnMutated);
+        _value = SentenceData.CreateConfiguration(data, () => _guard.Update(() => _sentence.UpdateParsedWords(force: true)));
     }
 
     public SentenceConfiguration Configuration => _value;
@@ -38,29 +38,23 @@ public class CachingSentenceConfigurationField
             .ToHashSet();
     }
 
-    public void RemoveHighlightedWord(string word)
+    public void RemoveHighlightedWord(string word) => _guard.Update(() =>
     {
         HighlightedWords.Remove(word);
-        OnMutated();
-    }
+        _sentence.UpdateParsedWords(force: true);
+    });
 
-    public void ResetHighlightedWords()
+    public void ResetHighlightedWords() => _guard.Update(() =>
     {
         _value.HighlightedWords.Clear();
-        OnMutated();
-    }
+        _sentence.UpdateParsedWords(force: true);
+    });
 
-    public void AddHighlightedWord(string vocab)
+    public void AddHighlightedWord(string vocab) => _guard.Update(() =>
     {
         HighlightedWords.Add(vocab.Trim());
-        OnMutated();
-    }
-
-    void OnMutated()
-    {
-        _guard.MarkDirty();
         _sentence.UpdateParsedWords(force: true);
-    }
+    });
 
     [Obsolete("For testing only")]
     public void SetValueDirectlyTestsOnly(SentenceConfiguration configuration)

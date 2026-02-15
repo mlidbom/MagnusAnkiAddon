@@ -13,6 +13,4 @@ public class NoteGuard
       mutation();
       _flush();
    }
-
-   public void MarkDirty() => _flush();
 }
