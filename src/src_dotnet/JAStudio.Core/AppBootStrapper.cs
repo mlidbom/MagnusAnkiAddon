@@ -39,8 +39,10 @@ static class AppBootstrapper
       } else
       {
          registrar.Register(
-            Singleton.For<INoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner) =>
-                                                          (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, App.DatabaseDir)));
+            Singleton.For<IMediaSyncService>().CreatedBy((MediaStorageService storage, MediaFileIndex index) =>
+                                                            (IMediaSyncService)new AnkiMediaSyncService(() => App.AnkiMediaDir, storage, index)),
+            Singleton.For<INoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner, IMediaSyncService mediaSyncService) =>
+                                                          (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, App.DatabaseDir, mediaSyncService)));
       }
 
       registrar.Register(

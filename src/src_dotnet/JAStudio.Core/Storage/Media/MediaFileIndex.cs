@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Compze.Utilities.Logging;
@@ -9,6 +10,7 @@ public record MediaFileInfo(MediaFileId Id, string FullPath, string OriginalFile
 public class MediaFileIndex
 {
    readonly Dictionary<MediaFileId, MediaFileInfo> _index = new();
+   readonly Dictionary<string, MediaFileInfo> _byOriginalFileName = new(StringComparer.OrdinalIgnoreCase);
    readonly string _mediaRoot;
    bool _initialized;
 
@@ -17,6 +19,7 @@ public class MediaFileIndex
    public void Build()
    {
       _index.Clear();
+      _byOriginalFileName.Clear();
 
       if(!Directory.Exists(_mediaRoot))
       {
@@ -38,6 +41,8 @@ public class MediaFileIndex
          {
             this.Log().Warning($"Duplicate media file ID {mediaFileId} found at {file} — already indexed at {_index[mediaFileId].FullPath}");
          }
+
+         _byOriginalFileName.TryAdd(info.OriginalFileName, info);
       }
 
       _initialized = true;
@@ -85,5 +90,15 @@ public class MediaFileIndex
       }
    }
 
-   internal void Register(MediaFileInfo info) => _index[info.Id] = info;
+   public bool ContainsByOriginalFileName(string originalFileName)
+   {
+      EnsureInitialized();
+      return _byOriginalFileName.ContainsKey(originalFileName);
+   }
+
+   internal void Register(MediaFileInfo info)
+   {
+      _index[info.Id] = info;
+      _byOriginalFileName.TryAdd(info.OriginalFileName, info);
+   }
 }

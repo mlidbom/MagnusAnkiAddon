@@ -4,6 +4,8 @@ using Compze.Utilities.Testing.Must;
 using Compze.Utilities.Testing.XUnit.BDD;
 using JAStudio.Core.Storage.Media;
 
+// ReSharper disable InconsistentNaming
+
 namespace JAStudio.Core.Tests.Storage;
 
 public class When_creating_a_MediaFileId
