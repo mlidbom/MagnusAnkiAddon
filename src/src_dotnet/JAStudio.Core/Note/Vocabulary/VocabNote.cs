@@ -139,6 +139,6 @@ public class VocabNote : JPNote
         return note;
     }
 
-    public static VocabNote Create(NoteServices services, string question, string answer, params string[] readings) => 
+    public static VocabNote Create(NoteServices services, string question, string answer, params string[] readings) =>
         Create(services, question, answer, readings.ToList(), new List<string>());
 }

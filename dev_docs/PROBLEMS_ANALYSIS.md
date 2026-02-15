@@ -2,146 +2,126 @@
 
 Analysis of all warnings and suggestions reported across the JAStudio workspace, grouped by type.
 
-**Total: ~81 reported problems across 13 files**
+**Total: 40 problems across 12 files**
 
 ---
 
-## 1. Unnecessary Whitespace (22 occurrences)
-
-Trailing or extraneous whitespace in code lines. All occur in menu builder files using multi-line `SpecMenuItem.Command(...)` calls.
-
-| File | Line(s) |
-|------|---------|
-| `src/src_dotnet/JAStudio.UI/Menus/Notes/Kanji/KanjiNoteMenus.cs` | 31, 38, 42, 44, 46, 56, 58, 60, 62, 65 |
-| `src/src_dotnet/JAStudio.UI/Menus/Notes/Sentence/SentenceNoteMenus.cs` | 44, 46, 48, 50, 76, 78, 80, 82, 97, 99, 101 |
-| `src/src_dotnet/JAStudio.Core/Note/Sentences/SentenceNote.cs` | 153 |
-
----
-
-## 2. Dead Code — Never Used Members (21 occurrences)
+## 1. Dead Code — Never Used Members (17 occurrences)
 
 Methods, properties, constants, and fields that are declared but never referenced.
 
-### Never-Used Methods (14)
+### Never-Used Methods (11)
 
 | File | Member | Line |
 |------|--------|------|
-| `src/src_dotnet/JAStudio.UI/AppDialogs.cs` | `ShowDialog<T>()` | 26 |
-| `src/src_dotnet/JAStudio.UI/AppDialogs.cs` | `ShowVocabFlagsDialog()` | 38 |
-| `src/src_dotnet/JAStudio.UI/AppDialogs.cs` | `ShowVocabEditorDialog()` | 59 |
-| `src/src_dotnet/JAStudio.UI/AppDialogs.cs` | `ShowKanjiEditorDialog()` | 79 |
-| `src/src_dotnet/JAStudio.UI/AppDialogs.cs` | `ShowSentenceEditorDialog()` | 99 |
-| `src/src_dotnet/JAStudio.UI/AppDialogs.cs` | `ShowAboutDialog()` | 119 |
-| `src/src_dotnet/JAStudio.UI/AppDialogs.cs` | `ToggleEnglishWordSearchDialog()` | 176 |
-| `src/src_dotnet/JAStudio.Core/App.cs` | `AddInitHook()` | 28 |
-| `src/src_dotnet/JAStudio.Core/Note/NoteConstants.cs` | `FromType()` | 59 |
-| `src/src_dotnet/JAStudio.Core/Note/NoteConstants.cs` | `IdFactoryFromType()` | 61 |
-| `src/src_dotnet/JAStudio.Core/Note/JPNote.cs` | `GetDependenciesRecursive()` | 160 |
-| `src/src_dotnet/JAStudio.Core/Note/JPNote.cs` | `GetMediaReferences()` | 169 |
-| `src/src_dotnet/JAStudio.Core/Note/Sentences/SentenceNote.cs` | `AddSentence()` | 189 |
-| `src/src_dotnet/JAStudio.Core/Note/NoteFields/MutableStringField.cs` | `GetImageReferences()` | 36 |
+| `src/src_dotnet/JAStudio.UI/AppDialogs.cs` | `ShowDialog<T>()` | 24 |
+| `src/src_dotnet/JAStudio.UI/AppDialogs.cs` | `ShowVocabFlagsDialog()` | 36 |
+| `src/src_dotnet/JAStudio.UI/AppDialogs.cs` | `ShowVocabEditorDialog()` | 57 |
+| `src/src_dotnet/JAStudio.UI/AppDialogs.cs` | `ShowKanjiEditorDialog()` | 77 |
+| `src/src_dotnet/JAStudio.UI/AppDialogs.cs` | `ShowSentenceEditorDialog()` | 97 |
+| `src/src_dotnet/JAStudio.UI/AppDialogs.cs` | `ShowAboutDialog()` | 117 |
+| `src/src_dotnet/JAStudio.UI/AppDialogs.cs` | `ToggleEnglishWordSearchDialog()` | 174 |
+| `src/src_dotnet/JAStudio.Core/App.cs` | `AddInitHook()` | 26 |
+| `src/src_dotnet/JAStudio.Core/Note/NoteConstants.cs` | `FromType()` | 61 |
+| `src/src_dotnet/JAStudio.Core/Note/NoteConstants.cs` | `IdFactoryFromType()` | 63 |
+| `src/src_dotnet/JAStudio.Core/Note/Sentences/SentenceNote.cs` | `AddSentence()` | 182 |
 
 ### Never-Used Properties (2)
 
 | File | Member | Line |
 |------|--------|------|
-| `src/src_dotnet/JAStudio.Core/Storage/FileSystemNoteRepository.cs` | `Serializer` | 20 |
-| `src/src_dotnet/JAStudio.Core/App.cs` | `AnkiMediaDir` | 63 |
+| `src/src_dotnet/JAStudio.Core/Storage/FileSystemNoteRepository.cs` | `Serializer` | 21 |
+| `src/src_dotnet/JAStudio.Core/App.cs` | `AnkiMediaDir` | 61 |
 
 ### Never-Used Constants/Fields (4)
 
 | File | Member | Line |
 |------|--------|------|
-| `src/src_dotnet/JAStudio.Core/Note/NoteConstants.cs` | `SentenceFields.Audio` | 15 |
-| `src/src_dotnet/JAStudio.Core/Note/NoteConstants.cs` | `SentenceFields.Screenshot` | 17 |
-| `src/src_dotnet/JAStudio.Core/Note/NoteConstants.cs` | `VocabCards.Listening` | 106 |
-| `src/src_dotnet/JAStudio.Core/Note/NoteConstants.cs` | `AppStillLoadingMessage` | 174 |
+| `src/src_dotnet/JAStudio.Core/Note/NoteConstants.cs` | `SentenceFields.Audio` | 17 |
+| `src/src_dotnet/JAStudio.Core/Note/NoteConstants.cs` | `SentenceFields.Screenshot` | 19 |
+| `src/src_dotnet/JAStudio.Core/Note/NoteConstants.cs` | `VocabCards.Listening` | 108 |
+| `src/src_dotnet/JAStudio.Core/Note/NoteConstants.cs` | `AppStillLoadingMessage` | 176 |
+
+### Virtual Methods Never Used (2)
+
+| File | Member | Line |
+|------|--------|------|
+| `src/src_dotnet/JAStudio.Core/Note/JPNote.cs` | `GetDependenciesRecursive()` | 141 |
+| `src/src_dotnet/JAStudio.Core/Note/JPNote.cs` | `GetMediaReferences()` | 150 |
 
 ### Collection Updated But Never Read (1)
 
 | File | Member | Line |
 |------|--------|------|
-| `src/src_dotnet/JAStudio.Core/App.cs` | `_initHooks` | 26 |
+| `src/src_dotnet/JAStudio.Core/App.cs` | `_initHooks` | 24 |
 
 **Note:** `AppDialogs` methods may be called from Python via pythonnet at runtime — verify before removing.
 
 ---
 
-## 3. Method Can Be Made Static (11 occurrences)
+## 2. Method Can Be Made Static (10 occurrences)
 
 Instance methods that don't access `this` and could be `static`.
 
 | File | Method | Line |
 |------|--------|------|
-| `src/src_dotnet/JAStudio.Core/Storage/FileSystemNoteRepository.cs` | `FindChangesSinceSnapshot` | 112 |
-| `src/src_dotnet/JAStudio.Core.Tests/Storage/FileSystemNoteRepositoryTests.cs` | `AssertAllNotesDataMatch` | 220 |
-| `src/src_dotnet/JAStudio.UI/Menus/Notes/Vocab/VocabNoteMenus.cs` | `BuildCreateNounVariationsMenuSpec` | 172 |
-| `src/src_dotnet/JAStudio.UI/Menus/Notes/Vocab/VocabNoteMenus.cs` | `BuildCreateVerbVariationsMenuSpec` | 187 |
-| `src/src_dotnet/JAStudio.UI/Menus/Notes/Vocab/VocabNoteMenus.cs` | `BuildCreateMiscMenuSpec` | 207 |
-| `src/src_dotnet/JAStudio.UI/Menus/Notes/Vocab/VocabNoteMenus.cs` | `BuildCopyMenuSpec` | 222 |
-| `src/src_dotnet/JAStudio.UI/Menus/Notes/Vocab/VocabNoteMenus.cs` | `BuildRemoveMenuSpec` | 261 |
-| `src/src_dotnet/JAStudio.UI/Menus/Notes/Vocab/VocabNoteMenus.cs` | `OnEditVocab` | 300 |
-| `src/src_dotnet/JAStudio.UI/Menus/Notes/Vocab/VocabNoteMenus.cs` | `FormatVocabMeaning` | 326 |
-| `src/src_dotnet/JAStudio.UI/Menus/Notes/Kanji/KanjiNoteMenus.cs` | `OnEditKanji` | 84 |
-| `src/src_dotnet/JAStudio.UI/Menus/Notes/Sentence/SentenceNoteMenus.cs` | `OnEditSentence` | 57 |
+| `src/src_dotnet/JAStudio.Core/Storage/FileSystemNoteRepository.cs` | `FindChangesSinceSnapshot` | 113 |
+| `src/src_dotnet/JAStudio.UI/Menus/Notes/Vocab/VocabNoteMenus.cs` | `BuildCreateNounVariationsMenuSpec` | 167 |
+| `src/src_dotnet/JAStudio.UI/Menus/Notes/Vocab/VocabNoteMenus.cs` | `BuildCreateVerbVariationsMenuSpec` | 182 |
+| `src/src_dotnet/JAStudio.UI/Menus/Notes/Vocab/VocabNoteMenus.cs` | `BuildCreateMiscMenuSpec` | 202 |
+| `src/src_dotnet/JAStudio.UI/Menus/Notes/Vocab/VocabNoteMenus.cs` | `BuildCopyMenuSpec` | 217 |
+| `src/src_dotnet/JAStudio.UI/Menus/Notes/Vocab/VocabNoteMenus.cs` | `BuildRemoveMenuSpec` | 256 |
+| `src/src_dotnet/JAStudio.UI/Menus/Notes/Vocab/VocabNoteMenus.cs` | `OnEditVocab` | 295 |
+| `src/src_dotnet/JAStudio.UI/Menus/Notes/Vocab/VocabNoteMenus.cs` | `FormatVocabMeaning` | 321 |
+| `src/src_dotnet/JAStudio.UI/Menus/Notes/Kanji/KanjiNoteMenus.cs` | `OnEditKanji` | 74 |
+| `src/src_dotnet/JAStudio.UI/Menus/Notes/Sentence/SentenceNoteMenus.cs` | `OnEditSentence` | 54 |
 
 ---
 
-## 4. Namespace Does Not Match File Location (4 occurrences)
-
-The declared namespace doesn't reflect the file's directory path.
-
-| File | Current Namespace | Expected Namespace |
-|------|------------------|--------------------|
-| `src/src_dotnet/JAStudio.UI/Menus/Notes/Kanji/KanjiNoteMenus.cs` | `JAStudio.UI.Menus` | `JAStudio.UI.Menus.Notes.Kanji` |
-| `src/src_dotnet/JAStudio.UI/Menus/Notes/Sentence/SentenceNoteMenus.cs` | `JAStudio.UI.Menus` | `JAStudio.UI.Menus.Notes.Sentence` |
-| `src/src_dotnet/JAStudio.Core/Note/Vocabulary/VocabNote.cs` | `JAStudio.Core.Note` | `JAStudio.Core.Note.Vocabulary` |
-| `src/src_dotnet/JAStudio.Core/Note/Sentences/SentenceNote.cs` | `JAStudio.Core.Note` | `JAStudio.Core.Note.Sentences` |
-
-**Note:** These may be intentional — the files were moved to subdirectories while keeping the original namespace to avoid breaking references. Fixing requires updating all `using` statements across the codebase.
-
----
-
-## 5. Non-readonly Field Referenced in `GetHashCode()` (5 occurrences)
-
-Mutable fields used in `GetHashCode()` can cause issues when objects are stored in hash-based collections if the field value changes after insertion.
-
-| File | Line | Field |
-|------|------|-------|
-| `src/src_dotnet/JAStudio.Core/Note/JPNote.cs` | 116 | `_hashValue` |
-| `src/src_dotnet/JAStudio.Core/Note/JPNote.cs` | 118 | `_hashValue`, `_id` |
-| `src/src_dotnet/JAStudio.Core/Note/JPNote.cs` | 119 | `_hashValue` |
-| `src/src_dotnet/JAStudio.Core/Note/JPNote.cs` | 125 | `_hashValue` |
-
-All in the same `GetHashCode()` override. The `_hashValue` field is used as a lazy cache and `_id` is the identity field.
-
----
-
-## 6. Captured Variable Modified in Outer Scope (2 occurrences)
+## 3. Captured Variable Modified in Outer Scope (2 occurrences)
 
 A lambda captures a variable that is reassigned after the lambda is created, which can lead to unexpected behavior.
 
 | File | Line | Variable |
 |------|------|----------|
-| `src/src_dotnet/JAStudio.Core/Storage/FileSystemNoteRepository.cs` | 100 | `container` |
-| `src/src_dotnet/JAStudio.Core/Storage/FileSystemNoteRepository.cs` | 104 | `container` |
+| `src/src_dotnet/JAStudio.Core/Storage/FileSystemNoteRepository.cs` | 101 | `container` |
+| `src/src_dotnet/JAStudio.Core/Storage/FileSystemNoteRepository.cs` | 105 | `container` |
 
 The `container` variable is captured in lambdas passed to `scope.RunIndeterminate()` and is also reassigned between calls.
 
 ---
 
-## 7. Expression Always True (Nullable Reference Types) (2 occurrences)
+## 4. Expression Always True (Nullable Reference Types) (2 occurrences)
 
 Null checks on values that the nullable annotations indicate can never be null.
 
 | File | Line | Expression |
 |------|------|------------|
-| `src/src_dotnet/JAStudio.Core/Note/Sentences/SentenceNote.cs` | 115 | `parsingResult != null` |
-| `src/src_dotnet/JAStudio.Core/Note/Sentences/SentenceNote.cs` | 153 | `parsingResult != null` |
+| `src/src_dotnet/JAStudio.Core/Note/Sentences/SentenceNote.cs` | 108 | `parsingResult != null` |
+| `src/src_dotnet/JAStudio.Core/Note/Sentences/SentenceNote.cs` | 146 | `parsingResult != null` |
 
 ---
 
-## 8. Possible Unintended Reference Comparison (1 occurrence)
+## 5. PowerShell Automatic Variable Overwrite (2 occurrences)
+
+Assigning to `$args`, which is a built-in automatic variable in PowerShell.
+
+| File | Line | Description |
+|------|------|-------------|
+| `src/src_dotnet/regenerate-stubs.ps1` | 54 | Assignment to `$args` |
+| `src/src_dotnet/regenerate-stubs.ps1` | 61 | Appending to `$args` |
+
+---
+
+## 6. Unnecessary Whitespace (1 occurrence)
+
+| File | Line |
+|------|------|
+| `src/src_dotnet/JAStudio.Core/Note/Vocabulary/VocabNote.cs` | 142 |
+
+---
+
+## 7. Possible Unintended Reference Comparison (1 occurrence)
 
 Using `!=` instead of `!Equals()` on reference types may compare identity rather than value.
 
@@ -153,13 +133,13 @@ Since `JPNote` overrides `Equals()` and `GetHashCode()`, this `!=` comparison ma
 
 ---
 
-## 9. Constant Hides Class from Outer Class (1 occurrence)
+## 8. Constant Hides Class from Outer Class (1 occurrence)
 
 A nested constant has the same name as a class visible in the outer scope.
 
 | File | Line | Member |
 |------|------|--------|
-| `src/src_dotnet/JAStudio.Core/Note/NoteConstants.cs` | 153 | Constant `Kanji` hides class `Kanji` |
+| `src/src_dotnet/JAStudio.Core/Note/NoteConstants.cs` | 155 | Constant `Kanji` hides class `Kanji` |
 
 ---
 
@@ -167,31 +147,29 @@ A nested constant has the same name as a class visible in the outer scope.
 
 | Category | Count | Severity | Fix Effort |
 |----------|-------|----------|------------|
-| Unnecessary Whitespace | 22 | Low | Trivial (auto-format) |
-| Dead Code (never used) | 21 | Medium | Low (verify Python interop first) |
-| Method Can Be Static | 11 | Low | Low (add `static` keyword) |
-| Non-readonly Field in GetHashCode | 5 | Medium | Medium (make fields readonly or restructure) |
-| Namespace Mismatch | 4 | Medium | Medium (update all references) |
+| Dead Code (never used) | 17 | Medium | Low (verify Python interop first) |
+| Method Can Be Static | 10 | Low | Low (add `static` keyword) |
 | Captured Variable in Outer Scope | 2 | Medium | Medium (restructure lambda captures) |
 | Expression Always True | 2 | Low | Low (remove redundant checks) |
+| PowerShell `$args` Overwrite | 2 | Low | Low (rename variable) |
+| Unnecessary Whitespace | 1 | Low | Trivial (auto-format) |
 | Possible Reference Comparison | 1 | Medium | Low (use Equals or verify operator overload) |
 | Name Hiding | 1 | Low | Low (rename constant) |
-| **Total** | **~69 unique** | | |
+| **Total** | **40** | | |
 
 ## Files Most Affected
 
 | File | Problem Count |
 |------|---------------|
-| `KanjiNoteMenus.cs` | 12 |
-| `SentenceNoteMenus.cs` | 13 |
 | `VocabNoteMenus.cs` | 7 |
 | `AppDialogs.cs` | 7 |
 | `NoteConstants.cs` | 7 |
-| `JPNote.cs` | 7 |
-| `SentenceNote.cs` | 5 |
 | `FileSystemNoteRepository.cs` | 4 |
+| `SentenceNote.cs` | 3 |
 | `App.cs` | 3 |
-| `FileSystemNoteRepositoryTests.cs` | 1 |
+| `JPNote.cs` | 2 |
+| `regenerate-stubs.ps1` | 2 |
+| `KanjiNoteMenus.cs` | 1 |
+| `SentenceNoteMenus.cs` | 1 |
 | `VocabNote.cs` | 1 |
 | `RelatedVocab.cs` | 1 |
-| `MutableStringField.cs` | 1 |
