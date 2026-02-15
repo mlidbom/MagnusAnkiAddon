@@ -106,38 +106,7 @@ public partial class VocabData : CorpusDataBase
    }
 
    /// Merges Anki-owned fields into existing data, preserving all fields Anki does not store.
-   public VocabData MergeAnkiData(NoteData ankiData)
-   {
-      var anki = new AnkiVocabNote(ankiData);
-      return new VocabData
-      {
-         Id = Id,
-         Tags = Tags,
-         Question = Question,
-         SourceAnswer = SourceAnswer,
-         UserAnswer = UserAnswer,
-         ActiveAnswer = ActiveAnswer,
-         UserExplanation = UserExplanation,
-         UserExplanationLong = UserExplanationLong,
-         UserMnemonic = UserMnemonic,
-         UserCompounds = UserCompounds,
-         Readings = Readings,
-         PartsOfSpeech = PartsOfSpeech,
-         SourceMnemonic = SourceMnemonic,
-         SourceReadingMnemonic = SourceReadingMnemonic,
-         AudioB = AudioB,
-         AudioG = AudioG,
-         AudioTTS = AudioTTS,
-         Forms = Forms,
-         SentenceCount = SentenceCount,
-         TechnicalNotes = TechnicalNotes,
-         References = References,
-         Image = anki.Image,
-         UserImage = anki.UserImage,
-         MatchingRules = MatchingRules,
-         RelatedVocab = RelatedVocab,
-      };
-   }
+   public VocabData MergeAnkiData(NoteData ankiData) => this; //There are no fields where Anki owns the data
 }
 
 /// Matching rules sub-data for vocab word matching (serialized in JSON).
