@@ -66,8 +66,9 @@ public class JapaneseMainMenu
             SpecMenuItem.Command(ShortcutFinger.Home3("Update everything except reanalysing sentences"), () => BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.UpdateAll())),
             SpecMenuItem.Command(ShortcutFinger.Home4("Create vocab notes for parsed words"), () => BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.CreateMissingVocabWithDictionaryEntries())),
             SpecMenuItem.Command(ShortcutFinger.Home5("Regenerate vocab source answers from jamdict"), () => BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.RegenerateJamdictVocabAnswers())),
-            SpecMenuItem.Command(ShortcutFinger.Up1("Force flush all notes"), () => BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.ForceFlushAllNotes())),
-            SpecMenuItem.Command(ShortcutFinger.Up2("Write file system repository"), () => BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.WriteFileSystemRepository()))
+            SpecMenuItem.Command(ShortcutFinger.Up1("Force flush all cached notes"), () => BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.ForceFlushAllNotes())),
+            SpecMenuItem.Command(ShortcutFinger.Up2("Force flush all Anki notes by ID"), () => BackgroundTaskManager.Run(FlushAllAnkiNotesById)),
+            SpecMenuItem.Command(ShortcutFinger.Up3("Write file system repository"), () => BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.WriteFileSystemRepository()))
          }
       );
 
@@ -96,6 +97,13 @@ public class JapaneseMainMenu
    }
 
    void OnReadingsMappings() => _dialogs.ShowReadingsMappingsDialog();
+
+   void FlushAllAnkiNotesById()
+   {
+      using var scope = _services.TaskRunner.Current("Flushing all Anki notes by ID");
+      var externalIds = _services.ExternalNoteIdMap.AllExternalIds();
+      scope.RunBatch(externalIds, AnkiFacade.Batches.FlushAnkiNote, "Flushing Anki notes");
+   }
 
    // Lookup menu actions
    void OnOpenNote() => _dialogs.ToggleNoteSearchDialog();

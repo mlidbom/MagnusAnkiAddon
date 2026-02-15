@@ -59,6 +59,12 @@ def batches_convert_immersion_kit_sentences() -> None:
     from jastudio.batches import local_note_updater
     local_note_updater.convert_immersion_kit_sentences()
 
+def batches_flush_anki_note(note_id: int) -> None:
+    from jastudio.ankiutils import app
+    col = app.anki_collection()
+    note = col.get_note(NoteId(note_id))
+    col.update_note(note)
+
 # ── NoteEx ──
 def note_suspend_all_cards(note_id: int) -> None:
     from jastudio.anki_extentions.note_ex import NoteEx
