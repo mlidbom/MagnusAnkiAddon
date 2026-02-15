@@ -33,7 +33,7 @@ public static class VocabNoteConverter
             Forms = note.Forms.AllRawList(),
             SentenceCount = note.MetaData.SentenceCount.Get(),
             TechnicalNotes = note.TechnicalNotes.Value,
-            References = note.GetField(NoteFieldsConstants.Vocab.References),
+            References = note.References.Value,
             MatchingRules = new VocabMatchingRulesSubData
             {
                 PrefixIsNot = rules.PrefixIsNot.OrderBy(s => s).ToList(),

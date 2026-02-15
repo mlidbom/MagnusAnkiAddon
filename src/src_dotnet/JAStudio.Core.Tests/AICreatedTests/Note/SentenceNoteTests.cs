@@ -23,7 +23,7 @@ public class SentenceNoteTests : TestStartingWithEmptyCollection, IAIGeneratedTe
    {
       // Arrange
       var sentence = new SentenceNote(NoteServices);
-      sentence.SetField(SentenceNoteFields.SourceAnswer, "<b>This</b> is a <i>book</i>.");
+      sentence.SourceAnswer.Set("<b>This</b> is a <i>book</i>.");
 
       // Act
       var answer = sentence.GetAnswer();

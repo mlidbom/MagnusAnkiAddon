@@ -30,6 +30,7 @@ public class VocabNote : JPNote
     public MutableStringField SourceMnemonic => new(this, NoteFieldsConstants.Vocab.SourceMnemonic);
     public MutableStringField SourceReadingMnemonic => new(this, NoteFieldsConstants.Vocab.SourceReadingMnemonic);
     public MutableStringField TechnicalNotes => new(this, NoteFieldsConstants.Vocab.TechnicalNotes);
+    public MutableStringField References => new(this, NoteFieldsConstants.Vocab.References);
     public ImageField Image => new(this, NoteFieldsConstants.Vocab.Image);
     public ImageField UserImage => new(this, NoteFieldsConstants.Vocab.UserImage);
 
@@ -75,7 +76,7 @@ public class VocabNote : JPNote
     public override string GetAnswer()
     {
         var userAnswer = User.Answer.Value;
-        var sourceAnswer = GetField(NoteFieldsConstants.Vocab.SourceAnswer);
+        var sourceAnswer = SourceAnswer.Value;
         return !string.IsNullOrEmpty(userAnswer) ? userAnswer : sourceAnswer;
     }
 

@@ -170,7 +170,7 @@ public abstract class JPNote
 
    public virtual List<MediaReference> GetMediaReferences() => [];
 
-   public string GetField(string fieldName) => _fields.TryGetValue(fieldName, out var value) ? value : string.Empty;
+   internal string GetField(string fieldName) => _fields.TryGetValue(fieldName, out var value) ? value : string.Empty;
 
    internal void MarkAsPersisted() => _persisted = true;
 
@@ -180,7 +180,7 @@ public abstract class JPNote
       RecursiveFlushGuard.Flush();
    }
 
-   public void SetField(string fieldName, string value)
+   internal void SetField(string fieldName, string value)
    {
       var fieldValue = GetField(fieldName);
       if(fieldValue != value)

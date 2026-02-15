@@ -42,7 +42,7 @@ public class NoteRelationshipTests : TestStartingWithEmptyCollection, IAIGenerat
       var radical1 = CreateKanji("人", "person", "ジン、ニン", "ひと");
       var radical2 = CreateKanji("食", "eat", "ショク", "た");
       var kanji = CreateKanji("飯", "cooked rice, meal", "ハン", "めし");
-      kanji.SetField(NoteFieldsConstants.Kanji.Radicals, "人, 食");
+      kanji.SetRadicals("人, 食");
 
       // Act
       var dependencies = kanji.GetDirectDependencies();

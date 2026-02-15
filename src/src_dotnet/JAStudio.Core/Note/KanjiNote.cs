@@ -477,6 +477,8 @@ public class KanjiNote : JPNote
    }
 
    public WritableAudioField Audio => new(this, NoteFieldsConstants.Kanji.Audio);
+   public MutableStringField PrimaryReadingsTtsAudio => new(this, NoteFieldsConstants.Kanji.PrimaryReadingsTtsAudio);
+   public MutableStringField KanjiReferences => new(this, NoteFieldsConstants.Kanji.References);
 
    public ImageField Image => new(this, NoteFieldsConstants.Kanji.Image);
 
