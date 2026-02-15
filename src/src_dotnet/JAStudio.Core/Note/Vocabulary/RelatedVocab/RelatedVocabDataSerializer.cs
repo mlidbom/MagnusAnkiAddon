@@ -51,22 +51,22 @@ public class RelatedVocabDataSerializer : IObjectSerializer<RelatedVocabData>
 
         if (!string.IsNullOrEmpty(instance.ErgativeTwin))
             dict["ergative_twin"] = instance.ErgativeTwin;
-        
+
         if (!string.IsNullOrEmpty(instance.DerivedFrom.Get()))
             dict["derived_from"] = instance.DerivedFrom.Get();
-        
+
         if (instance.Synonyms.Any())
             dict["synonyms"] = instance.Synonyms.OrderBy(s => s).ToList();
-        
+
         if (instance.PerfectSynonyms.Any())
             dict["perfect_synonyms"] = instance.PerfectSynonyms.OrderBy(s => s).ToList();
-        
+
         if (instance.Antonyms.Any())
             dict["antonyms"] = instance.Antonyms.OrderBy(s => s).ToList();
-        
+
         if (instance.ConfusedWith.Any())
             dict["confused_with"] = instance.ConfusedWith.OrderBy(s => s).ToList();
-        
+
         if (instance.SeeAlso.Any())
             dict["see_also"] = instance.SeeAlso.OrderBy(s => s).ToList();
 

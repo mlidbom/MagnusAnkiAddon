@@ -60,7 +60,7 @@ public sealed class TextAnalysis
         IndexingWordVariants = Locations
             .SelectMany(location => location.IndexingVariants)
             .ToList();
-        
+
         DisplayWordVariants = Locations
             .SelectMany(location => location.DisplayVariants)
             .ToList();
@@ -68,7 +68,7 @@ public sealed class TextAnalysis
         ValidMatches = IndexingWordVariants
             .SelectMany(variant => variant.ValidMatches)
             .ToList();
-        
+
         DisplayMatches = DisplayWordVariants
             .SelectMany(variant => variant.DisplayMatches)
             .ToList();

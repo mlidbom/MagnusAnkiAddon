@@ -18,7 +18,7 @@ public class RequireForbidFlagField
         _forbiddenTag = forbiddenTag;
         RequiredWeight = requiredWeight;
         ForbiddenWeight = forbiddenWeight;
-        
+
         // Cache tag states during construction - invalidated when matching_configuration is recreated
         _cachedIsRequired = note.Tags.Contains(requiredTag);
         _cachedIsForbidden = note.Tags.Contains(forbiddenTag);
@@ -26,7 +26,7 @@ public class RequireForbidFlagField
 
     public bool IsConfiguredRequired => _cachedIsRequired;
     public bool IsConfiguredForbidden => _cachedIsForbidden;
-    
+
     public int MatchWeight => IsRequired ? RequiredWeight : IsForbidden ? ForbiddenWeight : 0;
 
     public string Name => _requiredTag.Name.Replace(Tags.Vocab.Matching.Requires.FolderName, "");

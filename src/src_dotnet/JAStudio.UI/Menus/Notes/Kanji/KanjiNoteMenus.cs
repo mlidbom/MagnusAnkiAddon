@@ -28,22 +28,22 @@ public class KanjiNoteMenus
         {
             BuildOpenMenuSpec(kanji),
             SpecMenuItem.Command(ShortcutFinger.Home2("Edit"), () => OnEditKanji(kanji)),
-            SpecMenuItem.Command(ShortcutFinger.Home5("Reset Primary Vocabs"), 
+            SpecMenuItem.Command(ShortcutFinger.Home5("Reset Primary Vocabs"),
                 () => kanji.PrimaryVocab = new List<string>())
         };
 
         // Add conditional "Accept meaning" if no user answer exists
         if (string.IsNullOrEmpty(kanji.UserAnswer.Value))
         {
-            items.Add(SpecMenuItem.Command(ShortcutFinger.Up1("Accept meaning"), 
+            items.Add(SpecMenuItem.Command(ShortcutFinger.Up1("Accept meaning"),
                 () => OnAcceptKanjiMeaning(kanji)));
         }
 
-        items.Add(SpecMenuItem.Command(ShortcutFinger.Up2("Populate radicals from mnemonic tags"), 
+        items.Add(SpecMenuItem.Command(ShortcutFinger.Up2("Populate radicals from mnemonic tags"),
             () => kanji.PopulateRadicalsFromMnemonicTags()));
-        items.Add(SpecMenuItem.Command(ShortcutFinger.Up3("Bootstrap mnemonic from radicals"), 
+        items.Add(SpecMenuItem.Command(ShortcutFinger.Up3("Bootstrap mnemonic from radicals"),
             () => kanji.BootstrapMnemonicFromRadicals()));
-        items.Add(SpecMenuItem.Command(ShortcutFinger.Up4("Reset mnemonic"), 
+        items.Add(SpecMenuItem.Command(ShortcutFinger.Up4("Reset mnemonic"),
             () => kanji.UserMnemonic.Set("")));
 
         return SpecMenuItem.Submenu(ShortcutFinger.Home3("Note actions"), items);
@@ -53,16 +53,16 @@ public class KanjiNoteMenus
     {
         var items = new List<SpecMenuItem>
         {
-            SpecMenuItem.Command(ShortcutFinger.Home1("Primary Vocabs"), 
+            SpecMenuItem.Command(ShortcutFinger.Home1("Primary Vocabs"),
                 () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder().VocabsLookupStrings(kanji.PrimaryVocab))),
-            SpecMenuItem.Command(ShortcutFinger.Home2("Vocabs"), 
+            SpecMenuItem.Command(ShortcutFinger.Home2("Vocabs"),
                 () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder().VocabWithKanji(kanji))),
-            SpecMenuItem.Command(ShortcutFinger.Home3("Radicals"), 
+            SpecMenuItem.Command(ShortcutFinger.Home3("Radicals"),
                 () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder().NotesLookup(kanji.GetRadicalsNotes()))),
-            SpecMenuItem.Command(ShortcutFinger.Home4("Kanji"), 
+            SpecMenuItem.Command(ShortcutFinger.Home4("Kanji"),
                 () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder().NotesLookup(
                                                           _services.App.Collection.Kanji.WithRadical(kanji.GetQuestion())))),
-            SpecMenuItem.Command(ShortcutFinger.Home5("Sentences"), 
+            SpecMenuItem.Command(ShortcutFinger.Home5("Sentences"),
                 () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder().SentenceSearch(kanji.GetQuestion(), exact: true)))
         };
 
