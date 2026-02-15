@@ -2,6 +2,7 @@ using JAStudio.Core.Note;
 using JAStudio.Core.ViewModels.KanjiList;
 using System.Collections.Generic;
 using System.Linq;
+using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.UI.Web.Vocab;
 

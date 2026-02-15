@@ -5,7 +5,7 @@ using JAStudio.Core.Note;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
 
-namespace JAStudio.UI.Menus;
+namespace JAStudio.UI.Menus.Notes.Kanji;
 
 /// <summary>
 /// Kanji string menu builders (selection/clipboard context menus).

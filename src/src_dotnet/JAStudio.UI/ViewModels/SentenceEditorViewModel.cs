@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JAStudio.Core.Note;
 using System;
+using JAStudio.Core.Note.Sentences;
 
 namespace JAStudio.UI.ViewModels;
 

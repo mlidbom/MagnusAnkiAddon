@@ -4,8 +4,12 @@ using System.Linq;
 using Compze.Utilities.Logging;
 using JAStudio.Anki;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.Sentences;
+using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.TaskRunners;
 using JAStudio.PythonInterop;
+using JAStudio.UI.Menus.Notes.Kanji;
+using JAStudio.UI.Menus.Notes.Sentence;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
 

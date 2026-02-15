@@ -1,15 +1,14 @@
+using System.Collections.Generic;
+using System.Linq;
+using JAStudio.Core.LanguageServices;
 using JAStudio.Core.LanguageServices.JanomeEx;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 using JAStudio.Core.Note.CorpusData;
 using JAStudio.Core.Note.NoteFields;
-using JAStudio.Core.Note.Sentences;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.Storage.Converters;
-using System.Collections.Generic;
-using System.Linq;
-using JAStudio.Core.LanguageServices;
 
-namespace JAStudio.Core.Note;
+namespace JAStudio.Core.Note.Sentences;
 
 public class SentenceNote : JPNote
 {

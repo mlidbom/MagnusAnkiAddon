@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using JAStudio.Anki;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.Vocabulary;
 using JAStudio.UI.ViewModels;
 
 namespace JAStudio.UI.Views;

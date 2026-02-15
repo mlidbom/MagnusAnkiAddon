@@ -1,13 +1,12 @@
 using System.Collections.Generic;
+using Avalonia.Threading;
 using JAStudio.Anki;
 using JAStudio.Core.Note;
-using JAStudio.UI;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
 using JAStudio.UI.Views;
-using Avalonia.Threading;
 
-namespace JAStudio.UI.Menus;
+namespace JAStudio.UI.Menus.Notes.Kanji;
 
 /// <summary>
 /// Kanji note-specific menu builders.

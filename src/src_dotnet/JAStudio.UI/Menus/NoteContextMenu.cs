@@ -3,8 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Anki;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.Sentences;
+using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.TaskRunners;
 using JAStudio.UI;
+using JAStudio.UI.Menus.Notes.Kanji;
+using JAStudio.UI.Menus.Notes.Sentence;
+using JAStudio.UI.Menus.Notes.Vocab;
 using JAStudio.UI.Utils;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 

@@ -7,6 +7,7 @@ using JAStudio.Core.TaskRunners;
 using JAStudio.UI;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using Avalonia.Threading;
+using JAStudio.Core.Note.Vocabulary;
 using JAStudio.UI.Utils;
 using JAStudio.UI.Views;
 

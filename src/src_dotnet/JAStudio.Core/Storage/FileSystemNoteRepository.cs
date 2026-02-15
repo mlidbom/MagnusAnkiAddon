@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading;
 using Compze.Utilities.Logging;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.Sentences;
+using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.Storage.Dto;
 using JAStudio.Core.TaskRunners;
 using MemoryPack;

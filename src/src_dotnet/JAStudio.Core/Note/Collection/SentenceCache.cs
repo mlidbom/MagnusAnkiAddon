@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.Note.CorpusData;
+using JAStudio.Core.Note.Sentences;
+using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.Storage.Converters;
 
 namespace JAStudio.Core.Note.Collection;

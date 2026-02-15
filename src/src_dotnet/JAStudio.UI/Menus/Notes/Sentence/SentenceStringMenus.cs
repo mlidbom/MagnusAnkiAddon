@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
-using JAStudio.Core.Note;
 using JAStudio.Core.Note.Sentences;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
 
-namespace JAStudio.UI.Menus;
+namespace JAStudio.UI.Menus.Notes.Sentence;
 
 /// <summary>
 /// Sentence string menu builder - builds context menus for selected text within sentence notes.

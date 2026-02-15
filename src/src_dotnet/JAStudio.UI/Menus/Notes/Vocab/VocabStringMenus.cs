@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using JAStudio.Core.Note;
+using JAStudio.Core.Note.Vocabulary;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
 
-namespace JAStudio.UI.Menus;
+namespace JAStudio.UI.Menus.Notes.Vocab;
 
 /// <summary>
 /// Vocab string menu builders (selection/clipboard context menus).

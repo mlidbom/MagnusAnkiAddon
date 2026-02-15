@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.Note.Collection;
 

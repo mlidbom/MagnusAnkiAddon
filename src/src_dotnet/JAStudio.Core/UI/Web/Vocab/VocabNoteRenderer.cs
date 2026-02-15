@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.UI.Web.Vocab;
 

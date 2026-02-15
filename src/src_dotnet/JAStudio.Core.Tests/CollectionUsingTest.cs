@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.Sentences;
+using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.Tests.Fixtures;
 
 namespace JAStudio.Core.Tests;

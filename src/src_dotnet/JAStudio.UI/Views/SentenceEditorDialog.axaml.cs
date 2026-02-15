@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 using JAStudio.Anki;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.Sentences;
 using JAStudio.UI.ViewModels;
 
 namespace JAStudio.UI.Views;

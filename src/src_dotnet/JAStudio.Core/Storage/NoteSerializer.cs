@@ -3,6 +3,8 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.CorpusData;
+using JAStudio.Core.Note.Sentences;
+using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.Storage.Converters;
 using JAStudio.Core.Storage.Dto;
 using JAStudio.Core.TaskRunners;

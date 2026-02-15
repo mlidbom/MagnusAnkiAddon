@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
+using Avalonia.Threading;
 using JAStudio.Anki;
 using JAStudio.Core.Note;
-using JAStudio.UI;
+using JAStudio.Core.Note.Sentences;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
 using JAStudio.UI.Views;
-using Avalonia.Threading;
 
-namespace JAStudio.UI.Menus;
+namespace JAStudio.UI.Menus.Notes.Sentence;
 
 /// <summary>
 /// Sentence note-specific menu builders.

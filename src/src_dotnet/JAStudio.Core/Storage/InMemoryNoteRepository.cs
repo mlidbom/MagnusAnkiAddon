@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.Sentences;
+using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.Storage;
 

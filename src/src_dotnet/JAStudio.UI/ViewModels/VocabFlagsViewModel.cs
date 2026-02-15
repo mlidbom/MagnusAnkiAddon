@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Compze.Utilities.SystemCE.ThreadingCE.TasksCE;
+using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.UI.ViewModels;
 

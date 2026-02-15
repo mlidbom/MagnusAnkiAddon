@@ -9,6 +9,8 @@ using Compze.Utilities.SystemCE.ThreadingCE.TasksCE;
 using JAStudio.Anki;
 using JAStudio.Core.LanguageServices;
 using JAStudio.Core.Note;
+using JAStudio.Core.Note.Sentences;
+using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.SysUtils;
 using JAStudio.UI;
 
