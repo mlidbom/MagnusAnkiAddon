@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using JAStudio.Core.Anki;
 using MemoryPack;
@@ -70,4 +69,35 @@ public partial class KanjiData : CorpusDataBase
          PrimaryReadingsTtsAudio = anki.PrimaryReadingsTtsAudio,
          Image = anki.Image,
       };
+
+   /// Merges Anki-owned fields into existing data, preserving all fields Anki does not store.
+   public KanjiData MergeAnkiData(NoteData ankiData)
+   {
+      var anki = new AnkiKanjiNote(ankiData);
+      return new KanjiData
+             {
+                Image = anki.Image,
+                Id = Id,
+                Tags = Tags,
+                Kanji = Kanji,
+                SourceAnswer = SourceAnswer,
+                Audio = Audio,
+                PrimaryReadingsTtsAudio = PrimaryReadingsTtsAudio,
+                UserAnswer = UserAnswer,
+                ActiveAnswer = ActiveAnswer,
+                ReadingOnHtml = ReadingOnHtml,
+                ReadingKunHtml = ReadingKunHtml,
+                ReadingNanHtml = ReadingNanHtml,
+                Radicals = Radicals,
+                SourceMeaningMnemonic = SourceMeaningMnemonic,
+                MeaningInfo = MeaningInfo,
+                ReadingMnemonic = ReadingMnemonic,
+                ReadingInfo = ReadingInfo,
+                PrimaryVocab = PrimaryVocab,
+                References = References,
+                UserMnemonic = UserMnemonic,
+                SimilarMeaning = SimilarMeaning,
+                ConfusedWith = ConfusedWith,
+             };
+   }
 }

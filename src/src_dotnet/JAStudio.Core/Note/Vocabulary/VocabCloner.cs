@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.LanguageServices;
 using JAStudio.Core.Note.CorpusData;
+using JAStudio.Core.Storage.Converters;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
@@ -81,10 +82,36 @@ public class VocabCloner
 
     public VocabNote Clone()
     {
-        var data = Note.GetData();
-        data.Id = null;
-        data.Tags = [];
-        var clone = new VocabNote(Note.Services, VocabData.FromAnkiNoteData(data));
+        var source = VocabNoteConverter.ToCorpusData(Note);
+        var cloneData = new VocabData
+        {
+            Id = Guid.NewGuid(),
+            Tags = [],
+            Question = source.Question,
+            SourceAnswer = source.SourceAnswer,
+            UserAnswer = source.UserAnswer,
+            ActiveAnswer = source.ActiveAnswer,
+            UserExplanation = source.UserExplanation,
+            UserExplanationLong = source.UserExplanationLong,
+            UserMnemonic = source.UserMnemonic,
+            UserCompounds = source.UserCompounds,
+            Readings = source.Readings,
+            PartsOfSpeech = source.PartsOfSpeech,
+            SourceMnemonic = source.SourceMnemonic,
+            SourceReadingMnemonic = source.SourceReadingMnemonic,
+            AudioB = source.AudioB,
+            AudioG = source.AudioG,
+            AudioTTS = source.AudioTTS,
+            Forms = source.Forms,
+            SentenceCount = source.SentenceCount,
+            TechnicalNotes = source.TechnicalNotes,
+            References = source.References,
+            Image = source.Image,
+            UserImage = source.UserImage,
+            MatchingRules = source.MatchingRules,
+            RelatedVocab = source.RelatedVocab,
+        };
+        var clone = new VocabNote(Note.Services, cloneData);
 
         CopyVocabTagsTo(clone);
 

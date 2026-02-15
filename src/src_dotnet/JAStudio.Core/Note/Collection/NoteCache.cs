@@ -83,7 +83,7 @@ public abstract class NoteCacheBase<TNote> : IExternalNoteUpdateHandler where TN
       if(existing.IsFlushing) return; // Our code initiated this flush, nothing to do
 
       data.Id = noteId;
-      var note = _noteConstructor(_noteServices, data);
+      var note = CreateNoteByMergingAnkiData(_noteServices, existing, data);
       note.CopyStudyingStatusFrom(existing);
       note.UpdateGeneratedData();
       _monitor.Read(() => RefreshInCacheCore(note));
@@ -108,6 +108,9 @@ public abstract class NoteCacheBase<TNote> : IExternalNoteUpdateHandler where TN
 
    /// <summary>Creates the correctly typed NoteId for this cache (VocabId, KanjiId, etc.)</summary>
    protected abstract NoteId CreateTypedId(Guid value);
+
+   /// <summary>Creates a new note by merging Anki-owned fields into the existing note's data, preserving all fields Anki does not store.</summary>
+   protected abstract TNote CreateNoteByMergingAnkiData(NoteServices services, TNote existing, NoteData ankiData);
 
    public void JpNoteUpdated(TNote note)
    {

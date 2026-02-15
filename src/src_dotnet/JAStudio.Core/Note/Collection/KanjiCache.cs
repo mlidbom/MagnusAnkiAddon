@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.Note.CorpusData;
+using JAStudio.Core.Storage.Converters;
 
 namespace JAStudio.Core.Note.Collection;
 
@@ -12,6 +13,12 @@ public class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
 
    public KanjiCache(NoteServices noteServices) : base(typeof(KanjiNote), (services, data) => new KanjiNote(services, KanjiData.FromAnkiNoteData(data)), noteServices)
    {
+   }
+
+   protected override KanjiNote CreateNoteByMergingAnkiData(NoteServices services, KanjiNote existing, NoteData ankiData)
+   {
+      var mergedData = KanjiNoteConverter.ToCorpusData(existing).MergeAnkiData(ankiData);
+      return new KanjiNote(services, mergedData);
    }
 
    protected override void ClearDerivedIndexes()

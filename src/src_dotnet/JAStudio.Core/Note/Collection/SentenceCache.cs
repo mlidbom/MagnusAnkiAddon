@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.Note.CorpusData;
+using JAStudio.Core.Storage.Converters;
 
 namespace JAStudio.Core.Note.Collection;
 
@@ -14,6 +15,12 @@ public class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
 
    public SentenceCache(NoteServices noteServices) : base(typeof(SentenceNote), (services, data) => new SentenceNote(services, SentenceData.FromAnkiNoteData(data)), noteServices)
    {
+   }
+
+   protected override SentenceNote CreateNoteByMergingAnkiData(NoteServices services, SentenceNote existing, NoteData ankiData)
+   {
+      var mergedData = SentenceNoteConverter.ToCorpusData(existing).MergeAnkiData(ankiData);
+      return new SentenceNote(services, mergedData);
    }
 
    protected override void ClearDerivedIndexes()

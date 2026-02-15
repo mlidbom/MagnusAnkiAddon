@@ -56,16 +56,16 @@ public partial class SentenceData : CorpusDataBase
    {
       var config = new SentenceConfiguration(
          Configuration.HighlightedWords.ToList(),
-         new WordExclusionSet(() => { }, Configuration.IncorrectMatches.Select(FromExclusionSubData).ToList()),
-         new WordExclusionSet(() => { }, Configuration.HiddenMatches.Select(FromExclusionSubData).ToList()));
+         new WordExclusionSet(() => {}, Configuration.IncorrectMatches.Select(FromExclusionSubData).ToList()),
+         new WordExclusionSet(() => {}, Configuration.HiddenMatches.Select(FromExclusionSubData).ToList()));
       return ConfigSerializer.Serialize(config);
    }
 
    string SerializeParsingResult()
    {
-      if (ParsingResult == null) return string.Empty;
+      if(ParsingResult == null) return string.Empty;
 
-      var result = new Sentences.ParsingResult(
+      var result = new ParsingResult(
          ParsingResult.ParsedWords.Select(FromParsedMatchSubData).ToList(),
          ParsingResult.Sentence,
          ParsingResult.ParserVersion);
@@ -81,9 +81,8 @@ public partial class SentenceData : CorpusDataBase
    /// Creates SentenceData from raw Anki NoteData (for NoteCache and Python interop paths).
    public static SentenceData FromAnkiNoteData(NoteData data) => FromAnki(new AnkiSentenceNote(data));
 
-   public static SentenceData FromAnki(AnkiSentenceNote anki)
-   {
-      return new SentenceData
+   public static SentenceData FromAnki(AnkiSentenceNote anki) =>
+      new()
       {
          Id = (anki.Id ?? SentenceId.New()).Value,
          Tags = new List<string>(anki.Tags),
@@ -95,7 +94,9 @@ public partial class SentenceData : CorpusDataBase
          Audio = anki.Audio,
          Screenshot = anki.Screenshot,
       };
-   }
+
+   /// Merges Anki-owned fields into existing data, preserving all fields Anki does not store.
+   public SentenceData MergeAnkiData(NoteData ankiData) => this; //There are no fields where Anki owns the data
 
    static SentenceConfigSubData ToConfigSubData(SentenceConfiguration config) =>
       new()
@@ -108,15 +109,15 @@ public partial class SentenceData : CorpusDataBase
    static WordExclusionSubData ToExclusionSubData(WordExclusion ex) =>
       new() { Word = ex.Word, Index = ex.Index };
 
-   static SentenceParsingResultSubData? ToParsingResultSubData(Sentences.ParsingResult? result)
+   static SentenceParsingResultSubData? ToParsingResultSubData(ParsingResult? result)
    {
-      if (result == null || string.IsNullOrEmpty(result.Sentence)) return null;
+      if(result == null || string.IsNullOrEmpty(result.Sentence)) return null;
       return new SentenceParsingResultSubData
-      {
-         Sentence = result.Sentence,
-         ParserVersion = result.ParserVersion,
-         ParsedWords = result.ParsedWords.Select(ToParsedMatchSubData).ToList(),
-      };
+             {
+                Sentence = result.Sentence,
+                ParserVersion = result.ParserVersion,
+                ParsedWords = result.ParsedWords.Select(ToParsedMatchSubData).ToList(),
+             };
    }
 
    static ParsedMatchSubData ToParsedMatchSubData(ParsedMatch match) =>

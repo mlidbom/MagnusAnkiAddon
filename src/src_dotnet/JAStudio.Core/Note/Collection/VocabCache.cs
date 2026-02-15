@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.Note.CorpusData;
+using JAStudio.Core.Storage.Converters;
 
 namespace JAStudio.Core.Note.Collection;
 
@@ -18,6 +19,12 @@ public class VocabCache : NoteCache<VocabNote, VocabSnapshot>
 
    public VocabCache(NoteServices noteServices) : base(typeof(VocabNote), (services, data) => new VocabNote(services, VocabData.FromAnkiNoteData(data)), noteServices)
    {
+   }
+
+   protected override VocabNote CreateNoteByMergingAnkiData(NoteServices services, VocabNote existing, NoteData ankiData)
+   {
+      var mergedData = VocabNoteConverter.ToCorpusData(existing).MergeAnkiData(ankiData);
+      return new VocabNote(services, mergedData);
    }
 
    protected override void ClearDerivedIndexes()
