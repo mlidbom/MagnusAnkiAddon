@@ -14,7 +14,7 @@ namespace JAStudio.UI.Menus.Notes.Sentence;
 /// Sentence note-specific menu builders.
 /// Corresponds to notes/sentence/main.py in Python.
 /// </summary>
-public class SentenceNoteMenus
+class SentenceNoteMenus
 {
    readonly Core.TemporaryServiceCollection _services;
 
@@ -27,7 +27,7 @@ public class SentenceNoteMenus
          new List<SpecMenuItem>
          {
             BuildOpenMenuSpec(sentence),
-            SpecMenuItem.Command(ShortcutFinger.Home2("Edit"), () => OnEditSentence(sentence)),
+            SpecMenuItem.Command(ShortcutFinger.Home2("Edit"), () => Dispatcher.UIThread.Invoke(() => new SentenceEditorDialog(sentence).PositionNearCursor().Show())),
             BuildRemoveMenuSpec(sentence),
             BuildRemoveUserMenuSpec(sentence)
          }
@@ -49,16 +49,6 @@ public class SentenceNoteMenus
                   };
 
       return SpecMenuItem.Submenu(ShortcutFinger.Home1("Open"), items);
-   }
-
-   void OnEditSentence(SentenceNote sentence)
-   {
-      Dispatcher.UIThread.Invoke(() =>
-      {
-         var dialog = new SentenceEditorDialog(sentence);
-         WindowPositioner.PositionNearCursor(dialog);
-         dialog.Show();
-      });
    }
 
    static SpecMenuItem BuildRemoveMenuSpec(SentenceNote sentence)
