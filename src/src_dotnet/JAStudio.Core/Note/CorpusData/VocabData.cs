@@ -34,6 +34,9 @@ public partial class VocabData : CorpusDataBase
    public int SentenceCount { get; init; }
    public string TechnicalNotes { get; init; } = string.Empty;
    public string References { get; init; } = string.Empty;
+   // TODO: Batch extract Image and UserImage from Anki — these fields exist in Anki but were never imported into the data store.
+   public string Image { get; init; } = string.Empty;
+   public string UserImage { get; init; } = string.Empty;
    public VocabMatchingRulesSubData MatchingRules { get; init; } = new();
    public VocabRelatedSubData RelatedVocab { get; init; } = new();
 
@@ -60,6 +63,8 @@ public partial class VocabData : CorpusDataBase
       fields[NoteFieldsConstants.Vocab.SentenceCount] = SentenceCount.ToString();
       fields[NoteFieldsConstants.Vocab.TechnicalNotes] = TechnicalNotes;
       fields[NoteFieldsConstants.Vocab.References] = References;
+      fields[NoteFieldsConstants.Vocab.Image] = Image;
+      fields[NoteFieldsConstants.Vocab.UserImage] = UserImage;
       fields[NoteFieldsConstants.Vocab.MatchingRules] = SerializeMatchingRules();
       fields[NoteFieldsConstants.Vocab.RelatedVocab] = SerializeRelatedVocab();
    }

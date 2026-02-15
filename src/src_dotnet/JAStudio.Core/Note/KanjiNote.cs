@@ -28,7 +28,7 @@ public class KanjiNote : JPNote
    public WritableStringValue PrimaryReadingsTtsAudio { get; }
    public WritableStringValue KanjiReferences { get; }
    public WritableAudioValue Audio { get; }
-   public ImageField Image => new(StringField(NoteFieldsConstants.Kanji.Image));
+   public WritableImageValue Image { get; }
 
    readonly WritableStringValue _question;
    readonly WritableStringValue _radicalsRaw;
@@ -57,6 +57,7 @@ public class KanjiNote : JPNote
       _primaryVocabRaw = new WritableStringValue(data?.PrimaryVocab != null ? string.Join(", ", data.PrimaryVocab) : string.Empty, Guard);
       _similarMeaningRaw = new WritableStringValue(data?.SimilarMeaning != null ? string.Join(", ", data.SimilarMeaning) : string.Empty, Guard);
       _confusedWithRaw = new WritableStringValue(data?.ConfusedWith != null ? string.Join(", ", data.ConfusedWith) : string.Empty, Guard);
+      Image = new WritableImageValue(data?.Image ?? string.Empty, Guard);
    }
 
    public override HashSet<JPNote> GetDirectDependencies() => GetRadicalsNotes().Cast<JPNote>().ToHashSet();

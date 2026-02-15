@@ -52,6 +52,8 @@ public static class VocabNoteConverter
                 ConfusedWith = related.ConfusedWith.Get().OrderBy(s => s).ToList(),
                 SeeAlso = related.SeeAlso.Strings().OrderBy(s => s).ToList(),
             },
+            Image = note.Image.RawValue(),
+            UserImage = note.UserImage.RawValue(),
             Tags = note.Tags.ToStringList(),
         };
     }

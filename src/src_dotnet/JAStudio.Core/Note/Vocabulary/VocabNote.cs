@@ -30,8 +30,8 @@ public class VocabNote : JPNote
     public WritableStringValue SourceReadingMnemonic { get; }
     public WritableStringValue TechnicalNotes { get; }
     public WritableStringValue References { get; }
-    public ImageField Image => new(StringField(NoteFieldsConstants.Vocab.Image));
-    public ImageField UserImage => new(StringField(NoteFieldsConstants.Vocab.UserImage));
+    public WritableImageValue Image { get; }
+    public WritableImageValue UserImage { get; }
 
     readonly List<string> _readings;
 
@@ -43,6 +43,8 @@ public class VocabNote : JPNote
         SourceReadingMnemonic = new WritableStringValue(data?.SourceReadingMnemonic ?? string.Empty, Guard);
         TechnicalNotes = new WritableStringValue(data?.TechnicalNotes ?? string.Empty, Guard);
         References = new WritableStringValue(data?.References ?? string.Empty, Guard);
+        Image = new WritableImageValue(data?.Image ?? string.Empty, Guard);
+        UserImage = new WritableImageValue(data?.UserImage ?? string.Empty, Guard);
         _readings = data?.Readings != null ? new List<string>(data.Readings) : [];
 
         Question = new VocabNoteQuestion(this, data, Guard);

@@ -31,6 +31,7 @@ public static class KanjiNoteConverter
             UserMnemonic = note.UserMnemonic.Value,
             SimilarMeaning = note.UserSimilarMeaning,
             ConfusedWith = note.RelatedConfusedWith,
+            Image = note.Image.RawValue(),
             Tags = note.Tags.ToStringList(),
         };
     }
