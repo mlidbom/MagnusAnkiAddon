@@ -87,50 +87,15 @@ public partial class VocabData : CorpusDataBase
 
    public static VocabData FromAnki(AnkiVocabNote anki)
    {
-      var matchingRulesData = MatchingRulesSerializer.Deserialize(anki.MatchingRules);
-      var relatedVocabData = RelatedVocabSerializer.Deserialize(anki.RelatedVocab);
-
       return new VocabData
       {
          Id = (anki.Id ?? VocabId.New()).Value,
          Tags = new List<string>(anki.Tags),
          Question = anki.Question,
-         SourceAnswer = anki.SourceAnswer,
-         UserAnswer = anki.UserAnswer,
          ActiveAnswer = anki.ActiveAnswer,
-         UserExplanation = anki.UserExplanation,
-         UserExplanationLong = anki.UserExplanationLong,
-         UserMnemonic = anki.UserMnemonic,
-         UserCompounds = StringExtensions.ExtractCommaSeparatedValues(anki.UserCompounds),
-         Readings = StringExtensions.ExtractCommaSeparatedValues(anki.Reading),
-         PartsOfSpeech = anki.PartsOfSpeech,
-         SourceMnemonic = anki.SourceMnemonic,
-         SourceReadingMnemonic = anki.SourceReadingMnemonic,
          AudioB = anki.AudioB,
          AudioG = anki.AudioG,
          AudioTTS = anki.AudioTTS,
-         TechnicalNotes = anki.TechnicalNotes,
-         References = anki.References,
-         Forms = StringExtensions.ExtractCommaSeparatedValues(anki.Forms),
-         SentenceCount = int.TryParse(anki.SentenceCount, out var sc) ? sc : 0,
-         MatchingRules = new VocabMatchingRulesSubData
-         {
-            PrefixIsNot = matchingRulesData.PrefixIsNot.ToList(),
-            SuffixIsNot = matchingRulesData.SuffixIsNot.ToList(),
-            SurfaceIsNot = matchingRulesData.SurfaceIsNot.ToList(),
-            YieldToSurface = matchingRulesData.YieldToSurface.ToList(),
-            RequiredPrefix = matchingRulesData.RequiredPrefix.ToList(),
-         },
-         RelatedVocab = new VocabRelatedSubData
-         {
-            ErgativeTwin = relatedVocabData.ErgativeTwin,
-            DerivedFrom = relatedVocabData.DerivedFrom.Get(),
-            PerfectSynonyms = relatedVocabData.PerfectSynonyms.ToList(),
-            Synonyms = relatedVocabData.Synonyms.ToList(),
-            Antonyms = relatedVocabData.Antonyms.ToList(),
-            ConfusedWith = relatedVocabData.ConfusedWith.ToList(),
-            SeeAlso = relatedVocabData.SeeAlso.ToList(),
-         },
       };
    }
 }

@@ -83,28 +83,17 @@ public partial class SentenceData : CorpusDataBase
 
    public static SentenceData FromAnki(AnkiSentenceNote anki)
    {
-      var config = ConfigSerializer.Deserialize(anki.Configuration, () => { });
-      var parsingResult = ParsingSerializer.Deserialize(anki.ParsingResult);
-
       return new SentenceData
       {
          Id = (anki.Id ?? SentenceId.New()).Value,
          Tags = new List<string>(anki.Tags),
          SourceQuestion = anki.SourceQuestion,
-         UserQuestion = anki.UserQuestion,
-         ActiveQuestion = anki.ActiveQuestion,
          SourceAnswer = anki.SourceAnswer,
-         UserAnswer = anki.UserAnswer,
-         ActiveAnswer = anki.ActiveAnswer,
          SourceComments = anki.SourceComments,
-         UserComments = anki.UserComments,
          Reading = anki.Reading,
          ExternalId = anki.ExternalId,
          Audio = anki.Audio,
          Screenshot = anki.Screenshot,
-         Configuration = ToConfigSubData(config),
-         ParsingResult = ToParsingResultSubData(parsingResult),
-         JanomeTokens = anki.JanomeTokens,
       };
    }
 
