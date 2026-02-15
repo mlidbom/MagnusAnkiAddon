@@ -1,3 +1,6 @@
 [submodule "src_dotnet/pythonnet-stub-generator"]
 	path = src_dotnet/pythonnet-stub-generator
 	url = https://github.com/mlidbom/pythonnet-stub-generator.git
+[submodule "submodules/Compze"]
+	path = submodules/Compze
+	url = https://github.com/mlidbom/Compze.git
