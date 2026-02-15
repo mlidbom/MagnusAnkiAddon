@@ -82,7 +82,7 @@ public class RelatedVocab
    {
       return _vocab.GetReadings()
                    .SelectMany(reading => _vocab.Services.Collection.Vocab.WithReading(reading))
-                   .Where(homophone => homophone != _vocab)
+                   .Where(homophone => !Equals(homophone, _vocab))
                    .ToHashSet();
    }
 

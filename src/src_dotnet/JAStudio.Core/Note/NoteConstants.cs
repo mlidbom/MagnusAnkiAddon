@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+// ReSharper disable MemberHidesStaticFromOuterClass
 
 namespace JAStudio.Core.Note;
 

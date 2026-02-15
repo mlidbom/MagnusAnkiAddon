@@ -108,15 +108,13 @@ public class SentenceNote : JPNote
       var parsingResult = GetParsingResult();
       var questionText = Question.WithoutInvisibleSpace();
 
-      if(!force && parsingResult != null &&
-         parsingResult.Sentence == questionText &&
-         parsingResult.ParserVersion == TextAnalysis.Version)
+      if(!force && parsingResult.Sentence == questionText && parsingResult.ParserVersion == TextAnalysis.Version)
       {
          return;
       }
 
       // Invalidate cached janome tokens if the sentence text has changed
-      if(parsingResult == null || parsingResult.Sentence != questionText)
+      if(parsingResult.Sentence != questionText)
       {
          JanomeTokens.Empty();
       }
@@ -140,49 +138,6 @@ public class SentenceNote : JPNote
       note.SourceQuestion.Set(question);
       note.User.Answer.Set(answer);
       note.UpdateGeneratedData();
-      services.Collection.Sentences.Add(note);
-      return note;
-   }
-
-   public static SentenceNote AddSentence(
-      NoteServices services,
-      string question,
-      string answer,
-      string audio = "",
-      string screenshot = "",
-      HashSet<string>? highlightedVocab = null,
-      HashSet<Tag>? tags = null)
-   {
-      var note = new SentenceNote(services);
-      note.SourceQuestion.Set(question);
-      note.SourceAnswer.Set(answer);
-      note.Screenshot.SetRawValue(screenshot);
-      note.UpdateGeneratedData();
-
-      if(string.IsNullOrWhiteSpace(audio))
-      {
-         note.Tags.Set(Note.Tags.TTSAudio);
-      } else
-      {
-         note.Audio.SetRawValue(audio.Trim());
-      }
-
-      if(highlightedVocab != null)
-      {
-         foreach(var vocab in highlightedVocab)
-         {
-            note.Configuration.AddHighlightedWord(vocab);
-         }
-      }
-
-      if(tags != null)
-      {
-         foreach(var tag in tags)
-         {
-            note.Tags.Set(tag);
-         }
-      }
-
       services.Collection.Sentences.Add(note);
       return note;
    }
