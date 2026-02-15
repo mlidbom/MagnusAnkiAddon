@@ -94,7 +94,7 @@ public class FileSystemNoteRepository : INoteRepository
       using var scope = _taskRunner.Current("Loading notes with snapshot");
 
       var snapshotTimestamp = File.GetLastWriteTimeUtc(SnapshotPath);
-      var container = scope.RunIndeterminate("Loading binary snapshot", () => DeserializeSnapshot());
+      var container = scope.RunIndeterminate("Loading binary snapshot", DeserializeSnapshot);
 
       var filesByType = scope.RunIndeterminate("Scanning note files", ScanAllNoteFiles);
 

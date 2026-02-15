@@ -25,9 +25,6 @@ public partial class VocabFlagsDialog : Window
             Close();
         });
 
-        viewModel.CancelCommand = new CommunityToolkit.Mvvm.Input.RelayCommand(() =>
-        {
-            Close();
-        });
+        viewModel.CancelCommand = new CommunityToolkit.Mvvm.Input.RelayCommand(Close);
     }
 }

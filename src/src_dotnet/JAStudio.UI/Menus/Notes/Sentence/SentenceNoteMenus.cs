@@ -18,10 +18,7 @@ public class SentenceNoteMenus
 {
     readonly Core.TemporaryServiceCollection _services;
 
-    public SentenceNoteMenus(Core.TemporaryServiceCollection services)
-    {
-        _services = services;
-    }
+    public SentenceNoteMenus(Core.TemporaryServiceCollection services) => _services = services;
 
     public SpecMenuItem BuildNoteActionsMenuSpec(SentenceNote sentence)
     {

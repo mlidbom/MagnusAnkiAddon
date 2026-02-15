@@ -64,15 +64,9 @@ public class SentenceNote : JPNote
         return refs;
     }
 
-    public override string GetQuestion()
-    {
-        return Question.WithoutInvisibleSpace();
-    }
+    public override string GetQuestion() => Question.WithoutInvisibleSpace();
 
-    public override string GetAnswer()
-    {
-        return Answer.Get();
-    }
+    public override string GetAnswer() => Answer.Get();
 
     public AnalysisServices AnalysisServices => new(Services.Collection.Vocab, Services.DictLookup, Services.Settings);
 

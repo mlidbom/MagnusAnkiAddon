@@ -44,7 +44,7 @@ public class VocabNote : JPNote
         References = new WritableStringValue(data?.References ?? string.Empty, Guard);
         Image = new WritableImageValue(data?.Image ?? string.Empty, Guard);
         UserImage = new WritableImageValue(data?.UserImage ?? string.Empty, Guard);
-        _readings = data?.Readings != null ? new List<string>(data.Readings) : [];
+        _readings = data?.Readings != null ? [..data.Readings] : [];
 
         Question = new VocabNoteQuestion(this, data, Guard);
         User = new VocabNoteUserFields(data, Guard);
@@ -69,10 +69,7 @@ public class VocabNote : JPNote
 
     public override CorpusDataBase ToCorpusData() => VocabNoteConverter.ToCorpusData(this);
 
-    public override string GetQuestion()
-    {
-        return Question.Raw;
-    }
+    public override string GetQuestion() => Question.Raw;
 
     public override List<MediaReference> GetMediaReferences()
     {
@@ -91,10 +88,7 @@ public class VocabNote : JPNote
         return !string.IsNullOrEmpty(userAnswer) ? userAnswer : sourceAnswer;
     }
 
-    public override HashSet<JPNote> GetDirectDependencies()
-    {
-        return RelatedNotes.GetDirectDependencies();
-    }
+    public override HashSet<JPNote> GetDirectDependencies() => RelatedNotes.GetDirectDependencies();
 
     public override void OnTagsUpdated()
     {
@@ -108,10 +102,7 @@ public class VocabNote : JPNote
         Services.VocabNoteGeneratedData.UpdateGeneratedData(this);
     }
 
-    public List<string> GetReadings()
-    {
-        return _readings.ToList();
-    }
+    public List<string> GetReadings() => _readings.ToList();
 
     public void SetReadings(List<string> readings) => Guard.Update(() =>
     {
@@ -148,8 +139,6 @@ public class VocabNote : JPNote
         return note;
     }
 
-    public static VocabNote Create(NoteServices services, string question, string answer, params string[] readings)
-    {
-        return Create(services, question, answer, readings.ToList(), new List<string>());
-    }
+    public static VocabNote Create(NoteServices services, string question, string answer, params string[] readings) => 
+        Create(services, question, answer, readings.ToList(), new List<string>());
 }

@@ -16,10 +16,8 @@ public class App : IDisposable
 
    internal App(
       IBackendNoteCreator? backendNoteCreator = null,
-      IBackendDataLoader? backendDataLoader = null)
-   {
+      IBackendDataLoader? backendDataLoader = null) =>
       Services = AppBootstrapper.Bootstrap(this, backendNoteCreator, backendDataLoader).Resolve<TemporaryServiceCollection>();
-   }
 
    public static bool IsTesting => TestEnvDetector.IsTesting;
 
@@ -60,12 +58,7 @@ public class App : IDisposable
 
    internal static string DatabaseDir => Path.Combine(AddonRootDir, "jas_database");
 
-   internal static string AnkiMediaDir
-   {
-      get
-      {
-         return _environmentPaths?.AnkiMediaDir
-                ?? throw new InvalidOperationException("IEnvironmentPaths must be provided for non-testing mode. Call App.Bootstrap() with an IEnvironmentPaths implementation.");
-      }
-   }
+   internal static string AnkiMediaDir =>
+      _environmentPaths?.AnkiMediaDir
+   ?? throw new InvalidOperationException("IEnvironmentPaths must be provided for non-testing mode. Call App.Bootstrap() with an IEnvironmentPaths implementation.");
 }

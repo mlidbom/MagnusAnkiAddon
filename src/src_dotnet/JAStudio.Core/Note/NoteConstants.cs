@@ -58,28 +58,28 @@ public static class NoteTypes
 
     public static readonly IReadOnlyList<string> AllList = [Kanji, Vocab, Sentence];
 
-    public static string FromType(Type noteType) => _map[noteType];
+    public static string FromType(Type noteType) => Map[noteType];
 
-    public static Func<Guid, NoteId> IdFactoryFromType(Type noteType) => _idFactories[noteType];
+    public static Func<Guid, NoteId> IdFactoryFromType(Type noteType) => IDFactories[noteType];
 
-    public static Func<Guid, NoteId> IdFactoryFromName(string noteTypeName) => _idFactoriesByName[noteTypeName];
+    public static Func<Guid, NoteId> IdFactoryFromName(string noteTypeName) => IDFactoriesByName[noteTypeName];
 
     //create a dictionary from type to string for our supported type her
-    static readonly Dictionary<Type, string> _map = new()
+    static readonly Dictionary<Type, string> Map = new()
                                                     {
                                                        [typeof(KanjiNote)] = Kanji,
                                                        [typeof(VocabNote)] = Vocab,
                                                        [typeof(SentenceNote)] = Sentence,
                                                     };
 
-    static readonly Dictionary<Type, Func<Guid, NoteId>> _idFactories = new()
+    static readonly Dictionary<Type, Func<Guid, NoteId>> IDFactories = new()
                                                                         {
                                                                            [typeof(KanjiNote)] = g => new KanjiId(g),
                                                                            [typeof(VocabNote)] = g => new VocabId(g),
                                                                            [typeof(SentenceNote)] = g => new SentenceId(g),
                                                                         };
 
-    static readonly Dictionary<string, Func<Guid, NoteId>> _idFactoriesByName = new()
+    static readonly Dictionary<string, Func<Guid, NoteId>> IDFactoriesByName = new()
                                                                                 {
                                                                                    [Kanji] = g => new KanjiId(g),
                                                                                    [Vocab] = g => new VocabId(g),
@@ -125,7 +125,7 @@ public static class NoteFieldsConstants
         public const string ReadingInfo = "Reading_Info";
         public const string PrimaryVocab = "__primary_Vocab";
         public const string Audio = "__audio";
-        public const string PrimaryReadingsTtsAudio = "_primary_readings_tts_audio";
+        public const string PrimaryReadingsTTSAudio = "_primary_readings_tts_audio";
         public const string References = "__references";
         public const string UserMnemonic = "__mnemonic";
         public const string UserSimilarMeaning = "__similar_meaning";

@@ -104,7 +104,7 @@ public partial class StringChipViewModel : ObservableObject
 /// <summary>
 /// Simple text input dialog.
 /// </summary>
-public partial class TextInputDialog : Window
+public class TextInputDialog : Window
 {
     public string? Prompt
     {

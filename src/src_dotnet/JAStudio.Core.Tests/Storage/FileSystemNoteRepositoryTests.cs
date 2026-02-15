@@ -216,7 +216,7 @@ public class FileSystemNoteRepositoryTests : CollectionUsingTest, IDisposable
             NoteServices.Collection.Vocab.All(),
             NoteServices.Collection.Sentences.All());
 
-    void AssertAllNotesDataMatch(AllNotesData original, AllNotesData roundtripped)
+    static void AssertAllNotesDataMatch(AllNotesData original, AllNotesData roundtripped)
     {
         Assert.Equal(original.Kanji.Count, roundtripped.Kanji.Count);
         Assert.Equal(original.Vocab.Count, roundtripped.Vocab.Count);

@@ -174,9 +174,6 @@ public class AppDialogs
    public void ToggleEnglishWordSearchDialog()
    {
       this.Log().Info("ToggleEnglishWordSearchDialog() called");
-      Dispatcher.UIThread.Invoke(() =>
-      {
-         EnglishWordSearchDialog.ToggleVisibility();
-      });
+      Dispatcher.UIThread.Invoke(EnglishWordSearchDialog.ToggleVisibility);
    }
 }

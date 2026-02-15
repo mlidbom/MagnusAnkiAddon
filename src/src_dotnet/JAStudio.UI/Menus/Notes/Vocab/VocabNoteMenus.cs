@@ -19,10 +19,7 @@ public class VocabNoteMenus
 {
    readonly Core.TemporaryServiceCollection _services;
 
-   public VocabNoteMenus(Core.TemporaryServiceCollection services)
-   {
-      _services = services;
-   }
+   public VocabNoteMenus(Core.TemporaryServiceCollection services) => _services = services;
 
    public SpecMenuItem BuildNoteActionsMenuSpec(VocabNote vocab)
    {
@@ -82,7 +79,7 @@ public class VocabNoteMenus
       var readings = vocab.GetReadings();
       var items = new List<SpecMenuItem>();
 
-      for(int i = 0; i < readings.Count; i++)
+      for(var i = 0; i < readings.Count; i++)
       {
          var reading = readings[i];
          items.Add(SpecMenuItem.Command(
@@ -156,7 +153,7 @@ public class VocabNoteMenus
                                   .ToList();
 
       var items = new List<SpecMenuItem>();
-      for(int i = 0; i < formsWithNoVocab.Count; i++)
+      for(var i = 0; i < formsWithNoVocab.Count; i++)
       {
          var form = formsWithNoVocab[i];
          items.Add(SpecMenuItem.Command(
@@ -244,7 +241,7 @@ public class VocabNoteMenus
                                           null,
                                           !vocab.User.Answer.HasValue()),
                      SpecMenuItem.Command(ShortcutFinger.Home2("Generate answer"),
-                                          () => vocab.GenerateAndSetAnswer()),
+                                          vocab.GenerateAndSetAnswer),
                      SpecMenuItem.Command(ShortcutFinger.Home3("Reparse potentially matching sentences: (Only reparse all sentences is sure to catch everything)"),
                                           () => BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.ReparseSentencesForVocab(vocab))),
                      SpecMenuItem.Command(ShortcutFinger.Home4("Repopulate TOS"),
@@ -327,7 +324,7 @@ public class VocabNoteMenus
 
    static void CopyToClipboard(string text)
    {
-      Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+      Dispatcher.UIThread.Invoke(() =>
       {
          var topLevel = Avalonia.Application.Current?.ApplicationLifetime
                            is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop

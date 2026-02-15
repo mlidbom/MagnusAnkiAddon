@@ -13,7 +13,6 @@ public abstract class JPNote
    public NoteFlushGuard RecursiveFlushGuard { get; }
    public NoteGuard Guard { get; }
    public NoteServices Services { get; }
-   int _hashValue;
    bool _persisted;
    byte[]? _lastPersistedSnapshot;
 
@@ -29,17 +28,14 @@ public abstract class JPNote
    }
    public NoteTags Tags { get; }
 
-   NoteId _id;
+   readonly NoteId _id;
 
    protected JPNote(NoteServices services, NoteId id, List<string>? tags = null)
    {
       Services = services;
       RecursiveFlushGuard = new NoteFlushGuard(this);
       Guard = new NoteGuard(Flush);
-      _hashValue = 0;
-
       Tags = new NoteTags(this, tags);
-
       _id = id;
    }
 
@@ -53,10 +49,7 @@ public abstract class JPNote
 
    public NoteData GetData() => ToCorpusData().ToNoteData();
 
-   public override bool Equals(object? obj)
-   {
-      return obj is JPNote other && other.GetId() == _id;
-   }
+   public override bool Equals(object? obj) => obj is JPNote other && other.GetId() == _id;
 
    public abstract void UpdateInCache();
 
@@ -111,19 +104,7 @@ public abstract class JPNote
 
    public bool HasActiveCards() => IsStudying();
 
-   public override int GetHashCode()
-   {
-      if(_hashValue == 0)
-      {
-         _hashValue = _id.GetHashCode();
-         if(_hashValue == 0)
-         {
-            throw new InvalidOperationException("You cannot compare or hash a note that has not been saved yet since it has no id");
-         }
-      }
-
-      return _hashValue;
-   }
+   public override int GetHashCode() => _id.GetHashCode();
 
    public override string ToString() => $"{GetQuestion()}: {GetAnswer()}";
 

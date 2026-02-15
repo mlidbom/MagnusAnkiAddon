@@ -12,7 +12,7 @@ namespace JAStudio.Core.Note;
 
 public class KanjiNote : JPNote
 {
-   static readonly Regex PrimaryReadingPattern = new(@"<primary>(.*?)</primary>", RegexOptions.Compiled);
+   static readonly Regex PrimaryReadingPattern = new("<primary>(.*?)</primary>", RegexOptions.Compiled);
 
    public WritableStringValue SourceAnswer { get; }
    public WritableStringValue UserAnswer { get; }
@@ -476,7 +476,7 @@ public class KanjiNote : JPNote
    {
       List<string> DetectRadicalsFromMnemonic()
       {
-         var radicalNames = Regex.Matches(UserMnemonic.Value, @"<rad>(.*?)</rad>")
+         var radicalNames = Regex.Matches(UserMnemonic.Value, "<rad>(.*?)</rad>")
                                  .Select(m => m.Groups[1].Value)
                                  .ToList();
 

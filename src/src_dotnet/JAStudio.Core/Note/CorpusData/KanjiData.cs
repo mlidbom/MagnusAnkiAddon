@@ -46,7 +46,7 @@ public partial class KanjiData : CorpusDataBase
       fields[NoteFieldsConstants.Kanji.ReadingInfo] = ReadingInfo;
       fields[NoteFieldsConstants.Kanji.PrimaryVocab] = string.Join(", ", PrimaryVocab);
       fields[NoteFieldsConstants.Kanji.Audio] = Audio;
-      fields[NoteFieldsConstants.Kanji.PrimaryReadingsTtsAudio] = PrimaryReadingsTtsAudio;
+      fields[NoteFieldsConstants.Kanji.PrimaryReadingsTTSAudio] = PrimaryReadingsTtsAudio;
       fields[NoteFieldsConstants.Kanji.References] = References;
       fields[NoteFieldsConstants.Kanji.UserMnemonic] = UserMnemonic;
       fields[NoteFieldsConstants.Kanji.UserSimilarMeaning] = string.Join(", ", SimilarMeaning);
