@@ -73,7 +73,7 @@ The serializer is configured with `DefaultIgnoreCondition = JsonIgnoreCondition.
 - **Clean git diffs** — when new optional properties are added to the schema, existing files don't change (no new `"newField": null` lines appearing across thousands of files)
 - **Readable** — opening a sidecar shows only what's relevant to that specific file
 
-The `noteSourceTag` field preserves the full source tag from the note at import time (e.g. `source::anime::natsume::s1::01`). This enables filtering, bulk updates, and re-routing by source without re-parsing note data.
+The `noteSourceTag` field is a `SourceTag` value — a structured, `::` -separated hierarchical identifier (e.g. `source::anime::natsume::s1::01`). `SourceTag` is a domain type that supports hierarchical containment checks (`IsContainedIn`, `Contains`), proper equality, and rejects invalid values (empty strings, empty segments). This enables filtering, bulk updates, and re-routing by source without re-parsing note data.
 
 ### Shared media files
 
@@ -166,53 +166,30 @@ Each sidecar schema is independently extensible — adding audio-specific fields
 
 ## Import-Time Routing
 
-A manually maintained config maps **(note type, source tag prefix, field name)** to a storage directory and copyright status. The routing is **per note type** because the same source tag can have entirely different copyright implications depending on whether it's a vocab note or a sentence note.
+A manually maintained config maps **source tag prefix → storage directory**. Routing uses `SourceTag` — a hierarchical `::` -separated domain type. Each `MediaRoutingRule` has a `SourceTag Prefix` and a `TargetDirectory`. At import time, the source tag is matched against rules by hierarchical containment (`sourceTag.IsContainedIn(rule.Prefix)`), longest prefix first.
 
-```json
-{
-  "vocab": {
-    "source::wani::": {
-      "Audio.First":  { "directory": "commercial-002/wanikani", "copyright": "Commercial" },
-      "Audio.Second": { "directory": "commercial-002/wanikani", "copyright": "Commercial" },
-      "Audio.Tts":    { "directory": "free-vocab/tts",          "copyright": "Free" },
-      "Image":        { "directory": "commercial-002/wanikani", "copyright": "Commercial" },
-      "UserImage":    { "directory": "free-vocab/user",         "copyright": "Free" }
-    },
-    "source::core2000::": {
-      "Audio.First":  { "directory": "commercial-003/core2000", "copyright": "Commercial" },
-      "Audio.Tts":    { "directory": "free-vocab/tts",          "copyright": "Free" }
-    }
-  },
-  "sentence": {
-    "source::anime::natsume::": {
-      "Audio":      { "directory": "commercial-001/natsume", "copyright": "Commercial" },
-      "Screenshot": { "directory": "commercial-001/natsume", "copyright": "Commercial" }
-    },
-    "source::anime::mushishi::": {
-      "Audio":      { "directory": "commercial-001/mushishi", "copyright": "Commercial" },
-      "Screenshot": { "directory": "commercial-001/mushishi", "copyright": "Commercial" }
-    },
-    "source::wani::": {
-      "Audio":      { "directory": "free-sentence/tts",       "copyright": "Free" }
-    },
-    "source::core2000::": {
-      "Audio":      { "directory": "commercial-003/core2000", "copyright": "Commercial" }
-    }
-  },
-  "kanji": {
-    "default": {
-      "Audio": { "directory": "free-kanji/audio", "copyright": "Free" },
-      "Image": { "directory": "free-kanji/image", "copyright": "Free" }
-    }
-  }
-}
+**There are no defaults or catch-all rules.** If no rule matches a source tag, import fails with an error. This is by design — if we don't know where to put something, we cannot import it. The routing config must be explicitly configured for every source before import.
+
+```csharp
+// Domain type — hierarchical, ::‑separated, validated
+var tag = SourceTag.Parse("source::anime::natsume::s1::01");
+tag.IsContainedIn(SourceTag.Parse("source::anime::natsume")); // true
+tag.IsContainedIn(SourceTag.Parse("source::anime"));          // true
+tag.IsContainedIn(SourceTag.Parse("source::wani"));           // false
+
+// Routing config — explicit rules only, no fallback
+var config = new MediaRoutingConfig([
+    new MediaRoutingRule(SourceTag.Parse("source::anime::natsume"), "commercial-001"),
+    new MediaRoutingRule(SourceTag.Parse("source::anime"),          "commercial-002"),
+    new MediaRoutingRule(SourceTag.Parse("source::wani"),           "commercial-003")
+]);
+
+config.ResolveDirectory(SourceTag.Parse("source::anime::natsume::s1::01")); // "commercial-001"
+config.ResolveDirectory(SourceTag.Parse("source::anime::mushishi::s1"));    // "commercial-002"
+config.ResolveDirectory(SourceTag.Parse("source::forvo::ja"));              // throws InvalidOperationException
 ```
 
-At import time, the lookup is: find the note type section → match source tag by longest prefix → find the field name → get directory + copyright. **Unmatched combinations are collected as errors** (see Import Plan Phase 1). No silent fallbacks — an unmatched combination means the routing config is incomplete and must be fixed before the import can run.
-
-**This config is import-time only.** Once files are stored, the routing config is not consulted again. The `MediaFileIndex` discovers files by scanning the filesystem.
-
-This mapping is specific to the initial Anki import. Future imports will specify source/copyright at import time directly, not via magical source tags.
+The full routing config will also incorporate note type and field name (see Architecture Overview), but the current implementation routes by source tag only.
 
 ## Storage Path Structure
 
@@ -249,14 +226,24 @@ public enum CopyrightStatus
     Free           // freely redistributable (TTS, CC-licensed, etc.)
 }
 
+// SourceTag — hierarchical, ::‑separated, validated domain type
+// Supports containment: tag.IsContainedIn(ancestor), tag.Contains(descendant)
+// Serialized to/from JSON as a plain string
+public sealed class SourceTag : IEquatable<SourceTag>
+{
+    public static SourceTag Parse(string value);
+    public IReadOnlyList<string> Segments { get; }
+    public bool IsContainedIn(SourceTag ancestor);
+    public bool Contains(SourceTag descendant);
+}
+
 // Base — common storage/identity data shared by all media types
 public abstract record MediaAttachment
 {
     // Persisted in sidecar JSON
     public required MediaFileId Id { get; init; }
-    public required List<NoteId> NoteIds { get; init; }   // all notes that reference this file
-    public required string NoteSourceTag { get; init; }   // full tag, e.g. "source::anime::natsume::s1::01"
-    public string? AnkiFieldName { get; init; }           // which Anki field this came from, e.g. "Audio.First"
+    public required List<NoteId> NoteIds { get; init; }     // all notes that reference this file
+    public required SourceTag NoteSourceTag { get; init; }   // full tag, e.g. "source::anime::natsume::s1::01"
     public string? OriginalFileName { get; init; }
     public required CopyrightStatus Copyright { get; init; }
 
@@ -275,15 +262,21 @@ public record TtsInfo(string Engine, string Voice, string Version);
 // Image — extends with image-specific fields (none yet, but will diverge)
 public record ImageAttachment : MediaAttachment;
 
-// Aggregated per note
-public record NoteMedia(
-    IReadOnlyList<AudioAttachment> Audio,
-    IReadOnlyList<ImageAttachment> Images
-);
+// Routing — source tag prefix → target directory, no defaults
+public record MediaRoutingRule(SourceTag Prefix, string TargetDirectory)
+{
+    public bool Matches(SourceTag sourceTag) => sourceTag.IsContainedIn(Prefix);
+}
+
+public class MediaRoutingConfig(List<MediaRoutingRule> rules)
+{
+    // Ordered by segment count (longest prefix first)
+    // ResolveDirectory throws if no rule matches — no silent fallback
+    public string ResolveDirectory(SourceTag sourceTag);
+}
 ```
 
 The base `MediaAttachment` gives shared storage/serialization/index logic a single type to work with. `MediaFileIndex` can store all attachments as `MediaAttachment` internally, while typed accessors return `AudioAttachment` or `ImageAttachment`.
-```
 
 **Domain notes expose typed media from the index:**
 ```csharp
@@ -317,10 +310,10 @@ The association `note ↔ media` exists only in the media layer's sidecar files 
 Media access is controlled at runtime based on the user's verified accounts:
 
 ```
-noteSourceTag starts with "source::anime::natsume"  →  requires Crunchyroll (or relevant licensor)
-noteSourceTag starts with "source::wani::"           →  requires verified WaniKani account
-copyright == "free"                                  →  always available
-tts != null                                          →  always available
+noteSourceTag.IsContainedIn("source::anime::natsume")  →  requires Crunchyroll (or relevant licensor)
+noteSourceTag.IsContainedIn("source::wani")             →  requires verified WaniKani account
+copyright == Free                                       →  always available
+tts != null                                             →  always available
 ```
 
 A note might have 5 audio attachments. The access layer filters to what the user is entitled to, then the preference layer selects the best one (community-ranked, student-overridable, curator-pinned).
@@ -329,7 +322,7 @@ A note might have 5 audio attachments. The access layer filters to what the user
 
 If a rights holder demands removal of media from a source:
 
-1. Identify all sidecar files matching the source (e.g. `noteSourceTag` starts with `source::anime::natsume::`)
+1. Identify all sidecar files matching the source (e.g. `noteSourceTag.IsContainedIn(SourceTag.Parse("source::anime::natsume"))`)
 2. Delete the media files and their sidecars
 3. Commit the deletion to the media repo
 4. Core corpus is untouched — notes still load, they just have fewer (or no) audio/image options
@@ -352,36 +345,43 @@ This is name-based dedup, not content-based. Acceptable because Anki media files
 
 ## Current Implementation Status
 
-The existing code (`JAStudio.Core.Storage.Media` namespace) implements an earlier version of this design where:
+The storage layer (`JAStudio.Core.Storage.Media`) is implemented and tested:
 
-- Notes stored raw Anki markup (`[sound:file.mp3]`, `<img src="file.jpg">`) in the corpus JSON
-- Media association was embedded in the note data
-- All metadata was encoded in the filesystem path structure
-- No sidecar JSON files
+### Implemented
 
-This needs to be evolved to match the architecture described above.
+| Component | Status |
+|---|---|
+| `SourceTag` | Domain type with `::` hierarchy. `Parse()`, `IsContainedIn()`, `Contains()`, equality, JSON serialization. Rejects empty/invalid values. |
+| `MediaAttachment` / `AudioAttachment` / `ImageAttachment` | Record types with typed `SourceTag NoteSourceTag` field. Audio has `TtsInfo?`, Image is a separate schema. |
+| `SidecarSerializer` | Writes/reads typed sidecar JSON (`*.audio.json` / `*.image.json`). Omits defaults. Custom JSON converters for `NoteId`, `MediaFileId`, `SourceTag`. |
+| `MediaFileId` | GUID-based value type with `Parse`, `TryParse`, `New`. |
+| `MediaFileIndex` | Builds from filesystem scan of sidecar files. Lookups by ID, original filename (case-insensitive), note ID. In-memory `Register()` for newly stored files. |
+| `MediaStorageService` | Stores files with GUID-bucket paths, writes typed sidecars, updates existing sidecars for shared files (dedup by original filename). |
+| `MediaRoutingConfig` / `MediaRoutingRule` | Routes `SourceTag → directory` by hierarchical containment, longest prefix first. **No defaults — unmatched tags throw.** |
+| `AnkiMediaSyncService` | Syncs media from Anki media folder. Builds `SourceTag` from note tags, deduplicates, skips missing files with warning. |
 
-### Existing components to evolve:
+### Not yet implemented
 
-| Component | Current | Target |
-|---|---|---|
-| Note corpus data (DTOs) | Contains Anki markup audio/image fields | No media fields at all |
-| `MediaStorageService` | Encodes metadata in path | Stores typed sidecar JSON (`*.audio.json` / `*.image.json`) alongside media files |
-| `MediaFileIndex` | Recovers original filename from directory structure | Reads typed sidecars; supports `NoteId → NoteMedia` lookup |
-| `AnkiMediaSyncService` | Hardcodes `anki::audio`/`anki::image` tags | Uses routing config + note source tags to determine storage location and sidecar content |
-| `MediaFileInfo` | `(Id, FullPath, OriginalFileName, Extension)` | Replaced by typed `AudioAttachment` / `ImageAttachment` records built from sidecar data |
-| `MediaRoutingConfig` | Routes by source tag prefix → directory | Same role, but import-time only |
-| `WritableAudioValue` / `WritableImageValue` | Wraps raw Anki markup, parses media refs | Still needed for Anki interop; not used in corpus storage |
-| `JPNote.MediaReferences` | Aggregates media fields from the note | No longer needed on the note — media discovered via index |
+| Component | Notes |
+|---|---|
+| `AnkiFieldName` on sidecar | Per-field routing (same note can have commercial audio + free TTS). Design exists in doc, not yet in code. |
+| Note-type-aware routing | Config currently routes by source tag only; full design includes note type + field name dimensions. |
+| `NoteMedia` aggregate | Per-note typed media view (`Audio`, `Images`). Not yet needed — media is currently accessed via the index directly. |
+| Removal of media fields from corpus DTOs | Notes still contain Anki markup audio/image fields. These should be stripped. |
+| Access gating | Runtime filtering by user's verified accounts / copyright status. |
+| Import plan (Phase 1/2) | Dry-run planning with error collection before executing. Currently import is direct. |
 
-### Existing tests to adapt:
+### Test coverage
 
-- `When_creating_a_MediaFileId` — unchanged
-- `When_building_a_MediaFileIndex` — adapt to read sidecar JSON
-- `When_configuring_media_routing` — unchanged
-- `When_storing_a_media_file` — adapt to write/read sidecar JSON
-- `When_querying_MediaFileIndex_by_original_filename` — adapt to sidecar-based lookup
-- `When_syncing_media_from_anki` — adapt to new routing + sidecar writing
+All components have BDD-style tests:
+
+- `When_working_with_SourceTag` — parsing, containment, equality
+- `When_configuring_media_routing` — rule matching, longest prefix, throw on no match
+- `When_serializing_a_sidecar` — JSON roundtrip for audio/image, TTS, multiple note IDs, file read/write
+- `When_building_a_MediaFileIndex` — filesystem scan, sidecar parsing, lookups
+- `When_querying_MediaFileIndex_by_original_filename` — exact/case-insensitive lookup, registered attachments
+- `When_storing_a_media_file` — routing, GUID-bucket paths, sidecar writing, index rebuilding
+- `When_syncing_media_from_anki` — end-to-end sync with dedup, missing file warnings
 
 ## Import Plan (Fresh from Anki)
 
