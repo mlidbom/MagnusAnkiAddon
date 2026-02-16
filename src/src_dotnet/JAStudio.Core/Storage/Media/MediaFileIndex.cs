@@ -5,6 +5,7 @@ using System.Linq;
 using Compze.Utilities.Functional;
 using Compze.Utilities.Logging;
 using JAStudio.Core.Note;
+using JAStudio.Core.TaskRunners;
 
 namespace JAStudio.Core.Storage.Media;
 
@@ -20,11 +21,17 @@ public class MediaFileIndex
 
    public MediaFileIndex(string mediaRoot) => _mediaRoot = mediaRoot;
 
+   record MediaScanResult(
+      List<string> AudioSidecarPaths,
+      List<string> ImageSidecarPaths,
+      Dictionary<string, List<FileInfo>> MediaFilesByDirectory);
+
+   /// <summary>
+   /// Builds the index without progress reporting. Used by tests and lazy initialization.
+   /// </summary>
    public void Build()
    {
-      _byId.Clear();
-      _byOriginalFileName.Clear();
-      _byNoteId.Clear();
+      ClearIndexes();
 
       if(!Directory.Exists(_mediaRoot))
       {
@@ -32,6 +39,80 @@ public class MediaFileIndex
          return;
       }
 
+      var scan = ScanMediaFiles();
+
+      foreach(var path in scan.AudioSidecarPaths)
+      {
+         var attachment = DeserializeSidecar(path, isAudio: true, scan.MediaFilesByDirectory);
+         if(attachment != null) IndexAttachment(attachment);
+      }
+
+      foreach(var path in scan.ImageSidecarPaths)
+      {
+         var attachment = DeserializeSidecar(path, isAudio: false, scan.MediaFilesByDirectory);
+         if(attachment != null) IndexAttachment(attachment);
+      }
+
+      _initialized = true;
+      this.Log().Info($"Media file index built: {_byId.Count} files indexed under {_mediaRoot}");
+   }
+
+   /// <summary>
+   /// Builds the index with progress reporting via RunBatch. Used at startup.
+   /// Single filesystem enumeration, then parallel sidecar deserialization.
+   /// </summary>
+   public void Build(TaskRunner taskRunner)
+   {
+      ClearIndexes();
+
+      if(!Directory.Exists(_mediaRoot))
+      {
+         _initialized = true;
+         return;
+      }
+
+      using var scope = taskRunner.Current("Loading media index");
+
+      var scan = scope.RunIndeterminate("Scanning media files", ScanMediaFiles);
+
+      var audioAttachments = scope.RunBatch(
+         scan.AudioSidecarPaths,
+         path => DeserializeSidecar(path, isAudio: true, scan.MediaFilesByDirectory),
+         "Loading audio sidecars",
+         ThreadCount.FractionOfLogicalCores(0.3));
+
+      var imageAttachments = scope.RunBatch(
+         scan.ImageSidecarPaths,
+         path => DeserializeSidecar(path, isAudio: false, scan.MediaFilesByDirectory),
+         "Loading image sidecars",
+         ThreadCount.FractionOfLogicalCores(0.3));
+
+      scope.RunIndeterminate("Building media indexes", () =>
+      {
+         foreach(var attachment in audioAttachments)
+            if(attachment != null) IndexAttachment(attachment);
+
+         foreach(var attachment in imageAttachments)
+            if(attachment != null) IndexAttachment(attachment);
+      });
+
+      _initialized = true;
+      this.Log().Info($"Media file index built: {_byId.Count} files indexed under {_mediaRoot}");
+   }
+
+   void ClearIndexes()
+   {
+      _byId.Clear();
+      _byOriginalFileName.Clear();
+      _byNoteId.Clear();
+   }
+
+   /// <summary>
+   /// Single enumeration of the media directory tree. Separates files into
+   /// audio sidecar paths, image sidecar paths, and media files grouped by directory.
+   /// </summary>
+   MediaScanResult ScanMediaFiles()
+   {
       var audioSidecars = new List<string>();
       var imageSidecars = new List<string>();
       var mediaFilesByDirectory = new Dictionary<string, List<FileInfo>>(StringComparer.OrdinalIgnoreCase);
@@ -63,21 +144,14 @@ public class MediaFileIndex
          }
       }
 
-      foreach(var sidecarPath in audioSidecars)
-      {
-         IndexSidecar(sidecarPath, isAudio: true, mediaFilesByDirectory);
-      }
-
-      foreach(var sidecarPath in imageSidecars)
-      {
-         IndexSidecar(sidecarPath, isAudio: false, mediaFilesByDirectory);
-      }
-
-      _initialized = true;
-      this.Log().Info($"Media file index built: {_byId.Count} files indexed under {_mediaRoot}");
+      return new MediaScanResult(audioSidecars, imageSidecars, mediaFilesByDirectory);
    }
 
-   void IndexSidecar(string sidecarPath, bool isAudio, Dictionary<string, List<FileInfo>> mediaFilesByDirectory)
+   /// <summary>
+   /// Deserializes a single sidecar file and resolves its media file path.
+   /// Returns null if the sidecar cannot be read.
+   /// </summary>
+   MediaAttachment? DeserializeSidecar(string sidecarPath, bool isAudio, Dictionary<string, List<FileInfo>> mediaFilesByDirectory)
    {
       MediaAttachment attachment;
       try
@@ -89,15 +163,19 @@ public class MediaFileIndex
       catch(Exception ex)
       {
          this.Log().Warning($"Failed to read sidecar {sidecarPath}: {ex.Message}");
-         return;
+         return null;
       }
 
       var dir = Path.GetDirectoryName(sidecarPath) ?? string.Empty;
       attachment.FilePath = FindMediaFile(dir, attachment.Id, mediaFilesByDirectory) ?? string.Empty;
+      return attachment;
+   }
 
+   void IndexAttachment(MediaAttachment attachment)
+   {
       if(!_byId.TryAdd(attachment.Id, attachment))
       {
-         this.Log().Warning($"Duplicate media file ID {attachment.Id} in sidecar {sidecarPath}");
+         this.Log().Warning($"Duplicate media file ID {attachment.Id}");
          return;
       }
 
@@ -151,7 +229,7 @@ public class MediaFileIndex
    public NoteMedia GetNoteMedia(NoteId noteId) => EnsureInitialized()
      .then(() => _byNoteId.TryGetValue(noteId, out var attachments)
                     ? new NoteMedia(attachments.OfType<AudioAttachment>().ToList(), attachments.OfType<ImageAttachment>().ToList())
-                    : new NoteMedia([], []));
+                    : NoteMedia.Empty);
 
    public bool Contains(MediaFileId id) => EnsureInitialized()
      .then(() => _byId.ContainsKey(id));
