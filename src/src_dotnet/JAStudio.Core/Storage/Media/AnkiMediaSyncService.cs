@@ -25,10 +25,18 @@ public class AnkiMediaSyncService : IMediaSyncService
       if(references.Count == 0) return;
 
       var ankiMediaDir = _ankiMediaDir();
+      var noteId = note.GetId();
+      var rawSourceTag = note.GetSourceTag();
+      var sourceTag = string.IsNullOrEmpty(rawSourceTag) ? "anki::unknown" : $"source::{rawSourceTag}";
 
       foreach(var reference in references)
       {
-         if(_index.ContainsByOriginalFileName(reference.FileName)) continue;
+         var existing = _index.TryGetByOriginalFileName(reference.FileName);
+         if(existing != null)
+         {
+            _storageService.AddNoteIdToExisting(existing, noteId);
+            continue;
+         }
 
          var sourcePath = Path.Combine(ankiMediaDir, reference.FileName);
          if(!File.Exists(sourcePath))
@@ -37,8 +45,9 @@ public class AnkiMediaSyncService : IMediaSyncService
             continue;
          }
 
-         var sourceTag = reference.Type == MediaType.Audio ? "anki::audio" : "anki::image";
-         _storageService.StoreFile(sourcePath, sourceTag, reference.FileName);
+         var copyright = reference.Type == MediaType.Audio ? CopyrightStatus.Free : CopyrightStatus.Free;
+         _storageService.StoreFile(sourcePath, sourceTag, reference.FileName, noteId, reference.FieldName, reference.Type, copyright);
       }
    }
 }
+

@@ -151,8 +151,8 @@ public class When_syncing_media_from_anki : TestStartingWithEmptyCollection, IDi
 
    public class for_a_note_with_audio_and_image : When_syncing_media_from_anki
    {
-      readonly MediaFileInfo? _audioInfo;
-      readonly MediaFileInfo? _imageInfo;
+      readonly MediaAttachment? _audioAttachment;
+      readonly MediaAttachment? _imageAttachment;
 
       public for_a_note_with_audio_and_image()
       {
@@ -165,17 +165,16 @@ public class When_syncing_media_from_anki : TestStartingWithEmptyCollection, IDi
 
          _syncService.SyncMedia(note);
 
-         foreach(var info in _index.All)
+         foreach(var attachment in _index.All)
          {
-            if(info.OriginalFileName == "routed_audio.mp3") _audioInfo = info;
-            if(info.OriginalFileName == "routed_image.jpg") _imageInfo = info;
+            if(attachment.OriginalFileName == "routed_audio.mp3") _audioAttachment = attachment;
+            if(attachment.OriginalFileName == "routed_image.jpg") _imageAttachment = attachment;
          }
       }
 
-      [XF] public void the_audio_is_stored_under_anki_audio_path() =>
-         _audioInfo!.FullPath.Must().Contain(Path.Combine("anki", "audio"));
-
-      [XF] public void the_image_is_stored_under_anki_image_path() =>
-         _imageInfo!.FullPath.Must().Contain(Path.Combine("anki", "image"));
+      [XF] public void the_audio_is_stored() => _audioAttachment.Must().NotBeNull();
+      [XF] public void the_image_is_stored() => _imageAttachment.Must().NotBeNull();
+      [XF] public void the_audio_is_an_audio_attachment() => (_audioAttachment is AudioAttachment).Must().BeTrue();
+      [XF] public void the_image_is_an_image_attachment() => (_imageAttachment is ImageAttachment).Must().BeTrue();
    }
 }

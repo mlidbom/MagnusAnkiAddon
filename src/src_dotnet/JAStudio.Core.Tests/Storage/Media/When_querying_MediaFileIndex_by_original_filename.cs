@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using Compze.Utilities.Testing.Must;
 using Compze.Utilities.Testing.XUnit.BDD;
+using JAStudio.Core.Note;
 using JAStudio.Core.Storage.Media;
 
 // ReSharper disable InconsistentNaming
@@ -21,14 +22,31 @@ public class When_querying_MediaFileIndex_by_original_filename : IDisposable
 
    public void Dispose() => Directory.Delete(_tempDir, recursive: true);
 
+   static void CreateMediaFileWithSidecar(string dir, MediaFileId id, string originalFileName)
+   {
+      Directory.CreateDirectory(dir);
+      var extension = Path.GetExtension(originalFileName);
+      var mediaPath = Path.Combine(dir, $"{id}{extension}");
+      File.WriteAllText(mediaPath, "fake");
+
+      var audio = new AudioAttachment
+                  {
+                     Id = id,
+                     NoteIds = [new NoteId(Guid.NewGuid())],
+                     NoteSourceTag = "source::test",
+                     OriginalFileName = originalFileName,
+                     Copyright = CopyrightStatus.Free
+                  };
+      SidecarSerializer.WriteAudioSidecar(SidecarSerializer.BuildAudioSidecarPath(mediaPath), audio);
+   }
+
    public class with_an_indexed_file : When_querying_MediaFileIndex_by_original_filename
    {
       public with_an_indexed_file()
       {
          var id = MediaFileId.New();
-         var fileDir = Path.Combine(_tempDir, "test_audio.mp3");
-         Directory.CreateDirectory(fileDir);
-         File.WriteAllText(Path.Combine(fileDir, $"{id}.mp3"), "fake");
+         var fileDir = Path.Combine(_tempDir, "a1");
+         CreateMediaFileWithSidecar(fileDir, id, "test_audio.mp3");
          _index.Build();
       }
 
@@ -42,13 +60,20 @@ public class When_querying_MediaFileIndex_by_original_filename : IDisposable
          _index.ContainsByOriginalFileName("nonexistent.mp3").Must().BeFalse();
    }
 
-   public class with_a_registered_file : When_querying_MediaFileIndex_by_original_filename
+   public class with_a_registered_attachment : When_querying_MediaFileIndex_by_original_filename
    {
-      public with_a_registered_file()
+      public with_a_registered_attachment()
       {
          var id = MediaFileId.New();
          _index.Build();
-         _index.Register(new MediaFileInfo(id, Path.Combine(_tempDir, $"{id}.mp3"), "registered.mp3", ".mp3"));
+         _index.Register(new AudioAttachment
+                         {
+                            Id = id,
+                            NoteIds = [new NoteId(Guid.NewGuid())],
+                            NoteSourceTag = "source::test",
+                            OriginalFileName = "registered.mp3",
+                            Copyright = CopyrightStatus.Free
+                         });
       }
 
       [XF] public void it_is_found_by_original_name() =>

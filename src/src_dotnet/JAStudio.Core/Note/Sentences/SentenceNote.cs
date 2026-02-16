@@ -61,8 +61,8 @@ public class SentenceNote : JPNote
    {
       get
       {
-         var refs = Audio.GetMediaReferences();
-         refs.AddRange(Screenshot.GetMediaReferences());
+         var refs = WithFieldName(Audio.GetMediaReferences(), "Audio");
+         refs.AddRange(WithFieldName(Screenshot.GetMediaReferences(), "Screenshot"));
          return refs;
       }
    }
