@@ -4,7 +4,7 @@
 
 We are building a corpus of analyzed Japanese sentences/vocab for language study. Most sentences come from copyrighted material (anime, textbooks, learning platforms). Using them for study with linguistic breakdowns is fair use, but rights holders can be aggressive, so we need to:
 
-1. **Isolate media from the core corpus.** The core corpus is pure language analysis — text, breakdowns, grammar, readings. No media files, no media references, no source-identifying filenames.
+1. **Isolate media from the core corpus.** The core corpus is pure language analysis — text, breakdowns, grammar, readings. No media files, no media references, no source-identifying data.
 2. **Partition media by copyright regime.** Media lives in separate git repositories organized so that a takedown for one source (e.g. one anime) can be handled by deleting files without touching the core data or other media.
 3. **Keep git repos at manageable size.** Binary media files (audio, images) are large. Separating them from the text corpus keeps the core repo small and fast.
 
@@ -57,6 +57,14 @@ We are building a corpus of analyzed Japanese sentences/vocab for language study
 ## Sidecar Metadata Format
 
 Each media file is stored as a pair: `{guid}.{ext}` + `{guid}.json`. Different media types have **separate sidecar schemas** — audio and image are fundamentally different data and will diverge further over time (e.g. audio has duration, TTS engine; image has resolution; video will have frame range, subtitles track, etc.).
+
+### JSON Serialization
+
+The serializer is configured with `DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault`. This means properties with `null`, `0`, `false`, or other default values are omitted from the JSON output. Benefits:
+
+- **Smaller files** — most sidecar fields are optional; no need to write `"tts": null` on every non-TTS audio file
+- **Clean git diffs** — when new optional properties are added to the schema, existing files don't change (no new `"newField": null` lines appearing across thousands of files)
+- **Readable** — opening a sidecar shows only what's relevant to that specific file
 
 The `noteSourceTag` field preserves the full source tag from the note at import time (e.g. `source::anime::natsume::s1::01`). This enables filtering, bulk updates, and re-routing by source without re-parsing note data.
 
