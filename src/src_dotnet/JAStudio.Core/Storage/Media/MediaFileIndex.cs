@@ -31,21 +31,49 @@ public class MediaFileIndex
          return;
       }
 
-      foreach(var sidecarPath in Directory.EnumerateFiles(_mediaRoot, SidecarSerializer.AudioSidecarGlob, SearchOption.AllDirectories))
+      var audioSidecars = new List<string>();
+      var imageSidecars = new List<string>();
+      var mediaFilesByDirectory = new Dictionary<string, List<FileInfo>>(StringComparer.OrdinalIgnoreCase);
+
+      foreach(var fi in new DirectoryInfo(_mediaRoot).EnumerateFiles("*", SearchOption.AllDirectories))
       {
-         IndexSidecar(sidecarPath, isAudio: true);
+         var fullName = fi.FullName;
+         if(fullName.EndsWith(SidecarSerializer.AudioSidecarExtension, StringComparison.OrdinalIgnoreCase))
+         {
+            audioSidecars.Add(fullName);
+         }
+         else if(fullName.EndsWith(SidecarSerializer.ImageSidecarExtension, StringComparison.OrdinalIgnoreCase))
+         {
+            imageSidecars.Add(fullName);
+         }
+         else
+         {
+            var dir = fi.DirectoryName ?? string.Empty;
+            if(!mediaFilesByDirectory.TryGetValue(dir, out var list))
+            {
+               list = [];
+               mediaFilesByDirectory[dir] = list;
+            }
+
+            list.Add(fi);
+         }
       }
 
-      foreach(var sidecarPath in Directory.EnumerateFiles(_mediaRoot, SidecarSerializer.ImageSidecarGlob, SearchOption.AllDirectories))
+      foreach(var sidecarPath in audioSidecars)
       {
-         IndexSidecar(sidecarPath, isAudio: false);
+         IndexSidecar(sidecarPath, isAudio: true, mediaFilesByDirectory);
+      }
+
+      foreach(var sidecarPath in imageSidecars)
+      {
+         IndexSidecar(sidecarPath, isAudio: false, mediaFilesByDirectory);
       }
 
       _initialized = true;
       this.Log().Info($"Media file index built: {_byId.Count} files indexed under {_mediaRoot}");
    }
 
-   void IndexSidecar(string sidecarPath, bool isAudio)
+   void IndexSidecar(string sidecarPath, bool isAudio, Dictionary<string, List<FileInfo>> mediaFilesByDirectory)
    {
       MediaAttachment attachment;
       try
@@ -61,8 +89,7 @@ public class MediaFileIndex
       }
 
       var dir = Path.GetDirectoryName(sidecarPath) ?? string.Empty;
-      var mediaFileName = FindMediaFile(dir, attachment.Id);
-      attachment.FilePath = mediaFileName ?? string.Empty;
+      attachment.FilePath = FindMediaFile(dir, attachment.Id, mediaFilesByDirectory) ?? string.Empty;
 
       if(!_byId.TryAdd(attachment.Id, attachment))
       {
@@ -87,13 +114,15 @@ public class MediaFileIndex
       }
    }
 
-   static string? FindMediaFile(string directory, MediaFileId id)
+   static string? FindMediaFile(string directory, MediaFileId id, Dictionary<string, List<FileInfo>> mediaFilesByDirectory)
    {
+      if(!mediaFilesByDirectory.TryGetValue(directory, out var files)) return null;
+
       var idStr = id.ToString();
-      foreach(var file in Directory.EnumerateFiles(directory, $"{idStr}.*"))
+      foreach(var fi in files)
       {
-         if(!SidecarSerializer.IsSidecarFile(file))
-            return file;
+         if(Path.GetFileNameWithoutExtension(fi.Name) == idStr)
+            return fi.FullName;
       }
 
       return null;
