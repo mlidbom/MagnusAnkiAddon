@@ -73,3 +73,9 @@ This pattern is pervasive in Compze and throughout this project's code.
 ## Build & Verification
 
 See the main `copilot-instructions.md` for full build, test, and Definition of Done details.
+
+## NuGet Packages
+
+JAStudio is an end-user application, not a library. **Freely add NuGet packages** when they are the right tool for the job. The goal is the best, most maintainable code and result — not minimal dependencies. If a package solves the problem well, use it.
+
+(This does NOT apply to the Compze submodule, which is a library and must minimize its dependency footprint.)
