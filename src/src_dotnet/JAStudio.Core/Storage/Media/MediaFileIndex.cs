@@ -36,9 +36,14 @@ public class MediaFileIndex
       var imageSidecars = new List<string>();
       var mediaFilesByDirectory = new Dictionary<string, List<FileInfo>>(StringComparer.OrdinalIgnoreCase);
 
+      var metadataPrefix = App.MetadataDir + Path.DirectorySeparatorChar;
+
       foreach(var fi in new DirectoryInfo(_mediaRoot).EnumerateFiles("*", SearchOption.AllDirectories))
       {
          var fullName = fi.FullName;
+         if(fullName.StartsWith(metadataPrefix, StringComparison.OrdinalIgnoreCase))
+            continue;
+
          if(fullName.EndsWith(SidecarSerializer.AudioSidecarExtension, StringComparison.OrdinalIgnoreCase))
          {
             audioSidecars.Add(fullName);

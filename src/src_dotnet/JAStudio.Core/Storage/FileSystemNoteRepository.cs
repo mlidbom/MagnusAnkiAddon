@@ -214,34 +214,25 @@ public class FileSystemNoteRepository : INoteRepository
    public AllNotesData LoadSnapshot() => _serializer.ContainerToAllNotesData(DeserializeSnapshot());
 
    /// <summary>
-   /// Single directory walk from root — enumerates all *.json note files once,
-   /// partitions them into kanji/vocab/sentences based on which subdirectory they live under.
+   /// Scans only the three known note subdirectories (kanji, vocab, sentences),
+   /// ignoring media, metadata, and any other directories under root.
    /// </summary>
    NoteFilesByType ScanAllNoteFiles()
    {
-      var kanji = new List<ScannedFile>();
-      var vocab = new List<ScannedFile>();
-      var sentences = new List<ScannedFile>();
-
-      if(!Directory.Exists(_rootDir)) return new NoteFilesByType(kanji, vocab, sentences);
-
-      var kanjiPrefix = KanjiDir + Path.DirectorySeparatorChar;
-      var vocabPrefix = VocabDir + Path.DirectorySeparatorChar;
-      var sentencesPrefix = SentencesDir + Path.DirectorySeparatorChar;
-
-      foreach(var fi in new DirectoryInfo(_rootDir).EnumerateFiles("*.json", SearchOption.AllDirectories))
-      {
-         var fullName = fi.FullName;
-         var scanned = new ScannedFile(fullName, Guid.Parse(Path.GetFileNameWithoutExtension(fullName)), fi.LastWriteTimeUtc);
-         if(fullName.StartsWith(kanjiPrefix, StringComparison.OrdinalIgnoreCase))
-            kanji.Add(scanned);
-         else if(fullName.StartsWith(vocabPrefix, StringComparison.OrdinalIgnoreCase))
-            vocab.Add(scanned);
-         else if(fullName.StartsWith(sentencesPrefix, StringComparison.OrdinalIgnoreCase))
-            sentences.Add(scanned);
-      }
-
+      var kanji = ScanNoteDirectory(KanjiDir);
+      var vocab = ScanNoteDirectory(VocabDir);
+      var sentences = ScanNoteDirectory(SentencesDir);
       return new NoteFilesByType(kanji, vocab, sentences);
+   }
+
+   static List<ScannedFile> ScanNoteDirectory(string directory)
+   {
+      if(!Directory.Exists(directory)) return [];
+
+      return new DirectoryInfo(directory)
+            .EnumerateFiles("*.json", SearchOption.AllDirectories)
+            .Select(fi => new ScannedFile(fi.FullName, Guid.Parse(Path.GetFileNameWithoutExtension(fi.FullName)), fi.LastWriteTimeUtc))
+            .ToList();
    }
 
    static string Bucket(NoteId id) => id.Value.ToString("N")[..2];
