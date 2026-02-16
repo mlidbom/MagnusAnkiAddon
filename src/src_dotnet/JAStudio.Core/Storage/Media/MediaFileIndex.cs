@@ -17,9 +17,14 @@ public class MediaFileIndex
    readonly Dictionary<string, MediaAttachment> _byOriginalFileName = new(StringComparer.OrdinalIgnoreCase);
    readonly Dictionary<NoteId, List<MediaAttachment>> _byNoteId = new();
    readonly string _mediaRoot;
+   readonly TaskRunner _taskRunner;
    bool _initialized;
 
-   public MediaFileIndex(string mediaRoot) => _mediaRoot = mediaRoot;
+   public MediaFileIndex(string mediaRoot, TaskRunner taskRunner)
+   {
+      _mediaRoot = mediaRoot;
+      _taskRunner = taskRunner;
+   }
 
    record MediaScanResult(
       List<string> AudioSidecarPaths,
@@ -27,7 +32,8 @@ public class MediaFileIndex
       Dictionary<string, List<FileInfo>> MediaFilesByDirectory);
 
    /// <summary>
-   /// Builds the index without progress reporting. Used by tests and lazy initialization.
+   /// Builds the index with progress reporting via RunBatch.
+   /// Single filesystem enumeration, then parallel sidecar deserialization.
    /// </summary>
    public void Build()
    {
@@ -39,39 +45,7 @@ public class MediaFileIndex
          return;
       }
 
-      var scan = ScanMediaFiles();
-
-      foreach(var path in scan.AudioSidecarPaths)
-      {
-         var attachment = DeserializeSidecar(path, isAudio: true, scan.MediaFilesByDirectory);
-         if(attachment != null) IndexAttachment(attachment);
-      }
-
-      foreach(var path in scan.ImageSidecarPaths)
-      {
-         var attachment = DeserializeSidecar(path, isAudio: false, scan.MediaFilesByDirectory);
-         if(attachment != null) IndexAttachment(attachment);
-      }
-
-      _initialized = true;
-      this.Log().Info($"Media file index built: {_byId.Count} files indexed under {_mediaRoot}");
-   }
-
-   /// <summary>
-   /// Builds the index with progress reporting via RunBatch. Used at startup.
-   /// Single filesystem enumeration, then parallel sidecar deserialization.
-   /// </summary>
-   public void Build(TaskRunner taskRunner)
-   {
-      ClearIndexes();
-
-      if(!Directory.Exists(_mediaRoot))
-      {
-         _initialized = true;
-         return;
-      }
-
-      using var scope = taskRunner.Current("Loading media index");
+      using var scope = _taskRunner.Current("Loading media index");
 
       var scan = scope.RunIndeterminate("Scanning media files", ScanMediaFiles);
 

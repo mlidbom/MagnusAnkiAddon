@@ -56,8 +56,8 @@ static class AppBootstrapper
          Singleton.For<SentenceCollection>().CreatedBy((JPCollection col) => col.Sentences),
 
          // Media storage
-         Singleton.For<MediaFileIndex>().CreatedBy(() =>
-                                                      new MediaFileIndex(App.MediaDir)),
+         Singleton.For<MediaFileIndex>().CreatedBy((TaskRunner taskRunner) =>
+                                                      new MediaFileIndex(App.MediaDir, taskRunner)),
          Singleton.For<MediaStorageService>().CreatedBy((MediaFileIndex index) =>
                                                            new MediaStorageService(App.MediaDir, index)),
 

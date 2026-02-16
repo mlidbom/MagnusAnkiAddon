@@ -106,7 +106,7 @@ public class JPCollection
 
       ClearCaches();
       var repoLoad = TaskCE.Run(LoadFromRepository);
-      var mediaIndexBuild = TaskCE.Run(() => _mediaFileIndex.Build(NoteServices.TaskRunner));
+      var mediaIndexBuild = TaskCE.Run(() => _mediaFileIndex.Build());
 
       Task<BackendData?> backendDataTask = _backendDataLoader != null
                                               ? Task.Run(() => (BackendData?)_backendDataLoader.Load(NoteServices.TaskRunner))

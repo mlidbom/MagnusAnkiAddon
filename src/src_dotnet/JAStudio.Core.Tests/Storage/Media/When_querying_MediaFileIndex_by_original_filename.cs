@@ -4,12 +4,13 @@ using Compze.Utilities.Testing.Must;
 using Compze.Utilities.Testing.XUnit.BDD;
 using JAStudio.Core.Note;
 using JAStudio.Core.Storage.Media;
+using JAStudio.Core.TaskRunners;
 
 // ReSharper disable InconsistentNaming
 
 namespace JAStudio.Core.Tests.Storage.Media;
 
-public class When_querying_MediaFileIndex_by_original_filename : IDisposable
+public class When_querying_MediaFileIndex_by_original_filename : TestStartingWithEmptyCollection
 {
    readonly string _tempDir = Path.Combine(Path.GetTempPath(), $"JAStudio_test_{Guid.NewGuid():N}");
    readonly MediaFileIndex _index;
@@ -17,10 +18,14 @@ public class When_querying_MediaFileIndex_by_original_filename : IDisposable
    public When_querying_MediaFileIndex_by_original_filename()
    {
       Directory.CreateDirectory(_tempDir);
-      _index = new MediaFileIndex(_tempDir);
+      _index = new MediaFileIndex(_tempDir, GetService<TaskRunner>());
    }
 
-   public void Dispose() => Directory.Delete(_tempDir, recursive: true);
+   public new void Dispose()
+   {
+      base.Dispose();
+      Directory.Delete(_tempDir, recursive: true);
+   }
 
    static void CreateMediaFileWithSidecar(string dir, MediaFileId id, string originalFileName)
    {

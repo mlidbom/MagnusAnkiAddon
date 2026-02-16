@@ -5,13 +5,14 @@ using Compze.Utilities.Testing.XUnit.BDD;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Storage.Media;
+using JAStudio.Core.TaskRunners;
 using Xunit;
 
 // ReSharper disable InconsistentNaming
 
 namespace JAStudio.Core.Tests.Storage.Media;
 
-public class When_storing_a_media_file : IDisposable
+public class When_storing_a_media_file : TestStartingWithEmptyCollection
 {
    readonly string _tempDir = Path.Combine(Path.GetTempPath(), $"JAStudio_test_{Guid.NewGuid():N}");
    readonly string _mediaRoot;
@@ -22,11 +23,15 @@ public class When_storing_a_media_file : IDisposable
    {
       Directory.CreateDirectory(_tempDir);
       _mediaRoot = Path.Combine(_tempDir, "media");
-      _index = new MediaFileIndex(_mediaRoot);
+      _index = new MediaFileIndex(_mediaRoot, GetService<TaskRunner>());
       _service = new MediaStorageService(_mediaRoot, _index);
    }
 
-   public void Dispose() => Directory.Delete(_tempDir, recursive: true);
+   public new void Dispose()
+   {
+      base.Dispose();
+      Directory.Delete(_tempDir, recursive: true);
+   }
 
    protected string CreateSourceFile(string content = "fake audio content")
    {
@@ -85,7 +90,7 @@ public class When_storing_a_media_file : IDisposable
          _id = _service.StoreFile(sourceFile, "general", SourceTag.Parse("anime::natsume::s1::01"), "ep01.mp3",
             new NoteId(Guid.NewGuid()), MediaType.Audio, CopyrightStatus.Commercial);
 
-         _freshIndex = new MediaFileIndex(_mediaRoot);
+         _freshIndex = new MediaFileIndex(_mediaRoot, GetService<TaskRunner>());
          _freshIndex.Build();
       }
 

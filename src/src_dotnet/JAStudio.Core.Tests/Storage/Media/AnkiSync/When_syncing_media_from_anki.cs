@@ -24,7 +24,7 @@ public class When_importing_media_from_anki : TestStartingWithEmptyCollection, I
       Directory.CreateDirectory(_ankiMediaDir);
       Directory.CreateDirectory(mediaRoot);
 
-      _index = new MediaFileIndex(mediaRoot);
+      _index = new MediaFileIndex(mediaRoot, GetService<TaskRunner>());
       var storageService = new MediaStorageService(mediaRoot, _index);
       _analyzer = new MediaImportAnalyzer(_ankiMediaDir, _index);
       _executor = new MediaImportExecutor(storageService, GetService<TaskRunner>());
