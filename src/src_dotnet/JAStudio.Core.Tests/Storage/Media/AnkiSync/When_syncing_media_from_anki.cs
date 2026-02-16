@@ -3,6 +3,7 @@ using System.IO;
 using Compze.Utilities.Testing.Must;
 using Compze.Utilities.Testing.XUnit.BDD;
 using JAStudio.Core.Storage.Media;
+using JAStudio.Core.TaskRunners;
 
 // ReSharper disable InconsistentNaming
 
@@ -26,7 +27,7 @@ public class When_importing_media_from_anki : TestStartingWithEmptyCollection, I
       _index = new MediaFileIndex(mediaRoot);
       var storageService = new MediaStorageService(mediaRoot, _index);
       _analyzer = new MediaImportAnalyzer(_ankiMediaDir, _index);
-      _executor = new MediaImportExecutor(storageService);
+      _executor = new MediaImportExecutor(storageService, GetService<TaskRunner>());
    }
 
    public new void Dispose()
