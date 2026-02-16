@@ -52,6 +52,7 @@ public partial class NoteTypeImportTabViewModel<TRule> : ObservableObject where 
    void AddRule()
    {
       var rule = new EditableImportRule();
+      rule.RemoveSelfCommand = new RelayCommand(() => RemoveRule(rule));
       Rules.Add(rule);
       Reclassify();
    }
@@ -150,7 +151,11 @@ public partial class NoteTypeImportTabViewModel<TRule> : ObservableObject where 
 
    internal void LoadRules(IEnumerable<EditableImportRule> rules)
    {
-      foreach(var r in rules) Rules.Add(r);
+      foreach(var r in rules)
+      {
+         r.RemoveSelfCommand = new RelayCommand(() => RemoveRule(r));
+         Rules.Add(r);
+      }
    }
 }
 

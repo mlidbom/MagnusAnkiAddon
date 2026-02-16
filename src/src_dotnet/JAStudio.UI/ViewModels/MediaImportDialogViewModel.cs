@@ -65,6 +65,14 @@ public partial class MediaImportDialogViewModel : ObservableObject
 
    public IRelayCommand? CloseCommand { get; set; }
 
+   [RelayCommand] void AddVocabRule() => VocabTab.AddRuleCommand.Execute(null);
+   [RelayCommand] void AddSentenceRule() => SentenceTab.AddRuleCommand.Execute(null);
+   [RelayCommand] void AddKanjiRule() => KanjiTab.AddRuleCommand.Execute(null);
+
+   [RelayCommand] void RemoveVocabRule(EditableImportRule rule) => VocabTab.RemoveRuleCommand.Execute(rule);
+   [RelayCommand] void RemoveSentenceRule(EditableImportRule rule) => SentenceTab.RemoveRuleCommand.Execute(rule);
+   [RelayCommand] void RemoveKanjiRule(EditableImportRule rule) => KanjiTab.RemoveRuleCommand.Execute(rule);
+
    [RelayCommand]
    void Scan()
    {
@@ -346,6 +354,8 @@ public partial class EditableImportRule : ObservableObject
    [ObservableProperty] string _targetDirectory = "";
    [ObservableProperty] string _selectedCopyright = nameof(CopyrightStatus.Commercial);
    [ObservableProperty] int _matchCount;
+
+   public IRelayCommand? RemoveSelfCommand { get; set; }
 
    public bool IsValid =>
       !string.IsNullOrWhiteSpace(SourceTagPrefix) &&
