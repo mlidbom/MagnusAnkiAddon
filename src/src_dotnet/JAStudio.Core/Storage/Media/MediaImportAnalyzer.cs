@@ -18,6 +18,8 @@ public class MediaImportAnalyzer
       _index = index;
    }
 
+   public bool IsAlreadyStored(string originalFileName) => _index.ContainsByOriginalFileName(originalFileName);
+
    public MediaImportPlan AnalyzeVocab(IReadOnlyList<VocabNote> notes, IReadOnlyList<VocabImportRule> rules)
    {
       var ruleSet = new MediaImportRuleSet(new List<VocabImportRule>(rules), [], []);

@@ -49,7 +49,7 @@ public class JAStudioAppRoot
    {
       _app = app;
       Dialogs = new AppDialogs(app);
-      Menus = new AppMenus(app.Services, Dialogs);
+      Menus = new AppMenus(app.Services);
    }
 
    /// <summary>

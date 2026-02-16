@@ -1,0 +1,17 @@
+{
+  "vocabRules": [],
+  "sentenceRules": [
+    {
+      "prefix": "anime::natsume",
+      "targetDirectory": "natsume/audio",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "anime::natsume",
+      "field": "Screenshot",
+      "targetDirectory": "natsume/screenshots",
+      "copyright": "Commercial"
+    }
+  ],
+  "kanjiRules": []
+}

@@ -380,15 +380,13 @@ The storage layer (`JAStudio.Core.Storage.Media`) is implemented and tested:
 | `MediaImportRuleSet` | Holds all rules, resolves by (source tag, field). Returns `null` for unconfigured combinations — fields without rules are silently skipped. Longest prefix match. |
 | `MediaImportPlan` | Output of analysis: `FilesToImport` (ready to execute), `AlreadyStored` (sidecar noteId updates), `Missing` (files not found in Anki). Pure data — no side effects. |
 | `MediaImportAnalyzer` | Analyzes notes against rules. Per-note-type methods: `AnalyzeVocab`, `AnalyzeSentences`, `AnalyzeKanji`. Produces a `MediaImportPlan`. No side effects — reads filesystem and index to classify each media reference. |
-| `MediaImportExecutor` | Executes a `MediaImportPlan` — copies files, writes sidecars, updates noteIds. Note-type agnostic — works only with the flat plan. No analysis, no decision-making. |
+| `MediaImportExecutor` | Executes a `MediaImportPlan` — copies files, writes sidecars, updates noteIds. Note-type agnostic — works only with the flat plan. No analysis, no decision-making. Uses `TaskRunner.RunBatch` for visible progress. |
+| `MediaImportRulePersistence` | Saves/loads rules to `user_files/media-import-rules.json`. JSON with enum and `SourceTag` converters. |
+| `MediaImportDialog` | Avalonia dialog (View + ViewModel). Scan discovers un-imported media grouped by source/type. User configures rules, clicks Analyze to see plan counts (`FilesToImport`, `AlreadyStored`, `Missing`), then executes. Rules persist across sessions. Accessible from Config > Media import menu. |
 
 ### Not yet implemented
 
 | Component | Notes |
-|---|---|
-| Discovery UI | Scan notes, find media files in Anki that don't yet exist in our storage, present grouped by note type / source tag. User's shopping list for creating new import rules. |
-| Rule persistence | Save/load rules to `user_files/media-import-rules.json`. |
-| Import plan display | The `MediaImportPlan` has all the counts — the planning UI shows what will happen before the user commits to executing. No post-execution report needed. |
 | `NoteMedia` aggregate | Per-note typed media view (`Audio`, `Images`). Not yet needed — media is currently accessed via the index directly. |
 | Removal of media fields from corpus DTOs | Notes still contain Anki markup audio/image fields. Has unresolved design concerns — deferred for later discussion. |
 | Access gating | Runtime filtering by user's verified accounts / copyright status. |

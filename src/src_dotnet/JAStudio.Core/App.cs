@@ -49,11 +49,11 @@ public class App : IDisposable
       }
    }
 
-   internal static string AnkiMediaDir =>
+   public static string AnkiMediaDir =>
       _environmentPaths?.AnkiMediaDir
           ?? throw new InvalidOperationException("IEnvironmentPaths must be provided for non-testing mode. Call App.Bootstrap() with an IEnvironmentPaths implementation.");
 
-   internal static string UserFilesDir => Path.Combine(AddonRootDir, "user_files");
+   public static string UserFilesDir => Path.Combine(AddonRootDir, "user_files");
 
    internal static string DatabaseDir => Path.Combine(AddonRootDir, "jas_database");
 }

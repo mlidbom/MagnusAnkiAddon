@@ -1,0 +1,158 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:JAStudio.UI.ViewModels"
+        x:Class="JAStudio.UI.Views.MediaImportDialog"
+        x:DataType="vm:MediaImportDialogViewModel"
+        Title="Media Import"
+        SizeToContent="Height"
+        Width="900"
+        MinWidth="700" MinHeight="500"
+        Design.Width="900" Design.Height="800"
+        WindowStartupLocation="Manual">
+
+    <Design.DataContext>
+        <vm:MediaImportDialogViewModel />
+    </Design.DataContext>
+
+    <LayoutTransformControl>
+        <LayoutTransformControl.LayoutTransform>
+            <ScaleTransform ScaleX="0.85" ScaleY="0.85" />
+        </LayoutTransformControl.LayoutTransform>
+        <DockPanel Margin="10">
+            <!-- Button bar at bottom -->
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0" Spacing="10">
+                <Button Content="Scan" Command="{Binding ScanCommand}" Width="80" />
+                <Button Content="Analyze" Command="{Binding AnalyzeCommand}" Width="80" />
+                <Button Content="Import" Command="{Binding ImportCommand}" IsEnabled="{Binding HasPlan}" Width="80" />
+                <Button Content="Save Rules" Command="{Binding SaveRulesCommand}" Width="90" />
+                <Button Content="Close" Command="{Binding CloseCommand}" Width="80" />
+            </StackPanel>
+
+            <!-- Status bar -->
+            <TextBlock DockPanel.Dock="Bottom" Text="{Binding StatusText}" Margin="0,5,0,0" FontStyle="Italic" />
+
+            <!-- Main content -->
+            <ScrollViewer>
+                <StackPanel Spacing="10" Margin="5">
+
+                    <!-- Plan summary -->
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10"
+                            IsVisible="{Binding HasPlan}">
+                        <Grid ColumnDefinitions="Auto,Auto,30,Auto,Auto,30,Auto,Auto" RowDefinitions="Auto">
+                            <TextBlock Grid.Column="0" Text="To import:" FontWeight="SemiBold" Margin="0,0,5,0" />
+                            <TextBlock Grid.Column="1" Text="{Binding FilesToImportCount}" />
+                            <TextBlock Grid.Column="3" Text="Already stored:" FontWeight="SemiBold" Margin="0,0,5,0" />
+                            <TextBlock Grid.Column="4" Text="{Binding AlreadyStoredCount}" />
+                            <TextBlock Grid.Column="6" Text="Missing from Anki:" FontWeight="SemiBold" Margin="0,0,5,0" />
+                            <TextBlock Grid.Column="7" Text="{Binding MissingCount}" />
+                        </Grid>
+                    </Border>
+
+                    <!-- Discovery: Vocab -->
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Vocab — Un-imported Media" FontWeight="SemiBold" FontSize="14" />
+                            <DataGrid ItemsSource="{Binding VocabGroups}" IsReadOnly="True"
+                                      AutoGenerateColumns="False" MaxHeight="200">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Source" Binding="{Binding SourcePrefix}" Width="*" />
+                                    <DataGridTextColumn Header="Type" Binding="{Binding MediaType}" Width="80" />
+                                    <DataGridTextColumn Header="Files" Binding="{Binding FileCount}" Width="80" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <StackPanel Spacing="3">
+                                <TextBlock Text="Import Rules:" FontWeight="SemiBold" Margin="0,5,0,0" />
+                                <ItemsControl ItemsSource="{Binding VocabRules}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:EditableImportRule">
+                                            <Grid ColumnDefinitions="*,Auto,*,Auto,10" Margin="0,2">
+                                                <TextBox Grid.Column="0" Watermark="Source tag prefix" Text="{Binding SourceTagPrefix}" Margin="0,0,5,0" />
+                                                <ComboBox Grid.Column="1" ItemsSource="{Binding #VocabFieldList.Tag}" SelectedItem="{Binding SelectedField}" Width="120" Margin="0,0,5,0" />
+                                                <TextBox Grid.Column="2" Watermark="Target directory" Text="{Binding TargetDirectory}" Margin="0,0,5,0" />
+                                                <ComboBox Grid.Column="3" ItemsSource="{x:Static vm:EditableImportRule.CopyrightOptions}" SelectedItem="{Binding SelectedCopyright}" Width="120" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <Button Content="+ Add Vocab Rule" Command="{Binding AddVocabRuleCommand}" HorizontalAlignment="Left" />
+                                <!-- Hidden tag carrier for vocab fields -->
+                                <Border x:Name="VocabFieldList" IsVisible="False"
+                                        Tag="{x:Static vm:MediaImportDialogViewModel.VocabFieldNames}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Discovery: Sentences -->
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Sentences — Un-imported Media" FontWeight="SemiBold" FontSize="14" />
+                            <DataGrid ItemsSource="{Binding SentenceGroups}" IsReadOnly="True"
+                                      AutoGenerateColumns="False" MaxHeight="200">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Source" Binding="{Binding SourcePrefix}" Width="*" />
+                                    <DataGridTextColumn Header="Type" Binding="{Binding MediaType}" Width="80" />
+                                    <DataGridTextColumn Header="Files" Binding="{Binding FileCount}" Width="80" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <StackPanel Spacing="3">
+                                <TextBlock Text="Import Rules:" FontWeight="SemiBold" Margin="0,5,0,0" />
+                                <ItemsControl ItemsSource="{Binding SentenceRules}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:EditableImportRule">
+                                            <Grid ColumnDefinitions="*,Auto,*,Auto,10" Margin="0,2">
+                                                <TextBox Grid.Column="0" Watermark="Source tag prefix" Text="{Binding SourceTagPrefix}" Margin="0,0,5,0" />
+                                                <ComboBox Grid.Column="1" ItemsSource="{Binding #SentenceFieldList.Tag}" SelectedItem="{Binding SelectedField}" Width="120" Margin="0,0,5,0" />
+                                                <TextBox Grid.Column="2" Watermark="Target directory" Text="{Binding TargetDirectory}" Margin="0,0,5,0" />
+                                                <ComboBox Grid.Column="3" ItemsSource="{x:Static vm:EditableImportRule.CopyrightOptions}" SelectedItem="{Binding SelectedCopyright}" Width="120" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <Button Content="+ Add Sentence Rule" Command="{Binding AddSentenceRuleCommand}" HorizontalAlignment="Left" />
+                                <Border x:Name="SentenceFieldList" IsVisible="False"
+                                        Tag="{x:Static vm:MediaImportDialogViewModel.SentenceFieldNames}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Discovery: Kanji -->
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Kanji — Un-imported Media" FontWeight="SemiBold" FontSize="14" />
+                            <DataGrid ItemsSource="{Binding KanjiGroups}" IsReadOnly="True"
+                                      AutoGenerateColumns="False" MaxHeight="200">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Source" Binding="{Binding SourcePrefix}" Width="*" />
+                                    <DataGridTextColumn Header="Type" Binding="{Binding MediaType}" Width="80" />
+                                    <DataGridTextColumn Header="Files" Binding="{Binding FileCount}" Width="80" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <StackPanel Spacing="3">
+                                <TextBlock Text="Import Rules:" FontWeight="SemiBold" Margin="0,5,0,0" />
+                                <ItemsControl ItemsSource="{Binding KanjiRules}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:EditableImportRule">
+                                            <Grid ColumnDefinitions="*,Auto,*,Auto,10" Margin="0,2">
+                                                <TextBox Grid.Column="0" Watermark="Source tag prefix" Text="{Binding SourceTagPrefix}" Margin="0,0,5,0" />
+                                                <ComboBox Grid.Column="1" ItemsSource="{Binding #KanjiFieldList.Tag}" SelectedItem="{Binding SelectedField}" Width="120" Margin="0,0,5,0" />
+                                                <TextBox Grid.Column="2" Watermark="Target directory" Text="{Binding TargetDirectory}" Margin="0,0,5,0" />
+                                                <ComboBox Grid.Column="3" ItemsSource="{x:Static vm:EditableImportRule.CopyrightOptions}" SelectedItem="{Binding SelectedCopyright}" Width="120" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <Button Content="+ Add Kanji Rule" Command="{Binding AddKanjiRuleCommand}" HorizontalAlignment="Left" />
+                                <Border x:Name="KanjiFieldList" IsVisible="False"
+                                        Tag="{x:Static vm:MediaImportDialogViewModel.KanjiFieldNames}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+        </DockPanel>
+    </LayoutTransformControl>
+</Window>
