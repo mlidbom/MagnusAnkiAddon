@@ -12,13 +12,9 @@ public class MediaRoutingConfig(List<MediaRoutingRule> rules)
 
    public IReadOnlyList<MediaRoutingRule> Rules => _rules;
 
-   public string ResolveDirectory(string sourceTag) =>
-      TryResolveDirectory(sourceTag) ?? throw new InvalidOperationException($"No routing rule matches source tag '{sourceTag}'. Configure a routing rule before importing media.");
+   public string ResolveDirectory(string sourceTag) => TryResolveDirectory(sourceTag) ?? throw new InvalidOperationException($"No routing rule matches source tag '{sourceTag}'. Configure a routing rule before importing media.");
 
-   string? TryResolveDirectory(string sourceTag)
-   {
-      return _rules.Where(rule => sourceTag.StartsWith(rule.SourceTagPrefix, StringComparison.Ordinal))
-                   .Select(it => it.TargetDirectory)
-                   .FirstOrDefault();
-   }
+   string? TryResolveDirectory(string sourceTag) => _rules.Where(rule => sourceTag.StartsWith(rule.SourceTagPrefix, StringComparison.Ordinal))
+                                                          .Select(it => it.TargetDirectory)
+                                                          .FirstOrDefault();
 }
