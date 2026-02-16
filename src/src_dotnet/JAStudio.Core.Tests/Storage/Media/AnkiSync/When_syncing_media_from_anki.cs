@@ -6,7 +6,7 @@ using JAStudio.Core.Storage.Media;
 
 // ReSharper disable InconsistentNaming
 
-namespace JAStudio.Core.Tests.Storage.Media;
+namespace JAStudio.Core.Tests.Storage.Media.AnkiSync;
 
 public class When_syncing_media_from_anki : TestStartingWithEmptyCollection, IDisposable
 {

@@ -21,11 +21,11 @@ public class When_building_a_MediaFileIndex : IDisposable
 
    public void Dispose() => Directory.Delete(_tempDir, recursive: true);
 
-   public class over_a_directory_with_guid_named_files : When_building_a_MediaFileIndex
+   public class over_a_directory_with_a_guid_named_file : When_building_a_MediaFileIndex
    {
       readonly MediaFileId _id = MediaFileId.New();
 
-      public over_a_directory_with_guid_named_files()
+      public over_a_directory_with_a_guid_named_file()
       {
          var fileDir = Path.Combine(_tempDir, "anime", "natsume", "natsume_ep01_03m22s.mp3");
          Directory.CreateDirectory(fileDir);
@@ -36,7 +36,7 @@ public class When_building_a_MediaFileIndex : IDisposable
       [XF] public void it_indexes_the_file() => _index.Count.Must().Be(1);
       [XF] public void it_contains_the_id() => _index.Contains(_id).Must().BeTrue();
 
-      public class and_resolving_by_id : over_a_directory_with_guid_named_files
+      public class and_resolving_by_id : over_a_directory_with_a_guid_named_file
       {
          readonly string? _resolved;
          public and_resolving_by_id() => _resolved = _index.TryResolve(_id);
@@ -45,7 +45,7 @@ public class When_building_a_MediaFileIndex : IDisposable
          [XF] public void the_path_points_to_an_existing_file() => File.Exists(_resolved!).Must().BeTrue();
       }
 
-      public class and_getting_file_info : over_a_directory_with_guid_named_files
+      public class and_getting_file_info : over_a_directory_with_a_guid_named_file
       {
          readonly MediaFileInfo? _info;
          public and_getting_file_info() => _info = _index.TryGetInfo(_id);
