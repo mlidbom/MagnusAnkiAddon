@@ -5,6 +5,7 @@ using Compze.Utilities.Testing.XUnit.BDD;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Storage.Media;
+using Xunit;
 
 // ReSharper disable InconsistentNaming
 
@@ -46,8 +47,7 @@ public class When_storing_a_media_file : IDisposable
       public with_a_matching_routing_rule()
       {
          var config = new MediaRoutingConfig(
-            [new MediaRoutingRule("anime::natsume", "commercial-001")],
-            MediaRoutingConfig.DefaultDirectoryName);
+            [new MediaRoutingRule("anime::natsume", "commercial-001")]);
          InitService(config);
 
          var sourceFile = CreateSourceFile();
@@ -65,22 +65,17 @@ public class When_storing_a_media_file : IDisposable
       [XF] public void a_sidecar_file_is_written() => File.Exists(SidecarSerializer.BuildAudioSidecarPath(_resolved!)).Must().BeTrue();
    }
 
-   public class with_default_routing : When_storing_a_media_file
+   public class with_no_matching_routing_rule : When_storing_a_media_file
    {
-      readonly string? _resolved;
-
-      public with_default_routing()
+      public with_no_matching_routing_rule()
       {
-         var config = MediaRoutingConfig.Default();
+         var config = new MediaRoutingConfig([new MediaRoutingRule("anime", "commercial-001")]);
          InitService(config);
-
-         var sourceFile = CreateSourceFile();
-         var id = _service.StoreFile(sourceFile, "forvo", "走る_forvo.mp3",
-            new NoteId(Guid.NewGuid()), MediaType.Audio, CopyrightStatus.Free);
-         _resolved = _service.TryResolve(id);
       }
 
-      [XF] public void the_path_uses_the_general_directory() => _resolved!.Must().Contain(MediaRoutingConfig.DefaultDirectoryName);
+      [XF] public void it_throws() => Assert.Throws<InvalidOperationException>(() =>
+         _service.StoreFile(CreateSourceFile(), "forvo", "走る_forvo.mp3",
+            new NoteId(Guid.NewGuid()), MediaType.Audio, CopyrightStatus.Free));
    }
 
    public class after_storing_a_file : When_storing_a_media_file
@@ -89,7 +84,7 @@ public class When_storing_a_media_file : IDisposable
 
       public after_storing_a_file()
       {
-         var config = MediaRoutingConfig.Default();
+         var config = new MediaRoutingConfig([new MediaRoutingRule("", "general")]);
          InitService(config);
 
          var sourceFile = CreateSourceFile();
@@ -108,7 +103,7 @@ public class When_storing_a_media_file : IDisposable
 
       public when_rebuilding_the_index_from_filesystem()
       {
-         var config = MediaRoutingConfig.Default();
+         var config = new MediaRoutingConfig([new MediaRoutingRule("", "general")]);
          InitService(config);
 
          var sourceFile = CreateSourceFile();
