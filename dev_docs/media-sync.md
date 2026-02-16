@@ -202,12 +202,15 @@ public enum CopyrightStatus
 // Base — common storage/identity data shared by all media types
 public abstract record MediaAttachment
 {
+    // Persisted in sidecar JSON
     public required MediaFileId Id { get; init; }
     public required NoteId NoteId { get; init; }
     public required string NoteSourceTag { get; init; }   // full tag, e.g. "source::anime::natsume::s1::01"
     public string? OriginalFileName { get; init; }
     public required CopyrightStatus Copyright { get; init; }
-    public required string FilePath { get; init; }        // absolute path to the stored file
+
+    // Runtime only — resolved by MediaFileIndex from the filesystem, not serialized
+    [JsonIgnore] public string FilePath { get; internal set; } = string.Empty;
 }
 
 // Audio — extends with audio-specific fields
