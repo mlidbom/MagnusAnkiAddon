@@ -378,7 +378,9 @@ The storage layer (`JAStudio.Core.Storage.Media`) is implemented and tested:
 | `VocabMediaField` / `SentenceMediaField` / `KanjiMediaField` | Per-note-type enums for media fields. Compile-time safe — no string-based field names. |
 | `VocabImportRule` / `SentenceImportRule` / `KanjiImportRule` | Flat atomic rules: one rule = one (source tag, field) → (directory, copyright). |
 | `MediaImportRuleSet` | Holds all rules, resolves by (source tag, field). Returns `null` for unconfigured combinations — fields without rules are silently skipped. Longest prefix match. |
-| `MediaImportExecutor` | Batch executor with one method per note type: `ImportVocabMedia`, `ImportSentenceMedia`, `ImportKanjiMedia`. Takes a list of notes + rules, loops all notes, imports matching fields. Not a singleton — created when the user triggers a batch. |
+| `MediaImportPlan` | Output of analysis: `FilesToImport` (ready to execute), `AlreadyStored` (sidecar noteId updates), `Missing` (files not found in Anki). Pure data — no side effects. |
+| `MediaImportAnalyzer` | Analyzes notes against rules. Per-note-type methods: `AnalyzeVocab`, `AnalyzeSentences`, `AnalyzeKanji`. Produces a `MediaImportPlan`. No side effects — reads filesystem and index to classify each media reference. |
+| `MediaImportExecutor` | Executes a `MediaImportPlan` — copies files, writes sidecars, updates noteIds. Note-type agnostic — works only with the flat plan. No analysis, no decision-making. |
 
 ### Not yet implemented
 
@@ -401,37 +403,42 @@ All components have BDD-style tests:
 - `When_building_a_MediaFileIndex` — filesystem scan, sidecar parsing, lookups
 - `When_querying_MediaFileIndex_by_original_filename` — exact/case-insensitive lookup, registered attachments
 - `When_storing_a_media_file` — target directory, GUID-bucket paths, sidecar writing, index rebuilding
-- `When_importing_media_from_anki` — per-note-type batch import, dedup, missing file skipping, unconfigured field skipping, typed attachments
+- `When_importing_media_from_anki` — analyze → execute flow, plan inspection (files to import, already stored, missing), per-note-type batches, dedup, unconfigured field skipping, typed attachments
 
 ## Import Workflow
 
-Import is **batch, incremental, and per note type**. The user configures rules specifying what to import, executes a batch, and the executor processes all matching notes. Files already in storage are untouched. Rules are disposable — after a batch runs, spent rules can be deleted.
+Import is **batch, incremental, and per note type**. Analysis and execution are separate concerns:
+
+- **`MediaImportAnalyzer`** — knows note types, scans notes against rules, produces a `MediaImportPlan`. Pure analysis, no side effects.
+- **`MediaImportPlan`** — flat data: files to import, files already stored, files missing from Anki. Counts for the UI to display.
+- **`MediaImportExecutor`** — takes a plan, executes it. Note-type agnostic, no analysis, no decisions. Should Just Work or explode.
 
 ### Workflow
 
 1. **Discovery:** The UI scans all notes, checks which media files exist in Anki but not yet in our storage, and presents what's un-imported — grouped by note type and source tag prefix.
-2. **Configure rules:** The user creates import rules for the combinations they want to import now. Each rule is one (source tag, field) → (directory, copyright).
-3. **Execute:** The user triggers a batch per note type. `MediaImportExecutor.ImportVocabMedia(notes, rules)` loops all vocab notes and imports fields matching the rules. Same for sentence and kanji.
-4. **Inspect & repeat:** After reviewing results, the user can add more rules for other fields/source tags and run another batch. Spent rules can be deleted — no files will match them again.
+2. **Configure rules:** The user creates import rules for the combinations they want to import now.
+3. **Analyze:** `MediaImportAnalyzer.AnalyzeVocab(notes, rules)` → `MediaImportPlan`. UI shows: "2,341 to import, 3 missing from Anki, 847 already stored."
+4. **Execute:** User clicks Run. `MediaImportExecutor.Execute(plan)` — copies files, writes sidecars.
+5. **Repeat:** Add more rules, analyze again, execute again.
 
-### Execution details (per note type)
+### Example
 
 ```csharp
-// User triggers a vocab import batch
-executor.ImportVocabMedia(allVocabNotes, [
+var rules = new[]
+{
     new VocabImportRule(SourceTag.Parse("source::wani"), VocabMediaField.AudioFirst, "commercial/wani", CopyrightStatus.Commercial),
     new VocabImportRule(SourceTag.Parse("source::wani"), VocabMediaField.AudioTts,   "free/tts",        CopyrightStatus.Free)
-]);
-```
+};
 
-For each note in the batch:
-1. Resolve the note's source tag
-2. For each media field, try to find a matching rule
-3. If no rule matches → skip silently (not configured for this batch)
-4. If a rule matches, for each media reference in that field:
-   - Already in storage → update sidecar's `noteIds`
-   - Source file missing in Anki → log warning, skip
-   - Otherwise → copy file, write sidecar
+// 1. Analyze — no side effects
+var plan = analyzer.AnalyzeVocab(allVocabNotes, rules);
+// plan.FilesToImport.Count == 2341
+// plan.AlreadyStored.Count == 847
+// plan.Missing.Count == 3
+
+// 2. Execute — copies files, writes sidecars
+executor.Execute(plan);
+```
 
 ### Summary (presented to user after execution)
 

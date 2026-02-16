@@ -13,6 +13,7 @@ public class When_importing_media_from_anki : TestStartingWithEmptyCollection, I
    readonly string _tempDir = Path.Combine(Path.GetTempPath(), $"JAStudio_test_{Guid.NewGuid():N}");
    readonly string _ankiMediaDir;
    readonly MediaFileIndex _index;
+   readonly MediaImportAnalyzer _analyzer;
    readonly MediaImportExecutor _executor;
 
    public When_importing_media_from_anki()
@@ -24,7 +25,8 @@ public class When_importing_media_from_anki : TestStartingWithEmptyCollection, I
 
       _index = new MediaFileIndex(mediaRoot);
       var storageService = new MediaStorageService(mediaRoot, _index);
-      _executor = new MediaImportExecutor(_ankiMediaDir, storageService, _index);
+      _analyzer = new MediaImportAnalyzer(_ankiMediaDir, _index);
+      _executor = new MediaImportExecutor(storageService);
    }
 
    public new void Dispose()
@@ -40,6 +42,8 @@ public class When_importing_media_from_anki : TestStartingWithEmptyCollection, I
 
    public class for_a_vocab_batch_with_audio_and_image : When_importing_media_from_anki
    {
+      readonly MediaImportPlan _plan;
+
       public for_a_vocab_batch_with_audio_and_image()
       {
          CreateAnkiMediaFile("vocab_audio.mp3");
@@ -49,13 +53,15 @@ public class When_importing_media_from_anki : TestStartingWithEmptyCollection, I
          note.Audio.First.SetRawValue("[sound:vocab_audio.mp3]");
          note.Image.SetRawValue("<img src=\"vocab_image.jpg\">");
 
-         _executor.ImportVocabMedia([note],
+         _plan = _analyzer.AnalyzeVocab([note],
          [
             new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.AudioFirst, "general", CopyrightStatus.Free),
             new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.Image, "general", CopyrightStatus.Free)
          ]);
+         _executor.Execute(_plan);
       }
 
+      [XF] public void it_plans_two_files() => _plan.FilesToImport.Count.Must().Be(2);
       [XF] public void it_stores_both_files() => _index.Count.Must().Be(2);
 
       [XF] public void the_audio_file_is_indexed_by_original_name() =>
@@ -74,8 +80,9 @@ public class When_importing_media_from_anki : TestStartingWithEmptyCollection, I
          var note = CreateKanji("本", "book", "ホン", "もと");
          note.Audio.SetRawValue("[sound:kanji_audio.mp3]");
 
-         _executor.ImportKanjiMedia([note],
+         var plan = _analyzer.AnalyzeKanji([note],
             [new KanjiImportRule(SourceTag.Parse("anki"), KanjiMediaField.Audio, "general", CopyrightStatus.Free)]);
+         _executor.Execute(plan);
       }
 
       [XF] public void it_copies_the_audio_file() => _index.Count.Must().Be(1);
@@ -95,11 +102,12 @@ public class When_importing_media_from_anki : TestStartingWithEmptyCollection, I
          note.Audio.SetRawValue("[sound:sentence_audio.mp3]");
          note.Screenshot.SetRawValue("<img src=\"screenshot.png\">");
 
-         _executor.ImportSentenceMedia([note],
+         var plan = _analyzer.AnalyzeSentences([note],
          [
             new SentenceImportRule(SourceTag.Parse("anki"), SentenceMediaField.Audio, "general", CopyrightStatus.Free),
             new SentenceImportRule(SourceTag.Parse("anki"), SentenceMediaField.Screenshot, "general", CopyrightStatus.Free)
          ]);
+         _executor.Execute(plan);
       }
 
       [XF] public void it_copies_both_files() => _index.Count.Must().Be(2);
@@ -113,7 +121,7 @@ public class When_importing_media_from_anki : TestStartingWithEmptyCollection, I
 
    public class when_a_file_is_already_stored : When_importing_media_from_anki
    {
-      readonly int _countAfterSecondImport;
+      readonly MediaImportPlan _secondPlan;
 
       public when_a_file_is_already_stored()
       {
@@ -124,32 +132,42 @@ public class When_importing_media_from_anki : TestStartingWithEmptyCollection, I
 
          var rules = new[] { new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.AudioFirst, "general", CopyrightStatus.Free) };
 
-         _executor.ImportVocabMedia([note], rules);
+         var firstPlan = _analyzer.AnalyzeVocab([note], rules);
+         _executor.Execute(firstPlan);
          _index.Count.Must().Be(1);
 
-         _executor.ImportVocabMedia([note], rules);
-         _countAfterSecondImport = _index.Count;
+         _secondPlan = _analyzer.AnalyzeVocab([note], rules);
+         _executor.Execute(_secondPlan);
       }
 
-      [XF] public void it_does_not_duplicate_the_file() => _countAfterSecondImport.Must().Be(1);
+      [XF] public void it_does_not_duplicate_the_file() => _index.Count.Must().Be(1);
+      [XF] public void the_second_plan_has_one_already_stored() => _secondPlan.AlreadyStored.Count.Must().Be(1);
+      [XF] public void the_second_plan_has_no_files_to_import() => _secondPlan.FilesToImport.Count.Must().Be(0);
    }
 
    public class when_the_source_file_is_missing : When_importing_media_from_anki
    {
+      readonly MediaImportPlan _plan;
+
       public when_the_source_file_is_missing()
       {
          var note = CreateVocab("飲む", "to drink", "のむ");
          note.Audio.First.SetRawValue("[sound:missing_audio.mp3]");
 
-         _executor.ImportVocabMedia([note],
+         _plan = _analyzer.AnalyzeVocab([note],
             [new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.AudioFirst, "general", CopyrightStatus.Free)]);
+         _executor.Execute(_plan);
       }
 
-      [XF] public void it_skips_the_file_gracefully() => _index.Count.Must().Be(0);
+      [XF] public void it_imports_nothing() => _index.Count.Must().Be(0);
+      [XF] public void the_plan_reports_one_missing() => _plan.Missing.Count.Must().Be(1);
+      [XF] public void the_missing_file_has_the_correct_name() => _plan.Missing[0].FileName.Must().Be("missing_audio.mp3");
    }
 
    public class when_a_field_has_no_matching_rule : When_importing_media_from_anki
    {
+      readonly MediaImportPlan _plan;
+
       public when_a_field_has_no_matching_rule()
       {
          CreateAnkiMediaFile("audio.mp3");
@@ -160,11 +178,13 @@ public class When_importing_media_from_anki : TestStartingWithEmptyCollection, I
          note.Image.SetRawValue("<img src=\"image.jpg\">");
 
          // Only configure AudioFirst — Image has no rule
-         _executor.ImportVocabMedia([note],
+         _plan = _analyzer.AnalyzeVocab([note],
             [new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.AudioFirst, "general", CopyrightStatus.Free)]);
+         _executor.Execute(_plan);
       }
 
       [XF] public void it_imports_only_the_matched_field() => _index.Count.Must().Be(1);
+      [XF] public void the_plan_has_one_file_to_import() => _plan.FilesToImport.Count.Must().Be(1);
 
       [XF] public void the_audio_is_imported() =>
          _index.ContainsByOriginalFileName("audio.mp3").Must().BeTrue();
@@ -187,11 +207,12 @@ public class When_importing_media_from_anki : TestStartingWithEmptyCollection, I
          note.Audio.First.SetRawValue("[sound:routed_audio.mp3]");
          note.Image.SetRawValue("<img src=\"routed_image.jpg\">");
 
-         _executor.ImportVocabMedia([note],
+         var plan = _analyzer.AnalyzeVocab([note],
          [
             new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.AudioFirst, "general", CopyrightStatus.Free),
             new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.Image, "general", CopyrightStatus.Free)
          ]);
+         _executor.Execute(plan);
 
          foreach(var attachment in _index.All)
          {
