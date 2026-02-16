@@ -388,9 +388,9 @@ The storage layer (`JAStudio.Core.Storage.Media`) is implemented and tested:
 |---|---|
 | Discovery UI | Scan notes, find media files in Anki that don't yet exist in our storage, present grouped by note type / source tag. User's shopping list for creating new import rules. |
 | Rule persistence | Save/load rules to `user_files/media-import-rules.json`. |
-| Import summary | Post-execution report: files imported, deduped, skipped (missing / no rule). |
+| Import plan display | The `MediaImportPlan` has all the counts — the planning UI shows what will happen before the user commits to executing. No post-execution report needed. |
 | `NoteMedia` aggregate | Per-note typed media view (`Audio`, `Images`). Not yet needed — media is currently accessed via the index directly. |
-| Removal of media fields from corpus DTOs | Notes still contain Anki markup audio/image fields. These should be stripped. |
+| Removal of media fields from corpus DTOs | Notes still contain Anki markup audio/image fields. Has unresolved design concerns — deferred for later discussion. |
 | Access gating | Runtime filtering by user's verified accounts / copyright status. |
 
 ### Test coverage
@@ -417,9 +417,9 @@ Import is **batch, incremental, and per note type**. Analysis and execution are 
 
 1. **Discovery:** The UI scans all notes, checks which media files exist in Anki but not yet in our storage, and presents what's un-imported — grouped by note type and source tag prefix.
 2. **Configure rules:** The user creates import rules for the combinations they want to import now.
-3. **Analyze:** `MediaImportAnalyzer.AnalyzeVocab(notes, rules)` → `MediaImportPlan`. UI shows: "2,341 to import, 3 missing from Anki, 847 already stored."
-4. **Execute:** User clicks Run. `MediaImportExecutor.Execute(plan)` — copies files, writes sidecars.
-5. **Repeat:** Add more rules, analyze again, execute again.
+3. **Analyze & review:** `MediaImportAnalyzer.AnalyzeVocab(notes, rules)` → `MediaImportPlan`. UI shows: "2,341 to import, 3 missing from Anki, 847 already stored." The user reviews the plan and adjusts rules until the numbers look right.
+4. **Execute:** User is satisfied with the plan, clicks Run. `MediaImportExecutor.Execute(plan)` — does exactly what the plan promised. No report needed.
+5. **Repeat:** Add more rules, analyze again, review, execute again.
 
 ### Example
 
@@ -440,10 +440,12 @@ var plan = analyzer.AnalyzeVocab(allVocabNotes, rules);
 executor.Execute(plan);
 ```
 
-### Summary (presented to user after execution)
+### Plan review (presented to user before execution)
 
-- Files imported (audio / image breakdown)
-- Files deduplicated (already in storage, noteIds updated)
-- Files skipped (missing from Anki media)
+The `MediaImportPlan` contains all the information the user needs to decide whether to proceed:
 
-Stripping media fields from the corpus note JSON is a separate step (done when the corpus DTOs are updated to remove audio/image fields).
+- Files to import (audio / image breakdown)
+- Files already in storage (noteIds will be updated)
+- Files missing from Anki media
+
+Execution does exactly what the plan says — no surprises, no separate report needed.
