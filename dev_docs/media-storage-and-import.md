@@ -208,7 +208,7 @@ A manually maintained config maps **(note type, source tag prefix, field name)**
 }
 ```
 
-At import time, the lookup is: find the note type section → match source tag by longest prefix → find the field name → get directory + copyright. **If any step fails to match, the import throws an exception.** No silent fallbacks — an unmatched combination means the routing config is incomplete and must be fixed before proceeding.
+At import time, the lookup is: find the note type section → match source tag by longest prefix → find the field name → get directory + copyright. **Unmatched combinations are collected as errors** (see Import Plan Phase 1). No silent fallbacks — an unmatched combination means the routing config is incomplete and must be fixed before the import can run.
 
 **This config is import-time only.** Once files are stored, the routing config is not consulted again. The `MediaFileIndex` discovers files by scanning the filesystem.
 
