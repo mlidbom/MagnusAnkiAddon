@@ -100,9 +100,7 @@ public class JPCollection
    /// <summary>Clear and reload all caches. Called after sync or collection reload.</summary>
    public void ReloadFromBackend()
    {
-      using var runner = NoteServices.TaskRunner.Current("Populating caches from file system");
-      // ReSharper disable once ExplicitCallerInfoArgument
-      using var _ = this.Log().Info().LogMethodExecutionTime("====== Reloading JAStudio data ======");
+      using var runner = NoteServices.TaskRunner.Current("=== Populating JAStudio data from file system ===");
 
       ClearCaches();
       var repoLoad = TaskCE.Run(LoadFromRepository);
@@ -147,11 +145,9 @@ public class JPCollection
 
    void LoadFromRepository()
    {
-      using var _ = this.Log().Warning().LogMethodExecutionTime();
+      using var runner = NoteServices.TaskRunner.Current("Populating caches from file system");
 
       var allNotes = _repository.LoadAll();
-
-      using var runner = NoteServices.TaskRunner.Current("Populating caches from file system");
 
       Task.WaitAll(
          runner.RunIndeterminateAsync("Pushing kanji notes into cache", () => Kanji.Cache.AddAllToCache(allNotes.Kanji)),
@@ -161,16 +157,17 @@ public class JPCollection
 
    void WireMediaIntoNotes(ITaskProgressRunner runner)
    {
-      runner.RunIndeterminate("Wiring media into notes", () =>
-      {
-         foreach(var note in Vocab.All())
-            note.Media = _mediaFileIndex.GetNoteMedia(note.GetId());
+      runner.RunIndeterminate("Wiring media into notes",
+                              () =>
+                              {
+                                 foreach(var note in Vocab.All())
+                                    note.Media = _mediaFileIndex.GetNoteMedia(note.GetId());
 
-         foreach(var note in Kanji.All())
-            note.Media = _mediaFileIndex.GetNoteMedia(note.GetId());
+                                 foreach(var note in Kanji.All())
+                                    note.Media = _mediaFileIndex.GetNoteMedia(note.GetId());
 
-         foreach(var note in Sentences.All())
-            note.Media = _mediaFileIndex.GetNoteMedia(note.GetId());
-      });
+                                 foreach(var note in Sentences.All())
+                                    note.Media = _mediaFileIndex.GetNoteMedia(note.GetId());
+                              });
    }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Compze.Utilities.Functional;
 using Compze.Utilities.Logging;
 using JAStudio.Core.Note;
@@ -45,19 +46,15 @@ public class MediaFileIndex
          return;
       }
 
-      using var scope = _taskRunner.Current("Loading media index");
+      using var runner = _taskRunner.Current("Loading media index");
 
-      var scan = scope.RunIndeterminate("Scanning media files", ScanMediaFiles);
+      var scan = runner.RunIndeterminate("Scanning media files", ScanMediaFiles);
 
-      var audioAttachments = scope.RunBatch(scan.AudioSidecarPaths, path => DeserializeSidecar(path, isAudio: true, scan.MediaFilesByDirectory), "Loading audio sidecars", ThreadCount.FractionOfLogicalCores(0.3));
-      var imageAttachments = scope.RunBatch(scan.ImageSidecarPaths, path => DeserializeSidecar(path, isAudio: false, scan.MediaFilesByDirectory), "Loading image sidecars", ThreadCount.FractionOfLogicalCores(0.3));
+      var audioAttachments = runner.RunBatchAsync(scan.AudioSidecarPaths, path => DeserializeSidecar(path, isAudio: true, scan.MediaFilesByDirectory), "Loading audio sidecars", ThreadCount.FractionOfLogicalCores(0.3));
+      var imageAttachments = runner.RunBatchAsync(scan.ImageSidecarPaths, path => DeserializeSidecar(path, isAudio: false, scan.MediaFilesByDirectory), "Loading image sidecars", ThreadCount.FractionOfLogicalCores(0.3));
 
-      scope.RunIndeterminate("Building media indexes",
-                             () =>
-                             {
-                                foreach(var attachment in audioAttachments) IndexAttachment(attachment);
-                                foreach(var attachment in imageAttachments) IndexAttachment(attachment);
-                             });
+      runner.RunBatch(audioAttachments.Result, IndexAttachment, "Indexing audio attachments");
+      runner.RunBatch(imageAttachments.Result, IndexAttachment, "Indexing image attachments");
 
       _initialized = true;
       this.Log().Info($"Media file index built: {_byId.Count} files indexed under {_mediaRoot}");
