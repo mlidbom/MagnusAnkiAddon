@@ -106,9 +106,9 @@ public class JPCollection
       var repoLoad = TaskCE.Run(LoadFromRepository);
       var mediaIndexBuild = TaskCE.Run(() => _mediaFileIndex.Build());
 
-      Task<BackendData?> backendDataTask = _backendDataLoader != null
-                                              ? Task.Run(() => (BackendData?)_backendDataLoader.Load(NoteServices.TaskRunner))
-                                              : Task.FromResult<BackendData?>(null);
+      var backendDataTask = _backendDataLoader != null
+                               ? Task.Run(BackendData? () => _backendDataLoader.Load(NoteServices.TaskRunner))
+                               : Task.FromResult<BackendData?>(null);
 
       Task.WaitAll(repoLoad, mediaIndexBuild, backendDataTask);
 
@@ -145,7 +145,7 @@ public class JPCollection
 
    void LoadFromRepository()
    {
-      using var runner = NoteServices.TaskRunner.Current("Populating caches from file system");
+      using var runner = NoteServices.TaskRunner.Current("Loading notes from repository");
 
       var allNotes = _repository.LoadAll();
 
