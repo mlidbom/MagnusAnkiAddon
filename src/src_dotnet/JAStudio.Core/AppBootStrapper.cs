@@ -59,10 +59,10 @@ static class AppBootstrapper
 
          // Media storage
          Singleton.For<MediaFileIndex>().CreatedBy(() =>
-                                                      new MediaFileIndex(Path.Combine(App.DatabaseDir, "files"))),
+                                                      new MediaFileIndex(Path.Combine(App.DatabaseDir, "media"))),
          Singleton.For<MediaRoutingConfig>().CreatedBy(MediaRoutingConfig.Default),
          Singleton.For<MediaStorageService>().CreatedBy((MediaFileIndex index, MediaRoutingConfig routingConfig) =>
-                                                           new MediaStorageService(Path.Combine(App.DatabaseDir, "files"), index, routingConfig)),
+                                                           new MediaStorageService(Path.Combine(App.DatabaseDir, "media"), index, routingConfig)),
 
          // Core services
          Singleton.For<Settings>().CreatedBy((JapaneseConfig config) => new Settings(config)),
