@@ -14,7 +14,7 @@ namespace JAStudio.UI.Dialogs;
 /// </summary>
 public partial class TaskProgressScopePanel : UserControl
 {
-   static readonly string[] DepthBackgrounds = ["#10808080", "#08606080", "#06404060", "#04303050"];
+   static readonly string[] DepthBackgrounds = ["#18607890", "#14508070", "#10406860", "#0C305050"];
 
    /// <summary>
    /// Parameterless constructor used by DataTemplate instantiation.
