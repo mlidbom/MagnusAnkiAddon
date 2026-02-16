@@ -4,10 +4,9 @@
         x:Class="JAStudio.UI.Views.MediaImportDialog"
         x:DataType="vm:MediaImportDialogViewModel"
         Title="Media Import"
-        SizeToContent="Height"
-        Width="900"
+        Width="950" Height="700"
         MinWidth="700" MinHeight="500"
-        Design.Width="900" Design.Height="800"
+        Design.Width="950" Design.Height="700"
         WindowStartupLocation="Manual">
 
     <Design.DataContext>
@@ -31,128 +30,150 @@
             <!-- Status bar -->
             <TextBlock DockPanel.Dock="Bottom" Text="{Binding StatusText}" Margin="0,5,0,0" FontStyle="Italic" />
 
-            <!-- Main content -->
-            <ScrollViewer>
-                <StackPanel Spacing="10" Margin="5">
+            <!-- Plan summary -->
+            <Border DockPanel.Dock="Bottom" BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10" Margin="0,5,0,0"
+                    IsVisible="{Binding HasPlan}">
+                <Grid ColumnDefinitions="Auto,Auto,30,Auto,Auto,30,Auto,Auto" RowDefinitions="Auto">
+                    <TextBlock Grid.Column="0" Text="To import:" FontWeight="SemiBold" Margin="0,0,5,0" />
+                    <TextBlock Grid.Column="1" Text="{Binding FilesToImportCount}" />
+                    <TextBlock Grid.Column="3" Text="Already stored:" FontWeight="SemiBold" Margin="0,0,5,0" />
+                    <TextBlock Grid.Column="4" Text="{Binding AlreadyStoredCount}" />
+                    <TextBlock Grid.Column="6" Text="Missing from Anki:" FontWeight="SemiBold" Margin="0,0,5,0" />
+                    <TextBlock Grid.Column="7" Text="{Binding MissingCount}" />
+                </Grid>
+            </Border>
 
-                    <!-- Plan summary -->
-                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10"
-                            IsVisible="{Binding HasPlan}">
-                        <Grid ColumnDefinitions="Auto,Auto,30,Auto,Auto,30,Auto,Auto" RowDefinitions="Auto">
-                            <TextBlock Grid.Column="0" Text="To import:" FontWeight="SemiBold" Margin="0,0,5,0" />
-                            <TextBlock Grid.Column="1" Text="{Binding FilesToImportCount}" />
-                            <TextBlock Grid.Column="3" Text="Already stored:" FontWeight="SemiBold" Margin="0,0,5,0" />
-                            <TextBlock Grid.Column="4" Text="{Binding AlreadyStoredCount}" />
-                            <TextBlock Grid.Column="6" Text="Missing from Anki:" FontWeight="SemiBold" Margin="0,0,5,0" />
-                            <TextBlock Grid.Column="7" Text="{Binding MissingCount}" />
-                        </Grid>
-                    </Border>
-
-                    <!-- Discovery: Vocab -->
-                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
-                        <StackPanel Spacing="5">
-                            <TextBlock Text="Vocab — Un-imported Media" FontWeight="SemiBold" FontSize="14" />
-                            <DataGrid ItemsSource="{Binding VocabGroups}" IsReadOnly="True"
-                                      AutoGenerateColumns="False" MaxHeight="200">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Source" Binding="{Binding SourcePrefix}" Width="*" />
-                                    <DataGridTextColumn Header="Type" Binding="{Binding MediaType}" Width="80" />
-                                    <DataGridTextColumn Header="Files" Binding="{Binding FileCount}" Width="80" />
-                                </DataGrid.Columns>
-                            </DataGrid>
-
-                            <StackPanel Spacing="3">
-                                <TextBlock Text="Import Rules:" FontWeight="SemiBold" Margin="0,5,0,0" />
-                                <ItemsControl ItemsSource="{Binding VocabRules}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:EditableImportRule">
-                                            <Grid ColumnDefinitions="*,Auto,*,Auto,10" Margin="0,2">
-                                                <TextBox Grid.Column="0" Watermark="Source tag prefix" Text="{Binding SourceTagPrefix}" Margin="0,0,5,0" />
-                                                <ComboBox Grid.Column="1" ItemsSource="{Binding #VocabFieldList.Tag}" SelectedItem="{Binding SelectedField}" Width="120" Margin="0,0,5,0" />
-                                                <TextBox Grid.Column="2" Watermark="Target directory" Text="{Binding TargetDirectory}" Margin="0,0,5,0" />
-                                                <ComboBox Grid.Column="3" ItemsSource="{x:Static vm:EditableImportRule.CopyrightOptions}" SelectedItem="{Binding SelectedCopyright}" Width="120" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                                <Button Content="+ Add Vocab Rule" Command="{Binding AddVocabRuleCommand}" HorizontalAlignment="Left" />
-                                <!-- Hidden tag carrier for vocab fields -->
-                                <Border x:Name="VocabFieldList" IsVisible="False"
-                                        Tag="{x:Static vm:MediaImportDialogViewModel.VocabFieldNames}" />
-                            </StackPanel>
+            <!-- Tabs -->
+            <TabControl>
+                <!-- Vocab Tab -->
+                <TabItem Header="Vocab" DataContext="{Binding VocabTab}">
+                    <DockPanel Margin="5">
+                        <!-- Rules section -->
+                        <StackPanel DockPanel.Dock="Top" Spacing="3">
+                            <TextBlock Text="Import Rules" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,5" />
+                            <ItemsControl ItemsSource="{Binding Rules}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:EditableImportRule">
+                                        <Grid ColumnDefinitions="*,120,*,120,Auto,Auto" Margin="0,2">
+                                            <TextBox Grid.Column="0" Watermark="Source tag prefix" Text="{Binding SourceTagPrefix}" Margin="0,0,5,0" />
+                                            <ComboBox Grid.Column="1" ItemsSource="{x:Static vm:MediaImportDialogViewModel.VocabFieldNames}" SelectedItem="{Binding SelectedField}" Margin="0,0,5,0" />
+                                            <TextBox Grid.Column="2" Watermark="Target directory" Text="{Binding TargetDirectory}" Margin="0,0,5,0" />
+                                            <ComboBox Grid.Column="3" ItemsSource="{x:Static vm:EditableImportRule.CopyrightOptions}" SelectedItem="{Binding SelectedCopyright}" Margin="0,0,5,0" />
+                                            <TextBlock Grid.Column="4" Text="{Binding MatchCount, StringFormat='({0} files)'}" VerticalAlignment="Center" Margin="0,0,10,0" MinWidth="80" />
+                                            <Button Grid.Column="5" Content="X" Command="{Binding $parent[ItemsControl].((vm:NoteTypeImportTabViewModel`1).RemoveRuleCommand)}" CommandParameter="{Binding}" Width="30" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <Button Content="+ Add Rule" Command="{Binding AddRuleCommand}" HorizontalAlignment="Left" Margin="0,3,0,0" />
                         </StackPanel>
-                    </Border>
 
-                    <!-- Discovery: Sentences -->
-                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
-                        <StackPanel Spacing="5">
-                            <TextBlock Text="Sentences — Un-imported Media" FontWeight="SemiBold" FontSize="14" />
-                            <DataGrid ItemsSource="{Binding SentenceGroups}" IsReadOnly="True"
-                                      AutoGenerateColumns="False" MaxHeight="200">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Source" Binding="{Binding SourcePrefix}" Width="*" />
-                                    <DataGridTextColumn Header="Type" Binding="{Binding MediaType}" Width="80" />
-                                    <DataGridTextColumn Header="Files" Binding="{Binding FileCount}" Width="80" />
-                                </DataGrid.Columns>
-                            </DataGrid>
-
-                            <StackPanel Spacing="3">
-                                <TextBlock Text="Import Rules:" FontWeight="SemiBold" Margin="0,5,0,0" />
-                                <ItemsControl ItemsSource="{Binding SentenceRules}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:EditableImportRule">
-                                            <Grid ColumnDefinitions="*,Auto,*,Auto,10" Margin="0,2">
-                                                <TextBox Grid.Column="0" Watermark="Source tag prefix" Text="{Binding SourceTagPrefix}" Margin="0,0,5,0" />
-                                                <ComboBox Grid.Column="1" ItemsSource="{Binding #SentenceFieldList.Tag}" SelectedItem="{Binding SelectedField}" Width="120" Margin="0,0,5,0" />
-                                                <TextBox Grid.Column="2" Watermark="Target directory" Text="{Binding TargetDirectory}" Margin="0,0,5,0" />
-                                                <ComboBox Grid.Column="3" ItemsSource="{x:Static vm:EditableImportRule.CopyrightOptions}" SelectedItem="{Binding SelectedCopyright}" Width="120" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                                <Button Content="+ Add Sentence Rule" Command="{Binding AddSentenceRuleCommand}" HorizontalAlignment="Left" />
-                                <Border x:Name="SentenceFieldList" IsVisible="False"
-                                        Tag="{x:Static vm:MediaImportDialogViewModel.SentenceFieldNames}" />
-                            </StackPanel>
+                        <!-- Summary line -->
+                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,10,0,5" Spacing="20">
+                            <TextBlock FontWeight="SemiBold">
+                                <Run Text="Mapped: " /><Run Text="{Binding TotalMappedCount}" />
+                            </TextBlock>
+                            <TextBlock FontWeight="SemiBold">
+                                <Run Text="Unmapped: " /><Run Text="{Binding TotalUnmappedCount}" />
+                            </TextBlock>
                         </StackPanel>
-                    </Border>
 
-                    <!-- Discovery: Kanji -->
-                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
-                        <StackPanel Spacing="5">
-                            <TextBlock Text="Kanji — Un-imported Media" FontWeight="SemiBold" FontSize="14" />
-                            <DataGrid ItemsSource="{Binding KanjiGroups}" IsReadOnly="True"
-                                      AutoGenerateColumns="False" MaxHeight="200">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Source" Binding="{Binding SourcePrefix}" Width="*" />
-                                    <DataGridTextColumn Header="Type" Binding="{Binding MediaType}" Width="80" />
-                                    <DataGridTextColumn Header="Files" Binding="{Binding FileCount}" Width="80" />
-                                </DataGrid.Columns>
-                            </DataGrid>
+                        <!-- Unmapped files -->
+                        <DataGrid ItemsSource="{Binding UnmappedGroups}" IsReadOnly="True"
+                                  AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Source" Binding="{Binding SourcePrefix}" Width="*" />
+                                <DataGridTextColumn Header="Field" Binding="{Binding FieldName}" Width="120" />
+                                <DataGridTextColumn Header="Files" Binding="{Binding FileCount}" Width="80" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </DockPanel>
+                </TabItem>
 
-                            <StackPanel Spacing="3">
-                                <TextBlock Text="Import Rules:" FontWeight="SemiBold" Margin="0,5,0,0" />
-                                <ItemsControl ItemsSource="{Binding KanjiRules}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:EditableImportRule">
-                                            <Grid ColumnDefinitions="*,Auto,*,Auto,10" Margin="0,2">
-                                                <TextBox Grid.Column="0" Watermark="Source tag prefix" Text="{Binding SourceTagPrefix}" Margin="0,0,5,0" />
-                                                <ComboBox Grid.Column="1" ItemsSource="{Binding #KanjiFieldList.Tag}" SelectedItem="{Binding SelectedField}" Width="120" Margin="0,0,5,0" />
-                                                <TextBox Grid.Column="2" Watermark="Target directory" Text="{Binding TargetDirectory}" Margin="0,0,5,0" />
-                                                <ComboBox Grid.Column="3" ItemsSource="{x:Static vm:EditableImportRule.CopyrightOptions}" SelectedItem="{Binding SelectedCopyright}" Width="120" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                                <Button Content="+ Add Kanji Rule" Command="{Binding AddKanjiRuleCommand}" HorizontalAlignment="Left" />
-                                <Border x:Name="KanjiFieldList" IsVisible="False"
-                                        Tag="{x:Static vm:MediaImportDialogViewModel.KanjiFieldNames}" />
-                            </StackPanel>
+                <!-- Sentence Tab -->
+                <TabItem Header="Sentences" DataContext="{Binding SentenceTab}">
+                    <DockPanel Margin="5">
+                        <StackPanel DockPanel.Dock="Top" Spacing="3">
+                            <TextBlock Text="Import Rules" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,5" />
+                            <ItemsControl ItemsSource="{Binding Rules}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:EditableImportRule">
+                                        <Grid ColumnDefinitions="*,120,*,120,Auto,Auto" Margin="0,2">
+                                            <TextBox Grid.Column="0" Watermark="Source tag prefix" Text="{Binding SourceTagPrefix}" Margin="0,0,5,0" />
+                                            <ComboBox Grid.Column="1" ItemsSource="{x:Static vm:MediaImportDialogViewModel.SentenceFieldNames}" SelectedItem="{Binding SelectedField}" Margin="0,0,5,0" />
+                                            <TextBox Grid.Column="2" Watermark="Target directory" Text="{Binding TargetDirectory}" Margin="0,0,5,0" />
+                                            <ComboBox Grid.Column="3" ItemsSource="{x:Static vm:EditableImportRule.CopyrightOptions}" SelectedItem="{Binding SelectedCopyright}" Margin="0,0,5,0" />
+                                            <TextBlock Grid.Column="4" Text="{Binding MatchCount, StringFormat='({0} files)'}" VerticalAlignment="Center" Margin="0,0,10,0" MinWidth="80" />
+                                            <Button Grid.Column="5" Content="X" Command="{Binding $parent[ItemsControl].((vm:NoteTypeImportTabViewModel`1).RemoveRuleCommand)}" CommandParameter="{Binding}" Width="30" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <Button Content="+ Add Rule" Command="{Binding AddRuleCommand}" HorizontalAlignment="Left" Margin="0,3,0,0" />
                         </StackPanel>
-                    </Border>
 
-                </StackPanel>
-            </ScrollViewer>
+                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,10,0,5" Spacing="20">
+                            <TextBlock FontWeight="SemiBold">
+                                <Run Text="Mapped: " /><Run Text="{Binding TotalMappedCount}" />
+                            </TextBlock>
+                            <TextBlock FontWeight="SemiBold">
+                                <Run Text="Unmapped: " /><Run Text="{Binding TotalUnmappedCount}" />
+                            </TextBlock>
+                        </StackPanel>
+
+                        <DataGrid ItemsSource="{Binding UnmappedGroups}" IsReadOnly="True"
+                                  AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Source" Binding="{Binding SourcePrefix}" Width="*" />
+                                <DataGridTextColumn Header="Field" Binding="{Binding FieldName}" Width="120" />
+                                <DataGridTextColumn Header="Files" Binding="{Binding FileCount}" Width="80" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </DockPanel>
+                </TabItem>
+
+                <!-- Kanji Tab -->
+                <TabItem Header="Kanji" DataContext="{Binding KanjiTab}">
+                    <DockPanel Margin="5">
+                        <StackPanel DockPanel.Dock="Top" Spacing="3">
+                            <TextBlock Text="Import Rules" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,5" />
+                            <ItemsControl ItemsSource="{Binding Rules}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:EditableImportRule">
+                                        <Grid ColumnDefinitions="*,120,*,120,Auto,Auto" Margin="0,2">
+                                            <TextBox Grid.Column="0" Watermark="Source tag prefix" Text="{Binding SourceTagPrefix}" Margin="0,0,5,0" />
+                                            <ComboBox Grid.Column="1" ItemsSource="{x:Static vm:MediaImportDialogViewModel.KanjiFieldNames}" SelectedItem="{Binding SelectedField}" Margin="0,0,5,0" />
+                                            <TextBox Grid.Column="2" Watermark="Target directory" Text="{Binding TargetDirectory}" Margin="0,0,5,0" />
+                                            <ComboBox Grid.Column="3" ItemsSource="{x:Static vm:EditableImportRule.CopyrightOptions}" SelectedItem="{Binding SelectedCopyright}" Margin="0,0,5,0" />
+                                            <TextBlock Grid.Column="4" Text="{Binding MatchCount, StringFormat='({0} files)'}" VerticalAlignment="Center" Margin="0,0,10,0" MinWidth="80" />
+                                            <Button Grid.Column="5" Content="X" Command="{Binding $parent[ItemsControl].((vm:NoteTypeImportTabViewModel`1).RemoveRuleCommand)}" CommandParameter="{Binding}" Width="30" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <Button Content="+ Add Rule" Command="{Binding AddRuleCommand}" HorizontalAlignment="Left" Margin="0,3,0,0" />
+                        </StackPanel>
+
+                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,10,0,5" Spacing="20">
+                            <TextBlock FontWeight="SemiBold">
+                                <Run Text="Mapped: " /><Run Text="{Binding TotalMappedCount}" />
+                            </TextBlock>
+                            <TextBlock FontWeight="SemiBold">
+                                <Run Text="Unmapped: " /><Run Text="{Binding TotalUnmappedCount}" />
+                            </TextBlock>
+                        </StackPanel>
+
+                        <DataGrid ItemsSource="{Binding UnmappedGroups}" IsReadOnly="True"
+                                  AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Source" Binding="{Binding SourcePrefix}" Width="*" />
+                                <DataGridTextColumn Header="Field" Binding="{Binding FieldName}" Width="120" />
+                                <DataGridTextColumn Header="Files" Binding="{Binding FileCount}" Width="80" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </DockPanel>
+                </TabItem>
+            </TabControl>
         </DockPanel>
     </LayoutTransformControl>
 </Window>
