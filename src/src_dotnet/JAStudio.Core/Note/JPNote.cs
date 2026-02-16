@@ -129,9 +129,6 @@ public abstract class JPNote
 
    public abstract List<MediaReference> MediaReferences { get; }
 
-   protected static List<MediaReference> WithFieldName(List<MediaReference> refs, string fieldName) =>
-      refs.ConvertAll(r => r with { FieldName = fieldName });
-
    public abstract CorpusDataBase ToCorpusData();
 
    byte[] TakeSnapshot() => MemoryPackSerializer.Serialize(ToCorpusData());

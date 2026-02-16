@@ -18,7 +18,7 @@ public class MediaStorageService
       _routingConfig = routingConfig;
    }
 
-   public MediaFileId StoreFile(string sourceFilePath, string sourceTag, string originalFileName, NoteId noteId, string? ankiFieldName, MediaType mediaType, CopyrightStatus copyright, TtsInfo? tts = null)
+   public MediaFileId StoreFile(string sourceFilePath, string sourceTag, string originalFileName, NoteId noteId, MediaType mediaType, CopyrightStatus copyright, TtsInfo? tts = null)
    {
       var id = MediaFileId.New();
       var destPath = BuildStoragePath(id, sourceTag, originalFileName);
@@ -34,7 +34,6 @@ public class MediaStorageService
                         Id = id,
                         NoteIds = [noteId],
                         NoteSourceTag = sourceTag,
-                        AnkiFieldName = ankiFieldName,
                         OriginalFileName = originalFileName,
                         Copyright = copyright,
                         Tts = tts
@@ -52,7 +51,6 @@ public class MediaStorageService
                         Id = id,
                         NoteIds = [noteId],
                         NoteSourceTag = sourceTag,
-                        AnkiFieldName = ankiFieldName,
                         OriginalFileName = originalFileName,
                         Copyright = copyright
                      };

@@ -75,11 +75,11 @@ public class VocabNote : JPNote
    {
       get
       {
-         var refs = WithFieldName(Audio.First.GetMediaReferences(), "Audio.First");
-         refs.AddRange(WithFieldName(Audio.Second.GetMediaReferences(), "Audio.Second"));
-         refs.AddRange(WithFieldName(Audio.Tts.GetMediaReferences(), "Audio.Tts"));
-         refs.AddRange(WithFieldName(Image.GetMediaReferences(), "Image"));
-         refs.AddRange(WithFieldName(UserImage.GetMediaReferences(), "UserImage"));
+         var refs = Audio.First.GetMediaReferences();
+         refs.AddRange(Audio.Second.GetMediaReferences());
+         refs.AddRange(Audio.Tts.GetMediaReferences());
+         refs.AddRange(Image.GetMediaReferences());
+         refs.AddRange(UserImage.GetMediaReferences());
          return refs;
       }
    }

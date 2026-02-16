@@ -9,7 +9,6 @@ public abstract record MediaAttachment
    public required MediaFileId Id { get; init; }
    public required List<NoteId> NoteIds { get; init; }
    public required string NoteSourceTag { get; init; }
-   public string? AnkiFieldName { get; init; }
    public string? OriginalFileName { get; init; }
    public required CopyrightStatus Copyright { get; init; }
 

@@ -25,7 +25,6 @@ public class When_serializing_a_sidecar
                         Id = new MediaFileId(Guid.Parse("a1b2c3d4-e5f6-7890-abcd-ef1234567890")),
                         NoteIds = [new NoteId(Guid.Parse("9f8e7d6c-5b4a-3210-fedc-ba9876543210"))],
                         NoteSourceTag = "source::anime::natsume::s1::01",
-                        AnkiFieldName = "Audio",
                         OriginalFileName = "natsume_ep01_03m22s.mp3",
                         Copyright = CopyrightStatus.Commercial
                      };
@@ -37,7 +36,6 @@ public class When_serializing_a_sidecar
       [XF] public void it_roundtrips_the_id() => _deserialized.Id.Must().Be(_original.Id);
       [XF] public void it_roundtrips_the_note_ids() => _deserialized.NoteIds.Count.Must().Be(1);
       [XF] public void it_roundtrips_the_note_source_tag() => _deserialized.NoteSourceTag.Must().Be("source::anime::natsume::s1::01");
-      [XF] public void it_roundtrips_the_anki_field_name() => _deserialized.AnkiFieldName.Must().Be("Audio");
       [XF] public void it_roundtrips_the_original_filename() => _deserialized.OriginalFileName.Must().Be("natsume_ep01_03m22s.mp3");
       [XF] public void it_roundtrips_the_copyright() => _deserialized.Copyright.Must().Be(CopyrightStatus.Commercial);
       [XF] public void tts_is_null_when_not_set() => _deserialized.Tts.Must().BeNull();
@@ -57,7 +55,6 @@ public class When_serializing_a_sidecar
                         Id = new MediaFileId(Guid.Parse("a1b2c3d4-e5f6-7890-abcd-ef1234567890")),
                         NoteIds = [new NoteId(Guid.Parse("9f8e7d6c-5b4a-3210-fedc-ba9876543210"))],
                         NoteSourceTag = "source::wani::level05",
-                        AnkiFieldName = "Audio",
                         Copyright = CopyrightStatus.Free,
                         Tts = new TtsInfo("azure-neural", "ja-JP-NanamiNeural", "2025.1")
                      };
@@ -88,7 +85,6 @@ public class When_serializing_a_sidecar
                                 new NoteId(Guid.Parse("33333333-3333-3333-3333-333333333333"))
                              ],
                              NoteSourceTag = "source::core2000::step01",
-                             AnkiFieldName = "Audio.First",
                              OriginalFileName = "走る_core2k.mp3",
                              Copyright = CopyrightStatus.Commercial
                           };
@@ -112,7 +108,6 @@ public class When_serializing_a_sidecar
                         Id = new MediaFileId(Guid.Parse("f7e6d5c4-b3a2-1098-7654-321fedcba098")),
                         NoteIds = [new NoteId(Guid.Parse("9f8e7d6c-5b4a-3210-fedc-ba9876543210"))],
                         NoteSourceTag = "source::anime::natsume::s1::01",
-                        AnkiFieldName = "Screenshot",
                         OriginalFileName = "natsume_ep01_03m22s.png",
                         Copyright = CopyrightStatus.Commercial
                      };
@@ -144,7 +139,6 @@ public class When_serializing_a_sidecar
       }
 
       [XF] public void it_omits_null_originalFileName() => _json.Must().NotContain("originalFileName");
-      [XF] public void it_omits_null_ankiFieldName() => _json.Must().NotContain("ankiFieldName");
       [XF] public void it_omits_null_tts() => _json.Must().NotContain("tts");
    }
 

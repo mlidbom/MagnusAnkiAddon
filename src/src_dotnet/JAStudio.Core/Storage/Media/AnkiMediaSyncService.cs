@@ -48,7 +48,7 @@ public class AnkiMediaSyncService : IMediaSyncService
          }
 
          var copyright = reference.Type == MediaType.Audio ? CopyrightStatus.Free : CopyrightStatus.Free;
-         _storageService.StoreFile(sourcePath, sourceTag, reference.FileName, noteId, reference.FieldName, reference.Type, copyright);
+         _storageService.StoreFile(sourcePath, sourceTag, reference.FileName, noteId, reference.Type, copyright);
       }
    }
 }

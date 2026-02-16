@@ -456,8 +456,8 @@ public class KanjiNote : JPNote
    {
       get
       {
-         var refs = WithFieldName(Audio.GetMediaReferences(), "Audio");
-         refs.AddRange(WithFieldName(Image.GetMediaReferences(), "Image"));
+         var refs = Audio.GetMediaReferences();
+         refs.AddRange(Image.GetMediaReferences());
          return refs;
       }
    }

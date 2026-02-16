@@ -52,7 +52,7 @@ public class When_storing_a_media_file : IDisposable
 
          var sourceFile = CreateSourceFile();
          _id = _service.StoreFile(sourceFile, "anime::natsume::s1::01", "natsume_ep01_03m22s.mp3",
-            new NoteId(Guid.NewGuid()), "Audio", MediaType.Audio, CopyrightStatus.Commercial);
+            new NoteId(Guid.NewGuid()), MediaType.Audio, CopyrightStatus.Commercial);
          _resolved = _service.TryResolve(_id);
       }
 
@@ -76,7 +76,7 @@ public class When_storing_a_media_file : IDisposable
 
          var sourceFile = CreateSourceFile();
          var id = _service.StoreFile(sourceFile, "forvo", "走る_forvo.mp3",
-            new NoteId(Guid.NewGuid()), "Audio", MediaType.Audio, CopyrightStatus.Free);
+            new NoteId(Guid.NewGuid()), MediaType.Audio, CopyrightStatus.Free);
          _resolved = _service.TryResolve(id);
       }
 
@@ -94,7 +94,7 @@ public class When_storing_a_media_file : IDisposable
 
          var sourceFile = CreateSourceFile();
          _storedId = _service.StoreFile(sourceFile, "test", "test.mp3",
-            new NoteId(Guid.NewGuid()), "Audio", MediaType.Audio, CopyrightStatus.Free);
+            new NoteId(Guid.NewGuid()), MediaType.Audio, CopyrightStatus.Free);
       }
 
       [XF] public void stored_file_exists() => _service.Exists(_storedId).Must().BeTrue();
@@ -113,7 +113,7 @@ public class When_storing_a_media_file : IDisposable
 
          var sourceFile = CreateSourceFile();
          _id = _service.StoreFile(sourceFile, "anime::natsume::s1::01", "ep01.mp3",
-            new NoteId(Guid.NewGuid()), "Audio", MediaType.Audio, CopyrightStatus.Commercial);
+            new NoteId(Guid.NewGuid()), MediaType.Audio, CopyrightStatus.Commercial);
 
          _freshIndex = new MediaFileIndex(_mediaRoot);
          _freshIndex.Build();
