@@ -7,6 +7,12 @@ namespace JAStudio.Core.Storage.Media;
 
 public static class SidecarSerializer
 {
+   public const string AudioSidecarExtension = ".audio.json";
+   public const string ImageSidecarExtension = ".image.json";
+   const string SidecarJsonExtension = ".json";
+   public const string AudioSidecarGlob = "*" + AudioSidecarExtension;
+   public const string ImageSidecarGlob = "*" + ImageSidecarExtension;
+
    static readonly JsonSerializerOptions Options = new()
                                                    {
                                                       WriteIndented = true,
@@ -32,21 +38,20 @@ public static class SidecarSerializer
       JsonSerializer.Deserialize<ImageAttachment>(json, Options)
       ?? throw new JsonException("Failed to deserialize ImageAttachment");
 
-   public static string GetAudioSidecarExtension() => ".audio.json";
-   public static string GetImageSidecarExtension() => ".image.json";
+   public static bool IsSidecarFile(string filePath) => filePath.EndsWith(SidecarJsonExtension, StringComparison.OrdinalIgnoreCase);
 
    public static string BuildAudioSidecarPath(string mediaFilePath)
    {
       var dir = Path.GetDirectoryName(mediaFilePath) ?? string.Empty;
       var id = Path.GetFileNameWithoutExtension(mediaFilePath);
-      return Path.Combine(dir, $"{id}{GetAudioSidecarExtension()}");
+      return Path.Combine(dir, $"{id}{AudioSidecarExtension}");
    }
 
    public static string BuildImageSidecarPath(string mediaFilePath)
    {
       var dir = Path.GetDirectoryName(mediaFilePath) ?? string.Empty;
       var id = Path.GetFileNameWithoutExtension(mediaFilePath);
-      return Path.Combine(dir, $"{id}{GetImageSidecarExtension()}");
+      return Path.Combine(dir, $"{id}{ImageSidecarExtension}");
    }
 
    public static void WriteAudioSidecar(string sidecarPath, AudioAttachment attachment) =>

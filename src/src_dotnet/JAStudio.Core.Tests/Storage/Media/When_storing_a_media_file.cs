@@ -47,7 +47,7 @@ public class When_storing_a_media_file : IDisposable
       {
          var config = new MediaRoutingConfig(
             [new MediaRoutingRule("anime::natsume", "commercial-001")],
-            "general");
+            MediaRoutingConfig.DefaultDirectoryName);
          InitService(config);
 
          var sourceFile = CreateSourceFile();
@@ -80,7 +80,7 @@ public class When_storing_a_media_file : IDisposable
          _resolved = _service.TryResolve(id);
       }
 
-      [XF] public void the_path_uses_the_general_directory() => _resolved!.Must().Contain("general");
+      [XF] public void the_path_uses_the_general_directory() => _resolved!.Must().Contain(MediaRoutingConfig.DefaultDirectoryName);
    }
 
    public class after_storing_a_file : When_storing_a_media_file

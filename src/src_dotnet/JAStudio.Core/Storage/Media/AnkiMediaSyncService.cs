@@ -8,6 +8,8 @@ namespace JAStudio.Core.Storage.Media;
 
 public class AnkiMediaSyncService : IMediaSyncService
 {
+   const string FallbackSourceTag = "anki::unknown";
+
    readonly Func<string> _ankiMediaDir;
    readonly MediaStorageService _storageService;
    readonly MediaFileIndex _index;
@@ -27,7 +29,7 @@ public class AnkiMediaSyncService : IMediaSyncService
       var ankiMediaDir = _ankiMediaDir();
       var noteId = note.GetId();
       var rawSourceTag = note.GetSourceTag();
-      var sourceTag = string.IsNullOrEmpty(rawSourceTag) ? "anki::unknown" : $"source::{rawSourceTag}";
+      var sourceTag = string.IsNullOrEmpty(rawSourceTag) ? FallbackSourceTag : $"{Tags.Source.Folder}{rawSourceTag}";
 
       foreach(var reference in references)
       {

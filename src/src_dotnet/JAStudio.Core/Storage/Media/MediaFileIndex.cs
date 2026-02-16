@@ -31,12 +31,12 @@ public class MediaFileIndex
          return;
       }
 
-      foreach(var sidecarPath in Directory.EnumerateFiles(_mediaRoot, "*.audio.json", SearchOption.AllDirectories))
+      foreach(var sidecarPath in Directory.EnumerateFiles(_mediaRoot, SidecarSerializer.AudioSidecarGlob, SearchOption.AllDirectories))
       {
          IndexSidecar(sidecarPath, isAudio: true);
       }
 
-      foreach(var sidecarPath in Directory.EnumerateFiles(_mediaRoot, "*.image.json", SearchOption.AllDirectories))
+      foreach(var sidecarPath in Directory.EnumerateFiles(_mediaRoot, SidecarSerializer.ImageSidecarGlob, SearchOption.AllDirectories))
       {
          IndexSidecar(sidecarPath, isAudio: false);
       }
@@ -92,7 +92,7 @@ public class MediaFileIndex
       var idStr = id.ToString();
       foreach(var file in Directory.EnumerateFiles(directory, $"{idStr}.*"))
       {
-         if(!file.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+         if(!SidecarSerializer.IsSidecarFile(file))
             return file;
       }
 

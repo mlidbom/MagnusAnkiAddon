@@ -178,7 +178,7 @@ public class When_serializing_a_sidecar
 
          [XF] public void it_roundtrips_through_file() => _read.Id.Must().Be(new MediaFileId(Guid.Parse("a1b2c3d4-e5f6-7890-abcd-ef1234567890")));
          [XF] public void the_sidecar_has_audio_json_extension() =>
-            SidecarSerializer.BuildAudioSidecarPath("dir/a1b2c3d4.mp3").Must().EndWith(".audio.json");
+            SidecarSerializer.BuildAudioSidecarPath("dir/a1b2c3d4.mp3").Must().EndWith(SidecarSerializer.AudioSidecarExtension);
       }
 
       public class image_sidecar_file : writing_and_reading_files
@@ -203,7 +203,7 @@ public class When_serializing_a_sidecar
 
          [XF] public void it_roundtrips_through_file() => _read.Id.Must().Be(new MediaFileId(Guid.Parse("f7e6d5c4-b3a2-1098-7654-321fedcba098")));
          [XF] public void the_sidecar_has_image_json_extension() =>
-            SidecarSerializer.BuildImageSidecarPath("dir/f7e6d5c4.png").Must().EndWith(".image.json");
+            SidecarSerializer.BuildImageSidecarPath("dir/f7e6d5c4.png").Must().EndWith(SidecarSerializer.ImageSidecarExtension);
       }
    }
 }

@@ -15,7 +15,7 @@ public class When_configuring_media_routing
             new MediaRoutingRule("anime::natsume", "commercial-001"),
             new MediaRoutingRule("anime", "commercial-002")
          ],
-         "general");
+         MediaRoutingConfig.DefaultDirectoryName);
 
       [XF] public void it_resolves_the_longest_matching_prefix() => _config.ResolveDirectory("anime::natsume::s1::01").Must().Be("commercial-001");
       [XF] public void it_falls_back_to_shorter_prefix() => _config.ResolveDirectory("anime::mushishi::s1::05").Must().Be("commercial-002");
@@ -25,15 +25,15 @@ public class When_configuring_media_routing
    {
       readonly MediaRoutingConfig _config = new(
          [new MediaRoutingRule("anime", "commercial-001")],
-         "general");
+         MediaRoutingConfig.DefaultDirectoryName);
 
-      [XF] public void it_falls_back_to_default() => _config.ResolveDirectory("forvo").Must().Be("general");
+      [XF] public void it_falls_back_to_default() => _config.ResolveDirectory("forvo").Must().Be(MediaRoutingConfig.DefaultDirectoryName);
    }
 
    public class with_default_config : When_configuring_media_routing
    {
       readonly MediaRoutingConfig _config = MediaRoutingConfig.Default();
 
-      [XF] public void it_routes_everything_to_general() => _config.ResolveDirectory("anything").Must().Be("general");
+      [XF] public void it_routes_everything_to_general() => _config.ResolveDirectory("anything").Must().Be(MediaRoutingConfig.DefaultDirectoryName);
    }
 }

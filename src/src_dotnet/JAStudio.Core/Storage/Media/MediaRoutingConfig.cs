@@ -31,5 +31,7 @@ public class MediaRoutingConfig
       return _defaultDirectory;
    }
 
-   public static MediaRoutingConfig Default() => new([], "general");
+   public const string DefaultDirectoryName = "general";
+
+   public static MediaRoutingConfig Default() => new([], DefaultDirectoryName);
 }
