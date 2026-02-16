@@ -34,7 +34,7 @@ public class When_building_a_MediaFileIndex : IDisposable
                   {
                      Id = id,
                      NoteIds = [noteId],
-                     NoteSourceTag = "source::test",
+                     NoteSourceTag = SourceTag.Parse("source::test"),
                      OriginalFileName = originalFileName,
                      Copyright = copyright
                   };

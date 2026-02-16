@@ -22,7 +22,8 @@ public static class SidecarSerializer
                                                       {
                                                          new JsonStringEnumConverter(JsonNamingPolicy.CamelCase),
                                                          new NoteIdJsonConverter(),
-                                                         new MediaFileIdJsonConverter()
+                                                         new MediaFileIdJsonConverter(),
+                                                         new SourceTagJsonConverter()
                                                       }
                                                    };
 

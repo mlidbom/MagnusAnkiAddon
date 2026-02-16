@@ -33,7 +33,7 @@ public class When_querying_MediaFileIndex_by_original_filename : IDisposable
                   {
                      Id = id,
                      NoteIds = [new NoteId(Guid.NewGuid())],
-                     NoteSourceTag = "source::test",
+                     NoteSourceTag = SourceTag.Parse("source::test"),
                      OriginalFileName = originalFileName,
                      Copyright = CopyrightStatus.Free
                   };
@@ -70,7 +70,7 @@ public class When_querying_MediaFileIndex_by_original_filename : IDisposable
                          {
                             Id = id,
                             NoteIds = [new NoteId(Guid.NewGuid())],
-                            NoteSourceTag = "source::test",
+                            NoteSourceTag = SourceTag.Parse("source::test"),
                             OriginalFileName = "registered.mp3",
                             Copyright = CopyrightStatus.Free
                          });

@@ -23,7 +23,7 @@ public class When_syncing_media_from_anki : TestStartingWithEmptyCollection, IDi
       Directory.CreateDirectory(mediaRoot);
 
       _index = new MediaFileIndex(mediaRoot);
-      var config = new MediaRoutingConfig([new MediaRoutingRule("", "general")]);
+      var config = new MediaRoutingConfig([new MediaRoutingRule(null, "general")]);
       var storageService = new MediaStorageService(mediaRoot, _index, config);
       _syncService = new AnkiMediaSyncService(() => _ankiMediaDir, storageService, _index);
    }

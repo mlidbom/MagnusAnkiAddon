@@ -47,11 +47,11 @@ public class When_storing_a_media_file : IDisposable
       public with_a_matching_routing_rule()
       {
          var config = new MediaRoutingConfig(
-            [new MediaRoutingRule("anime::natsume", "commercial-001")]);
+            [new MediaRoutingRule(SourceTag.Parse("anime::natsume"), "commercial-001")]);
          InitService(config);
 
          var sourceFile = CreateSourceFile();
-         _id = _service.StoreFile(sourceFile, "anime::natsume::s1::01", "natsume_ep01_03m22s.mp3",
+         _id = _service.StoreFile(sourceFile, SourceTag.Parse("anime::natsume::s1::01"), "natsume_ep01_03m22s.mp3",
             new NoteId(Guid.NewGuid()), MediaType.Audio, CopyrightStatus.Commercial);
          _resolved = _service.TryResolve(_id);
       }
@@ -69,12 +69,12 @@ public class When_storing_a_media_file : IDisposable
    {
       public with_no_matching_routing_rule()
       {
-         var config = new MediaRoutingConfig([new MediaRoutingRule("anime", "commercial-001")]);
+         var config = new MediaRoutingConfig([new MediaRoutingRule(SourceTag.Parse("anime"), "commercial-001")]);
          InitService(config);
       }
 
       [XF] public void it_throws() => Assert.Throws<InvalidOperationException>(() =>
-         _service.StoreFile(CreateSourceFile(), "forvo", "走る_forvo.mp3",
+         _service.StoreFile(CreateSourceFile(), SourceTag.Parse("forvo"), "走る_forvo.mp3",
             new NoteId(Guid.NewGuid()), MediaType.Audio, CopyrightStatus.Free));
    }
 
@@ -84,11 +84,11 @@ public class When_storing_a_media_file : IDisposable
 
       public after_storing_a_file()
       {
-         var config = new MediaRoutingConfig([new MediaRoutingRule("", "general")]);
+         var config = new MediaRoutingConfig([new MediaRoutingRule(null, "general")]);
          InitService(config);
 
          var sourceFile = CreateSourceFile();
-         _storedId = _service.StoreFile(sourceFile, "test", "test.mp3",
+         _storedId = _service.StoreFile(sourceFile, SourceTag.Parse("test"), "test.mp3",
             new NoteId(Guid.NewGuid()), MediaType.Audio, CopyrightStatus.Free);
       }
 
@@ -103,11 +103,11 @@ public class When_storing_a_media_file : IDisposable
 
       public when_rebuilding_the_index_from_filesystem()
       {
-         var config = new MediaRoutingConfig([new MediaRoutingRule("", "general")]);
+         var config = new MediaRoutingConfig([new MediaRoutingRule(null, "general")]);
          InitService(config);
 
          var sourceFile = CreateSourceFile();
-         _id = _service.StoreFile(sourceFile, "anime::natsume::s1::01", "ep01.mp3",
+         _id = _service.StoreFile(sourceFile, SourceTag.Parse("anime::natsume::s1::01"), "ep01.mp3",
             new NoteId(Guid.NewGuid()), MediaType.Audio, CopyrightStatus.Commercial);
 
          _freshIndex = new MediaFileIndex(_mediaRoot);

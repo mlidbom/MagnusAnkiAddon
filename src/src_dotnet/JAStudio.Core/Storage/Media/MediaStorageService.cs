@@ -18,7 +18,7 @@ public class MediaStorageService
       _routingConfig = routingConfig;
    }
 
-   public MediaFileId StoreFile(string sourceFilePath, string sourceTag, string originalFileName, NoteId noteId, MediaType mediaType, CopyrightStatus copyright, TtsInfo? tts = null)
+   public MediaFileId StoreFile(string sourceFilePath, SourceTag sourceTag, string originalFileName, NoteId noteId, MediaType mediaType, CopyrightStatus copyright, TtsInfo? tts = null)
    {
       var id = MediaFileId.New();
       var destPath = BuildStoragePath(id, sourceTag, originalFileName);
@@ -88,7 +88,7 @@ public class MediaStorageService
 
    public bool Exists(MediaFileId id) => _index.Contains(id);
 
-   string BuildStoragePath(MediaFileId id, string sourceTag, string originalFileName)
+   string BuildStoragePath(MediaFileId id, SourceTag sourceTag, string originalFileName)
    {
       var routedDirectory = _routingConfig.ResolveDirectory(sourceTag);
       var bucket = id.ToString()[..2];
