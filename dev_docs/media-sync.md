@@ -193,34 +193,42 @@ At startup, `MediaFileIndex` scans all media repositories, reading every `*.audi
 
 **Runtime domain objects (built from sidecar data at index time):**
 ```csharp
-// Audio — has its own domain-specific fields
-public record AudioAttachment(
-    MediaFileId Id,
-    NoteId NoteId,
-    string NoteSourceTag,         // full tag, e.g. "source::anime::natsume::s1::01"
-    string? OriginalFileName,
-    string Copyright,             // "commercial", "free"
-    string FilePath,              // absolute path to the .mp3/.wav/etc.
-    TtsInfo? Tts                  // non-null if TTS-generated
-);
+public enum CopyrightStatus
+{
+    Commercial,    // requires verified account or license
+    Free           // freely redistributable (TTS, CC-licensed, etc.)
+}
+
+// Base — common storage/identity data shared by all media types
+public abstract record MediaAttachment
+{
+    public required MediaFileId Id { get; init; }
+    public required NoteId NoteId { get; init; }
+    public required string NoteSourceTag { get; init; }   // full tag, e.g. "source::anime::natsume::s1::01"
+    public string? OriginalFileName { get; init; }
+    public required CopyrightStatus Copyright { get; init; }
+    public required string FilePath { get; init; }        // absolute path to the stored file
+}
+
+// Audio — extends with audio-specific fields
+public record AudioAttachment : MediaAttachment
+{
+    public TtsInfo? Tts { get; init; }                    // non-null if TTS-generated
+}
 
 public record TtsInfo(string Engine, string Voice, string Version);
 
-// Image — separate type, own fields
-public record ImageAttachment(
-    MediaFileId Id,
-    NoteId NoteId,
-    string NoteSourceTag,
-    string? OriginalFileName,
-    string Copyright,
-    string FilePath
-);
+// Image — extends with image-specific fields (none yet, but will diverge)
+public record ImageAttachment : MediaAttachment;
 
 // Aggregated per note
 public record NoteMedia(
     IReadOnlyList<AudioAttachment> Audio,
     IReadOnlyList<ImageAttachment> Images
 );
+```
+
+The base `MediaAttachment` gives shared storage/serialization/index logic a single type to work with. `MediaFileIndex` can store all attachments as `MediaAttachment` internally, while typed accessors return `AudioAttachment` or `ImageAttachment`.
 ```
 
 **Domain notes expose typed media from the index:**
