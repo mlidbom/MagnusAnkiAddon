@@ -378,14 +378,14 @@ The storage layer (`JAStudio.Core.Storage.Media`) is implemented and tested:
 | `VocabMediaField` / `SentenceMediaField` / `KanjiMediaField` | Per-note-type enums for media fields. Compile-time safe — no string-based field names. |
 | `VocabImportRule` / `SentenceImportRule` / `KanjiImportRule` | Flat atomic rules: one rule = one (source tag, field) → (directory, copyright). |
 | `MediaImportRuleSet` | Holds all rules, resolves by (source tag, field). Returns `null` for unconfigured combinations — fields without rules are silently skipped. Longest prefix match. |
-| `AnkiMediaSyncService` | Syncs media from Anki per field. Switches on note type, resolves per-field via `MediaImportRuleSet`, skips unconfigured fields, deduplicates, skips missing files with warning. |
+| `MediaImportExecutor` | Batch executor with one method per note type: `ImportVocabMedia`, `ImportSentenceMedia`, `ImportKanjiMedia`. Takes a list of notes + rules, loops all notes, imports matching fields. Not a singleton — created when the user triggers a batch. |
 
 ### Not yet implemented
 
 | Component | Notes |
 |---|---|
-| Discovery UI | Scan notes, find media not yet in storage, present grouped by note type / source tag. User's shopping list for creating new import rules. |
-| Rule persistence | Save/load `MediaImportRuleSet` to `user_files/media-import-rules.json`. |
+| Discovery UI | Scan notes, find media files in Anki that don't yet exist in our storage, present grouped by note type / source tag. User's shopping list for creating new import rules. |
+| Rule persistence | Save/load rules to `user_files/media-import-rules.json`. |
 | Import summary | Post-execution report: files imported, deduped, skipped (missing / no rule). |
 | `NoteMedia` aggregate | Per-note typed media view (`Audio`, `Images`). Not yet needed — media is currently accessed via the index directly. |
 | Removal of media fields from corpus DTOs | Notes still contain Anki markup audio/image fields. These should be stripped. |
@@ -401,35 +401,42 @@ All components have BDD-style tests:
 - `When_building_a_MediaFileIndex` — filesystem scan, sidecar parsing, lookups
 - `When_querying_MediaFileIndex_by_original_filename` — exact/case-insensitive lookup, registered attachments
 - `When_storing_a_media_file` — target directory, GUID-bucket paths, sidecar writing, index rebuilding
-- `When_syncing_media_from_anki` — per-note-type sync with dedup, missing file warnings, unconfigured field skipping
+- `When_importing_media_from_anki` — per-note-type batch import, dedup, missing file skipping, unconfigured field skipping, typed attachments
 
 ## Import Workflow
 
-Import is **incremental and additive**. Each run imports exactly what the current rules specify. Files already in storage are left untouched (deduplication by original filename handles re-encounters).
+Import is **batch, incremental, and per note type**. The user configures rules specifying what to import, executes a batch, and the executor processes all matching notes. Files already in storage are untouched. Rules are disposable — after a batch runs, spent rules can be deleted.
 
 ### Workflow
 
-1. **Discovery:** The UI scans all notes, checks which media files are not yet in storage, and presents what's missing — grouped by note type and source tag. This is the user's shopping list.
-2. **Configure rules:** The user creates import rules for the combinations they want to import now. Rules are persisted to `user_files/media-import-rules.json`.
-3. **Execute:** The import runs all configured rules. For each note matching a rule, the specified field's media references are imported into the target directory with the specified copyright.
-4. **Repeat:** After inspecting results, the user can add more rules for other fields/source tags and run again. Spent rules can be deleted — their files are already stored.
+1. **Discovery:** The UI scans all notes, checks which media files exist in Anki but not yet in our storage, and presents what's un-imported — grouped by note type and source tag prefix.
+2. **Configure rules:** The user creates import rules for the combinations they want to import now. Each rule is one (source tag, field) → (directory, copyright).
+3. **Execute:** The user triggers a batch per note type. `MediaImportExecutor.ImportVocabMedia(notes, rules)` loops all vocab notes and imports fields matching the rules. Same for sentence and kanji.
+4. **Inspect & repeat:** After reviewing results, the user can add more rules for other fields/source tags and run another batch. Spent rules can be deleted — no files will match them again.
 
-### Execution details
+### Execution details (per note type)
 
-For each note:
-1. Determine note type → switch to the appropriate sync method
-2. For each media field on that note type, try to resolve a rule from the `MediaImportRuleSet`
-3. If no rule matches (returns null), skip that field silently
-4. If a rule matches, process each media reference in that field:
-   - If the file is already in storage (by original filename), update the sidecar's `noteIds`
-   - If the source file is missing in Anki media, log a warning and skip
-   - Otherwise, copy the file and write the sidecar
+```csharp
+// User triggers a vocab import batch
+executor.ImportVocabMedia(allVocabNotes, [
+    new VocabImportRule(SourceTag.Parse("source::wani"), VocabMediaField.AudioFirst, "commercial/wani", CopyrightStatus.Commercial),
+    new VocabImportRule(SourceTag.Parse("source::wani"), VocabMediaField.AudioTts,   "free/tts",        CopyrightStatus.Free)
+]);
+```
+
+For each note in the batch:
+1. Resolve the note's source tag
+2. For each media field, try to find a matching rule
+3. If no rule matches → skip silently (not configured for this batch)
+4. If a rule matches, for each media reference in that field:
+   - Already in storage → update sidecar's `noteIds`
+   - Source file missing in Anki → log warning, skip
+   - Otherwise → copy file, write sidecar
 
 ### Summary (presented to user after execution)
 
 - Files imported (audio / image breakdown)
 - Files deduplicated (already in storage, noteIds updated)
 - Files skipped (missing from Anki media)
-- Fields skipped (no matching rule)
 
 Stripping media fields from the corpus note JSON is a separate step (done when the corpus DTOs are updated to remove audio/image fields).
