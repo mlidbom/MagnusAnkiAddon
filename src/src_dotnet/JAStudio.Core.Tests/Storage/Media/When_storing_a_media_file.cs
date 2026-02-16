@@ -84,7 +84,7 @@ public class When_storing_a_media_file : IDisposable
 
       public after_storing_a_file()
       {
-         var config = new MediaRoutingConfig([new MediaRoutingRule(null, "general")]);
+         var config = new MediaRoutingConfig([new MediaRoutingRule(SourceTag.Parse("test"), "general")]);
          InitService(config);
 
          var sourceFile = CreateSourceFile();
@@ -103,7 +103,7 @@ public class When_storing_a_media_file : IDisposable
 
       public when_rebuilding_the_index_from_filesystem()
       {
-         var config = new MediaRoutingConfig([new MediaRoutingRule(null, "general")]);
+         var config = new MediaRoutingConfig([new MediaRoutingRule(SourceTag.Parse("anime"), "general")]);
          InitService(config);
 
          var sourceFile = CreateSourceFile();

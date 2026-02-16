@@ -4,14 +4,14 @@ using System.Linq;
 
 namespace JAStudio.Core.Storage.Media;
 
-public record MediaRoutingRule(SourceTag? Prefix, string TargetDirectory)
+public record MediaRoutingRule(SourceTag Prefix, string TargetDirectory)
 {
-   public bool Matches(SourceTag sourceTag) => Prefix is null || sourceTag.IsContainedIn(Prefix);
+   public bool Matches(SourceTag sourceTag) => sourceTag.IsContainedIn(Prefix);
 }
 
 public class MediaRoutingConfig(List<MediaRoutingRule> rules)
 {
-   readonly List<MediaRoutingRule> _rules = rules.OrderByDescending(r => r.Prefix?.Segments.Count ?? 0).ToList();
+   readonly List<MediaRoutingRule> _rules = rules.OrderByDescending(r => r.Prefix.Segments.Count).ToList();
 
    public IReadOnlyList<MediaRoutingRule> Rules => _rules;
 
