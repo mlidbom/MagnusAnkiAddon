@@ -15,6 +15,5 @@ public class MediaRoutingConfig(List<MediaRoutingRule> rules)
    public string ResolveDirectory(string sourceTag) =>
       _rules.Where(rule => sourceTag.StartsWith(rule.SourceTagPrefix, StringComparison.Ordinal))
             .Select(it => it.TargetDirectory)
-            .FirstOrDefault() ??
-      throw new InvalidOperationException($"No routing rule matches source tag '{sourceTag}'. Configure a routing rule before importing media.");
+            .FirstOrDefault() ?? throw new InvalidOperationException($"No routing rule matches source tag '{sourceTag}'. Configure a routing rule before importing media.");
 }
