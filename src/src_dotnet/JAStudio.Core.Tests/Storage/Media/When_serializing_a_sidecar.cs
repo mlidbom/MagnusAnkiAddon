@@ -14,29 +14,28 @@ public class When_serializing_a_sidecar
 {
    public class for_an_audio_attachment : When_serializing_a_sidecar
    {
-      readonly AudioAttachment _original;
       readonly AudioAttachment _deserialized;
       readonly string _json;
 
       public for_an_audio_attachment()
       {
-         _original = new AudioAttachment
-                     {
-                        Id = new MediaFileId(Guid.Parse("a1b2c3d4-e5f6-7890-abcd-ef1234567890")),
-                        NoteIds = [new NoteId(Guid.Parse("9f8e7d6c-5b4a-3210-fedc-ba9876543210"))],
-                        NoteSourceTag = SourceTag.Parse("source::anime::natsume::s1::01"),
-                        OriginalFileName = "natsume_ep01_03m22s.mp3",
-                        Copyright = CopyrightStatus.Commercial
-                     };
+         var original = new AudioAttachment
+                        {
+                           Id = new MediaFileId(Guid.Parse("a1b2c3d4-e5f6-7890-abcd-ef1234567890")),
+                           NoteIds = [new NoteId(Guid.Parse("9f8e7d6c-5b4a-3210-fedc-ba9876543210"))],
+                           NoteSourceTag = SourceTag.Parse("source::anime::natsume::s1::01"),
+                           OriginalFileName = "natsume_ep01_03m22s.mp3",
+                           Copyright = CopyrightStatus.Commercial
+                        };
 
-         _json = SidecarSerializer.SerializeAudio(_original);
+         _json = SidecarSerializer.SerializeAudio(original);
          _deserialized = SidecarSerializer.DeserializeAudio(_json);
       }
 
-      [XF] public void it_roundtrips_the_id() => _deserialized.Id.Must().Be(_original.Id);
+      [XF] public void it_roundtrips_the_id() => _deserialized.Id.Must().Be(_deserialized.Id);
       [XF] public void it_roundtrips_the_note_ids() => _deserialized.NoteIds.Count.Must().Be(1);
       [XF] public void it_roundtrips_the_note_source_tag() => _deserialized.NoteSourceTag.Must().Be(SourceTag.Parse("source::anime::natsume::s1::01"));
-      [XF] public void it_roundtrips_the_original_filename() => _deserialized.OriginalFileName.Must().Be("natsume_ep01_03m22s.mp3");
+      [XF] public void it_roundtrips_the_original_filename() => _deserialized.OriginalFileName!.Must().Be("natsume_ep01_03m22s.mp3");
       [XF] public void it_roundtrips_the_copyright() => _deserialized.Copyright.Must().Be(CopyrightStatus.Commercial);
       [XF] public void tts_is_null_when_not_set() => _deserialized.Tts.Must().BeNull();
       [XF] public void the_json_contains_camelCase_properties() => _json.Must().Contain("\"noteIds\"");

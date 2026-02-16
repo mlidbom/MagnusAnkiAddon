@@ -17,40 +17,11 @@ We are building a corpus of analyzed Japanese sentences/vocab for language study
 │    kanji/{bucket}/{id}.json     ← pure language     │
 │    vocab/{bucket}/{id}.json        analysis data    │
 │    sentences/{bucket}/{id}.json    NO media refs    │
-└─────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────┐
-│  Media Repos (one or more separate git repos)       │
-│                                                     │
-│  commercial-001/                                    │
-│    natsume/                                         │
-│      a1/                                            │
-│        a1b2c3d4-....mp3          ← media file       │
-│        a1b2c3d4-....json         ← sidecar metadata │
-│      f7/                                            │
-│        f7e6d5c4-....png                             │
-│        f7e6d5c4-....json                            │
-│    mushishi/                                        │
-│      ...                                            │
-│                                                     │
-│  commercial-002/                                    │
-│    wanikani/                                        │
-│      ...                                            │
-│                                                     │
-│  free-vocab/                                        │
-│    tts/                                             │
-│      3c/                                            │
-│        3c4d5e6f-....mp3                             │
-│        3c4d5e6f-....audio.json                      │
-│    user/                                            │
-│      ...                                            │
-│                                                     │
-│  free-sentence/                                     │
-│    tts/                                             │
-│      ...                                            │
-│                                                     │
-│  free-kanji/                                        │
-│    ...                                              │
+│    media/                       ← media layer       │
+│      metadata/                  ← import rules etc  │
+│      {repo}/                    ← media files +     │
+│        {source}/                   sidecars         │
+│          {bucket}/{guid}.*                          │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -60,6 +31,7 @@ We are building a corpus of analyzed Japanese sentences/vocab for language study
 - **All note↔media association lives in the media layer.** Each media file's sidecar JSON declares which note it belongs to.
 - **Directory structure is organizational, not semantic.** The routing config determines where files land at import time, but the path encodes no meaning — all metadata is in the sidecar JSON.
 - **Sidecar JSON per media file.** Every media file has a companion `.json` file with the same GUID name containing all metadata about that file.
+- **Note scanner is scoped to note directories.** `FileSystemNoteRepository` scans only `kanji/`, `vocab/`, and `sentences/` — it does not walk `media/` or any other subdirectory of `jas_database/`. This avoids both performance issues (thousands of media files) and GUID-parsing failures on non-note JSON files.
 
 ## Sidecar Metadata Format
 
@@ -225,7 +197,7 @@ free-vocab/tts/3c/3c4d5e6f-a7b8-9012-cdef-123456789012.audio.json
 
 ## Runtime: Building the Domain Model
 
-At startup, `MediaFileIndex` scans all media repositories, reading every `*.audio.json` and `*.image.json` sidecar to build an in-memory index.
+`MediaFileIndex` is lazy-initialized — it scans all media directories under `App.MediaDir` on first access, not at startup. The scan reads every `*.audio.json` and `*.image.json` sidecar to build an in-memory index. The `metadata/` subdirectory is excluded. This means the first operation that touches the index (typically clicking Scan in the import dialog) pays the full cost of the filesystem walk.
 
 **Index lookups:**
 - `NoteId → NoteMedia` — all media for a note, typed (a single media file appears in the results for every note in its `NoteIds` list)
@@ -236,6 +208,7 @@ At startup, `MediaFileIndex` scans all media repositories, reading every `*.audi
 ```csharp
 public enum CopyrightStatus
 {
+    Unknown = 0,   // not yet classified
     Commercial,    // requires verified account or license
     Free           // freely redistributable (TTS, CC-licensed, etc.)
 }
@@ -259,7 +232,7 @@ public abstract record MediaAttachment
     public required List<NoteId> NoteIds { get; init; }     // all notes that reference this file
     public required SourceTag NoteSourceTag { get; init; }   // full tag, e.g. "source::anime::natsume::s1::01"
     public string? OriginalFileName { get; init; }
-    public required CopyrightStatus Copyright { get; init; }
+    public CopyrightStatus Copyright { get; init; } = CopyrightStatus.Unknown;  // not required — defaults for backward compat
 
     // Runtime only — resolved by MediaFileIndex from the filesystem, not serialized
     [JsonIgnore] public string FilePath { get; internal set; } = string.Empty;
@@ -381,12 +354,18 @@ The storage layer (`JAStudio.Core.Storage.Media`) is implemented and tested:
 | `MediaImportPlan` | Output of analysis: `FilesToImport` (ready to execute), `AlreadyStored` (sidecar noteId updates), `Missing` (files not found in Anki). Pure data — no side effects. |
 | `MediaImportAnalyzer` | Analyzes notes against rules. Per-note-type methods: `AnalyzeVocab`, `AnalyzeSentences`, `AnalyzeKanji`. Produces a `MediaImportPlan`. No side effects — reads filesystem and index to classify each media reference. |
 | `MediaImportExecutor` | Executes a `MediaImportPlan` — copies files, writes sidecars, updates noteIds. Note-type agnostic — works only with the flat plan. No analysis, no decision-making. Uses `TaskRunner.RunBatch` for visible progress. |
-| `MediaImportRulePersistence` | Saves/loads rules to `user_files/media-import-rules.json`. JSON with enum and `SourceTag` converters. |
-| `MediaImportDialog` | Avalonia dialog (View + ViewModel). Scan discovers un-imported media grouped by source/type. User configures rules, clicks Analyze to see plan counts (`FilesToImport`, `AlreadyStored`, `Missing`), then executes. Rules persist across sessions. Accessible from Config > Media import menu. |
+| `MediaImportRulePersistence` | Saves/loads rules to `jas_database/media/metadata/media-import-rules.json`. JSON with enum and `SourceTag` converters. Rules are stored in the media layer, not user files. |
+| `MediaImportDialog` | Avalonia dialog (View + ViewModel). Scan discovers un-imported media grouped by source/type. User configures rules (sorted by source tag prefix then target directory), clicks Analyze to see plan counts (`FilesToImport`, `AlreadyStored`, `Missing`), then executes. The Missing count is a clickable link that opens a `MissingFilesDialog` with per-note-type tabs (Vocab, Sentences, Kanji) showing question, note ID, field, and filename in a sortable DataGrid. Double-clicking a row opens the note in Anki's browser. Rules persist across sessions. Accessible from Config > Media import menu. |
+| `MissingFilesDialog` | Avalonia dialog showing files referenced by notes but not found in Anki's media folder, organized in tabs by note type with sortable DataGrid columns. Supports double-click to open the note in Anki. |
+
+### Completed milestones
+
+- **Initial media import complete.** All media files from Anki have been imported into the structured media storage layer. The first full batch import ran successfully across all note types.
 
 ### Not yet implemented
 
 | Component | Notes |
+|---|---|
 | `NoteMedia` aggregate | Per-note typed media view (`Audio`, `Images`). Not yet needed — media is currently accessed via the index directly. |
 | Removal of media fields from corpus DTOs | Notes still contain Anki markup audio/image fields. Has unresolved design concerns — deferred for later discussion. |
 | Access gating | Runtime filtering by user's verified accounts / copyright status. |
@@ -402,6 +381,7 @@ All components have BDD-style tests:
 - `When_querying_MediaFileIndex_by_original_filename` — exact/case-insensitive lookup, registered attachments
 - `When_storing_a_media_file` — target directory, GUID-bucket paths, sidecar writing, index rebuilding
 - `When_importing_media_from_anki` — analyze → execute flow, plan inspection (files to import, already stored, missing), per-note-type batches, dedup, unconfigured field skipping, typed attachments
+- `When_parsing_media_references` — audio and image regex parsing, apostrophe handling in filenames, multiple references, blank input
 
 ## Import Workflow
 
