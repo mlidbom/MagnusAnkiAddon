@@ -43,6 +43,33 @@ applyTo: "**/*.cs"
 - Keep tests close to the code they test
 - UI tests go in `JAStudio.UI.Tests`
 
+## Default Interface Methods (Mixins)
+
+**Design rule:** Any method that can be defined in terms of other public methods on an interface SHOULD be implemented as a default method on the interface, because the implementation is identical for every implementing class and they should not be burdened with writing it over and over again.
+
+This codebase uses **default interface methods extensively** as a mixin pattern. Interfaces often contain many convenience overloads and helper methods implemented as defaults that delegate to a small number of abstract members.
+
+**Always check interfaces for default method implementations AND extension methods** before assuming a method doesn't exist or writing workarounds. If you only see a few abstract members on a class, look at the interface — it likely has many more methods available via defaults. Also check for extension method classes (often named `{TypeName}Extensions` or `{TypeName}CE`) that add convenience methods. Older code uses extension methods for the same mixin pattern; newer code uses default interface methods.
+
+Example from Compze: `IMonitorCE` has ~10 abstract lock primitives (`TakeReadLock`, `TakeUpdateLock`, etc.) but provides ~12 default methods (`Read`, `Update`, `ReadWhen`, `Await`, etc.) that delegate to them — split across partial interface files:
+
+```csharp
+// Abstract — the only members implementors need to provide
+IDisposable TakeReadLock(TimeSpan? timeout = null);
+IDisposable TakeUpdateLock(TimeSpan? timeout = null);
+
+// Default — delegates Action overload to Func overload
+unit Read(Action action, TimeSpan? timeout = null) => Read(action.AsFunc(), timeout);
+
+// Default — delegates to abstract TakeReadLock
+TReturn Read<TReturn>(Func<TReturn> func, TimeSpan? timeout = null)
+{
+   using(TakeReadLock(timeout)) return func();
+}
+```
+
+This pattern is pervasive in Compze and throughout this project's code.
+
 ## Build & Verification
 
 See the main `copilot-instructions.md` for full build, test, and Definition of Done details.
