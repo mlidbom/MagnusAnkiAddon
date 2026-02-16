@@ -100,6 +100,12 @@ public class TaskRunner
    readonly AsyncLocal<IScopePanel?> _parentScope = new();
 
    /// <summary>
+   /// Tracks the current log entry per async call chain so that
+   /// child scopes and tasks can attach their log entries to the parent.
+   /// </summary>
+   readonly AsyncLocal<TaskLogEntry?> _currentLogEntry = new();
+
+   /// <summary>
    /// The one and only way to obtain a task runner.
    /// Returns a scope that implements <see cref="ITaskProgressRunner"/>.
    /// Nested calls share the same progress dialog window which stays open and
@@ -120,15 +126,17 @@ public class TaskRunner
          _holdDialog?.Invoke();
       }
 
-      var scope = new TaskRunnerScope(this, scopeTitle, visible, allowCancel, depth, previousNestingDepth, _parentScope.Value);
+      var scope = new TaskRunnerScope(this, scopeTitle, visible, allowCancel, depth, previousNestingDepth, _parentScope.Value, _currentLogEntry.Value);
       _parentScope.Value = scope.ScopePanel;
+      _currentLogEntry.Value = scope.LogEntry;
       return scope;
    }
 
-   internal void OnScopeDisposed(int previousNestingDepth, IScopePanel? previousParentScope)
+   internal void OnScopeDisposed(int previousNestingDepth, IScopePanel? previousParentScope, TaskLogEntry? previousLogEntry)
    {
       _nestingDepth.Value = previousNestingDepth;
       _parentScope.Value = previousParentScope;
+      _currentLogEntry.Value = previousLogEntry;
 
       if(Interlocked.Decrement(ref _openScopes) == 0)
       {

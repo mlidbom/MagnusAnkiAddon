@@ -23,24 +23,37 @@ public class TaskRunnerScope : ITaskProgressRunner
    readonly bool _allowCancel;
    readonly Stopwatch _stopwatch = Stopwatch.StartNew();
    readonly IScopePanel? _scopePanel;
+   readonly int _depth;
    readonly int _previousNestingDepth;
    readonly IScopePanel? _previousParentScope;
+   readonly TaskLogEntry? _previousLogEntry;
+   readonly TaskLogEntry _logEntry;
    bool _disposed;
 
    internal IScopePanel? ScopePanel => _scopePanel;
+   internal TaskLogEntry LogEntry => _logEntry;
 
-   internal TaskRunnerScope(TaskRunner taskRunner, string scopeTitle, bool visible, bool allowCancel, int depth, int previousNestingDepth, IScopePanel? previousParentScope)
+   internal TaskRunnerScope(TaskRunner taskRunner, string scopeTitle, bool visible, bool allowCancel, int depth, int previousNestingDepth, IScopePanel? previousParentScope, TaskLogEntry? parentLogEntry)
    {
       _taskRunner = taskRunner;
       _scopeTitle = scopeTitle;
       _allowCancel = allowCancel;
       _visible = visible;
+      _depth = depth;
       _previousNestingDepth = previousNestingDepth;
       _previousParentScope = previousParentScope;
+      _previousLogEntry = parentLogEntry;
+      _logEntry = new TaskLogEntry(scopeTitle);
+      parentLogEntry?.AddChild(_logEntry);
       _scopePanel = visible ? taskRunner.CreateScopePanel(scopeTitle, visible, depth) : null;
    }
 
-   ITaskProgressRunner CreateRunner(string message) => _taskRunner.Create(_scopePanel, message, _visible, _allowCancel);
+   ITaskProgressRunner CreateRunner(string message)
+   {
+      var taskLogEntry = new TaskLogEntry(message);
+      _logEntry.AddChild(taskLogEntry);
+      return new LoggingTaskRunnerWrapper(_taskRunner.Create(_scopePanel, message, _visible, _allowCancel), taskLogEntry);
+   }
 
    public List<TOutput> RunBatch<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
    {
@@ -80,9 +93,14 @@ public class TaskRunnerScope : ITaskProgressRunner
       _disposed = true;
 
       _stopwatch.Stop();
-      this.Log().Info($"Scope \"{_scopeTitle}\" completed in {_stopwatch.Elapsed:g}");
+      _logEntry.MarkCompleted();
+
+      if(_depth == 1)
+      {
+         this.Log().Info($"{Environment.NewLine}{_logEntry.FormatTree()}");
+      }
 
       _scopePanel?.Dispose();
-      _taskRunner.OnScopeDisposed(_previousNestingDepth, _previousParentScope);
+      _taskRunner.OnScopeDisposed(_previousNestingDepth, _previousParentScope, _previousLogEntry);
    }
 }
