@@ -55,7 +55,7 @@ public class When_syncing_media_from_anki : TestStartingWithEmptyCollection, IDi
          _syncService.SyncMedia(note);
       }
 
-      [XF] public void it_copies_the_audio_file() => _index.Count.Must().Be(2);
+      [XF] public void it_stores_both_files() => _index.Count.Must().Be(2);
 
       [XF] public void the_audio_file_is_indexed_by_original_name() =>
          _index.ContainsByOriginalFileName("vocab_audio.mp3").Must().BeTrue();
@@ -151,12 +151,12 @@ public class When_syncing_media_from_anki : TestStartingWithEmptyCollection, IDi
       [XF] public void it_does_nothing() => _index.Count.Must().Be(0);
    }
 
-   public class verifying_storage_path_routing : When_syncing_media_from_anki
+   public class for_a_note_with_audio_and_image : When_syncing_media_from_anki
    {
       readonly MediaFileInfo? _audioInfo;
       readonly MediaFileInfo? _imageInfo;
 
-      public verifying_storage_path_routing()
+      public for_a_note_with_audio_and_image()
       {
          CreateAnkiMediaFile("routed_audio.mp3");
          CreateAnkiMediaFile("routed_image.jpg");

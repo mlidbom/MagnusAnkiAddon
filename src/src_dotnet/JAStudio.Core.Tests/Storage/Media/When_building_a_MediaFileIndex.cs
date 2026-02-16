@@ -72,13 +72,15 @@ public class When_building_a_MediaFileIndex : IDisposable
 
    public class over_a_nonexistent_directory : When_building_a_MediaFileIndex
    {
+      readonly MediaFileIndex _nonexistentIndex;
+
       public over_a_nonexistent_directory()
       {
-         var index = new MediaFileIndex(Path.Combine(_tempDir, "does_not_exist"));
-         index.Build();
+         _nonexistentIndex = new MediaFileIndex(Path.Combine(_tempDir, "does_not_exist"));
+         _nonexistentIndex.Build();
       }
 
-      [XF] public void it_handles_gracefully() => _index.Count.Must().Be(0);
+      [XF] public void it_indexes_nothing() => _nonexistentIndex.Count.Must().Be(0);
    }
 
    public class without_explicit_Build_call : When_building_a_MediaFileIndex

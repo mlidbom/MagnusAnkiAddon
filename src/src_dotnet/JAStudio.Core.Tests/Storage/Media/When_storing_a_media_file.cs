@@ -79,11 +79,11 @@ public class When_storing_a_media_file : IDisposable
       [XF] public void the_path_uses_the_general_directory() => _resolved!.Must().Contain("general");
    }
 
-   public class checking_existence : When_storing_a_media_file
+   public class after_storing_a_file : When_storing_a_media_file
    {
       readonly MediaFileId _storedId;
 
-      public checking_existence()
+      public after_storing_a_file()
       {
          var config = MediaRoutingConfig.Default();
          InitService(config);
@@ -96,12 +96,12 @@ public class When_storing_a_media_file : IDisposable
       [XF] public void unknown_id_does_not_exist() => _service.Exists(MediaFileId.New()).Must().BeFalse();
    }
 
-   public class rebuilding_index_from_filesystem : When_storing_a_media_file
+   public class when_rebuilding_the_index_from_filesystem : When_storing_a_media_file
    {
       readonly MediaFileId _id;
       readonly MediaFileIndex _freshIndex;
 
-      public rebuilding_index_from_filesystem()
+      public when_rebuilding_the_index_from_filesystem()
       {
          var config = MediaRoutingConfig.Default();
          InitService(config);
