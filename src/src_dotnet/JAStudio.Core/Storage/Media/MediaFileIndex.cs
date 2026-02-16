@@ -163,7 +163,7 @@ public class MediaFileIndex
    public MediaAttachment? TryGetByOriginalFileName(string originalFileName) => EnsureInitialized()
      .then(() => _byOriginalFileName.TryGetValue(originalFileName, out var attachment) ? attachment : null);
 
-   internal void Register(MediaAttachment attachment)
+   public void Register(MediaAttachment attachment)
    {
       _byId[attachment.Id] = attachment;
 
