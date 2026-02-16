@@ -48,9 +48,10 @@ public class TaskRunnerScope : ITaskProgressRunner
       _scopePanel = visible ? taskRunner.CreateScopePanel(scopeTitle, visible, depth) : null;
    }
 
-   ITaskProgressRunner CreateRunner(string message)
+   ITaskProgressRunner CreateRunner(string message, bool async = false)
    {
-      var taskLogEntry = new TaskLogEntry(message);
+      var logMessage = async ? $"(async) {message}" : message;
+      var taskLogEntry = new TaskLogEntry(logMessage);
       _logEntry.AddChild(taskLogEntry);
       return new LoggingTaskRunnerWrapper(_taskRunner.Create(_scopePanel, message, _visible, _allowCancel), taskLogEntry);
    }
@@ -69,13 +70,13 @@ public class TaskRunnerScope : ITaskProgressRunner
 
    public async Task<List<TOutput>> RunBatchAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threadCount)
    {
-      using var runner = CreateRunner(message);
+      using var runner = CreateRunner(message, async: true);
       return await runner.RunBatchAsync(items, processItem, message, threadCount);
    }
 
    public async Task<TResult> RunIndeterminateAsync<TResult>(string message, Func<TResult> action)
    {
-      using var runner = CreateRunner(message);
+      using var runner = CreateRunner(message, async: true);
       return await runner.RunIndeterminateAsync(message, action);
    }
 
