@@ -4,6 +4,7 @@ using System.Linq;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using JAStudio.Anki;
 using JAStudio.Core;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
@@ -181,13 +182,20 @@ public partial class MediaImportDialogViewModel : ObservableObject
 
       Dispatcher.UIThread.Invoke(() =>
       {
-         var dialog = new Views.MissingFilesDialog(vocabRows, sentenceRows, kanjiRows);
+         var dialog = new Views.MissingFilesDialog(vocabRows, sentenceRows, kanjiRows, OpenNoteInAnki);
          dialog.Show();
       });
    }
 
+   void OpenNoteInAnki(NoteId noteId)
+   {
+      var query = _services.QueryBuilder().NotesByIds([noteId]);
+      if(!string.IsNullOrEmpty(query))
+         AnkiFacade.Browser.ExecuteLookup(query);
+   }
+
    static List<MissingFileRow> BuildMissingFileRows(List<MissingFile> missing, Func<NoteId, string> getQuestion) =>
-      missing.Select(m => new MissingFileRow(getQuestion(m.NoteId), m.NoteId.ToString(), m.FieldName, m.FileName))
+      missing.Select(m => new MissingFileRow(getQuestion(m.NoteId), m.NoteId.ToString(), m.FieldName, m.FileName, m.NoteId))
              .OrderBy(r => r.Question)
              .ThenBy(r => r.FieldName)
              .ToList();
@@ -392,4 +400,4 @@ public partial class EditableImportRule : ObservableObject
    public static List<string> CopyrightOptions { get; } = [nameof(CopyrightStatus.Unknown), nameof(CopyrightStatus.Free), nameof(CopyrightStatus.Commercial)];
 }
 
-public record MissingFileRow(string Question, string NoteId, string FieldName, string FileName);
+public record MissingFileRow(string Question, string NoteIdDisplay, string FieldName, string FileName, NoteId NoteId);
