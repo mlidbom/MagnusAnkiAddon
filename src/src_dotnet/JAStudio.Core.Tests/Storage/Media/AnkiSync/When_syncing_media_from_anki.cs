@@ -15,8 +15,6 @@ public class When_syncing_media_from_anki : TestStartingWithEmptyCollection, IDi
    readonly MediaFileIndex _index;
    readonly AnkiMediaSyncService _syncService;
 
-   static readonly MediaImportRoute General = new("general", CopyrightStatus.Free);
-
    public When_syncing_media_from_anki()
    {
       _ankiMediaDir = Path.Combine(_tempDir, "anki_media");
@@ -27,14 +25,24 @@ public class When_syncing_media_from_anki : TestStartingWithEmptyCollection, IDi
       _index = new MediaFileIndex(mediaRoot);
       var storageService = new MediaStorageService(mediaRoot, _index);
 
-      var vocabRouting = new MediaImportRoutingConfig<VocabMediaImportRule>(
-         [new VocabMediaImportRule(SourceTag.Parse("anki"), General, General, General, General, General)]);
-      var sentenceRouting = new MediaImportRoutingConfig<SentenceMediaImportRule>(
-         [new SentenceMediaImportRule(SourceTag.Parse("anki"), General, General)]);
-      var kanjiRouting = new MediaImportRoutingConfig<KanjiMediaImportRule>(
-         [new KanjiMediaImportRule(SourceTag.Parse("anki"), General, General)]);
+      var ruleSet = new MediaImportRuleSet(
+         [
+            new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.AudioFirst, "general", CopyrightStatus.Free),
+            new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.AudioSecond, "general", CopyrightStatus.Free),
+            new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.AudioTts, "general", CopyrightStatus.Free),
+            new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.Image, "general", CopyrightStatus.Free),
+            new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.UserImage, "general", CopyrightStatus.Free)
+         ],
+         [
+            new SentenceImportRule(SourceTag.Parse("anki"), SentenceMediaField.Audio, "general", CopyrightStatus.Free),
+            new SentenceImportRule(SourceTag.Parse("anki"), SentenceMediaField.Screenshot, "general", CopyrightStatus.Free)
+         ],
+         [
+            new KanjiImportRule(SourceTag.Parse("anki"), KanjiMediaField.Audio, "general", CopyrightStatus.Free),
+            new KanjiImportRule(SourceTag.Parse("anki"), KanjiMediaField.Image, "general", CopyrightStatus.Free)
+         ]);
 
-      _syncService = new AnkiMediaSyncService(() => _ankiMediaDir, storageService, _index, vocabRouting, sentenceRouting, kanjiRouting);
+      _syncService = new AnkiMediaSyncService(() => _ankiMediaDir, storageService, _index, ruleSet);
    }
 
    public new void Dispose()

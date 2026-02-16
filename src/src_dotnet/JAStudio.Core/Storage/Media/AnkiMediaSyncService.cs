@@ -16,24 +16,18 @@ public class AnkiMediaSyncService : IMediaSyncService
    readonly Func<string> _ankiMediaDir;
    readonly MediaStorageService _storageService;
    readonly MediaFileIndex _index;
-   readonly MediaImportRoutingConfig<VocabMediaImportRule> _vocabRouting;
-   readonly MediaImportRoutingConfig<SentenceMediaImportRule> _sentenceRouting;
-   readonly MediaImportRoutingConfig<KanjiMediaImportRule> _kanjiRouting;
+   readonly MediaImportRuleSet _ruleSet;
 
    public AnkiMediaSyncService(
       Func<string> ankiMediaDir,
       MediaStorageService storageService,
       MediaFileIndex index,
-      MediaImportRoutingConfig<VocabMediaImportRule> vocabRouting,
-      MediaImportRoutingConfig<SentenceMediaImportRule> sentenceRouting,
-      MediaImportRoutingConfig<KanjiMediaImportRule> kanjiRouting)
+      MediaImportRuleSet ruleSet)
    {
       _ankiMediaDir = ankiMediaDir;
       _storageService = storageService;
       _index = index;
-      _vocabRouting = vocabRouting;
-      _sentenceRouting = sentenceRouting;
-      _kanjiRouting = kanjiRouting;
+      _ruleSet = ruleSet;
    }
 
    public void SyncMedia(JPNote note)
@@ -55,38 +49,45 @@ public class AnkiMediaSyncService : IMediaSyncService
    void SyncVocabMedia(VocabNote note)
    {
       var sourceTag = ResolveSourceTag(note);
-      var rule = _vocabRouting.Resolve(sourceTag);
       var noteId = note.GetId();
 
-      SyncField(note.Audio.First.GetMediaReferences(), rule.AudioFirst, sourceTag, noteId);
-      SyncField(note.Audio.Second.GetMediaReferences(), rule.AudioSecond, sourceTag, noteId);
-      SyncField(note.Audio.Tts.GetMediaReferences(), rule.AudioTts, sourceTag, noteId);
-      SyncField(note.Image.GetMediaReferences(), rule.Image, sourceTag, noteId);
-      SyncField(note.UserImage.GetMediaReferences(), rule.UserImage, sourceTag, noteId);
+      SyncField(note.Audio.First.GetMediaReferences(), _ruleSet.TryResolveVocab(sourceTag, VocabMediaField.AudioFirst), sourceTag, noteId);
+      SyncField(note.Audio.Second.GetMediaReferences(), _ruleSet.TryResolveVocab(sourceTag, VocabMediaField.AudioSecond), sourceTag, noteId);
+      SyncField(note.Audio.Tts.GetMediaReferences(), _ruleSet.TryResolveVocab(sourceTag, VocabMediaField.AudioTts), sourceTag, noteId);
+      SyncField(note.Image.GetMediaReferences(), _ruleSet.TryResolveVocab(sourceTag, VocabMediaField.Image), sourceTag, noteId);
+      SyncField(note.UserImage.GetMediaReferences(), _ruleSet.TryResolveVocab(sourceTag, VocabMediaField.UserImage), sourceTag, noteId);
    }
 
    void SyncSentenceMedia(SentenceNote note)
    {
       var sourceTag = ResolveSourceTag(note);
-      var rule = _sentenceRouting.Resolve(sourceTag);
       var noteId = note.GetId();
 
-      SyncField(note.Audio.GetMediaReferences(), rule.Audio, sourceTag, noteId);
-      SyncField(note.Screenshot.GetMediaReferences(), rule.Screenshot, sourceTag, noteId);
+      SyncField(note.Audio.GetMediaReferences(), _ruleSet.TryResolveSentence(sourceTag, SentenceMediaField.Audio), sourceTag, noteId);
+      SyncField(note.Screenshot.GetMediaReferences(), _ruleSet.TryResolveSentence(sourceTag, SentenceMediaField.Screenshot), sourceTag, noteId);
    }
 
    void SyncKanjiMedia(KanjiNote note)
    {
       var sourceTag = ResolveSourceTag(note);
-      var rule = _kanjiRouting.Resolve(sourceTag);
       var noteId = note.GetId();
 
-      SyncField(note.Audio.GetMediaReferences(), rule.Audio, sourceTag, noteId);
-      SyncField(note.Image.GetMediaReferences(), rule.Image, sourceTag, noteId);
+      SyncField(note.Audio.GetMediaReferences(), _ruleSet.TryResolveKanji(sourceTag, KanjiMediaField.Audio), sourceTag, noteId);
+      SyncField(note.Image.GetMediaReferences(), _ruleSet.TryResolveKanji(sourceTag, KanjiMediaField.Image), sourceTag, noteId);
    }
 
-   void SyncField(List<MediaReference> references, MediaImportRoute route, SourceTag sourceTag, NoteId noteId)
+   void SyncField(List<MediaReference> references, VocabImportRule? rule, SourceTag sourceTag, NoteId noteId) =>
+      SyncField(references, rule?.TargetDirectory, rule?.Copyright, sourceTag, noteId);
+
+   void SyncField(List<MediaReference> references, SentenceImportRule? rule, SourceTag sourceTag, NoteId noteId) =>
+      SyncField(references, rule?.TargetDirectory, rule?.Copyright, sourceTag, noteId);
+
+   void SyncField(List<MediaReference> references, KanjiImportRule? rule, SourceTag sourceTag, NoteId noteId) =>
+      SyncField(references, rule?.TargetDirectory, rule?.Copyright, sourceTag, noteId);
+
+   void SyncField(List<MediaReference> references, string? targetDirectory, CopyrightStatus? copyright, SourceTag sourceTag, NoteId noteId)
    {
+      if(targetDirectory == null || copyright == null) return;
       if(references.Count == 0) return;
 
       var ankiMediaDir = _ankiMediaDir();
@@ -107,7 +108,7 @@ public class AnkiMediaSyncService : IMediaSyncService
             continue;
          }
 
-         _storageService.StoreFile(sourcePath, route.TargetDirectory, sourceTag, reference.FileName, noteId, reference.Type, route.Copyright);
+         _storageService.StoreFile(sourcePath, targetDirectory, sourceTag, reference.FileName, noteId, reference.Type, copyright.Value);
       }
    }
 

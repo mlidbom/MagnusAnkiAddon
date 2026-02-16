@@ -39,11 +39,8 @@ static class AppBootstrapper
       } else
       {
          registrar.Register(
-            Singleton.For<IMediaSyncService>().CreatedBy((MediaStorageService storage, MediaFileIndex index,
-                                                            MediaImportRoutingConfig<VocabMediaImportRule> vocabRouting,
-                                                            MediaImportRoutingConfig<SentenceMediaImportRule> sentenceRouting,
-                                                            MediaImportRoutingConfig<KanjiMediaImportRule> kanjiRouting) =>
-                                                            (IMediaSyncService)new AnkiMediaSyncService(() => App.AnkiMediaDir, storage, index, vocabRouting, sentenceRouting, kanjiRouting)),
+            Singleton.For<IMediaSyncService>().CreatedBy((MediaStorageService storage, MediaFileIndex index, MediaImportRuleSet ruleSet) =>
+                                                            (IMediaSyncService)new AnkiMediaSyncService(() => App.AnkiMediaDir, storage, index, ruleSet)),
             Singleton.For<INoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner, IMediaSyncService mediaSyncService) =>
                                                           (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, App.DatabaseDir, mediaSyncService)));
       }
@@ -63,9 +60,7 @@ static class AppBootstrapper
          // Media storage
          Singleton.For<MediaFileIndex>().CreatedBy(() =>
                                                       new MediaFileIndex(Path.Combine(App.DatabaseDir, "media"))),
-         Singleton.For<MediaImportRoutingConfig<VocabMediaImportRule>>().CreatedBy(() => new MediaImportRoutingConfig<VocabMediaImportRule>([])),
-         Singleton.For<MediaImportRoutingConfig<SentenceMediaImportRule>>().CreatedBy(() => new MediaImportRoutingConfig<SentenceMediaImportRule>([])),
-         Singleton.For<MediaImportRoutingConfig<KanjiMediaImportRule>>().CreatedBy(() => new MediaImportRoutingConfig<KanjiMediaImportRule>([])),
+         Singleton.For<MediaImportRuleSet>().CreatedBy(() => new MediaImportRuleSet([], [], [])),
          Singleton.For<MediaStorageService>().CreatedBy((MediaFileIndex index) =>
                                                            new MediaStorageService(Path.Combine(App.DatabaseDir, "media"), index)),
 
