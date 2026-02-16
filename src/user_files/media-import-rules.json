@@ -1,15 +1,179 @@
 {
-  "vocabRules": [],
+  "vocabRules": [
+    {
+      "prefix": "wani",
+      "targetDirectory": "commercial-02/vocab/wani/audio/first",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "wani",
+      "field": "AudioSecond",
+      "targetDirectory": "commercial-02/vocab/wani/audio/second",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "core2000",
+      "targetDirectory": "commercial-02/vocab/core200/audio",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "core2000",
+      "field": "Image",
+      "targetDirectory": "commercial-02/vocab/core200/images",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "core2000",
+      "field": "UserImage",
+      "targetDirectory": "commercial-02/vocab/core200/user-image",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "wani",
+      "field": "Image",
+      "targetDirectory": "commercial-02/vocab/wani/image",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "wani",
+      "field": "UserImage",
+      "targetDirectory": "commercial-02/vocab/wani/user-image",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "wani",
+      "field": "AudioTts",
+      "targetDirectory": "vocab/TTS",
+      "copyright": "Free"
+    },
+    {
+      "prefix": "yomitan",
+      "field": "AudioTts",
+      "targetDirectory": "vocab/TTS",
+      "copyright": "Free"
+    },
+    {
+      "prefix": "unknown",
+      "field": "AudioTts",
+      "targetDirectory": "vocab/TTS",
+      "copyright": "Free"
+    },
+    {
+      "prefix": "yomitan",
+      "targetDirectory": "vocab/audio/free",
+      "copyright": "Free"
+    },
+    {
+      "prefix": "yomitan",
+      "field": "AudioSecond",
+      "targetDirectory": "vocab/audio/free",
+      "copyright": "Free"
+    },
+    {
+      "prefix": "unknown",
+      "targetDirectory": "vocab/audio/unknown",
+      "copyright": "Free"
+    },
+    {
+      "prefix": "yomitan",
+      "field": "UserImage",
+      "targetDirectory": "vocab/image/unknown",
+      "copyright": "Free"
+    },
+    {
+      "prefix": "unknown",
+      "field": "AudioSecond",
+      "targetDirectory": "vocab/audio/unknown",
+      "copyright": "Free"
+    }
+  ],
   "sentenceRules": [
     {
       "prefix": "anime::natsume",
-      "targetDirectory": "natsume/audio",
+      "targetDirectory": "commercial-01/anime/natsume/audio",
       "copyright": "Commercial"
     },
     {
       "prefix": "anime::natsume",
       "field": "Screenshot",
-      "targetDirectory": "natsume/screenshots",
+      "targetDirectory": "commercial-01/anime/natsume/screenshots",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "anime::violet",
+      "targetDirectory": "commercial-01/anime/violet/audio",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "anime::violet",
+      "field": "Screenshot",
+      "targetDirectory": "commercial-01/anime/violet/screenshots",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "anime::one-week",
+      "targetDirectory": "commercial-01/anime/one-week-friends/audio",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "anime::one-week",
+      "field": "Screenshot",
+      "targetDirectory": "commercial-01/anime/one-week-friends/screenshots",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "core2000",
+      "targetDirectory": "commercial-01/studying/core2000/audio",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "core2000",
+      "field": "Screenshot",
+      "targetDirectory": "commercial-01/studying/core2000/images",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "anime::girls-last-tour",
+      "targetDirectory": "commercial-01/anime/girls-last-tour/audio",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "anime::girls-last-tour",
+      "field": "Screenshot",
+      "targetDirectory": "commercial-01/anime/girls-last-tour/screenshots",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "wani",
+      "targetDirectory": "commercial-01/studying/wanikani/audio",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "wani",
+      "field": "Screenshot",
+      "targetDirectory": "commercial-01/studying/wanikani/images",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "immersion_kit",
+      "targetDirectory": "commercial-01/anime/immersion-kit/audio",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "immersion_kit",
+      "field": "Screenshot",
+      "targetDirectory": "commercial-01/anime/immersion-kit/screenshots",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "jlab",
+      "targetDirectory": "commercial-01/anime/jlab/audio",
+      "copyright": "Commercial"
+    },
+    {
+      "prefix": "jlab",
+      "field": "Screenshot",
+      "targetDirectory": "commercial-01/anime/jlab/audio",
       "copyright": "Commercial"
     }
   ],
