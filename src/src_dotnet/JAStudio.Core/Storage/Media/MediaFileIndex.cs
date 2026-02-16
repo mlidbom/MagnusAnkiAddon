@@ -49,26 +49,15 @@ public class MediaFileIndex
 
       var scan = scope.RunIndeterminate("Scanning media files", ScanMediaFiles);
 
-      var audioAttachments = scope.RunBatch(
-         scan.AudioSidecarPaths,
-         path => DeserializeSidecar(path, isAudio: true, scan.MediaFilesByDirectory),
-         "Loading audio sidecars",
-         ThreadCount.FractionOfLogicalCores(0.3));
+      var audioAttachments = scope.RunBatch(scan.AudioSidecarPaths, path => DeserializeSidecar(path, isAudio: true, scan.MediaFilesByDirectory), "Loading audio sidecars", ThreadCount.FractionOfLogicalCores(0.3));
+      var imageAttachments = scope.RunBatch(scan.ImageSidecarPaths, path => DeserializeSidecar(path, isAudio: false, scan.MediaFilesByDirectory), "Loading image sidecars", ThreadCount.FractionOfLogicalCores(0.3));
 
-      var imageAttachments = scope.RunBatch(
-         scan.ImageSidecarPaths,
-         path => DeserializeSidecar(path, isAudio: false, scan.MediaFilesByDirectory),
-         "Loading image sidecars",
-         ThreadCount.FractionOfLogicalCores(0.3));
-
-      scope.RunIndeterminate("Building media indexes", () =>
-      {
-         foreach(var attachment in audioAttachments)
-            if(attachment != null) IndexAttachment(attachment);
-
-         foreach(var attachment in imageAttachments)
-            if(attachment != null) IndexAttachment(attachment);
-      });
+      scope.RunIndeterminate("Building media indexes",
+                             () =>
+                             {
+                                foreach(var attachment in audioAttachments) IndexAttachment(attachment);
+                                foreach(var attachment in imageAttachments) IndexAttachment(attachment);
+                             });
 
       _initialized = true;
       this.Log().Info($"Media file index built: {_byId.Count} files indexed under {_mediaRoot}");
@@ -121,24 +110,11 @@ public class MediaFileIndex
       return new MediaScanResult(audioSidecars, imageSidecars, mediaFilesByDirectory);
    }
 
-   /// <summary>
-   /// Deserializes a single sidecar file and resolves its media file path.
-   /// Returns null if the sidecar cannot be read.
-   /// </summary>
-   MediaAttachment? DeserializeSidecar(string sidecarPath, bool isAudio, Dictionary<string, List<FileInfo>> mediaFilesByDirectory)
+   static MediaAttachment DeserializeSidecar(string sidecarPath, bool isAudio, Dictionary<string, List<FileInfo>> mediaFilesByDirectory)
    {
-      MediaAttachment attachment;
-      try
-      {
-         attachment = isAudio
-                         ? SidecarSerializer.ReadAudioSidecar(sidecarPath)
-                         : SidecarSerializer.ReadImageSidecar(sidecarPath);
-      }
-      catch(Exception ex)
-      {
-         this.Log().Warning($"Failed to read sidecar {sidecarPath}: {ex.Message}");
-         return null;
-      }
+      MediaAttachment attachment = isAudio
+                                      ? SidecarSerializer.ReadAudioSidecar(sidecarPath)
+                                      : SidecarSerializer.ReadImageSidecar(sidecarPath);
 
       var dir = Path.GetDirectoryName(sidecarPath) ?? string.Empty;
       attachment.FilePath = FindMediaFile(dir, attachment.Id, mediaFilesByDirectory) ?? string.Empty;
