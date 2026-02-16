@@ -68,25 +68,34 @@ The serializer is configured with `DefaultIgnoreCondition = JsonIgnoreCondition.
 
 The `noteSourceTag` field preserves the full source tag from the note at import time (e.g. `source::anime::natsume::s1::01`). This enables filtering, bulk updates, and re-routing by source without re-parsing note data.
 
+### Shared media files
+
+A single media file (e.g. pronunciation audio for 走る) may be referenced by multiple notes — the vocab note for 走る and every sentence note containing 走る. The sidecar uses `noteIds` (plural) to track all associated notes. During import, when a file is encountered that already exists (by original filename), its sidecar is updated to append the new note ID rather than creating a duplicate file.
+
+### `ankiFieldName` — preserving the source field
+
+The `ankiFieldName` field records which Anki note field the media came from (e.g. `"Audio.First"`, `"Audio.Tts"`, `"Screenshot"`). This is critical because the same note can have multiple audio fields with different copyright status — e.g. a vocab note's `Audio.First` is commercial (WaniKani) while `Audio.Tts` is free.
+
 ### Audio Sidecar (`{guid}.audio.json`)
 
-**Copyrighted anime audio:**
+**Copyrighted anime audio (sentence):**
 ```json
 {
-  "noteId": "9f8e7d6c-5b4a-3210-fedc-ba9876543210",
+  "noteIds": ["9f8e7d6c-5b4a-3210-fedc-ba9876543210"],
   "noteSourceTag": "source::anime::natsume::s1::01",
+  "ankiFieldName": "Audio",
   "originalFileName": "natsume_ep01_03m22s.mp3",
-  "copyright": "commercial"
+  "copyright": "Commercial"
 }
 ```
 
-**TTS-generated audio:**
+**TTS-generated audio (wani sentence):**
 ```json
 {
-  "noteId": "9f8e7d6c-5b4a-3210-fedc-ba9876543210",
+  "noteIds": ["9f8e7d6c-5b4a-3210-fedc-ba9876543210"],
   "noteSourceTag": "source::wani::level05",
-  "originalFileName": null,
-  "copyright": "free",
+  "ankiFieldName": "Audio",
+  "copyright": "Free",
   "tts": {
     "engine": "azure-neural",
     "voice": "ja-JP-NanamiNeural",
@@ -98,10 +107,26 @@ The `noteSourceTag` field preserves the full source tag from the note at import 
 **WaniKani vocabulary audio:**
 ```json
 {
-  "noteId": "abc12345-6789-0abc-def0-123456789abc",
+  "noteIds": ["abc12345-6789-0abc-def0-123456789abc"],
   "noteSourceTag": "source::wani::level05",
+  "ankiFieldName": "Audio.First",
   "originalFileName": "走る_audio_b.mp3",
-  "copyright": "commercial"
+  "copyright": "Commercial"
+}
+```
+
+**Shared pronunciation audio (vocab + multiple sentences):**
+```json
+{
+  "noteIds": [
+    "abc12345-6789-0abc-def0-123456789abc",
+    "9f8e7d6c-5b4a-3210-fedc-ba9876543210",
+    "11223344-5566-7788-99aa-bbccddeeff00"
+  ],
+  "noteSourceTag": "source::core2000::step01",
+  "ankiFieldName": "Audio.First",
+  "originalFileName": "走る_core2k.mp3",
+  "copyright": "Commercial"
 }
 ```
 
@@ -110,10 +135,11 @@ The `noteSourceTag` field preserves the full source tag from the note at import 
 **Screenshot from anime:**
 ```json
 {
-  "noteId": "9f8e7d6c-5b4a-3210-fedc-ba9876543210",
+  "noteIds": ["9f8e7d6c-5b4a-3210-fedc-ba9876543210"],
   "noteSourceTag": "source::anime::natsume::s1::01",
+  "ankiFieldName": "Screenshot",
   "originalFileName": "natsume_ep01_03m22s.png",
-  "copyright": "commercial"
+  "copyright": "Commercial"
 }
 ```
 
@@ -133,35 +159,52 @@ Each sidecar schema is independently extensible — adding audio-specific fields
 
 ## Import-Time Routing
 
-A manually maintained config maps Anki note source tags to storage directories:
+A manually maintained config maps **(note type, source tag prefix, field name)** to a storage directory and copyright status. The routing is **per note type** because the same source tag can have entirely different copyright implications depending on whether it's a vocab note or a sentence note.
 
 ```json
 {
-  "routing": {
-    "source::anime::natsume::": "commercial-001/natsume",
-    "source::anime::mushishi::": "commercial-001/mushishi",
-    "source::wani::": "commercial-002/wanikani",
-    "source::core2000::": "commercial-003/core2000"
+  "vocab": {
+    "source::wani::": {
+      "Audio.First":  { "directory": "commercial-002/wanikani", "copyright": "Commercial" },
+      "Audio.Second": { "directory": "commercial-002/wanikani", "copyright": "Commercial" },
+      "Audio.Tts":    { "directory": "general/tts",             "copyright": "Free" },
+      "Image":        { "directory": "commercial-002/wanikani", "copyright": "Commercial" },
+      "UserImage":    { "directory": "general/user",            "copyright": "Free" }
+    },
+    "source::core2000::": {
+      "Audio.First":  { "directory": "commercial-003/core2000", "copyright": "Commercial" },
+      "Audio.Tts":    { "directory": "general/tts",             "copyright": "Free" }
+    }
   },
-  "default": "general"
+  "sentence": {
+    "source::anime::natsume::": {
+      "Audio":      { "directory": "commercial-001/natsume", "copyright": "Commercial" },
+      "Screenshot": { "directory": "commercial-001/natsume", "copyright": "Commercial" }
+    },
+    "source::anime::mushishi::": {
+      "Audio":      { "directory": "commercial-001/mushishi", "copyright": "Commercial" },
+      "Screenshot": { "directory": "commercial-001/mushishi", "copyright": "Commercial" }
+    },
+    "source::wani::": {
+      "Audio":      { "directory": "general/tts",             "copyright": "Free" }
+    },
+    "source::core2000::": {
+      "Audio":      { "directory": "commercial-003/core2000", "copyright": "Commercial" }
+    }
+  },
+  "kanji": {
+    "default": {
+      "Audio": { "directory": "general/kanji", "copyright": "Free" },
+      "Image": { "directory": "general/kanji", "copyright": "Free" }
+    }
+  },
+  "default": { "directory": "general/uncategorized", "copyright": "Free" }
 }
 ```
 
-At import time, the note's tags are matched by longest prefix to determine the target directory. Unmatched files go to `"general"`.
+At import time, the lookup is: find the note type section → match source tag by longest prefix → find the field name → get directory + copyright. Unmatched combinations fall through to `"default"`.
 
 **This config is import-time only.** Once files are stored, the routing config is not consulted again. The `MediaFileIndex` discovers files by scanning the filesystem.
-
-### Copyright mapping from current Anki data
-
-The copyright owner of a media file depends on the **note's source tag** and **which field** the media came from:
-
-| Note source tag | Media field | Copyright | Storage target |
-|---|---|---|---|
-| `source::anime::natsume::*` | Audio | Commercial (show owner) | `commercial-001/natsume` |
-| `source::anime::natsume::*` | Screenshot | Commercial (show owner) | `commercial-001/natsume` |
-| `source::wani::*` | Audio_b, Audio_g | Commercial (WaniKani) | `commercial-002/wanikani` |
-| `source::wani::*` (sentences) | Audio | Free (TTS) | `general/tts` |
-| `source::core2000::*` | Audio | Commercial (Core 2000) | `commercial-003/core2000` |
 
 This mapping is specific to the initial Anki import. Future imports will specify source/copyright at import time directly, not via magical source tags.
 
@@ -188,8 +231,9 @@ general/tts/3c/3c4d5e6f-a7b8-9012-cdef-123456789012.audio.json
 At startup, `MediaFileIndex` scans all media repositories, reading every `*.audio.json` and `*.image.json` sidecar to build an in-memory index.
 
 **Index lookups:**
-- `NoteId → NoteMedia` — all media for a note, typed
+- `NoteId → NoteMedia` — all media for a note, typed (a single media file appears in the results for every note in its `NoteIds` list)
 - `MediaFileId → AudioAttachment | ImageAttachment` — single file by GUID
+- `OriginalFileName → MediaAttachment` — for dedup during import
 
 **Runtime domain objects (built from sidecar data at index time):**
 ```csharp
@@ -204,8 +248,9 @@ public abstract record MediaAttachment
 {
     // Persisted in sidecar JSON
     public required MediaFileId Id { get; init; }
-    public required NoteId NoteId { get; init; }
+    public required List<NoteId> NoteIds { get; init; }   // all notes that reference this file
     public required string NoteSourceTag { get; init; }   // full tag, e.g. "source::anime::natsume::s1::01"
+    public string? AnkiFieldName { get; init; }           // which Anki field this came from, e.g. "Audio.First"
     public string? OriginalFileName { get; init; }
     public required CopyrightStatus Copyright { get; init; }
 
@@ -291,10 +336,10 @@ Note tags like `source::anime::natsume::s1::01` on sentence notes in the core co
 
 ## Deduplication Strategy
 
-`MediaFileIndex.ContainsByOriginalFileName()` checks if a file with the same original name is already stored before copying. This means:
+During import, `MediaFileIndex.TryGetByOriginalFileName()` checks if a file with the same original name is already stored:
 
-- First import of a file: copied and indexed
-- Subsequent imports of the same filename: skipped
+- **First encounter:** file is copied, sidecar created with `noteIds: [currentNoteId]`
+- **Subsequent encounters (same filename, different note):** file is NOT copied again; the existing sidecar's `noteIds` list is updated to include the new note ID
 - The check is case-insensitive
 
 This is name-based dedup, not content-based. Acceptable because Anki media files are essentially immutable once created.
@@ -332,11 +377,14 @@ This needs to be evolved to match the architecture described above.
 - `When_querying_MediaFileIndex_by_original_filename` — adapt to sidecar-based lookup
 - `When_syncing_media_from_anki` — adapt to new routing + sidecar writing
 
-## Migration Plan (50k Sentence Import)
+## Import Plan (Fresh from Anki)
 
-1. Parse existing Anki markup from current note JSON → extract original filenames
-2. For each media reference, determine copyright/source from the note's tags using the routing config
-3. Copy file from Anki media dir into the target media repo directory
-4. Write typed sidecar JSON (`*.audio.json` or `*.image.json`) with `noteId`, `noteSourceTag`, `originalFileName`, `copyright`, etc.
-5. Strip media fields from corpus note JSON (remove `Audio`, `Screenshot`, `Image`, etc.)
-6. Rebuild `MediaFileIndex` from the new sidecar-based storage
+The import always runs from scratch — wipe the media output folder and re-import everything from Anki. No incremental or crash-recovery logic needed.
+
+1. Delete all existing media files in the target directories (clean slate)
+2. Load all notes from the corpus; for each note, parse Anki markup fields → extract original filenames and field names
+3. For each media reference, look up `(noteType, sourceTag, fieldName)` in the routing config → get target directory + copyright
+4. Check if file already stored (by original filename — dedup): if so, append noteId to existing sidecar's `noteIds`; if not, copy from Anki media dir
+5. Write typed sidecar JSON (`*.audio.json` or `*.image.json`) with `noteIds`, `noteSourceTag`, `ankiFieldName`, `originalFileName`, `copyright`, etc.
+
+Stripping media fields from the corpus note JSON is a separate step (done when the corpus DTOs are updated to remove audio/image fields).
