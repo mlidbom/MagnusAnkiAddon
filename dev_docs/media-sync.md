@@ -56,33 +56,30 @@ We are building a corpus of analyzed Japanese sentences/vocab for language study
 
 ## Sidecar Metadata Format
 
-Each media file is stored as a pair: `{guid}.{ext}` + `{guid}.json`.
+Each media file is stored as a pair: `{guid}.{ext}` + `{guid}.json`. Different media types have **separate sidecar schemas** — audio and image are fundamentally different data and will diverge further over time (e.g. audio has duration, TTS engine; image has resolution; video will have frame range, subtitles track, etc.).
 
-**Example: copyrighted anime audio**
+The `noteSourceTag` field preserves the full source tag from the note at import time (e.g. `source::anime::natsume::s1::01`). This enables filtering, bulk updates, and re-routing by source without re-parsing note data.
+
+### Audio Sidecar (`{guid}.audio.json`)
+
+**Copyrighted anime audio:**
 ```json
 {
   "noteId": "9f8e7d6c-5b4a-3210-fedc-ba9876543210",
+  "noteSourceTag": "source::anime::natsume::s1::01",
   "originalFileName": "natsume_ep01_03m22s.mp3",
-  "mediaType": "audio",
-  "copyright": "commercial",
-  "source": {
-    "type": "anime",
-    "show": "natsume",
-    "season": 1,
-    "episode": 1
-  }
+  "copyright": "commercial"
 }
 ```
 
-**Example: TTS-generated audio**
+**TTS-generated audio:**
 ```json
 {
   "noteId": "9f8e7d6c-5b4a-3210-fedc-ba9876543210",
+  "noteSourceTag": "source::wani::level05",
   "originalFileName": null,
-  "mediaType": "audio",
   "copyright": "free",
-  "generation": {
-    "method": "tts",
+  "tts": {
     "engine": "azure-neural",
     "voice": "ja-JP-NanamiNeural",
     "version": "2025.1"
@@ -90,23 +87,41 @@ Each media file is stored as a pair: `{guid}.{ext}` + `{guid}.json`.
 }
 ```
 
-**Example: screenshot from anime**
+**WaniKani vocabulary audio:**
 ```json
 {
-  "noteId": "9f8e7d6c-5b4a-3210-fedc-ba9876543210",
-  "originalFileName": "natsume_ep01_03m22s.png",
-  "mediaType": "image",
-  "copyright": "commercial",
-  "source": {
-    "type": "anime",
-    "show": "natsume",
-    "season": 1,
-    "episode": 1
-  }
+  "noteId": "abc12345-6789-0abc-def0-123456789abc",
+  "noteSourceTag": "source::wani::level05",
+  "originalFileName": "走る_audio_b.mp3",
+  "copyright": "commercial"
 }
 ```
 
-The sidecar format is extensible — new fields can be added as needed without restructuring storage.
+### Image Sidecar (`{guid}.image.json`)
+
+**Screenshot from anime:**
+```json
+{
+  "noteId": "9f8e7d6c-5b4a-3210-fedc-ba9876543210",
+  "noteSourceTag": "source::anime::natsume::s1::01",
+  "originalFileName": "natsume_ep01_03m22s.png",
+  "copyright": "commercial"
+}
+```
+
+### File naming convention
+
+The sidecar extension encodes the media type, so the media type is knowable from the filename alone without reading the JSON:
+
+```
+a1b2c3d4-e5f6-7890-abcd-ef1234567890.mp3          ← audio file
+a1b2c3d4-e5f6-7890-abcd-ef1234567890.audio.json   ← audio sidecar
+
+f7e6d5c4-b3a2-1098-7654-321fedcba098.png           ← image file
+f7e6d5c4-b3a2-1098-7654-321fedcba098.image.json    ← image sidecar
+```
+
+Each sidecar schema is independently extensible — adding audio-specific fields (duration, bitrate) or image-specific fields (resolution, format) doesn't affect the other type.
 
 ## Import-Time Routing
 
@@ -153,43 +168,60 @@ The GUID bucket is the first two hex characters of the GUID, keeping any single 
 
 ```
 commercial-001/natsume/a1/a1b2c3d4-e5f6-7890-abcd-ef1234567890.mp3
-commercial-001/natsume/a1/a1b2c3d4-e5f6-7890-abcd-ef1234567890.json
+commercial-001/natsume/a1/a1b2c3d4-e5f6-7890-abcd-ef1234567890.audio.json
+commercial-001/natsume/f7/f7e6d5c4-b3a2-1098-7654-321fedcba098.png
+commercial-001/natsume/f7/f7e6d5c4-b3a2-1098-7654-321fedcba098.image.json
 general/tts/3c/3c4d5e6f-a7b8-9012-cdef-123456789012.mp3
-general/tts/3c/3c4d5e6f-a7b8-9012-cdef-123456789012.json
+general/tts/3c/3c4d5e6f-a7b8-9012-cdef-123456789012.audio.json
 ```
 
 ## Runtime: Building the Domain Model
 
-At startup, `MediaFileIndex` scans all media repositories, reading every `.json` sidecar to build an in-memory index.
+At startup, `MediaFileIndex` scans all media repositories, reading every `*.audio.json` and `*.image.json` sidecar to build an in-memory index.
 
 **Index lookups:**
-- `NoteId → List<MediaAttachment>` — all media for a note
-- `MediaFileId → MediaAttachment` — single file by GUID
+- `NoteId → NoteMedia` — all media for a note, typed
+- `MediaFileId → AudioAttachment | ImageAttachment` — single file by GUID
 
-**Runtime domain object (built from index at note load time):**
+**Runtime domain objects (built from sidecar data at index time):**
 ```csharp
-// Rich object combining note data + media index
-public record MediaAttachment(
+// Audio — has its own domain-specific fields
+public record AudioAttachment(
     MediaFileId Id,
+    NoteId NoteId,
+    string NoteSourceTag,         // full tag, e.g. "source::anime::natsume::s1::01"
     string? OriginalFileName,
-    string Extension,
-    MediaType Type,           // Audio, Image — inferred from extension
-    string Copyright,         // "commercial", "free"
-    string FilePath           // absolute path to the media file
-    // extensible: add TTS engine, source info, etc. as needed
+    string Copyright,             // "commercial", "free"
+    string FilePath,              // absolute path to the .mp3/.wav/etc.
+    TtsInfo? Tts                  // non-null if TTS-generated
+);
+
+public record TtsInfo(string Engine, string Voice, string Version);
+
+// Image — separate type, own fields
+public record ImageAttachment(
+    MediaFileId Id,
+    NoteId NoteId,
+    string NoteSourceTag,
+    string? OriginalFileName,
+    string Copyright,
+    string FilePath
+);
+
+// Aggregated per note
+public record NoteMedia(
+    IReadOnlyList<AudioAttachment> Audio,
+    IReadOnlyList<ImageAttachment> Images
 );
 ```
 
-**Domain notes expose media from the index:**
+**Domain notes expose typed media from the index:**
 ```csharp
 // SentenceNote — assembled at load time
-public IReadOnlyList<MediaAttachment> AllMedia { get; }
-public IReadOnlyList<MediaAttachment> AudioOptions { get; }
-public IReadOnlyList<MediaAttachment> Images { get; }
+public NoteMedia Media { get; }    // .Audio, .Images
 
-// VocabNote — same pattern
-public IReadOnlyList<MediaAttachment> AudioOptions { get; }
-public IReadOnlyList<MediaAttachment> Images { get; }
+// VocabNote — same
+public NoteMedia Media { get; }
 ```
 
 Multiple audio sources per note is the norm — copyrighted original audio, TTS from multiple engines, human recordings from free sources. The access/preference layer selects which to present.
@@ -215,10 +247,10 @@ The association `note ↔ media` exists only in the media layer's sidecar files 
 Media access is controlled at runtime based on the user's verified accounts:
 
 ```
-source.type "anime" on Crunchyroll  → requires verified Crunchyroll account
-source.type "wanikani"              → requires verified WaniKani account
-copyright "free"                    → always available
-generation.method "tts"             → always available
+noteSourceTag starts with "source::anime::natsume"  →  requires Crunchyroll (or relevant licensor)
+noteSourceTag starts with "source::wani::"           →  requires verified WaniKani account
+copyright == "free"                                  →  always available
+tts != null                                          →  always available
 ```
 
 A note might have 5 audio attachments. The access layer filters to what the user is entitled to, then the preference layer selects the best one (community-ranked, student-overridable, curator-pinned).
@@ -227,7 +259,7 @@ A note might have 5 audio attachments. The access layer filters to what the user
 
 If a rights holder demands removal of media from a source:
 
-1. Identify all sidecar files matching the source (e.g. `source.show == "natsume"`)
+1. Identify all sidecar files matching the source (e.g. `noteSourceTag` starts with `source::anime::natsume::`)
 2. Delete the media files and their sidecars
 3. Commit the deletion to the media repo
 4. Core corpus is untouched — notes still load, they just have fewer (or no) audio/image options
@@ -264,10 +296,10 @@ This needs to be evolved to match the architecture described above.
 | Component | Current | Target |
 |---|---|---|
 | Note corpus data (DTOs) | Contains Anki markup audio/image fields | No media fields at all |
-| `MediaStorageService` | Encodes metadata in path | Stores sidecar JSON alongside media files |
-| `MediaFileIndex` | Recovers original filename from directory structure | Reads sidecar JSON for full metadata; supports `NoteId → media` lookup |
+| `MediaStorageService` | Encodes metadata in path | Stores typed sidecar JSON (`*.audio.json` / `*.image.json`) alongside media files |
+| `MediaFileIndex` | Recovers original filename from directory structure | Reads typed sidecars; supports `NoteId → NoteMedia` lookup |
 | `AnkiMediaSyncService` | Hardcodes `anki::audio`/`anki::image` tags | Uses routing config + note source tags to determine storage location and sidecar content |
-| `MediaFileInfo` | `(Id, FullPath, OriginalFileName, Extension)` | Richer record with all sidecar fields |
+| `MediaFileInfo` | `(Id, FullPath, OriginalFileName, Extension)` | Replaced by typed `AudioAttachment` / `ImageAttachment` records built from sidecar data |
 | `MediaRoutingConfig` | Routes by source tag prefix → directory | Same role, but import-time only |
 | `WritableAudioValue` / `WritableImageValue` | Wraps raw Anki markup, parses media refs | Still needed for Anki interop; not used in corpus storage |
 | `JPNote.MediaReferences` | Aggregates media fields from the note | No longer needed on the note — media discovered via index |
@@ -286,6 +318,6 @@ This needs to be evolved to match the architecture described above.
 1. Parse existing Anki markup from current note JSON → extract original filenames
 2. For each media reference, determine copyright/source from the note's tags using the routing config
 3. Copy file from Anki media dir into the target media repo directory
-4. Write sidecar JSON with `noteId`, `originalFileName`, `mediaType`, `copyright`, `source`, etc.
+4. Write typed sidecar JSON (`*.audio.json` or `*.image.json`) with `noteId`, `noteSourceTag`, `originalFileName`, `copyright`, etc.
 5. Strip media fields from corpus note JSON (remove `Audio`, `Screenshot`, `Image`, etc.)
 6. Rebuild `MediaFileIndex` from the new sidecar-based storage
