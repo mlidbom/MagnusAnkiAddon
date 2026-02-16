@@ -140,13 +140,13 @@ public class MediaFileIndex
 
    public MediaFileInfo? TryGetInfo(MediaFileId id) => EnsureInitialized()
      .then(() => _byId.TryGetValue(id, out var attachment)
-        ? new MediaFileInfo(attachment.Id, attachment.FilePath, attachment.OriginalFileName ?? string.Empty, Path.GetExtension(attachment.FilePath))
-        : null);
+                    ? new MediaFileInfo(attachment.Id, attachment.FilePath, attachment.OriginalFileName ?? string.Empty, Path.GetExtension(attachment.FilePath))
+                    : null);
 
    public NoteMedia GetNoteMedia(NoteId noteId) => EnsureInitialized()
      .then(() => _byNoteId.TryGetValue(noteId, out var attachments)
-        ? new NoteMedia(attachments.OfType<AudioAttachment>().ToList(), attachments.OfType<ImageAttachment>().ToList())
-        : new NoteMedia([], []));
+                    ? new NoteMedia(attachments.OfType<AudioAttachment>().ToList(), attachments.OfType<ImageAttachment>().ToList())
+                    : new NoteMedia([], []));
 
    public bool Contains(MediaFileId id) => EnsureInitialized()
      .then(() => _byId.ContainsKey(id));
