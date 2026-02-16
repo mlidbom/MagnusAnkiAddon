@@ -79,10 +79,6 @@ The `noteSourceTag` field is a `SourceTag` value — a structured, `::` -separat
 
 A single media file (e.g. pronunciation audio for 走る) may be referenced by multiple notes — the vocab note for 走る and every sentence note containing 走る. The sidecar uses `noteIds` (plural) to track all associated notes. During import, when a file is encountered that already exists (by original filename), its sidecar is updated to append the new note ID rather than creating a duplicate file.
 
-### `ankiFieldName` — preserving the source field
-
-The `ankiFieldName` field records which Anki note field the media came from (e.g. `"Audio.First"`, `"Audio.Tts"`, `"Screenshot"`). This is critical because the same note can have multiple audio fields with different copyright status — e.g. a vocab note's `Audio.First` is commercial (WaniKani) while `Audio.Tts` is free.
-
 ### Audio Sidecar (`{guid}.audio.json`)
 
 **Copyrighted anime audio (sentence):**
@@ -90,7 +86,6 @@ The `ankiFieldName` field records which Anki note field the media came from (e.g
 {
   "noteIds": ["9f8e7d6c-5b4a-3210-fedc-ba9876543210"],
   "noteSourceTag": "source::anime::natsume::s1::01",
-  "ankiFieldName": "Audio",
   "originalFileName": "natsume_ep01_03m22s.mp3",
   "copyright": "Commercial"
 }
@@ -101,7 +96,6 @@ The `ankiFieldName` field records which Anki note field the media came from (e.g
 {
   "noteIds": ["9f8e7d6c-5b4a-3210-fedc-ba9876543210"],
   "noteSourceTag": "source::wani::level05",
-  "ankiFieldName": "Audio",
   "copyright": "Free",
   "tts": {
     "engine": "azure-neural",
@@ -116,7 +110,6 @@ The `ankiFieldName` field records which Anki note field the media came from (e.g
 {
   "noteIds": ["abc12345-6789-0abc-def0-123456789abc"],
   "noteSourceTag": "source::wani::level05",
-  "ankiFieldName": "Audio.First",
   "originalFileName": "走る_audio_b.mp3",
   "copyright": "Commercial"
 }
@@ -131,7 +124,6 @@ The `ankiFieldName` field records which Anki note field the media came from (e.g
     "11223344-5566-7788-99aa-bbccddeeff00"
   ],
   "noteSourceTag": "source::core2000::step01",
-  "ankiFieldName": "Audio.First",
   "originalFileName": "走る_core2k.mp3",
   "copyright": "Commercial"
 }
@@ -144,7 +136,6 @@ The `ankiFieldName` field records which Anki note field the media came from (e.g
 {
   "noteIds": ["9f8e7d6c-5b4a-3210-fedc-ba9876543210"],
   "noteSourceTag": "source::anime::natsume::s1::01",
-  "ankiFieldName": "Screenshot",
   "originalFileName": "natsume_ep01_03m22s.png",
   "copyright": "Commercial"
 }
