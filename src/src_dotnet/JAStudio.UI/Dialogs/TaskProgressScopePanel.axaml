@@ -27,7 +27,7 @@
                            FontSize="12"/>
             </DockPanel>
 
-            <!-- Child progress panels: different templates for spinner vs batch -->
+            <!-- Child progress panels: different templates for spinner vs batch vs nested scope -->
             <ItemsControl ItemsSource="{Binding Children}" Margin="6,0,0,0">
                 <ItemsControl.DataTemplates>
                     <DataTemplate DataType="{x:Type taskRunners:BatchTaskProgressViewModel}">
@@ -35,6 +35,9 @@
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type taskRunners:TaskProgressViewModel}">
                         <dialogs:SpinnerProgressPanel />
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type taskRunners:TaskProgressScopeViewModel}">
+                        <dialogs:TaskProgressScopePanel />
                     </DataTemplate>
                 </ItemsControl.DataTemplates>
             </ItemsControl>

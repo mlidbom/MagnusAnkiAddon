@@ -98,11 +98,17 @@ public class JAStudioAppRoot
       var root = new JAStudioAppRoot(app) { _uiThread = uiThread };
 
       // Set up task runner factories
-      root.Services.TaskRunner.SetUiScopePanelFactory((scopeTitle, depth) =>
+      root.Services.TaskRunner.SetUiScopePanelFactory((scopeTitle, depth, parentScope) =>
       {
-         var viewModel = new TaskProgressScopeViewModel(scopeTitle);
+         var viewModel = new TaskProgressScopeViewModel(scopeTitle, depth);
+         if(parentScope != null)
+         {
+            Dispatcher.UIThread.Invoke(() => parentScope.ViewModel.Children.Add(viewModel));
+            return new AvaloniaScopePanel(viewModel, topLevelPanel: null, parentScope);
+         }
+
          var panel = Dispatcher.UIThread.Invoke(() => MultiTaskProgressDialog.CreateScopePanel(viewModel, depth));
-         return new AvaloniaScopePanel(viewModel, panel);
+         return new AvaloniaScopePanel(viewModel, panel, parentScope: null);
       });
 
       root.Services.TaskRunner.SetUiTaskRunnerFactory((scopePanel, labelText, allowCancel) =>

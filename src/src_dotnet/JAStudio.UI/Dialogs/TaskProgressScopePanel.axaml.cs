@@ -1,6 +1,7 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using JAStudio.Core.TaskRunners;
 
 namespace JAStudio.UI.Dialogs;
 
@@ -8,14 +9,30 @@ namespace JAStudio.UI.Dialogs;
 /// A scope-level panel bound to a <see cref="JAStudio.Core.TaskRunners.TaskProgressScopeViewModel"/>.
 /// Displays a heading with elapsed time and hosts child progress panels
 /// via an <c>ItemsControl</c> bound to the view model's <c>Children</c> collection.
-/// Only depth-based visual styling remains in code-behind.
+/// Nested scopes are structurally nested via recursive <c>DataTemplate</c>s, so
+/// indentation comes from the tree structure itself. Only background color varies by depth.
 /// </summary>
 public partial class TaskProgressScopePanel : UserControl
 {
    static readonly string[] DepthBackgrounds = ["#10808080", "#08606080", "#06404060", "#04303050"];
 
-   public TaskProgressScopePanel() : this(1) {}
+   /// <summary>
+   /// Parameterless constructor used by DataTemplate instantiation.
+   /// Reads depth from the DataContext once it is set.
+   /// </summary>
+   public TaskProgressScopePanel()
+   {
+      InitializeComponent();
+      DataContextChanged += (_, _) =>
+      {
+         if(DataContext is TaskProgressScopeViewModel vm)
+            ApplyDepthStyling(vm.Depth);
+      };
+   }
 
+   /// <summary>
+   /// Constructor used when creating top-level scope panels programmatically.
+   /// </summary>
    public TaskProgressScopePanel(int depth)
    {
       InitializeComponent();
@@ -29,9 +46,6 @@ public partial class TaskProgressScopePanel : UserControl
 
    void ApplyDepthStyling(int depth)
    {
-      var indent = Math.Max(0, (depth - 1) * 16);
-      Margin = new Avalonia.Thickness(indent, 2, 0, 2);
-
       var border = this.FindControl<Border>("ScopeBorder");
       if(border != null)
       {

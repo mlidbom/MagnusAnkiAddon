@@ -23,15 +23,21 @@ public class TaskRunnerScope : ITaskProgressRunner
    readonly bool _allowCancel;
    readonly Stopwatch _stopwatch = Stopwatch.StartNew();
    readonly IScopePanel? _scopePanel;
+   readonly int _previousNestingDepth;
+   readonly IScopePanel? _previousParentScope;
    bool _disposed;
 
-   internal TaskRunnerScope(TaskRunner taskRunner, string scopeTitle, bool visible, bool allowCancel)
+   internal IScopePanel? ScopePanel => _scopePanel;
+
+   internal TaskRunnerScope(TaskRunner taskRunner, string scopeTitle, bool visible, bool allowCancel, int depth, int previousNestingDepth, IScopePanel? previousParentScope)
    {
       _taskRunner = taskRunner;
       _scopeTitle = scopeTitle;
       _allowCancel = allowCancel;
       _visible = visible;
-      _scopePanel = visible ? taskRunner.CreateScopePanel(scopeTitle, visible) : null;
+      _previousNestingDepth = previousNestingDepth;
+      _previousParentScope = previousParentScope;
+      _scopePanel = visible ? taskRunner.CreateScopePanel(scopeTitle, visible, depth) : null;
    }
 
    ITaskProgressRunner CreateRunner(string message) => _taskRunner.Create(_scopePanel, message, _visible, _allowCancel);
@@ -77,6 +83,6 @@ public class TaskRunnerScope : ITaskProgressRunner
       this.Log().Info($"Scope \"{_scopeTitle}\" completed in {_stopwatch.Elapsed:g}");
 
       _scopePanel?.Dispose();
-      _taskRunner.OnScopeDisposed();
+      _taskRunner.OnScopeDisposed(_previousNestingDepth, _previousParentScope);
    }
 }

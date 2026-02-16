@@ -54,7 +54,7 @@ public partial class MultiTaskProgressDialog : Window
    }
 
    /// <summary>
-   /// Create a new scope panel and add it to the shared dialog.
+   /// Create a new top-level scope panel and add it to the shared dialog.
    /// Opens the dialog if it is not already visible.
    /// Must be called on the UI thread.
    /// </summary>

@@ -7,4 +7,7 @@ namespace JAStudio.Core.TaskRunners;
 /// under a heading. Implemented by the Avalonia UI layer.
 /// Core code only interacts with scopes through this interface.
 /// </summary>
-public interface IScopePanel : IDisposable {}
+public interface IScopePanel : IDisposable
+{
+   TaskProgressScopeViewModel ViewModel { get; }
+}
