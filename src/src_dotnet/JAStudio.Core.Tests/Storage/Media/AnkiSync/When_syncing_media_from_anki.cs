@@ -12,22 +12,20 @@ public class When_syncing_media_from_anki : TestStartingWithEmptyCollection, IDi
 {
    readonly string _tempDir = Path.Combine(Path.GetTempPath(), $"JAStudio_test_{Guid.NewGuid():N}");
    readonly string _ankiMediaDir;
-   readonly string _mediaRoot;
    readonly MediaFileIndex _index;
-   readonly MediaStorageService _storageService;
    readonly AnkiMediaSyncService _syncService;
 
    public When_syncing_media_from_anki()
    {
       _ankiMediaDir = Path.Combine(_tempDir, "anki_media");
-      _mediaRoot = Path.Combine(_tempDir, "corpus_files");
+      var mediaRoot = Path.Combine(_tempDir, "corpus_files");
       Directory.CreateDirectory(_ankiMediaDir);
-      Directory.CreateDirectory(_mediaRoot);
+      Directory.CreateDirectory(mediaRoot);
 
-      _index = new MediaFileIndex(_mediaRoot);
+      _index = new MediaFileIndex(mediaRoot);
       var config = MediaRoutingConfig.Default();
-      _storageService = new MediaStorageService(_mediaRoot, _index, config);
-      _syncService = new AnkiMediaSyncService(() => _ankiMediaDir, _storageService, _index);
+      var storageService = new MediaStorageService(mediaRoot, _index, config);
+      _syncService = new AnkiMediaSyncService(() => _ankiMediaDir, storageService, _index);
    }
 
    public new void Dispose()
