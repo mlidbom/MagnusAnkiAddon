@@ -15,7 +15,9 @@ public class MediaImportRulePersistence
       Converters = { new JsonStringEnumConverter(), new SourceTagJsonConverter() }
    };
 
-   static string FilePath => Path.Combine(App.UserFilesDir, "media-import-rules.json");
+   static string MetadataDir => Path.Combine(App.DatabaseDir, "metadata");
+
+   static string FilePath => Path.Combine(MetadataDir, "media-import-rules.json");
 
    public static PersistedImportRules Load()
    {
