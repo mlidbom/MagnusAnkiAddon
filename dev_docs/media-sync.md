@@ -37,13 +37,20 @@ We are building a corpus of analyzed Japanese sentences/vocab for language study
 │    wanikani/                                        │
 │      ...                                            │
 │                                                     │
-│  general/                                           │
+│  free-vocab/                                        │
 │    tts/                                             │
 │      3c/                                            │
 │        3c4d5e6f-....mp3                             │
-│        3c4d5e6f-....json                            │
-│    forvo/                                           │
+│        3c4d5e6f-....audio.json                      │
+│    user/                                            │
 │      ...                                            │
+│                                                     │
+│  free-sentence/                                     │
+│    tts/                                             │
+│      ...                                            │
+│                                                     │
+│  free-kanji/                                        │
+│    ...                                              │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -167,13 +174,13 @@ A manually maintained config maps **(note type, source tag prefix, field name)**
     "source::wani::": {
       "Audio.First":  { "directory": "commercial-002/wanikani", "copyright": "Commercial" },
       "Audio.Second": { "directory": "commercial-002/wanikani", "copyright": "Commercial" },
-      "Audio.Tts":    { "directory": "general/tts",             "copyright": "Free" },
+      "Audio.Tts":    { "directory": "free-vocab/tts",          "copyright": "Free" },
       "Image":        { "directory": "commercial-002/wanikani", "copyright": "Commercial" },
-      "UserImage":    { "directory": "general/user",            "copyright": "Free" }
+      "UserImage":    { "directory": "free-vocab/user",         "copyright": "Free" }
     },
     "source::core2000::": {
       "Audio.First":  { "directory": "commercial-003/core2000", "copyright": "Commercial" },
-      "Audio.Tts":    { "directory": "general/tts",             "copyright": "Free" }
+      "Audio.Tts":    { "directory": "free-vocab/tts",          "copyright": "Free" }
     }
   },
   "sentence": {
@@ -186,7 +193,7 @@ A manually maintained config maps **(note type, source tag prefix, field name)**
       "Screenshot": { "directory": "commercial-001/mushishi", "copyright": "Commercial" }
     },
     "source::wani::": {
-      "Audio":      { "directory": "general/tts",             "copyright": "Free" }
+      "Audio":      { "directory": "free-sentence/tts",       "copyright": "Free" }
     },
     "source::core2000::": {
       "Audio":      { "directory": "commercial-003/core2000", "copyright": "Commercial" }
@@ -194,15 +201,14 @@ A manually maintained config maps **(note type, source tag prefix, field name)**
   },
   "kanji": {
     "default": {
-      "Audio": { "directory": "general/kanji", "copyright": "Free" },
-      "Image": { "directory": "general/kanji", "copyright": "Free" }
+      "Audio": { "directory": "free-kanji/audio", "copyright": "Free" },
+      "Image": { "directory": "free-kanji/image", "copyright": "Free" }
     }
-  },
-  "default": { "directory": "general/uncategorized", "copyright": "Free" }
+  }
 }
 ```
 
-At import time, the lookup is: find the note type section → match source tag by longest prefix → find the field name → get directory + copyright. Unmatched combinations fall through to `"default"`.
+At import time, the lookup is: find the note type section → match source tag by longest prefix → find the field name → get directory + copyright. **If any step fails to match, the import throws an exception.** No silent fallbacks — an unmatched combination means the routing config is incomplete and must be fixed before proceeding.
 
 **This config is import-time only.** Once files are stored, the routing config is not consulted again. The `MediaFileIndex` discovers files by scanning the filesystem.
 
@@ -222,8 +228,8 @@ commercial-001/natsume/a1/a1b2c3d4-e5f6-7890-abcd-ef1234567890.mp3
 commercial-001/natsume/a1/a1b2c3d4-e5f6-7890-abcd-ef1234567890.audio.json
 commercial-001/natsume/f7/f7e6d5c4-b3a2-1098-7654-321fedcba098.png
 commercial-001/natsume/f7/f7e6d5c4-b3a2-1098-7654-321fedcba098.image.json
-general/tts/3c/3c4d5e6f-a7b8-9012-cdef-123456789012.mp3
-general/tts/3c/3c4d5e6f-a7b8-9012-cdef-123456789012.audio.json
+free-vocab/tts/3c/3c4d5e6f-a7b8-9012-cdef-123456789012.mp3
+free-vocab/tts/3c/3c4d5e6f-a7b8-9012-cdef-123456789012.audio.json
 ```
 
 ## Runtime: Building the Domain Model
@@ -381,10 +387,30 @@ This needs to be evolved to match the architecture described above.
 
 The import always runs from scratch — wipe the media output folder and re-import everything from Anki. No incremental or crash-recovery logic needed.
 
-1. Delete all existing media files in the target directories (clean slate)
-2. Load all notes from the corpus; for each note, parse Anki markup fields → extract original filenames and field names
-3. For each media reference, look up `(noteType, sourceTag, fieldName)` in the routing config → get target directory + copyright
-4. Check if file already stored (by original filename — dedup): if so, append noteId to existing sidecar's `noteIds`; if not, copy from Anki media dir
-5. Write typed sidecar JSON (`*.audio.json` or `*.image.json`) with `noteIds`, `noteSourceTag`, `ankiFieldName`, `originalFileName`, `copyright`, etc.
+### Phase 1: Plan (no side effects)
+
+Build the complete import plan in memory before touching any files:
+
+1. Load all notes from the corpus; for each note, parse Anki markup fields → extract original filenames and field names
+2. For each media reference, look up `(noteType, sourceTag, fieldName)` in the routing config → get target directory + copyright. **Collect all unmatched combinations as errors — don't stop at the first one.**
+3. Deduplicate by original filename — group noteIds that reference the same file
+4. Check that every referenced file exists in the Anki media folder — collect warnings for missing files
+5. Build a complete `ImportPlan`: list of `PlannedFileCopy` (source path, target path, sidecar content) + summary statistics
+
+**Import plan summary (always presented to user):**
+- Total unique files to copy (audio / image breakdown)
+- Total sidecar files to write
+- Total notes with media / without media
+- Files per target directory (shows distribution across repos)
+- Missing source files (warnings — these will be skipped)
+- Shared files (files referenced by multiple notes)
+- **Unmatched routing combinations (errors) — listed with note type, source tag, and field name**
+
+If there are any routing errors, the summary shows them all so the config can be fixed in one pass. **Phase 2 is blocked until there are zero routing errors.**
+
+### Phase 2: Execute (after user confirms, only if plan is valid)
+
+6. Delete all existing media files in the target directories (clean slate)
+7. Execute the planned file copies and write sidecars
 
 Stripping media fields from the corpus note JSON is a separate step (done when the corpus DTOs are updated to remove audio/image fields).
