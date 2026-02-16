@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JAStudio.Core;
@@ -59,6 +60,9 @@ public partial class MediaImportDialogViewModel : ObservableObject
    [ObservableProperty] bool _hasPlan;
 
    MediaImportPlan? _currentPlan;
+   MediaImportPlan _vocabPlan = new();
+   MediaImportPlan _sentencePlan = new();
+   MediaImportPlan _kanjiPlan = new();
    [ObservableProperty] int _filesToImportCount;
    [ObservableProperty] int _alreadyStoredCount;
    [ObservableProperty] int _missingCount;
@@ -121,6 +125,9 @@ public partial class MediaImportDialogViewModel : ObservableObject
 
          Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
          {
+            _vocabPlan = vocabPlan;
+            _sentencePlan = sentencePlan;
+            _kanjiPlan = kanjiPlan;
             _currentPlan = merged;
             FilesToImportCount = merged.FilesToImport.Count;
             AlreadyStoredCount = merged.AlreadyStored.Count;
@@ -164,6 +171,26 @@ public partial class MediaImportDialogViewModel : ObservableObject
       MediaImportRulePersistence.Save(persisted);
       StatusText = "Rules saved.";
    }
+
+   [RelayCommand]
+   void ShowMissingFiles()
+   {
+      var vocabRows = BuildMissingFileRows(_vocabPlan.Missing, noteId => _vocabCollection.WithIdOrNone(noteId)?.GetQuestion() ?? "?");
+      var sentenceRows = BuildMissingFileRows(_sentencePlan.Missing, noteId => _sentenceCollection.WithIdOrNone(noteId)?.GetQuestion() ?? "?");
+      var kanjiRows = BuildMissingFileRows(_kanjiPlan.Missing, noteId => _kanjiCollection.WithIdOrNone(noteId)?.GetQuestion() ?? "?");
+
+      Dispatcher.UIThread.Invoke(() =>
+      {
+         var dialog = new Views.MissingFilesDialog(vocabRows, sentenceRows, kanjiRows);
+         dialog.Show();
+      });
+   }
+
+   static List<MissingFileRow> BuildMissingFileRows(List<MissingFile> missing, Func<NoteId, string> getQuestion) =>
+      missing.Select(m => new MissingFileRow(getQuestion(m.NoteId), m.NoteId.ToString(), m.FieldName, m.FileName))
+             .OrderBy(r => r.Question)
+             .ThenBy(r => r.FieldName)
+             .ToList();
 
    NoteTypeImportTabViewModel<VocabImportRule> CreateVocabTab()
    {
@@ -364,3 +391,5 @@ public partial class EditableImportRule : ObservableObject
 
    public static List<string> CopyrightOptions { get; } = [nameof(CopyrightStatus.Unknown), nameof(CopyrightStatus.Free), nameof(CopyrightStatus.Commercial)];
 }
+
+public record MissingFileRow(string Question, string NoteId, string FieldName, string FileName);

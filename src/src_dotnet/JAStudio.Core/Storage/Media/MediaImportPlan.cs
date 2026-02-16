@@ -15,7 +15,7 @@ public record PlannedFileImport(
 
 public record AlreadyStoredFile(MediaAttachment Existing, NoteId NoteId);
 
-public record MissingFile(string FileName, NoteId NoteId);
+public record MissingFile(string FileName, NoteId NoteId, string FieldName);
 
 public class MediaImportPlan
 {

@@ -30,11 +30,11 @@ public class MediaImportAnalyzer
          var sourceTag = ResolveSourceTag(note);
          var noteId = note.GetId();
 
-         AnalyzeField(note.Audio.First.GetMediaReferences(), ruleSet.TryResolveVocab(sourceTag, VocabMediaField.AudioFirst), sourceTag, noteId, plan);
-         AnalyzeField(note.Audio.Second.GetMediaReferences(), ruleSet.TryResolveVocab(sourceTag, VocabMediaField.AudioSecond), sourceTag, noteId, plan);
-         AnalyzeField(note.Audio.Tts.GetMediaReferences(), ruleSet.TryResolveVocab(sourceTag, VocabMediaField.AudioTts), sourceTag, noteId, plan);
-         AnalyzeField(note.Image.GetMediaReferences(), ruleSet.TryResolveVocab(sourceTag, VocabMediaField.Image), sourceTag, noteId, plan);
-         AnalyzeField(note.UserImage.GetMediaReferences(), ruleSet.TryResolveVocab(sourceTag, VocabMediaField.UserImage), sourceTag, noteId, plan);
+         AnalyzeField(note.Audio.First.GetMediaReferences(), ruleSet.TryResolveVocab(sourceTag, VocabMediaField.AudioFirst), nameof(VocabMediaField.AudioFirst), sourceTag, noteId, plan);
+         AnalyzeField(note.Audio.Second.GetMediaReferences(), ruleSet.TryResolveVocab(sourceTag, VocabMediaField.AudioSecond), nameof(VocabMediaField.AudioSecond), sourceTag, noteId, plan);
+         AnalyzeField(note.Audio.Tts.GetMediaReferences(), ruleSet.TryResolveVocab(sourceTag, VocabMediaField.AudioTts), nameof(VocabMediaField.AudioTts), sourceTag, noteId, plan);
+         AnalyzeField(note.Image.GetMediaReferences(), ruleSet.TryResolveVocab(sourceTag, VocabMediaField.Image), nameof(VocabMediaField.Image), sourceTag, noteId, plan);
+         AnalyzeField(note.UserImage.GetMediaReferences(), ruleSet.TryResolveVocab(sourceTag, VocabMediaField.UserImage), nameof(VocabMediaField.UserImage), sourceTag, noteId, plan);
       }
 
       return plan;
@@ -50,8 +50,8 @@ public class MediaImportAnalyzer
          var sourceTag = ResolveSourceTag(note);
          var noteId = note.GetId();
 
-         AnalyzeField(note.Audio.GetMediaReferences(), ruleSet.TryResolveSentence(sourceTag, SentenceMediaField.Audio), sourceTag, noteId, plan);
-         AnalyzeField(note.Screenshot.GetMediaReferences(), ruleSet.TryResolveSentence(sourceTag, SentenceMediaField.Screenshot), sourceTag, noteId, plan);
+         AnalyzeField(note.Audio.GetMediaReferences(), ruleSet.TryResolveSentence(sourceTag, SentenceMediaField.Audio), nameof(SentenceMediaField.Audio), sourceTag, noteId, plan);
+         AnalyzeField(note.Screenshot.GetMediaReferences(), ruleSet.TryResolveSentence(sourceTag, SentenceMediaField.Screenshot), nameof(SentenceMediaField.Screenshot), sourceTag, noteId, plan);
       }
 
       return plan;
@@ -67,23 +67,23 @@ public class MediaImportAnalyzer
          var sourceTag = ResolveSourceTag(note);
          var noteId = note.GetId();
 
-         AnalyzeField(note.Audio.GetMediaReferences(), ruleSet.TryResolveKanji(sourceTag, KanjiMediaField.Audio), sourceTag, noteId, plan);
-         AnalyzeField(note.Image.GetMediaReferences(), ruleSet.TryResolveKanji(sourceTag, KanjiMediaField.Image), sourceTag, noteId, plan);
+         AnalyzeField(note.Audio.GetMediaReferences(), ruleSet.TryResolveKanji(sourceTag, KanjiMediaField.Audio), nameof(KanjiMediaField.Audio), sourceTag, noteId, plan);
+         AnalyzeField(note.Image.GetMediaReferences(), ruleSet.TryResolveKanji(sourceTag, KanjiMediaField.Image), nameof(KanjiMediaField.Image), sourceTag, noteId, plan);
       }
 
       return plan;
    }
 
-   void AnalyzeField(List<MediaReference> references, VocabImportRule? rule, SourceTag sourceTag, NoteId noteId, MediaImportPlan plan) =>
-      AnalyzeField(references, rule?.TargetDirectory, rule?.Copyright, sourceTag, noteId, plan);
+   void AnalyzeField(List<MediaReference> references, VocabImportRule? rule, string fieldName, SourceTag sourceTag, NoteId noteId, MediaImportPlan plan) =>
+      AnalyzeField(references, rule?.TargetDirectory, rule?.Copyright, fieldName, sourceTag, noteId, plan);
 
-   void AnalyzeField(List<MediaReference> references, SentenceImportRule? rule, SourceTag sourceTag, NoteId noteId, MediaImportPlan plan) =>
-      AnalyzeField(references, rule?.TargetDirectory, rule?.Copyright, sourceTag, noteId, plan);
+   void AnalyzeField(List<MediaReference> references, SentenceImportRule? rule, string fieldName, SourceTag sourceTag, NoteId noteId, MediaImportPlan plan) =>
+      AnalyzeField(references, rule?.TargetDirectory, rule?.Copyright, fieldName, sourceTag, noteId, plan);
 
-   void AnalyzeField(List<MediaReference> references, KanjiImportRule? rule, SourceTag sourceTag, NoteId noteId, MediaImportPlan plan) =>
-      AnalyzeField(references, rule?.TargetDirectory, rule?.Copyright, sourceTag, noteId, plan);
+   void AnalyzeField(List<MediaReference> references, KanjiImportRule? rule, string fieldName, SourceTag sourceTag, NoteId noteId, MediaImportPlan plan) =>
+      AnalyzeField(references, rule?.TargetDirectory, rule?.Copyright, fieldName, sourceTag, noteId, plan);
 
-   void AnalyzeField(List<MediaReference> references, string? targetDirectory, CopyrightStatus? copyright, SourceTag sourceTag, NoteId noteId, MediaImportPlan plan)
+   void AnalyzeField(List<MediaReference> references, string? targetDirectory, CopyrightStatus? copyright, string fieldName, SourceTag sourceTag, NoteId noteId, MediaImportPlan plan)
    {
       if(targetDirectory == null || copyright == null) return;
       if(references.Count == 0) return;
@@ -100,7 +100,7 @@ public class MediaImportAnalyzer
          var sourcePath = Path.Combine(_ankiMediaDir, reference.FileName);
          if(!File.Exists(sourcePath))
          {
-            plan.Missing.Add(new MissingFile(reference.FileName, noteId));
+            plan.Missing.Add(new MissingFile(reference.FileName, noteId, fieldName));
             continue;
          }
 

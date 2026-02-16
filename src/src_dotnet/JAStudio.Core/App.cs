@@ -56,4 +56,6 @@ public class App : IDisposable
    public static string UserFilesDir => Path.Combine(AddonRootDir, "user_files");
 
    internal static string DatabaseDir => Path.Combine(AddonRootDir, "jas_database");
+   internal static string MediaDir => Path.Combine(DatabaseDir, "media");
+   internal static string MetadataDir => Path.Combine(DatabaseDir, "metadata");
 }
