@@ -54,6 +54,7 @@ public partial class NoteTypeImportTabViewModel<TRule> : ObservableObject where 
       var rule = new EditableImportRule();
       rule.RemoveSelfCommand = new RelayCommand(() => RemoveRule(rule));
       Rules.Add(rule);
+      SortRules();
       Reclassify();
    }
 
@@ -155,6 +156,20 @@ public partial class NoteTypeImportTabViewModel<TRule> : ObservableObject where 
       {
          r.RemoveSelfCommand = new RelayCommand(() => RemoveRule(r));
          Rules.Add(r);
+      }
+      SortRules();
+   }
+
+   void SortRules()
+   {
+      var sorted = Rules.OrderBy(r => r.SourceTagPrefix, StringComparer.Ordinal)
+                        .ThenBy(r => r.TargetDirectory, StringComparer.Ordinal)
+                        .ToList();
+
+      for(var i = 0; i < sorted.Count; i++)
+      {
+         var currentIndex = Rules.IndexOf(sorted[i]);
+         if(currentIndex != i) Rules.Move(currentIndex, i);
       }
    }
 }

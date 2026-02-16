@@ -362,5 +362,5 @@ public partial class EditableImportRule : ObservableObject
       !string.IsNullOrWhiteSpace(SelectedField) &&
       !string.IsNullOrWhiteSpace(TargetDirectory);
 
-   public static List<string> CopyrightOptions { get; } = [nameof(CopyrightStatus.Free), nameof(CopyrightStatus.Commercial)];
+   public static List<string> CopyrightOptions { get; } = [nameof(CopyrightStatus.Unknown), nameof(CopyrightStatus.Free), nameof(CopyrightStatus.Commercial)];
 }
