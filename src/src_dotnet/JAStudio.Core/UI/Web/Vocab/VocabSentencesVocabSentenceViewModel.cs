@@ -121,9 +121,9 @@ public class VocabSentenceViewModel
          var maxEnd = System.Math.Max(shadingEndIndex, match.EndIndex);
 
          var head = sentenceText.Substring(0, minStart);
-         var shadingPreRange = sentenceText.Substring(System.Math.Min(shadingStartIndex, match.StartIndex), System.Math.Max(0, match.StartIndex - shadingStartIndex));
+         var shadingPreRange = sentenceText.Substring(shadingStartIndex, match.StartIndex - shadingStartIndex);
          var matchRange = sentenceText.Substring(match.StartIndex, match.EndIndex - match.StartIndex);
-         var shadingPostRange = sentenceText.Substring(match.EndIndex, System.Math.Max(0, shadingEndIndex - match.EndIndex));
+         var shadingPostRange = sentenceText.Substring(match.EndIndex, shadingEndIndex - match.EndIndex);
          var tail = sentenceText.Substring(maxEnd);
 
          return string.Concat(

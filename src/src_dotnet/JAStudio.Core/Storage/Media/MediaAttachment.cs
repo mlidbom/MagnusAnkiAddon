@@ -10,7 +10,7 @@ public abstract record MediaAttachment
    public required List<NoteId> NoteIds { get; init; }
    public required SourceTag NoteSourceTag { get; init; }
    public string? OriginalFileName { get; init; }
-   public required CopyrightStatus Copyright { get; init; }
+   public CopyrightStatus Copyright { get; init; } = CopyrightStatus.Unknown;
 
    [JsonIgnore] public string FilePath { get; internal set; } = string.Empty;
 }
