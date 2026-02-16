@@ -39,8 +39,11 @@ static class AppBootstrapper
       } else
       {
          registrar.Register(
-            Singleton.For<IMediaSyncService>().CreatedBy((MediaStorageService storage, MediaFileIndex index) =>
-                                                            (IMediaSyncService)new AnkiMediaSyncService(() => App.AnkiMediaDir, storage, index)),
+            Singleton.For<IMediaSyncService>().CreatedBy((MediaStorageService storage, MediaFileIndex index,
+                                                            MediaImportRoutingConfig<VocabMediaImportRule> vocabRouting,
+                                                            MediaImportRoutingConfig<SentenceMediaImportRule> sentenceRouting,
+                                                            MediaImportRoutingConfig<KanjiMediaImportRule> kanjiRouting) =>
+                                                            (IMediaSyncService)new AnkiMediaSyncService(() => App.AnkiMediaDir, storage, index, vocabRouting, sentenceRouting, kanjiRouting)),
             Singleton.For<INoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner, IMediaSyncService mediaSyncService) =>
                                                           (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, App.DatabaseDir, mediaSyncService)));
       }
@@ -60,9 +63,11 @@ static class AppBootstrapper
          // Media storage
          Singleton.For<MediaFileIndex>().CreatedBy(() =>
                                                       new MediaFileIndex(Path.Combine(App.DatabaseDir, "media"))),
-         Singleton.For<MediaRoutingConfig>().CreatedBy(() => new MediaRoutingConfig([])),
-         Singleton.For<MediaStorageService>().CreatedBy((MediaFileIndex index, MediaRoutingConfig routingConfig) =>
-                                                           new MediaStorageService(Path.Combine(App.DatabaseDir, "media"), index, routingConfig)),
+         Singleton.For<MediaImportRoutingConfig<VocabMediaImportRule>>().CreatedBy(() => new MediaImportRoutingConfig<VocabMediaImportRule>([])),
+         Singleton.For<MediaImportRoutingConfig<SentenceMediaImportRule>>().CreatedBy(() => new MediaImportRoutingConfig<SentenceMediaImportRule>([])),
+         Singleton.For<MediaImportRoutingConfig<KanjiMediaImportRule>>().CreatedBy(() => new MediaImportRoutingConfig<KanjiMediaImportRule>([])),
+         Singleton.For<MediaStorageService>().CreatedBy((MediaFileIndex index) =>
+                                                           new MediaStorageService(Path.Combine(App.DatabaseDir, "media"), index)),
 
          // Core services
          Singleton.For<Settings>().CreatedBy((JapaneseConfig config) => new Settings(config)),

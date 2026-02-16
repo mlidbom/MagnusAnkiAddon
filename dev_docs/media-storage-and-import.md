@@ -166,30 +166,53 @@ Each sidecar schema is independently extensible — adding audio-specific fields
 
 ## Import-Time Routing
 
-A manually maintained config maps **source tag prefix → storage directory**. Routing uses `SourceTag` — a hierarchical `::` -separated domain type. Each `MediaRoutingRule` has a `SourceTag Prefix` and a `TargetDirectory`. At import time, the source tag is matched against rules by hierarchical containment (`sourceTag.IsContainedIn(rule.Prefix)`), longest prefix first.
+Import routing is **per note type** because the same source tag has entirely different fields and copyright implications depending on the note type. Each note type has its own routing config with typed fields — no string-based field names, so invalid field references are compile errors.
 
-**There are no defaults or catch-all rules.** If no rule matches a source tag, import fails with an error. This is by design — if we don't know where to put something, we cannot import it. The routing config must be explicitly configured for every source before import.
+Each routing rule maps a **source tag prefix** to a `MediaImportRoute` (target directory + copyright status) **per field**. At import time, the source tag is matched by hierarchical containment (`sourceTag.IsContainedIn(rule.Prefix)`), longest prefix first.
 
+**There are no defaults or catch-all rules.** If no rule matches a source tag, import fails with an error. If we don't know where to put something, we cannot import it.
+
+### Note-type routing classes
+
+**VocabNote** fields: `Audio.First`, `Audio.Second`, `Audio.Tts`, `Image`, `UserImage`
 ```csharp
-// Domain type — hierarchical, ::‑separated, validated
-var tag = SourceTag.Parse("source::anime::natsume::s1::01");
-tag.IsContainedIn(SourceTag.Parse("source::anime::natsume")); // true
-tag.IsContainedIn(SourceTag.Parse("source::anime"));          // true
-tag.IsContainedIn(SourceTag.Parse("source::wani"));           // false
-
-// Routing config — explicit rules only, no fallback
-var config = new MediaRoutingConfig([
-    new MediaRoutingRule(SourceTag.Parse("source::anime::natsume"), "commercial-001"),
-    new MediaRoutingRule(SourceTag.Parse("source::anime"),          "commercial-002"),
-    new MediaRoutingRule(SourceTag.Parse("source::wani"),           "commercial-003")
-]);
-
-config.ResolveDirectory(SourceTag.Parse("source::anime::natsume::s1::01")); // "commercial-001"
-config.ResolveDirectory(SourceTag.Parse("source::anime::mushishi::s1"));    // "commercial-002"
-config.ResolveDirectory(SourceTag.Parse("source::forvo::ja"));              // throws InvalidOperationException
+new VocabMediaImportRule(
+    Prefix:      SourceTag.Parse("source::wani"),
+    AudioFirst:  new MediaImportRoute("commercial-002/wanikani", CopyrightStatus.Commercial),
+    AudioSecond: new MediaImportRoute("commercial-002/wanikani", CopyrightStatus.Commercial),
+    AudioTts:    new MediaImportRoute("free-vocab/tts",          CopyrightStatus.Free),
+    Image:       new MediaImportRoute("commercial-002/wanikani", CopyrightStatus.Commercial),
+    UserImage:   new MediaImportRoute("free-vocab/user",         CopyrightStatus.Free))
 ```
 
-The full routing config will also incorporate note type and field name (see Architecture Overview), but the current implementation routes by source tag only.
+**SentenceNote** fields: `Audio`, `Screenshot`
+```csharp
+new SentenceMediaImportRule(
+    Prefix:     SourceTag.Parse("source::anime::natsume"),
+    Audio:      new MediaImportRoute("commercial-001/natsume", CopyrightStatus.Commercial),
+    Screenshot: new MediaImportRoute("commercial-001/natsume", CopyrightStatus.Commercial))
+```
+
+**KanjiNote** fields: `Audio`, `Image`
+```csharp
+new KanjiMediaImportRule(
+    Prefix: SourceTag.Parse("source::kanji"),
+    Audio:  new MediaImportRoute("free-kanji/audio", CopyrightStatus.Free),
+    Image:  new MediaImportRoute("free-kanji/image", CopyrightStatus.Free))
+```
+
+### Resolution
+
+```csharp
+var vocabConfig = new MediaImportRoutingConfig<VocabMediaImportRule>([...rules...]);
+var rule = vocabConfig.Resolve(SourceTag.Parse("source::wani::level05"));
+// rule.AudioFirst  → ("commercial-002/wanikani", Commercial)
+// rule.AudioTts    → ("free-vocab/tts", Free)
+```
+
+The `MediaImportRoutingConfig<T>` is generic — it handles source-tag matching (longest prefix first). Each concrete rule type provides the typed per-field routes.
+
+**This config is import-time only.** Once files are stored, the routing config is not consulted again. The `MediaFileIndex` discovers files by scanning the filesystem. `MediaStorageService` takes the resolved target directory directly — it has no dependency on routing.
 
 ## Storage Path Structure
 
@@ -262,17 +285,24 @@ public record TtsInfo(string Engine, string Voice, string Version);
 // Image — extends with image-specific fields (none yet, but will diverge)
 public record ImageAttachment : MediaAttachment;
 
-// Routing — source tag prefix → target directory, no defaults
-public record MediaRoutingRule(SourceTag Prefix, string TargetDirectory)
-{
-    public bool Matches(SourceTag sourceTag) => sourceTag.IsContainedIn(Prefix);
-}
+// Import-time routing — per note type, per field
+public record MediaImportRoute(string TargetDirectory, CopyrightStatus Copyright);
 
-public class MediaRoutingConfig(List<MediaRoutingRule> rules)
+public record VocabMediaImportRule(SourceTag Prefix, MediaImportRoute AudioFirst,
+    MediaImportRoute AudioSecond, MediaImportRoute AudioTts,
+    MediaImportRoute Image, MediaImportRoute UserImage) : IMediaImportRule;
+
+public record SentenceMediaImportRule(SourceTag Prefix,
+    MediaImportRoute Audio, MediaImportRoute Screenshot) : IMediaImportRule;
+
+public record KanjiMediaImportRule(SourceTag Prefix,
+    MediaImportRoute Audio, MediaImportRoute Image) : IMediaImportRule;
+
+public class MediaImportRoutingConfig<TRule>(List<TRule> rules) where TRule : IMediaImportRule
 {
     // Ordered by segment count (longest prefix first)
-    // ResolveDirectory throws if no rule matches — no silent fallback
-    public string ResolveDirectory(SourceTag sourceTag);
+    // Resolve throws if no rule matches — no silent fallback
+    public TRule Resolve(SourceTag sourceTag);
 }
 ```
 
@@ -356,16 +386,17 @@ The storage layer (`JAStudio.Core.Storage.Media`) is implemented and tested:
 | `SidecarSerializer` | Writes/reads typed sidecar JSON (`*.audio.json` / `*.image.json`). Omits defaults. Custom JSON converters for `NoteId`, `MediaFileId`, `SourceTag`. |
 | `MediaFileId` | GUID-based value type with `Parse`, `TryParse`, `New`. |
 | `MediaFileIndex` | Builds from filesystem scan of sidecar files. Lookups by ID, original filename (case-insensitive), note ID. In-memory `Register()` for newly stored files. |
-| `MediaStorageService` | Stores files with GUID-bucket paths, writes typed sidecars, updates existing sidecars for shared files (dedup by original filename). |
-| `MediaRoutingConfig` / `MediaRoutingRule` | Routes `SourceTag → directory` by hierarchical containment, longest prefix first. **No defaults — unmatched tags throw.** |
-| `AnkiMediaSyncService` | Syncs media from Anki media folder. Builds `SourceTag` from note tags, deduplicates, skips missing files with warning. |
+| `MediaStorageService` | Stores files with GUID-bucket paths, writes typed sidecars, updates existing sidecars for shared files (dedup by original filename). Takes target directory as parameter — no routing dependency. |
+| `MediaImportRoutingConfig<T>` | Generic routing config. Matches source tag by hierarchical containment, longest prefix first. **No defaults — unmatched tags throw.** |
+| `VocabMediaImportRule` | Per-field routes for vocab: `AudioFirst`, `AudioSecond`, `AudioTts`, `Image`, `UserImage`. Each field has its own `MediaImportRoute` (directory + copyright). |
+| `SentenceMediaImportRule` | Per-field routes for sentence: `Audio`, `Screenshot`. |
+| `KanjiMediaImportRule` | Per-field routes for kanji: `Audio`, `Image`. |
+| `AnkiMediaSyncService` | Syncs media from Anki per field (not aggregated). Switches on note type, resolves per-field routing, builds `SourceTag` from note tags, deduplicates, skips missing files with warning. |
 
 ### Not yet implemented
 
 | Component | Notes |
 |---|---|
-| `AnkiFieldName` on sidecar | Per-field routing (same note can have commercial audio + free TTS). Design exists in doc, not yet in code. |
-| Note-type-aware routing | Config currently routes by source tag only; full design includes note type + field name dimensions. |
 | `NoteMedia` aggregate | Per-note typed media view (`Audio`, `Images`). Not yet needed — media is currently accessed via the index directly. |
 | Removal of media fields from corpus DTOs | Notes still contain Anki markup audio/image fields. These should be stripped. |
 | Access gating | Runtime filtering by user's verified accounts / copyright status. |
@@ -376,12 +407,12 @@ The storage layer (`JAStudio.Core.Storage.Media`) is implemented and tested:
 All components have BDD-style tests:
 
 - `When_working_with_SourceTag` — parsing, containment, equality
-- `When_configuring_media_routing` — rule matching, longest prefix, throw on no match
+- `When_configuring_media_import_routing` — per-note-type rule matching, longest prefix, throw on no match, per-field copyright verification
 - `When_serializing_a_sidecar` — JSON roundtrip for audio/image, TTS, multiple note IDs, file read/write
 - `When_building_a_MediaFileIndex` — filesystem scan, sidecar parsing, lookups
 - `When_querying_MediaFileIndex_by_original_filename` — exact/case-insensitive lookup, registered attachments
-- `When_storing_a_media_file` — routing, GUID-bucket paths, sidecar writing, index rebuilding
-- `When_syncing_media_from_anki` — end-to-end sync with dedup, missing file warnings
+- `When_storing_a_media_file` — target directory, GUID-bucket paths, sidecar writing, index rebuilding
+- `When_syncing_media_from_anki` — per-note-type sync with dedup, missing file warnings
 
 ## Import Plan (Fresh from Anki)
 

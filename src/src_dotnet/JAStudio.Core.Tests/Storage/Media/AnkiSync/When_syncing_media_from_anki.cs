@@ -15,6 +15,8 @@ public class When_syncing_media_from_anki : TestStartingWithEmptyCollection, IDi
    readonly MediaFileIndex _index;
    readonly AnkiMediaSyncService _syncService;
 
+   static readonly MediaImportRoute General = new("general", CopyrightStatus.Free);
+
    public When_syncing_media_from_anki()
    {
       _ankiMediaDir = Path.Combine(_tempDir, "anki_media");
@@ -23,9 +25,16 @@ public class When_syncing_media_from_anki : TestStartingWithEmptyCollection, IDi
       Directory.CreateDirectory(mediaRoot);
 
       _index = new MediaFileIndex(mediaRoot);
-      var config = new MediaRoutingConfig([new MediaRoutingRule(SourceTag.Parse("anki"), "general")]);
-      var storageService = new MediaStorageService(mediaRoot, _index, config);
-      _syncService = new AnkiMediaSyncService(() => _ankiMediaDir, storageService, _index);
+      var storageService = new MediaStorageService(mediaRoot, _index);
+
+      var vocabRouting = new MediaImportRoutingConfig<VocabMediaImportRule>(
+         [new VocabMediaImportRule(SourceTag.Parse("anki"), General, General, General, General, General)]);
+      var sentenceRouting = new MediaImportRoutingConfig<SentenceMediaImportRule>(
+         [new SentenceMediaImportRule(SourceTag.Parse("anki"), General, General)]);
+      var kanjiRouting = new MediaImportRoutingConfig<KanjiMediaImportRule>(
+         [new KanjiMediaImportRule(SourceTag.Parse("anki"), General, General)]);
+
+      _syncService = new AnkiMediaSyncService(() => _ankiMediaDir, storageService, _index, vocabRouting, sentenceRouting, kanjiRouting);
    }
 
    public new void Dispose()

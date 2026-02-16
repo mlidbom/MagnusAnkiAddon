@@ -23,6 +23,7 @@ public class When_storing_a_media_file : IDisposable
       Directory.CreateDirectory(_tempDir);
       _mediaRoot = Path.Combine(_tempDir, "media");
       _index = new MediaFileIndex(_mediaRoot);
+      _service = new MediaStorageService(_mediaRoot, _index);
    }
 
    public void Dispose() => Directory.Delete(_tempDir, recursive: true);
@@ -36,22 +37,15 @@ public class When_storing_a_media_file : IDisposable
       return path;
    }
 
-   protected void InitService(MediaRoutingConfig config) =>
-      _service = new MediaStorageService(_mediaRoot, _index, config);
-
-   public class with_a_matching_routing_rule : When_storing_a_media_file
+   public class with_a_target_directory : When_storing_a_media_file
    {
       readonly MediaFileId _id;
       readonly string? _resolved;
 
-      public with_a_matching_routing_rule()
+      public with_a_target_directory()
       {
-         var config = new MediaRoutingConfig(
-            [new MediaRoutingRule(SourceTag.Parse("anime::natsume"), "commercial-001")]);
-         InitService(config);
-
          var sourceFile = CreateSourceFile();
-         _id = _service.StoreFile(sourceFile, SourceTag.Parse("anime::natsume::s1::01"), "natsume_ep01_03m22s.mp3",
+         _id = _service.StoreFile(sourceFile, "commercial-001", SourceTag.Parse("anime::natsume::s1::01"), "natsume_ep01_03m22s.mp3",
             new NoteId(Guid.NewGuid()), MediaType.Audio, CopyrightStatus.Commercial);
          _resolved = _service.TryResolve(_id);
       }
@@ -59,23 +53,10 @@ public class When_storing_a_media_file : IDisposable
       [XF] public void the_id_is_not_empty() => _id.IsEmpty.Must().BeFalse();
       [XF] public void the_file_is_resolvable() => _resolved.Must().NotBeNull();
       [XF] public void the_file_exists_on_disk() => File.Exists(_resolved!).Must().BeTrue();
-      [XF] public void the_path_contains_the_routed_directory() => _resolved!.Must().Contain("commercial-001");
+      [XF] public void the_path_contains_the_target_directory() => _resolved!.Must().Contain("commercial-001");
       [XF] public void the_path_uses_guid_bucket() => _resolved!.Must().Contain(Path.DirectorySeparatorChar + _id.ToString()[..2] + Path.DirectorySeparatorChar);
       [XF] public void the_file_ends_with_the_guid() => _resolved!.Must().EndWith($"{_id}.mp3");
       [XF] public void a_sidecar_file_is_written() => File.Exists(SidecarSerializer.BuildAudioSidecarPath(_resolved!)).Must().BeTrue();
-   }
-
-   public class with_no_matching_routing_rule : When_storing_a_media_file
-   {
-      public with_no_matching_routing_rule()
-      {
-         var config = new MediaRoutingConfig([new MediaRoutingRule(SourceTag.Parse("anime"), "commercial-001")]);
-         InitService(config);
-      }
-
-      [XF] public void it_throws() => Assert.Throws<InvalidOperationException>(() =>
-         _service.StoreFile(CreateSourceFile(), SourceTag.Parse("forvo"), "走る_forvo.mp3",
-            new NoteId(Guid.NewGuid()), MediaType.Audio, CopyrightStatus.Free));
    }
 
    public class after_storing_a_file : When_storing_a_media_file
@@ -84,11 +65,8 @@ public class When_storing_a_media_file : IDisposable
 
       public after_storing_a_file()
       {
-         var config = new MediaRoutingConfig([new MediaRoutingRule(SourceTag.Parse("test"), "general")]);
-         InitService(config);
-
          var sourceFile = CreateSourceFile();
-         _storedId = _service.StoreFile(sourceFile, SourceTag.Parse("test"), "test.mp3",
+         _storedId = _service.StoreFile(sourceFile, "general", SourceTag.Parse("test"), "test.mp3",
             new NoteId(Guid.NewGuid()), MediaType.Audio, CopyrightStatus.Free);
       }
 
@@ -103,11 +81,8 @@ public class When_storing_a_media_file : IDisposable
 
       public when_rebuilding_the_index_from_filesystem()
       {
-         var config = new MediaRoutingConfig([new MediaRoutingRule(SourceTag.Parse("anime"), "general")]);
-         InitService(config);
-
          var sourceFile = CreateSourceFile();
-         _id = _service.StoreFile(sourceFile, SourceTag.Parse("anime::natsume::s1::01"), "ep01.mp3",
+         _id = _service.StoreFile(sourceFile, "general", SourceTag.Parse("anime::natsume::s1::01"), "ep01.mp3",
             new NoteId(Guid.NewGuid()), MediaType.Audio, CopyrightStatus.Commercial);
 
          _freshIndex = new MediaFileIndex(_mediaRoot);

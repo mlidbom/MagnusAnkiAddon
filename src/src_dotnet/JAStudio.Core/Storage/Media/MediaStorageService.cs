@@ -9,19 +9,17 @@ public class MediaStorageService
 {
    readonly string _mediaRoot;
    readonly MediaFileIndex _index;
-   readonly MediaRoutingConfig _routingConfig;
 
-   public MediaStorageService(string mediaRoot, MediaFileIndex index, MediaRoutingConfig routingConfig)
+   public MediaStorageService(string mediaRoot, MediaFileIndex index)
    {
       _mediaRoot = mediaRoot;
       _index = index;
-      _routingConfig = routingConfig;
    }
 
-   public MediaFileId StoreFile(string sourceFilePath, SourceTag sourceTag, string originalFileName, NoteId noteId, MediaType mediaType, CopyrightStatus copyright, TtsInfo? tts = null)
+   public MediaFileId StoreFile(string sourceFilePath, string targetDirectory, SourceTag sourceTag, string originalFileName, NoteId noteId, MediaType mediaType, CopyrightStatus copyright, TtsInfo? tts = null)
    {
       var id = MediaFileId.New();
-      var destPath = BuildStoragePath(id, sourceTag, originalFileName);
+      var destPath = BuildStoragePath(id, targetDirectory, originalFileName);
 
       Directory.CreateDirectory(Path.GetDirectoryName(destPath)!);
       File.Copy(sourceFilePath, destPath, overwrite: false);
@@ -88,14 +86,13 @@ public class MediaStorageService
 
    public bool Exists(MediaFileId id) => _index.Contains(id);
 
-   string BuildStoragePath(MediaFileId id, SourceTag sourceTag, string originalFileName)
+   string BuildStoragePath(MediaFileId id, string targetDirectory, string originalFileName)
    {
-      var routedDirectory = _routingConfig.ResolveDirectory(sourceTag);
       var bucket = id.ToString()[..2];
       var extension = Path.GetExtension(originalFileName);
 
-      // {mediaRoot}/{routedDirectory}/{bucket}/{id}.{ext}
-      return Path.Combine(_mediaRoot, routedDirectory, bucket, $"{id}{extension}");
+      // {mediaRoot}/{targetDirectory}/{bucket}/{id}.{ext}
+      return Path.Combine(_mediaRoot, targetDirectory, bucket, $"{id}{extension}");
    }
 }
 
