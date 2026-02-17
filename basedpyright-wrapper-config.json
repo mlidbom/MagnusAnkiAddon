@@ -11,6 +11,7 @@
     "**/node_modules",
     "**/__pycache__",
     "**/.*",
+    "src/jas_database",
     "src/jastudio_src/_lib/",
     "**/_lib_patched/*",
     "**venv/*",
