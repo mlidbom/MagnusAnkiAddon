@@ -121,7 +121,7 @@ public class DictLookup
       List<DictEntry> KanjiFormMatches(List<DictEntry> lookup)
       {
          return lookup
-               .Where(entry => readings.Any(reading => entry.HasMatchingKanaForm(reading)) &&
+               .Where(entry => readings.Any(entry.HasMatchingKanaForm) &&
                                entry.KanjiForms.Any() &&
                                entry.HasMatchingKanjiForm(word))
                .ToList();

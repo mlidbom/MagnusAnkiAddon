@@ -42,9 +42,10 @@ class TaskRunnerScope : ITaskProgressRunner
       _previousNestingDepth = previousNestingDepth;
       _previousParentScope = previousParentScope;
       _previousLogEntry = parentLogEntry;
-      LogEntry = new TaskLogEntry(scopeTitle);
+      LogEntry = new TaskLogEntry(_scopeTitle);
       parentLogEntry?.AddChild(LogEntry);
-      ScopePanel = visible ? taskRunner.CreateScopePanel(scopeTitle, visible, depth) : null;
+      //todo: should the UI controls not use the scope itself, or a viewmodel wrapping it, to maintain their state? Should the scope know anything about UI panels?
+      ScopePanel = visible ? taskRunner.CreateScopePanel(_scopeTitle, visible, depth) : null;
    }
 
    ITaskProgressRunner CreateRunner(string message, bool async = false)

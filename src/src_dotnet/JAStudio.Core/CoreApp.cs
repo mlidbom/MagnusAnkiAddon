@@ -33,7 +33,17 @@ public class CoreApp : IDisposable
 
    public JapaneseConfig Config => Services.ConfigurationStore.Config();
    public JPCollection Collection => Services.ServiceLocator.Resolve<JPCollection>();
+   
 
+   public static string AnkiMediaDir =>
+      _environmentPaths?.AnkiMediaDir
+   ?? throw new InvalidOperationException("IEnvironmentPaths must be provided for non-testing mode. Call App.Bootstrap() with an IEnvironmentPaths implementation.");
+
+   //todo: urgent: surely these should not be static, it will break any test running in parallel will it not?
+   public static string UserFilesDir => Path.Combine(AddonRootDir, "user_files");
+   internal static string DatabaseDir => Path.Combine(AddonRootDir, "jas_database");
+   internal static string MediaDir => Path.Combine(DatabaseDir, "media");
+   internal static string MetadataDir => Path.Combine(MediaDir, "metadata");
    internal static string AddonRootDir
    {
       get
@@ -48,14 +58,4 @@ public class CoreApp : IDisposable
              ?? throw new InvalidOperationException("IEnvironmentPaths must be provided for non-testing mode. Call App.Bootstrap() with an IEnvironmentPaths implementation.");
       }
    }
-
-   public static string AnkiMediaDir =>
-      _environmentPaths?.AnkiMediaDir
-   ?? throw new InvalidOperationException("IEnvironmentPaths must be provided for non-testing mode. Call App.Bootstrap() with an IEnvironmentPaths implementation.");
-
-   public static string UserFilesDir => Path.Combine(AddonRootDir, "user_files");
-
-   internal static string DatabaseDir => Path.Combine(AddonRootDir, "jas_database");
-   internal static string MediaDir => Path.Combine(DatabaseDir, "media");
-   internal static string MetadataDir => Path.Combine(MediaDir, "metadata");
 }
