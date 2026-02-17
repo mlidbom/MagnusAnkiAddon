@@ -1,6 +1,6 @@
 namespace JAStudio.Core.Note.NoteFields;
 
-public class FallbackStringField
+internal class FallbackStringField
 {
    readonly IStringValue _field;
    readonly IStringValue _fallbackField;

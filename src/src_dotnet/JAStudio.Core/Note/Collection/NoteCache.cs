@@ -179,7 +179,7 @@ public abstract class NoteCacheBase<TNote> : IExternalNoteUpdateHandler where TN
    }
 }
 
-public abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
+internal abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
    where TNote : JPNote
    where TSnapshot : CachedNote
 {

@@ -3,7 +3,7 @@ using JAStudio.Core.Note.Sentences;
 
 namespace JAStudio.Core.Note.Collection;
 
-public class SentenceSnapshot : CachedNote
+internal class SentenceSnapshot : CachedNote
 {
    public string[] Words { get; }
    public NoteId[] DetectedVocab { get; }

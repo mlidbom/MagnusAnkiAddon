@@ -4,7 +4,7 @@ using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing.PreProcessingStage;
 
-public abstract class WordInfoEntry
+internal abstract class WordInfoEntry
 {
    public string Word { get; }
    public FrozenSet<string> PartsOfSpeech { get; }
