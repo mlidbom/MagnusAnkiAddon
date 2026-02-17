@@ -1,5 +1,4 @@
 using System;
-using JAStudio.Core.Batches;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.Note;
 using JAStudio.Core.TaskRunners;

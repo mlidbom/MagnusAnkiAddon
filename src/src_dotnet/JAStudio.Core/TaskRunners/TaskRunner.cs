@@ -1,4 +1,3 @@
-using System;
 using System.Threading;
 
 namespace JAStudio.Core.TaskRunners;
@@ -7,10 +6,7 @@ public class TaskRunner
 {
    readonly ITaskProgressUI _progressUI;
 
-   internal TaskRunner(ITaskProgressUI progressUI)
-   {
-      _progressUI = progressUI;
-   }
+   internal TaskRunner(ITaskProgressUI progressUI) => _progressUI = progressUI;
 
    internal ITaskProgressRunner Create(IScopePanel? scopePanel, string labelText, bool? visible = null, bool allowCancel = true)
    {

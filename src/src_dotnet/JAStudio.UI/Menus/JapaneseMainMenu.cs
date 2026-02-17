@@ -24,6 +24,7 @@ public class JapaneseMainMenu
       _openInAnkiMenus = new OpenInAnkiMenus(_services);
    }
 
+   // ReSharper disable once UnusedMember.Global used from python
    public List<SpecMenuItem> BuildMenuSpec(Func<string> getClipboardContent) =>
    [
       BuildConfigMenuSpec(),
