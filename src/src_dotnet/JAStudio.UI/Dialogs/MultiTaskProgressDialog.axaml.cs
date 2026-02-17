@@ -87,9 +87,7 @@ public partial class MultiTaskProgressDialog : Window
    {
       if(_instance == null || !_instance.IsVisible)
       {
-         _instance = new MultiTaskProgressDialog();
-         _instance.PositionNearCursor();
-         _instance.Show();
+         _instance = new MultiTaskProgressDialog().ShowNearCursor();
       }
    }
 
