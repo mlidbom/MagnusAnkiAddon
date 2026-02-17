@@ -1,11 +1,5 @@
-import abc
-from JAStudio.Core import CoreApp, IEnvironmentPaths
 from System import IDisposable
-
-class TestCoreApp(abc.ABC):
-    @staticmethod
-    def Reset() -> CoreApp: ...
-
+from JAStudio.Core import IEnvironmentPaths
 
 class TestEnvironmentPaths(IDisposable, IEnvironmentPaths):
     def __init__(self) -> None: ...

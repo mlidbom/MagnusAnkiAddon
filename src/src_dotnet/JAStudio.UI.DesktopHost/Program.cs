@@ -1,6 +1,6 @@
 using System;
 using Avalonia;
-using JAStudio.Core.TestUtils;
+using JAStudio.Core;
 
 namespace JAStudio.UI.DesktopHost;
 
@@ -18,7 +18,7 @@ class Program
    [STAThread]
    public static int Main(string[] args)
    {
-      TestCoreApp.Reset();
+      AppBootstrapper.BootstrapForTests();
       return BuildAvaloniaApp()
         .StartWithClassicDesktopLifetime(args);
    }

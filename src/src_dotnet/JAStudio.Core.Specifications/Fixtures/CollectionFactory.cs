@@ -2,7 +2,6 @@ using System;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Sentences;
 using JAStudio.Core.Specifications.Fixtures.BaseData.SampleData;
-using JAStudio.Core.TestUtils;
 
 namespace JAStudio.Core.Specifications.Fixtures;
 
@@ -19,7 +18,7 @@ public static class CollectionFactory
 {
    public static AppScope InjectCollectionWithSelectData(DataNeeded data)
    {
-      var app = TestCoreApp.Reset();
+      var app = AppBootstrapper.BootstrapForTests();
       if(data == DataNeeded.None)
          return new AppScope(app);
 
