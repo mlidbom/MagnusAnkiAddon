@@ -17,7 +17,7 @@ class CompoundPart
    }
 }
 
-public static class CompoundPartsRenderer
+static class CompoundPartsRenderer
 {
    static string CreateClasses(VocabNote vocab, int depth = 0)
    {

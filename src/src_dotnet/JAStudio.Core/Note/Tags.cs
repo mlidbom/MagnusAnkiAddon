@@ -1,3 +1,4 @@
+// ReSharper disable MemberCanBeInternal todo: review
 namespace JAStudio.Core.Note;
 
 public static class Tags

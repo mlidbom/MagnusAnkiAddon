@@ -170,4 +170,4 @@ partial class NoteTypeImportTabViewModel<TRule> : ObservableObject where TRule :
 }
 
 record ScannedMediaFile(string SourceTag, string FieldName, string FileName);
-public record UnmappedMediaGroup(string SourcePrefix, string FieldName, int FileCount);
+record UnmappedMediaGroup(string SourcePrefix, string FieldName, int FileCount);

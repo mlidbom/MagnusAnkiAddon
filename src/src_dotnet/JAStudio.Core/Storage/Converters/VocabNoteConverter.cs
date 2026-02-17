@@ -4,7 +4,7 @@ using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.Storage.Converters;
 
-public static class VocabNoteConverter
+static class VocabNoteConverter
 {
    public static VocabData ToCorpusData(VocabNote note)
    {

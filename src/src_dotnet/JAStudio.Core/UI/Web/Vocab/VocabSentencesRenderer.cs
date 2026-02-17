@@ -5,7 +5,7 @@ using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.UI.Web.Vocab;
 
-public static class VocabSentencesRenderer
+static class VocabSentencesRenderer
 {
    public static string GenerateMarkedInvalidInListHtml(VocabNote vocabNote)
    {

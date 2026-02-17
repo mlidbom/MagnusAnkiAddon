@@ -80,7 +80,7 @@ partial class StringSetControlViewModel : ObservableObject
 /// <summary>
 /// ViewModel for a single string chip with a remove button.
 /// </summary>
-public partial class StringChipViewModel : ObservableObject
+partial class StringChipViewModel : ObservableObject
 {
    readonly System.Action<string> _onRemove;
 

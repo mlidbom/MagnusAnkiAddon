@@ -5,7 +5,7 @@ using JAStudio.Core.ViewModels.KanjiList;
 
 namespace JAStudio.Core.UI.Web.Vocab;
 
-public class VocabKanjiListRenderer
+class VocabKanjiListRenderer
 {
    readonly SentenceKanjiListViewModel _sentenceKanjiListViewModel;
    internal VocabKanjiListRenderer(SentenceKanjiListViewModel sentenceKanjiListViewModel) => _sentenceKanjiListViewModel = sentenceKanjiListViewModel;

@@ -384,7 +384,7 @@ partial class MediaImportDialogViewModel : ObservableObject
    }
 }
 
-public partial class EditableImportRule : ObservableObject
+partial class EditableImportRule : ObservableObject
 {
    [ObservableProperty] string _sourceTagPrefix = "";
    [ObservableProperty] string _selectedField = "";
@@ -402,4 +402,4 @@ public partial class EditableImportRule : ObservableObject
    public static List<string> CopyrightOptions { get; } = [nameof(CopyrightStatus.Unknown), nameof(CopyrightStatus.Free), nameof(CopyrightStatus.Commercial)];
 }
 
-public record MissingFileRow(string Question, string NoteIdDisplay, string FieldName, string FileName, NoteId NoteId);
+record MissingFileRow(string Question, string NoteIdDisplay, string FieldName, string FileName, NoteId NoteId);
