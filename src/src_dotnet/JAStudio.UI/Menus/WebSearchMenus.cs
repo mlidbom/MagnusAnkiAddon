@@ -6,19 +6,8 @@ using JAStudio.UI.Utils;
 
 namespace JAStudio.UI.Menus;
 
-/// <summary>
-/// Builds web search menus for looking up Japanese text on various websites.
-/// Ported from jastudio/ui/menus/web_search.py
-/// Now uses UI-agnostic MenuItem specifications.
-/// </summary>
 public static class WebSearchMenus
 {
-   /// <summary>
-   /// Build the complete web search menu structure as a UI-agnostic specification.
-   /// Can be passed to AvaloniaMenuAdapter, Python, or any other UI framework.
-   /// </summary>
-   /// <param name="getSearchText">Function that returns the text to search for</param>
-   /// <param name="openUrl">Action to open a URL in the browser</param>
    public static SpecMenuItem BuildWebSearchMenuSpec(Func<string> getSearchText) =>
       SpecMenuItem.Submenu(
          ShortcutFinger.Home3("Web"),
@@ -28,18 +17,7 @@ public static class WebSearchMenus
             BuildSentencesMenuSpec(getSearchText),
             BuildMiscMenuSpec(getSearchText),
             BuildLookupMenuSpec(getSearchText)
-         }
-      );
-
-   /// <summary>
-   /// Build the web search menu and convert to Avalonia MenuItem.
-   /// This is a convenience method for backward compatibility.
-   /// </summary>
-   public static Avalonia.Controls.MenuItem BuildWebSearchMenu(Func<string> getSearchText)
-   {
-      var spec = BuildWebSearchMenuSpec(getSearchText);
-      return AvaloniaMenuAdapter.ToAvalonia(spec);
-   }
+         });
 
    static SpecMenuItem BuildKanjiMenuSpec(Func<string> getSearchText) =>
       SpecMenuItem.Submenu(
@@ -129,17 +107,6 @@ public static class WebSearchMenus
          }
       );
 
-   static SpecMenuItem CreateWebLookupSpec(string header, string urlTemplate, Func<string> getSearchText)
-   {
-      return SpecMenuItem.Command(
-         header,
-         () =>
-         {
-            var searchText = getSearchText();
-            var encodedText = HttpUtility.UrlEncode(searchText);
-            var url = urlTemplate.Replace("%s", encodedText);
-            BrowserLauncher.OpenUrl(url);
-         }
-      );
-   }
+   static SpecMenuItem CreateWebLookupSpec(string header, string urlTemplate, Func<string> getSearchText) =>
+      SpecMenuItem.Command(header, () => BrowserLauncher.OpenUrl(urlTemplate.Replace("%s", HttpUtility.UrlEncode(getSearchText()))));
 }

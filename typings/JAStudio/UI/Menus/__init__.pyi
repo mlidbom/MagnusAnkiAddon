@@ -36,7 +36,5 @@ class OpenInAnkiMenus:
 
 class WebSearchMenus(abc.ABC):
     @staticmethod
-    def BuildWebSearchMenu(getSearchText: Func_1[str]) -> MenuItem: ...
-    @staticmethod
     def BuildWebSearchMenuSpec(getSearchText: Func_1[str]) -> SpecMenuItem: ...
 
