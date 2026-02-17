@@ -4,13 +4,11 @@ using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices;
 using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches;
 using JAStudio.Core.Note.Collection;
-using JAStudio.Core.Note.Sentences;
 
 namespace JAStudio.Core.UI.Web.Sentence;
 
 public class MatchViewModel
 {
-   readonly SentenceConfiguration _config;
    readonly Settings _settings;
    readonly List<string> _metaTags;
 
@@ -37,7 +35,7 @@ public class MatchViewModel
       _settings = settings;
       MatchIsDisplayed = match.IsDisplayed;
       VocabMatch = match as VocabMatch;
-      _config = wordVariantVm.CandidateWord.Word.Analysis.Configuration;
+      var config = wordVariantVm.CandidateWord.Word.Analysis.Configuration;
       WordVariantVm = wordVariantVm;
       IsDisplayWord = wordVariantVm.IsDisplayWord;
       ParsedForm = match.ParsedForm;
@@ -45,7 +43,7 @@ public class MatchViewModel
       VocabForm = !settings.ShowBreakdownInEditMode() ? match.MatchForm : match.ExclusionForm;
       CompoundParts = [];
       AudioPath = string.Empty;
-      IsHighlighted = _config.HighlightedWords.Contains(ParsedForm) || _config.HighlightedWords.Contains(VocabForm);
+      IsHighlighted = config.HighlightedWords.Contains(ParsedForm) || config.HighlightedWords.Contains(VocabForm);
       Readings = string.Join(", ", match.Readings);
       MetaTagsHtml = string.Empty;
       _metaTags = [];
@@ -55,7 +53,7 @@ public class MatchViewModel
 
       if(VocabMatch != null)
       {
-         CompoundParts = CompoundPartViewModel.GetCompoundPartsRecursive(this, VocabMatch.Vocab, _config, settings, vocab);
+         CompoundParts = CompoundPartViewModel.GetCompoundPartsRecursive(this, VocabMatch.Vocab, config, settings, vocab);
          AudioPath = VocabMatch.Vocab.Audio.PrimaryAudioPath;
          _metaTags = VocabMatch.Vocab.GetMetaTags().ToList();
          MetaTagsHtml = VocabMatch.Vocab.MetaData.MetaTagsHtml(displayExtendedSentenceStatistics: false);

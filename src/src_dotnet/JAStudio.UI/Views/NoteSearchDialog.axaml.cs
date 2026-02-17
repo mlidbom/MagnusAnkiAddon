@@ -11,7 +11,7 @@ partial class NoteSearchDialog : Window
 {
    static NoteSearchDialog? _instance;
 
-   [Obsolete("For XAML designer/previever only")]
+   [Obsolete("For XAML designer/previewer only")]
    public NoteSearchDialog() {}
 
    static NoteSearchDialog GetInstance(Core.TemporaryServiceCollection services)

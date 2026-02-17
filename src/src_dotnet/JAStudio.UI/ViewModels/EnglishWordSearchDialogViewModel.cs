@@ -17,6 +17,7 @@ partial class EnglishWordSearchDialogViewModel : ObservableObject
 
    public ObservableCollection<EnglishWordResultViewModel> Results { get; } = [];
 
+   // ReSharper disable once UnusedParameterInPartialMethod
    partial void OnSearchTextChanged(string value)
    {
       PerformSearch();

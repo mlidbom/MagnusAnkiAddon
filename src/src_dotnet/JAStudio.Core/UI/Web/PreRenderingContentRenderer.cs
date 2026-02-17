@@ -49,7 +49,7 @@ public class PreRenderingContentRenderer<TNote> where TNote : JPNote
       );
    }
 
-   string RenderWithTiming(Func<TNote, string> renderMethod, TNote note, string tag)
+   static string RenderWithTiming(Func<TNote, string> renderMethod, TNote note, string tag)
    {
       using(StopWatch.LogWarningIfSlowerThan(0.5, $"rendering:{tag}"))
       {

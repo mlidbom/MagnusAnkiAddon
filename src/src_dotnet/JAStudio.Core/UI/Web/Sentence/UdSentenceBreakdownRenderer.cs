@@ -25,7 +25,7 @@ class UdSentenceBreakdownRenderer
       _vocab = vocab;
    }
 
-   string FormatReason(string reason) =>
+   static string FormatReason(string reason) =>
       reason.Contains("configured")
          ? $"""<span class="configured">{reason}</span>"""
          : reason;
@@ -89,12 +89,12 @@ class UdSentenceBreakdownRenderer
                                                                        { "hide_all_compounds", "HAC" }
                                                                     };
 
-   string GetToggleAbbreviation(string toggle) =>
+   static string GetToggleAbbreviation(string toggle) =>
       ToggleAbbreviations.TryGetValue(toggle, out var abbr)
          ? abbr
          : $"MISSING_ABBREVIATION:{toggle}";
 
-   string RenderToggle(ConfigurationValue<bool> toggle) => $"""<span class="toggle {toggle.Name}" title="{toggle.Title}">{GetToggleAbbreviation(toggle.Name)}</span>  """;
+   static string RenderToggle(ConfigurationValue<bool> toggle) => $"""<span class="toggle {toggle.Name}" title="{toggle.Title}">{GetToggleAbbreviation(toggle.Name)}</span>  """;
 
    string RenderToggleList()
    {
@@ -224,7 +224,7 @@ class UdSentenceBreakdownRenderer
       return html;
    }
 
-   string RenderTokenProperties(IAnalysisToken token)
+   static string RenderTokenProperties(IAnalysisToken token)
    {
       var properties = TokenBooleanFlags
                       .Where(flag => flag.Predicate(token))
@@ -234,7 +234,7 @@ class UdSentenceBreakdownRenderer
       return properties.Count > 0 ? string.Join(", ", properties) : "";
    }
 
-   string RenderTokenList(List<IAnalysisToken> tokens, string sectionTitle)
+   static string RenderTokenList(List<IAnalysisToken> tokens, string sectionTitle)
    {
       var html = new StringBuilder();
 

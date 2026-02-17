@@ -10,14 +10,10 @@
         WindowStartupLocation="Manual">
 
    <Window.Resources>
-      <!-- Spacing and Margin Constants -->
-      <!-- <x:Double x:Key="NumericsStackPanelSpacing">-10</x:Double> -->
       <x:Double x:Key="CheckboxStackPanelSpacing">-10</x:Double>
       <Thickness x:Key="SectionHeaderMargin">0,0,0,10</Thickness>
       <Thickness x:Key="SectionBorderPadding">10</Thickness>
       <x:Double x:Key="ColumnSpacing">10</x:Double>
-      <x:Double x:Key="NumericUpDownWideWidth">120</x:Double>
-      <x:Double x:Key="NumericUpDownNarrowWidth">100</x:Double>
    </Window.Resources>
 
    <Design.DataContext>
@@ -40,10 +36,10 @@
                 <!-- LEFT COLUMN: Numeric Settings -->
                 <StackPanel Grid.Column="0" Spacing="{StaticResource ColumnSpacing}" Margin="0,0,10,0">
 
-                    <!-- Vocab Autoadvance Timings -->
+                    <!-- Vocab Auto-advance Timings -->
                     <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="{StaticResource SectionBorderPadding}">
-                        <StackPanel Spacing="{StaticResource NumericsStackPanelSpacing}">
-                            <TextBlock Text="Vocab autoadvance timings" FontWeight="SemiBold" />
+                        <StackPanel>
+                            <TextBlock Text="Vocab auto-advance timings" FontWeight="SemiBold" />
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Starting Seconds" VerticalAlignment="Center" Margin="0,0,0,0" />
                                 <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding AutoadvanceVocabStartingSeconds}" Minimum="0" Maximum="100" Increment="0.05" FormatString="F2" Width="120" Margin="0,0,0,5" />
@@ -60,10 +56,10 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- Sentence Autoadvance Timings -->
+                    <!-- Sentence Auto-advance Timings -->
                     <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="20">
-                        <StackPanel Spacing="{StaticResource NumericsStackPanelSpacing}">
-                            <TextBlock Text="Sentence autoadvance timings" FontWeight="SemiBold" />
+                        <StackPanel>
+                            <TextBlock Text="Sentence auto-advance timings" FontWeight="SemiBold" />
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Starting Seconds" VerticalAlignment="Center" Margin="0,0,10,5" />
                                 <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding AutoadvanceSentenceStartingSeconds}" 
@@ -86,7 +82,7 @@
 
                     <!-- Boost Failed Card Allowed Time -->
                     <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
-                        <StackPanel Spacing="{StaticResource NumericsStackPanelSpacing}">
+                        <StackPanel>
                             <TextBlock Text="Boost failed card allowed time" FontWeight="SemiBold" />
                             <Grid ColumnDefinitions="*,Auto">
                                 <TextBlock Grid.Column="0" Text="Boost Failed Card Allowed Time Factor" VerticalAlignment="Center" />
@@ -98,7 +94,7 @@
 
                     <!-- Decrease Failed Card Intervals -->
                     <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
-                        <StackPanel Spacing="{StaticResource NumericsStackPanelSpacing}">
+                        <StackPanel>
                             <TextBlock Text="Decrease failed card intervals" FontWeight="SemiBold" />
                             <Grid ColumnDefinitions="*,Auto">
                                 <TextBlock Grid.Column="0" Text="Failed card again seconds for next again" VerticalAlignment="Center" TextWrapping="Wrap" />
@@ -110,7 +106,7 @@
 
                     <!-- Timeboxes -->
                     <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
-                        <StackPanel Spacing="{StaticResource NumericsStackPanelSpacing}">
+                        <StackPanel>
                             <TextBlock Text="Timeboxes" FontWeight="SemiBold" />
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Sentence Read" VerticalAlignment="Center" Margin="0,0,10,5" />
@@ -138,7 +134,7 @@
 
                     <!-- Prevent Accidental Clicks -->
                     <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
-                        <StackPanel Spacing="{StaticResource NumericsStackPanelSpacing}">
+                        <StackPanel>
                             <TextBlock Text="Prevent accidental clicks" FontWeight="SemiBold" />
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Minimum time viewing question" VerticalAlignment="Center" Margin="0,0,10,5" />

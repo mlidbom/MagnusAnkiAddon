@@ -200,7 +200,7 @@ partial class MediaImportDialogViewModel : ObservableObject
              .ThenBy(r => r.FieldName)
              .ToList();
 
-   NoteTypeImportTabViewModel<VocabImportRule> CreateVocabTab()
+   static NoteTypeImportTabViewModel<VocabImportRule> CreateVocabTab()
    {
       var ruleSet = (MediaImportRuleSet?)null;
       return new NoteTypeImportTabViewModel<VocabImportRule>(
@@ -219,7 +219,7 @@ partial class MediaImportDialogViewModel : ObservableObject
          });
    }
 
-   NoteTypeImportTabViewModel<SentenceImportRule> CreateSentenceTab()
+   static NoteTypeImportTabViewModel<SentenceImportRule> CreateSentenceTab()
    {
       var ruleSet = (MediaImportRuleSet?)null;
       return new NoteTypeImportTabViewModel<SentenceImportRule>(
@@ -238,7 +238,7 @@ partial class MediaImportDialogViewModel : ObservableObject
          });
    }
 
-   NoteTypeImportTabViewModel<KanjiImportRule> CreateKanjiTab()
+   static NoteTypeImportTabViewModel<KanjiImportRule> CreateKanjiTab()
    {
       var ruleSet = (MediaImportRuleSet?)null;
       return new NoteTypeImportTabViewModel<KanjiImportRule>(

@@ -90,5 +90,5 @@ static class AvaloniaMenuAdapter
 /// </summary>
 static class KeyGestureParser
 {
-   public static Avalonia.Input.KeyGesture? Parse(string shortcutText) => Avalonia.Input.KeyGesture.Parse(shortcutText);
+   public static Avalonia.Input.KeyGesture Parse(string shortcutText) => Avalonia.Input.KeyGesture.Parse(shortcutText);
 }

@@ -26,8 +26,8 @@ public class MenuSpecificationTests
 
       var kanjiSubmenu = menuSpec.Children.FirstOrDefault(c => c.Name.Contains("Kanji"));
       Assert.NotNull(kanjiSubmenu);
-      Assert.Equal(SpecMenuItemKind.Submenu, kanjiSubmenu!.Kind);
-      Assert.Equal(3, kanjiSubmenu.Children!.Count); // Kanji explosion, Kanshudo, Kanji map
+      Assert.Equal(SpecMenuItemKind.Submenu, kanjiSubmenu.Kind);
+      Assert.Equal(3, kanjiSubmenu.Children.Count); // Kanji explosion, Kanshudo, Kanji map
    }
 
    [Fact]
@@ -39,8 +39,8 @@ public class MenuSpecificationTests
       // Act - Build menu and find the "Kanji explosion" action
       var menuSpec = WebSearchMenuBuilder.BuildWebSearchMenu(() => searchText);
 
-      var kanjiSubmenu = menuSpec.Children!.First(c => c.Name.Contains("Kanji"));
-      var kanjiExplosionItem = kanjiSubmenu.Children!.First();
+      var kanjiSubmenu = menuSpec.Children.First(c => c.Name.Contains("Kanji"));
+      var kanjiExplosionItem = kanjiSubmenu.Children.First();
 
       Assert.Equal("_u Kanji explosion", kanjiExplosionItem.Name); // ShortcutFinger.Home1("Kanji explosion")
       // Note: Can't test execution since it calls AnkiFacade.OpenUrl
@@ -92,7 +92,7 @@ public class MenuSpecificationTests
       Assert.Equal('T', command.AcceleratorKey);
       Assert.Equal("Ctrl+T", command.KeyboardShortcut);
 
-      command.Action!();
+      command.Action();
       Assert.True(executed);
    }
 
@@ -115,7 +115,7 @@ public class MenuSpecificationTests
       Assert.Equal(SpecMenuItemKind.Submenu, submenu.Kind);
       Assert.Equal("Test Menu", submenu.Name);
       Assert.Equal('M', submenu.AcceleratorKey);
-      Assert.Equal(3, submenu.Children!.Count);
+      Assert.Equal(3, submenu.Children.Count);
    }
 
    [Fact]
@@ -137,7 +137,7 @@ public class MenuSpecificationTests
       );
 
       // Assert - Only visible items should be counted
-      var visibleItems = menu.Children!.Where(c => c.IsVisible).ToList();
+      var visibleItems = menu.Children.Where(c => c.IsVisible).ToList();
       Assert.Single(visibleItems);
       Assert.Equal("Always Visible", visibleItems[0].Name);
    }
@@ -214,7 +214,7 @@ public class MenuSpecificationTests
    /// <summary>
    /// Helper to recursively extract all leaf (command) items from a menu tree.
    /// </summary>
-   List<SpecMenuItem> GetAllLeafItems(SpecMenuItem menu)
+   static List<SpecMenuItem> GetAllLeafItems(SpecMenuItem menu)
    {
       var result = new List<SpecMenuItem>();
 

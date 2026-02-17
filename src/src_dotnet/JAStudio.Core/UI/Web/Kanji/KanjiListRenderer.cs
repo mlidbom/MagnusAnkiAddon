@@ -38,7 +38,7 @@ class KanjiListRenderer
 
       int PreferStudyingKanji(KanjiNote kan) => kan.IsStudying() ? 0 : 1;
 
-      kanjis = kanjis.Where(kan => kan != note).ToList();
+      kanjis = kanjis.Where(kan => !Equals(kan, note)).ToList();
       kanjis = kanjis.OrderBy(PreferStudyingKanji).ToList();
 
       var viewmodels = kanjis.Select(kanji => new KanjiViewModel(kanji)).ToList();
