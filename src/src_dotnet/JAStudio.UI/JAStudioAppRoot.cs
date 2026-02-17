@@ -56,6 +56,7 @@ public class JAStudioAnkiAppRoot
          environmentPaths: new AnkiEnvironmentPaths(),
          backendNoteCreator: new AnkiBackendNoteCreator(),
          backendDataLoader: new AnkiBackendDataLoader(),
+         fatalErrorHandler: new AvaloniaFatalErrorHandler(),
          cardOperationsFactory: idMap => new AnkiCardOperationsImpl(idMap),
          configJson: configJson,
          configUpdateCallback: configUpdateCallback);
@@ -109,8 +110,6 @@ public class JAStudioAnkiAppRoot
          () => Dispatcher.UIThread.Invoke(MultiTaskProgressDialog.Hold),
          () => Dispatcher.UIThread.Post(MultiTaskProgressDialog.Release));
 
-      BackgroundTaskManagerSetup.Initialize();
-
       return root;
    }
 
@@ -132,7 +131,7 @@ public class JAStudioAnkiAppRoot
             if(_profileOpen)
             {
                CancelPendingReload();
-               BackgroundTaskManager.Run(() => _coreApp.Collection.ReloadFromBackend());
+               _coreApp.Services.BackgroundTaskManager.Run(() => _coreApp.Collection.ReloadFromBackend());
             }
 
             break;
@@ -166,7 +165,7 @@ public class JAStudioAnkiAppRoot
       var cts = new CancellationTokenSource();
       _reloadCts = cts;
 
-      BackgroundTaskManager.RunAsync(async () =>
+      _coreApp.Services.BackgroundTaskManager.RunAsync(async () =>
       {
          await Task.Delay(ReloadDebounceDelay, cts.Token);
          this.Log().Info("Debounce elapsed reloading from backend");

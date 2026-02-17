@@ -307,7 +307,7 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
 
    void OnReparseMatchingSentences(string text)
    {
-      BackgroundTaskManager.Run(() =>
+      _services.BackgroundTaskManager.Run(() =>
       {
          _services.LocalNoteUpdater.ReparseMatchingSentences(text);
          AnkiFacade.UIUtils.Refresh();
@@ -317,7 +317,7 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
 
    void OnCreateVocabNote(string text)
    {
-      BackgroundTaskManager.Run(() =>
+      _services.BackgroundTaskManager.Run(() =>
       {
          var newVocab = _services.VocabNoteFactory.CreateWithDictionary(text);
          _services.LocalNoteUpdater.ReparseSentencesForVocab(newVocab);

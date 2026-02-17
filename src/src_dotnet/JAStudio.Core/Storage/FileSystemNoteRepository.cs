@@ -16,15 +16,17 @@ public class FileSystemNoteRepository : INoteRepository
 {
    readonly NoteSerializer _serializer;
    readonly TaskRunner _taskRunner;
+   readonly BackgroundTaskManager _backgroundTaskManager;
    readonly string _rootDir;
 
-   public FileSystemNoteRepository(NoteSerializer serializer, TaskRunner taskRunner, IEnvironmentPaths paths)
-      : this(serializer, taskRunner, paths.DatabaseDir) {}
+   public FileSystemNoteRepository(NoteSerializer serializer, TaskRunner taskRunner, BackgroundTaskManager backgroundTaskManager, IEnvironmentPaths paths)
+      : this(serializer, taskRunner, backgroundTaskManager, paths.DatabaseDir) {}
 
-   public FileSystemNoteRepository(NoteSerializer serializer, TaskRunner taskRunner, string rootDir)
+   public FileSystemNoteRepository(NoteSerializer serializer, TaskRunner taskRunner, BackgroundTaskManager backgroundTaskManager, string rootDir)
    {
       _serializer = serializer;
       _taskRunner = taskRunner;
+      _backgroundTaskManager = backgroundTaskManager;
       _rootDir = rootDir;
    }
 
@@ -105,7 +107,7 @@ public class FileSystemNoteRepository : INoteRepository
       {
          container = scope.RunIndeterminate("Patching snapshot with changes", () => PatchSnapshotWithChanges(container, changes));
          var snapshotToSave = container;
-         BackgroundTaskManager.Run(() => SaveSnapshotContainer(snapshotToSave));
+         _backgroundTaskManager.Run(() => SaveSnapshotContainer(snapshotToSave));
       }
 
       return _serializer.ContainerToAllNotesData(container);

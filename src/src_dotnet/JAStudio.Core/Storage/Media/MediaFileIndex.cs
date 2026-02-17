@@ -19,15 +19,17 @@ public class MediaFileIndex
    readonly Dictionary<NoteId, List<MediaAttachment>> _byNoteId = new();
    readonly string _mediaRoot;
    readonly TaskRunner _taskRunner;
+   readonly BackgroundTaskManager _backgroundTaskManager;
    bool _initialized;
 
-   public MediaFileIndex(IEnvironmentPaths paths, TaskRunner taskRunner)
-      : this(paths.MediaDir, taskRunner) {}
+   public MediaFileIndex(IEnvironmentPaths paths, TaskRunner taskRunner, BackgroundTaskManager backgroundTaskManager)
+      : this(paths.MediaDir, taskRunner, backgroundTaskManager) {}
 
-   public MediaFileIndex(string mediaRoot, TaskRunner taskRunner)
+   public MediaFileIndex(string mediaRoot, TaskRunner taskRunner, BackgroundTaskManager backgroundTaskManager)
    {
       _mediaRoot = mediaRoot;
       _taskRunner = taskRunner;
+      _backgroundTaskManager = backgroundTaskManager;
       _metadataDir = Path.Combine(mediaRoot, "metadata");
    }
 
@@ -89,7 +91,7 @@ public class MediaFileIndex
 
       var audio = audioAttachments.Result;
       var images = imageAttachments.Result;
-      BackgroundTaskManager.Run(() => SaveSnapshot(MediaSnapshotConverter.ToContainer(audio, images)));
+      _backgroundTaskManager.Run(() => SaveSnapshot(MediaSnapshotConverter.ToContainer(audio, images)));
    }
 
    void BuildWithSnapshotMerge()
@@ -109,7 +111,7 @@ public class MediaFileIndex
                                              () => PatchSnapshot(container, changes, scan.MediaFilesByDirectory));
 
          var snapshotToSave = container;
-         BackgroundTaskManager.Run(() => SaveSnapshot(snapshotToSave));
+         _backgroundTaskManager.Run(() => SaveSnapshot(snapshotToSave));
       }
 
       var audioAttachments = runner.RunBatchAsync(container.Audio, MediaSnapshotConverter.ToAudioAttachment, "Constructing audio attachments");

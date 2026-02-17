@@ -86,7 +86,7 @@ partial class MediaImportDialogViewModel : ObservableObject
       IsScanning = true;
       StatusText = "Scanning notes for un-imported media...";
 
-      BackgroundTaskManager.Run(() =>
+      _services.BackgroundTaskManager.Run(() =>
       {
          var vocabFiles = ScanNotes(_vocabCollection.All());
          var sentenceFiles = ScanNotes(_sentenceCollection.All());
@@ -111,7 +111,7 @@ partial class MediaImportDialogViewModel : ObservableObject
       StatusText = "Analyzing import plan...";
       HasPlan = false;
 
-      BackgroundTaskManager.Run(() =>
+      _services.BackgroundTaskManager.Run(() =>
       {
          var ankiMediaDir = _paths.AnkiMediaDir;
          var analyzer = new MediaImportAnalyzer(ankiMediaDir, _index);
@@ -150,7 +150,7 @@ partial class MediaImportDialogViewModel : ObservableObject
       HasPlan = false;
       StatusText = "Importing...";
 
-      BackgroundTaskManager.Run(() =>
+      _services.BackgroundTaskManager.Run(() =>
       {
          var executor = new MediaImportExecutor(_storageService, _taskRunner);
          executor.Execute(plan);

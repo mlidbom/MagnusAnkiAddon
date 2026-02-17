@@ -27,10 +27,12 @@ public static class AppBootstrapper
       IEnvironmentPaths environmentPaths,
       IBackendNoteCreator backendNoteCreator,
       IBackendDataLoader backendDataLoader,
+      IFatalErrorHandler fatalErrorHandler,
       Func<ExternalNoteIdMap, ICardOperations> cardOperationsFactory,
       string configJson,
       System.Action<string> configUpdateCallback) =>
       Bootstrap(environmentPaths, backendNoteCreator, backendDataLoader,
+         fatalErrorHandler: fatalErrorHandler,
          cardOperationsFactory: cardOperationsFactory,
          configDictSource: new AnkiConfigDictSource(configJson, configUpdateCallback));
 
@@ -39,6 +41,7 @@ public static class AppBootstrapper
       Assert.State.Is(CoreApp.IsTesting);
 
       return Bootstrap(new TestEnvironmentPaths(), new TestingBackendNoteCreator(), backendDataLoader: null,
+         fatalErrorHandler: new RethrowingFatalErrorHandler(),
          readingsMappingsSource: new TestReadingsMappingsSource(),
          configDictSource: new TestConfigDictSource());
    }
@@ -47,6 +50,7 @@ public static class AppBootstrapper
       IEnvironmentPaths paths,
       IBackendNoteCreator backendNoteCreator,
       IBackendDataLoader? backendDataLoader,
+      IFatalErrorHandler fatalErrorHandler,
       Func<ExternalNoteIdMap, ICardOperations>? cardOperationsFactory = null,
       IConfigDictSource? configDictSource = null,
       IReadingsMappingsSource? readingsMappingsSource = null)
@@ -57,8 +61,8 @@ public static class AppBootstrapper
       var registrar = container.Register();
 
       registrar.Register(
-         Singleton.For<INoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner) =>
-                                                       (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, paths)));
+         Singleton.For<INoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner, BackgroundTaskManager bgTasks) =>
+                                                       (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, bgTasks, paths)));
 
       registrar.Register(
          Singleton.For<IBackendNoteCreator>().Instance(backendNoteCreator),
@@ -76,8 +80,8 @@ public static class AppBootstrapper
          Singleton.For<SentenceCollection>().CreatedBy((JPCollection col) => col.Sentences),
 
          // Media storage
-         Singleton.For<MediaFileIndex>().CreatedBy((TaskRunner taskRunner) =>
-                                                      new MediaFileIndex(paths, taskRunner)),
+         Singleton.For<MediaFileIndex>().CreatedBy((TaskRunner taskRunner, BackgroundTaskManager bgTasks) =>
+                                                      new MediaFileIndex(paths, taskRunner, bgTasks)),
          Singleton.For<MediaStorageService>().CreatedBy((MediaFileIndex index) =>
                                                            new MediaStorageService(paths, index)),
 
@@ -90,6 +94,7 @@ public static class AppBootstrapper
          Singleton.For<LocalNoteUpdater>().CreatedBy((TaskRunner taskRunner, VocabCollection vocab, KanjiCollection kanji, SentenceCollection sentences, JapaneseConfig config, DictLookup dictLookup, VocabNoteFactory vocabNoteFactory, FileSystemNoteRepository fileSystemNoteRepository) =>
                                                         new LocalNoteUpdater(taskRunner, vocab, kanji, sentences, config, dictLookup, vocabNoteFactory, fileSystemNoteRepository)),
          Singleton.For<TaskRunner>().CreatedBy(() => new TaskRunner()),
+         Singleton.For<BackgroundTaskManager>().CreatedBy(() => new BackgroundTaskManager(fatalErrorHandler)),
 
          // Services owned by JPCollection — registered as property accessors
          Singleton.For<NoteServices>().CreatedBy((IServiceLocator serviceLocator) => new NoteServices(serviceLocator)),
@@ -97,8 +102,8 @@ public static class AppBootstrapper
          Singleton.For<VocabNoteFactory>().CreatedBy((JPCollection col) => col.VocabNoteFactory),
          Singleton.For<VocabNoteGeneratedData>().CreatedBy((JPCollection col) => col.VocabNoteGeneratedData),
          Singleton.For<NoteSerializer>().CreatedBy((NoteServices noteServices) => new NoteSerializer(noteServices)),
-         Singleton.For<FileSystemNoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner) =>
-                                                                new FileSystemNoteRepository(serializer, taskRunner, paths)),
+         Singleton.For<FileSystemNoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner, BackgroundTaskManager bgTasks) =>
+                                                                new FileSystemNoteRepository(serializer, taskRunner, bgTasks, paths)),
          Singleton.For<KanjiNoteMnemonicMaker>().CreatedBy((JapaneseConfig config) => new KanjiNoteMnemonicMaker(config)),
 
          // ViewModels

@@ -101,7 +101,7 @@ class AnkiBrowserMenuBuilder
 
    void OnReparseSentences(List<SentenceNote> sentences)
    {
-      BackgroundTaskManager.Run(() =>
+      _services.BackgroundTaskManager.Run(() =>
       {
          _services.LocalNoteUpdater.ReparseSentences(sentences);
          AnkiFacade.UIUtils.Refresh();

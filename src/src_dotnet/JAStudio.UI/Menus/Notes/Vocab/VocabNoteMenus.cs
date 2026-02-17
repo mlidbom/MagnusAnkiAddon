@@ -43,7 +43,7 @@ class VocabNoteMenus(Core.TemporaryServiceCollection services)
                                  {
                                     SpecMenuItem.Command(ShortcutFinger.Home1("Accept meaning"), () => vocab.User.Answer.Set(FormatVocabMeaning(vocab.GetAnswer())), enabled: !vocab.User.Answer.HasValue()),
                                     SpecMenuItem.Command(ShortcutFinger.Home2("Generate answer"), vocab.GenerateAndSetAnswer),
-                                    SpecMenuItem.Command(ShortcutFinger.Home3("Reparse potentially matching sentences: (Only reparse all sentences is sure to catch everything)"), () => BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.ReparseSentencesForVocab(vocab))),
+                                    SpecMenuItem.Command(ShortcutFinger.Home3("Reparse potentially matching sentences: (Only reparse all sentences is sure to catch everything)"), () => _services.BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.ReparseSentencesForVocab(vocab))),
                                     SpecMenuItem.Command(ShortcutFinger.Home4("Repopulate TOS"), () => vocab.PartsOfSpeech.SetAutomaticallyFromDictionary()),
                                     SpecMenuItem.Command(ShortcutFinger.Home5("Autogenerate compounds"), () => vocab.CompoundParts.AutoGenerate())
                                  }),

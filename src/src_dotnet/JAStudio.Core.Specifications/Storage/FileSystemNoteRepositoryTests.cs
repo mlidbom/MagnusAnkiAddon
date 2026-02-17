@@ -19,7 +19,7 @@ public class FileSystemNoteRepositoryTests : SpecificationUsingACollection, IDis
    {
       _serializer = GetService<NoteSerializer>();
       _tempDir = Path.Combine(Path.GetTempPath(), $"JAStudio_test_{Guid.NewGuid():N}");
-      _repo = new FileSystemNoteRepository(_serializer, GetService<TaskRunner>(), _tempDir);
+      _repo = new FileSystemNoteRepository(_serializer, GetService<TaskRunner>(), GetService<BackgroundTaskManager>(), _tempDir);
    }
 
    public new void Dispose()

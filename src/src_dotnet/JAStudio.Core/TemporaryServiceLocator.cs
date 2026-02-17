@@ -21,6 +21,7 @@ public class TemporaryServiceCollection : IDisposable
    // Core services
    public LocalNoteUpdater LocalNoteUpdater => ServiceLocator.Resolve<LocalNoteUpdater>();
    public TaskRunner TaskRunner => ServiceLocator.Resolve<TaskRunner>();
+   public BackgroundTaskManager BackgroundTaskManager => ServiceLocator.Resolve<BackgroundTaskManager>();
    public ICardOperations CardOperations => ServiceLocator.Resolve<ICardOperations>();
    public ExternalNoteIdMap ExternalNoteIdMap => ServiceLocator.Resolve<ExternalNoteIdMap>();
 

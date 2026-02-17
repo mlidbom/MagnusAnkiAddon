@@ -1,18 +1,15 @@
 import typing, abc
-from System import Action, Func_1, Action_1, Exception, IDisposable, Func_2, TimeSpan, Func_4, IEquatable_1
+from System import Action, Func_1, Exception, IDisposable, Action_1, Func_2, TimeSpan, Func_4, IEquatable_1
 from System.Threading.Tasks import Task, Task_1, ParallelOptions
 from System.Diagnostics import Stopwatch
 from System.Collections.Generic import List_1, IEnumerable_1
 from System.ComponentModel import INotifyPropertyChanged
 from System.Collections.ObjectModel import ObservableCollection_1
 
-class BackgroundTaskManager(abc.ABC):
-    @staticmethod
-    def Run(action: Action) -> None: ...
-    @staticmethod
-    def RunAsync(action: Func_1[Task]) -> None: ...
-    @staticmethod
-    def SetFatalErrorHandler(handler: Action_1[Exception]) -> None: ...
+class BackgroundTaskManager:
+    def __init__(self, fatalErrorHandler: IFatalErrorHandler) -> None: ...
+    def Run(self, action: Action) -> None: ...
+    def RunAsync(self, action: Func_1[Task]) -> None: ...
 
 
 class BatchTaskProgressViewModel(TaskProgressViewModel):
@@ -41,6 +38,11 @@ class BatchTaskProgressViewModel(TaskProgressViewModel):
     def WasCanceled(self) -> bool: ...
     def SetProgress(self, current: int, total: int) -> None: ...
     def UpdateProgressWithTiming(self, current: int, total: int, stopwatch: Stopwatch) -> None: ...
+
+
+class IFatalErrorHandler(typing.Protocol):
+    @abc.abstractmethod
+    def Handle(self, exception: Exception) -> None: ...
 
 
 class IScopePanel(IDisposable, typing.Protocol):
