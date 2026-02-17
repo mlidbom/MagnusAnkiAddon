@@ -10,7 +10,7 @@ class TestBootstrapDependencies : IBootstrapDependencies
 {
    public IEnvironmentPaths EnvironmentPaths { get; } = new TestEnvironmentPaths();
    public IBackendNoteCreator BackendNoteCreator { get; } = new TestingBackendNoteCreator();
-   public IBackendDataLoader? BackendDataLoader => null;
+   public IBackendDataLoader BackendDataLoader { get; } = new NoOpBackendDataLoader();
    public IFatalErrorHandler FatalErrorHandler { get; } = new RethrowingFatalErrorHandler();
    public ITaskProgressUI TaskProgressUI { get; } = new HeadlessTaskProgressUI();
    public IConfigDictSource ConfigDictSource { get; } = new TestConfigDictSource();

@@ -15,6 +15,15 @@ public interface IBackendDataLoader
 }
 
 /// <summary>
+/// No-op implementation for tests and environments without a backend data source.
+/// Returns empty mappings and statuses.
+/// </summary>
+class NoOpBackendDataLoader : IBackendDataLoader
+{
+   public BackendData Load(TaskRunner taskRunner) => new([], []);
+}
+
+/// <summary>
 /// Data loaded from the backend system that is needed to fully populate caches.
 /// Contains the mapping between external IDs and domain NoteIds,
 /// plus per-card studying status information.

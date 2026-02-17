@@ -62,7 +62,7 @@ public class JPCollection
       JapaneseConfig config,
       INoteRepository noteRepository,
       MediaFileIndex mediaFileIndex,
-      IBackendDataLoader? backendDataLoader = null)
+      IBackendDataLoader backendDataLoader)
    {
       this.Log().Info().LogMethodExecutionTime();
 
@@ -85,7 +85,7 @@ public class JPCollection
 
    readonly INoteRepository _repository;
    readonly MediaFileIndex _mediaFileIndex;
-   readonly IBackendDataLoader? _backendDataLoader;
+   readonly IBackendDataLoader _backendDataLoader;
 
    /// <summary>Clear all in-memory caches. Called when the backend DB is about to become unreliable (e.g. sync starting, profile closing).</summary>
    public void ClearCaches()
@@ -106,39 +106,34 @@ public class JPCollection
       var repoLoad = TaskCE.Run(LoadFromRepository);
       var mediaIndexBuild = TaskCE.Run(() => _mediaFileIndex.Build());
 
-      var backendDataTask = _backendDataLoader != null
-                               ? Task.Run(BackendData? () => _backendDataLoader.Load(NoteServices.TaskRunner))
-                               : Task.FromResult<BackendData?>(null);
+      var backendDataTask = Task.Run(() => _backendDataLoader.Load(NoteServices.TaskRunner));
 
       Task.WaitAll(repoLoad, mediaIndexBuild, backendDataTask);
 
       var backendData = backendDataTask.Result;
-      if(backendData != null)
-      {
-         foreach(var (externalId, noteId) in backendData.IdMappings)
-            NoteServices.ExternalNoteIdMap.Register(externalId, noteId);
+      foreach(var (externalId, noteId) in backendData.IdMappings)
+         NoteServices.ExternalNoteIdMap.Register(externalId, noteId);
 
-         var vocabStatuses = backendData.StudyingStatuses
-                                        .Where(s => s.NoteTypeName == NoteTypes.Vocab)
+      var vocabStatuses = backendData.StudyingStatuses
+                                     .Where(s => s.NoteTypeName == NoteTypes.Vocab)
+                                     .GroupBy(s => s.ExternalNoteId)
+                                     .ToDictionary(g => g.Key, g => g.ToList());
+      var kanjiStatuses = backendData.StudyingStatuses
+                                     .Where(s => s.NoteTypeName == NoteTypes.Kanji)
+                                     .GroupBy(s => s.ExternalNoteId)
+                                     .ToDictionary(g => g.Key, g => g.ToList());
+      var sentenceStatuses = backendData.StudyingStatuses
+                                        .Where(s => s.NoteTypeName == NoteTypes.Sentence)
                                         .GroupBy(s => s.ExternalNoteId)
                                         .ToDictionary(g => g.Key, g => g.ToList());
-         var kanjiStatuses = backendData.StudyingStatuses
-                                        .Where(s => s.NoteTypeName == NoteTypes.Kanji)
-                                        .GroupBy(s => s.ExternalNoteId)
-                                        .ToDictionary(g => g.Key, g => g.ToList());
-         var sentenceStatuses = backendData.StudyingStatuses
-                                           .Where(s => s.NoteTypeName == NoteTypes.Sentence)
-                                           .GroupBy(s => s.ExternalNoteId)
-                                           .ToDictionary(g => g.Key, g => g.ToList());
 
-         runner.RunIndeterminate("Setting studying statuses",
-                                 () =>
-                                 {
-                                    Vocab.Cache.SetStudyingStatuses(vocabStatuses);
-                                    Kanji.Cache.SetStudyingStatuses(kanjiStatuses);
-                                    Sentences.Cache.SetStudyingStatuses(sentenceStatuses);
-                                 });
-      }
+      runner.RunIndeterminate("Setting studying statuses",
+                              () =>
+                              {
+                                 Vocab.Cache.SetStudyingStatuses(vocabStatuses);
+                                 Kanji.Cache.SetStudyingStatuses(kanjiStatuses);
+                                 Sentences.Cache.SetStudyingStatuses(sentenceStatuses);
+                              });
 
       WireMediaIntoNotes(runner);
    }

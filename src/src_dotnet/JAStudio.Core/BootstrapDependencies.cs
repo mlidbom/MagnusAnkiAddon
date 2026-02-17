@@ -13,10 +13,10 @@ public interface IBootstrapDependencies
 {
    IEnvironmentPaths EnvironmentPaths { get; }
    IBackendNoteCreator BackendNoteCreator { get; }
-   IBackendDataLoader? BackendDataLoader { get; }
+   IBackendDataLoader BackendDataLoader { get; }
    IFatalErrorHandler FatalErrorHandler { get; }
    ITaskProgressUI TaskProgressUI { get; }
    IConfigDictSource ConfigDictSource { get; }
-   IReadingsMappingsSource? ReadingsMappingsSource { get; }
+   IReadingsMappingsSource ReadingsMappingsSource { get; }
    Func<ExternalNoteIdMap, ICardOperations> CardOperationsFactory { get; }
 }

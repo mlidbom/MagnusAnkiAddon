@@ -3,7 +3,7 @@ using System.IO;
 
 namespace JAStudio.Core.Configuration;
 
-class FileReadingsMappingsSource : IReadingsMappingsSource
+public class FileReadingsMappingsSource : IReadingsMappingsSource
 {
    readonly string _filePath;
 

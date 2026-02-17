@@ -36,7 +36,7 @@ public static class AppBootstrapper
       var backendNoteCreator = deps.BackendNoteCreator;
       var backendDataLoader = deps.BackendDataLoader;
       var configDictSource = deps.ConfigDictSource;
-      var readingsMappingsSource = deps.ReadingsMappingsSource ?? new FileReadingsMappingsSource(paths);
+      var readingsMappingsSource = deps.ReadingsMappingsSource;
       var cardOperationsFactory = deps.CardOperationsFactory;
       var container = new SimpleInjectorDependencyInjectionContainer();
       var registrar = container.Register();
@@ -61,10 +61,8 @@ public static class AppBootstrapper
          Singleton.For<SentenceCollection>().CreatedBy((JPCollection col) => col.Sentences),
 
          // Media storage
-         Singleton.For<MediaFileIndex>().CreatedBy((TaskRunner taskRunner, BackgroundTaskManager bgTasks) =>
-                                                      new MediaFileIndex(paths, taskRunner, bgTasks)),
-         Singleton.For<MediaStorageService>().CreatedBy((MediaFileIndex index) =>
-                                                           new MediaStorageService(paths, index)),
+         Singleton.For<MediaFileIndex>().CreatedBy((TaskRunner taskRunner, BackgroundTaskManager bgTasks) => new MediaFileIndex(paths, taskRunner, bgTasks)),
+         Singleton.For<MediaStorageService>().CreatedBy((MediaFileIndex index) => new MediaStorageService(paths, index)),
 
          // Core services
          Singleton.For<Settings>().CreatedBy((JapaneseConfig config) => new Settings(config)),
