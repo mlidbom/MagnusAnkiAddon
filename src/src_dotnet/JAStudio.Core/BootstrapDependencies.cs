@@ -18,5 +18,5 @@ public interface IBootstrapDependencies
    ITaskProgressUI TaskProgressUI { get; }
    IConfigDictSource ConfigDictSource { get; }
    IReadingsMappingsSource? ReadingsMappingsSource { get; }
-   Func<ExternalNoteIdMap, ICardOperations>? CardOperationsFactory { get; }
+   Func<ExternalNoteIdMap, ICardOperations> CardOperationsFactory { get; }
 }

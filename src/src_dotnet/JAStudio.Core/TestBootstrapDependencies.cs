@@ -15,5 +15,5 @@ class TestBootstrapDependencies : IBootstrapDependencies
    public ITaskProgressUI TaskProgressUI { get; } = new HeadlessTaskProgressUI();
    public IConfigDictSource ConfigDictSource { get; } = new TestConfigDictSource();
    public IReadingsMappingsSource ReadingsMappingsSource { get; } = new TestReadingsMappingsSource();
-   public Func<ExternalNoteIdMap, ICardOperations>? CardOperationsFactory => null;
+   public Func<ExternalNoteIdMap, ICardOperations> CardOperationsFactory => _ => new NoOpCardOperations();
 }
