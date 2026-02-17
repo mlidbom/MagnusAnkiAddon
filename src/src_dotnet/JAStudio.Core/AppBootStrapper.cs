@@ -21,58 +21,50 @@ namespace JAStudio.Core;
 
 public static class AppBootstrapper
 {
-   public static CoreApp BootstrapProduction(IBootstrapDependencies deps) => Bootstrap(deps);
+   public static CoreApp BootstrapProduction(IEnvironmentSpecificDependenciesRegistrar deps) => Bootstrap(deps);
 
    public static CoreApp BootstrapForTests()
    {
       Assert.State.Is(CoreApp.IsTesting);
-
-      return Bootstrap(new TestBootstrapDependencies());
+      return Bootstrap(new TestEnvironmentSpecificDependenciesRegistrar());
    }
 
-   static CoreApp Bootstrap(IBootstrapDependencies deps)
+   static CoreApp Bootstrap(IEnvironmentSpecificDependenciesRegistrar environmentSpecificDependenciesRegistrar)
    {
-      var paths = deps.EnvironmentPaths;
-      var backendNoteCreator = deps.BackendNoteCreator;
-      var backendDataLoader = deps.BackendDataLoader;
-      var configDictSource = deps.ConfigDictSource;
-      var readingsMappingsSource = deps.ReadingsMappingsSource;
-      var cardOperationsFactory = deps.CardOperationsFactory;
       var container = new SimpleInjectorDependencyInjectionContainer();
       var registrar = container.Register();
 
+      environmentSpecificDependenciesRegistrar.WireEnvironmentSpecificServices(registrar);
+
       registrar.Register(
-         Singleton.For<INoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner, BackgroundTaskManager bgTasks) =>
+         Singleton.For<INoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner, BackgroundTaskManager bgTasks, IEnvironmentPaths paths) =>
                                                        (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, bgTasks, paths)));
 
       registrar.Register(
-         Singleton.For<IBackendNoteCreator>().Instance(backendNoteCreator),
-         Singleton.For<IEnvironmentPaths>().Instance(paths),
          Singleton.For<IServiceLocator>().CreatedBy(() => container.ServiceLocator),
          Singleton.For<AnkiHTMLRenderers>().CreatedBy((IServiceLocator serviceLocator) => new AnkiHTMLRenderers(serviceLocator)),
-         Singleton.For<CoreApp>().CreatedBy((TemporaryServiceCollection services) => new CoreApp(services, paths)),
-         Singleton.For<ConfigurationStore>().CreatedBy(() => new ConfigurationStore(readingsMappingsSource, configDictSource)),
+         Singleton.For<CoreApp>().CreatedBy((TemporaryServiceCollection services, IEnvironmentPaths paths) => new CoreApp(services, paths)),
+         Singleton.For<ConfigurationStore>().CreatedBy((IReadingsMappingsSource readingsMappingsSource, IConfigDictSource configDictSource) => new ConfigurationStore(readingsMappingsSource, configDictSource)),
          Singleton.For<TemporaryServiceCollection>().CreatedBy((IServiceLocator serviceLocator) => new TemporaryServiceCollection(serviceLocator)),
          Singleton.For<JapaneseConfig>().CreatedBy((ConfigurationStore store) => store.Config()),
-         Singleton.For<JPCollection>().CreatedBy((NoteServices noteServices, JapaneseConfig config, INoteRepository noteRepository, MediaFileIndex mediaFileIndex) =>
+         Singleton.For<JPCollection>().CreatedBy((IBackendNoteCreator backendNoteCreator, NoteServices noteServices, JapaneseConfig config, INoteRepository noteRepository, MediaFileIndex mediaFileIndex, IBackendDataLoader backendDataLoader) =>
                                                     new JPCollection(backendNoteCreator, noteServices, config, noteRepository, mediaFileIndex, backendDataLoader)),
          Singleton.For<VocabCollection>().CreatedBy((JPCollection col) => col.Vocab),
          Singleton.For<KanjiCollection>().CreatedBy((JPCollection col) => col.Kanji),
          Singleton.For<SentenceCollection>().CreatedBy((JPCollection col) => col.Sentences),
 
          // Media storage
-         Singleton.For<MediaFileIndex>().CreatedBy((TaskRunner taskRunner, BackgroundTaskManager bgTasks) => new MediaFileIndex(paths, taskRunner, bgTasks)),
-         Singleton.For<MediaStorageService>().CreatedBy((MediaFileIndex index) => new MediaStorageService(paths, index)),
+         Singleton.For<MediaFileIndex>().CreatedBy((IEnvironmentPaths paths, TaskRunner taskRunner, BackgroundTaskManager bgTasks) => new MediaFileIndex(paths, taskRunner, bgTasks)),
+         Singleton.For<MediaStorageService>().CreatedBy((IEnvironmentPaths paths, MediaFileIndex index) => new MediaStorageService(paths, index)),
 
          // Core services
          Singleton.For<Settings>().CreatedBy((JapaneseConfig config) => new Settings(config)),
          Singleton.For<AnalysisServices>().CreatedBy((VocabCollection vocab, DictLookup dictLookup, Settings settings) => new AnalysisServices(vocab, dictLookup, settings)),
          Singleton.For<ExternalNoteIdMap>().CreatedBy(() => new ExternalNoteIdMap()),
-         Singleton.For<ICardOperations>().CreatedBy(cardOperationsFactory),
          Singleton.For<LocalNoteUpdater>().CreatedBy((TaskRunner taskRunner, VocabCollection vocab, KanjiCollection kanji, SentenceCollection sentences, JapaneseConfig config, DictLookup dictLookup, VocabNoteFactory vocabNoteFactory, FileSystemNoteRepository fileSystemNoteRepository) =>
                                                         new LocalNoteUpdater(taskRunner, vocab, kanji, sentences, config, dictLookup, vocabNoteFactory, fileSystemNoteRepository)),
-         Singleton.For<TaskRunner>().CreatedBy(() => new TaskRunner(deps.TaskProgressUI)),
-         Singleton.For<BackgroundTaskManager>().CreatedBy(() => new BackgroundTaskManager(deps.FatalErrorHandler)),
+         Singleton.For<TaskRunner>().CreatedBy((ITaskProgressUI taskProgressUI) => new TaskRunner(taskProgressUI)),
+         Singleton.For<BackgroundTaskManager>().CreatedBy((IFatalErrorHandler fatalErrorHandler) => new BackgroundTaskManager(fatalErrorHandler)),
 
          // Services owned by JPCollection — registered as property accessors
          Singleton.For<NoteServices>().CreatedBy((IServiceLocator serviceLocator) => new NoteServices(serviceLocator)),
@@ -80,7 +72,7 @@ public static class AppBootstrapper
          Singleton.For<VocabNoteFactory>().CreatedBy((JPCollection col) => col.VocabNoteFactory),
          Singleton.For<VocabNoteGeneratedData>().CreatedBy((JPCollection col) => col.VocabNoteGeneratedData),
          Singleton.For<NoteSerializer>().CreatedBy((NoteServices noteServices) => new NoteSerializer(noteServices)),
-         Singleton.For<FileSystemNoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner, BackgroundTaskManager bgTasks) =>
+         Singleton.For<FileSystemNoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner, BackgroundTaskManager bgTasks, IEnvironmentPaths paths) =>
                                                                 new FileSystemNoteRepository(serializer, taskRunner, bgTasks, paths)),
          Singleton.For<KanjiNoteMnemonicMaker>().CreatedBy((JapaneseConfig config) => new KanjiNoteMnemonicMaker(config)),
 

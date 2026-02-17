@@ -3,13 +3,13 @@ from JAStudio.Core.UI.Web.Kanji import KanjiNoteRenderer
 from JAStudio.Core.UI.Web.Sentence import SentenceNoteRenderer
 from JAStudio.Core.UI.Web.Vocab import VocabNoteRenderer
 from System.Collections.Generic import Dictionary_2, List_1
-from JAStudio.Core.Note import NoteId, IBackendNoteCreator, ExternalNoteIdMap, ICardOperations, NoteServices
+from JAStudio.Core.Note import NoteId, ExternalNoteIdMap, NoteServices
 from JAStudio.Core.Note.Collection import CardStudyingStatus, JPCollection
-from System import IDisposable, Func_2
-from JAStudio.Core.Configuration import JapaneseConfig, IConfigDictSource, IReadingsMappingsSource, ConfigurationStore
-from JAStudio.Core.TaskRunners import TaskRunner, IFatalErrorHandler, ITaskProgressUI, BackgroundTaskManager
+from System import IDisposable
+from JAStudio.Core.Configuration import JapaneseConfig, ConfigurationStore
+from JAStudio.Core.TaskRunners import TaskRunner, BackgroundTaskManager
+from Compze.Utilities.DependencyInjection.Abstractions import IComponentRegistrar, IServiceLocator
 from JAStudio.Core.Batches import LocalNoteUpdater
-from Compze.Utilities.DependencyInjection.Abstractions import IServiceLocator
 from JAStudio.Core.Note.Vocabulary import VocabNoteFactory
 
 class AnkiHTMLRenderers:
@@ -57,22 +57,8 @@ class IBackendDataLoader(typing.Protocol):
 
 
 class IBootstrapDependencies(typing.Protocol):
-    @property
-    def BackendDataLoader(self) -> IBackendDataLoader: ...
-    @property
-    def BackendNoteCreator(self) -> IBackendNoteCreator: ...
-    @property
-    def CardOperationsFactory(self) -> Func_2[ExternalNoteIdMap, ICardOperations]: ...
-    @property
-    def ConfigDictSource(self) -> IConfigDictSource: ...
-    @property
-    def EnvironmentPaths(self) -> IEnvironmentPaths: ...
-    @property
-    def FatalErrorHandler(self) -> IFatalErrorHandler: ...
-    @property
-    def ReadingsMappingsSource(self) -> IReadingsMappingsSource: ...
-    @property
-    def TaskProgressUI(self) -> ITaskProgressUI: ...
+    @abc.abstractmethod
+    def WireEnvironmentSpecificServices(self, registrar: IComponentRegistrar) -> None: ...
 
 
 class IEnvironmentPaths(typing.Protocol):

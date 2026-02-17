@@ -50,7 +50,7 @@ public class JAStudioAnkiAppRoot
          Debugger.Launch();
       }
 
-      var app = AppBootstrapper.BootstrapProduction(new AnkiBootstrapDependencies(configJson, configUpdateCallback));
+      var app = AppBootstrapper.BootstrapProduction(new AnkiAddonEnvironmentDependenciesRegistrar(configJson, configUpdateCallback));
       CompzeLogger.LogLevel = LogLevel.Info;
 
       var uiThread = new Thread(() =>
