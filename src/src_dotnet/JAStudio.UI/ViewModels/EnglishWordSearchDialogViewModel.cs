@@ -40,7 +40,7 @@ partial class EnglishWordSearchDialogViewModel : ObservableObject
       }
    }
 
-   List<EnglishWordResultViewModel> SearchEnglishWords(string searchText)
+   static List<EnglishWordResultViewModel> SearchEnglishWords(string searchText)
    {
       var dictionary = EnglishDictionary.Instance;
       var matchingWords = dictionary.WordsContainingStartingWithFirstThenByShortestFirst(searchText);

@@ -141,7 +141,7 @@ partial class NoteSearchDialogViewModel : ObservableObject
       return results.Take(MaxResults).ToList();
    }
 
-   List<NoteSearchResultViewModel> SearchInNotes<TNote>(
+   static List<NoteSearchResultViewModel> SearchInNotes<TNote>(
       List<TNote> notes,
       string searchText,
       Func<TNote, Dictionary<string, Func<string>>> extractorsFactory)
