@@ -40,7 +40,7 @@ public class JAStudioAppRoot
    public TemporaryServiceCollection Services => _coreApp.Services;
 
    /// <summary>Dialog show/toggle methods, extracted from this root.</summary>
-   public AppDialogs Dialogs { get; }
+   public AnkiDialogs Dialogs { get; }
 
    /// <summary>Menu factory methods, extracted from this root.</summary>
    public AnkiMenus Menus { get; }
@@ -48,7 +48,7 @@ public class JAStudioAppRoot
    JAStudioAppRoot(CoreApp coreApp)
    {
       _coreApp = coreApp;
-      Dialogs = new AppDialogs(coreApp);
+      Dialogs = new AnkiDialogs(coreApp);
       Menus = new AnkiMenus(coreApp.Services);
    }
 

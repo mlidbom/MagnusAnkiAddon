@@ -6,26 +6,15 @@ using JAStudio.UI.Views;
 
 namespace JAStudio.UI;
 
-public class AppDialogs
+public class AnkiDialogs
 {
    readonly CoreApp _coreApp;
    TemporaryServiceCollection Services => _coreApp.Services;
 
-   internal AppDialogs(CoreApp coreApp) => _coreApp = coreApp;
+   internal AnkiDialogs(CoreApp coreApp) => _coreApp = coreApp;
 
-   internal void ShowOptionsDialog()
-   {
-      Dispatcher.UIThread.Invoke(() =>
-      {
-         this.Log().Info("Creating OptionsDialog window...");
-         var window = new OptionsDialog(Services);
-         window.PositionNearCursor();
-         this.Log().Info("OptionsDialog created, calling Show()...");
-         window.Show();
-         this.Log().Info("OptionsDialog.Show() completed");
-      });
-   }
-
+   // ReSharper disable once MemberCanBeInternal used from python
+   // ReSharper disable once UnusedMember.Global used from python
    internal void ShowReadingsMappingsDialog()
    {
       this.Log().Info("ShowReadingsMappingsDialog() called");
@@ -33,6 +22,7 @@ public class AppDialogs
    }
 
    // ReSharper disable once MemberCanBeInternal used from python
+   // ReSharper disable once UnusedMember.Global used from python
    public void ToggleNoteSearchDialog()
    {
       this.Log().Info("ToggleNoteSearchDialog() called");
