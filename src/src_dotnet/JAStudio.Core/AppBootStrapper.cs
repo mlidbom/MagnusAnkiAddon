@@ -1,5 +1,4 @@
-﻿using System;
-using Compze.Utilities.Contracts;
+﻿using Compze.Utilities.Contracts;
 using Compze.Utilities.DependencyInjection;
 using Compze.Utilities.DependencyInjection.Abstractions;
 using Compze.Utilities.DependencyInjection.SimpleInjector;

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Avalonia.Threading;
 using JAStudio.Anki;
-using JAStudio.Core.TaskRunners;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
 using JAStudio.UI.Views;
@@ -60,7 +59,7 @@ public class JapaneseMainMenu
          new List<SpecMenuItem>
          {
             BuildUpdateSubmenuSpec(),
-            SpecMenuItem.Command(ShortcutFinger.Home2("Convert Immersion Kit sentences"), () => _services.BackgroundTaskManager.Run(() => AnkiFacade.Batches.ConvertImmersionKitSentences())),
+            SpecMenuItem.Command(ShortcutFinger.Home2("Convert Immersion Kit sentences"), () => _services.BackgroundTaskManager.Run(AnkiFacade.Batches.ConvertImmersionKitSentences)),
             SpecMenuItem.Command(ShortcutFinger.Home3("Update everything except reanalysing sentences"), () => _services.BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.UpdateAll())),
             SpecMenuItem.Command(ShortcutFinger.Home4("Create vocab notes for parsed words"), () => _services.BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.CreateMissingVocabWithDictionaryEntries())),
             SpecMenuItem.Command(ShortcutFinger.Home5("Regenerate vocab source answers from jamdict"), () => _services.BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.RegenerateJamdictVocabAnswers())),

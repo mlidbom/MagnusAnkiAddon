@@ -4,7 +4,6 @@ using JAStudio.Anki;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Sentences;
 using JAStudio.Core.Note.Vocabulary;
-using JAStudio.Core.TaskRunners;
 using JAStudio.UI.Menus.Notes.Kanji;
 using JAStudio.UI.Menus.Notes.Sentence;
 using JAStudio.UI.Menus.Notes.Vocab;
@@ -102,6 +101,7 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
       return menuItems;
    }
 
+   // ReSharper disable once UnusedMember.Global used from python
    public List<Avalonia.Controls.MenuItem> BuildVocabContextMenu(long vocabId, string selection, string clipboard)
    {
       var noteId = _services.CoreApp.Collection.Vocab.ExternalIdToNoteId(vocabId);
@@ -110,6 +110,7 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
       return ConvertToAvaloniaMenuItems(specs);
    }
 
+   // ReSharper disable once UnusedMember.Global used from python
    public List<Avalonia.Controls.MenuItem> BuildKanjiContextMenu(long kanjiId, string selection, string clipboard)
    {
       var noteId = _services.CoreApp.Collection.Kanji.ExternalIdToNoteId(kanjiId);
@@ -118,6 +119,7 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
       return ConvertToAvaloniaMenuItems(specs);
    }
 
+   // ReSharper disable once UnusedMember.Global used from python
    public List<Avalonia.Controls.MenuItem> BuildSentenceContextMenu(long sentenceId, string selection, string clipboard)
    {
       var noteId = _services.CoreApp.Collection.Sentences.ExternalIdToNoteId(sentenceId);
@@ -126,6 +128,7 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
       return ConvertToAvaloniaMenuItems(specs);
    }
 
+   // ReSharper disable once UnusedMember.Global used from python
    public List<Avalonia.Controls.MenuItem> BuildGenericContextMenu(string selection, string clipboard)
    {
       var specs = BuildGenericContextMenuSpec(selection, clipboard);
@@ -253,18 +256,9 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
          label,
          new List<SpecMenuItem>
          {
-            SpecMenuItem.Command(ShortcutFinger.Home1("Open in previewer"),
-                                 () => OnOpenInPreviewer(note)),
-            SpecMenuItem.Command(ShortcutFinger.Home3("Unsuspend all cards"),
-                                 () => note.UnsuspendAllCards(),
-                                 null,
-                                 null,
-                                 hasSuspendedCards),
-            SpecMenuItem.Command(ShortcutFinger.Home4("Suspend all cards"),
-                                 () => note.SuspendAllCards(),
-                                 null,
-                                 null,
-                                 hasActiveCards)
+            SpecMenuItem.Command(ShortcutFinger.Home1("Open in previewer"), () => OnOpenInPreviewer(note)),
+            SpecMenuItem.Command(ShortcutFinger.Home3("Unsuspend all cards"), note.UnsuspendAllCards, null, null, hasSuspendedCards),
+            SpecMenuItem.Command(ShortcutFinger.Home4("Suspend all cards"), note.SuspendAllCards, null, null, hasActiveCards)
          }
       );
    }
@@ -339,7 +333,6 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
    void OnCreateKanjiNote(string text)
    {
       var noteServices = _services.NoteServices;
-      // Create with placeholder values - user will need to fill them in
       var newKanji = KanjiNote.Create(noteServices, text, "TODO", "", "");
 
       var query = _services.QueryBuilder().NotesLookup([newKanji]);
