@@ -60,7 +60,7 @@ public partial class EnglishWordSearchDialogViewModel : ObservableObject
          return;
 
       var url = $"https://www.merriam-webster.com/dictionary/{SelectedResult.Word}";
-      BrowserLauncher.OpenUrl(url);
+      BrowserLauncher.OpenUrlInDefaultBrowser(url);
    }
 
    public void OpenInGoogle()
@@ -69,7 +69,7 @@ public partial class EnglishWordSearchDialogViewModel : ObservableObject
          return;
 
       var url = $"https://www.google.com/search?q=define+{SelectedResult.Word}";
-      BrowserLauncher.OpenUrl(url);
+      BrowserLauncher.OpenUrlInDefaultBrowser(url);
    }
 
    public void OpenInOED()
@@ -78,7 +78,7 @@ public partial class EnglishWordSearchDialogViewModel : ObservableObject
          return;
 
       var url = $"https://www.oed.com/search/dictionary/?scope=Entries&q={SelectedResult.Word}";
-      BrowserLauncher.OpenUrl(url);
+      BrowserLauncher.OpenUrlInDefaultBrowser(url);
    }
 }
 

@@ -119,8 +119,8 @@ public class JAStudioAppRoot
 
       // Keep the progress dialog window open across nested task scopes
       root.Services.TaskRunner.SetDialogLifetimeCallbacks(
-         () => Dispatcher.UIThread.Invoke(() => MultiTaskProgressDialog.Hold()),
-         () => Dispatcher.UIThread.Post(() => MultiTaskProgressDialog.Release()));
+         () => Dispatcher.UIThread.Invoke(MultiTaskProgressDialog.Hold),
+         () => Dispatcher.UIThread.Post(MultiTaskProgressDialog.Release));
 
       BackgroundTaskManagerSetup.Initialize();
 
