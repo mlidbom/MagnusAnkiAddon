@@ -3,9 +3,9 @@ from JAStudio.Core.UI.Web.Kanji import KanjiNoteRenderer
 from JAStudio.Core.UI.Web.Sentence import SentenceNoteRenderer
 from JAStudio.Core.UI.Web.Vocab import VocabNoteRenderer
 from JAStudio.Core.Note import IBackendNoteCreator, NoteId, CardOperations, ExternalNoteIdMap, NoteServices
+from System import Action_1, IDisposable
 from System.Collections.Generic import Dictionary_2, List_1
 from JAStudio.Core.Note.Collection import CardStudyingStatus, JPCollection
-from System import IDisposable
 from JAStudio.Core.Configuration import JapaneseConfig, ConfigurationStore
 from JAStudio.Core.TaskRunners import TaskRunner
 from JAStudio.Core.Batches import LocalNoteUpdater
@@ -25,7 +25,7 @@ class AppBootstrapper(abc.ABC):
     @staticmethod
     def BootstrapForTests() -> CoreApp: ...
     @staticmethod
-    def BootstrapProduction(environmentPaths: IEnvironmentPaths, backendNoteCreator: IBackendNoteCreator, backendDataLoader: IBackendDataLoader) -> CoreApp: ...
+    def BootstrapProduction(environmentPaths: IEnvironmentPaths, backendNoteCreator: IBackendNoteCreator, backendDataLoader: IBackendDataLoader, configJson: str, configUpdateCallback: Action_1[str]) -> CoreApp: ...
 
 
 class BackendData:

@@ -27,10 +27,6 @@ partial class OptionsDialogViewModel : ObservableObject
    {
       this.Log().Info("OptionsDialogViewModel constructor: starting...");
       _window = window;
-      if(Design.IsDesignMode)
-      {
-         services.ConfigurationStore.InitForTesting();
-      }
 
       _config = services.CoreApp.Config;
       this.Log().Info("OptionsDialogViewModel constructor: calling LoadFromConfig()...");

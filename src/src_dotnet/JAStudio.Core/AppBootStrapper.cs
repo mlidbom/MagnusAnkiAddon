@@ -22,20 +22,32 @@ namespace JAStudio.Core;
 
 public static class AppBootstrapper
 {
-   public static CoreApp BootstrapProduction(IEnvironmentPaths environmentPaths, IBackendNoteCreator backendNoteCreator, IBackendDataLoader backendDataLoader) =>
-      Bootstrap(environmentPaths, backendNoteCreator, backendDataLoader);
+   public static CoreApp BootstrapProduction(
+      IEnvironmentPaths environmentPaths,
+      IBackendNoteCreator backendNoteCreator,
+      IBackendDataLoader backendDataLoader,
+      string configJson,
+      System.Action<string> configUpdateCallback) =>
+      Bootstrap(environmentPaths, backendNoteCreator, backendDataLoader,
+         configDictSource: new AnkiConfigDictSource(configJson, configUpdateCallback));
 
    public static CoreApp BootstrapForTests()
    {
       Assert.State.Is(CoreApp.IsTesting);
 
-      var app = Bootstrap(new TestEnvironmentPaths(), new TestingBackendNoteCreator(), backendDataLoader: null, new TestReadingsMappingsSource());
-      app.Services.ConfigurationStore.InitForTesting();
-      return app;
+      return Bootstrap(new TestEnvironmentPaths(), new TestingBackendNoteCreator(), backendDataLoader: null,
+         readingsMappingsSource: new TestReadingsMappingsSource(),
+         configDictSource: new TestConfigDictSource());
    }
 
-   static CoreApp Bootstrap(IEnvironmentPaths paths, IBackendNoteCreator backendNoteCreator, IBackendDataLoader? backendDataLoader, IReadingsMappingsSource? readingsMappingsSource = null)
+   static CoreApp Bootstrap(
+      IEnvironmentPaths paths,
+      IBackendNoteCreator backendNoteCreator,
+      IBackendDataLoader? backendDataLoader,
+      IConfigDictSource? configDictSource = null,
+      IReadingsMappingsSource? readingsMappingsSource = null)
    {
+      configDictSource ??= new TestConfigDictSource();
       readingsMappingsSource ??= new FileReadingsMappingsSource(paths);
       var container = new SimpleInjectorDependencyInjectionContainer();
       var registrar = container.Register();
@@ -50,7 +62,7 @@ public static class AppBootstrapper
          Singleton.For<IServiceLocator>().CreatedBy(() => container.ServiceLocator),
          Singleton.For<AnkiHTMLRenderers>().CreatedBy((IServiceLocator serviceLocator) => new AnkiHTMLRenderers(serviceLocator)),
          Singleton.For<CoreApp>().CreatedBy((TemporaryServiceCollection services) => new CoreApp(services, paths)),
-         Singleton.For<ConfigurationStore>().CreatedBy(() => new ConfigurationStore(readingsMappingsSource)),
+         Singleton.For<ConfigurationStore>().CreatedBy(() => new ConfigurationStore(readingsMappingsSource, configDictSource)),
          Singleton.For<TemporaryServiceCollection>().CreatedBy((IServiceLocator serviceLocator) => new TemporaryServiceCollection(serviceLocator)),
          Singleton.For<JapaneseConfig>().CreatedBy((ConfigurationStore store) => store.Config()),
          Singleton.For<JPCollection>().CreatedBy((NoteServices noteServices, JapaneseConfig config, INoteRepository noteRepository, MediaFileIndex mediaFileIndex) =>

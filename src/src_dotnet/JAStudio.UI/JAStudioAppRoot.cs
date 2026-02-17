@@ -55,10 +55,10 @@ public class JAStudioAnkiAppRoot
       var app = AppBootstrapper.BootstrapProduction(
          environmentPaths: new AnkiEnvironmentPaths(),
          backendNoteCreator: new AnkiBackendNoteCreator(),
-         backendDataLoader: new AnkiBackendDataLoader());
+         backendDataLoader: new AnkiBackendDataLoader(),
+         configJson: configJson,
+         configUpdateCallback: configUpdateCallback);
       CompzeLogger.LogLevel = LogLevel.Info;
-
-      app.Services.ConfigurationStore.InitJson(configJson, configUpdateCallback);
 
       var uiThread = new Thread(() =>
                      {
