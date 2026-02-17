@@ -1,4 +1,5 @@
-﻿using Compze.Utilities.Contracts;
+﻿using System;
+using Compze.Utilities.Contracts;
 using Compze.Utilities.DependencyInjection;
 using Compze.Utilities.DependencyInjection.Abstractions;
 using Compze.Utilities.DependencyInjection.SimpleInjector;
@@ -26,9 +27,11 @@ public static class AppBootstrapper
       IEnvironmentPaths environmentPaths,
       IBackendNoteCreator backendNoteCreator,
       IBackendDataLoader backendDataLoader,
+      Func<ExternalNoteIdMap, ICardOperations> cardOperationsFactory,
       string configJson,
       System.Action<string> configUpdateCallback) =>
       Bootstrap(environmentPaths, backendNoteCreator, backendDataLoader,
+         cardOperationsFactory: cardOperationsFactory,
          configDictSource: new AnkiConfigDictSource(configJson, configUpdateCallback));
 
    public static CoreApp BootstrapForTests()
@@ -44,6 +47,7 @@ public static class AppBootstrapper
       IEnvironmentPaths paths,
       IBackendNoteCreator backendNoteCreator,
       IBackendDataLoader? backendDataLoader,
+      Func<ExternalNoteIdMap, ICardOperations>? cardOperationsFactory = null,
       IConfigDictSource? configDictSource = null,
       IReadingsMappingsSource? readingsMappingsSource = null)
    {
@@ -81,10 +85,11 @@ public static class AppBootstrapper
          Singleton.For<Settings>().CreatedBy((JapaneseConfig config) => new Settings(config)),
          Singleton.For<AnalysisServices>().CreatedBy((VocabCollection vocab, DictLookup dictLookup, Settings settings) => new AnalysisServices(vocab, dictLookup, settings)),
          Singleton.For<ExternalNoteIdMap>().CreatedBy(() => new ExternalNoteIdMap()),
+         Singleton.For<ICardOperations>().CreatedBy((ExternalNoteIdMap idMap) =>
+            cardOperationsFactory != null ? cardOperationsFactory(idMap) : (ICardOperations)new NoOpCardOperations()),
          Singleton.For<LocalNoteUpdater>().CreatedBy((TaskRunner taskRunner, VocabCollection vocab, KanjiCollection kanji, SentenceCollection sentences, JapaneseConfig config, DictLookup dictLookup, VocabNoteFactory vocabNoteFactory, FileSystemNoteRepository fileSystemNoteRepository) =>
                                                         new LocalNoteUpdater(taskRunner, vocab, kanji, sentences, config, dictLookup, vocabNoteFactory, fileSystemNoteRepository)),
          Singleton.For<TaskRunner>().CreatedBy(() => new TaskRunner()),
-         Singleton.For<CardOperations>().CreatedBy(() => new CardOperations()),
 
          // Services owned by JPCollection — registered as property accessors
          Singleton.For<NoteServices>().CreatedBy((IServiceLocator serviceLocator) => new NoteServices(serviceLocator)),

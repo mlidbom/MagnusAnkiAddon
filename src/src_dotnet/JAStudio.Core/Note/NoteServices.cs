@@ -20,7 +20,7 @@ public class NoteServices
    internal NoteServices(IServiceLocator serviceLocator) => _serviceLocator = serviceLocator;
 
    public JPCollection Collection => _serviceLocator.Resolve<JPCollection>();
-   public CardOperations CardOperations => _serviceLocator.Resolve<CardOperations>();
+   public ICardOperations CardOperations => _serviceLocator.Resolve<ICardOperations>();
    public Settings Settings => _serviceLocator.Resolve<Settings>();
    public DictLookup DictLookup => _serviceLocator.Resolve<DictLookup>();
    public VocabNoteFactory VocabNoteFactory => _serviceLocator.Resolve<VocabNoteFactory>();

@@ -56,6 +56,7 @@ public class JAStudioAnkiAppRoot
          environmentPaths: new AnkiEnvironmentPaths(),
          backendNoteCreator: new AnkiBackendNoteCreator(),
          backendDataLoader: new AnkiBackendDataLoader(),
+         cardOperationsFactory: idMap => new AnkiCardOperationsImpl(idMap),
          configJson: configJson,
          configUpdateCallback: configUpdateCallback);
       CompzeLogger.LogLevel = LogLevel.Info;
@@ -109,10 +110,6 @@ public class JAStudioAnkiAppRoot
          () => Dispatcher.UIThread.Post(MultiTaskProgressDialog.Release));
 
       BackgroundTaskManagerSetup.Initialize();
-
-      // TODO: urgent:  this is a wiring concern and should probably not be here
-      // Register card operations so Core can suspend/unsuspend cards via the backend API
-      root.Services.CardOperations.SetImplementation(new AnkiCardOperationsImpl(root.Services.ExternalNoteIdMap));
 
       return root;
    }
