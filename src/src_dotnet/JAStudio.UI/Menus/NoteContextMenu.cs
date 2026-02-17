@@ -161,7 +161,7 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
       [
          BuildCurrentNoteActionsSubmenuSpec(text, noteType, note),
          _openInAnkiMenus.BuildOpenInAnkiMenuSpec(() => text),
-         WebSearchMenus.BuildWebSearchMenuSpec(() => text),
+         WebSearchMenus.BuildWebSearchMenu(() => text),
          BuildMatchingNotesSubmenuSpec(text),
          BuildCreateNoteSubmenuSpec(text),
          SpecMenuItem.Command(ShortcutFinger.Down1("Reparse matching sentences"), () => OnReparseMatchingSentences(text))

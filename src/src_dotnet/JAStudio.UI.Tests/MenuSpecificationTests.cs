@@ -17,7 +17,7 @@ public class MenuSpecificationTests
       var searchText = "漢字";
 
       // Act - Build the menu spec (no Avalonia needed!)
-      var menuSpec = WebSearchMenus.BuildWebSearchMenuSpec(() => searchText);
+      var menuSpec = WebSearchMenus.BuildWebSearchMenu(() => searchText);
 
       // Assert - Verify structure
       Assert.Equal("_o Web", menuSpec.Name); // ShortcutFinger.Home3("Web") = "_o Web"
@@ -37,7 +37,7 @@ public class MenuSpecificationTests
       var searchText = "漢字";
 
       // Act - Build menu and find the "Kanji explosion" action
-      var menuSpec = WebSearchMenus.BuildWebSearchMenuSpec(() => searchText);
+      var menuSpec = WebSearchMenus.BuildWebSearchMenu(() => searchText);
 
       var kanjiSubmenu = menuSpec.Children!.First(c => c.Name.Contains("Kanji"));
       var kanjiExplosionItem = kanjiSubmenu.Children!.First();
@@ -51,7 +51,7 @@ public class MenuSpecificationTests
    public void WebSearchMenu_AllLeafNodes_HaveActions()
    {
       // Arrange & Act
-      var menuSpec = WebSearchMenus.BuildWebSearchMenuSpec(() => "test");
+      var menuSpec = WebSearchMenus.BuildWebSearchMenu(() => "test");
 
       // Assert - Recursively verify all leaf nodes have actions
       var leafItems = GetAllLeafItems(menuSpec);
