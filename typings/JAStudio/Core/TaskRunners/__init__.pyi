@@ -1,5 +1,5 @@
 import typing, abc
-from System import Action, Func_1, Action_1, Exception, Func_2, IDisposable, TimeSpan, Func_4, IEquatable_1
+from System import Action, Func_1, Action_1, Exception, IDisposable, Func_2, TimeSpan, Func_4, IEquatable_1
 from System.Threading.Tasks import Task, Task_1, ParallelOptions
 from System.Diagnostics import Stopwatch
 from System.Collections.Generic import List_1, IEnumerable_1
@@ -41,66 +41,6 @@ class BatchTaskProgressViewModel(TaskProgressViewModel):
     def WasCanceled(self) -> bool: ...
     def SetProgress(self, current: int, total: int) -> None: ...
     def UpdateProgressWithTiming(self, current: int, total: int, stopwatch: Stopwatch) -> None: ...
-
-
-class InvisibleTaskRunner(ITaskProgressRunner):
-    def __init__(self, labelText: str) -> None: ...
-    def Close(self) -> None: ...
-    def Dispose(self) -> None: ...
-    def IsHidden(self) -> bool: ...
-    def SetLabelText(self, labelText: str) -> None: ...
-    # Skipped RunBatch due to it being static, abstract and generic.
-
-    RunBatch : RunBatch_MethodGroup
-    class RunBatch_MethodGroup:
-        def __getitem__(self, t:typing.Tuple[typing.Type[RunBatch_2_T1], typing.Type[RunBatch_2_T2]]) -> RunBatch_2[RunBatch_2_T1, RunBatch_2_T2]: ...
-
-        RunBatch_2_T1 = typing.TypeVar('RunBatch_2_T1')
-        RunBatch_2_T2 = typing.TypeVar('RunBatch_2_T2')
-        class RunBatch_2(typing.Generic[RunBatch_2_T1, RunBatch_2_T2]):
-            RunBatch_2_TInput = InvisibleTaskRunner.RunBatch_MethodGroup.RunBatch_2_T1
-            RunBatch_2_TOutput = InvisibleTaskRunner.RunBatch_MethodGroup.RunBatch_2_T2
-            def __call__(self, items: List_1[RunBatch_2_TInput], processItem: Func_2[RunBatch_2_TInput, RunBatch_2_TOutput], message: str, threads: ThreadCount) -> List_1[RunBatch_2_TOutput]:...
-
-
-    # Skipped RunBatchAsync due to it being static, abstract and generic.
-
-    RunBatchAsync : RunBatchAsync_MethodGroup
-    class RunBatchAsync_MethodGroup:
-        def __getitem__(self, t:typing.Tuple[typing.Type[RunBatchAsync_2_T1], typing.Type[RunBatchAsync_2_T2]]) -> RunBatchAsync_2[RunBatchAsync_2_T1, RunBatchAsync_2_T2]: ...
-
-        RunBatchAsync_2_T1 = typing.TypeVar('RunBatchAsync_2_T1')
-        RunBatchAsync_2_T2 = typing.TypeVar('RunBatchAsync_2_T2')
-        class RunBatchAsync_2(typing.Generic[RunBatchAsync_2_T1, RunBatchAsync_2_T2]):
-            RunBatchAsync_2_TInput = InvisibleTaskRunner.RunBatchAsync_MethodGroup.RunBatchAsync_2_T1
-            RunBatchAsync_2_TOutput = InvisibleTaskRunner.RunBatchAsync_MethodGroup.RunBatchAsync_2_T2
-            def __call__(self, items: List_1[RunBatchAsync_2_TInput], processItem: Func_2[RunBatchAsync_2_TInput, RunBatchAsync_2_TOutput], message: str, threads: ThreadCount) -> Task_1[List_1[RunBatchAsync_2_TOutput]]:...
-
-
-    # Skipped RunIndeterminate due to it being static, abstract and generic.
-
-    RunIndeterminate : RunIndeterminate_MethodGroup
-    class RunIndeterminate_MethodGroup:
-        def __getitem__(self, t:typing.Type[RunIndeterminate_1_T1]) -> RunIndeterminate_1[RunIndeterminate_1_T1]: ...
-
-        RunIndeterminate_1_T1 = typing.TypeVar('RunIndeterminate_1_T1')
-        class RunIndeterminate_1(typing.Generic[RunIndeterminate_1_T1]):
-            RunIndeterminate_1_TResult = InvisibleTaskRunner.RunIndeterminate_MethodGroup.RunIndeterminate_1_T1
-            def __call__(self, message: str, action: Func_1[RunIndeterminate_1_TResult]) -> RunIndeterminate_1_TResult:...
-
-
-    # Skipped RunIndeterminateAsync due to it being static, abstract and generic.
-
-    RunIndeterminateAsync : RunIndeterminateAsync_MethodGroup
-    class RunIndeterminateAsync_MethodGroup:
-        def __getitem__(self, t:typing.Type[RunIndeterminateAsync_1_T1]) -> RunIndeterminateAsync_1[RunIndeterminateAsync_1_T1]: ...
-
-        RunIndeterminateAsync_1_T1 = typing.TypeVar('RunIndeterminateAsync_1_T1')
-        class RunIndeterminateAsync_1(typing.Generic[RunIndeterminateAsync_1_T1]):
-            RunIndeterminateAsync_1_TResult = InvisibleTaskRunner.RunIndeterminateAsync_MethodGroup.RunIndeterminateAsync_1_T1
-            def __call__(self, message: str, action: Func_1[RunIndeterminateAsync_1_TResult]) -> Task_1[RunIndeterminateAsync_1_TResult]:...
-
-
 
 
 class IScopePanel(IDisposable, typing.Protocol):
@@ -255,65 +195,6 @@ class TaskRunner:
     def SetDialogLifetimeCallbacks(self, hold: Action, release: Action) -> None: ...
     def SetUiScopePanelFactory(self, factory: Func_4[str, int, IScopePanel, IScopePanel]) -> None: ...
     def SetUiTaskRunnerFactory(self, factory: Func_4[IScopePanel, str, bool, ITaskProgressRunner]) -> None: ...
-
-
-class TaskRunnerScope(ITaskProgressRunner):
-    def Close(self) -> None: ...
-    def Dispose(self) -> None: ...
-    def IsHidden(self) -> bool: ...
-    def SetLabelText(self, text: str) -> None: ...
-    # Skipped RunBatch due to it being static, abstract and generic.
-
-    RunBatch : RunBatch_MethodGroup
-    class RunBatch_MethodGroup:
-        def __getitem__(self, t:typing.Tuple[typing.Type[RunBatch_2_T1], typing.Type[RunBatch_2_T2]]) -> RunBatch_2[RunBatch_2_T1, RunBatch_2_T2]: ...
-
-        RunBatch_2_T1 = typing.TypeVar('RunBatch_2_T1')
-        RunBatch_2_T2 = typing.TypeVar('RunBatch_2_T2')
-        class RunBatch_2(typing.Generic[RunBatch_2_T1, RunBatch_2_T2]):
-            RunBatch_2_TInput = TaskRunnerScope.RunBatch_MethodGroup.RunBatch_2_T1
-            RunBatch_2_TOutput = TaskRunnerScope.RunBatch_MethodGroup.RunBatch_2_T2
-            def __call__(self, items: List_1[RunBatch_2_TInput], processItem: Func_2[RunBatch_2_TInput, RunBatch_2_TOutput], message: str, threads: ThreadCount) -> List_1[RunBatch_2_TOutput]:...
-
-
-    # Skipped RunBatchAsync due to it being static, abstract and generic.
-
-    RunBatchAsync : RunBatchAsync_MethodGroup
-    class RunBatchAsync_MethodGroup:
-        def __getitem__(self, t:typing.Tuple[typing.Type[RunBatchAsync_2_T1], typing.Type[RunBatchAsync_2_T2]]) -> RunBatchAsync_2[RunBatchAsync_2_T1, RunBatchAsync_2_T2]: ...
-
-        RunBatchAsync_2_T1 = typing.TypeVar('RunBatchAsync_2_T1')
-        RunBatchAsync_2_T2 = typing.TypeVar('RunBatchAsync_2_T2')
-        class RunBatchAsync_2(typing.Generic[RunBatchAsync_2_T1, RunBatchAsync_2_T2]):
-            RunBatchAsync_2_TInput = TaskRunnerScope.RunBatchAsync_MethodGroup.RunBatchAsync_2_T1
-            RunBatchAsync_2_TOutput = TaskRunnerScope.RunBatchAsync_MethodGroup.RunBatchAsync_2_T2
-            def __call__(self, items: List_1[RunBatchAsync_2_TInput], processItem: Func_2[RunBatchAsync_2_TInput, RunBatchAsync_2_TOutput], message: str, threadCount: ThreadCount) -> Task_1[List_1[RunBatchAsync_2_TOutput]]:...
-
-
-    # Skipped RunIndeterminate due to it being static, abstract and generic.
-
-    RunIndeterminate : RunIndeterminate_MethodGroup
-    class RunIndeterminate_MethodGroup:
-        def __getitem__(self, t:typing.Type[RunIndeterminate_1_T1]) -> RunIndeterminate_1[RunIndeterminate_1_T1]: ...
-
-        RunIndeterminate_1_T1 = typing.TypeVar('RunIndeterminate_1_T1')
-        class RunIndeterminate_1(typing.Generic[RunIndeterminate_1_T1]):
-            RunIndeterminate_1_TResult = TaskRunnerScope.RunIndeterminate_MethodGroup.RunIndeterminate_1_T1
-            def __call__(self, message: str, action: Func_1[RunIndeterminate_1_TResult]) -> RunIndeterminate_1_TResult:...
-
-
-    # Skipped RunIndeterminateAsync due to it being static, abstract and generic.
-
-    RunIndeterminateAsync : RunIndeterminateAsync_MethodGroup
-    class RunIndeterminateAsync_MethodGroup:
-        def __getitem__(self, t:typing.Type[RunIndeterminateAsync_1_T1]) -> RunIndeterminateAsync_1[RunIndeterminateAsync_1_T1]: ...
-
-        RunIndeterminateAsync_1_T1 = typing.TypeVar('RunIndeterminateAsync_1_T1')
-        class RunIndeterminateAsync_1(typing.Generic[RunIndeterminateAsync_1_T1]):
-            RunIndeterminateAsync_1_TResult = TaskRunnerScope.RunIndeterminateAsync_MethodGroup.RunIndeterminateAsync_1_T1
-            def __call__(self, message: str, action: Func_1[RunIndeterminateAsync_1_TResult]) -> Task_1[RunIndeterminateAsync_1_TResult]:...
-
-
 
 
 class ThreadCount(IEquatable_1[ThreadCount]):

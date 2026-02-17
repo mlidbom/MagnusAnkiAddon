@@ -1,14 +1,6 @@
 import typing, abc
-from Avalonia.Controls import MenuItem
-from System.Collections.Generic import IEnumerable_1, IReadOnlyList_1
 from System import Action
-
-class AvaloniaMenuAdapter(abc.ABC):
-    @staticmethod
-    def ToAvalonia(spec: SpecMenuItem) -> MenuItem: ...
-    @staticmethod
-    def ToAvaloniaList(specs: IEnumerable_1[SpecMenuItem]) -> IEnumerable_1[typing.Any]: ...
-
+from System.Collections.Generic import IReadOnlyList_1
 
 class SpecMenuItem(abc.ABC):
     @property

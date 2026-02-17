@@ -2,17 +2,6 @@ import typing, abc
 from System.Collections.Generic import Dictionary_2
 from System import Func_2
 
-class DisplayType(abc.ABC):
-    ReviewAnswer : str
-    ReviewQuestion : str
-    @staticmethod
-    def IsDisplayingAnswer(displayType: str) -> bool: ...
-    @staticmethod
-    def IsDisplayingReviewAnswer(displayType: str) -> bool: ...
-    @staticmethod
-    def IsDisplayingReviewQuestion(displayType: str) -> bool: ...
-
-
 class PreRenderingContentRenderer_GenericClasses(abc.ABCMeta):
     Generic_PreRenderingContentRenderer_GenericClasses_PreRenderingContentRenderer_1_TNote = typing.TypeVar('Generic_PreRenderingContentRenderer_GenericClasses_PreRenderingContentRenderer_1_TNote')
     def __getitem__(self, types : typing.Type[Generic_PreRenderingContentRenderer_GenericClasses_PreRenderingContentRenderer_1_TNote]) -> typing.Type[PreRenderingContentRenderer_1[Generic_PreRenderingContentRenderer_GenericClasses_PreRenderingContentRenderer_1_TNote]]: ...

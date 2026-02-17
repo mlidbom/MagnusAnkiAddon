@@ -96,22 +96,6 @@ class FileSystemNoteRepository(INoteRepository):
 
 
 
-class InMemoryNoteRepository(INoteRepository):
-    def __init__(self) -> None: ...
-    def LoadAll(self) -> AllNotesData: ...
-    # Skipped Save due to it being static, abstract and generic.
-
-    Save : Save_MethodGroup
-    class Save_MethodGroup:
-        @typing.overload
-        def __call__(self, note: KanjiNote) -> None:...
-        @typing.overload
-        def __call__(self, note: VocabNote) -> None:...
-        @typing.overload
-        def __call__(self, note: SentenceNote) -> None:...
-
-
-
 class INoteRepository(typing.Protocol):
     @abc.abstractmethod
     def LoadAll(self) -> AllNotesData: ...

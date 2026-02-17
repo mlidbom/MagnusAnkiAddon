@@ -1,14 +1,7 @@
-import typing, abc
-from System.Collections.Generic import Dictionary_2, IEnumerable_1, List_1, HashSet_1
+import typing
 from System.Text.Json import JsonElement
+from System.Collections.Generic import IEnumerable_1, List_1, HashSet_1
 from System import Func_2, Func_1
-
-class JsonHelper(abc.ABC):
-    @staticmethod
-    def DictToJson(dict: Dictionary_2[str, typing.Any]) -> str: ...
-    @staticmethod
-    def JsonToDict(json: str) -> Dictionary_2[str, typing.Any]: ...
-
 
 class JsonReader:
     def __init__(self, element: JsonElement) -> None: ...

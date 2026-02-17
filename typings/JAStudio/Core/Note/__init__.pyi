@@ -258,12 +258,6 @@ class Mine(abc.ABC):
     VocabPrefixSuffixMarker : str
 
 
-class MyNoteFields(abc.ABC):
-    Answer : str
-    JasNoteId : str
-    Question : str
-
-
 class NoteData:
     def __init__(self, id: NoteId, fields: Dictionary_2[str, str], tags: List_1[str]) -> None: ...
     @property
@@ -423,24 +417,6 @@ class SentenceId(NoteId):
     def Value(self) -> Guid: ...
     @staticmethod
     def New() -> SentenceId: ...
-
-
-class SentenceNoteFields(abc.ABC):
-    ActiveAnswer : str
-    ActiveQuestion : str
-    Audio : str
-    Configuration : str
-    Id : str
-    JanomeTokens : str
-    ParsingResult : str
-    Reading : str
-    Screenshot : str
-    SourceAnswer : str
-    SourceComments : str
-    SourceQuestion : str
-    UserAnswer : str
-    UserComments : str
-    UserQuestion : str
 
 
 class Tag:

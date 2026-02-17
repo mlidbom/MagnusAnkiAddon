@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+// ReSharper disable MemberCanBeInternal
 // ReSharper disable MemberHidesStaticFromOuterClass
 
 namespace JAStudio.Core.Note;
@@ -31,7 +31,7 @@ static class SentenceNoteFields
    public const string Configuration = "__configuration";
 }
 
-static class CardTypes
+public static class CardTypes
 {
    public const string Reading = "Reading";
    public const string Listening = "Listening";
