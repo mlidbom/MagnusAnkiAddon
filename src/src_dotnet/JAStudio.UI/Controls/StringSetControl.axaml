@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:JAStudio.UI.Controls"
              x:Class="JAStudio.UI.Controls.StringSetControl">
     <StackPanel Spacing="5">
         <DockPanel>
@@ -13,7 +14,7 @@
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="local:StringChipViewModel">
                     <Border Background="#e0e0e0" 
                             CornerRadius="3" 
                             Padding="6,3" 

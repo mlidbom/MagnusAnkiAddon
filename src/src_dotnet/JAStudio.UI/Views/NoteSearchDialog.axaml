@@ -52,7 +52,7 @@
                   BorderBrush="Gray">
             
             <ListBox.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="vm:NoteSearchResultViewModel">
                     <Grid ColumnDefinitions="100,300,*" Margin="2">
                         <TextBlock Grid.Column="0" 
                                    Text="{Binding NoteType}" 

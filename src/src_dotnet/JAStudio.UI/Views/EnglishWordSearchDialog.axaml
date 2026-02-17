@@ -30,7 +30,7 @@
                   BorderBrush="Gray">
             
             <ListBox.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="vm:EnglishWordResultViewModel">
                     <Grid ColumnDefinitions="Auto,*" Margin="2">
                         <TextBlock Grid.Column="0" 
                                    Text="{Binding Word}" 
