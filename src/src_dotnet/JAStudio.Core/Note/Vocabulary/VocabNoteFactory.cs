@@ -23,7 +23,7 @@ public class VocabNoteFactory
       var lookupResult = _dictLookup.LookupWord(question);
       if(!lookupResult.FoundWords())
       {
-         return Create(question, "", new List<string>());
+         return Create(question, "", []);
       }
 
       var created = Create(question, lookupResult.FormatAnswer(), lookupResult.Readings());

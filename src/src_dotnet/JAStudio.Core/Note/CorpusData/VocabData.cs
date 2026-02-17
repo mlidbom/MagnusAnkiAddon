@@ -93,7 +93,7 @@ public partial class VocabData : CorpusDataBase
       new()
       {
          Id = (anki.Id ?? VocabId.New()).Value,
-         Tags = new List<string>(anki.Tags),
+         Tags = [..anki.Tags],
          Question = anki.Question,
          ActiveAnswer = anki.ActiveAnswer,
          AudioB = anki.AudioB,

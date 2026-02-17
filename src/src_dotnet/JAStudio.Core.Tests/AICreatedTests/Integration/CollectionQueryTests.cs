@@ -15,7 +15,7 @@ public class CollectionQueryTests : TestStartingWithEmptyCollection, IAIGenerate
       var vocab3 = CreateVocab("走る", "to run", "はしる");
 
       // Act
-      var results = GetService<VocabCollection>().WithQuestion("\u672c");
+      var results = GetService<VocabCollection>().WithQuestion("本");
 
       // Assert
       Assert.Single(results);

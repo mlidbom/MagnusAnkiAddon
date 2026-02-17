@@ -37,7 +37,7 @@ public sealed class TextAnalysis
       SerializedJanomeTokens = tokenizeResult.SerializedTokens;
       PreProcessedTokens = TokenizedText.PreProcess(services.Vocab, services.DictLookup);
 
-      Locations = new List<TextAnalysisLocation>();
+      Locations = [];
 
       var characterIndex = 0;
       for(var tokenIndex = 0; tokenIndex < PreProcessedTokens.Count; tokenIndex++)

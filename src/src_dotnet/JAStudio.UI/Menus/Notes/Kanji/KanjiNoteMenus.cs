@@ -25,7 +25,7 @@ class KanjiNoteMenus
                      BuildOpenMenuSpec(kanji),
                      SpecMenuItem.Command(ShortcutFinger.Home2("Edit"), () => Dispatcher.UIThread.Invoke(() => new KanjiEditorDialog(kanji).ShowNearCursor())),
                      SpecMenuItem.Command(ShortcutFinger.Home5("Reset Primary Vocabs"),
-                                          () => kanji.PrimaryVocab = new List<string>())
+                                          () => kanji.PrimaryVocab = [])
                   };
 
       // Add conditional "Accept meaning" if no user answer exists

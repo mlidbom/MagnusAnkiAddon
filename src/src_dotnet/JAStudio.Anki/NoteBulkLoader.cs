@@ -71,7 +71,7 @@ public static class NoteBulkLoader
          {
             var ankiId = reader.GetInt64(0);
             var fldsRaw = reader.IsDBNull(1) ? "" : reader.GetString(1);
-            var fieldValues = string.IsNullOrEmpty(fldsRaw) ? Array.Empty<string>() : fldsRaw.Split(FieldSeparator);
+            var fieldValues = string.IsNullOrEmpty(fldsRaw) ? [] : fldsRaw.Split(FieldSeparator);
 
             var jasNoteIdStr = jasNoteIdOrdinal < fieldValues.Length ? fieldValues[jasNoteIdOrdinal] : "";
             if(Guid.TryParse(jasNoteIdStr, out var guid))
@@ -150,7 +150,7 @@ public static class NoteBulkLoader
 
          var fldsRaw = reader.IsDBNull(2) ? "" : reader.GetString(2);
          var fieldValues = string.IsNullOrEmpty(fldsRaw)
-                              ? Array.Empty<string>()
+                              ? []
                               : fldsRaw.Split(FieldSeparator);
 
          var fields = new Dictionary<string, string>(fieldMap.Count);

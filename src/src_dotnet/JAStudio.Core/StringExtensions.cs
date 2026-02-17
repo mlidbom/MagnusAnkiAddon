@@ -23,7 +23,7 @@ public static class StringExtensions
    {
       if(string.IsNullOrWhiteSpace(input))
       {
-         return new List<string>();
+         return [];
       }
 
       // Support both comma and Japanese comma

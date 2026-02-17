@@ -27,7 +27,7 @@ public class EnglishWord
    {
       Word = word;
       LowerCaseWord = word.ToLowerInvariant();
-      Senses = new List<WordSense>();
+      Senses = [];
 
       // Add the initial sense if provided
       if(!string.IsNullOrEmpty(definition) || !string.IsNullOrEmpty(pos))
@@ -52,7 +52,7 @@ public class EnglishDictionary
 
    EnglishDictionary()
    {
-      Words = new List<EnglishWord>();
+      Words = [];
       WordMap = new Dictionary<string, EnglishWord>();
 
       // Get the path to the data files

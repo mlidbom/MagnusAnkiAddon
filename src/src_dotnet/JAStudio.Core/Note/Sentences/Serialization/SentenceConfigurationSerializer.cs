@@ -26,7 +26,7 @@ public class SentenceConfigurationSerializer
       if(string.IsNullOrEmpty(json))
       {
          return new SentenceConfiguration(
-            new List<string>(),
+            [],
             WordExclusionSet.Empty(saveCallback),
             WordExclusionSet.Empty(saveCallback)
          );
@@ -35,9 +35,9 @@ public class SentenceConfigurationSerializer
       using var doc = JsonDocument.Parse(json);
       var reader = new JsonReader(doc.RootElement);
       return new SentenceConfiguration(
-         reader.GetStringList("highlighted_words", new List<string>()),
-         new WordExclusionSet(saveCallback, reader.GetObjectList("incorrect_matches", r => WordExclusion.FromReader(r), new List<WordExclusion>())),
-         new WordExclusionSet(saveCallback, reader.GetObjectList("hidden_matches", r => WordExclusion.FromReader(r), new List<WordExclusion>()))
+         reader.GetStringList("highlighted_words", []),
+         new WordExclusionSet(saveCallback, reader.GetObjectList("incorrect_matches", r => WordExclusion.FromReader(r), [])),
+         new WordExclusionSet(saveCallback, reader.GetObjectList("hidden_matches", r => WordExclusion.FromReader(r), []))
       );
    }
 

@@ -54,7 +54,7 @@ class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
       {
          if(!_byRadical.ContainsKey(form))
          {
-            _byRadical[form] = new HashSet<KanjiNote>();
+            _byRadical[form] = [];
          }
 
          _byRadical[form].Add(note);
@@ -64,7 +64,7 @@ class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
       {
          if(!_byReading.ContainsKey(reading))
          {
-            _byReading[reading] = new HashSet<KanjiNote>();
+            _byReading[reading] = [];
          }
 
          _byReading[reading].Add(note);
@@ -73,11 +73,11 @@ class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
 
    public List<KanjiNote> WithRadical(string radical)
    {
-      return _monitor.Read(() => _byRadical.TryGetValue(radical, out var notes) ? notes.ToList() : new List<KanjiNote>());
+      return _monitor.Read(() => _byRadical.TryGetValue(radical, out var notes) ? notes.ToList() : []);
    }
 
    public HashSet<KanjiNote> WithReading(string reading)
    {
-      return _monitor.Read(() => _byReading.TryGetValue(reading, out var notes) ? notes.ToHashSet() : new HashSet<KanjiNote>());
+      return _monitor.Read(() => _byReading.TryGetValue(reading, out var notes) ? notes.ToHashSet() : []);
    }
 }

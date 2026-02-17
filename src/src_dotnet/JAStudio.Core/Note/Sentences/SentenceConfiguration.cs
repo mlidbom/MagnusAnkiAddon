@@ -17,9 +17,9 @@ public class SentenceConfiguration
       HiddenMatches = hiddenMatches;
    }
 
-   public static SentenceConfiguration FromIncorrectMatches(List<WordExclusion> incorrectMatches) => FromValues(new List<string>(), incorrectMatches, new List<WordExclusion>());
+   public static SentenceConfiguration FromIncorrectMatches(List<WordExclusion> incorrectMatches) => FromValues([], incorrectMatches, []);
 
-   public static SentenceConfiguration FromHiddenMatches(List<WordExclusion> hiddenMatches) => FromValues(new List<string>(), new List<WordExclusion>(), hiddenMatches);
+   public static SentenceConfiguration FromHiddenMatches(List<WordExclusion> hiddenMatches) => FromValues([], [], hiddenMatches);
 
    public static SentenceConfiguration FromValues(
       List<string> highlighted,
@@ -34,7 +34,7 @@ public class SentenceConfiguration
 
    public static SentenceConfiguration Empty() =>
       new(
-         new List<string>(),
+         [],
          WordExclusionSet.Empty(),
          WordExclusionSet.Empty());
 

@@ -40,7 +40,7 @@ public class CacheInvalidationTests : TestStartingWithEmptyCollection, IAIGenera
       Assert.Empty(results);
 
       // But it should still be findable by its actual question
-      var byQuestion = GetService<VocabCollection>().WithQuestion("\u98df\u3079\u308b");
+      var byQuestion = GetService<VocabCollection>().WithQuestion("食べる");
       Assert.Single(byQuestion);
    }
 

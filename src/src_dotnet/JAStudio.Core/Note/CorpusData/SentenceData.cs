@@ -85,7 +85,7 @@ public partial class SentenceData : CorpusDataBase
       new()
       {
          Id = (anki.Id ?? SentenceId.New()).Value,
-         Tags = new List<string>(anki.Tags),
+         Tags = [..anki.Tags],
          SourceQuestion = anki.SourceQuestion,
          SourceAnswer = anki.SourceAnswer,
          SourceComments = anki.SourceComments,
@@ -100,7 +100,7 @@ public partial class SentenceData : CorpusDataBase
 
    public static ParsingResult CreateParsingResult(SentenceParsingResultSubData? data)
    {
-      if(data == null) return new ParsingResult(new List<ParsedMatch>(), "", "");
+      if(data == null) return new ParsingResult([], "", "");
       return new ParsingResult(
          data.ParsedWords.Select(FromParsedMatchSubData).ToList(),
          data.Sentence,
@@ -111,7 +111,7 @@ public partial class SentenceData : CorpusDataBase
    {
       if(data == null)
          return new SentenceConfiguration(
-            new List<string>(),
+            [],
             WordExclusionSet.Empty(saveCallback),
             WordExclusionSet.Empty(saveCallback));
       return new SentenceConfiguration(

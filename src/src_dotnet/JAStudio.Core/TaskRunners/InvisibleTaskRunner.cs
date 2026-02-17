@@ -38,7 +38,7 @@ class InvisibleTaskRunner : ITaskProgressRunner
                       i => results[i] = processItem(items[i]));
          watch.Stop();
          this.Log().Debug($"##--InvisibleTaskRunner--## Finished {message} in {watch.Elapsed:g} handled {items.Count} items ({threads.Threads} threads)");
-         return new List<TOutput>(results);
+         return [..results];
       }
    }
 

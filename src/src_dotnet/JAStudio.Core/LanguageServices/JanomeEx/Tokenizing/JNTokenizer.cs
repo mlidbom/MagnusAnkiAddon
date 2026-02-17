@@ -13,13 +13,13 @@ public sealed class JNTokenizer
       ["!", "！", "|", "（", "）"];
 
    /// <summary>The invisible space character (U+200B) used as field separator in the serialized token string from Python.</summary>
-   const string FieldSeparator = "\u200B";
+   const string FieldSeparator = StringExtensions.InvisibleSpace;
 
    const string WrapperPythonCode =
-      """
+      $"""
       from janome.tokenizer import Tokenizer
 
-      _FIELD_SEPARATOR = "\u200B"
+      _FIELD_SEPARATOR = "{FieldSeparator}"
       _tokenizer = Tokenizer()
 
       def _sanitize(value):

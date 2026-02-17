@@ -14,7 +14,7 @@ public class SenseEX
    public SenseEX(dynamic source)
    {
       // Extract glosses - replace spaces with dashes
-      Glosses = new List<string>();
+      Glosses = [];
       foreach(var gloss in source.gloss)
       {
          Glosses.Add(((string)gloss.text).Replace(" ", "-"));
@@ -87,7 +87,7 @@ public class KanaFormEX
    public KanaFormEX(dynamic source)
    {
       Text = (string)source.text;
-      PriorityTags = new List<string>();
+      PriorityTags = [];
       foreach(var pri in source.pri)
       {
          PriorityTags.Add((string)pri);
@@ -103,7 +103,7 @@ public class KanjiFormEX
    public KanjiFormEX(dynamic source)
    {
       Text = (string)source.text;
-      PriorityTags = new List<string>();
+      PriorityTags = [];
       foreach(var pri in source.pri)
       {
          PriorityTags.Add((string)pri);
@@ -119,19 +119,19 @@ public sealed class DictEntry
 
    public DictEntry(dynamic source)
    {
-      KanaForms = new List<KanaFormEX>();
+      KanaForms = [];
       foreach(var kanaForm in source.kana_forms)
       {
          KanaForms.Add(new KanaFormEX(kanaForm));
       }
 
-      KanjiForms = new List<KanjiFormEX>();
+      KanjiForms = [];
       foreach(var kanjiForm in source.kanji_forms)
       {
          KanjiForms.Add(new KanjiFormEX(kanjiForm));
       }
 
-      Senses = new List<SenseEX>();
+      Senses = [];
       foreach(var sense in source.senses)
       {
          Senses.Add(new SenseEX(sense));

@@ -10,7 +10,7 @@ static class VocabNoteSorting
       List<string>? primaryVoc = null,
       string? preferredKanji = null)
    {
-      var primaryVocList = primaryVoc ?? new List<string>();
+      var primaryVocList = primaryVoc ?? [];
 
       int PreferPrimaryVocabInOrder(VocabNote localVocab)
       {

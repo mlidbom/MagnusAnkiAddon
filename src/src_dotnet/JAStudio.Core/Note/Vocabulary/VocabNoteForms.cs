@@ -20,7 +20,7 @@ public class VocabNoteForms
    {
       _vocab = vocab;
       _guard = guard;
-      _rawParts = data?.Forms != null ? new List<string>(data.Forms) : [];
+      _rawParts = data?.Forms != null ? [..data.Forms] : [];
       _allRawSet = new LazyCE<HashSet<string>>(() => _rawParts.ToHashSet());
       _allList = new LazyCE<List<string>>(() => _rawParts.Select(StripBrackets).ToList());
       _allSet = new LazyCE<HashSet<string>>(() => _allList.Value.ToHashSet());

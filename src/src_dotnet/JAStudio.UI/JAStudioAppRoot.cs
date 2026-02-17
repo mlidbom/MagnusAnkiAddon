@@ -78,7 +78,7 @@ public class JAStudioAppRoot
                      {
                         AppBuilder.Configure<UIApp>()
                                   .UsePlatformDetect()
-                                  .StartWithClassicDesktopLifetime(Array.Empty<string>(), ShutdownMode.OnExplicitShutdown);
+                                  .StartWithClassicDesktopLifetime([], ShutdownMode.OnExplicitShutdown);
                      })
                      {
                         IsBackground = true,
@@ -194,7 +194,7 @@ public class JAStudioAppRoot
       BackgroundTaskManager.RunAsync(async () =>
       {
          await Task.Delay(ReloadDebounceDelay, cts.Token);
-         this.Log().Info("Debounce elapsed \u2014 reloading from backend");
+         this.Log().Info("Debounce elapsed reloading from backend");
          _coreApp.Collection.ReloadFromBackend();
       });
    }

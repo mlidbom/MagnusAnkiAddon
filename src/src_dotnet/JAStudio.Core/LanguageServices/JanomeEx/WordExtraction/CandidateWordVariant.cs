@@ -32,9 +32,9 @@ public sealed class CandidateWordVariant
                              .Select(vocab => new VocabMatch(this, vocab))
                              .ToList();
 
-      Matches = new List<Match>();
-      _validMatches = Enumerable.Empty<Match>();
-      _displayMatches = new List<Match>();
+      Matches = [];
+      _validMatches = [];
+      _displayMatches = [];
    }
 
    public bool IsSurface => Form == Word.SurfaceForm;
@@ -89,7 +89,7 @@ public sealed class CandidateWordVariant
    public IEnumerable<Match> ValidMatches => OnceValidityAnalyzed._validMatches;
    public List<Match> DisplayMatches => OnceVisibilityAnalyzed._displayMatches;
 
-   List<VocabMatch> ValidVocabMatches { get; set; } = new();
+   List<VocabMatch> ValidVocabMatches { get; set; } = [];
 
    CandidateWordVariant OnceValidityAnalyzed
    {

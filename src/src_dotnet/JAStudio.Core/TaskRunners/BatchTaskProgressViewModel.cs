@@ -54,10 +54,12 @@ public class BatchTaskProgressViewModel : TaskProgressViewModel
       var estimatedTotalSeconds = current > 0 ? (elapsedSeconds / current) * total : 0;
       var estimatedRemainingSeconds = current > 0 ? estimatedTotalSeconds - elapsedSeconds : 0;
 
-      StatsText = $"{current}/{total}  \u2022  elapsed: {FormatSeconds(elapsedSeconds)}  \u2022  remaining: {FormatSeconds(estimatedRemainingSeconds)}  \u2022  est: {FormatSeconds(estimatedTotalSeconds)}";
+      StatsText = $"{current}/{total}  {BlackBullet}  elapsed: {FormatSeconds(elapsedSeconds)}  {BlackBullet}  remaining: {FormatSeconds(estimatedRemainingSeconds)}  {BlackBullet}  est: {FormatSeconds(estimatedTotalSeconds)}";
    }
 
-   static string FormatSeconds(double seconds)
+   const string BlackBullet = "\u2022";
+
+    static string FormatSeconds(double seconds)
    {
       var timeSpan = TimeSpan.FromSeconds(seconds);
       return $"{timeSpan.Hours:D2}:{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";

@@ -61,10 +61,10 @@ static class CompoundPartsRenderer
 
    static List<CompoundPart> GetCompoundPartsRecursive(VocabNote vocabNote, int depth = 0, HashSet<NoteId>? visited = null)
    {
-      visited ??= new HashSet<NoteId>();
+      visited ??= [];
 
       if(visited.Contains(vocabNote.GetId()))
-         return new List<CompoundPart>();
+         return [];
 
       visited.Add(vocabNote.GetId());
 

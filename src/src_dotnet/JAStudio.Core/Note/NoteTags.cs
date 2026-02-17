@@ -7,7 +7,7 @@ namespace JAStudio.Core.Note;
 public class NoteTags : IEnumerable<Tag>
 {
    readonly JPNote _note;
-   readonly HashSet<Tag> _tags = new();
+   readonly HashSet<Tag> _tags = [];
 
    public NoteTags(JPNote note, List<string>? tags = null)
    {

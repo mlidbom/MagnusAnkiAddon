@@ -39,7 +39,7 @@ public class TaskProgressScopeViewModel : NotifyPropertyChangedBase, IDisposable
    /// items for child scopes. Add/remove on the UI thread since
    /// <see cref="ObservableCollection{T}"/> is bound to an <c>ItemsControl</c>.
    /// </summary>
-   public ObservableCollection<NotifyPropertyChangedBase> Children { get; } = new();
+   public ObservableCollection<NotifyPropertyChangedBase> Children { get; } = [];
 
    public TaskProgressScopeViewModel(string heading, int depth)
    {

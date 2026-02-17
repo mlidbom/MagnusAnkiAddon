@@ -9,11 +9,11 @@ namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteMatchingRulesData
 {
-   public HashSet<string> PrefixIsNot { get; set; } = new();
-   public HashSet<string> SuffixIsNot { get; set; } = new();
-   public HashSet<string> SurfaceIsNot { get; set; } = new();
-   public HashSet<string> YieldToSurface { get; set; } = new();
-   public HashSet<string> RequiredPrefix { get; set; } = new();
+   public HashSet<string> PrefixIsNot { get; set; } = [];
+   public HashSet<string> SuffixIsNot { get; set; } = [];
+   public HashSet<string> SurfaceIsNot { get; set; } = [];
+   public HashSet<string> YieldToSurface { get; set; } = [];
+   public HashSet<string> RequiredPrefix { get; set; } = [];
 
    public VocabNoteMatchingRulesData() {}
 
@@ -54,11 +54,11 @@ public class VocabNoteMatchingRulesSerializer : IObjectSerializer<VocabNoteMatch
       var reader = new JsonReader(doc.RootElement);
 
       return new VocabNoteMatchingRulesData(
-         reader.GetStringSet("surface_is_not", new List<string>()),
-         reader.GetStringSet("prefix_is_not", new List<string>()),
-         reader.GetStringSet("suffix_is_not", new List<string>()),
-         reader.GetStringSet("required_prefix", new List<string>()),
-         reader.GetStringSet("yield_to_surface", new List<string>())
+         reader.GetStringSet("surface_is_not", []),
+         reader.GetStringSet("prefix_is_not", []),
+         reader.GetStringSet("suffix_is_not", []),
+         reader.GetStringSet("required_prefix", []),
+         reader.GetStringSet("yield_to_surface", [])
       );
    }
 

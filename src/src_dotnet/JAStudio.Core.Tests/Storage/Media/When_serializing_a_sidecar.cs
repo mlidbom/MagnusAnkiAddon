@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Compze.Utilities.SystemCE;
 using Compze.Utilities.Testing.Must;
 using Compze.Utilities.Testing.XUnit.BDD;
 using JAStudio.Core.Note;
@@ -116,7 +117,7 @@ public class When_serializing_a_sidecar
 
       [XF] public void it_roundtrips_the_id() => _deserialized.Id.Must().Be(_original.Id);
       [XF] public void it_roundtrips_the_copyright() => _deserialized.Copyright.Must().Be(CopyrightStatus.Commercial);
-      [XF] public void it_roundtrips_the_original_filename() => _deserialized.OriginalFileName.Must().Be("natsume_ep01_03m22s.png");
+      [XF] public void it_roundtrips_the_original_filename() => _deserialized.OriginalFileName.NotNull().Must().Be("natsume_ep01_03m22s.png");
    }
 
    public class omitting_default_values : When_serializing_a_sidecar

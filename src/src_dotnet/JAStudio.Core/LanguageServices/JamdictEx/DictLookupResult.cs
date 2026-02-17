@@ -114,7 +114,7 @@ public class DictLookupResult
    {
       if(_failed == null)
       {
-         _failed = new DictLookupResult(new List<DictEntry>(), "", new List<string>());
+         _failed = new DictLookupResult([], "", []);
       }
 
       return _failed;

@@ -137,7 +137,7 @@ class AvaloniaTaskProgressRunner : ITaskProgressRunner
                       });
       }
 
-      return new List<TOutput>(results);
+      return [..results];
    }
 
    public async Task<List<TOutput>> RunBatchAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads) =>

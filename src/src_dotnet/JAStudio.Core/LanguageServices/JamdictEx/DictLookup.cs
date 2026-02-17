@@ -176,7 +176,7 @@ public class DictLookup
       }
 
       var entries = LookupWordRaw(word);
-      return new DictLookupResult(entries, word, new List<string>());
+      return new DictLookupResult(entries, word, []);
    }
 
    public DictLookupResult LookupName(string word)
@@ -187,14 +187,14 @@ public class DictLookup
       }
 
       var entries = LookupNameRaw(word);
-      return new DictLookupResult(entries, word, new List<string>());
+      return new DictLookupResult(entries, word, []);
    }
 
    List<DictEntry> LookupWordRaw(string word)
    {
       if(!MightBeWord(word))
       {
-         return new List<DictEntry>();
+         return [];
       }
 
       return LookupWordRawCache.GetOrAdd(word, LookupWordRawInner);
@@ -217,7 +217,7 @@ public class DictLookup
    {
       if(!MightBeName(word))
       {
-         return new List<DictEntry>();
+         return [];
       }
 
       return LookupNameRawCache.GetOrAdd(word, LookupNameRawInner);

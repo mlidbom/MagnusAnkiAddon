@@ -40,8 +40,7 @@ public class When_configuring_media_import_routing
    {
       readonly MediaImportRuleSet _ruleSet;
 
-      public with_vocab_rules_having_different_copyright_per_field()
-      {
+      public with_vocab_rules_having_different_copyright_per_field() =>
          _ruleSet = new MediaImportRuleSet(
             [
                new VocabImportRule(Tag("wani"), VocabMediaField.AudioFirst, "commercial/wani", CopyrightStatus.Commercial),
@@ -50,7 +49,6 @@ public class When_configuring_media_import_routing
             ],
             [],
             []);
-      }
 
       [XF] public void audio_first_is_commercial() => _ruleSet.TryResolveVocab(Tag("wani::level05"), VocabMediaField.AudioFirst)!.Copyright.Must().Be(CopyrightStatus.Commercial);
       [XF] public void audio_tts_is_free() => _ruleSet.TryResolveVocab(Tag("wani::level05"), VocabMediaField.AudioTts)!.Copyright.Must().Be(CopyrightStatus.Free);

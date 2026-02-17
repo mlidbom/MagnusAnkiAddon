@@ -117,7 +117,7 @@ class RelatedVocabsRenderer
 
    public static string GenerateInCompoundsList(VocabNote vocabNote)
    {
-      var forms = Conjugator.GetVocabStems(vocabNote).Concat(new[] { vocabNote.Question.Raw }).ToList();
+      var forms = Conjugator.GetVocabStems(vocabNote).Concat([vocabNote.Question.Raw]).ToList();
 
       int PreferCompoundsStartingWithThisVocab(VocabNote vocab)
       {

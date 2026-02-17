@@ -20,10 +20,10 @@ public class WordExclusionSet
 
    public static WordExclusionSet Empty()
    {
-      return new WordExclusionSet(() => {}, new List<WordExclusion>());
+      return new WordExclusionSet(() => {}, []);
    }
 
-   public static WordExclusionSet Empty(Action saveCallback) => new(saveCallback, new List<WordExclusion>());
+   public static WordExclusionSet Empty(Action saveCallback) => new(saveCallback, []);
 
    public bool IsEmpty() => !_exclusions.Any();
 

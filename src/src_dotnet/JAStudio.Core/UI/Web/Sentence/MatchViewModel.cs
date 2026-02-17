@@ -43,12 +43,12 @@ public class MatchViewModel
       ParsedForm = match.ParsedForm;
       Answer = match.Answer;
       VocabForm = !settings.ShowBreakdownInEditMode() ? match.MatchForm : match.ExclusionForm;
-      CompoundParts = new List<CompoundPartViewModel>();
+      CompoundParts = [];
       AudioPath = string.Empty;
       IsHighlighted = _config.HighlightedWords.Contains(ParsedForm) || _config.HighlightedWords.Contains(VocabForm);
       Readings = string.Join(", ", match.Readings);
       MetaTagsHtml = string.Empty;
-      _metaTags = new List<string>();
+      _metaTags = [];
       DisplayVocabForm = ParsedForm != VocabForm;
       MatchOwnsForm = ParsedForm == VocabForm;
       DisplayReadings = ParsedForm != Readings;

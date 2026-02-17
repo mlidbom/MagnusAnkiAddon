@@ -61,7 +61,7 @@ public partial class KanjiData : CorpusDataBase
       new()
       {
          Id = (anki.Id ?? KanjiId.New()).Value,
-         Tags = new List<string>(anki.Tags),
+         Tags = [..anki.Tags],
          Kanji = anki.Question,
          SourceAnswer = anki.SourceAnswer,
          ActiveAnswer = anki.ActiveAnswer,

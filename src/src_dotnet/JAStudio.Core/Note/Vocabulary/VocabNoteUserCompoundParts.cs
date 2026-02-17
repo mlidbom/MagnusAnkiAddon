@@ -17,7 +17,7 @@ public class VocabNoteUserCompoundParts
    {
       Vocab = vocab;
       _guard = guard;
-      _parts = data?.UserCompounds != null ? new List<string>(data.UserCompounds) : [];
+      _parts = data?.UserCompounds != null ? [..data.UserCompounds] : [];
    }
 
    VocabNote Vocab { get; }
@@ -39,7 +39,7 @@ public class VocabNoteUserCompoundParts
    /// Returns all compound parts with brackets preserved (e.g. "[word]" stays as-is).
    public List<string> AllRaw() => _parts.ToList();
 
-   public void Set(List<string> value) => _guard.Update(() => _parts = new List<string>(value));
+   public void Set(List<string> value) => _guard.Update(() => _parts = [..value]);
 
    public HashSet<VocabNote> AllNotes()
    {

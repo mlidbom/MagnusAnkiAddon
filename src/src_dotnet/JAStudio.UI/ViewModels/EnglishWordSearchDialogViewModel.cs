@@ -15,7 +15,7 @@ partial class EnglishWordSearchDialogViewModel : ObservableObject
 
    [ObservableProperty] EnglishWordResultViewModel? _selectedResult;
 
-   public ObservableCollection<EnglishWordResultViewModel> Results { get; } = new();
+   public ObservableCollection<EnglishWordResultViewModel> Results { get; } = [];
 
    partial void OnSearchTextChanged(string value)
    {

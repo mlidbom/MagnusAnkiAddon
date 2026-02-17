@@ -20,11 +20,11 @@ class RelatedVocabDataSerializer : IObjectSerializer<RelatedVocabData>
          return new RelatedVocabData(
             string.Empty,
             new ValueWrapper<string>(string.Empty),
-            new HashSet<string>(),
-            new HashSet<string>(),
-            new HashSet<string>(),
-            new HashSet<string>(),
-            new HashSet<string>()
+            [],
+            [],
+            [],
+            [],
+            []
          );
       }
 
@@ -34,11 +34,11 @@ class RelatedVocabDataSerializer : IObjectSerializer<RelatedVocabData>
       return new RelatedVocabData(
          reader.GetString("ergative_twin", string.Empty),
          new ValueWrapper<string>(reader.GetString("derived_from", string.Empty)),
-         reader.GetStringSet("perfect_synonyms", new List<string>()),
-         reader.GetStringSet("synonyms", new List<string>()),
-         reader.GetStringSet("antonyms", new List<string>()),
-         reader.GetStringSet("confused_with", new List<string>()),
-         reader.GetStringSet("see_also", new List<string>())
+         reader.GetStringSet("perfect_synonyms", []),
+         reader.GetStringSet("synonyms", []),
+         reader.GetStringSet("antonyms", []),
+         reader.GetStringSet("confused_with", []),
+         reader.GetStringSet("see_also", [])
       );
    }
 

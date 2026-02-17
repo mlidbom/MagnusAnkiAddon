@@ -26,9 +26,9 @@ public sealed class CandidateWord
       SurfaceVariant = new CandidateWordVariant(this, SurfaceForm);
       BaseVariant = BaseForm != SurfaceForm ? new CandidateWordVariant(this, BaseForm) : null;
 
-      IndexingVariants = new List<CandidateWordVariant>();
-      ValidVariants = new List<CandidateWordVariant>();
-      DisplayVariants = new List<CandidateWordVariant>();
+      IndexingVariants = [];
+      ValidVariants = [];
+      DisplayVariants = [];
    }
 
    public bool HasBaseVariantWithValidMatch => BaseVariant != null && BaseVariant.HasValidMatch;
@@ -45,7 +45,7 @@ public sealed class CandidateWord
       if(BaseVariant != null) BaseVariant.RunValidityAnalysis();
       SurfaceVariant.RunValidityAnalysis();
 
-      ValidVariants = new List<CandidateWordVariant>();
+      ValidVariants = [];
       if(HasBaseVariantWithValidMatch)
       {
          ValidVariants.Add(BaseVariant!);
@@ -75,7 +75,7 @@ public sealed class CandidateWord
       SurfaceVariant.RunVisibilityAnalysis();
 
       var oldDisplayWordVariants = DisplayVariants;
-      DisplayVariants = new List<CandidateWordVariant>();
+      DisplayVariants = [];
 
       if(SurfaceVariant.DisplayMatches.Any())
       {

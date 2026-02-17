@@ -7,7 +7,7 @@ namespace JAStudio.Core.Note.Vocabulary;
 public class VocabMatchingRulesConfigurationRequiresForbidsFlags
 {
    readonly VocabNote _vocab;
-   readonly List<RequireForbidFlagField> _allFlags = new();
+   readonly List<RequireForbidFlagField> _allFlags = [];
 
    public RequireForbidFlagField MasuStem { get; }
    public RequireForbidFlagField Godan { get; }

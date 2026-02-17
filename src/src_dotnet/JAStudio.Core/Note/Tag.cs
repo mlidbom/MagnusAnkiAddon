@@ -7,7 +7,7 @@ namespace JAStudio.Core.Note;
 public class Tag
 {
    static readonly IMonitorCE _monitor = IMonitorCE.WithDefaultTimeout();
-   static HashSet<int> _usedIds = new();
+   static HashSet<int> _usedIds = [];
    static Dictionary<int, Tag> _byId = new();
    static Dictionary<string, Tag> _byName = new();
 

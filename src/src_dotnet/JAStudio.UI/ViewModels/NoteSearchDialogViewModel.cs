@@ -28,7 +28,7 @@ partial class NoteSearchDialogViewModel : ObservableObject
 
    [ObservableProperty] NoteSearchResultViewModel? _selectedResult;
 
-   public ObservableCollection<NoteSearchResultViewModel> Results { get; } = new();
+   public ObservableCollection<NoteSearchResultViewModel> Results { get; } = [];
 
    public AsyncRelayCommand SearchCommand { get; }
 
@@ -151,7 +151,7 @@ partial class NoteSearchDialogViewModel : ObservableObject
 
       // Split search text by " && " to get multiple conditions
       var searchConditions = searchText
-                            .Split(new[] { " && " }, StringSplitOptions.RemoveEmptyEntries)
+                            .Split([" && "], StringSplitOptions.RemoveEmptyEntries)
                             .Select(c => c.Trim())
                             .ToList();
 
@@ -256,7 +256,7 @@ partial class NoteSearchDialogViewModel : ObservableObject
          return;
 
       var noteId = SelectedResult.NoteId;
-      var query = _services.QueryBuilder().NotesByIds(new[] { noteId });
+      var query = _services.QueryBuilder().NotesByIds([noteId]);
       AnkiFacade.Browser.ExecuteLookup(query);
    }
 }

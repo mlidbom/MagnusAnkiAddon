@@ -126,7 +126,7 @@ public class JsonReader
                        .ToList();
          }
 
-         return defaultValue ?? new List<string>();
+         return defaultValue ?? [];
       }
       catch(KeyNotFoundException)
       {
@@ -148,7 +148,7 @@ public class JsonReader
                        .ToList();
          }
 
-         return defaultValue ?? new List<string>();
+         return defaultValue ?? [];
       }
       catch(KeyNotFoundException)
       {
@@ -174,7 +174,7 @@ public class JsonReader
                        .ToList();
          }
 
-         return defaultValue ?? new List<T>();
+         return defaultValue ?? [];
       }
       catch(KeyNotFoundException)
       {
@@ -196,7 +196,7 @@ public class JsonReader
                        .ToList();
          }
 
-         return defaultValue ?? new List<T>();
+         return defaultValue ?? [];
       }
       catch(KeyNotFoundException)
       {

@@ -27,7 +27,7 @@ partial class StringSetControlViewModel : ObservableObject
 
    public string Title { get; }
 
-   [ObservableProperty] ObservableCollection<StringChipViewModel> _items = new();
+   [ObservableProperty] ObservableCollection<StringChipViewModel> _items = [];
 
    public StringSetControlViewModel(HashSet<string> backingSet, string title, Window? parentWindow = null)
    {

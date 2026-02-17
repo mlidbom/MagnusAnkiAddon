@@ -37,22 +37,22 @@ class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
 
    public List<SentenceNote> WithVocab(VocabNote vocab)
    {
-      return _monitor.Read(() => _byVocabId.TryGetValue(vocab.GetId(), out var notes) ? notes.ToList() : new List<SentenceNote>());
+      return _monitor.Read(() => _byVocabId.TryGetValue(vocab.GetId(), out var notes) ? notes.ToList() : []);
    }
 
    public List<SentenceNote> WithVocabForm(string form)
    {
-      return _monitor.Read(() => _byVocabForm.TryGetValue(form, out var notes) ? notes.ToList() : new List<SentenceNote>());
+      return _monitor.Read(() => _byVocabForm.TryGetValue(form, out var notes) ? notes.ToList() : []);
    }
 
    public List<SentenceNote> WithUserHighlightedVocab(string form)
    {
-      return _monitor.Read(() => _byUserHighlightedVocab.TryGetValue(form, out var notes) ? notes.ToList() : new List<SentenceNote>());
+      return _monitor.Read(() => _byUserHighlightedVocab.TryGetValue(form, out var notes) ? notes.ToList() : []);
    }
 
    public List<SentenceNote> WithUserMarkedInvalidVocab(string form)
    {
-      return _monitor.Read(() => _byUserMarkedInvalidVocab.TryGetValue(form, out var notes) ? notes.ToList() : new List<SentenceNote>());
+      return _monitor.Read(() => _byUserMarkedInvalidVocab.TryGetValue(form, out var notes) ? notes.ToList() : []);
    }
 
    protected override void InheritorRemoveFromCache(SentenceNote note, SentenceSnapshot snapshot)
@@ -96,7 +96,7 @@ class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
       {
          if(!_byVocabForm.ContainsKey(vocabForm))
          {
-            _byVocabForm[vocabForm] = new HashSet<SentenceNote>();
+            _byVocabForm[vocabForm] = [];
          }
 
          _byVocabForm[vocabForm].Add(note);
@@ -106,7 +106,7 @@ class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
       {
          if(!_byUserHighlightedVocab.ContainsKey(vocabForm))
          {
-            _byUserHighlightedVocab[vocabForm] = new HashSet<SentenceNote>();
+            _byUserHighlightedVocab[vocabForm] = [];
          }
 
          _byUserHighlightedVocab[vocabForm].Add(note);
@@ -116,7 +116,7 @@ class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
       {
          if(!_byUserMarkedInvalidVocab.ContainsKey(vocabForm))
          {
-            _byUserMarkedInvalidVocab[vocabForm] = new HashSet<SentenceNote>();
+            _byUserMarkedInvalidVocab[vocabForm] = [];
          }
 
          _byUserMarkedInvalidVocab[vocabForm].Add(note);
@@ -126,7 +126,7 @@ class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
       {
          if(!_byVocabId.ContainsKey(vocabId))
          {
-            _byVocabId[vocabId] = new HashSet<SentenceNote>();
+            _byVocabId[vocabId] = [];
          }
 
          _byVocabId[vocabId].Add(note);

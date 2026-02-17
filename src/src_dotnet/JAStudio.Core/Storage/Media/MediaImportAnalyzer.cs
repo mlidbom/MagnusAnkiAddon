@@ -22,7 +22,7 @@ public class MediaImportAnalyzer
 
    public MediaImportPlan AnalyzeVocab(IReadOnlyList<VocabNote> notes, IReadOnlyList<VocabImportRule> rules)
    {
-      var ruleSet = new MediaImportRuleSet(new List<VocabImportRule>(rules), [], []);
+      var ruleSet = new MediaImportRuleSet([..rules], [], []);
       var plan = new MediaImportPlan();
 
       foreach(var note in notes)
@@ -42,7 +42,7 @@ public class MediaImportAnalyzer
 
    public MediaImportPlan AnalyzeSentences(IReadOnlyList<SentenceNote> notes, IReadOnlyList<SentenceImportRule> rules)
    {
-      var ruleSet = new MediaImportRuleSet([], new List<SentenceImportRule>(rules), []);
+      var ruleSet = new MediaImportRuleSet([], [..rules], []);
       var plan = new MediaImportPlan();
 
       foreach(var note in notes)
@@ -59,7 +59,7 @@ public class MediaImportAnalyzer
 
    public MediaImportPlan AnalyzeKanji(IReadOnlyList<KanjiNote> notes, IReadOnlyList<KanjiImportRule> rules)
    {
-      var ruleSet = new MediaImportRuleSet([], [], new List<KanjiImportRule>(rules));
+      var ruleSet = new MediaImportRuleSet([], [], [..rules]);
       var plan = new MediaImportPlan();
 
       foreach(var note in notes)

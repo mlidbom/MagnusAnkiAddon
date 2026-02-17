@@ -21,7 +21,7 @@ public class ParsedWordSerializer
 
    public static ParsedMatch FromRow(string serialized)
    {
-      var values = serialized.Split(new[] { Separator }, StringSplitOptions.None);
+      var values = serialized.Split([Separator], StringSplitOptions.None);
 
       // Parse VocabId: supports both Guid format (new) and legacy long format
       NoteId? vocabId;

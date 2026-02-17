@@ -77,7 +77,7 @@ public class KanjiNoteMnemonicMaker
             // Find shortest path, preferring long starting segments
             List<string> FindShortestPathPreferLongStartingSegments()
             {
-               var shortestPathsToPosition = new Dictionary<int, List<string>> { { 0, new List<string>() } };
+               var shortestPathsToPosition = new Dictionary<int, List<string>> { { 0, [] } };
 
                // Sort candidates longest first so that the longest starting candidate will be preferred
                foreach(var candidates in segmentsWithMappedReadingsByStartIndex)
@@ -98,12 +98,12 @@ public class KanjiNoteMnemonicMaker
                         shortestPathsToPosition[currentPosition].Count < shortestPathsToPosition[positionAfterSegment].Count)
                      {
                         shortestPathsToPosition[positionAfterSegment] =
-                           shortestPathsToPosition[currentPosition].Concat(new[] { currentSegment }).ToList();
+                           shortestPathsToPosition[currentPosition].Concat([currentSegment]).ToList();
                      }
                   }
                }
 
-               return shortestPathsToPosition.TryGetValue(readingLength, out var path) ? path : new List<string>();
+               return shortestPathsToPosition.TryGetValue(readingLength, out var path) ? path : [];
             }
 
             RemoveDeadEndPaths();

@@ -15,14 +15,14 @@ class ParsingResultSerializer : IObjectSerializer<ParsingResult>
       var rows = serialized.Split('\n');
       if(rows.Length < 2)
       {
-         return new ParsingResult(new List<ParsedMatch>(), "", "");
+         return new ParsingResult([], "", "");
       }
 
       try
       {
          if(string.IsNullOrEmpty(serialized))
          {
-            return new ParsingResult(new List<ParsedMatch>(), "", "");
+            return new ParsingResult([], "", "");
          }
 
          var parsedWords = rows.Skip(2)
@@ -38,7 +38,7 @@ class ParsingResultSerializer : IObjectSerializer<ParsingResult>
       catch(Exception ex)
       {
          this.Log().Warning($"Failed to deserialize ParsingResult:\nmessage:\n{ex.Message}\n{serialized}");
-         return new ParsingResult(new List<ParsedMatch>(), "", "");
+         return new ParsingResult([], "", "");
       }
    }
 
