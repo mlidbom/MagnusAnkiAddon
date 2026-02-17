@@ -70,7 +70,7 @@ public static class AppBootstrapper
          Singleton.For<Settings>().CreatedBy((JapaneseConfig config) => new Settings(config)),
          Singleton.For<AnalysisServices>().CreatedBy((VocabCollection vocab, DictLookup dictLookup, Settings settings) => new AnalysisServices(vocab, dictLookup, settings)),
          Singleton.For<ExternalNoteIdMap>().CreatedBy(() => new ExternalNoteIdMap()),
-         Singleton.For<ICardOperations>().CreatedBy((ExternalNoteIdMap idMap) => cardOperationsFactory(idMap)),
+         Singleton.For<ICardOperations>().CreatedBy(cardOperationsFactory),
          Singleton.For<LocalNoteUpdater>().CreatedBy((TaskRunner taskRunner, VocabCollection vocab, KanjiCollection kanji, SentenceCollection sentences, JapaneseConfig config, DictLookup dictLookup, VocabNoteFactory vocabNoteFactory, FileSystemNoteRepository fileSystemNoteRepository) =>
                                                         new LocalNoteUpdater(taskRunner, vocab, kanji, sentences, config, dictLookup, vocabNoteFactory, fileSystemNoteRepository)),
          Singleton.For<TaskRunner>().CreatedBy(() => new TaskRunner(deps.TaskProgressUI)),
