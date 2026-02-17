@@ -23,7 +23,7 @@ public class KanjiNoteMenus
       var items = new List<SpecMenuItem>
                   {
                      BuildOpenMenuSpec(kanji),
-                     SpecMenuItem.Command(ShortcutFinger.Home2("Edit"), () => Dispatcher.UIThread.Invoke(() => new KanjiEditorDialog(kanji).PositionNearCursor().Show())),
+                     SpecMenuItem.Command(ShortcutFinger.Home2("Edit"), () => Dispatcher.UIThread.Invoke(() => new KanjiEditorDialog(kanji).ShowNearCursor())),
                      SpecMenuItem.Command(ShortcutFinger.Home5("Reset Primary Vocabs"),
                                           () => kanji.PrimaryVocab = new List<string>())
                   };

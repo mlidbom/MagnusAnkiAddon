@@ -24,14 +24,10 @@ public static class WindowPositioner
       public int Y;
    }
 
+   public static TWindow ShowNearCursor<TWindow>(this TWindow window)
+      where TWindow : Window
+      => window.mutate(it => it.ShowNearCursor());
 
-   public static Window ShowNearCursor(this Window window) => window.mutate(it => it.PositionNearCursor().Show());
-
-   /// <summary>
-   /// Position a window centered on the current mouse cursor, clamped to the screen's working area.
-   /// Must be called after the window is constructed but before <see cref="Window.Show"/>.
-   /// Sets <see cref="Window.WindowStartupLocation"/> to <see cref="WindowStartupLocation.Manual"/>.
-   /// </summary>
    public static Window PositionNearCursor(this Window window)
    {
       window.WindowStartupLocation = WindowStartupLocation.Manual;

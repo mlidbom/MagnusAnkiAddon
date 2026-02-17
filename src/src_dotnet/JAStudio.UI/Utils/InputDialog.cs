@@ -117,13 +117,8 @@ public class InputDialog : Window
    /// <summary>
    /// Shows the dialog and returns the entered text (or null if cancelled).
    /// </summary>
-   public static string? ShowAsync(string prompt, string initialValue = "")
-   {
-      var dialog = new InputDialog(prompt, initialValue);
-      dialog.PositionNearCursor();
-      dialog.Show();
-      return dialog._resultSource.Task.Result;
-   }
+   public static string? ShowAsync(string prompt, string initialValue = "") =>
+      new InputDialog(prompt, initialValue).ShowNearCursor()._resultSource.Task.Result;
 
    /// <summary>
    /// Shows the dialog synchronously on the UI thread and returns the entered text.

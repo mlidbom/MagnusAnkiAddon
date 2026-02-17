@@ -27,7 +27,7 @@ class SentenceNoteMenus
          new List<SpecMenuItem>
          {
             BuildOpenMenuSpec(sentence),
-            SpecMenuItem.Command(ShortcutFinger.Home2("Edit"), () => Dispatcher.UIThread.Invoke(() => new SentenceEditorDialog(sentence).PositionNearCursor().Show())),
+            SpecMenuItem.Command(ShortcutFinger.Home2("Edit"), () => Dispatcher.UIThread.Invoke(() => new SentenceEditorDialog(sentence).ShowNearCursor())),
             BuildRemoveMenuSpec(sentence),
             BuildRemoveUserMenuSpec(sentence)
          }

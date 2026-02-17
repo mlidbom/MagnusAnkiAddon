@@ -37,9 +37,9 @@ public class JapaneseMainMenu
          ShortcutFinger.Home1("Config"),
          new List<SpecMenuItem>
          {
-            SpecMenuItem.Command(ShortcutFinger.Home1("Options (Ctrl+Shift+S)"), () => Dispatcher.UIThread.Invoke(() => new OptionsDialog(_services).PositionNearCursor().Show())),
-            SpecMenuItem.Command(ShortcutFinger.Home2("Readings mappings (Ctrl+Shift+M)"), () => Dispatcher.UIThread.Invoke(() => new ReadingsMappingsDialog(_services).PositionNearCursor().Show())),
-            SpecMenuItem.Command(ShortcutFinger.Home3("Media import"), () => Dispatcher.UIThread.Invoke(() => new MediaImportDialog(_services).PositionNearCursor().Show()))
+            SpecMenuItem.Command(ShortcutFinger.Home1("Options (Ctrl+Shift+S)"), () => Dispatcher.UIThread.Invoke(() => new OptionsDialog(_services).ShowNearCursor())),
+            SpecMenuItem.Command(ShortcutFinger.Home2("Readings mappings (Ctrl+Shift+M)"), () => Dispatcher.UIThread.Invoke(() => new ReadingsMappingsDialog(_services).ShowNearCursor())),
+            SpecMenuItem.Command(ShortcutFinger.Home3("Media import"), () => Dispatcher.UIThread.Invoke(() => new MediaImportDialog(_services).ShowNearCursor()))
          }
       );
 

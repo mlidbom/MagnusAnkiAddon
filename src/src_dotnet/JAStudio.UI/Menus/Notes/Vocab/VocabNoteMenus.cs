@@ -27,7 +27,7 @@ class VocabNoteMenus(Core.TemporaryServiceCollection services)
          new List<SpecMenuItem>
          {
             BuildOpenMenuSpec(vocab),
-            SpecMenuItem.Command(ShortcutFinger.Home2("Edit"), () => Dispatcher.UIThread.Invoke(() => new VocabEditorDialog(vocab).PositionNearCursor().Show())),
+            SpecMenuItem.Command(ShortcutFinger.Home2("Edit"), () => Dispatcher.UIThread.Invoke(() => new VocabEditorDialog(vocab).ShowNearCursor())),
             SpecMenuItem.Command(ShortcutFinger.Up1("Edit Matching Config"), () => OnEditVocabFlags(vocab)),
             BuildCreateMenuSpec(vocab),
             SpecMenuItem.Submenu(ShortcutFinger.Home4("Copy"),
@@ -208,12 +208,7 @@ class VocabNoteMenus(Core.TemporaryServiceCollection services)
 
    void OnEditVocabFlags(VocabNote vocab)
    {
-      Dispatcher.UIThread.Invoke(() =>
-      {
-         var dialog = new VocabFlagsDialog(vocab, _services);
-         dialog.PositionNearCursor();
-         dialog.Show();
-      });
+      Dispatcher.UIThread.Invoke(() => new VocabFlagsDialog(vocab, _services).ShowNearCursor());
    }
 
    static string FormatVocabMeaning(string meaning) => meaning.Replace(" SOURCE", "").Replace(", ", "/").Replace(" ", "-").ToLower().StripHtmlAndBracketMarkupAndNoiseCharacters();
