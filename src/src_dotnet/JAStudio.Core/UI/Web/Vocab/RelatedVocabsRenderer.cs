@@ -6,7 +6,7 @@ using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.UI.Web.Vocab;
 
-public class RelatedVocabsRenderer
+class RelatedVocabsRenderer
 {
    readonly VocabCollection _vocab;
    internal RelatedVocabsRenderer(VocabCollection vocab) => _vocab = vocab;

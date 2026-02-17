@@ -9,7 +9,7 @@ namespace JAStudio.UI.Menus.Notes.Vocab;
 /// Vocab string menu builders (selection/clipboard context menus).
 /// Corresponds to notes/vocab/string_menu.py in Python.
 /// </summary>
-public class VocabStringMenus
+class VocabStringMenus
 {
    readonly Core.TemporaryServiceCollection _services;
 

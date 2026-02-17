@@ -4,7 +4,7 @@ using JAStudio.Core.Note.Sentences;
 
 namespace JAStudio.Core.UI.Web.Sentence;
 
-public class SentenceRenderer
+class SentenceRenderer
 {
    readonly JapaneseConfig _config;
    internal SentenceRenderer(JapaneseConfig config) => _config = config;

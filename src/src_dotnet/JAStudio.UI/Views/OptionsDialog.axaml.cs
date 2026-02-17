@@ -5,7 +5,7 @@ using JAStudio.UI.ViewModels;
 
 namespace JAStudio.UI.Views;
 
-public partial class OptionsDialog : Window
+partial class OptionsDialog : Window
 {
    [Obsolete("For XAML designer/previever only")]
    public OptionsDialog() {}

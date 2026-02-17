@@ -9,7 +9,7 @@ namespace JAStudio.UI.Dialogs;
 /// A minimal progress panel for indeterminate/spinner operations.
 /// Bound to a <see cref="TaskProgressViewModel"/>.
 /// </summary>
-public partial class SpinnerProgressPanel : UserControl
+partial class SpinnerProgressPanel : UserControl
 {
    public SpinnerProgressPanel()
    {

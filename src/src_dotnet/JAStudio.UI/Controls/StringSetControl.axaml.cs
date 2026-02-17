@@ -8,7 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace JAStudio.UI.Controls;
 
-public partial class StringSetControl : UserControl
+partial class StringSetControl : UserControl
 {
    public StringSetControl()
    {
@@ -19,7 +19,7 @@ public partial class StringSetControl : UserControl
 /// <summary>
 /// ViewModel for a string set control (add/remove chips).
 /// </summary>
-public partial class StringSetControlViewModel : ObservableObject
+partial class StringSetControlViewModel : ObservableObject
 {
    readonly HashSet<string> _backingSet;
    readonly Window? _parentWindow;
@@ -101,7 +101,7 @@ public partial class StringChipViewModel : ObservableObject
 /// <summary>
 /// Simple text input dialog.
 /// </summary>
-public class TextInputDialog : Window
+class TextInputDialog : Window
 {
    public string? Prompt
    {

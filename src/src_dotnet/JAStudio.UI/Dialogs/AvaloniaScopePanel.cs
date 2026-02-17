@@ -9,7 +9,7 @@ namespace JAStudio.UI.Dialogs;
 /// When a parent scope exists, the view model is nested inside the parent's children
 /// collection; otherwise a panel is added to the top-level dialog.
 /// </summary>
-public class AvaloniaScopePanel : IScopePanel
+class AvaloniaScopePanel : IScopePanel
 {
    readonly TaskProgressScopePanel? _topLevelPanel;
    readonly IScopePanel? _parentScope;

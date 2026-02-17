@@ -5,7 +5,7 @@ using JAStudio.Core.Note;
 
 namespace JAStudio.Core.UI.Web.Kanji;
 
-public static class DependenciesRenderer
+static class DependenciesRenderer
 {
    public static string RenderDependenciesList(KanjiNote note)
    {

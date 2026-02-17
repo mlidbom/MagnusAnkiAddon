@@ -11,7 +11,7 @@ namespace JAStudio.UI.Menus.Notes.Sentence;
 /// Sentence string menu builder - builds context menus for selected text within sentence notes.
 /// Corresponds to notes/sentence/string_menu.py in Python.
 /// </summary>
-public static class SentenceStringMenus
+static class SentenceStringMenus
 {
    public static SpecMenuItem BuildStringMenuSpec(SentenceNote sentence, string menuString) =>
       SpecMenuItem.Submenu(

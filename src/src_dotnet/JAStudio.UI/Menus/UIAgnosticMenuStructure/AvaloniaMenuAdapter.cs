@@ -8,7 +8,7 @@ namespace JAStudio.UI.Menus.UIAgnosticMenuStructure;
 /// Converts UI-agnostic MenuItem specifications to Avalonia MenuItems.
 /// This is a thin adapter - all menu structure/logic lives in the spec classes.
 /// </summary>
-public static class AvaloniaMenuAdapter
+static class AvaloniaMenuAdapter
 {
    static readonly ILogger Log = CompzeLogger.For(typeof(AvaloniaMenuAdapter));
 

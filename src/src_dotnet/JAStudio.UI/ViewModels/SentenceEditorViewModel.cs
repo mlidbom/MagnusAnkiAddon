@@ -5,7 +5,7 @@ using JAStudio.Core.Note.Sentences;
 
 namespace JAStudio.UI.ViewModels;
 
-public partial class SentenceEditorViewModel : ObservableObject
+partial class SentenceEditorViewModel : ObservableObject
 {
    readonly SentenceNote _sentence;
 

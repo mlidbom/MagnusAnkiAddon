@@ -11,7 +11,7 @@ namespace JAStudio.UI.Menus.Notes.Kanji;
 /// Kanji string menu builders (selection/clipboard context menus).
 /// Corresponds to notes/kanji/string_menu.py in Python.
 /// </summary>
-public static class KanjiStringMenus
+static class KanjiStringMenus
 {
    public static SpecMenuItem BuildStringMenuSpec(string text, KanjiNote kanji)
    {

@@ -8,7 +8,7 @@ using JAStudio.UI.ViewModels;
 
 namespace JAStudio.UI.Views;
 
-public partial class MissingFilesDialog : Window
+partial class MissingFilesDialog : Window
 {
    readonly Action<NoteId>? _openNote;
 

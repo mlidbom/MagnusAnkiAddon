@@ -6,7 +6,7 @@ using JAStudio.UI.ViewModels;
 
 namespace JAStudio.UI.Views;
 
-public partial class SentenceEditorDialog : Window
+partial class SentenceEditorDialog : Window
 {
    public SentenceEditorDialog()
    {

@@ -10,7 +10,7 @@ namespace JAStudio.UI;
 /// QueryBuilder lives in JAStudio.Anki (it builds Anki-format search queries),
 /// so Core cannot reference it. UI creates it lazily here.
 /// </summary>
-public static class AnkiServiceExtensions
+static class AnkiServiceExtensions
 {
    static QueryBuilder? _queryBuilder;
 

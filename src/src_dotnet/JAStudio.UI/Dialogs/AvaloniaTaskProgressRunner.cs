@@ -9,7 +9,7 @@ using JAStudio.Core.TaskRunners;
 
 namespace JAStudio.UI.Dialogs;
 
-public class AvaloniaTaskProgressRunner : ITaskProgressRunner
+class AvaloniaTaskProgressRunner : ITaskProgressRunner
 {
    TaskProgressViewModel? _viewModel;
    readonly TaskProgressScopeViewModel _scopeViewModel;

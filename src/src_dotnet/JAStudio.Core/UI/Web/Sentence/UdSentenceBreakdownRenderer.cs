@@ -10,7 +10,7 @@ using JAStudio.Core.ViewModels.KanjiList;
 
 namespace JAStudio.Core.UI.Web.Sentence;
 
-public class UdSentenceBreakdownRenderer
+class UdSentenceBreakdownRenderer
 {
    readonly Settings _settings;
    readonly SentenceKanjiListViewModel _sentenceKanjiListViewModel;

@@ -5,7 +5,7 @@ using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.UI.Web.Vocab;
 
-public class CompoundPart
+class CompoundPart
 {
    public VocabNote VocabNote { get; set; }
    public int Depth { get; set; }

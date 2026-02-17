@@ -8,7 +8,7 @@ namespace JAStudio.UI.Utils;
 /// After calling <see cref="Initialize"/>, all code should use
 /// <see cref="Core.TaskRunners.BackgroundTaskManager"/> directly.
 /// </summary>
-public static class BackgroundTaskManagerSetup
+static class BackgroundTaskManagerSetup
 {
    public static void Initialize()
    {

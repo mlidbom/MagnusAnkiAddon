@@ -9,7 +9,7 @@ using JAStudio.Anki;
 
 namespace JAStudio.UI.ViewModels;
 
-public partial class ReadingsMappingsDialogViewModel : ObservableObject
+partial class ReadingsMappingsDialogViewModel : ObservableObject
 {
    readonly Window _window;
    readonly Core.TemporaryServiceCollection _services;

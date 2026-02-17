@@ -7,7 +7,7 @@ using Compze.Utilities.Logging;
 
 namespace JAStudio.UI.Views;
 
-public partial class ContextMenuPopup : UserControl
+partial class ContextMenuPopup : UserControl
 {
    readonly string _clipboardContent;
    readonly string _selectionContent;

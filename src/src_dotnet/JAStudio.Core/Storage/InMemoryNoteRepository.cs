@@ -5,7 +5,7 @@ using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.Storage;
 
-public class InMemoryNoteRepository : INoteRepository
+class InMemoryNoteRepository : INoteRepository
 {
    readonly Dictionary<NoteId, KanjiNote> _kanji = new();
    readonly Dictionary<NoteId, VocabNote> _vocab = new();

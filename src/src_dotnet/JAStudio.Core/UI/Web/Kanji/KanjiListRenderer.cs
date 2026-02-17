@@ -8,7 +8,7 @@ using JAStudio.Core.ViewModels.KanjiList;
 
 namespace JAStudio.Core.UI.Web.Kanji;
 
-public class KanjiListRenderer
+class KanjiListRenderer
 {
    readonly KanjiCollection _kanji;
    internal KanjiListRenderer(KanjiCollection kanji) => _kanji = kanji;

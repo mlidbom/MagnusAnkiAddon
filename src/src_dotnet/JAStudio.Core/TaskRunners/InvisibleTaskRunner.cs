@@ -7,7 +7,7 @@ using Compze.Utilities.SystemCE.ThreadingCE.TasksCE;
 
 namespace JAStudio.Core.TaskRunners;
 
-public class InvisibleTaskRunner : ITaskProgressRunner
+class InvisibleTaskRunner : ITaskProgressRunner
 {
    public InvisibleTaskRunner(string labelText)
    {

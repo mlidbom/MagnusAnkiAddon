@@ -5,7 +5,7 @@ using JAStudio.Core.Note.Sentences;
 
 namespace JAStudio.Core.Storage.Converters;
 
-public static class SentenceNoteConverter
+static class SentenceNoteConverter
 {
    public static SentenceData ToCorpusData(SentenceNote note)
    {

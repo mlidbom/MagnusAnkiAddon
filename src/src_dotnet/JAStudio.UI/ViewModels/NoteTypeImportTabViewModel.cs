@@ -8,7 +8,7 @@ using JAStudio.Core.Storage.Media;
 
 namespace JAStudio.UI.ViewModels;
 
-public partial class NoteTypeImportTabViewModel<TRule> : ObservableObject where TRule : class
+partial class NoteTypeImportTabViewModel<TRule> : ObservableObject where TRule : class
 {
    readonly Func<List<EditableImportRule>, List<TRule>> _buildRules;
    readonly Func<SourceTag, string, TRule?> _tryResolve;
@@ -169,5 +169,5 @@ public partial class NoteTypeImportTabViewModel<TRule> : ObservableObject where 
    }
 }
 
-public record ScannedMediaFile(string SourceTag, string FieldName, string FileName);
+record ScannedMediaFile(string SourceTag, string FieldName, string FileName);
 public record UnmappedMediaGroup(string SourcePrefix, string FieldName, int FileCount);

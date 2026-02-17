@@ -3,7 +3,7 @@ using JAStudio.Core.Note.CorpusData;
 
 namespace JAStudio.Core.Storage.Converters;
 
-public static class KanjiNoteConverter
+static class KanjiNoteConverter
 {
    public static KanjiData ToCorpusData(KanjiNote note) =>
       new()

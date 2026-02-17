@@ -4,7 +4,7 @@ using JAStudio.UI.ViewModels;
 
 namespace JAStudio.UI.Views;
 
-public partial class MediaImportDialog : Window
+partial class MediaImportDialog : Window
 {
    public MediaImportDialog() => InitializeComponent();
 

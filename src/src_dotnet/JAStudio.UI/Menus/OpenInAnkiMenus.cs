@@ -11,7 +11,7 @@ namespace JAStudio.UI.Menus;
 /// Ported from jastudio/ui/menus/open_in_anki.py
 /// Now uses UI-agnostic MenuItem specifications and AnkiFacade for Anki calls.
 /// </summary>
-public class OpenInAnkiMenus
+class OpenInAnkiMenus
 {
    readonly Core.TemporaryServiceCollection _services;
 

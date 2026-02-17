@@ -5,14 +5,14 @@ using System.Collections.Generic;
 
 namespace JAStudio.Core.Note;
 
-public static class MyNoteFields
+static class MyNoteFields
 {
    public const string Question = "Q";
    public const string Answer = "A";
    public const string JasNoteId = "jas_note_id";
 }
 
-public static class SentenceNoteFields
+static class SentenceNoteFields
 {
    public const string Reading = "Reading";
    public const string Id = "ID";
@@ -31,7 +31,7 @@ public static class SentenceNoteFields
    public const string Configuration = "__configuration";
 }
 
-public static class CardTypes
+static class CardTypes
 {
    public const string Reading = "Reading";
    public const string Listening = "Listening";

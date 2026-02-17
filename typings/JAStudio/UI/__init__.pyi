@@ -1,8 +1,8 @@
 import typing, abc
 from JAStudio.UI.Menus.UIAgnosticMenuStructure import SpecMenuItem
 from JAStudio.UI.Menus import JapaneseMainMenu, NoteContextMenu
-from JAStudio.Anki import QueryBuilder, AnkiLifecycleEvent
 from JAStudio.Core import TemporaryServiceCollection
+from JAStudio.Anki import AnkiLifecycleEvent
 from System import Action_1, Action
 from System.Collections.Generic import IEnumerable_1
 from Avalonia.Controls import MenuItem, IResourceDictionary
@@ -23,11 +23,6 @@ class AnkiMenus:
     def CreateJapaneseMainMenu(self) -> JapaneseMainMenu: ...
     def CreateNoteContextMenu(self) -> NoteContextMenu: ...
     def ShowContextMenuPopup(self, clipboardContent: str, selectionContent: str, x: int, y: int) -> None: ...
-
-
-class AnkiServiceExtensions(abc.ABC):
-    @staticmethod
-    def QueryBuilder(services: TemporaryServiceCollection) -> QueryBuilder: ...
 
 
 class JAStudioAppRoot:

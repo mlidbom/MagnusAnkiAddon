@@ -12,7 +12,7 @@ namespace JAStudio.UI.Menus.Notes.Kanji;
 /// Kanji note-specific menu builders.
 /// Corresponds to notes/kanji/main.py in Python.
 /// </summary>
-public class KanjiNoteMenus
+class KanjiNoteMenus
 {
    readonly Core.TemporaryServiceCollection _services;
 

@@ -15,7 +15,7 @@ using JAStudio.Core.SysUtils;
 
 namespace JAStudio.UI.ViewModels;
 
-public partial class NoteSearchDialogViewModel : ObservableObject
+partial class NoteSearchDialogViewModel : ObservableObject
 {
    const int MaxResults = 100;
    readonly Core.TemporaryServiceCollection _services;
@@ -261,7 +261,7 @@ public partial class NoteSearchDialogViewModel : ObservableObject
    }
 }
 
-public class NoteSearchResultViewModel
+class NoteSearchResultViewModel
 {
    public NoteId NoteId { get; }
    public string NoteType { get; }

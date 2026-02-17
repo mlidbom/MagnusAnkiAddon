@@ -9,7 +9,7 @@ namespace JAStudio.UI.Dialogs;
 /// A progress panel for batch/determinate operations that process a collection of items.
 /// Bound to a <see cref="BatchTaskProgressViewModel"/>.
 /// </summary>
-public partial class BatchTaskProgressPanel : UserControl
+partial class BatchTaskProgressPanel : UserControl
 {
    public BatchTaskProgressPanel()
    {

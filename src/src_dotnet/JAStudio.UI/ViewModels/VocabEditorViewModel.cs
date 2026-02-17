@@ -5,7 +5,7 @@ using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.UI.ViewModels;
 
-public partial class VocabEditorViewModel : ObservableObject
+partial class VocabEditorViewModel : ObservableObject
 {
    readonly VocabNote _vocab;
 

@@ -12,7 +12,7 @@ namespace JAStudio.UI.Dialogs;
 /// Nested scopes are structurally nested via recursive <c>DataTemplate</c>s, so
 /// indentation comes from the tree structure itself. Only background color varies by depth.
 /// </summary>
-public partial class TaskProgressScopePanel : UserControl
+partial class TaskProgressScopePanel : UserControl
 {
    static readonly string[] DepthBackgrounds = ["#18607890", "#14508070", "#10406860", "#0C305050"];
 

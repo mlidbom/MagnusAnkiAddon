@@ -13,7 +13,7 @@ namespace JAStudio.UI.ViewModels;
 /// Provides two-way bindings to JapaneseConfig values.
 /// Changes are automatically saved via ConfigurationValue SetValue().
 /// </summary>
-public partial class OptionsDialogViewModel : ObservableObject
+partial class OptionsDialogViewModel : ObservableObject
 {
    readonly Window _window;
    readonly JapaneseConfig _config;

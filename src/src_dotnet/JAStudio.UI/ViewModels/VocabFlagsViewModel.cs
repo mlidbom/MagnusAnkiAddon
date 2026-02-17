@@ -16,7 +16,7 @@ namespace JAStudio.UI.ViewModels;
 /// <summary>
 /// ViewModel for editing VocabNote matching flags, register settings, and string rules.
 /// </summary>
-public partial class VocabFlagsViewModel : ObservableObject
+partial class VocabFlagsViewModel : ObservableObject
 {
    readonly VocabNote _vocab;
    readonly Window? _parentWindow;

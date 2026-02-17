@@ -7,7 +7,7 @@ using JAStudio.UI.Utils;
 
 namespace JAStudio.UI.ViewModels;
 
-public partial class EnglishWordSearchDialogViewModel : ObservableObject
+partial class EnglishWordSearchDialogViewModel : ObservableObject
 {
    const int MaxResults = 100;
 
@@ -82,7 +82,7 @@ public partial class EnglishWordSearchDialogViewModel : ObservableObject
    }
 }
 
-public class EnglishWordResultViewModel
+class EnglishWordResultViewModel
 {
    public string Word { get; }
    public string Definition { get; }

@@ -3,7 +3,7 @@ using System;
 namespace JAStudio.Core.SysUtils;
 
 //porting comment: renamed to avoid collision with assertion libraries assert class
-public static class JAAssert
+static class JAAssert
 {
    public static void That(bool condition, string? message = null)
    {

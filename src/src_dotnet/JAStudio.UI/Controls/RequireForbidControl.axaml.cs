@@ -4,7 +4,7 @@ using JAStudio.Core.Note.NoteFields;
 
 namespace JAStudio.UI.Controls;
 
-public partial class RequireForbidControl : UserControl
+partial class RequireForbidControl : UserControl
 {
    public RequireForbidControl()
    {
@@ -15,7 +15,7 @@ public partial class RequireForbidControl : UserControl
 /// <summary>
 /// ViewModel for a RequireForbid control (three radio buttons: Unset/Required/Forbidden).
 /// </summary>
-public partial class RequireForbidControlViewModel : ObservableObject
+partial class RequireForbidControlViewModel : ObservableObject
 {
    readonly RequireForbidFlagField _field;
    readonly bool _initialRequired;

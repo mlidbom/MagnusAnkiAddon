@@ -4,7 +4,7 @@ using JAStudio.Core.Note;
 
 namespace JAStudio.Core.UI.Web.Kanji;
 
-public static class ReadingsRenderer
+static class ReadingsRenderer
 {
    public static string RenderKatakanaOnyomi(KanjiNote kanjiNote)
    {

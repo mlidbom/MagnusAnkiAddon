@@ -5,7 +5,7 @@ using JAStudio.UI.ViewModels;
 
 namespace JAStudio.UI.Views;
 
-public partial class ReadingsMappingsDialog : Window
+partial class ReadingsMappingsDialog : Window
 {
    [Obsolete("For XAML designer/previever only")]
    public ReadingsMappingsDialog() {}

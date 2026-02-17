@@ -15,7 +15,7 @@ namespace JAStudio.Core.TaskRunners;
 /// scope until it is disposed, so panels can come and go without the window
 /// flickering or repositioning.
 /// </summary>
-public class TaskRunnerScope : ITaskProgressRunner
+class TaskRunnerScope : ITaskProgressRunner
 {
    readonly TaskRunner _taskRunner;
    readonly string _scopeTitle;

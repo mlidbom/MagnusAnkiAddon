@@ -6,7 +6,7 @@ using JAStudio.UI.ViewModels;
 
 namespace JAStudio.UI.Views;
 
-public partial class KanjiEditorDialog : Window
+partial class KanjiEditorDialog : Window
 {
    public KanjiEditorDialog()
    {

@@ -4,7 +4,7 @@ using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.UI.Web.Kanji;
 
-public static class VocabListRenderer
+static class VocabListRenderer
 {
    public static string GenerateVocabHtmlList(KanjiNote kanjiNote)
    {

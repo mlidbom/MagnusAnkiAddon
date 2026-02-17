@@ -16,7 +16,7 @@ using JAStudio.Core.TaskRunners;
 
 namespace JAStudio.UI.ViewModels;
 
-public partial class MediaImportDialogViewModel : ObservableObject
+partial class MediaImportDialogViewModel : ObservableObject
 {
    public static List<string> VocabFieldNames { get; } = Enum.GetNames<VocabMediaField>().ToList();
    public static List<string> SentenceFieldNames { get; } = Enum.GetNames<SentenceMediaField>().ToList();

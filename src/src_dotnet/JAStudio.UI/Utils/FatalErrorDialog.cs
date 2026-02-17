@@ -12,7 +12,7 @@ namespace JAStudio.UI.Utils;
 /// Informs the user that application state may be corrupted
 /// and they should restart Anki and check logs.
 /// </summary>
-public class FatalErrorDialog : Window
+class FatalErrorDialog : Window
 {
    FatalErrorDialog(Exception ex)
    {

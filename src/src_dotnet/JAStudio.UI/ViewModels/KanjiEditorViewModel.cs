@@ -5,7 +5,7 @@ using JAStudio.Core.Note;
 
 namespace JAStudio.UI.ViewModels;
 
-public partial class KanjiEditorViewModel : ObservableObject
+partial class KanjiEditorViewModel : ObservableObject
 {
    readonly KanjiNote _kanji;
 

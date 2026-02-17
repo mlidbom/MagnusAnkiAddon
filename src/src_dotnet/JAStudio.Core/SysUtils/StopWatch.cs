@@ -3,7 +3,7 @@ using Compze.Utilities.Logging;
 
 namespace JAStudio.Core.SysUtils;
 
-public class StopWatch
+class StopWatch
 {
    readonly System.Diagnostics.Stopwatch _stopwatch;
 

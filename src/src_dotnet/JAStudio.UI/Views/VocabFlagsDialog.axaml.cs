@@ -5,7 +5,7 @@ using JAStudio.UI.ViewModels;
 
 namespace JAStudio.UI.Views;
 
-public partial class VocabFlagsDialog : Window
+partial class VocabFlagsDialog : Window
 {
    public VocabFlagsDialog()
    {

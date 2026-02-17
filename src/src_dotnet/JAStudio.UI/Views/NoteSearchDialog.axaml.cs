@@ -7,7 +7,7 @@ using JAStudio.UI.ViewModels;
 
 namespace JAStudio.UI.Views;
 
-public partial class NoteSearchDialog : Window
+partial class NoteSearchDialog : Window
 {
    static NoteSearchDialog? _instance;
 

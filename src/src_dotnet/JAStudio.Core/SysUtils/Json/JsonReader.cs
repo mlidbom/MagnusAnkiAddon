@@ -233,7 +233,7 @@ public class JsonReader
 /// <summary>
 /// Helper methods for JSON serialization and deserialization.
 /// </summary>
-public static class JsonHelper
+static class JsonHelper
 {
    public static Dictionary<string, object> JsonToDict(string json)
    {

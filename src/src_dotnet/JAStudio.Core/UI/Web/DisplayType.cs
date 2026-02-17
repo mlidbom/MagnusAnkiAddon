@@ -5,7 +5,7 @@ namespace JAStudio.Core.UI.Web;
 /// <summary>
 /// Display type constants and checks.
 /// </summary>
-public static class DisplayType
+static class DisplayType
 {
    public const string ReviewQuestion = "reviewQuestion";
    public const string ReviewAnswer = "reviewAnswer";

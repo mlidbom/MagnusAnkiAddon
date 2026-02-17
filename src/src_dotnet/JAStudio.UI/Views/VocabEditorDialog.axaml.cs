@@ -6,7 +6,7 @@ using JAStudio.UI.ViewModels;
 
 namespace JAStudio.UI.Views;
 
-public partial class VocabEditorDialog : Window
+partial class VocabEditorDialog : Window
 {
    public VocabEditorDialog()
    {
