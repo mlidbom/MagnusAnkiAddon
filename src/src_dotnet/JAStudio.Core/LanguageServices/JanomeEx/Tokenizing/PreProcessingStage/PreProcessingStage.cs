@@ -5,7 +5,7 @@ using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing.PreProcessingStage;
 
-public class PreProcessingStage
+class PreProcessingStage
 {
    readonly VocabCollection _vocabs;
    readonly DictLookup _dictLookup;

@@ -5,7 +5,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.Tokenizing.PreProcessingStage;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
-public class VocabMetaTag
+class VocabMetaTag
 {
    public string Name { get; set; }
    public string Display { get; set; }
@@ -19,7 +19,7 @@ public class VocabMetaTag
    }
 }
 
-public static class VocabNoteMetaTagFormatter
+static class VocabNoteMetaTagFormatter
 {
    public static string GetMetaTagsHtml(VocabNote vocab, bool displayExtendedSentenceStatistics = true, bool noSentenceStatistics = false)
    {

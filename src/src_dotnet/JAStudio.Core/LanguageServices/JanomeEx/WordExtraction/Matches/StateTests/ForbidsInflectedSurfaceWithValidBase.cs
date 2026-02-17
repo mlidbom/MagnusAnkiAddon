@@ -4,7 +4,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests;
 
-public static class ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb
+static class ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb
 {
    static readonly FailedMatchRequirement Failed = FailedMatchRequirement.Forbids("inflected_surface_with_valid_base");
    static readonly HashSet<string> PrefixesThatIndicatesVerbIfFollowedByEndOfStatement = ["を", "が"];

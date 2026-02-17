@@ -2,7 +2,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Requirement
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.Head;
 
-public static class RequiresOrForbidsMasuStem
+static class RequiresOrForbidsMasuStem
 {
    static readonly FailedMatchRequirement RequiredReason = FailedMatchRequirement.Required("masu-stem");
    static readonly FailedMatchRequirement ForbiddenReason = FailedMatchRequirement.Forbids("masu-stem");

@@ -2,7 +2,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Requirement
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.Head;
 
-public static class RequiresOrForbidsPrecedingAdverb
+static class RequiresOrForbidsPrecedingAdverb
 {
    static readonly FailedMatchRequirement RequiredReason = FailedMatchRequirement.Required("preceding-adverb");
    static readonly FailedMatchRequirement ForbiddenReason = FailedMatchRequirement.Forbids("preceding-adverb");

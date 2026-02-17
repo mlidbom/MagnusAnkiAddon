@@ -6,7 +6,7 @@ using JAStudio.Core.Note.NoteFields;
 
 namespace JAStudio.Core.Note.Sentences.Serialization;
 
-public class ParsingResultSerializer : IObjectSerializer<ParsingResult>
+class ParsingResultSerializer : IObjectSerializer<ParsingResult>
 {
    static readonly string NewlineReplacement = $"NEWLINE{StringExtensions.InvisibleSpace}";
 

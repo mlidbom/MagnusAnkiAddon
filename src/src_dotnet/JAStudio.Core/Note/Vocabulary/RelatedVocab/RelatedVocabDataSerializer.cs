@@ -7,7 +7,7 @@ using JAStudio.Core.SysUtils.Json;
 
 namespace JAStudio.Core.Note.Vocabulary.RelatedVocab;
 
-public class RelatedVocabDataSerializer : IObjectSerializer<RelatedVocabData>
+class RelatedVocabDataSerializer : IObjectSerializer<RelatedVocabData>
 {
    readonly string _emptyObjectJson;
 

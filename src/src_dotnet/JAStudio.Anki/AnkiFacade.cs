@@ -54,7 +54,7 @@ public static class AnkiFacade
       public static void FlushAnkiNote(long externalNoteId) => Backend.Use(it => it.batches_flush_anki_note(externalNoteId));
    }
 
-   public static class NoteEx
+   internal static class NoteEx
    {
       /// <summary>Suspend all cards for the given note ID.</summary>
       public static void SuspendAllCardsForNote(long noteId) => Backend.Use(it => it.note_suspend_all_cards(noteId));
@@ -63,7 +63,7 @@ public static class AnkiFacade
       public static void UnsuspendAllCardsForNote(long noteId) => Backend.Use(it => it.note_unsuspend_all_cards(noteId));
    }
 
-   public static class Col
+   internal static class Col
    {
       public static string? DbFilePath() => Backend.Use(it => (string)it.col_db_file_path());
    }

@@ -3,7 +3,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests;
 
-public static class ForbidsIsPoisonWord
+static class ForbidsIsPoisonWord
 {
    static readonly FailedMatchRequirement Failed = FailedMatchRequirement.Forbids("poison_word");
 

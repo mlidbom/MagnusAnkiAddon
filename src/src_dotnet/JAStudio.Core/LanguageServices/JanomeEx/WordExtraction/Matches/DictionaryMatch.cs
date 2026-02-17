@@ -6,7 +6,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches;
 
-public sealed class DictionaryMatch : Match
+sealed class DictionaryMatch : Match
 {
    static readonly List<System.Func<MatchInspector, FailedMatchRequirement?>> RequirementsList =
    [

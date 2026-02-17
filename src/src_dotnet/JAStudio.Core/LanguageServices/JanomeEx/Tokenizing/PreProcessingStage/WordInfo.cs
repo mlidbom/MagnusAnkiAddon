@@ -4,7 +4,7 @@ using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing.PreProcessingStage;
 
-public static class WordInfo
+static class WordInfo
 {
    public static WordInfoEntry? Lookup(VocabCollection vocab, DictLookup dictLookup, string word)
    {

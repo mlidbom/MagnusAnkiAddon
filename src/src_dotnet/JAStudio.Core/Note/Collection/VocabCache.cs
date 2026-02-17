@@ -7,7 +7,7 @@ using JAStudio.Core.Storage.Converters;
 
 namespace JAStudio.Core.Note.Collection;
 
-public class VocabCache : NoteCache<VocabNote, VocabSnapshot>
+class VocabCache : NoteCache<VocabNote, VocabSnapshot>
 {
    readonly Dictionary<string, HashSet<VocabNote>> _byDisambiguationName = new();
    readonly Dictionary<string, HashSet<VocabNote>> _byForm = new();

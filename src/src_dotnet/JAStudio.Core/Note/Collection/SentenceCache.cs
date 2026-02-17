@@ -8,7 +8,7 @@ using JAStudio.Core.Storage.Converters;
 
 namespace JAStudio.Core.Note.Collection;
 
-public class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
+class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
 {
    readonly Dictionary<string, HashSet<SentenceNote>> _byVocabForm = new();
    readonly Dictionary<string, HashSet<SentenceNote>> _byUserHighlightedVocab = new();

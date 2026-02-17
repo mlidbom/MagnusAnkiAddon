@@ -3,7 +3,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Requirement
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.Head;
 
-public sealed class Forbids
+sealed class Forbids
 {
    readonly Func<MatchInspector, bool> _isInState;
    readonly FailedMatchRequirement _requiredFailure;

@@ -3,7 +3,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests;
 
-public static class ForbidsIsConfiguredHidden
+static class ForbidsIsConfiguredHidden
 {
    static readonly FailedMatchRequirement Failed = FailedMatchRequirement.Forbids("configured_hidden");
 

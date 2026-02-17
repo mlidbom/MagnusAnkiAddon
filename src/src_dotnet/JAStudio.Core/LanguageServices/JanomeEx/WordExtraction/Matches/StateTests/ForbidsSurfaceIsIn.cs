@@ -3,7 +3,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests;
 
-public static class ForbidsSurfaceIsIn
+static class ForbidsSurfaceIsIn
 {
    public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
    {

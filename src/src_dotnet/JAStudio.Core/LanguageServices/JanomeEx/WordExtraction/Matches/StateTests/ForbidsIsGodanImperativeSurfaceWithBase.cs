@@ -3,7 +3,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests;
 
-public static class ForbidsIsGodanImperativeInflectionWithBase
+static class ForbidsIsGodanImperativeInflectionWithBase
 {
    static readonly FailedMatchRequirement Failed = FailedMatchRequirement.Forbids("godan_imperative_surface_with_base");
 

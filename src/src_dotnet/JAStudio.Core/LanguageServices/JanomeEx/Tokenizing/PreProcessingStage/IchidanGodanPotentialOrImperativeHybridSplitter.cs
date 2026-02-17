@@ -5,7 +5,7 @@ using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing.PreProcessingStage;
 
-public static class IchidanGodanPotentialOrImperativeHybridSplitter
+static class IchidanGodanPotentialOrImperativeHybridSplitter
 {
    static readonly HashSet<string> PotentialOrImperativeGodanLastCompoundParts = ["える", "え"];
 

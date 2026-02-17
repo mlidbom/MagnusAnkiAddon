@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing.PreProcessingStage;
 
-public static class DictionaryFormVerbSplitter
+static class DictionaryFormVerbSplitter
 {
    public static List<IAnalysisToken>? TrySplit(JNToken token)
    {

@@ -1,7 +1,7 @@
 namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;
 
 // TODO: replace this jack of all trades class with custom classes
-public class SplitToken : SplitTokenBase
+class SplitToken : SplitTokenBase
 {
    readonly bool _isInflectableWord;
    readonly bool _isNonWordCharacter;

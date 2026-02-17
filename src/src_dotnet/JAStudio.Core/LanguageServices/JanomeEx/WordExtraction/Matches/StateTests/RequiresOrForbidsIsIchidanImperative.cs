@@ -3,7 +3,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests;
 
-public static class RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection
+static class RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection
 {
    static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("ichidan_imperative");
    static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("ichidan_imperative");

@@ -6,7 +6,7 @@ using JAStudio.Core.Storage.Converters;
 
 namespace JAStudio.Core.Note.Collection;
 
-public class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
+class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
 {
    readonly Dictionary<string, HashSet<KanjiNote>> _byRadical = new();
    readonly Dictionary<string, HashSet<KanjiNote>> _byReading = new();

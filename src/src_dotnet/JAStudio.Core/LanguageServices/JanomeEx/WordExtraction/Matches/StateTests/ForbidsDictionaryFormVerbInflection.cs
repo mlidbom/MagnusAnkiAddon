@@ -3,7 +3,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests;
 
-public static class ForbidsDictionaryInflectionSurfaceWithBase
+static class ForbidsDictionaryInflectionSurfaceWithBase
 {
    static readonly FailedMatchRequirement Failed = FailedMatchRequirement.Forbids("dictionary_form_verb_inflection");
 

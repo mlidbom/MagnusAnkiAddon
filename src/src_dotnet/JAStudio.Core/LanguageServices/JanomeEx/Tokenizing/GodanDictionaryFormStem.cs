@@ -57,7 +57,7 @@ public class GodanDictionaryFormStem : DictionaryFormStem
 }
 
 // Godan potential dictionary form stem
-public class GodanPotentialDictionaryFormStem : GodanDictionaryFormStem
+class GodanPotentialDictionaryFormStem : GodanDictionaryFormStem
 {
    public GodanPotentialDictionaryFormStem(JNToken source, string surface, string baseForm)
       : base(source, surface, baseForm) {}
@@ -69,14 +69,14 @@ public class GodanPotentialDictionaryFormStem : GodanDictionaryFormStem
 }
 
 // Godan dictionary form inflection
-public class GodanDictionaryFormInflection : DictionaryFormInflection
+class GodanDictionaryFormInflection : DictionaryFormInflection
 {
    public GodanDictionaryFormInflection(JNToken source, string surface, string baseForm)
       : base(source, surface, baseForm) {}
 }
 
 // Godan potential inflection dictionary form stem
-public class GodanPotentialInflectionDictionaryFormStem : DictionaryFormStem
+class GodanPotentialInflectionDictionaryFormStem : DictionaryFormStem
 {
    public GodanPotentialInflectionDictionaryFormStem(JNToken source, string surface, string baseForm)
       : base(source, surface, baseForm) {}
@@ -85,49 +85,49 @@ public class GodanPotentialInflectionDictionaryFormStem : DictionaryFormStem
 }
 
 // Godan potential inflection dictionary form inflection
-public class GodanPotentialInflectionDictionaryFormInflection : DictionaryFormInflection
+class GodanPotentialInflectionDictionaryFormInflection : DictionaryFormInflection
 {
    public GodanPotentialInflectionDictionaryFormInflection(JNToken source)
       : base(source, "る", "る") {}
 }
 
 // Ichidan dictionary form stem
-public class IchidanDictionaryFormStem : DictionaryFormStem
+class IchidanDictionaryFormStem : DictionaryFormStem
 {
    public IchidanDictionaryFormStem(JNToken source, string surface, string baseForm)
       : base(source, surface, baseForm) {}
 }
 
 // Ichidan dictionary form inflection
-public class IchidanDictionaryFormInflection : DictionaryFormInflection
+class IchidanDictionaryFormInflection : DictionaryFormInflection
 {
    public IchidanDictionaryFormInflection(JNToken source)
       : base(source, "る", "る") {}
 }
 
 // Kuru verb dictionary form stem
-public class KuruVerbDictionaryFormStem : DictionaryFormStem
+class KuruVerbDictionaryFormStem : DictionaryFormStem
 {
    public KuruVerbDictionaryFormStem(JNToken source, string surface, string baseForm)
       : base(source, surface, baseForm) {}
 }
 
 // Kuru verb dictionary form inflection
-public class KuruVerbDictionaryFormInflection : DictionaryFormInflection
+class KuruVerbDictionaryFormInflection : DictionaryFormInflection
 {
    public KuruVerbDictionaryFormInflection(JNToken source)
       : base(source, "る", "る") {}
 }
 
 // Suru verb dictionary form stem
-public class SuruVerbDictionaryFormStem : DictionaryFormStem
+class SuruVerbDictionaryFormStem : DictionaryFormStem
 {
    public SuruVerbDictionaryFormStem(JNToken source, string surface, string baseForm)
       : base(source, surface, baseForm) {}
 }
 
 // Suru verb dictionary form inflection
-public class SuruVerbDictionaryFormInflection : DictionaryFormInflection
+class SuruVerbDictionaryFormInflection : DictionaryFormInflection
 {
    public SuruVerbDictionaryFormInflection(JNToken source)
       : base(source, "る", "る") {}

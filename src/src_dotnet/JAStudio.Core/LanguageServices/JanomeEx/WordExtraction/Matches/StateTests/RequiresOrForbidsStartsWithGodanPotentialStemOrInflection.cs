@@ -3,7 +3,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests;
 
-public static class RequiresOrForbidsStartsWithGodanPotentialStemOrInflection
+static class RequiresOrForbidsStartsWithGodanPotentialStemOrInflection
 {
    static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("godan_potential");
    static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("godan_potential");

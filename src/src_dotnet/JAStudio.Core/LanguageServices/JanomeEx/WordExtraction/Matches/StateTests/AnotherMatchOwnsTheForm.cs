@@ -3,7 +3,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests;
 
-public static class ForbidsAnotherMatchIsHigherPriority
+static class ForbidsAnotherMatchIsHigherPriority
 {
    static readonly FailedMatchRequirement Failed = FailedMatchRequirement.Forbids("another_match_owns_the_form_or_is_higher_priority_due_to_custom_requirements_weight");
 

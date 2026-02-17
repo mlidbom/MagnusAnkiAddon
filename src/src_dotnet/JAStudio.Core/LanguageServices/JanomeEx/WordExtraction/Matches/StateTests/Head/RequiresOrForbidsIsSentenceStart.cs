@@ -2,7 +2,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Requirement
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.Head;
 
-public static class RequiresOrForbidsIsSentenceStart
+static class RequiresOrForbidsIsSentenceStart
 {
    static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("sentence_start");
    static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("sentence_start");

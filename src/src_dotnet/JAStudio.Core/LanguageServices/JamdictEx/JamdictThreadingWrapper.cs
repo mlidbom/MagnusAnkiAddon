@@ -33,7 +33,7 @@ public class JamdictLookupResult
    }
 }
 
-public class JamdictThreadingWrapper
+class JamdictThreadingWrapper
 {
    readonly BlockingCollection<object> _queue;
 

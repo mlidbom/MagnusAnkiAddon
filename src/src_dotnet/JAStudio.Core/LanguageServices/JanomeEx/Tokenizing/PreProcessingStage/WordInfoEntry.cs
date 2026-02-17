@@ -22,7 +22,7 @@ public abstract class WordInfoEntry
    public abstract string Answer { get; }
 }
 
-public class VocabWordInfoEntry : WordInfoEntry
+class VocabWordInfoEntry : WordInfoEntry
 {
    readonly VocabNote _vocab;
 
@@ -33,7 +33,7 @@ public class VocabWordInfoEntry : WordInfoEntry
    public override string Answer => _vocab.GetAnswer();
 }
 
-public class DictWordInfoEntry : WordInfoEntry
+class DictWordInfoEntry : WordInfoEntry
 {
    readonly DictLookupResult _dictResult;
 

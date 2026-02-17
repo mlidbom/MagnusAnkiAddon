@@ -2,7 +2,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Requirement
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.Head;
 
-public static class RequiresOrForbidsHasTeFormStem
+static class RequiresOrForbidsHasTeFormStem
 {
    static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("te_form_stem");
    static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("te_form_stem");

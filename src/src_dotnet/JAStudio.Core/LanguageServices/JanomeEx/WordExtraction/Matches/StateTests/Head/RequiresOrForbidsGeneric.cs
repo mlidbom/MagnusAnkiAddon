@@ -4,7 +4,7 @@ using JAStudio.Core.Note.NoteFields;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.Head;
 
-public sealed class RequiresOrForbids
+sealed class RequiresOrForbids
 {
    readonly Func<VocabMatchInspector, RequireForbidFlagField> _getRequirement;
    readonly Func<VocabMatchInspector, bool> _isInState;

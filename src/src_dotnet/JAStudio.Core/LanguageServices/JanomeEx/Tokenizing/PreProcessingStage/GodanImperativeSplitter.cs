@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing.PreProcessingStage;
 
-public static class GodanImperativeSplitter
+static class GodanImperativeSplitter
 {
    public static List<IAnalysisToken>? TrySplit(JNToken token)
    {

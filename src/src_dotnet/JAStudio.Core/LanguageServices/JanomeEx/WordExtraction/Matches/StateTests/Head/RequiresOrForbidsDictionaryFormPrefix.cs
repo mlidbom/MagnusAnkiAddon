@@ -2,7 +2,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Requirement
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.Head;
 
-public static class RequiresOrForbidsDictionaryFormPrefix
+static class RequiresOrForbidsDictionaryFormPrefix
 {
    static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("dictionary_form_prefix");
    static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("dictionary_form_prefix");

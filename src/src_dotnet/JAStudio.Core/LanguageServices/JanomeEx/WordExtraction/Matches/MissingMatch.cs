@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches;
 
-public sealed class MissingMatch : Match
+sealed class MissingMatch : Match
 {
    public MissingMatch(CandidateWordVariant wordVariant) : base(wordVariant) {}
 

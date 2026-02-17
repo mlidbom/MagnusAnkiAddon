@@ -5,7 +5,7 @@ using Compze.Utilities.SystemCE.ThreadingCE.ResourceAccess;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
-public class POSSetManager
+class POSSetManager
 {
    static readonly Dictionary<string, FrozenSet<string>> _posByStr = new();
    static readonly Dictionary<string, string> _stringInterner = new();

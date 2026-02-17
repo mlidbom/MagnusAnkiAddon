@@ -3,7 +3,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests;
 
-public static class ForbidsCompositionallyTransparentCompound
+static class ForbidsCompositionallyTransparentCompound
 {
    static readonly FailedMatchRequirement Failed = FailedMatchRequirement.Forbids("configured_to_hide_compositionally_transparent_compounds");
 

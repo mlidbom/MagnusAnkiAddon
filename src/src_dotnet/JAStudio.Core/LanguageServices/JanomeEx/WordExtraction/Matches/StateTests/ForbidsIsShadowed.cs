@@ -2,7 +2,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Requirement
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests;
 
-public sealed class ForbidsIsShadowed : MatchRequirement
+sealed class ForbidsIsShadowed : MatchRequirement
 {
    readonly MatchInspector _inspector;
 

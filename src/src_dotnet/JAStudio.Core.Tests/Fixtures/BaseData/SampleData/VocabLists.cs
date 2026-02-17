@@ -5,7 +5,7 @@ using VM = JAStudio.Core.Note.Tags.Vocab.Matching;
 
 namespace JAStudio.Core.Tests.Fixtures.BaseData.SampleData;
 
-public static class VocabLists
+static class VocabLists
 {
    public static readonly List<VocabSpec> TestSpecialVocab =
    [

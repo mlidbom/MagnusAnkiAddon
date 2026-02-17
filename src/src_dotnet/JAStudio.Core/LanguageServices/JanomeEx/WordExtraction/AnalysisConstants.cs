@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 
-public static class AnalysisConstants
+static class AnalysisConstants
 {
    static readonly HashSet<string> RealQuoteCharacters = ["「", "」", "\""];
    public static readonly HashSet<string> PseudoQuoteCharacters = ["と", "って"];

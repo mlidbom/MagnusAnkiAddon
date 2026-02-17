@@ -3,7 +3,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests;
 
-public static class ForbidsDictionaryVerbFormStemAsCompoundEnd
+static class ForbidsDictionaryVerbFormStemAsCompoundEnd
 {
    static readonly FailedMatchRequirement Failed = FailedMatchRequirement.Forbids("dictionary_form_verb_stem_as_compound_end");
 

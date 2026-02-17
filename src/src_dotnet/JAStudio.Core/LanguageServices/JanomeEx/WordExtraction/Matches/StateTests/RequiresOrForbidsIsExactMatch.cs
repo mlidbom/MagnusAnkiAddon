@@ -3,7 +3,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests;
 
-public static class RequiresOrForbidsSurface
+static class RequiresOrForbidsSurface
 {
    static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("surface");
    static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("surface");

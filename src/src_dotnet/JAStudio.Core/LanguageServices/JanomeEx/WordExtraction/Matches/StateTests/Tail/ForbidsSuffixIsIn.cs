@@ -4,7 +4,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.Tail;
 
-public static class ForbidsSuffixIsIn
+static class ForbidsSuffixIsIn
 {
    public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
    {

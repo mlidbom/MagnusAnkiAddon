@@ -3,7 +3,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests;
 
-public static class RequiresOrForbidsIsSingleToken
+static class RequiresOrForbidsIsSingleToken
 {
    static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("single_token");
    static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("single_token");

@@ -3,7 +3,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.Tail;
 
-public static class RequiresOrForbidsIsSentenceEnd
+static class RequiresOrForbidsIsSentenceEnd
 {
    static readonly FailedMatchRequirement RequiredFailure = FailedMatchRequirement.Required("sentence_end");
    static readonly FailedMatchRequirement ForbiddenFailure = FailedMatchRequirement.Forbids("sentence_end");

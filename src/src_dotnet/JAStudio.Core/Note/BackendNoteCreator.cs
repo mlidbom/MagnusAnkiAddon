@@ -11,7 +11,7 @@ public interface IBackendNoteCreator
    void CreateSentence(SentenceNote note, Action callback);
 }
 
-public class TestingBackendNoteCreator : IBackendNoteCreator
+class TestingBackendNoteCreator : IBackendNoteCreator
 {
    public void CreateKanji(KanjiNote note, Action callback)
    {

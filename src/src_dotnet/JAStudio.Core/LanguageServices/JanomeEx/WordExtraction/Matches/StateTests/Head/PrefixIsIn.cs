@@ -3,7 +3,7 @@ using JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Requirement
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.Head;
 
-public static class ForbidsPrefixIsIn
+static class ForbidsPrefixIsIn
 {
    public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
    {
@@ -17,7 +17,7 @@ public static class ForbidsPrefixIsIn
    }
 }
 
-public static class RequiresPrefixIsIn
+static class RequiresPrefixIsIn
 {
    public static FailedMatchRequirement? ApplyTo(VocabMatchInspector inspector)
    {

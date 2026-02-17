@@ -60,13 +60,13 @@ public static class NoteTypes
                                                                               };
 }
 
-public static class NoteFieldsConstants
+static class NoteFieldsConstants
 {
    public const string NoteId = "nid";
 
-   public static class VocabNoteType
+   internal static class VocabNoteType
    {
-      public static class Card
+      internal static class Card
       {
          public const string Reading = CardTypes.Reading;
          public const string Listening = CardTypes.Listening;
@@ -82,7 +82,7 @@ public static class NoteFieldsConstants
       }
    }
 
-   public static class Kanji
+   internal static class Kanji
    {
       public const string Question = MyNoteFields.Question;
       public const string ActiveAnswer = MyNoteFields.Answer;
@@ -106,7 +106,7 @@ public static class NoteFieldsConstants
       public const string Image = "_image";
    }
 
-   public static class Vocab
+   internal static class Vocab
    {
       public const string MatchingRules = "__matching_rules";
       public const string RelatedVocab = "__related_vocab";
@@ -143,7 +143,7 @@ public static class Builtin
    public const string Card = "card";
 }
 
-public static class Mine
+static class Mine
 {
    public const string AppName = "JA-Studio";
 
