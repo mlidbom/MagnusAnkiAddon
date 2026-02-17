@@ -6,7 +6,7 @@ using JAStudio.UI.Utils;
 
 namespace JAStudio.UI.Menus;
 
-public static class WebSearchMenus
+public static class WebSearchMenuBuilder
 {
    public static SpecMenuItem BuildWebSearchMenu(Func<string> getSearchText) =>
       SpecMenuItem.Submenu(
