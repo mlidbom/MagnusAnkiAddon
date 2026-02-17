@@ -29,6 +29,7 @@ partial class MediaImportDialogViewModel : ObservableObject
    readonly MediaFileIndex _index;
    readonly MediaStorageService _storageService;
    readonly TaskRunner _taskRunner;
+   readonly IEnvironmentPaths _paths;
 
 #pragma warning disable CS8618
    [Obsolete("Parameterless constructor is only for XAML designer support and should not be used directly.")]
@@ -44,6 +45,7 @@ partial class MediaImportDialogViewModel : ObservableObject
       _index = services.ServiceLocator.Resolve<MediaFileIndex>();
       _storageService = services.ServiceLocator.Resolve<MediaStorageService>();
       _taskRunner = services.TaskRunner;
+      _paths = services.ServiceLocator.Resolve<IEnvironmentPaths>();
 
       VocabTab = CreateVocabTab();
       SentenceTab = CreateSentenceTab();
@@ -111,7 +113,7 @@ partial class MediaImportDialogViewModel : ObservableObject
 
       BackgroundTaskManager.Run(() =>
       {
-         var ankiMediaDir = CoreApp.AnkiMediaDir;
+         var ankiMediaDir = _paths.AnkiMediaDir;
          var analyzer = new MediaImportAnalyzer(ankiMediaDir, _index);
 
          var vocabRules = BuildVocabRules();
@@ -169,7 +171,7 @@ partial class MediaImportDialogViewModel : ObservableObject
                          SentenceRules = BuildSentenceRules(),
                          KanjiRules = BuildKanjiRules()
                       };
-      MediaImportRulePersistence.Save(persisted);
+      MediaImportRulePersistence.Save(persisted, _paths);
       StatusText = "Rules saved.";
    }
 
@@ -281,7 +283,7 @@ partial class MediaImportDialogViewModel : ObservableObject
 
    void LoadPersistedRules()
    {
-      var persisted = MediaImportRulePersistence.Load();
+      var persisted = MediaImportRulePersistence.Load(_paths);
       VocabTab.LoadRules(persisted.VocabRules.Select(r => new EditableImportRule
                                                           { SourceTagPrefix = r.Prefix.ToString(), SelectedField = r.Field.ToString(), TargetDirectory = r.TargetDirectory, SelectedCopyright = r.Copyright.ToString() }));
       SentenceTab.LoadRules(persisted.SentenceRules.Select(r => new EditableImportRule

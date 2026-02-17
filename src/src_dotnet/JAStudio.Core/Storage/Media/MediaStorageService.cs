@@ -9,6 +9,9 @@ public class MediaStorageService
    readonly string _mediaRoot;
    readonly MediaFileIndex _index;
 
+   public MediaStorageService(IEnvironmentPaths paths, MediaFileIndex index)
+      : this(paths.MediaDir, index) {}
+
    public MediaStorageService(string mediaRoot, MediaFileIndex index)
    {
       _mediaRoot = mediaRoot;

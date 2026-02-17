@@ -9,7 +9,12 @@ namespace JAStudio.Core.Configuration;
 
 public class ConfigurationStore
 {
-   internal ConfigurationStore() {}
+   readonly IEnvironmentPaths _paths;
+
+   internal ConfigurationStore(IEnvironmentPaths paths)
+   {
+      _paths = paths;
+   }
 
    Dictionary<string, object>? _configDict;
    Action<string>? _updateCallback;
@@ -98,5 +103,5 @@ public class ConfigurationStore
                             );
    }
 
-   string MappingsFilePath() => Path.Combine(CoreApp.UserFilesDir, "readings_mappings.txt");
+   string MappingsFilePath() => Path.Combine(_paths.UserFilesDir, "readings_mappings.txt");
 }

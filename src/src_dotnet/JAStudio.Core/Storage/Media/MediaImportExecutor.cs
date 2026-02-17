@@ -23,8 +23,7 @@ public class MediaImportExecutor
                      "Updating shared file references");
 
       scope.RunBatch(plan.FilesToImport,
-                     file =>
-                        _storageService.StoreFile(file.SourcePath, file.TargetDirectory, file.SourceTag, file.OriginalFileName, file.NoteId, file.MediaType, file.Copyright),
+                     file => _storageService.StoreFile(file.SourcePath, file.TargetDirectory, file.SourceTag, file.OriginalFileName, file.NoteId, file.MediaType, file.Copyright),
                      "Copying media files");
    }
 }

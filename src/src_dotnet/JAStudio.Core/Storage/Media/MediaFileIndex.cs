@@ -21,13 +21,18 @@ public class MediaFileIndex
    readonly TaskRunner _taskRunner;
    bool _initialized;
 
+   public MediaFileIndex(IEnvironmentPaths paths, TaskRunner taskRunner)
+      : this(paths.MediaDir, taskRunner) {}
+
    public MediaFileIndex(string mediaRoot, TaskRunner taskRunner)
    {
       _mediaRoot = mediaRoot;
       _taskRunner = taskRunner;
+      _metadataDir = Path.Combine(mediaRoot, "metadata");
    }
 
-   string SnapshotPath => Path.Combine(CoreApp.MetadataDir, "media-snapshot.bin");
+   readonly string _metadataDir;
+   string SnapshotPath => Path.Combine(_metadataDir, "media-snapshot.bin");
 
    record ScannedSidecar(string Path, MediaFileId Id, DateTime LastWriteUtc);
 
@@ -205,7 +210,7 @@ public class MediaFileIndex
       var imageSidecars = new List<ScannedSidecar>();
       var mediaFilesByDirectory = new Dictionary<string, List<FileInfo>>(StringComparer.OrdinalIgnoreCase);
 
-      var metadataPrefix = CoreApp.MetadataDir + Path.DirectorySeparatorChar;
+      var metadataPrefix = _metadataDir + Path.DirectorySeparatorChar;
 
       foreach(var fi in new DirectoryInfo(_mediaRoot).EnumerateFiles("*", SearchOption.AllDirectories))
       {

@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
@@ -10,52 +9,34 @@ namespace JAStudio.Core;
 public class CoreApp : IDisposable
 {
    public TemporaryServiceCollection Services { get; }
-
-   static IEnvironmentPaths? _environmentPaths;
+   public IEnvironmentPaths Paths { get; }
 
    internal CoreApp(
+      IEnvironmentPaths environmentPaths,
       IBackendNoteCreator? backendNoteCreator = null,
-      IBackendDataLoader? backendDataLoader = null) =>
+      IBackendDataLoader? backendDataLoader = null)
+   {
+      Paths = environmentPaths;
       Services = AppBootstrapper.Bootstrap(this, backendNoteCreator, backendDataLoader).Resolve<TemporaryServiceCollection>();
+   }
 
    public static bool IsTesting => TestEnvDetector.IsTesting;
 
-   public void Dispose() => Services.Dispose();
+   public void Dispose()
+   {
+      Services.Dispose();
+      (Paths as IDisposable)?.Dispose();
+   }
 
    public static CoreApp Bootstrap(
       IBackendNoteCreator? backendNoteCreator = null,
       IBackendDataLoader? backendDataLoader = null,
       IEnvironmentPaths? environmentPaths = null)
    {
-      if(environmentPaths != null) _environmentPaths = environmentPaths;
-      return new CoreApp(backendNoteCreator, backendDataLoader);
+      ArgumentNullException.ThrowIfNull(environmentPaths);
+      return new CoreApp(environmentPaths, backendNoteCreator, backendDataLoader);
    }
 
    public JapaneseConfig Config => Services.ConfigurationStore.Config();
    public JPCollection Collection => Services.ServiceLocator.Resolve<JPCollection>();
-
-
-   public static string AnkiMediaDir =>
-      _environmentPaths?.AnkiMediaDir
-   ?? throw new InvalidOperationException("IEnvironmentPaths must be provided for non-testing mode. Call App.Bootstrap() with an IEnvironmentPaths implementation.");
-
-   //todo: urgent: surely these should not be static, it will break any test running in parallel will it not?
-   public static string UserFilesDir => Path.Combine(AddonRootDir, "user_files");
-   internal static string DatabaseDir => Path.Combine(AddonRootDir, "jas_database");
-   internal static string MediaDir => Path.Combine(DatabaseDir, "media");
-   internal static string MetadataDir => Path.Combine(MediaDir, "metadata");
-   internal static string AddonRootDir
-   {
-      get
-      {
-         if(IsTesting)
-         {
-            var assemblyLocation = typeof(CoreApp).Assembly.Location;
-            return Path.GetDirectoryName(Path.GetDirectoryName(assemblyLocation)) ?? string.Empty;
-         }
-
-         return _environmentPaths?.AddonRootDir
-             ?? throw new InvalidOperationException("IEnvironmentPaths must be provided for non-testing mode. Call App.Bootstrap() with an IEnvironmentPaths implementation.");
-      }
-   }
 }

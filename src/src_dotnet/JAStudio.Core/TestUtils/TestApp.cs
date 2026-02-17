@@ -15,7 +15,7 @@ public class TestCoreApp
 
    public static CoreApp Reset()
    {
-      var app = CoreApp.Bootstrap();
+      var app = CoreApp.Bootstrap(environmentPaths: new TestEnvironmentPaths());
       app.Services.ConfigurationStore.InitForTesting();
       app.Config.SetReadingsMappingsForTesting(TestReadingsMappings);
 

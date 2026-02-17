@@ -4,6 +4,7 @@ from JAStudio.Core.Note import KanjiNote, NoteServices
 from JAStudio.Core.Note.Vocabulary import VocabNote
 from JAStudio.Core.Note.Sentences import SentenceNote
 from JAStudio.Core.TaskRunners import TaskRunner
+from JAStudio.Core import IEnvironmentPaths
 from System import IEquatable_1, Guid, DateTime
 
 class AllNotesData:
@@ -17,6 +18,9 @@ class AllNotesData:
 
 
 class FileSystemNoteRepository(INoteRepository):
+    @typing.overload
+    def __init__(self, serializer: NoteSerializer, taskRunner: TaskRunner, paths: IEnvironmentPaths) -> None: ...
+    @typing.overload
     def __init__(self, serializer: NoteSerializer, taskRunner: TaskRunner, rootDir: str) -> None: ...
     def LoadAll(self) -> AllNotesData: ...
     def LoadSnapshot(self) -> AllNotesData: ...

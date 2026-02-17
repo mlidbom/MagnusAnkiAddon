@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Compze.Utilities.SystemCE.ActionFuncHarmonization;
 using JetBrains.Annotations;
+// ReSharper disable UnusedMethodReturnValue.Global
 
 namespace JAStudio.Core.TaskRunners;
 

@@ -18,6 +18,9 @@ public class FileSystemNoteRepository : INoteRepository
    readonly TaskRunner _taskRunner;
    readonly string _rootDir;
 
+   public FileSystemNoteRepository(NoteSerializer serializer, TaskRunner taskRunner, IEnvironmentPaths paths)
+      : this(serializer, taskRunner, paths.DatabaseDir) {}
+
    public FileSystemNoteRepository(NoteSerializer serializer, TaskRunner taskRunner, string rootDir)
    {
       _serializer = serializer;

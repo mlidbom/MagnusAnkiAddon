@@ -31,6 +31,8 @@ static class AppBootstrapper
       var container = new SimpleInjectorDependencyInjectionContainer();
       var registrar = container.Register();
 
+      var paths = coreApp.Paths;
+
       if(CoreApp.IsTesting)
       {
          registrar.Register(
@@ -39,13 +41,14 @@ static class AppBootstrapper
       {
          registrar.Register(
             Singleton.For<INoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner) =>
-                                                          (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, CoreApp.DatabaseDir)));
+                                                          (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, paths)));
       }
 
       registrar.Register(
          Singleton.For<IBackendNoteCreator>().Instance(backendNoteCreator),
          Singleton.For<CoreApp>().Instance(coreApp),
-         Singleton.For<ConfigurationStore>().CreatedBy((TemporaryServiceCollection services) => new ConfigurationStore()),
+         Singleton.For<IEnvironmentPaths>().Instance(paths),
+         Singleton.For<ConfigurationStore>().CreatedBy((TemporaryServiceCollection services) => new ConfigurationStore(paths)),
          Singleton.For<TemporaryServiceCollection>().CreatedBy(() => new TemporaryServiceCollection(container.ServiceLocator)),
          Singleton.For<JapaneseConfig>().CreatedBy((ConfigurationStore store) => store.Config()),
          Singleton.For<JPCollection>().CreatedBy((NoteServices noteServices, JapaneseConfig config, INoteRepository noteRepository, MediaFileIndex mediaFileIndex) =>
@@ -56,9 +59,9 @@ static class AppBootstrapper
 
          // Media storage
          Singleton.For<MediaFileIndex>().CreatedBy((TaskRunner taskRunner) =>
-                                                      new MediaFileIndex(CoreApp.MediaDir, taskRunner)),
+                                                      new MediaFileIndex(paths, taskRunner)),
          Singleton.For<MediaStorageService>().CreatedBy((MediaFileIndex index) =>
-                                                           new MediaStorageService(CoreApp.MediaDir, index)),
+                                                           new MediaStorageService(paths, index)),
 
          // Core services
          Singleton.For<Settings>().CreatedBy((JapaneseConfig config) => new Settings(config)),
@@ -77,7 +80,7 @@ static class AppBootstrapper
          Singleton.For<VocabNoteGeneratedData>().CreatedBy((JPCollection col) => col.VocabNoteGeneratedData),
          Singleton.For<NoteSerializer>().CreatedBy((NoteServices noteServices) => new NoteSerializer(noteServices)),
          Singleton.For<FileSystemNoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner) =>
-                                                                new FileSystemNoteRepository(serializer, taskRunner, CoreApp.DatabaseDir)),
+                                                                new FileSystemNoteRepository(serializer, taskRunner, paths)),
          Singleton.For<KanjiNoteMnemonicMaker>().CreatedBy((JapaneseConfig config) => new KanjiNoteMnemonicMaker(config)),
 
          // ViewModels

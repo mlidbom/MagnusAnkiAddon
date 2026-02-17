@@ -15,19 +15,19 @@ public class MediaImportRulePersistence
                                                           Converters = { new JsonStringEnumConverter(), new SourceTagJsonConverter() }
                                                        };
 
-   static string FilePath => Path.Combine(CoreApp.MetadataDir, "media-import-rules.json");
+   static string FilePath(IEnvironmentPaths paths) => Path.Combine(paths.MetadataDir, "media-import-rules.json");
 
-   public static PersistedImportRules Load()
+   public static PersistedImportRules Load(IEnvironmentPaths paths)
    {
-      var path = FilePath;
+      var path = FilePath(paths);
       if(!File.Exists(path)) return new PersistedImportRules();
       var json = File.ReadAllText(path);
       return JsonSerializer.Deserialize<PersistedImportRules>(json, JsonOptions) ?? new PersistedImportRules();
    }
 
-   public static void Save(PersistedImportRules rules)
+   public static void Save(PersistedImportRules rules, IEnvironmentPaths paths)
    {
-      var path = FilePath;
+      var path = FilePath(paths);
       Directory.CreateDirectory(Path.GetDirectoryName(path)!);
       var json = JsonSerializer.Serialize(rules, JsonOptions);
       File.WriteAllText(path, json);
