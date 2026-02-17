@@ -14,18 +14,14 @@ using JAStudio.UI.Utils;
 
 namespace JAStudio.UI.Menus;
 
-/// <summary>
-/// Builds browser context menu for Anki's card browser.
-/// Corresponds to ui/menus/browser/main.py in Python.
-/// </summary>
-public class BrowserMenus
+class AnkiBrowserMenuBuilder
 {
    readonly Core.TemporaryServiceCollection _services;
    readonly VocabNoteMenus _vocabNoteMenus;
    readonly KanjiNoteMenus _kanjiNoteMenus;
    readonly SentenceNoteMenus _sentenceNoteMenus;
 
-   public BrowserMenus(Core.TemporaryServiceCollection services)
+   internal AnkiBrowserMenuBuilder(Core.TemporaryServiceCollection services)
    {
       _services = services;
       _vocabNoteMenus = new VocabNoteMenus(services);
@@ -33,21 +29,14 @@ public class BrowserMenus
       _sentenceNoteMenus = new SentenceNoteMenus(services);
    }
 
-   /// <summary>
-   /// Build the complete browser context menu structure as UI-agnostic specifications.
-   /// </summary>
-   /// <param name="selectedCardIds">List of selected card IDs (from Python/Anki)</param>
-   /// <param name="selectedNoteIds">List of selected note IDs (from Python/Anki)</param>
    public SpecMenuItem BuildBrowserMenuSpec(IReadOnlyList<long> selectedCardIds, IReadOnlyList<long> selectedNoteIds)
    {
       var items = new List<SpecMenuItem>();
 
-      // Single card selected: Prioritize + Note actions
       if(selectedCardIds.Count == 1)
       {
          items.Add(SpecMenuItem.Command("Prioritize selected cards", () => AnkiFacade.Browser.MenuActions.PrioritizeCards(selectedCardIds)));
 
-         // Note submenu - uses existing context menu for the selected note
          var note = GetNoteFromCardId(selectedCardIds[0]);
          if(note != null)
          {
@@ -55,18 +44,15 @@ public class BrowserMenus
          }
       }
 
-      // Any cards selected: Spread submenu
       if(selectedCardIds.Count > 0)
       {
          items.Add(BuildSpreadSubmenu(selectedCardIds));
       }
 
-      // Selected sentence notes: Reparse action
       var sentenceNotes = GetSentenceNotes(selectedNoteIds);
       if(sentenceNotes.Any())
       {
-         items.Add(SpecMenuItem.Command("Reparse sentence words",
-                                        () => OnReparseSentences(sentenceNotes)));
+         items.Add(SpecMenuItem.Command("Reparse sentence words", () => OnReparseSentences(sentenceNotes)));
       }
 
       return SpecMenuItem.Submenu("&Magnus", items);
@@ -74,8 +60,6 @@ public class BrowserMenus
 
    SpecMenuItem BuildNoteActionsSubmenu(JPNote note)
    {
-      // Build note-specific context menu using existing infrastructure
-      // Just return their note actions submenu for the specific note type
       if(note is VocabNote vocab)
       {
          return _vocabNoteMenus.BuildNoteActionsMenuSpec(vocab);
@@ -87,7 +71,6 @@ public class BrowserMenus
          return _sentenceNoteMenus.BuildNoteActionsMenuSpec(sentence);
       }
 
-      // Fallback: empty submenu
       return SpecMenuItem.Submenu(ShortcutFinger.Home3("Note"), new List<SpecMenuItem>());
    }
 
@@ -95,14 +78,14 @@ public class BrowserMenus
    {
       var startDayMenus = new List<SpecMenuItem>();
 
-      for(int startDay = 0; startDay <= 9; startDay++)
+      for(var startDay = 0; startDay <= 9; startDay++)
       {
          var daysApartItems = new List<SpecMenuItem>();
 
-         for(int daysApart = 1; daysApart <= 9; daysApart++)
+         for(var daysApart = 1; daysApart <= 9; daysApart++)
          {
-            int currentStartDay = startDay; // Capture for lambda
-            int currentDaysApart = daysApart;
+            var currentStartDay = startDay;
+            var currentDaysApart = daysApart;
 
             daysApartItems.Add(SpecMenuItem.Command($"{currentDaysApart} days apart",
                                                     () => OnSpreadCards(cardIds, currentStartDay, currentDaysApart)));

@@ -1,15 +1,10 @@
 import abc
 from JAStudio.Core import TemporaryServiceCollection
+from System.Collections.Generic import List_1
 from JAStudio.UI.Menus.UIAgnosticMenuStructure import SpecMenuItem
-from System.Collections.Generic import IReadOnlyList_1, List_1
 from System import Func_1
 from Avalonia.Controls import MenuItem
 from JAStudio.Core.Note import NoteId
-
-class BrowserMenus:
-    def __init__(self, services: TemporaryServiceCollection) -> None: ...
-    def BuildBrowserMenuSpec(self, selectedCardIds: IReadOnlyList_1[int], selectedNoteIds: IReadOnlyList_1[int]) -> SpecMenuItem: ...
-
 
 class JapaneseMainMenu:
     def __init__(self, services: TemporaryServiceCollection) -> None: ...

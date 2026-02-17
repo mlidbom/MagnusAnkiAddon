@@ -120,7 +120,7 @@ class SentenceNoteMenus
       var items = new List<SpecMenuItem>();
 
       // Add toggles for sentence view configuration
-      for(int i = 0; i < config.SentenceViewToggles.Count; i++)
+      for(var i = 0; i < config.SentenceViewToggles.Count; i++)
       {
          var toggle = config.SentenceViewToggles[i];
          items.Add(SpecMenuItem.Command(

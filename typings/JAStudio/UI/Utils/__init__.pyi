@@ -1,5 +1,4 @@
 import typing, abc
-from System.Threading.Tasks import Task_1
 from Avalonia.Controls import Window, WindowTransparencyLevel, Classes, WindowClosingBehavior, ContextMenu, ITemplate_1, Control, WindowIcon, WindowBase, IResourceDictionary, Screens, SizeToContent, SystemDecorations, WindowStartupLocation, WindowState
 from Avalonia.Styling import ThemeVariant, Styles, ControlTheme
 from Avalonia.Media import IBrush, BackgroundSizing, Geometry, IEffect, FlowDirection, FontFamily, FontFeatureCollection, FontStretch, FontStyle, FontWeight, ITransform
@@ -23,13 +22,6 @@ from Avalonia.Data import IndexerDescriptor, IBinding
 class BackgroundTaskManagerSetup(abc.ABC):
     @staticmethod
     def Initialize() -> None: ...
-
-
-class BrowserLauncher(abc.ABC):
-    @staticmethod
-    def OpenUrl(url: str) -> None: ...
-    @staticmethod
-    def OpenUrlAsync(url: str) -> Task_1[bool]: ...
 
 
 class FatalErrorDialog(Window):

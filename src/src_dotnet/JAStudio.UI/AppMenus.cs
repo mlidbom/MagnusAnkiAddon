@@ -43,6 +43,6 @@ public class AnkiMenus
    public SpecMenuItem BuildBrowserMenuSpec(
       dynamic selectedCardIds,
       dynamic selectedNoteIds) =>
-      new BrowserMenus(_services).BuildBrowserMenuSpec(PythonDotNetShim.LongList.ToDotNet(selectedCardIds),
+      new AnkiBrowserMenuBuilder(_services).BuildBrowserMenuSpec(PythonDotNetShim.LongList.ToDotNet(selectedCardIds),
                                                        PythonDotNetShim.LongList.ToDotNet(selectedNoteIds));
 }

@@ -248,8 +248,8 @@ public partial class VocabFlagsViewModel : ObservableObject
    bool ShouldPromptToReparse()
    {
       // Check if any reparse-triggering flag has changed
-      bool changedReparseFlags = AllRequireForbidControls.Any(c => c.RepraiseTrigger && c.HasChanged());
-      bool stringRulesModified = AllStringSetControls.Any(c => c.HasChanges());
+      var changedReparseFlags = AllRequireForbidControls.Any(c => c.RepraiseTrigger && c.HasChanged());
+      var stringRulesModified = AllStringSetControls.Any(c => c.HasChanges());
 
       return changedReparseFlags || stringRulesModified;
    }

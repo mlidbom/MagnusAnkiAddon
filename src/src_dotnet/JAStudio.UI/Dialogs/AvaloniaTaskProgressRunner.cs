@@ -90,8 +90,8 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
       vm.Message = message;
       vm.SetProgress(0, totalItems);
 
-      int completed = 0;
-      long lastRefreshTicks = Stopwatch.GetTimestamp();
+      var completed = 0;
+      var lastRefreshTicks = Stopwatch.GetTimestamp();
       var stopwatch = Stopwatch.StartNew();
 
       void UpdateProgress()
@@ -113,7 +113,7 @@ public class AvaloniaTaskProgressRunner : ITaskProgressRunner
 
       if(threads.IsSequential)
       {
-         for(int i = 0; i < totalItems; i++)
+         for(var i = 0; i < totalItems; i++)
          {
             if(_allowCancel && vm.WasCanceled)
             {

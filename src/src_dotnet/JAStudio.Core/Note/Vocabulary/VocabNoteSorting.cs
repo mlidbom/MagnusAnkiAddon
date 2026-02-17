@@ -14,7 +14,7 @@ public static class VocabNoteSorting
 
       int PreferPrimaryVocabInOrder(VocabNote localVocab)
       {
-         for(int index = 0; index < primaryVocList.Count; index++)
+         for(var index = 0; index < primaryVocList.Count; index++)
          {
             var primary = primaryVocList[index];
             var readings = localVocab.GetReadings();

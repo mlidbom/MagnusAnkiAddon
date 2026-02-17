@@ -86,8 +86,8 @@ public partial class RequireForbidControlViewModel : ObservableObject
 
    public bool HasChanged()
    {
-      bool currentRequired = IsRequired;
-      bool currentForbidden = IsForbidden;
+      var currentRequired = IsRequired;
+      var currentForbidden = IsForbidden;
       return currentRequired != _initialRequired || currentForbidden != _initialForbidden;
    }
 }

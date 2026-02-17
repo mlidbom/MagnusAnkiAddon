@@ -23,7 +23,7 @@ public static class KanjiStringMenus
          var primaryVocab = kanji.PrimaryVocab;
 
          // Add positioning actions for each existing primary vocab
-         for(int i = 0; i < primaryVocab.Count; i++)
+         for(var i = 0; i < primaryVocab.Count; i++)
          {
             var vocab = primaryVocab[i];
             var index = i; // Capture for lambda

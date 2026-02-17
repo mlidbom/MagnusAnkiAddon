@@ -72,9 +72,9 @@ public class VocabNoteUserCompoundParts
       {
          var word = Vocab.GetQuestion();
          var allSubstrings = new List<string>();
-         for(int i = 0; i < word.Length; i++)
+         for(var i = 0; i < word.Length; i++)
          {
-            for(int j = i + 1; j <= word.Length; j++)
+            for(var j = i + 1; j <= word.Length; j++)
             {
                var substring = word.Substring(i, j - i);
                if(substring != word)

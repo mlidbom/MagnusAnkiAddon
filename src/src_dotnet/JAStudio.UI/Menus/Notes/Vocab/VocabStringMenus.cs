@@ -153,7 +153,7 @@ public class VocabStringMenus
       var hasSentences = sentences.Count > 0;
       var disambiguationName = vocab.Question.DisambiguationName;
 
-      bool isHighlighted = hasSentences && sentences[0].Configuration.HighlightedWords.Contains(disambiguationName);
+      var isHighlighted = hasSentences && sentences[0].Configuration.HighlightedWords.Contains(disambiguationName);
 
       var items = new List<SpecMenuItem>
                   {

@@ -47,7 +47,7 @@ public static class SentenceStringMenus
             } else
             {
                var subItems = new List<SpecMenuItem>();
-               for(int i = 0; i < matchesExcludedByMenuString.Count; i++)
+               for(var i = 0; i < matchesExcludedByMenuString.Count; i++)
                {
                   var match = matchesExcludedByMenuString[i];
                   var index = i; // Capture for lambda
@@ -103,7 +103,7 @@ public static class SentenceStringMenus
             } else
             {
                var subItems = new List<SpecMenuItem>();
-               for(int i = 0; i < coveredExistingExclusions.Count; i++)
+               for(var i = 0; i < coveredExistingExclusions.Count; i++)
                {
                   var exclusion = coveredExistingExclusions[i];
                   var index = i; // Capture for lambda

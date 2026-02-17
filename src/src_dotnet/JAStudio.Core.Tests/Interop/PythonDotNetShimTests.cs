@@ -11,7 +11,7 @@ public class PythonDotNetShimTests
    [Fact] public void RoundTrippingStringListResultInIdenticalList()
    {
       List<string> expected = ["1", "2", "3"];
-      List<string> other = (List<string>)PythonDotNetShim.StringList.ToDotNet(
+      var other = (List<string>)PythonDotNetShim.StringList.ToDotNet(
          PythonDotNetShim.StringList.ToPython(expected));
 
       other.Must().DeepEqual(expected);
@@ -19,7 +19,7 @@ public class PythonDotNetShimTests
       //this is way too slow, we need another aproach for our amounts of data
       PythonEnvironment.Use(() =>
       {
-         for(int i = 0; i < 10000; i++)
+         for(var i = 0; i < 10000; i++)
          {
             other = (List<string>)PythonDotNetShim.StringList.ToDotNet(PythonDotNetShim.StringList.ToPython(expected));
          }
@@ -28,11 +28,11 @@ public class PythonDotNetShimTests
 
    [Fact] public void RoundTrippingStringStringDictsResultInIdenticalDict()
    {
-      Dictionary<string, string> expected = new Dictionary<string, string>
-                                            {
-                                               ["1"] = "2",
-                                               ["3"] = "4"
-                                            };
+      var expected = new Dictionary<string, string>
+                     {
+                        ["1"] = "2",
+                        ["3"] = "4"
+                     };
       var other = (Dictionary<string, string>)PythonDotNetShim.StringStringDict.ToDotNet(
          PythonDotNetShim.StringStringDict.ToPython(expected));
 
@@ -41,7 +41,7 @@ public class PythonDotNetShimTests
       //this is way too slow, we need another aproach for our amounts of data
       PythonEnvironment.Use(() =>
       {
-         for(int i = 0; i < 10000; i++)
+         for(var i = 0; i < 10000; i++)
          {
             other = (Dictionary<string, string>)PythonDotNetShim.StringStringDict.ToDotNet(PythonDotNetShim.StringStringDict.ToPython(expected));
          }
@@ -51,14 +51,14 @@ public class PythonDotNetShimTests
    [Fact] public void RoundTrippingLongListResultInIdenticalList()
    {
       List<long> expected = [1L, 2L, 3L];
-      List<long> other = (List<long>)PythonDotNetShim.LongList.ToDotNet(
+      var other = (List<long>)PythonDotNetShim.LongList.ToDotNet(
          PythonDotNetShim.LongList.ToPython(expected));
 
       other.Must().DeepEqual(expected);
 
       PythonEnvironment.Use(() =>
       {
-         for(int i = 0; i < 10000; i++)
+         for(var i = 0; i < 10000; i++)
          {
             other = (List<long>)PythonDotNetShim.LongList.ToDotNet(PythonDotNetShim.LongList.ToPython(expected));
          }

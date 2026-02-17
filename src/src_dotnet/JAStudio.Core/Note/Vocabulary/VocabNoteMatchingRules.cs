@@ -118,7 +118,7 @@ public class VocabNoteMatchingRules
    {
       get
       {
-         int weight = 0;
+         var weight = 0;
          if(RequiredPrefix.Any())
             weight += 10;
 
