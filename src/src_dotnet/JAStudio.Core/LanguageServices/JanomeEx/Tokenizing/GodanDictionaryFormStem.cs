@@ -22,7 +22,7 @@ public abstract class SplitTokenBase : IAnalysisToken
 }
 
 // Base class for dictionary form tokens
-public abstract class DictionaryFormsTokenBase : SplitTokenBase
+abstract class DictionaryFormsTokenBase : SplitTokenBase
 {
    protected DictionaryFormsTokenBase(JNToken source, string surface, string baseForm)
       : base(source, surface, baseForm) {}
