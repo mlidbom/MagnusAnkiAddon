@@ -85,8 +85,6 @@ class TaskRunnerScope : ITaskProgressRunner
 
    public bool IsHidden() => !_visible;
 
-   public void Close() => Dispose();
-
    public void Dispose()
    {
       if(_disposed) return;

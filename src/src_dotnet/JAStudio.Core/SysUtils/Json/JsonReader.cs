@@ -266,7 +266,7 @@ static class JsonHelper
          JsonValueKind.Array  => element.EnumerateArray().Select(ConvertElement).ToList(),
          JsonValueKind.Object => ElementToDict(element),
          JsonValueKind.Null   => null!,
-         _                    => null!
+         _                    => throw new ArgumentException("Unsupported element") //code used to `be => null!` which just discards any element we do not understand. Yikes.
       };
    }
 

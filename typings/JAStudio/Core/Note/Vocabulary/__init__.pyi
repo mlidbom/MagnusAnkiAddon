@@ -3,7 +3,7 @@ from JAStudio.Core.Note.NoteFields import TagFlagField, RequireForbidFlagField, 
 from JAStudio.Core.Note import Tag, JPNote, NoteServices, NoteGuard, NoteFlushGuard, NoteTags
 from System.Collections.Generic import HashSet_1, IEnumerable_1, List_1
 from System import Func_1, Func_3, Array_1, Action_1
-from JAStudio.Core.Note.CorpusData import VocabData, CorpusDataBase, VocabMatchingRulesSubData
+from JAStudio.Core.Note.CorpusData import VocabData, CorpusDataBase
 from JAStudio.Core.Note.Collection import JPCollection
 from JAStudio.Core.Storage.Media import NoteMedia
 from JAStudio.Core.Note.Vocabulary.RelatedVocab import RelatedVocab
@@ -338,7 +338,6 @@ class VocabNoteMatchingConfiguration:
 
 
 class VocabNoteMatchingRules:
-    def __init__(self, vocab: VocabNote, subData: VocabMatchingRulesSubData, guard: NoteGuard) -> None: ...
     @property
     def MatchWeight(self) -> int: ...
     @property

@@ -252,6 +252,12 @@ class KanjiNoteMnemonicMaker:
     def CreateDefaultMnemonic(self, kanjiNote: KanjiNote) -> str: ...
 
 
+class Mine(abc.ABC):
+    AppName : str
+    AppStillLoadingMessage : str
+    VocabPrefixSuffixMarker : str
+
+
 class NoteData:
     def __init__(self, id: NoteId, fields: Dictionary_2[str, str], tags: List_1[str]) -> None: ...
     @property

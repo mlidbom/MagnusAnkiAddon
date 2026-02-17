@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable MemberHidesStaticFromOuterClass
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace JAStudio.Core.Note;
 
@@ -143,7 +144,7 @@ public static class Builtin
    public const string Card = "card";
 }
 
-static class Mine
+public static class Mine
 {
    public const string AppName = "JA-Studio";
 
