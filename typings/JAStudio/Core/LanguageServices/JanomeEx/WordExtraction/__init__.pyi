@@ -1,27 +1,10 @@
-import typing, abc
-from System.Collections.Generic import HashSet_1, List_1, IEnumerable_1, Dictionary_2
+import typing
+from System.Collections.Generic import List_1, IEnumerable_1, Dictionary_2
 from JAStudio.Core.Note.Sentences import SentenceConfiguration
 from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches import Match, VocabMatch
 from JAStudio.Core.LanguageServices.JanomeEx import AnalysisServices
 from JAStudio.Core.LanguageServices.JanomeEx.Tokenizing import IAnalysisToken, JNTokenizedText
 from JAStudio.Core.SysUtils.Json import JsonReader
-
-class AnalysisConstants(abc.ABC):
-    AllPunctuationCharacters : HashSet_1[str]
-    AllQuoteCharacters : HashSet_1[str]
-    CausativeVerbEndings : HashSet_1[str]
-    Commas : HashSet_1[str]
-    Exclamations : HashSet_1[str]
-    NoiseCharacters : HashSet_1[str]
-    PassiveVerbEndings : HashSet_1[str]
-    Periods : HashSet_1[str]
-    PseudoQuoteCharacters : HashSet_1[str]
-    QuestionMarks : HashSet_1[str]
-    SentenceEndCharacters : HashSet_1[str]
-    SentenceStartCharacters : HashSet_1[str]
-    SpaceCharacters : HashSet_1[str]
-    Tilde : HashSet_1[str]
-
 
 class CandidateWord:
     def __init__(self, locations: List_1[TextAnalysisLocation]) -> None: ...

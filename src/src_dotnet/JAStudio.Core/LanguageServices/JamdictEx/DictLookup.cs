@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Linq;
 using Compze.Utilities.Logging;
 using Compze.Utilities.SystemCE;
-using Compze.Utilities.SystemCE.ThreadingCE.ResourceAccess;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Note.Vocabulary;
@@ -14,17 +13,14 @@ namespace JAStudio.Core.LanguageServices.JamdictEx;
 
 public class DictLookup
 {
-   readonly IMonitorCE _monitor = IMonitorCE.WithDefaultTimeout();
    readonly JPCollection _collection;
-   readonly JapaneseConfig _config;
 
    internal DictLookup(JPCollection collection, JapaneseConfig config)
    {
       _collection = collection;
-      _config = config;
       _jamdictThreadingWrapper = new JamdictThreadingWrapper(config);
       _allWordForms = new LazyCE<HashSet<string>>(FindAllWords);
-      _allNameForms = new LazyCE<HashSet<string>>(FindAllWords);
+      _allNameForms = new LazyCE<HashSet<string>>(FindAllNames);
    }
 
    readonly JamdictThreadingWrapper _jamdictThreadingWrapper;

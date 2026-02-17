@@ -203,7 +203,6 @@ public class JNToken : IAnalysisToken
 
    public bool CannotFollowIchidanStem() => InvalidIchidanInflectionSurfaces.Contains(Surface);
 
-   static readonly HashSet<JNPartsOfSpeech> PosMoreLikelyToFollowImperativeThanIchidanStem = [];
 
    public bool IsMoreLikelyToFollowImperativeThanIchidanStem()
    {
@@ -212,7 +211,7 @@ public class JNToken : IAnalysisToken
          return true;
       }
 
-      return PosMoreLikelyToFollowImperativeThanIchidanStem.Contains(PartsOfSpeech);
+      return false;
    }
 
    static readonly HashSet<string> InvalidGodanPotentialFormSurfaces = ["っ", "う"];

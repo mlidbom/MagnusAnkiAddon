@@ -1,5 +1,4 @@
-from JAStudio.Core.Note.Sentences import ParsedMatch, ParsingResult, SentenceConfiguration
-from JAStudio.Core.Note.NoteFields import IObjectSerializer_1
+from JAStudio.Core.Note.Sentences import ParsedMatch, SentenceConfiguration
 from System import Action
 
 class ParsedWordSerializer:
@@ -8,12 +7,6 @@ class ParsedWordSerializer:
     def FromRow(serialized: str) -> ParsedMatch: ...
     @staticmethod
     def ToRow(parsedWord: ParsedMatch) -> str: ...
-
-
-class ParsingResultSerializer(IObjectSerializer_1[ParsingResult]):
-    def __init__(self) -> None: ...
-    def Deserialize(self, serialized: str) -> ParsingResult: ...
-    def Serialize(self, instance: ParsingResult) -> str: ...
 
 
 class SentenceConfigurationSerializer:

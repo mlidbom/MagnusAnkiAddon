@@ -252,12 +252,6 @@ class KanjiNoteMnemonicMaker:
     def CreateDefaultMnemonic(self, kanjiNote: KanjiNote) -> str: ...
 
 
-class Mine(abc.ABC):
-    AppName : str
-    AppStillLoadingMessage : str
-    VocabPrefixSuffixMarker : str
-
-
 class NoteData:
     def __init__(self, id: NoteId, fields: Dictionary_2[str, str], tags: List_1[str]) -> None: ...
     @property
@@ -274,76 +268,6 @@ class NoteData:
     def Tags(self, value: List_1[str]) -> List_1[str]: ...
     @staticmethod
     def FromPythonNoteData(item: typing.Any) -> NoteData: ...
-
-
-class NoteFieldsConstants(abc.ABC):
-    NoteId : str
-
-    class Kanji(abc.ABC):
-        ActiveAnswer : str
-        Audio : str
-        Image : str
-        MeaningInfo : str
-        PrimaryReadingsTTSAudio : str
-        PrimaryVocab : str
-        Question : str
-        Radicals : str
-        ReadingInfo : str
-        ReadingKun : str
-        ReadingMnemonic : str
-        ReadingNan : str
-        ReadingOn : str
-        References : str
-        RelatedConfusedWith : str
-        SourceAnswer : str
-        SourceMeaningMnemonic : str
-        UserAnswer : str
-        UserMnemonic : str
-        UserSimilarMeaning : str
-
-
-    class SentencesNoteType(abc.ABC):
-
-        class Card(abc.ABC):
-            Listening : str
-            Reading : str
-
-
-
-    class Vocab(abc.ABC):
-        ActiveAnswer : str
-        AudioB : str
-        AudioG : str
-        AudioTTS : str
-        Forms : str
-        Image : str
-        Kanji : str
-        MatchingRules : str
-        PartsOfSpeech : str
-        Question : str
-        Reading : str
-        References : str
-        RelatedVocab : str
-        SentenceCount : str
-        SourceAnswer : str
-        SourceMnemonic : str
-        SourceReadingMnemonic : str
-        TechnicalNotes : str
-        UserAnswer : str
-        UserCompounds : str
-        UserExplanation : str
-        UserExplanationLong : str
-        UserImage : str
-        UserMnemonic : str
-
-
-    class VocabNoteType(abc.ABC):
-
-        class Card(abc.ABC):
-            Listening : str
-            Reading : str
-
-
 
 
 class NoteFlushGuard:
@@ -558,13 +482,6 @@ class Tags(abc.ABC):
             Vulgar : Tag
 
 
-
-
-class TestingBackendNoteCreator(IBackendNoteCreator):
-    def __init__(self) -> None: ...
-    def CreateKanji(self, note: KanjiNote, callback: Action) -> None: ...
-    def CreateSentence(self, note: SentenceNote, callback: Action) -> None: ...
-    def CreateVocab(self, note: VocabNote, callback: Action) -> None: ...
 
 
 class VocabId(NoteId):

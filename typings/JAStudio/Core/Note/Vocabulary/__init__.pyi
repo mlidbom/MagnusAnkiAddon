@@ -1,8 +1,7 @@
 import typing, abc
 from JAStudio.Core.Note.NoteFields import TagFlagField, RequireForbidFlagField, WritableStringValue, WritableImageValue, MediaReference, IObjectSerializer_1
 from JAStudio.Core.Note import Tag, JPNote, NoteServices, NoteGuard, NoteFlushGuard, NoteTags
-from System.Collections.Generic import HashSet_1, List_1, IEnumerable_1
-from System.Collections.Frozen import FrozenSet_1
+from System.Collections.Generic import HashSet_1, IEnumerable_1, List_1
 from System import Func_1, Func_3, Array_1, Action_1
 from JAStudio.Core.Note.CorpusData import VocabData, CorpusDataBase, VocabMatchingRulesSubData
 from JAStudio.Core.Note.Collection import JPCollection
@@ -62,22 +61,6 @@ class POS(abc.ABC):
     Unknown : str
     YodanVerb : str
     ZuruVerb : str
-
-
-class POSSetManager:
-    def __init__(self) -> None: ...
-    @staticmethod
-    def Get(pos: str) -> FrozenSet_1[str]: ...
-    @staticmethod
-    def InternAndHarmonize(pos: str) -> str: ...
-    @staticmethod
-    def InternAndHarmonizeFromList(posList: List_1[str]) -> FrozenSet_1[str]: ...
-    @staticmethod
-    def IsIntransitiveVerb(posSet: FrozenSet_1[str]) -> bool: ...
-    @staticmethod
-    def IsTransitiveVerb(posSet: FrozenSet_1[str]) -> bool: ...
-    @staticmethod
-    def IsVerb(posSet: FrozenSet_1[str]) -> bool: ...
 
 
 class SentenceCounts:
@@ -190,22 +173,6 @@ class VocabMatchingRulesConfigurationRequiresForbidsFlags:
     def TeFormStem(self) -> RequireForbidFlagField: ...
     @property
     def YieldLastToken(self) -> YieldLastTokenToOverlappingCompound: ...
-
-
-class VocabMetaTag:
-    def __init__(self, name: str, display: str, tooltip: str) -> None: ...
-    @property
-    def Display(self) -> str: ...
-    @Display.setter
-    def Display(self, value: str) -> str: ...
-    @property
-    def Name(self) -> str: ...
-    @Name.setter
-    def Name(self, value: str) -> str: ...
-    @property
-    def Tooltip(self) -> str: ...
-    @Tooltip.setter
-    def Tooltip(self, value: str) -> str: ...
 
 
 class VocabNote(JPNote):
@@ -431,11 +398,6 @@ class VocabNoteMetaData:
     def SetSentenceCount(self, value: int) -> None: ...
 
 
-class VocabNoteMetaTagFormatter(abc.ABC):
-    @staticmethod
-    def GetMetaTagsHtml(vocab: VocabNote, displayExtendedSentenceStatistics: bool = ..., noSentenceStatistics: bool = ...) -> str: ...
-
-
 class VocabNotePartsOfSpeech:
     def __init__(self, vocab: VocabNote, data: VocabData, guard: NoteGuard) -> None: ...
     def Get(self) -> HashSet_1[str]: ...
@@ -521,11 +483,6 @@ class VocabNoteSentences:
     def UserHighlighted(self) -> List_1[SentenceNote]: ...
     def WithOwnedForm(self) -> List_1[SentenceNote]: ...
     def WithPrimaryForm(self) -> List_1[SentenceNote]: ...
-
-
-class VocabNoteSorting(abc.ABC):
-    @staticmethod
-    def SortVocabListByStudyingStatus(vocabs: IEnumerable_1[VocabNote], primaryVoc: List_1[str] = ..., preferredKanji: str = ...) -> List_1[VocabNote]: ...
 
 
 class VocabNoteUserCompoundParts:

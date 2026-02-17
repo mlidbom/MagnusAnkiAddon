@@ -3,11 +3,6 @@ from System.Collections.Generic import List_1
 from System import IEquatable_1, IObservable_1, IDisposable, IObserver_1
 from JAStudio.Core.Note import JPNote, Tag, NoteGuard
 
-class FallbackStringField:
-    def __init__(self, primaryField: IStringValue, fallbackField: IStringValue) -> None: ...
-    def Get(self) -> str: ...
-
-
 class IObjectSerializer_GenericClasses(abc.ABCMeta):
     Generic_IObjectSerializer_GenericClasses_IObjectSerializer_1_T = typing.TypeVar('Generic_IObjectSerializer_GenericClasses_IObjectSerializer_1_T')
     def __getitem__(self, types : typing.Type[Generic_IObjectSerializer_GenericClasses_IObjectSerializer_1_T]) -> typing.Type[IObjectSerializer_1[Generic_IObjectSerializer_GenericClasses_IObjectSerializer_1_T]]: ...

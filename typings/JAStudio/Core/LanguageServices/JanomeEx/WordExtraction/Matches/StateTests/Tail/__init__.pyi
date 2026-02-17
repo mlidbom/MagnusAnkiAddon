@@ -1,6 +1,4 @@
-import abc
 from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Requirements import CustomForbidsNoCache, VocabMatchInspector
-from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.StateTests.Head import FailedMatchRequirement
 
 class ForbidsHasDisplayedOverlappingFollowingCompound(CustomForbidsNoCache):
     @property
@@ -13,14 +11,4 @@ class ForbidsHasDisplayedOverlappingFollowingCompound(CustomForbidsNoCache):
     def IsInState(self) -> bool: ...
     @staticmethod
     def ApplyTo(inspector: VocabMatchInspector) -> ForbidsHasDisplayedOverlappingFollowingCompound: ...
-
-
-class ForbidsSuffixIsIn(abc.ABC):
-    @staticmethod
-    def ApplyTo(inspector: VocabMatchInspector) -> FailedMatchRequirement: ...
-
-
-class RequiresOrForbidsIsSentenceEnd(abc.ABC):
-    @staticmethod
-    def ApplyTo(inspector: VocabMatchInspector) -> FailedMatchRequirement: ...
 
