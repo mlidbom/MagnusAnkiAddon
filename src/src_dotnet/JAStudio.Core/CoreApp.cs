@@ -33,7 +33,7 @@ public class CoreApp : IDisposable
 
    public JapaneseConfig Config => Services.ConfigurationStore.Config();
    public JPCollection Collection => Services.ServiceLocator.Resolve<JPCollection>();
-   
+
 
    public static string AnkiMediaDir =>
       _environmentPaths?.AnkiMediaDir

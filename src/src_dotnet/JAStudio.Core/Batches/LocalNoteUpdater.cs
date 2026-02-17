@@ -95,7 +95,7 @@ public class LocalNoteUpdater
       }
 
       using var scope = _taskRunner.Current("Tagging sentence notes");
-      scope.RunBatch(_sentences.All().ToList(), it => { TagSentence(it); }, "Tagging sentence notes");
+      scope.RunBatch(_sentences.All().ToList(), TagSentence, "Tagging sentence notes");
    }
 
    public void TagVocabMetadata()
@@ -110,12 +110,12 @@ public class LocalNoteUpdater
       }
 
       using var scope = _taskRunner.Current("Tagging vocab");
-      scope.RunBatch(_vocab.All().ToList(), it => { TagNote(it); }, "Tag vocab notes");
+      scope.RunBatch(_vocab.All().ToList(), TagNote, "Tag vocab notes");
    }
 
    public void TagKanjiMetadata()
    {
-      var primaryReadingPattern = new Regex(@"<primary>(.*?)</primary>", RegexOptions.Compiled);
+      var primaryReadingPattern = new Regex("<primary>(.*?)</primary>", RegexOptions.Compiled);
       var knownKanji = _kanji.All()
                              .Where(kanji => kanji.IsStudying())
                              .Select(kanji => kanji.GetQuestion())
@@ -163,10 +163,7 @@ public class LocalNoteUpdater
                                                                             ReadingInVocabReading(kanji, kanjiReading, vocabReading, voc.GetQuestion())));
          }
 
-         bool VocabHasOnlyKnownKanji(VocabNote voc)
-         {
-            return !voc.Kanji.ExtractAllKanji().Any(kan => !knownKanji.Contains(kan));
-         }
+         bool VocabHasOnlyKnownKanji(VocabNote voc) => voc.Kanji.ExtractAllKanji().All(knownKanji.Contains);
 
          bool HasVocabWithReadingAndNoUnknownKanji(string kanjiReading)
          {
@@ -187,14 +184,14 @@ public class LocalNoteUpdater
          kanji.Tags.Toggle(Tags.Kanji.WithStudyingVocabWithPrimaryOnReading,
                            primaryOnReadings.Any() && HasStudyingVocabWithReading(primaryOnReadings[0]));
          kanji.Tags.Toggle(Tags.Kanji.HasStudyingVocabForEachPrimaryReading,
-                           primaryReadings.Any() && !primaryReadings.Any(reading => !HasStudyingVocabWithReading(reading)));
+                           primaryReadings.Any() && primaryReadings.All(HasStudyingVocabWithReading));
          kanji.Tags.Toggle(Tags.Kanji.HasPrimaryReadingWithNoStudyingVocab,
                            primaryReadings.Any() && studyingReadingVocab.Any() &&
                            primaryReadings.Any(reading => !HasStudyingVocabWithReading(reading)));
          kanji.Tags.Toggle(Tags.Kanji.HasNonPrimaryOnReadingVocab,
-                           nonPrimaryOnReadings.Any(reading => HasVocabWithReading(reading)));
+                           nonPrimaryOnReadings.Any(HasVocabWithReading));
          kanji.Tags.Toggle(Tags.Kanji.HasNonPrimaryOnReadingVocabWithOnlyKnownKanji,
-                           nonPrimaryOnReadings.Any(reading => HasVocabWithReadingAndNoUnknownKanji(reading)));
+                           nonPrimaryOnReadings.Any(HasVocabWithReadingAndNoUnknownKanji));
 
          var allReadings = kanji.ReadingsClean;
 
@@ -250,8 +247,8 @@ public class LocalNoteUpdater
 
       using var scope = _taskRunner.Current("Tagging kanji");
       var allKanji = _kanji.All().ToList();
-      scope.RunBatch(allKanji, it => { TagKanji(it); }, "Tagging kanji with studying metadata");
-      scope.RunBatch(allKanji, it => { TagHasSingleKanjiVocabWithReadingDifferentFromKanjiPrimaryReading(it); }, "Tagging kanji with single kanji vocab");
+      scope.RunBatch(allKanji, TagKanji, "Tagging kanji with studying metadata");
+      scope.RunBatch(allKanji, TagHasSingleKanjiVocabWithReadingDifferentFromKanjiPrimaryReading, "Tagging kanji with single kanji vocab");
    }
 
    public void ReparseAllSentences()
@@ -293,7 +290,7 @@ public class LocalNoteUpdater
 
       using var runner = _taskRunner.Current("Reparse Sentences");
       runner.RunBatch(sentences,
-                      it => { ReparseSentence(it); },
+                      ReparseSentence,
                       "Reanalysing sentences.",
                       threads: ThreadCount.WithThreads((int)_config.ReanalysisThreads.Value));
    }
@@ -342,7 +339,7 @@ public class LocalNoteUpdater
          }
       }
 
-      scope.RunBatch(dictionaryWordsWithNoVocab, it => { CreateVocabIfNotAlreadyCreated(it); }, "Creating vocab notes");
+      scope.RunBatch(dictionaryWordsWithNoVocab, CreateVocabIfNotAlreadyCreated, "Creating vocab notes");
    }
 
    public void RegenerateJamdictVocabAnswers()
