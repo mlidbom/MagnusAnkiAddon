@@ -53,7 +53,7 @@ using Compze.Utilities.Testing.XUnit.BDD;
 
 namespace OurApplication.Specifications.UserAccounts.Registration;
 
-public class When_a_user_attempts_to_register : SpecificationBase
+public class When_a_user_attempts_to_register : SomeSpecificationBaseClass
 {
    readonly IUserRegistrar _userRegistrar = ResolveService<IUserRegistrar>();
 
