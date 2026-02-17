@@ -52,7 +52,7 @@ public class VocabSentenceMatchViewModel
       }
    }
 
-   public override string ToString() => Match.ToString() ?? string.Empty;
+   public override string ToString() => Match.ToString();
 }
 
 public class VocabSentenceViewModel

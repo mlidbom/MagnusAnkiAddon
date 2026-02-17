@@ -12,7 +12,7 @@ public class ParsingResult
 
    public ParsingResult(List<ParsedMatch> words, string sentence, string parserVersion)
    {
-      ParsedWords = words ?? new List<ParsedMatch>();
+      ParsedWords = words;
       Sentence = sentence?.Replace(StringExtensions.InvisibleSpace, string.Empty) ?? string.Empty;
       ParserVersion = parserVersion ?? string.Empty;
    }

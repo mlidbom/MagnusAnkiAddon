@@ -10,14 +10,11 @@ public class SentenceConfiguration
    public WordExclusionSet IncorrectMatches { get; }
    public WordExclusionSet HiddenMatches { get; }
 
-   public SentenceConfiguration(
-      List<string> highlightedWords,
-      WordExclusionSet incorrectMatches,
-      WordExclusionSet hiddenMatches)
+   public SentenceConfiguration(List<string> highlightedWords, WordExclusionSet incorrectMatches, WordExclusionSet hiddenMatches)
    {
-      HighlightedWords = highlightedWords ?? new List<string>();
-      IncorrectMatches = incorrectMatches ?? WordExclusionSet.Empty();
-      HiddenMatches = hiddenMatches ?? WordExclusionSet.Empty();
+      HighlightedWords = highlightedWords;
+      IncorrectMatches = incorrectMatches;
+      HiddenMatches = hiddenMatches;
    }
 
    public static SentenceConfiguration FromIncorrectMatches(List<WordExclusion> incorrectMatches) => FromValues(new List<string>(), incorrectMatches, new List<WordExclusion>());

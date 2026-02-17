@@ -232,6 +232,6 @@ public sealed class VocabMatch : Match
    public override string ToString() =>
       $"{Vocab.GetQuestion()}, {Vocab.GetAnswer()[..Math.Min(10, Vocab.GetAnswer().Length)]}: " +
       $"{MatchForm[..Math.Min(10, MatchForm.Length)]}: " +
-      $"failure_reasons: {string.Join(" ", FailureReasons) ?? "None"} " +
-      $"## hiding_reasons: {string.Join(" ", HidingReasons) ?? "None"}";
+      $"failure_reasons: {string.Join(" ", FailureReasons)} " +
+      $"## hiding_reasons: {string.Join(" ", HidingReasons)}";
 }

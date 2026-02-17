@@ -2,6 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
+using Compze.Utilities.Functional;
 
 namespace JAStudio.UI.Utils;
 
@@ -22,6 +23,9 @@ public static class WindowPositioner
       public int X;
       public int Y;
    }
+
+
+   public static Window ShowNearCursor(this Window window) => window.mutate(it => it.PositionNearCursor().Show());
 
    /// <summary>
    /// Position a window centered on the current mouse cursor, clamped to the screen's working area.

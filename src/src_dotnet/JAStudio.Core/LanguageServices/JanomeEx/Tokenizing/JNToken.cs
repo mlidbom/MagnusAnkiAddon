@@ -11,8 +11,6 @@ public class JNToken : IAnalysisToken
    readonly string _baseForm;
    readonly string _surface;
 
-   // Standard references instead of WeakRef (C# has better GC)
-
    public JNToken(
       JNPartsOfSpeech partsOfSpeech,
       string baseForm,
@@ -23,8 +21,8 @@ public class JNToken : IAnalysisToken
       string phonetic = "",
       string nodeType = "")
    {
-      _baseForm = baseForm ?? string.Empty;
-      _surface = surface ?? string.Empty;
+      _baseForm = baseForm;
+      _surface = surface;
 
       // Python defaults to "*" when not provided
       inflectionType ??= "*";
@@ -38,16 +36,19 @@ public class JNToken : IAnalysisToken
                          ? InflectionForms.GetByName(str2)
                          : (InflectionForm)inflectedForm;
 
-      Reading = reading ?? string.Empty;
-      Phonetic = phonetic ?? string.Empty;
-      NodeType = nodeType ?? string.Empty;
+      Reading = reading;
+      Phonetic = phonetic;
+      NodeType = nodeType;
       PartsOfSpeech = partsOfSpeech;
    }
 
    public InflectionType InflectionType { get; }
    public InflectionForm InflectedForm { get; }
+   // ReSharper disable once UnusedAutoPropertyAccessor.Global
    public string Reading { get; }
+   // ReSharper disable once UnusedAutoPropertyAccessor.Global
    public string Phonetic { get; }
+   // ReSharper disable once UnusedAutoPropertyAccessor.Global
    public string NodeType { get; }
    public JNPartsOfSpeech PartsOfSpeech { get; }
 

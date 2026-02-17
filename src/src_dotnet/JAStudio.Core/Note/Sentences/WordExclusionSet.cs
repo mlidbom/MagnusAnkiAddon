@@ -14,7 +14,7 @@ public class WordExclusionSet
    public WordExclusionSet(Action saveCallback, List<WordExclusion> exclusions)
    {
       _saveCallback = saveCallback;
-      _exclusions = new HashSet<WordExclusion>(exclusions ?? new List<WordExclusion>());
+      _exclusions = new HashSet<WordExclusion>(exclusions);
       _excludedWords = ExtractWords();
    }
 

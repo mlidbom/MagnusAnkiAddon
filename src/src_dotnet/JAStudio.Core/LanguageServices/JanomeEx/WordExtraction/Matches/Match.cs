@@ -217,6 +217,6 @@ public abstract class Match
 
    public override string ToString() =>
       $"{ParsedForm}, {MatchForm[..Math.Min(10, MatchForm.Length)]}: " +
-      $"failure_reasons: {string.Join(" ", FailureReasons) ?? "None"} " +
-      $"## hiding_reasons: {string.Join(" ", HidingReasons) ?? "None"}";
+      $"failure_reasons: {string.Join(" ", FailureReasons)} " +
+      $"## hiding_reasons: {string.Join(" ", HidingReasons)}";
 }

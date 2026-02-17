@@ -29,12 +29,7 @@ public class AppDialogs
    internal void ShowReadingsMappingsDialog()
    {
       this.Log().Info("ShowReadingsMappingsDialog() called");
-      Dispatcher.UIThread.Invoke(() =>
-      {
-         var window = new ReadingsMappingsDialog(Services);
-         window.PositionNearCursor();
-         window.Show();
-      });
+      Dispatcher.UIThread.Invoke(() => new ReadingsMappingsDialog(Services).ShowNearCursor());
    }
 
    // ReSharper disable once MemberCanBeInternal used from python
