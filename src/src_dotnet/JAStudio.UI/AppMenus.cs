@@ -7,18 +7,16 @@ using JAStudio.UI.Views;
 
 namespace JAStudio.UI;
 
+// ReSharper disable UnusedMember.Global //used from python
 /// <summary>
 /// Factory methods for building menus (context menus, toolbar menus, browser menus).
 /// Exposed via <see cref="JAStudioAppRoot.Menus"/>.
 /// </summary>
-public class AppMenus
+public class AnkiMenus
 {
    readonly TemporaryServiceCollection _services;
 
-   internal AppMenus(TemporaryServiceCollection services)
-   {
-      _services = services;
-   }
+   internal AnkiMenus(TemporaryServiceCollection services) => _services = services;
 
    /// <summary>Called from Python to build right-click context menus.</summary>
    public NoteContextMenu CreateNoteContextMenu() => new(_services);
@@ -29,7 +27,7 @@ public class AppMenus
    /// <summary>
    /// Show the context menu popup at the current cursor position.
    /// </summary>
-   public void ShowContextMenuPopup(string clipboardContent, string selectionContent, int x, int y)
+   public void ShowContextMenuPopup(string? clipboardContent, string? selectionContent, int x, int y)
    {
       Dispatcher.UIThread.Invoke(() =>
       {

@@ -33,10 +33,10 @@ public class MediaStorageService
                         NoteSourceTag = sourceTag,
                         OriginalFileName = originalFileName,
                         Copyright = copyright,
-                        Tts = tts
+                        Tts = tts,
+                        FilePath = destPath
                      };
 
-         audio.FilePath = destPath;
          var sidecarPath = SidecarSerializer.BuildAudioSidecarPath(destPath);
          SidecarSerializer.WriteAudioSidecar(sidecarPath, audio);
          attachment = audio;
@@ -48,10 +48,10 @@ public class MediaStorageService
                         NoteIds = [noteId],
                         NoteSourceTag = sourceTag,
                         OriginalFileName = originalFileName,
-                        Copyright = copyright
+                        Copyright = copyright,
+                        FilePath = destPath
                      };
 
-         image.FilePath = destPath;
          var sidecarPath = SidecarSerializer.BuildImageSidecarPath(destPath);
          SidecarSerializer.WriteImageSidecar(sidecarPath, image);
          attachment = image;

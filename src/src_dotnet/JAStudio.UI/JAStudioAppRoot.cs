@@ -43,13 +43,13 @@ public class JAStudioAppRoot
    public AppDialogs Dialogs { get; }
 
    /// <summary>Menu factory methods, extracted from this root.</summary>
-   public AppMenus Menus { get; }
+   public AnkiMenus Menus { get; }
 
    JAStudioAppRoot(CoreApp coreApp)
    {
       _coreApp = coreApp;
       Dialogs = new AppDialogs(coreApp);
-      Menus = new AppMenus(coreApp.Services);
+      Menus = new AnkiMenus(coreApp.Services);
    }
 
    /// <summary>
