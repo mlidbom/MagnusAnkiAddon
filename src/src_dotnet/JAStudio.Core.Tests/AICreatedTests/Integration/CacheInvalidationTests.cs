@@ -8,19 +8,15 @@ public class CacheInvalidationTests : TestStartingWithEmptyCollection, IAIGenera
    [Fact]
    public void UpdatingVocabQuestion_UpdatesCache()
    {
-      // Arrange
       var vocab = CreateVocab("食べる", "to eat", "たべる");
-      var originalQuestion = vocab.GetQuestion();
+      vocab.GetQuestion();
 
-      // Act
       vocab.Question.Set("飲む");
       vocab.UpdateGeneratedData(); // Trigger cache update
 
-      // Assert - Old question should not find it
       var oldResults = GetService<VocabCollection>().WithQuestion("食べる");
       Assert.Empty(oldResults);
 
-      // New question should find it
       var newResults = GetService<VocabCollection>().WithQuestion("飲む");
       Assert.Single(newResults);
       Assert.Equal(vocab, newResults[0]);

@@ -10,9 +10,9 @@ public class CollectionQueryTests : TestStartingWithEmptyCollection, IAIGenerate
    public void VocabCollection_WithQuestion_FindsVocabByQuestion()
    {
       // Arrange
-      var vocab1 = CreateVocab("食べる", "to eat", "たべる");
+      CreateVocab("食べる", "to eat", "たべる");
       var vocab2 = CreateVocab("本", "book", "ほん");
-      var vocab3 = CreateVocab("走る", "to run", "はしる");
+      CreateVocab("走る", "to run", "はしる");
 
       // Act
       var results = GetService<VocabCollection>().WithQuestion("本");
@@ -40,7 +40,7 @@ public class CollectionQueryTests : TestStartingWithEmptyCollection, IAIGenerate
    public void VocabCollection_WithQuestion_ReturnsEmptyWhenNotFound()
    {
       // Arrange
-      var vocab = CreateVocab("食べる", "to eat", "たべる");
+      CreateVocab("食べる", "to eat", "たべる");
 
       // Act
       var results = GetService<VocabCollection>().WithQuestion("存在しない");
