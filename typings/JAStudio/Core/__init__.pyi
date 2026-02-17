@@ -1,9 +1,9 @@
 import typing, abc
-from System import IDisposable
-from JAStudio.Core.Note.Collection import JPCollection, CardStudyingStatus
-from JAStudio.Core.Configuration import JapaneseConfig, ConfigurationStore
-from JAStudio.Core.Note import IBackendNoteCreator, NoteId, CardOperations, ExternalNoteIdMap, NoteServices
 from System.Collections.Generic import Dictionary_2, List_1
+from JAStudio.Core.Note import NoteId, IBackendNoteCreator, CardOperations, ExternalNoteIdMap, NoteServices
+from JAStudio.Core.Note.Collection import CardStudyingStatus, JPCollection
+from System import IDisposable
+from JAStudio.Core.Configuration import JapaneseConfig, ConfigurationStore
 from JAStudio.Core.TaskRunners import TaskRunner
 from JAStudio.Core.UI.Web.Kanji import KanjiNoteRenderer
 from JAStudio.Core.UI.Web.Sentence import SentenceNoteRenderer
@@ -12,7 +12,15 @@ from JAStudio.Core.Batches import LocalNoteUpdater
 from Compze.Utilities.DependencyInjection.Abstractions import IServiceLocator
 from JAStudio.Core.Note.Vocabulary import VocabNoteFactory
 
-class App(IDisposable):
+class BackendData:
+    def __init__(self, idMappings: Dictionary_2[int, NoteId], studyingStatuses: List_1[CardStudyingStatus]) -> None: ...
+    @property
+    def IdMappings(self) -> Dictionary_2[int, NoteId]: ...
+    @property
+    def StudyingStatuses(self) -> List_1[CardStudyingStatus]: ...
+
+
+class CoreApp(IDisposable):
     @classmethod
     @property
     def AnkiMediaDir(cls) -> str: ...
@@ -29,16 +37,8 @@ class App(IDisposable):
     @property
     def UserFilesDir(cls) -> str: ...
     @staticmethod
-    def Bootstrap(backendNoteCreator: IBackendNoteCreator = ..., backendDataLoader: IBackendDataLoader = ..., environmentPaths: IEnvironmentPaths = ...) -> App: ...
+    def Bootstrap(backendNoteCreator: IBackendNoteCreator = ..., backendDataLoader: IBackendDataLoader = ..., environmentPaths: IEnvironmentPaths = ...) -> CoreApp: ...
     def Dispose(self) -> None: ...
-
-
-class BackendData:
-    def __init__(self, idMappings: Dictionary_2[int, NoteId], studyingStatuses: List_1[CardStudyingStatus]) -> None: ...
-    @property
-    def IdMappings(self) -> Dictionary_2[int, NoteId]: ...
-    @property
-    def StudyingStatuses(self) -> List_1[CardStudyingStatus]: ...
 
 
 class IBackendDataLoader(typing.Protocol):
@@ -78,11 +78,11 @@ class StringExtensions(abc.ABC):
 
 class TemporaryServiceCollection(IDisposable):
     @property
-    def App(self) -> App: ...
-    @property
     def CardOperations(self) -> CardOperations: ...
     @property
     def ConfigurationStore(self) -> ConfigurationStore: ...
+    @property
+    def CoreApp(self) -> CoreApp: ...
     @property
     def ExternalNoteIdMap(self) -> ExternalNoteIdMap: ...
     @classmethod

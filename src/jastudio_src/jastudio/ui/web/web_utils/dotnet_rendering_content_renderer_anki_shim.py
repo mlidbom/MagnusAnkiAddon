@@ -22,7 +22,7 @@ class DotNetPrerenderingContentRendererAnkiShim[TNote: JPNote](Slots):
         if not app.is_initialized():
             return Mine.AppStillLoadingMessage
 
-        note = dotnet_ui_root.Services.App.Collection.NoteFromExternalId(card.nid if card.nid else card.note().id)
+        note = dotnet_ui_root.Services.CoreApp.Collection.NoteFromExternalId(card.nid if card.nid else card.note().id)
 
         if not isinstance(note, self._cls):
             return html

@@ -1,9 +1,9 @@
 import abc
-from JAStudio.Core import App
+from JAStudio.Core import CoreApp
 
-class TestApp:
+class TestCoreApp:
     @staticmethod
-    def Reset() -> App: ...
+    def Reset() -> CoreApp: ...
 
 
 class TestEnvDetector(abc.ABC):
