@@ -36,8 +36,6 @@ applyTo: "**/*.cs"
 - No direct Python/pythonnet dependencies here — that belongs in PythonInterop
 - Provides C# abstractions that the rest of the solution can consume
 
-## Testing
-
 ## Default Interface Methods (Mixins)
 
 **Design rule:** Any method that can be defined in terms of other public methods on an interface SHOULD be implemented as a default method on the interface, because the implementation is identical for every implementing class and they should not be burdened with writing it over and over again.

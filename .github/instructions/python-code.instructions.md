@@ -10,10 +10,7 @@ applyTo: "**/*.py"
 
 ### Minimize Python Code
 This project is actively porting from Python to C#. **Do NOT expand Python functionality:**
-- ❌ Don't add new Python business logic
-- ❌ Don't add new Python UI code
-- ✅ Only add Python code when interfacing with Anki APIs
-- ✅ Prefer moving logic to C# (`JAStudio.Anki.csproj` `JAStudio.Core` or `JAStudio.UI`)
+- ✅ Prefer moving logic to C#
 
 ### Type Safety is Mandatory
 - ✅ **All functions must have complete type hints** (parameters and return types)

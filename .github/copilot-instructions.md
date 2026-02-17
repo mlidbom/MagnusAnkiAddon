@@ -6,7 +6,7 @@ JAStudio is a Japanese language learning tool that runs as an Anki addon. The co
 
 ```powershell
 dotnet build src\src_dotnet\JAStudio.slnx -c Debug   # Fast .NET build (iteration)
-dotnet test src\src_dotnet\JAStudio.slnx -v quiet     # .NET tests
+dotnet test src\src_dotnet\JAStudio.slnx -v quiet     # .NET specifications (tests)
 pytest                                                 # Python tests
 .\full-build.ps1                                       # Full validation (Definition of Done)
 ruff check --fix                                       # Lint + autofix Python
@@ -74,10 +74,9 @@ JASTUDIO_VENV_PATH="$(pwd)/venv" dotnet test src/src_dotnet/JAStudio.slnx --verb
 source venv/bin/activate && pytest
 ```
 
-**Note:** `BulkLoaderTests` require a test Anki database (`src/tests/collection.anki2`) not available in CI. Exclude them with `--filter "FullyQualifiedName!~BulkLoaderTests"`.
 
 **Test Guidelines:**
-- Write tests for new C# features in the appropriate `*.Tests` project
+- Write tests for new C# features in the appropriate `*.Specifications` project
 - Python test directories: `src/tests/jaspythonutils_tests/`, `src/tests/jaslib_tests/`, `src/tests/jastudio_tests/` — choose based on what code is under test
 - Follow existing test patterns and naming conventions
 - Run relevant tests after making changes, not just at the end
@@ -135,65 +134,3 @@ This project is actively porting UI from Python/PyQt6 to C#/Avalonia. **Use Pyth
 
 The project uses a virtual environment at `venv/`. Python dependencies are managed via `requirements.txt`.
 On Linux, run `./setup-dev.sh` to create the venv and install all dependencies.
-
-## Exception Handling
-
-### CRITICAL: Never Swallow Exceptions
-
-❌ **FORBIDDEN - Silent failure:**
-```csharp
-try
-{
-    CriticalOperation();
-}
-catch (Exception ex)
-{
-    JALogger.Log($"Error: {ex.Message}");  // WRONG - exception is swallowed
-}
-```
-
-✅ **CORRECT - Re-throw or wrap:**
-```csharp
-// Option 1: Don't catch at all (preferred)
-CriticalOperation();
-
-// Option 2: Re-throw after logging
-try
-{
-    CriticalOperation();
-}
-catch (Exception ex)
-{
-    JALogger.Log($"Error: {ex.Message}");
-    throw; // CRITICAL: Must re-throw
-}
-
-// Option 3: Wrap with context
-try
-{
-    CriticalOperation();
-}
-catch (Exception ex)
-{
-    throw new InvalidOperationException("Failed during critical operation", ex);
-}
-```
-
-**Only catch exceptions when you have a specific recovery strategy:**
-- ✅ Retry logic with backoff
-- ✅ Wrapping with more context and re-throwing
-- ✅ Cleanup operations followed by re-throw
-- ✅ Converting to a different exception type (still re-throwing)
-
-**Bottom line**: If you can't handle the error meaningfully, don't catch it. Let it propagate.
-
-## Comments
-- Don't add comments unless they match existing style or explain complex logic
-- Prefer self-documenting code over comments
-- Update comments when changing code
-
-## Dependencies
-- **Use existing libraries** whenever possible
-- **Only add/update libraries** if absolutely necessary
-- **Don't update versions** unless required for the task
-- **Install via package managers**: `dotnet add package`, `pip install`

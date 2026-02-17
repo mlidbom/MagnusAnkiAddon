@@ -77,12 +77,15 @@ applyTo: "**/*.cs"
 
 ## Exceptions
 
-- Never swallow exceptions in a catch block without rethrowing.
+- **CRITICAL**: Never swallow exceptions in a catch block without rethrowing.
+  - Only catch an exception at all if you have a specific recovery strategy or need to add context before re-throwing.
 - Use the fluent `Assert.*` contract system instead of raw `throw` statements where possible.
 
 ## Comments & Documentation
 
-- Prefer descriptive names and extracting new methods over explanatory comments.
+- Prefer self-documenting code over comments
+    - Extract a well named method that explains what is happening instead of writing a comment
+    - Rename a method to explain what it does rather than add a documentation comment
 
 ## XML doc comments
 
