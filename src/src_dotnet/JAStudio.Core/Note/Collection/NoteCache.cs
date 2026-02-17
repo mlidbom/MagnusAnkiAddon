@@ -7,7 +7,7 @@ using JAStudio.PythonInterop;
 
 namespace JAStudio.Core.Note.Collection;
 
-internal class CachedNote
+class CachedNote
 {
    public NoteId Id { get; }
    public string Question { get; }
@@ -19,7 +19,7 @@ internal class CachedNote
    }
 }
 
-internal abstract class NoteCacheBase<TNote> : IExternalNoteUpdateHandler where TNote : JPNote
+abstract class NoteCacheBase<TNote> : IExternalNoteUpdateHandler where TNote : JPNote
 {
    readonly Func<NoteServices, NoteData, TNote> _noteConstructor;
    readonly Type _noteType;
@@ -179,7 +179,7 @@ internal abstract class NoteCacheBase<TNote> : IExternalNoteUpdateHandler where 
    }
 }
 
-internal abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
+abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
    where TNote : JPNote
    where TSnapshot : CachedNote
 {
