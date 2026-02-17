@@ -119,41 +119,8 @@ public partial class SentenceData : CorpusDataBase
          new WordExclusionSet(saveCallback, data.IncorrectMatches.Select(FromExclusionSubData).ToList()),
          new WordExclusionSet(saveCallback, data.HiddenMatches.Select(FromExclusionSubData).ToList()));
    }
-
-   static SentenceConfigSubData ToConfigSubData(SentenceConfiguration config) =>
-      new()
-      {
-         HighlightedWords = config.HighlightedWords.ToList(),
-         IncorrectMatches = config.IncorrectMatches.Get().Select(ToExclusionSubData).ToList(),
-         HiddenMatches = config.HiddenMatches.Get().Select(ToExclusionSubData).ToList(),
-      };
-
-   static WordExclusionSubData ToExclusionSubData(WordExclusion ex) =>
-      new() { Word = ex.Word, Index = ex.Index };
-
-   static SentenceParsingResultSubData? ToParsingResultSubData(ParsingResult? result)
-   {
-      if(result == null || string.IsNullOrEmpty(result.Sentence)) return null;
-      return new SentenceParsingResultSubData
-             {
-                Sentence = result.Sentence,
-                ParserVersion = result.ParserVersion,
-                ParsedWords = result.ParsedWords.Select(ToParsedMatchSubData).ToList(),
-             };
-   }
-
-   static ParsedMatchSubData ToParsedMatchSubData(ParsedMatch match) =>
-      new()
-      {
-         Variant = match.Variant,
-         StartIndex = match.StartIndex,
-         IsDisplayed = match.IsDisplayed,
-         ParsedForm = match.ParsedForm,
-         VocabId = match.VocabId?.Value,
-      };
 }
 
-/// Sentence configuration sub-data (serialized in JSON).
 [MemoryPackable]
 public partial class SentenceConfigSubData
 {
@@ -162,7 +129,6 @@ public partial class SentenceConfigSubData
    public List<WordExclusionSubData> HiddenMatches { get; init; } = [];
 }
 
-/// Word exclusion sub-data.
 [MemoryPackable]
 public partial class WordExclusionSubData
 {
@@ -170,7 +136,6 @@ public partial class WordExclusionSubData
    public int Index { get; init; } = -1;
 }
 
-/// Sentence parsing result sub-data (serialized in JSON).
 [MemoryPackable]
 public partial class SentenceParsingResultSubData
 {
@@ -179,7 +144,6 @@ public partial class SentenceParsingResultSubData
    public List<ParsedMatchSubData> ParsedWords { get; init; } = [];
 }
 
-/// Individual parsed match sub-data.
 [MemoryPackable]
 public partial class ParsedMatchSubData
 {

@@ -97,9 +97,6 @@ class AnkiBrowserMenuBuilder
       return SpecMenuItem.Submenu("&Spread selected cards", startDayMenus);
    }
 
-   // Action handlers
-   static void OnPrioritizeCards(IReadOnlyList<long> cardIds) => AnkiFacade.Browser.MenuActions.PrioritizeCards(cardIds);
-
    static void OnSpreadCards(IReadOnlyList<long> cardIds, int startDay, int daysApart) => AnkiFacade.Browser.MenuActions.SpreadCardsOverDays(cardIds, startDay, daysApart);
 
    void OnReparseSentences(List<SentenceNote> sentences)
@@ -112,29 +109,18 @@ class AnkiBrowserMenuBuilder
       });
    }
 
-   // Helper methods
    JPNote? GetNoteFromCardId(long cardId)
    {
-      try
-      {
-         // Get external note ID from card ID via AnkiFacade, then look up in domain collections
-         var ankiNoteId = AnkiFacade.GetNoteIdFromCardId(cardId);
+      var ankiNoteId = AnkiFacade.GetNoteIdFromCardId(cardId);
 
-         // Try each note type collection using external ID mapping
-         JPNote? vocab = _services.CoreApp.Collection.Vocab.WithExternalIdOrNone(ankiNoteId);
-         if(vocab != null) return vocab;
+      JPNote? vocab = _services.CoreApp.Collection.Vocab.WithExternalIdOrNone(ankiNoteId);
+      if(vocab != null) return vocab;
 
-         JPNote? sentence = _services.CoreApp.Collection.Sentences.WithExternalIdOrNone(ankiNoteId);
-         if(sentence != null) return sentence;
+      JPNote? sentence = _services.CoreApp.Collection.Sentences.WithExternalIdOrNone(ankiNoteId);
+      if(sentence != null) return sentence;
 
-         JPNote? kanji = _services.CoreApp.Collection.Kanji.WithExternalIdOrNone(ankiNoteId);
-         return kanji;
-      }
-      catch(Exception ex)
-      {
-         this.Log().Info($"Failed to get note from card ID {cardId}: {ex.Message}");
-         return null;
-      }
+      JPNote? kanji = _services.CoreApp.Collection.Kanji.WithExternalIdOrNone(ankiNoteId);
+      return kanji;
    }
 
    List<SentenceNote> GetSentenceNotes(IReadOnlyList<long> ankiNoteIds)
