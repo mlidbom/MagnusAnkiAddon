@@ -229,12 +229,6 @@ public class JapaneseConfig
       ReadingsMappingsDict = _store.GetReadingsMappings();
    }
 
-   public void SetReadingsMappingsForTesting(string mappings)
-   {
-      _store.SetReadingsMappingsForTesting(mappings);
-      ReadingsMappingsDict = _store.GetReadingsMappings();
-   }
-
    public string ReadReadingsMappingsFile() => _store.ReadReadingsMappingsFile();
 
    void PublishChange()

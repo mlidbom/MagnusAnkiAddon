@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using JAStudio.Core.TestUtils;
 using Newtonsoft.Json;
 
@@ -9,11 +7,11 @@ namespace JAStudio.Core.Configuration;
 
 public class ConfigurationStore
 {
-   readonly IEnvironmentPaths _paths;
+   readonly IReadingsMappingsSource _mappingsSource;
 
-   internal ConfigurationStore(IEnvironmentPaths paths)
+   internal ConfigurationStore(IReadingsMappingsSource mappingsSource)
    {
-      _paths = paths;
+      _mappingsSource = mappingsSource;
    }
 
    Dictionary<string, object>? _configDict;
@@ -23,12 +21,6 @@ public class ConfigurationStore
    {
       if(_configDict != null) return;
       InitJson("{}", _ => {});
-      _readingsMappingsOverride = new Dictionary<string, string>();
-   }
-
-   public void SetReadingsMappingsForTesting(string mappings)
-   {
-      _readingsMappingsOverride = ParseMappingsFromString(mappings);
    }
 
    public void InitJson(string json, Action<string> updateCallback)
@@ -62,46 +54,9 @@ public class ConfigurationStore
 
    // --- Readings mappings ---
 
-   Dictionary<string, string>? _readingsMappingsOverride;
+   public Dictionary<string, string> GetReadingsMappings() => _mappingsSource.GetMappings();
 
-   public Dictionary<string, string> GetReadingsMappings() => _readingsMappingsOverride ?? ReadReadingsMappingsFromFile();
+   public void SaveMappings(string mappings) => _mappingsSource.SaveMappings(mappings);
 
-   public void SaveMappings(string mappings)
-   {
-      File.WriteAllText(MappingsFilePath(), mappings);
-      _readingsMappingsOverride = null;
-   }
-
-   public string ReadReadingsMappingsFile() => File.ReadAllText(MappingsFilePath());
-
-   Dictionary<string, string> ReadReadingsMappingsFromFile() => ParseMappingsFromString(ReadReadingsMappingsFile());
-
-   static Dictionary<string, string> ParseMappingsFromString(string mappingsString)
-   {
-      string ParseValuePart(string valuePart)
-      {
-         if(valuePart.Contains("<read>"))
-         {
-            return valuePart;
-         }
-
-         if(valuePart.Contains(":"))
-         {
-            var parts = valuePart.Split([':'], 2);
-            return $"<read>{parts[0].Trim()}</read>{parts[1]}";
-         }
-
-         return $"<read>{valuePart}</read>";
-      }
-
-      return mappingsString.Trim().Split('\n')
-                           .Where(line => line.Contains(":"))
-                           .Select(line => line.Split([':'], 2))
-                           .ToDictionary(
-                               parts => parts[0].Trim(),
-                               parts => ParseValuePart(parts[1].Trim())
-                            );
-   }
-
-   string MappingsFilePath() => Path.Combine(_paths.UserFilesDir, "readings_mappings.txt");
+   public string ReadReadingsMappingsFile() => _mappingsSource.ReadRawMappings();
 }
