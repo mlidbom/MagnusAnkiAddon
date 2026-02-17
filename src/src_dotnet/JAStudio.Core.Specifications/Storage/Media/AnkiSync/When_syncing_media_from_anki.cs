@@ -6,6 +6,7 @@ using JAStudio.Core.Storage.Media;
 using JAStudio.Core.TaskRunners;
 
 // ReSharper disable InconsistentNaming
+// ReSharper disable MemberCanBeProtected.Global
 
 namespace JAStudio.Core.Specifications.Storage.Media.AnkiSync;
 

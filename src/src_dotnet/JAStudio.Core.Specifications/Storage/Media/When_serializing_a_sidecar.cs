@@ -7,6 +7,7 @@ using JAStudio.Core.Note;
 using JAStudio.Core.Storage.Media;
 
 // ReSharper disable InconsistentNaming
+// ReSharper disable MemberCanBeProtected.Global
 
 namespace JAStudio.Core.Specifications.Storage.Media;
 
