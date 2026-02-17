@@ -1,4 +1,7 @@
 import typing
+from JAStudio.Core.Configuration import IConfigDictSource
+from System import Action_1
+from System.Collections.Generic import Dictionary_2, List_1, IReadOnlyList_1
 from Avalonia.Controls import Window, WindowTransparencyLevel, Classes, WindowClosingBehavior, ContextMenu, ITemplate_1, Control, WindowIcon, WindowBase, IResourceDictionary, Screens, SizeToContent, SystemDecorations, WindowStartupLocation, WindowState
 from Avalonia.Styling import ThemeVariant, Styles, ControlTheme
 from Avalonia.Media import IBrush, BackgroundSizing, Geometry, IEffect, FlowDirection, FontFamily, FontFeatureCollection, FontStretch, FontStyle, FontWeight, ITransform
@@ -11,12 +14,17 @@ from Avalonia.Platform import ExtendClientAreaChromeHints, IWindowImpl, IWindowB
 from Avalonia.Input.GestureRecognizers import GestureRecognizerCollection
 from Avalonia.Layout import HorizontalAlignment, VerticalAlignment
 from Avalonia.Controls.Platform import IInputPane, IInsetsManager
-from System.Collections.Generic import List_1, IReadOnlyList_1
 from Avalonia.Platform.Storage import ILauncher, IStorageProvider
 from Avalonia.Controls.Presenters import ContentPresenter
 from Avalonia.Rendering import RendererDiagnostics
 from Avalonia.Animation import Transitions
 from Avalonia.Data import IndexerDescriptor, IBinding
+
+class AnkiConfigDictSource(IConfigDictSource):
+    def __init__(self, json: str, updateCallback: Action_1[str]) -> None: ...
+    def Load(self) -> Dictionary_2[str, typing.Any]: ...
+    def Persist(self, json: str) -> None: ...
+
 
 class InputDialog(Window):
     def __init__(self, prompt: str, initialValue: str = ...) -> None: ...

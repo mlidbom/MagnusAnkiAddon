@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+using JAStudio.Core.Configuration;
 using Newtonsoft.Json;
 
-namespace JAStudio.Core.Configuration;
+namespace JAStudio.UI.Utils;
 
 public class AnkiConfigDictSource : IConfigDictSource
 {
