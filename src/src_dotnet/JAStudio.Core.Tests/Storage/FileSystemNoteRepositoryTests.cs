@@ -9,7 +9,7 @@ using Xunit;
 
 namespace JAStudio.Core.Tests.Storage;
 
-public class FileSystemNoteRepositoryTests : CollectionUsingTest, IDisposable
+public class FileSystemNoteRepositoryTests : Specification_using_a_collection, IDisposable
 {
    readonly NoteSerializer _serializer;
    readonly string _tempDir;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Sentences;
@@ -7,9 +7,9 @@ using JAStudio.Core.Tests.Fixtures;
 
 namespace JAStudio.Core.Tests;
 
-public abstract class CollectionUsingTest : IDisposable
+public abstract class Specification_using_a_collection : IDisposable
 {
-   protected CollectionUsingTest(DataNeeded data = DataNeeded.All) =>
+   protected Specification_using_a_collection(DataNeeded data = DataNeeded.All) =>
       _appScope = CollectionFactory.InjectCollectionWithSelectData(data);
 
    public void Dispose() => _appScope.Dispose();

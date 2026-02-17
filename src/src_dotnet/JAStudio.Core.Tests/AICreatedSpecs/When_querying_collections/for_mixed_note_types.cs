@@ -4,9 +4,9 @@ using JAStudio.Core.Note.Collection;
 
 // ReSharper disable InconsistentNaming
 
-namespace JAStudio.Core.Tests.AICreatedTests.Integration.When_querying_collections;
+namespace JAStudio.Core.Tests.AICreatedSpecs.When_querying_collections;
 
-public class for_mixed_note_types : TestStartingWithEmptyCollection, IAIGeneratedTestClass
+public class for_mixed_note_types : Specification_for_an_empty_collection, IAIGeneratedSpec
 {
    public class given_one_of_each_note_type : for_mixed_note_types
    {

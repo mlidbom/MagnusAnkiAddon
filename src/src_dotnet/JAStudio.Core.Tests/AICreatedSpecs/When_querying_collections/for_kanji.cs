@@ -5,9 +5,9 @@ using JAStudio.Core.Note.Collection;
 
 // ReSharper disable InconsistentNaming
 
-namespace JAStudio.Core.Tests.AICreatedTests.Integration.When_querying_collections;
+namespace JAStudio.Core.Tests.AICreatedSpecs.When_querying_collections;
 
-public class for_kanji : TestStartingWithEmptyCollection, IAIGeneratedTestClass
+public class for_kanji : Specification_for_an_empty_collection, IAIGeneratedSpec
 {
    public class given_two_kanji : for_kanji
    {

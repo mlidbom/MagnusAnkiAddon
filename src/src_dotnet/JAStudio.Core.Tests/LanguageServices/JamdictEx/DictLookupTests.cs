@@ -8,7 +8,7 @@ namespace JAStudio.Core.Tests.LanguageServices.JamdictEx;
 /// <summary>
 /// Tests ported from test_dict_lookup.py
 /// </summary>
-public class DictLookupTests : TestStartingWithEmptyCollection
+public class DictLookupTests : Specification_for_an_empty_collection
 {
    [Theory]
    [InlineData("為る", new[] { "する" })]

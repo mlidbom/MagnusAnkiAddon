@@ -6,7 +6,7 @@ namespace JAStudio.Core.Tests.Note.Vocabulary;
 /// <summary>
 /// Tests ported from test_perfect_synonyms.py
 /// </summary>
-public class PerfectSynonymsTests : TestStartingWithEmptyCollection
+public class PerfectSynonymsTests : Specification_for_an_empty_collection
 {
    [Fact]
    public void AnswerSyncsToSynonymOnAdd()

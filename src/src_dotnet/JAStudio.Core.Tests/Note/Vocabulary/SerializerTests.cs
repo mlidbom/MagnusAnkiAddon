@@ -6,7 +6,7 @@ using Xunit;
 
 namespace JAStudio.Core.Tests.Note.Vocabulary;
 
-public class RelatedVocabDataSerializerTests : TestStartingWithEmptyCollection
+public class RelatedVocabDataSerializerTests : Specification_for_an_empty_collection
 {
    readonly IObjectSerializer<RelatedVocabData> _serializer = RelatedVocabData.Serializer();
 
@@ -68,7 +68,7 @@ public class RelatedVocabDataSerializerTests : TestStartingWithEmptyCollection
    }
 }
 
-public class VocabNoteMatchingRulesSerializerTests : TestStartingWithEmptyCollection
+public class VocabNoteMatchingRulesSerializerTests : Specification_for_an_empty_collection
 {
    readonly VocabNoteMatchingRulesSerializer _serializer = new();
 

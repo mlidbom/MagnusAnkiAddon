@@ -8,7 +8,7 @@ namespace JAStudio.Core.Tests.LanguageServices.TextAnalysis;
 /// <summary>
 /// Tests ported from test_text_analysis_with_select_data.py
 /// </summary>
-public class TextAnalysisWithSelectDataTests : CollectionUsingTest
+public class TextAnalysisWithSelectDataTests : Specification_using_a_collection
 {
    public TextAnalysisWithSelectDataTests() : base(DataNeeded.Vocabulary) {}
 

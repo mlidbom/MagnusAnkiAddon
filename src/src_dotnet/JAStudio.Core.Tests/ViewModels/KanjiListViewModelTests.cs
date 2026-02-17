@@ -8,7 +8,7 @@ namespace JAStudio.Core.Tests.ViewModels;
 /// <summary>
 /// Tests ported from test_kanji_list_viewmodel.py
 /// </summary>
-public class KanjiListViewModelTests : CollectionUsingTest
+public class KanjiListViewModelTests : Specification_using_a_collection
 {
    [Fact]
    public void KanjiListViewModel()

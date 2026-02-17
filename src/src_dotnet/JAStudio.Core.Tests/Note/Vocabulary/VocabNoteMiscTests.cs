@@ -7,7 +7,7 @@ namespace JAStudio.Core.Tests.Note.Vocabulary;
 /// <summary>
 /// Tests ported from test_vocabnote_misc.py
 /// </summary>
-public class VocabNoteMiscTests : TestStartingWithEmptyCollection
+public class VocabNoteMiscTests : Specification_for_an_empty_collection
 {
    [Fact]
    public void FormsExclusionRegex()

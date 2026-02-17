@@ -9,7 +9,7 @@ using JAStudio.Core.TaskRunners;
 
 namespace JAStudio.Core.Tests.Storage.Media.AnkiSync;
 
-public class When_importing_media_from_anki : TestStartingWithEmptyCollection, IDisposable
+public class When_importing_media_from_anki : Specification_for_an_empty_collection, IDisposable
 {
    readonly string _tempDir = Path.Combine(Path.GetTempPath(), $"JAStudio_test_{Guid.NewGuid():N}");
    readonly string _ankiMediaDir;

@@ -9,7 +9,7 @@ namespace JAStudio.Core.Tests.LanguageServices.TextAnalysis;
 /// Note: This test uses per-test fixture scope (function scope in Python).
 /// Each test creates and disposes its own collection.
 /// </summary>
-public class TextAnalysisWithPerTestDataTests : CollectionUsingTest
+public class TextAnalysisWithPerTestDataTests : Specification_using_a_collection
 {
    public TextAnalysisWithPerTestDataTests() : base(DataNeeded.Vocabulary) {}
 

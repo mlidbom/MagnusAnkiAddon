@@ -4,9 +4,9 @@ using JAStudio.Core.Note;
 
 // ReSharper disable InconsistentNaming
 
-namespace JAStudio.Core.Tests.AICreatedTests.Integration.When_managing_note_tags;
+namespace JAStudio.Core.Tests.AICreatedSpecs.When_managing_note_tags;
 
-public class for_a_kanji : TestStartingWithEmptyCollection, IAIGeneratedTestClass
+public class for_a_kanji : Specification_for_an_empty_collection, IAIGeneratedSpec
 {
    public class given_one_with_multiple_tags : for_a_kanji
    {

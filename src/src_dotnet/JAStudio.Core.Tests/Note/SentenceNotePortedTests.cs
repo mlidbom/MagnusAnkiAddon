@@ -5,7 +5,7 @@ namespace JAStudio.Core.Tests.Note;
 /// <summary>
 /// Tests ported from test_sentencenote.py
 /// </summary>
-public class SentenceNotePortedTests : TestStartingWithEmptyCollection
+public class SentenceNotePortedTests : Specification_for_an_empty_collection
 {
    [Fact]
    public void SplitToken()

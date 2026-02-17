@@ -5,9 +5,9 @@ using JAStudio.Core.Note.Vocabulary;
 
 // ReSharper disable InconsistentNaming
 
-namespace JAStudio.Core.Tests.AICreatedTests.Integration.When_managing_note_tags;
+namespace JAStudio.Core.Tests.AICreatedSpecs.When_managing_note_tags;
 
-public class for_a_vocab : TestStartingWithEmptyCollection, IAIGeneratedTestClass
+public class for_a_vocab : Specification_for_an_empty_collection, IAIGeneratedSpec
 {
    public class given_one_tagged_with_TTSAudio : for_a_vocab
    {

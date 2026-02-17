@@ -4,9 +4,9 @@ using JAStudio.Core.Note.Sentences;
 
 // ReSharper disable InconsistentNaming
 
-namespace JAStudio.Core.Tests.AICreatedTests.Note;
+namespace JAStudio.Core.Tests.AICreatedSpecs;
 
-public class When_working_with_a_SentenceNote : TestStartingWithEmptyCollection, IAIGeneratedTestClass
+public class When_working_with_a_SentenceNote : Specification_for_an_empty_collection, IAIGeneratedSpec
 {
    public class given_a_newly_created_sentence : When_working_with_a_SentenceNote
    {
