@@ -120,7 +120,7 @@ This project is actively porting UI from Python/PyQt6 to C#/Avalonia. **Use Pyth
   - `JAStudio.Core/` - Domain logic
   - `JAStudio.Anki/` - Anki integration utilities (C# side)
   - `JAStudio.PythonInterop/` - Python ↔ C# bridge
-  - `JAStudio.Core.Tests/`, `JAStudio.UI.Tests/` - .NET test projects (xunit)
+  - `JAStudio.Core.Specifications/`, `JAStudio.UI.Specifications/` - .NET test projects (xunit)
 - `src/jastudio_src/` - Python source (Anki addon, thin integration layer)
 - `src/jaspythonutils_src/` - Python utility libraries
 - `src/jaslib_src/` - Python libraries (Japanese language processing)
@@ -130,7 +130,6 @@ This project is actively porting UI from Python/PyQt6 to C#/Avalonia. **Use Pyth
 - `src/user_files/` - User-specific configuration files
 - `src/runtime_binaries/` - Compiled .NET DLLs (auto-generated, don't edit)
 - `typings/` - Python type stubs for C# (auto-generated, don't edit)
-- `src/MagnusAddon/`, `src/MagnusAddonTests/` - Legacy directories (mostly empty, ignore)
 
 ## Python Environment
 

@@ -38,11 +38,6 @@ applyTo: "**/*.cs"
 
 ## Testing
 
-### Test Location
-- Unit tests: Same namespace as code under test, in `*.Tests` project
-- Keep tests close to the code they test
-- UI tests go in `JAStudio.UI.Tests`
-
 ## Default Interface Methods (Mixins)
 
 **Design rule:** Any method that can be defined in terms of other public methods on an interface SHOULD be implemented as a default method on the interface, because the implementation is identical for every implementing class and they should not be burdened with writing it over and over again.
