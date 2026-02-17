@@ -1,21 +1,10 @@
-using JAStudio.Core.Configuration;
-
 namespace JAStudio.Core.TestUtils;
 
-public class TestCoreApp
+public static class TestCoreApp
 {
-   readonly CoreApp _coreApp;
-   readonly ConfigurationStore _configurationStore;
-
-   internal TestCoreApp(CoreApp coreApp, ConfigurationStore configurationStore)
-   {
-      _coreApp = coreApp;
-      _configurationStore = configurationStore;
-   }
-
    public static CoreApp Reset()
    {
-      var app = CoreApp.Bootstrap(environmentPaths: new TestEnvironmentPaths());
+      var app = AppBootstrapper.BootstrapForTests();
       app.Services.ConfigurationStore.InitForTesting();
       app.Config.SetReadingsMappingsForTesting(TestReadingsMappings);
 

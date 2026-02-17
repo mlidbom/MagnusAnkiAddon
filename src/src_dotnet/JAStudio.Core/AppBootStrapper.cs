@@ -1,5 +1,5 @@
-﻿using Compze.Utilities.DependencyInjection;
-using Compze.Utilities.DependencyInjection.Abstractions;
+﻿using Compze.Utilities.Contracts;
+using Compze.Utilities.DependencyInjection;
 using Compze.Utilities.DependencyInjection.SimpleInjector;
 using JAStudio.Core.Batches;
 using JAStudio.Core.Configuration;
@@ -19,35 +19,31 @@ using JAStudio.Core.ViewModels.KanjiList;
 
 namespace JAStudio.Core;
 
-static class AppBootstrapper
+public static class AppBootstrapper
 {
-   internal static IServiceLocator Bootstrap(
-      CoreApp coreApp,
-      IBackendNoteCreator? backendNoteCreator = null,
-      IBackendDataLoader? backendDataLoader = null)
-   {
-      backendNoteCreator ??= new TestingBackendNoteCreator();
+   public static CoreApp BootstrapProduction(IEnvironmentPaths environmentPaths, IBackendNoteCreator backendNoteCreator, IBackendDataLoader backendDataLoader) =>
+      Bootstrap(environmentPaths, backendNoteCreator, backendDataLoader);
 
+   public static CoreApp BootstrapForTests()
+   {
+      Assert.State.Is(CoreApp.IsTesting);
+
+      return Bootstrap(new TestEnvironmentPaths(), new TestingBackendNoteCreator(), backendDataLoader: null);
+   }
+
+   static CoreApp Bootstrap(IEnvironmentPaths paths, IBackendNoteCreator backendNoteCreator, IBackendDataLoader? backendDataLoader)
+   {
       var container = new SimpleInjectorDependencyInjectionContainer();
       var registrar = container.Register();
 
-      var paths = coreApp.Paths;
-
-      if(CoreApp.IsTesting)
-      {
-         registrar.Register(
-            Singleton.For<INoteRepository>().CreatedBy(() => (INoteRepository)new InMemoryNoteRepository()));
-      } else
-      {
-         registrar.Register(
-            Singleton.For<INoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner) =>
-                                                          (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, paths)));
-      }
+      registrar.Register(
+         Singleton.For<INoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner) =>
+                                                       (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, paths)));
 
       registrar.Register(
          Singleton.For<IBackendNoteCreator>().Instance(backendNoteCreator),
-         Singleton.For<CoreApp>().Instance(coreApp),
          Singleton.For<IEnvironmentPaths>().Instance(paths),
+         Singleton.For<CoreApp>().CreatedBy((TemporaryServiceCollection services) => new CoreApp(services, paths)),
          Singleton.For<ConfigurationStore>().CreatedBy((TemporaryServiceCollection services) => new ConfigurationStore(paths)),
          Singleton.For<TemporaryServiceCollection>().CreatedBy(() => new TemporaryServiceCollection(container.ServiceLocator)),
          Singleton.For<JapaneseConfig>().CreatedBy((ConfigurationStore store) => store.Config()),
@@ -71,7 +67,6 @@ static class AppBootstrapper
                                                         new LocalNoteUpdater(taskRunner, vocab, kanji, sentences, config, dictLookup, vocabNoteFactory, fileSystemNoteRepository)),
          Singleton.For<TaskRunner>().CreatedBy((JapaneseConfig config) => new TaskRunner()),
          Singleton.For<CardOperations>().CreatedBy(() => new CardOperations()),
-         Singleton.For<TestCoreApp>().CreatedBy((ConfigurationStore configurationStore) => new TestCoreApp(coreApp, configurationStore)),
 
          // Services owned by JPCollection — registered as property accessors
          Singleton.For<NoteServices>().CreatedBy(() => new NoteServices(container.ServiceLocator)),
@@ -102,6 +97,6 @@ static class AppBootstrapper
 
       TemporaryServiceCollection.Instance = container.ServiceLocator.Resolve<TemporaryServiceCollection>();
 
-      return container.ServiceLocator;
+      return container.ServiceLocator.Resolve<CoreApp>();
    }
 }

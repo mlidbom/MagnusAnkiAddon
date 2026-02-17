@@ -1,6 +1,6 @@
 import typing, abc
+from JAStudio.Core.Note import IBackendNoteCreator, NoteId, CardOperations, ExternalNoteIdMap, NoteServices
 from System.Collections.Generic import Dictionary_2, List_1
-from JAStudio.Core.Note import NoteId, IBackendNoteCreator, CardOperations, ExternalNoteIdMap, NoteServices
 from JAStudio.Core.Note.Collection import CardStudyingStatus, JPCollection
 from System import IDisposable
 from JAStudio.Core.Configuration import JapaneseConfig, ConfigurationStore
@@ -11,6 +11,13 @@ from JAStudio.Core.UI.Web.Vocab import VocabNoteRenderer
 from JAStudio.Core.Batches import LocalNoteUpdater
 from Compze.Utilities.DependencyInjection.Abstractions import IServiceLocator
 from JAStudio.Core.Note.Vocabulary import VocabNoteFactory
+
+class AppBootstrapper(abc.ABC):
+    @staticmethod
+    def BootstrapForTests() -> CoreApp: ...
+    @staticmethod
+    def BootstrapProduction(environmentPaths: IEnvironmentPaths, backendNoteCreator: IBackendNoteCreator, backendDataLoader: IBackendDataLoader) -> CoreApp: ...
+
 
 class BackendData:
     def __init__(self, idMappings: Dictionary_2[int, NoteId], studyingStatuses: List_1[CardStudyingStatus]) -> None: ...
@@ -32,8 +39,6 @@ class CoreApp(IDisposable):
     def Paths(self) -> IEnvironmentPaths: ...
     @property
     def Services(self) -> TemporaryServiceCollection: ...
-    @staticmethod
-    def Bootstrap(backendNoteCreator: IBackendNoteCreator = ..., backendDataLoader: IBackendDataLoader = ..., environmentPaths: IEnvironmentPaths = ...) -> CoreApp: ...
     def Dispose(self) -> None: ...
 
 
