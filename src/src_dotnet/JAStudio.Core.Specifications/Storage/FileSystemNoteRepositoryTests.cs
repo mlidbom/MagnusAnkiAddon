@@ -15,7 +15,7 @@ public class FileSystemNoteRepositoryTests : SpecificationUsingACollection, IDis
    readonly string _tempDir;
    readonly FileSystemNoteRepository _repo;
 
-   public FileSystemNoteRepositoryTests() : base()
+   public FileSystemNoteRepositoryTests()
    {
       _serializer = GetService<NoteSerializer>();
       _tempDir = Path.Combine(Path.GetTempPath(), $"JAStudio_test_{Guid.NewGuid():N}");

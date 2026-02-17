@@ -15,15 +15,14 @@ public class When_storing_a_media_file : SpecificationStartingWithAnEmptyCollect
 {
    readonly string _tempDir = Path.Combine(Path.GetTempPath(), $"JAStudio_test_{Guid.NewGuid():N}");
    readonly string _mediaRoot;
-   readonly MediaFileIndex _index;
-   protected MediaStorageService _service = null!;
+   readonly MediaStorageService _service;
 
    public When_storing_a_media_file()
    {
       Directory.CreateDirectory(_tempDir);
       _mediaRoot = Path.Combine(_tempDir, "media");
-      _index = new MediaFileIndex(_mediaRoot, GetService<TaskRunner>());
-      _service = new MediaStorageService(_mediaRoot, _index);
+      var index = new MediaFileIndex(_mediaRoot, GetService<TaskRunner>());
+      _service = new MediaStorageService(_mediaRoot, index);
    }
 
    public new void Dispose()

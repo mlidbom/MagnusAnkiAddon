@@ -10,7 +10,7 @@ public class NoteSerializerRoundtripTests : SpecificationUsingACollection
 {
    readonly NoteSerializer _serializer;
 
-   public NoteSerializerRoundtripTests() : base() => _serializer = GetService<NoteSerializer>();
+   public NoteSerializerRoundtripTests() => _serializer = GetService<NoteSerializer>();
 
    [Fact]
    public void AllKanjiNotes_RoundtripToIdenticalJson()

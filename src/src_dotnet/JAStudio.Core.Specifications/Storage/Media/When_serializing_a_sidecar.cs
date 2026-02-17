@@ -44,21 +44,20 @@ public class When_serializing_a_sidecar
 
    public class for_an_audio_attachment_with_tts : When_serializing_a_sidecar
    {
-      readonly AudioAttachment _original;
       readonly AudioAttachment _deserialized;
 
       public for_an_audio_attachment_with_tts()
       {
-         _original = new AudioAttachment
-                     {
-                        Id = new MediaFileId(Guid.Parse("a1b2c3d4-e5f6-7890-abcd-ef1234567890")),
-                        NoteIds = [new NoteId(Guid.Parse("9f8e7d6c-5b4a-3210-fedc-ba9876543210"))],
-                        NoteSourceTag = SourceTag.Parse("source::wani::level05"),
-                        Copyright = CopyrightStatus.Free,
-                        Tts = new TtsInfo("azure-neural", "ja-JP-NanamiNeural", "2025.1")
-                     };
+         var original = new AudioAttachment
+                        {
+                           Id = new MediaFileId(Guid.Parse("a1b2c3d4-e5f6-7890-abcd-ef1234567890")),
+                           NoteIds = [new NoteId(Guid.Parse("9f8e7d6c-5b4a-3210-fedc-ba9876543210"))],
+                           NoteSourceTag = SourceTag.Parse("source::wani::level05"),
+                           Copyright = CopyrightStatus.Free,
+                           Tts = new TtsInfo("azure-neural", "ja-JP-NanamiNeural", "2025.1")
+                        };
 
-         var json = SidecarSerializer.SerializeAudio(_original);
+         var json = SidecarSerializer.SerializeAudio(original);
          _deserialized = SidecarSerializer.DeserializeAudio(json);
       }
 

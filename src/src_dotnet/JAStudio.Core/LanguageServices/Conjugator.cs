@@ -162,20 +162,15 @@ public static class Conjugator
             return word.Substring(0, word.Length - 2) + MasuFormsByIndex[stemIndex];
          }
 
-         if(TwoCharacterMappings.ContainsKey(lastTwoChars))
+         if(TwoCharacterMappings.TryGetValue(lastTwoChars, out var mapping))
          {
-            return word.Substring(0, word.Length - 2) + TwoCharacterMappings[lastTwoChars][stemIndex];
+            return word.Substring(0, word.Length - 2) + mapping[stemIndex];
          }
 
          var lastOneChar = word.Substring(word.Length - 1);
-         if(OneCharacterMappings.ContainsKey(lastOneChar))
+         if(OneCharacterMappings.TryGetValue(lastOneChar, out var characterMapping))
          {
-            if(lastOneChar != "る")
-            {
-               return word.Substring(0, word.Length - 1) + OneCharacterMappings[lastOneChar][stemIndex];
-            }
-
-            return word.Substring(0, word.Length - 1) + OneCharacterMappings[lastOneChar][stemIndex];
+            return word.Substring(0, word.Length - 1) + characterMapping[stemIndex];
          }
       }
       catch(KeyNotFoundException)

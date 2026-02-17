@@ -9,8 +9,7 @@ namespace JAStudio.Core.Configuration;
 
 public class ConfigurationStore
 {
-   readonly TemporaryServiceCollection _services;
-   internal ConfigurationStore(TemporaryServiceCollection services) => _services = services;
+   internal ConfigurationStore() {}
 
    Dictionary<string, object>? _configDict;
    Action<string>? _updateCallback;
@@ -72,7 +71,7 @@ public class ConfigurationStore
 
    Dictionary<string, string> ReadReadingsMappingsFromFile() => ParseMappingsFromString(ReadReadingsMappingsFile());
 
-   Dictionary<string, string> ParseMappingsFromString(string mappingsString)
+   static Dictionary<string, string> ParseMappingsFromString(string mappingsString)
    {
       string ParseValuePart(string valuePart)
       {

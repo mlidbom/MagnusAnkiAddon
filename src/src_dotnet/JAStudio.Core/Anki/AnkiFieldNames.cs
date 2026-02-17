@@ -1,4 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
+// ReSharper disable MemberCanBeInternal
+
+// ReSharper disable MemberHidesStaticFromOuterClass
 
 namespace JAStudio.Core.Anki;
 
@@ -26,11 +29,11 @@ public static class AnkiFieldNames
 
    public static class Vocab
    {
-      public const string Question = AnkiFieldNames.Question; //Sync only to anki, not from
-      public const string ActiveAnswer = Answer;              //Sync only to anki, not from
-      public const string AudioB = "Audio_b";                 //Sync only to anki, not from
-      public const string AudioG = "Audio_g";                 //Sync only to anki, not from
-      public const string AudioTTS = "Audio_TTS";             //Sync only to anki, not from
+      public const string Question = AnkiFieldNames.Question;
+      public const string ActiveAnswer = Answer;
+      public const string AudioB = "Audio_b";
+      public const string AudioG = "Audio_g";
+      public const string AudioTTS = "Audio_TTS";
       public const string Image = "Image";
       public const string UserImage = "__image";
 
@@ -41,9 +44,9 @@ public static class AnkiFieldNames
 
    public static class Kanji
    {
-      public const string Question = AnkiFieldNames.Question; //Sync only to anki, not from
-      public const string ActiveAnswer = Answer;              //Sync only to anki, not from
-      public const string SourceAnswer = "source_answer";     //Sync only to anki, not from
+      public const string Question = AnkiFieldNames.Question;
+      public const string ActiveAnswer = Answer;
+      public const string SourceAnswer = "source_answer";
       public const string Audio = "__audio";
       public const string PrimaryReadingsTtsAudio = "_primary_readings_tts_audio"; //Sync from anki (TTS addon writes here)
       public const string Image = "_image";
@@ -55,13 +58,13 @@ public static class AnkiFieldNames
 
    public static class Sentence
    {
-      public const string Reading = "Reading";                //Read only on first import, then sync only to anki
-      public const string Id = "ID";                          //Read only on first import, then can be ignored
-      public const string SourceQuestion = "source_question"; //Read only on first import, then can be ignored
-      public const string SourceComments = "Comments";        //Read only on first import, then can be ignored
-      public const string SourceAnswer = "source_answer";     //Read only on first import, then can be ignored
-      public const string Audio = "Audio Sentence";           //Read only on first import, then sync only to anki
-      public const string Screenshot = "Screenshot";          //Read only on first import, then sync only to anki
+      public const string Reading = "Reading";
+      public const string Id = "ID";
+      public const string SourceQuestion = "source_question";
+      public const string SourceComments = "Comments";
+      public const string SourceAnswer = "source_answer";
+      public const string Audio = "Audio Sentence";
+      public const string Screenshot = "Screenshot";
 
       // Kept for QueryBuilder Anki search queries until the Anki field is actually removed
       public const string ParsingResult = "__parsing_result";
@@ -71,11 +74,11 @@ public static class AnkiFieldNames
    [SuppressMessage("ReSharper", "UnusedMember.Global")]
    public static class ImmersionKit
    {
-      public const string Audio = "Audio Sentence";  //Read only once to do conversion to our sentence type
-      public const string Id = "ID";                 //Read only once to do conversion to our sentence type
-      public const string Screenshot = "Screenshot"; //Read only once to do conversion to our sentence type
-      public const string Reading = "Reading";       //Read only once to do conversion to our sentence type
-      public const string Answer = "English";        //Read only once to do conversion to our sentence type
-      public const string Question = "Expression";   //Read only once to do conversion to our sentence type
+      public const string Audio = "Audio Sentence";
+      public const string Id = "ID";
+      public const string Screenshot = "Screenshot";
+      public const string Reading = "Reading";
+      public const string Answer = "English";
+      public const string Question = "Expression";
    }
 }
