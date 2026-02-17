@@ -3,7 +3,7 @@
    <Project Path="JAStudio.Core.Specifications/JAStudio.Core.Specifications.csproj" />
    <Project Path="JAStudio.Core\JAStudio.Core.csproj" />
    <Project Path="JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
-   <Project Path="JAStudio.UI.Tests/JAStudio.UI.Tests.csproj" />
+   <Project Path="JAStudio.UI.Specifications/JAStudio.UI.Specifications.csproj" />
    <Project Path="JAStudio.UI\JAStudio.UI.csproj" />
    <Project Path="JAStudio.UI.DesktopHost\JAStudio.UI.DesktopHost.csproj" />
 </Solution>

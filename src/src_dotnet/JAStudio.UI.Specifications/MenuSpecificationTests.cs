@@ -1,7 +1,7 @@
 using JAStudio.UI.Menus;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 
-namespace JAStudio.UI.Tests;
+namespace JAStudio.UI.Specifications;
 
 /// <summary>
 /// Demonstrates the benefit of UI-agnostic menu specifications:
