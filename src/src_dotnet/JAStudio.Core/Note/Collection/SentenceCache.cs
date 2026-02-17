@@ -15,7 +15,7 @@ class SentenceCache : NoteCache<SentenceNote, SentenceSnapshot>
    readonly Dictionary<string, HashSet<SentenceNote>> _byUserMarkedInvalidVocab = new();
    readonly Dictionary<NoteId, HashSet<SentenceNote>> _byVocabId = new();
 
-   public SentenceCache(NoteServices noteServices) : base(typeof(SentenceNote), (services, data) => new SentenceNote(services, SentenceData.FromAnkiNoteData(data)), noteServices) {}
+   public SentenceCache(NoteServices noteServices) : base((services, data) => new SentenceNote(services, SentenceData.FromAnkiNoteData(data)), noteServices) {}
 
    protected override SentenceNote CreateNoteByMergingAnkiData(NoteServices services, SentenceNote existing, NoteData ankiData)
    {

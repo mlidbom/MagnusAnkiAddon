@@ -12,7 +12,7 @@ namespace JAStudio.Core.Note.CorpusData;
 [MemoryPackable]
 public partial class SentenceData : CorpusDataBase
 {
-   static readonly SentenceConfigurationSerializer ConfigSerializer = SentenceConfigurationSerializer.Instance;
+   static readonly ISentenceConfigurationSerializer ConfigSerializer = ISentenceConfigurationSerializer.Instance;
    static readonly ParsingResultSerializer ParsingSerializer = new();
 
    public string SourceQuestion { get; init; } = string.Empty;

@@ -10,14 +10,14 @@ public class ParsingResult
    public string Sentence { get; }
    public string ParserVersion { get; }
 
-   public ParsingResult(List<ParsedMatch> words, string sentence, string parserVersion)
+   internal ParsingResult(List<ParsedMatch> words, string sentence, string parserVersion)
    {
       ParsedWords = words;
-      Sentence = sentence?.Replace(StringExtensions.InvisibleSpace, string.Empty) ?? string.Empty;
-      ParserVersion = parserVersion ?? string.Empty;
+      Sentence = sentence.Replace(StringExtensions.InvisibleSpace, string.Empty);
+      ParserVersion = parserVersion;
    }
 
-   public HashSet<NoteId> MatchedVocabIds
+   internal HashSet<NoteId> MatchedVocabIds
    {
       get
       {
@@ -28,12 +28,12 @@ public class ParsingResult
       }
    }
 
-   public List<string> ParsedWordsStrings()
+   internal List<string> ParsedWordsStrings()
    {
       return ParsedWords.Select(p => p.ParsedForm).Distinct().ToList();
    }
 
-   public static ParsingResult FromAnalysis(TextAnalysis analysis) =>
+   internal static ParsingResult FromAnalysis(TextAnalysis analysis) =>
       new(
          analysis.ValidMatches.Select(ParsedMatch.FromMatch).ToList(),
          analysis.Text,

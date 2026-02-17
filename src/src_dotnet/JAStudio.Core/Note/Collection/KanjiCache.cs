@@ -11,7 +11,7 @@ class KanjiCache : NoteCache<KanjiNote, KanjiSnapshot>
    readonly Dictionary<string, HashSet<KanjiNote>> _byRadical = new();
    readonly Dictionary<string, HashSet<KanjiNote>> _byReading = new();
 
-   public KanjiCache(NoteServices noteServices) : base(typeof(KanjiNote), (services, data) => new KanjiNote(services, KanjiData.FromAnkiNoteData(data)), noteServices) {}
+   public KanjiCache(NoteServices noteServices) : base((services, data) => new KanjiNote(services, KanjiData.FromAnkiNoteData(data)), noteServices) {}
 
    protected override KanjiNote CreateNoteByMergingAnkiData(NoteServices services, KanjiNote existing, NoteData ankiData)
    {

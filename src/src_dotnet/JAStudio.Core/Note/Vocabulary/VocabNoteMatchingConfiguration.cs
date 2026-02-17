@@ -14,7 +14,7 @@ public class VocabNoteMatchingConfiguration
    public VocabNoteMatchingConfiguration(VocabNote vocab, VocabData? data, NoteGuard guard)
    {
       _vocab = vocab;
-      ConfigurableRules = new VocabNoteMatchingRules(vocab, data?.MatchingRules, guard);
+      ConfigurableRules = new VocabNoteMatchingRules(data?.MatchingRules, guard);
       RequiresForbids = new VocabMatchingRulesConfigurationRequiresForbidsFlags(vocab);
       BoolFlags = new VocabMatchingRulesConfigurationBoolFlags(vocab);
    }

@@ -1,12 +1,11 @@
 using System;
 using System.Threading;
-using JAStudio.Core.Configuration;
 
 namespace JAStudio.Core.TaskRunners;
 
 public class TaskRunner
 {
-   internal TaskRunner(JapaneseConfig _) {}
+   internal TaskRunner() {}
 
    Func<string, int, IScopePanel?, IScopePanel>? _uiScopePanelFactory;
    Func<IScopePanel, string, bool, ITaskProgressRunner>? _uiTaskRunnerFactory;

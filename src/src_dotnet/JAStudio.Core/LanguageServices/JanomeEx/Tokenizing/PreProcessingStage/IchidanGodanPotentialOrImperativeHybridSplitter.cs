@@ -143,8 +143,7 @@ static class IchidanGodanPotentialOrImperativeHybridSplitter
          return true;
       } else if(godanWordInfo != null && godanWordInfo.IsIntransitive && token.Previous != null && token.Previous.Surface == "を")
       {
-         // Intransitive verbs don't take を so this is most likely actually the ichidan verb
-         return false;
+         return false; // Intransitive verbs don't take を so this is most likely actually the ichidan verb
       } else if(token.Next != null && token.Next.CannotFollowIchidanStem())
       {
          return true;

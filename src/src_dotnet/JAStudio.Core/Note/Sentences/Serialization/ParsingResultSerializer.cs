@@ -42,9 +42,9 @@ class ParsingResultSerializer : IObjectSerializer<ParsingResult>
       }
    }
 
-   string ReplaceNewline(string value) => value.Replace("\n", NewlineReplacement);
+   static string ReplaceNewline(string value) => value.Replace("\n", NewlineReplacement);
 
-   string RestoreNewline(string serializedValue) => serializedValue.Replace(NewlineReplacement, "\n");
+   static string RestoreNewline(string serializedValue) => serializedValue.Replace(NewlineReplacement, "\n");
 
    public string Serialize(ParsingResult instance)
    {

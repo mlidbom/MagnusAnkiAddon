@@ -66,7 +66,7 @@ static class AppBootstrapper
          Singleton.For<ExternalNoteIdMap>().CreatedBy(() => new ExternalNoteIdMap()),
          Singleton.For<LocalNoteUpdater>().CreatedBy((TaskRunner taskRunner, VocabCollection vocab, KanjiCollection kanji, SentenceCollection sentences, JapaneseConfig config, DictLookup dictLookup, VocabNoteFactory vocabNoteFactory, FileSystemNoteRepository fileSystemNoteRepository) =>
                                                         new LocalNoteUpdater(taskRunner, vocab, kanji, sentences, config, dictLookup, vocabNoteFactory, fileSystemNoteRepository)),
-         Singleton.For<TaskRunner>().CreatedBy((JapaneseConfig config) => new TaskRunner(config)),
+         Singleton.For<TaskRunner>().CreatedBy((JapaneseConfig config) => new TaskRunner()),
          Singleton.For<CardOperations>().CreatedBy(() => new CardOperations()),
          Singleton.For<TestCoreApp>().CreatedBy((ConfigurationStore configurationStore) => new TestCoreApp(coreApp, configurationStore)),
 

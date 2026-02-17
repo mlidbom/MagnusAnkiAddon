@@ -88,7 +88,6 @@ public class VocabNoteMatchingRulesSerializer : IObjectSerializer<VocabNoteMatch
 
 public class VocabNoteMatchingRules
 {
-   readonly VocabNote _vocab;
    readonly NoteGuard _guard;
    readonly VocabNoteMatchingRulesData _data;
 
@@ -98,9 +97,8 @@ public class VocabNoteMatchingRules
    public HashSet<string> SuffixIsNot => _data.SuffixIsNot;
    public HashSet<string> RequiredPrefix => _data.RequiredPrefix;
 
-   public VocabNoteMatchingRules(VocabNote vocab, VocabMatchingRulesSubData? subData, NoteGuard guard)
+   internal VocabNoteMatchingRules(VocabMatchingRulesSubData? subData, NoteGuard guard)
    {
-      _vocab = vocab;
       _guard = guard;
       _data = subData != null
                  ? new VocabNoteMatchingRulesData(

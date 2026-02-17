@@ -57,7 +57,7 @@ public class VocabNoteForms
       {
          return !_vocab.Services.Collection.Vocab.Cache.WithQuestion(form)
                        .Any(formOwningVocab =>
-                               formOwningVocab != _vocab &&
+                               !Equals(formOwningVocab, _vocab) &&
                                formOwningVocab.Forms.AllSet().Contains(_vocab.GetQuestion()));
       }
 

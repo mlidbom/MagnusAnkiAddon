@@ -18,7 +18,7 @@ class VocabCache : NoteCache<VocabNote, VocabSnapshot>
    readonly Dictionary<string, HashSet<VocabNote>> _byReading = new();
    readonly Dictionary<string, HashSet<VocabNote>> _byStem = new();
 
-   public VocabCache(NoteServices noteServices) : base(typeof(VocabNote), (services, data) => new VocabNote(services, VocabData.FromAnkiNoteData(data)), noteServices) {}
+   public VocabCache(NoteServices noteServices) : base((services, data) => new VocabNote(services, VocabData.FromAnkiNoteData(data)), noteServices) {}
 
    protected override VocabNote CreateNoteByMergingAnkiData(NoteServices services, VocabNote existing, NoteData ankiData)
    {

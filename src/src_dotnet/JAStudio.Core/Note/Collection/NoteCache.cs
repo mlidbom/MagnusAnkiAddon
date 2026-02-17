@@ -19,21 +19,14 @@ class CachedNote
    }
 }
 
-abstract class NoteCacheBase<TNote> : IExternalNoteUpdateHandler where TNote : JPNote
+abstract class NoteCacheBase<TNote>(Func<NoteServices, NoteData, TNote> noteConstructor, NoteServices noteServices) : IExternalNoteUpdateHandler
+   where TNote : JPNote
 {
-   readonly Func<NoteServices, NoteData, TNote> _noteConstructor;
-   readonly Type _noteType;
+   readonly Func<NoteServices, NoteData, TNote> _noteConstructor = noteConstructor;
    protected readonly Dictionary<NoteId, TNote> _byId = new();
    readonly List<Action<TNote>> _updateListeners = [];
-   readonly NoteServices _noteServices;
+   readonly NoteServices _noteServices = noteServices;
    protected readonly IMonitorCE _monitor = IMonitorCE.WithDefaultTimeout();
-
-   protected NoteCacheBase(Type cachedNoteType, Func<NoteServices, NoteData, TNote> noteConstructor, NoteServices noteServices)
-   {
-      _noteConstructor = noteConstructor;
-      _noteType = cachedNoteType;
-      _noteServices = noteServices;
-   }
 
    public void OnNoteUpdated(dynamic listener)
    {
@@ -179,15 +172,12 @@ abstract class NoteCacheBase<TNote> : IExternalNoteUpdateHandler where TNote : J
    }
 }
 
-abstract class NoteCache<TNote, TSnapshot> : NoteCacheBase<TNote>
+abstract class NoteCache<TNote, TSnapshot>(Func<NoteServices, NoteData, TNote> noteConstructor, NoteServices noteServices) : NoteCacheBase<TNote>(noteConstructor, noteServices)
    where TNote : JPNote
    where TSnapshot : CachedNote
 {
    readonly Dictionary<string, HashSet<TNote>> _byQuestion = new();
    readonly Dictionary<NoteId, TSnapshot> _snapshotById = new();
-
-   protected NoteCache(Type cachedNoteType, Func<NoteServices, NoteData, TNote> noteConstructor, NoteServices noteServices)
-      : base(cachedNoteType, noteConstructor, noteServices) {}
 
    public List<TNote> All() => _monitor.Read(() => _byId.Values.ToList());
 

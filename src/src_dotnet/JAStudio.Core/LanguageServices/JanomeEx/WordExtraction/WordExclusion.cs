@@ -6,30 +6,22 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction;
 
 public sealed class WordExclusion
 {
-   const string Secret = "aoesunth9cgrcgf";
    const int NoIndex = -1;
 
    public string Word { get; }
    public int Index { get; }
-   readonly string _matchPart;
 
-   WordExclusion(string word, int index, string secret)
+   WordExclusion(string word, int index)
    {
-      if(secret != Secret)
-      {
-         throw new InvalidOperationException("please use the factory methods instead of this private constructor");
-      }
-
       Word = word;
       Index = index;
-      _matchPart = word.Split('｜')[0]; // VocabNoteQuestion.DISAMBIGUATION_MARKER
    }
 
    public bool ExcludesFormAtIndex(string form, int index) => form == Word && (Index == NoIndex || Index == index);
 
-   public static WordExclusion Global(string exclusion) => new(exclusion.Trim(), NoIndex, Secret);
+   public static WordExclusion Global(string exclusion) => new(exclusion.Trim(), NoIndex);
 
-   public static WordExclusion AtIndex(string exclusion, int index) => new(exclusion.Trim(), index, Secret);
+   public static WordExclusion AtIndex(string exclusion, int index) => new(exclusion.Trim(), index);
 
    /// <summary>
    /// Creates a WordExclusion from a string in the format "word:index" or "word" for global exclusions.
@@ -74,7 +66,6 @@ public sealed class WordExclusion
    public static WordExclusion FromReader(JsonReader reader) =>
       new(
          reader.GetString("word"),
-         reader.GetInt("index"),
-         Secret
+         reader.GetInt("index")
       );
 }

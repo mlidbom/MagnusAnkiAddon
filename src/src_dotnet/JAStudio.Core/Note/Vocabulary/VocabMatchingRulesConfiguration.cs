@@ -33,8 +33,6 @@ public class VocabMatchingRulesConfigurationRequiresForbidsFlags
    {
       _vocab = vocab;
 
-      var breakpoint = vocab.Question.DisambiguationName;
-
       MasuStem = AddFlag(50, 1, Tags.Vocab.Matching.Requires.MasuStem, Tags.Vocab.Matching.Forbids.MasuStem);
       Godan = AddFlag(50, 1, Tags.Vocab.Matching.Requires.Godan, Tags.Vocab.Matching.Forbids.Godan);
       Ichidan = AddFlag(50, 1, Tags.Vocab.Matching.Requires.Ichidan, Tags.Vocab.Matching.Forbids.Ichidan);
