@@ -13,7 +13,6 @@ using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.Storage;
 using JAStudio.Core.Storage.Media;
 using JAStudio.Core.TaskRunners;
-using JAStudio.Core.TestUtils;
 using JAStudio.Core.UI.Web.Kanji;
 using JAStudio.Core.UI.Web.Sentence;
 using JAStudio.Core.UI.Web.Vocab;
@@ -23,40 +22,23 @@ namespace JAStudio.Core;
 
 public static class AppBootstrapper
 {
-   public static CoreApp BootstrapProduction(
-      IEnvironmentPaths environmentPaths,
-      IBackendNoteCreator backendNoteCreator,
-      IBackendDataLoader backendDataLoader,
-      IFatalErrorHandler fatalErrorHandler,
-      Func<ExternalNoteIdMap, ICardOperations> cardOperationsFactory,
-      string configJson,
-      System.Action<string> configUpdateCallback) =>
-      Bootstrap(environmentPaths, backendNoteCreator, backendDataLoader,
-         fatalErrorHandler: fatalErrorHandler,
-         cardOperationsFactory: cardOperationsFactory,
-         configDictSource: new AnkiConfigDictSource(configJson, configUpdateCallback));
+   public static CoreApp BootstrapProduction(IBootstrapDependencies deps) => Bootstrap(deps);
 
    public static CoreApp BootstrapForTests()
    {
       Assert.State.Is(CoreApp.IsTesting);
 
-      return Bootstrap(new TestEnvironmentPaths(), new TestingBackendNoteCreator(), backendDataLoader: null,
-         fatalErrorHandler: new RethrowingFatalErrorHandler(),
-         readingsMappingsSource: new TestReadingsMappingsSource(),
-         configDictSource: new TestConfigDictSource());
+      return Bootstrap(new TestBootstrapDependencies());
    }
 
-   static CoreApp Bootstrap(
-      IEnvironmentPaths paths,
-      IBackendNoteCreator backendNoteCreator,
-      IBackendDataLoader? backendDataLoader,
-      IFatalErrorHandler fatalErrorHandler,
-      Func<ExternalNoteIdMap, ICardOperations>? cardOperationsFactory = null,
-      IConfigDictSource? configDictSource = null,
-      IReadingsMappingsSource? readingsMappingsSource = null)
+   static CoreApp Bootstrap(IBootstrapDependencies deps)
    {
-      configDictSource ??= new TestConfigDictSource();
-      readingsMappingsSource ??= new FileReadingsMappingsSource(paths);
+      var paths = deps.EnvironmentPaths;
+      var backendNoteCreator = deps.BackendNoteCreator;
+      var backendDataLoader = deps.BackendDataLoader;
+      var configDictSource = deps.ConfigDictSource;
+      var readingsMappingsSource = deps.ReadingsMappingsSource ?? new FileReadingsMappingsSource(paths);
+      var cardOperationsFactory = deps.CardOperationsFactory;
       var container = new SimpleInjectorDependencyInjectionContainer();
       var registrar = container.Register();
 
@@ -93,8 +75,8 @@ public static class AppBootstrapper
             cardOperationsFactory != null ? cardOperationsFactory(idMap) : (ICardOperations)new NoOpCardOperations()),
          Singleton.For<LocalNoteUpdater>().CreatedBy((TaskRunner taskRunner, VocabCollection vocab, KanjiCollection kanji, SentenceCollection sentences, JapaneseConfig config, DictLookup dictLookup, VocabNoteFactory vocabNoteFactory, FileSystemNoteRepository fileSystemNoteRepository) =>
                                                         new LocalNoteUpdater(taskRunner, vocab, kanji, sentences, config, dictLookup, vocabNoteFactory, fileSystemNoteRepository)),
-         Singleton.For<TaskRunner>().CreatedBy(() => new TaskRunner()),
-         Singleton.For<BackgroundTaskManager>().CreatedBy(() => new BackgroundTaskManager(fatalErrorHandler)),
+         Singleton.For<TaskRunner>().CreatedBy(() => new TaskRunner(deps.TaskProgressUI)),
+         Singleton.For<BackgroundTaskManager>().CreatedBy(() => new BackgroundTaskManager(deps.FatalErrorHandler)),
 
          // Services owned by JPCollection — registered as property accessors
          Singleton.For<NoteServices>().CreatedBy((IServiceLocator serviceLocator) => new NoteServices(serviceLocator)),

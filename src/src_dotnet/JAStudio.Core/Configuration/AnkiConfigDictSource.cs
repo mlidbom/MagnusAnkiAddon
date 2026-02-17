@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace JAStudio.Core.Configuration;
 
-class AnkiConfigDictSource : IConfigDictSource
+public class AnkiConfigDictSource : IConfigDictSource
 {
    readonly Dictionary<string, object> _configDict;
    readonly Action<string> _updateCallback;

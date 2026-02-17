@@ -39,8 +39,6 @@ public class JapaneseConfig
    public ConfigurationValue<bool> PreventDoubleClicks { get; }
    public ConfigurationValue<bool> PreferDefaultMnemonicsToSourceMnemonics { get; }
 
-   public List<ConfigurationValue<bool>> MiscToggles { get; }
-
    // Sentence view toggles
    public ConfigurationValue<bool> ShowCompoundPartsInSentenceBreakdown { get; }
    public ConfigurationValue<bool> ShowKanjiInSentenceBreakdown { get; }
@@ -66,18 +64,12 @@ public class JapaneseConfig
    public ConfigurationValue<bool> EnableGarbageCollectionDuringBatches { get; }
    public ConfigurationValue<bool> EnableAutomaticGarbageCollection { get; }
 
-   public List<ConfigurationValue<bool>> PerformanceAndMemoryToggles { get; }
-
    // Developer only toggles
    public ConfigurationValue<bool> TrackInstancesInMemory { get; }
    public ConfigurationValue<bool> EnableTraceMalloc { get; }
    public ConfigurationValue<bool> LogWhenFlushingNotes { get; }
 
-   public List<ConfigurationValue<bool>> DeveloperOnlyToggles { get; }
-
-   public List<(string, List<ConfigurationValue<bool>>)> FeatureToggles { get; }
-
-   public Dictionary<string, string> ReadingsMappingsDict { get; private set; }
+   internal Dictionary<string, string> ReadingsMappingsDict { get; private set; }
 
    static class To
    {
@@ -134,16 +126,6 @@ public class JapaneseConfig
       PreventDoubleClicks = Add(New("prevent_double_clicks", "Prevent double clicks", true, To.Bool));
       PreferDefaultMnemonicsToSourceMnemonics = Add(New("prefer_default_mnemocs_to_source_mnemonics", "Prefer default mnemonics to source mnemonics", false, To.Bool));
 
-      MiscToggles =
-      [
-         YomitanIntegrationCopyAnswerToClipboard,
-         AnkiInternalFsrsSetEnableFsrsShortTermWithSteps,
-         DecreaseFailedCardIntervals,
-         PreventDoubleClicks,
-         BoostFailedCardAllowedTime,
-         PreferDefaultMnemonicsToSourceMnemonics
-      ];
-
       // sentence_view_toggles
       ShowCompoundPartsInSentenceBreakdown = Add(New("show_compound_parts_in_sentence_breakdown", "Show compound parts in sentence breakdown", true, To.Bool));
       ShowKanjiInSentenceBreakdown = Add(New("show_kanji_in_sentence_breakdown", "Show kanji in sentence breakdown", true, To.Bool));
@@ -181,36 +163,10 @@ public class JapaneseConfig
       EnableGarbageCollectionDuringBatches = Add(New("enable_garbage_collection_during_batches", "Enable Batch GC. [Requires restart]", true, To.Bool));
       EnableAutomaticGarbageCollection = Add(New("enable_automatic_garbage_collection", "Enable automatic GC. [Requires restart. Reduces memory usage the most but slows Anki down and may cause crashes due to Qt incompatibility.]", false, To.Bool));
 
-      PerformanceAndMemoryToggles =
-      [
-         LoadStudioInForeground,
-         LoadJamdictDbIntoMemory,
-         PreCacheCardStudyingStatus,
-         PreventAnkiFromGarbageCollectingEveryTimeAWindowCloses,
-         DisableAllAutomaticGarbageCollection,
-         EnableGarbageCollectionDuringBatches,
-         EnableAutomaticGarbageCollection
-      ];
-
       // developer only toggles
       TrackInstancesInMemory = Add(New("track_instances_in_memory", "Track instances in memory. [Requires restart.. Only useful to developers and will use extra memory.]", false, To.Bool));
       EnableTraceMalloc = Add(New("enable_trace_malloc", "Enable tracemalloc. Will show memory usage in logs and increase memory usage A LOT. [Requires restart]", false, To.Bool));
       LogWhenFlushingNotes = Add(New("log_when_flushing_notes", "Log when flushing notes to backend.", false, To.Bool));
-
-      DeveloperOnlyToggles =
-      [
-         EnableTraceMalloc,
-         TrackInstancesInMemory,
-         LogWhenFlushingNotes
-      ];
-
-      FeatureToggles =
-      [
-         ("Sentence Display", SentenceViewToggles),
-         ("Misc", MiscToggles),
-         ("Performance and memory usage", PerformanceAndMemoryToggles),
-         ("Developers only", DeveloperOnlyToggles)
-      ];
 
       ReadingsMappingsDict = _store.GetReadingsMappings();
    }

@@ -25,8 +25,8 @@ public class DictLookup
 
    readonly JamdictThreadingWrapper _jamdictThreadingWrapper;
 
-   LazyCE<HashSet<string>> _allWordForms { get; }
-   LazyCE<HashSet<string>> _allNameForms { get; }
+   readonly LazyCE<HashSet<string>> _allWordForms;
+   readonly LazyCE<HashSet<string>> _allNameForms;
 
    // Cache dictionaries for @cache decorator equivalent
    static readonly ConcurrentDictionary<(string, string), DictLookupResult> TryLookupWithReadingCache = new();
@@ -75,7 +75,7 @@ public class DictLookup
    }
 
    HashSet<string> AllNameForms() => _allNameForms.Value;
-   HashSet<string> AllWordForms() => _allNameForms.Value;
+   HashSet<string> AllWordForms() => _allWordForms.Value;
 
    public DictLookupResult LookupVocabWordOrName(VocabNote vocab)
    {

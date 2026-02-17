@@ -1,6 +1,12 @@
 import typing, abc
+from System import Action_1, Func_2, ValueTuple_2, Action
 from System.Collections.Generic import Dictionary_2, List_1
-from System import Func_2, Action_1, ValueTuple_2, Action
+
+class AnkiConfigDictSource(IConfigDictSource):
+    def __init__(self, json: str, updateCallback: Action_1[str]) -> None: ...
+    def Load(self) -> Dictionary_2[str, typing.Any]: ...
+    def Persist(self, json: str) -> None: ...
+
 
 class ConfigurationStore:
     def Config(self) -> JapaneseConfig: ...

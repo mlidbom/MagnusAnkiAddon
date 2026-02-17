@@ -1,5 +1,5 @@
 import typing, abc
-from System import Action, Func_1, Exception, IDisposable, Action_1, Func_2, TimeSpan, Func_4, IEquatable_1
+from System import Action, Func_1, Exception, IDisposable, Action_1, Func_2, TimeSpan, IEquatable_1
 from System.Threading.Tasks import Task, Task_1, ParallelOptions
 from System.Diagnostics import Stopwatch
 from System.Collections.Generic import List_1, IEnumerable_1
@@ -7,7 +7,6 @@ from System.ComponentModel import INotifyPropertyChanged
 from System.Collections.ObjectModel import ObservableCollection_1
 
 class BackgroundTaskManager:
-    def __init__(self, fatalErrorHandler: IFatalErrorHandler) -> None: ...
     def Run(self, action: Action) -> None: ...
     def RunAsync(self, action: Func_1[Task]) -> None: ...
 
@@ -141,6 +140,17 @@ class ITaskProgressRunner(IDisposable, typing.Protocol):
 
 
 
+class ITaskProgressUI(typing.Protocol):
+    @abc.abstractmethod
+    def CreateScopePanel(self, scopeTitle: str, depth: int, parentScope: IScopePanel) -> IScopePanel: ...
+    @abc.abstractmethod
+    def CreateTaskRunner(self, scopePanel: IScopePanel, labelText: str, allowCancel: bool) -> ITaskProgressRunner: ...
+    @abc.abstractmethod
+    def HoldDialog(self) -> None: ...
+    @abc.abstractmethod
+    def ReleaseDialog(self) -> None: ...
+
+
 class NotifyPropertyChangedBase(INotifyPropertyChanged, abc.ABC):
     pass
 
@@ -194,9 +204,6 @@ class TaskProgressViewModel(NotifyPropertyChangedBase):
 
 class TaskRunner:
     def Current(self, scopeTitle: str, forceHide: bool = ..., allowCancel: bool = ...) -> ITaskProgressRunner: ...
-    def SetDialogLifetimeCallbacks(self, hold: Action, release: Action) -> None: ...
-    def SetUiScopePanelFactory(self, factory: Func_4[str, int, IScopePanel, IScopePanel]) -> None: ...
-    def SetUiTaskRunnerFactory(self, factory: Func_4[IScopePanel, str, bool, ITaskProgressRunner]) -> None: ...
 
 
 class ThreadCount(IEquatable_1[ThreadCount]):

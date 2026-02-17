@@ -5,47 +5,11 @@ namespace JAStudio.Core.TaskRunners;
 
 public class TaskRunner
 {
-   internal TaskRunner() {}
+   readonly ITaskProgressUI _progressUI;
 
-   Func<string, int, IScopePanel?, IScopePanel>? _uiScopePanelFactory;
-   Func<IScopePanel, string, bool, ITaskProgressRunner>? _uiTaskRunnerFactory;
-
-   /// <summary>
-   /// Register the factory that creates a visible <see cref="ITaskProgressRunner"/>
-   /// whose child panels live inside the given <see cref="IScopePanel"/>.
-   /// </summary>
-   public void SetUiTaskRunnerFactory(Func<IScopePanel, string, bool, ITaskProgressRunner> factory)
+   internal TaskRunner(ITaskProgressUI progressUI)
    {
-      if(_uiTaskRunnerFactory != null)
-      {
-         throw new InvalidOperationException("UI task runner factory already set.");
-      }
-
-      _uiTaskRunnerFactory = factory;
-   }
-
-   /// <summary>
-   /// Register the factory that creates a scope-level panel in the UI.
-   /// The panel shows a heading and elapsed time for the scope.
-   /// Parameters: (scopeTitle, nestingDepth, parentScopePanel) → IScopePanel
-   /// </summary>
-   public void SetUiScopePanelFactory(Func<string, int, IScopePanel?, IScopePanel> factory)
-   {
-      if(_uiScopePanelFactory != null)
-      {
-         throw new InvalidOperationException("UI scope panel factory already set.");
-      }
-
-      _uiScopePanelFactory = factory;
-   }
-
-   Action? _holdDialog;
-   Action? _releaseDialog;
-
-   public void SetDialogLifetimeCallbacks(Action hold, Action release)
-   {
-      _holdDialog = hold;
-      _releaseDialog = release;
+      _progressUI = progressUI;
    }
 
    internal ITaskProgressRunner Create(IScopePanel? scopePanel, string labelText, bool? visible = null, bool allowCancel = true)
@@ -57,24 +21,14 @@ public class TaskRunner
          return new InvisibleTaskRunner(labelText);
       }
 
-      if(_uiTaskRunnerFactory == null)
-      {
-         throw new InvalidOperationException("No UI task runner factory set. Set it with TaskRunner.SetUiTaskRunnerFactory().");
-      }
-
-      return _uiTaskRunnerFactory(scopePanel, labelText, allowCancel);
+      return _progressUI.CreateTaskRunner(scopePanel, labelText, allowCancel);
    }
 
    internal IScopePanel? CreateScopePanel(string scopeTitle, bool visible, int depth)
    {
       if(!visible) return null;
 
-      if(_uiScopePanelFactory == null)
-      {
-         throw new InvalidOperationException("No UI scope panel factory set. Set it with TaskRunner.SetUiScopePanelFactory().");
-      }
-
-      return _uiScopePanelFactory(scopeTitle, depth, _parentScope.Value);
+      return _progressUI.CreateScopePanel(scopeTitle, depth, _parentScope.Value);
    }
 
    /// <summary>
@@ -122,7 +76,7 @@ public class TaskRunner
 
       if(Interlocked.Increment(ref _openScopes) == 1 && visible)
       {
-         _holdDialog?.Invoke();
+         _progressUI.HoldDialog();
       }
 
       var scope = new TaskRunnerScope(this, scopeTitle, visible, allowCancel, depth, previousNestingDepth, _parentScope.Value, _currentLogEntry.Value);
@@ -139,7 +93,7 @@ public class TaskRunner
 
       if(Interlocked.Decrement(ref _openScopes) == 0)
       {
-         _releaseDialog?.Invoke();
+         _progressUI.ReleaseDialog();
       }
    }
 }

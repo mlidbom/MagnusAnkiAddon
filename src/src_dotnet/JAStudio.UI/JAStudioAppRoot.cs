@@ -10,8 +10,6 @@ using Compze.Utilities.Logging;
 using Compze.Utilities.SystemCE;
 using JAStudio.Anki;
 using JAStudio.Core;
-using JAStudio.Core.TaskRunners;
-using JAStudio.UI.Dialogs;
 using JAStudio.UI.Utils;
 
 namespace JAStudio.UI;
@@ -29,6 +27,7 @@ public class JAStudioAnkiAppRoot
 #pragma warning restore CS0414
 
    // ReSharper disable once MemberCanBePrivate.Global used from python
+   // ReSharper disable once UnusedMember.Global
    public TemporaryServiceCollection Services => _coreApp.Services;
 
    // ReSharper disable once UnusedAutoPropertyAccessor.Global used from python
@@ -52,14 +51,7 @@ public class JAStudioAnkiAppRoot
          Debugger.Launch();
       }
 
-      var app = AppBootstrapper.BootstrapProduction(
-         environmentPaths: new AnkiEnvironmentPaths(),
-         backendNoteCreator: new AnkiBackendNoteCreator(),
-         backendDataLoader: new AnkiBackendDataLoader(),
-         fatalErrorHandler: new AvaloniaFatalErrorHandler(),
-         cardOperationsFactory: idMap => new AnkiCardOperationsImpl(idMap),
-         configJson: configJson,
-         configUpdateCallback: configUpdateCallback);
+      var app = AppBootstrapper.BootstrapProduction(new AnkiBootstrapDependencies(configJson, configUpdateCallback));
       CompzeLogger.LogLevel = LogLevel.Info;
 
       var uiThread = new Thread(() =>
@@ -83,32 +75,6 @@ public class JAStudioAnkiAppRoot
       UIApp.WaitForInitialization(TimeSpan.FromSeconds(30));
 
       var root = new JAStudioAnkiAppRoot(app) { _uiThread = uiThread };
-
-      // TODO: urgent:  this is a wiring concern and should probably not be here
-      root.Services.TaskRunner.SetUiScopePanelFactory((scopeTitle, depth, parentScope) =>
-      {
-         var viewModel = new TaskProgressScopeViewModel(scopeTitle, depth);
-         if(parentScope != null)
-         {
-            Dispatcher.UIThread.Invoke(() => parentScope.ViewModel.Children.Add(viewModel));
-            return new AvaloniaScopePanel(viewModel, topLevelPanel: null, parentScope);
-         }
-
-         var panel = Dispatcher.UIThread.Invoke(() => MultiTaskProgressDialog.CreateScopePanel(viewModel, depth));
-         return new AvaloniaScopePanel(viewModel, panel, parentScope: null);
-      });
-
-      root.Services.TaskRunner.SetUiTaskRunnerFactory((scopePanel, labelText, allowCancel) =>
-      {
-         var avaloniaScope = (AvaloniaScopePanel)scopePanel;
-         return new AvaloniaTaskProgressRunner(avaloniaScope.ViewModel, labelText, allowCancel);
-      });
-
-      //TODO: urgent: this is a bleeding mess of a dependency, implementing a vital part of a component through a callback here. Jeez!
-      // Keep the progress dialog window open across nested task scopes
-      root.Services.TaskRunner.SetDialogLifetimeCallbacks(
-         () => Dispatcher.UIThread.Invoke(MultiTaskProgressDialog.Hold),
-         () => Dispatcher.UIThread.Post(MultiTaskProgressDialog.Release));
 
       return root;
    }
@@ -181,19 +147,5 @@ public class JAStudioAnkiAppRoot
          _reloadCts.Dispose();
          _reloadCts = null;
       }
-   }
-
-   /// <summary>
-   /// Shutdown Avalonia. Call at addon unload.
-   /// </summary>
-   public void ShutdownUIFramework()
-   {
-      Dispatcher.UIThread.Invoke(() =>
-      {
-         if(Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
-         {
-            lifetime.Shutdown();
-         }
-      });
    }
 }
