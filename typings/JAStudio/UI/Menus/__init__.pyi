@@ -2,7 +2,6 @@ import abc
 from JAStudio.Core import TemporaryServiceCollection
 from JAStudio.UI.Menus.UIAgnosticMenuStructure import SpecMenuItem
 from System.Collections.Generic import IReadOnlyList_1, List_1
-from JAStudio.UI import AppDialogs
 from System import Func_1
 from Avalonia.Controls import MenuItem
 from JAStudio.Core.Note import NoteId
@@ -13,7 +12,7 @@ class BrowserMenus:
 
 
 class JapaneseMainMenu:
-    def __init__(self, services: TemporaryServiceCollection, dialogs: AppDialogs) -> None: ...
+    def __init__(self, services: TemporaryServiceCollection) -> None: ...
     def BuildMenuSpec(self, getClipboardContent: Func_1[str]) -> List_1[SpecMenuItem]: ...
 
 

@@ -264,7 +264,7 @@ public class LocalNoteUpdater
 
    public bool ReadingInVocabReading(KanjiNote kanji, string kanjiReading, string vocabReading, string vocabForm)
    {
-      vocabForm = ExStr.StripHtmlAndBracketMarkupAndNoiseCharacters(vocabForm);
+      vocabForm = vocabForm.StripHtmlAndBracketMarkupAndNoiseCharacters();
       if(vocabForm.StartsWith(kanji.GetQuestion()))
       {
          return vocabReading.StartsWith(kanjiReading);

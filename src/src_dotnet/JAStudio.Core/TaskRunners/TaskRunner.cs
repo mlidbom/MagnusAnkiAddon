@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using JAStudio.Core.Configuration;
 
 namespace JAStudio.Core.TaskRunners;
@@ -7,7 +8,7 @@ public class TaskRunner
 {
    internal TaskRunner(JapaneseConfig _) {}
 
-   Func<string, int, IScopePanel>? _uiScopePanelFactory;
+   Func<string, int, IScopePanel?, IScopePanel>? _uiScopePanelFactory;
    Func<IScopePanel, string, bool, ITaskProgressRunner>? _uiTaskRunnerFactory;
 
    /// <summary>
@@ -27,9 +28,9 @@ public class TaskRunner
    /// <summary>
    /// Register the factory that creates a scope-level panel in the UI.
    /// The panel shows a heading and elapsed time for the scope.
-   /// Parameters: (scopeTitle, nestingDepth) → IScopePanel
+   /// Parameters: (scopeTitle, nestingDepth, parentScopePanel) → IScopePanel
    /// </summary>
-   public void SetUiScopePanelFactory(Func<string, int, IScopePanel> factory)
+   public void SetUiScopePanelFactory(Func<string, int, IScopePanel?, IScopePanel> factory)
    {
       if(_uiScopePanelFactory != null)
       {
@@ -50,7 +51,7 @@ public class TaskRunner
 
    internal ITaskProgressRunner Create(IScopePanel? scopePanel, string labelText, bool? visible = null, bool allowCancel = true)
    {
-      visible ??= !App.IsTesting;
+      visible ??= !CoreApp.IsTesting;
 
       if(!visible.Value || scopePanel == null)
       {
@@ -65,7 +66,7 @@ public class TaskRunner
       return _uiTaskRunnerFactory(scopePanel, labelText, allowCancel);
    }
 
-   internal IScopePanel? CreateScopePanel(string scopeTitle, bool visible)
+   internal IScopePanel? CreateScopePanel(string scopeTitle, bool visible, int depth)
    {
       if(!visible) return null;
 
@@ -74,10 +75,35 @@ public class TaskRunner
          throw new InvalidOperationException("No UI scope panel factory set. Set it with TaskRunner.SetUiScopePanelFactory().");
       }
 
-      return _uiScopePanelFactory(scopeTitle, _depth);
+      return _uiScopePanelFactory(scopeTitle, depth, _parentScope.Value);
    }
 
-   int _depth;
+   /// <summary>
+   /// Tracks the number of currently open scopes across all threads.
+   /// Used solely for dialog lifetime management (hold/release).
+   /// Thread-safe via <see cref="Interlocked"/>.
+   /// </summary>
+   int _openScopes;
+
+   /// <summary>
+   /// Tracks the logical nesting depth per async call chain.
+   /// Parallel siblings calling <see cref="Current"/> from the same parent scope
+   /// each inherit the parent's depth and thus land at the same visual level.
+   /// </summary>
+   readonly AsyncLocal<int> _nestingDepth = new();
+
+   /// <summary>
+   /// Tracks the current parent scope panel per async call chain so that
+   /// child scopes are nested inside their parent rather than appended
+   /// to the top-level dialog.
+   /// </summary>
+   readonly AsyncLocal<IScopePanel?> _parentScope = new();
+
+   /// <summary>
+   /// Tracks the current log entry per async call chain so that
+   /// child scopes and tasks can attach their log entries to the parent.
+   /// </summary>
+   readonly AsyncLocal<TaskLogEntry?> _currentLogEntry = new();
 
    /// <summary>
    /// The one and only way to obtain a task runner.
@@ -89,20 +115,30 @@ public class TaskRunner
    /// </summary>
    public ITaskProgressRunner Current(string scopeTitle, bool forceHide = false, bool allowCancel = true)
    {
-      var visible = !App.IsTesting && !forceHide;
-      _depth++;
-      if(_depth == 1 && visible)
+      var visible = !CoreApp.IsTesting && !forceHide;
+
+      var previousNestingDepth = _nestingDepth.Value;
+      var depth = previousNestingDepth + 1;
+      _nestingDepth.Value = depth;
+
+      if(Interlocked.Increment(ref _openScopes) == 1 && visible)
       {
          _holdDialog?.Invoke();
       }
 
-      return new TaskRunnerScope(this, scopeTitle, visible, allowCancel);
+      var scope = new TaskRunnerScope(this, scopeTitle, visible, allowCancel, depth, previousNestingDepth, _parentScope.Value, _currentLogEntry.Value);
+      _parentScope.Value = scope.ScopePanel;
+      _currentLogEntry.Value = scope.LogEntry;
+      return scope;
    }
 
-   internal void OnScopeDisposed()
+   internal void OnScopeDisposed(int previousNestingDepth, IScopePanel? previousParentScope, TaskLogEntry? previousLogEntry)
    {
-      _depth--;
-      if(_depth == 0)
+      _nestingDepth.Value = previousNestingDepth;
+      _parentScope.Value = previousParentScope;
+      _currentLogEntry.Value = previousLogEntry;
+
+      if(Interlocked.Decrement(ref _openScopes) == 0)
       {
          _releaseDialog?.Invoke();
       }

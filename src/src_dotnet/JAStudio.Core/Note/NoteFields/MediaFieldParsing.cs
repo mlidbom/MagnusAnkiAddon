@@ -35,7 +35,7 @@ public static partial class MediaFieldParsing
 
       foreach(Match match in ImgSrcRegex().Matches(rawValue))
       {
-         var fileName = match.Groups[1].Value.Trim();
+         var fileName = match.Groups[2].Value.Trim();
          if(!string.IsNullOrEmpty(fileName))
             results.Add(new MediaReference(fileName, MediaType.Image));
       }
@@ -46,6 +46,6 @@ public static partial class MediaFieldParsing
    [GeneratedRegex(@"\[sound:([^\]]+)\]")]
    private static partial Regex SoundTagRegex();
 
-   [GeneratedRegex(@"<img[^>]+src\s*=\s*[""']([^""']+)[""']", RegexOptions.IgnoreCase)]
+   [GeneratedRegex(@"<img[^>]+src\s*=\s*([""'])(.*?)\1", RegexOptions.IgnoreCase)]
    private static partial Regex ImgSrcRegex();
 }

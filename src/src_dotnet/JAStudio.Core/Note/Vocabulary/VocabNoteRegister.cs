@@ -4,11 +4,9 @@ namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteRegister
 {
-   readonly VocabNote _vocab;
+   public VocabNoteRegister(VocabNote vocab) => Vocab = vocab;
 
-   public VocabNoteRegister(VocabNote vocab) => _vocab = vocab;
-
-   VocabNote Vocab => _vocab;
+   VocabNote Vocab { get; }
 
    public TagFlagField Polite => new TagFlagField(Vocab, Tags.Vocab.Register.Polite);
    public TagFlagField Formal => new TagFlagField(Vocab, Tags.Vocab.Register.Formal);

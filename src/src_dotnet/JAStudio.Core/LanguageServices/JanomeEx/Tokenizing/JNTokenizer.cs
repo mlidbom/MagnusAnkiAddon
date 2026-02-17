@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Compze.Utilities.SystemCE.ThreadingCE.ResourceAccess;
 using JAStudio.PythonInterop.Utilities;
@@ -101,7 +100,7 @@ public sealed class JNTokenizer
       {
          if(line.Length == 0) continue;
 
-         var fields = line.Split(FieldSeparator, StringSplitOptions.None);
+         var fields = line.Split(FieldSeparator);
          // Fields: 0=part_of_speech, 1=base_form, 2=surface, 3=infl_type, 4=infl_form, 5=reading, 6=phonetic, 7=node_type
          var partsOfSpeech = JNPartsOfSpeech.Fetch(fields[0]);
 

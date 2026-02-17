@@ -9,11 +9,9 @@ namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabCloner
 {
-   readonly VocabNote _note;
+   public VocabCloner(VocabNote note) => Note = note;
 
-   public VocabCloner(VocabNote note) => _note = note;
-
-   VocabNote Note => _note;
+   VocabNote Note { get; }
 
    public VocabNote PrefixToDictionaryForm(string prefix, string speechType = POS.Expression) => CreatePostfixPrefixVersion(prefix, speechType, isPrefix: true);
 

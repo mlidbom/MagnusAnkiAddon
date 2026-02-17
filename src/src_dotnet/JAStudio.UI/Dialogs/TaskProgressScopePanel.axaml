@@ -11,9 +11,9 @@
             BorderBrush="#50607080"
             BorderThickness="1"
             CornerRadius="3"
-            Padding="8,3,8,4"
-            Margin="0,1">
-        <StackPanel Spacing="2">
+            Padding="8,5,8,6"
+            Margin="0,3">
+        <StackPanel Spacing="4">
             <!-- Scope heading + elapsed time -->
             <DockPanel>
                 <TextBlock DockPanel.Dock="Right"
@@ -27,14 +27,22 @@
                            FontSize="12"/>
             </DockPanel>
 
-            <!-- Child progress panels: different templates for spinner vs batch -->
-            <ItemsControl ItemsSource="{Binding Children}" Margin="6,0,0,0">
+            <!-- Child progress panels: different templates for spinner vs batch vs nested scope -->
+            <ItemsControl ItemsSource="{Binding Children}" Margin="8,0,0,0">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Spacing="3"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
                 <ItemsControl.DataTemplates>
                     <DataTemplate DataType="{x:Type taskRunners:BatchTaskProgressViewModel}">
                         <dialogs:BatchTaskProgressPanel />
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type taskRunners:TaskProgressViewModel}">
                         <dialogs:SpinnerProgressPanel />
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type taskRunners:TaskProgressScopeViewModel}">
+                        <dialogs:TaskProgressScopePanel />
                     </DataTemplate>
                 </ItemsControl.DataTemplates>
             </ItemsControl>

@@ -16,7 +16,7 @@ public abstract class CollectionUsingTest : IDisposable
 
    readonly CollectionFactory.AppScope _appScope;
 
-   protected TService GetService<TService>() where TService : class => _appScope.App.Services.ServiceLocator.Resolve<TService>();
+   protected TService GetService<TService>() where TService : class => _appScope.CoreApp.Services.ServiceLocator.Resolve<TService>();
 
    protected NoteServices NoteServices => GetService<NoteServices>();
 

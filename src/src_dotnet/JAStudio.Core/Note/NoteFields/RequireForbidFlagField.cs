@@ -5,8 +5,6 @@ public class RequireForbidFlagField
    readonly JPNote _note;
    readonly Tag _requiredTag;
    readonly Tag _forbiddenTag;
-   readonly bool _cachedIsRequired;
-   readonly bool _cachedIsForbidden;
 
    public int RequiredWeight { get; }
    public int ForbiddenWeight { get; }
@@ -20,20 +18,21 @@ public class RequireForbidFlagField
       ForbiddenWeight = forbiddenWeight;
 
       // Cache tag states during construction - invalidated when matching_configuration is recreated
-      _cachedIsRequired = note.Tags.Contains(requiredTag);
-      _cachedIsForbidden = note.Tags.Contains(forbiddenTag);
+      IsConfiguredRequired = note.Tags.Contains(requiredTag);
+      IsConfiguredForbidden = note.Tags.Contains(forbiddenTag);
    }
 
-   public bool IsConfiguredRequired => _cachedIsRequired;
-   public bool IsConfiguredForbidden => _cachedIsForbidden;
+   public bool IsConfiguredRequired { get; }
+
+   public bool IsConfiguredForbidden { get; }
 
    public int MatchWeight => IsRequired ? RequiredWeight : IsForbidden ? ForbiddenWeight : 0;
 
    public string Name => _requiredTag.Name.Replace(Tags.Vocab.Matching.Requires.FolderName, "");
 
-   public virtual bool IsRequired => _cachedIsRequired;
-   public bool IsForbidden => _cachedIsForbidden;
-   public bool IsActive => _cachedIsRequired || _cachedIsForbidden;
+   public virtual bool IsRequired => IsConfiguredRequired;
+   public bool IsForbidden => IsConfiguredForbidden;
+   public bool IsActive => IsConfiguredRequired || IsConfiguredForbidden;
 
    public void SetForbidden(bool value)
    {

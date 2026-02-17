@@ -6,6 +6,17 @@ applyTo: "**/*.Tests/**/*.cs"
 
 **Scope:** All test code in `JAStudio.Core.Tests` and `JAStudio.UI.Tests`.
 
+## Testing Philosophy: Black-Box Integration Tests
+
+Tests verify that things **actually work correctly together**. They are **not** unit tests that isolate a single component — they are black-box tests that exercise the real wiring.
+
+**CRITICAL rules:**
+- **Resolve components from the DI container** via `GetService<T>()`. Never construct services directly or duplicate the wiring logic from `AppBootstrapper` in tests.
+- **Never make constructors, fields, or methods public just so tests can access them.** If a test can't reach something through the container, that's a design signal — fix the design, not the visibility.
+- **Don't duplicate initialization details in tests.** Manually wiring up a component's dependencies in a test is fragile: it breaks when we refactor internals even though the domain code is correct, and it silently diverges from the real wiring over time.
+
+The goal: if the domain code works, the tests pass. If the domain code breaks, the tests fail. Tests should not duplicate wiring details creating fragile implicit dependencies.
+
 ## Test Infrastructure
 
 ### Base Classes (Mandatory)
@@ -27,7 +38,7 @@ Use `GetService<T>()` from the base class to get services from the real DI conta
 ```csharp
 var analyzer = GetService<TextAnalyzer>();
 ```
-Do **not** construct service objects directly.
+Do **not** construct service objects directly — this duplicates wiring, breaks encapsulation, and makes tests fragile.
 
 ### Creating Test Notes
 Use the available factory methods or the note will not be in the collection — **never call note constructors directly**.

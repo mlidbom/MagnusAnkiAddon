@@ -6,11 +6,9 @@ namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteKanji
 {
-   readonly VocabNote _vocab;
+   public VocabNoteKanji(VocabNote vocab) => Vocab = vocab;
 
-   public VocabNoteKanji(VocabNote vocab) => _vocab = vocab;
-
-   VocabNote Vocab => _vocab;
+   VocabNote Vocab { get; }
 
    public List<string> ExtractMainFormKanji()
    {

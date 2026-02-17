@@ -162,5 +162,5 @@ public class RelatedVocabsRenderer
                 : "";
    }
 
-   public static string GenerateMetaTags(VocabNote vocabNote) => vocabNote.MetaData.MetaTagsHtml(true);
+   public static string GenerateMetaTags(VocabNote vocabNote) => vocabNote.MetaData.MetaTagsHtml();
 }

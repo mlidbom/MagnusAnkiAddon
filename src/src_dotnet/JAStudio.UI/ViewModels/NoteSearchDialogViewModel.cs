@@ -84,7 +84,7 @@ public partial class NoteSearchDialogViewModel : ObservableObject
    {
       var results = new List<NoteSearchResultViewModel>();
 
-      var col = _services.App.Collection;
+      var col = _services.CoreApp.Collection;
 
       // Search in kanji notes
       results.AddRange(SearchInNotes(
@@ -248,7 +248,7 @@ public partial class NoteSearchDialogViewModel : ObservableObject
 
    static string StripHtml(string html) =>
       // Strip HTML tags and bracket markup
-      ExStr.StripHtmlAndBracketMarkupAndNoiseCharacters(html);
+      html.StripHtmlAndBracketMarkupAndNoiseCharacters();
 
    public void OpenSelectedNote()
    {
@@ -272,8 +272,8 @@ public class NoteSearchResultViewModel
    {
       NoteId = note.GetId();
       NoteType = GetNoteTypeDisplay(note);
-      Question = ExStr.StripHtmlAndBracketMarkupAndNoiseCharacters(note.GetQuestion());
-      Answer = ExStr.StripHtmlAndBracketMarkupAndNoiseCharacters(note.GetAnswer());
+      Question = note.GetQuestion().StripHtmlAndBracketMarkupAndNoiseCharacters();
+      Answer = note.GetAnswer().StripHtmlAndBracketMarkupAndNoiseCharacters();
    }
 
    static string GetNoteTypeDisplay(JPNote note)

@@ -6,34 +6,57 @@ using JAStudio.Core.Storage.Media;
 
 namespace JAStudio.Core.Tests.Storage.Media;
 
-public class When_configuring_media_routing
+public class When_configuring_media_import_routing
 {
-   public class with_multiple_rules : When_configuring_media_routing
+   static SourceTag Tag(string value) => SourceTag.Parse(value);
+
+   public class with_multiple_sentence_rules : When_configuring_media_import_routing
    {
-      readonly MediaRoutingConfig _config = new(
+      readonly MediaImportRuleSet _ruleSet = new(
+         [],
          [
-            new MediaRoutingRule("anime::natsume", "commercial-001"),
-            new MediaRoutingRule("anime", "commercial-002")
+            new SentenceImportRule(Tag("anime::natsume"), SentenceMediaField.Audio, "commercial-001", CopyrightStatus.Commercial),
+            new SentenceImportRule(Tag("anime::natsume"), SentenceMediaField.Screenshot, "commercial-001", CopyrightStatus.Commercial),
+            new SentenceImportRule(Tag("anime"), SentenceMediaField.Audio, "commercial-002", CopyrightStatus.Commercial),
+            new SentenceImportRule(Tag("anime"), SentenceMediaField.Screenshot, "commercial-002", CopyrightStatus.Commercial)
          ],
-         "general");
+         []);
 
-      [XF] public void it_resolves_the_longest_matching_prefix() => _config.ResolveDirectory("anime::natsume::s1::01").Must().Be("commercial-001");
-      [XF] public void it_falls_back_to_shorter_prefix() => _config.ResolveDirectory("anime::mushishi::s1::05").Must().Be("commercial-002");
+      [XF] public void it_resolves_the_longest_matching_prefix() => _ruleSet.TryResolveSentence(Tag("anime::natsume::s1::01"), SentenceMediaField.Audio)!.TargetDirectory.Must().Be("commercial-001");
+      [XF] public void it_falls_back_to_shorter_prefix() => _ruleSet.TryResolveSentence(Tag("anime::mushishi::s1::05"), SentenceMediaField.Audio)!.TargetDirectory.Must().Be("commercial-002");
    }
 
-   public class with_no_matching_rule : When_configuring_media_routing
+   public class with_no_matching_rule : When_configuring_media_import_routing
    {
-      readonly MediaRoutingConfig _config = new(
-         [new MediaRoutingRule("anime", "commercial-001")],
-         "general");
+      readonly MediaImportRuleSet _ruleSet = new(
+         [],
+         [new SentenceImportRule(Tag("anime"), SentenceMediaField.Audio, "commercial-001", CopyrightStatus.Commercial)],
+         []);
 
-      [XF] public void it_falls_back_to_default() => _config.ResolveDirectory("forvo").Must().Be("general");
+      [XF] public void it_returns_null() => _ruleSet.TryResolveSentence(Tag("forvo"), SentenceMediaField.Audio).Must().BeNull();
    }
 
-   public class with_default_config : When_configuring_media_routing
+   public class with_vocab_rules_having_different_copyright_per_field : When_configuring_media_import_routing
    {
-      readonly MediaRoutingConfig _config = MediaRoutingConfig.Default();
+      readonly MediaImportRuleSet _ruleSet;
 
-      [XF] public void it_routes_everything_to_general() => _config.ResolveDirectory("anything").Must().Be("general");
+      public with_vocab_rules_having_different_copyright_per_field()
+      {
+         _ruleSet = new MediaImportRuleSet(
+            [
+               new VocabImportRule(Tag("wani"), VocabMediaField.AudioFirst, "commercial/wani", CopyrightStatus.Commercial),
+               new VocabImportRule(Tag("wani"), VocabMediaField.AudioTts, "free/tts", CopyrightStatus.Free),
+               new VocabImportRule(Tag("wani"), VocabMediaField.UserImage, "free/user", CopyrightStatus.Free)
+            ],
+            [],
+            []);
+      }
+
+      [XF] public void audio_first_is_commercial() => _ruleSet.TryResolveVocab(Tag("wani::level05"), VocabMediaField.AudioFirst)!.Copyright.Must().Be(CopyrightStatus.Commercial);
+      [XF] public void audio_tts_is_free() => _ruleSet.TryResolveVocab(Tag("wani::level05"), VocabMediaField.AudioTts)!.Copyright.Must().Be(CopyrightStatus.Free);
+      [XF] public void audio_first_goes_to_commercial_dir() => _ruleSet.TryResolveVocab(Tag("wani::level05"), VocabMediaField.AudioFirst)!.TargetDirectory.Must().Be("commercial/wani");
+      [XF] public void audio_tts_goes_to_free_dir() => _ruleSet.TryResolveVocab(Tag("wani::level05"), VocabMediaField.AudioTts)!.TargetDirectory.Must().Be("free/tts");
+      [XF] public void user_image_is_free() => _ruleSet.TryResolveVocab(Tag("wani::level05"), VocabMediaField.UserImage)!.Copyright.Must().Be(CopyrightStatus.Free);
+      [XF] public void unconfigured_field_returns_null() => _ruleSet.TryResolveVocab(Tag("wani::level05"), VocabMediaField.AudioSecond).Must().BeNull();
    }
 }

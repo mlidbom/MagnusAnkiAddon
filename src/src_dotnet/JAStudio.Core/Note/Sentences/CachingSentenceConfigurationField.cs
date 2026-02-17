@@ -10,22 +10,21 @@ public class CachingSentenceConfigurationField
 {
    readonly SentenceNote _sentence;
    readonly NoteGuard _guard;
-   SentenceConfiguration _value;
 
    public CachingSentenceConfigurationField(SentenceNote sentence, SentenceConfigSubData? data, NoteGuard guard)
    {
       _sentence = sentence;
       _guard = guard;
-      _value = SentenceData.CreateConfiguration(data, () => _guard.Update(() => _sentence.UpdateParsedWords(force: true)));
+      Configuration = SentenceData.CreateConfiguration(data, () => _guard.Update(() => _sentence.UpdateParsedWords(force: true)));
    }
 
-   public SentenceConfiguration Configuration => _value;
+   public SentenceConfiguration Configuration { get; private set; }
 
-   public WordExclusionSet IncorrectMatches => _value.IncorrectMatches;
+   public WordExclusionSet IncorrectMatches => Configuration.IncorrectMatches;
 
-   public WordExclusionSet HiddenMatches => _value.HiddenMatches;
+   public WordExclusionSet HiddenMatches => Configuration.HiddenMatches;
 
-   public List<string> HighlightedWords => _value.HighlightedWords;
+   public List<string> HighlightedWords => Configuration.HighlightedWords;
 
    public HashSet<VocabNote> HighlightedVocab()
    {
@@ -46,7 +45,7 @@ public class CachingSentenceConfigurationField
 
    public void ResetHighlightedWords() => _guard.Update(() =>
    {
-      _value.HighlightedWords.Clear();
+      Configuration.HighlightedWords.Clear();
       _sentence.UpdateParsedWords(force: true);
    });
 
@@ -59,6 +58,6 @@ public class CachingSentenceConfigurationField
    [Obsolete("For testing only")]
    public void SetValueDirectlyTestsOnly(SentenceConfiguration configuration)
    {
-      _value = configuration;
+      Configuration = configuration;
    }
 }

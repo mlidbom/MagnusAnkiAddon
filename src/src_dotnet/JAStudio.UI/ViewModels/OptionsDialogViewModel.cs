@@ -23,7 +23,7 @@ public partial class OptionsDialogViewModel : ObservableObject
    public OptionsDialogViewModel() {}
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
-   public OptionsDialogViewModel(Window window, Core.TemporaryServiceCollection services)
+   public OptionsDialogViewModel(Window window, TemporaryServiceCollection services)
    {
       this.Log().Info("OptionsDialogViewModel constructor: starting...");
       _window = window;
@@ -32,7 +32,7 @@ public partial class OptionsDialogViewModel : ObservableObject
          services.ConfigurationStore.InitForTesting();
       }
 
-      _config = services.App.Config;
+      _config = services.CoreApp.Config;
       this.Log().Info("OptionsDialogViewModel constructor: calling LoadFromConfig()...");
       LoadFromConfig();
       this.Log().Info("OptionsDialogViewModel constructor: completed");

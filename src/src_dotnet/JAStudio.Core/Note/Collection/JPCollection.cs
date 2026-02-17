@@ -7,6 +7,8 @@ using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.Storage;
+using JAStudio.Core.Storage.Media;
+using JAStudio.Core.TaskRunners;
 
 namespace JAStudio.Core.Note.Collection;
 
@@ -59,12 +61,14 @@ public class JPCollection
       NoteServices noteServices,
       JapaneseConfig config,
       INoteRepository noteRepository,
+      MediaFileIndex mediaFileIndex,
       IBackendDataLoader? backendDataLoader = null)
    {
       this.Log().Info().LogMethodExecutionTime();
 
       NoteServices = noteServices;
       _repository = noteRepository;
+      _mediaFileIndex = mediaFileIndex;
       _backendDataLoader = backendDataLoader;
       DictLookup = new DictLookup(this, config);
       VocabNoteGeneratedData = new VocabNoteGeneratedData(DictLookup);
@@ -80,6 +84,7 @@ public class JPCollection
    }
 
    readonly INoteRepository _repository;
+   readonly MediaFileIndex _mediaFileIndex;
    readonly IBackendDataLoader? _backendDataLoader;
 
    /// <summary>Clear all in-memory caches. Called when the backend DB is about to become unreliable (e.g. sync starting, profile closing).</summary>
@@ -95,18 +100,17 @@ public class JPCollection
    /// <summary>Clear and reload all caches. Called after sync or collection reload.</summary>
    public void ReloadFromBackend()
    {
-      using var runner = NoteServices.TaskRunner.Current("Populating caches from file system");
-      // ReSharper disable once ExplicitCallerInfoArgument
-      using var _ = this.Log().Info().LogMethodExecutionTime("====== Reloading JAStudio data ======");
+      using var runner = NoteServices.TaskRunner.Current("=== Populating JAStudio data from file system ===");
 
       ClearCaches();
       var repoLoad = TaskCE.Run(LoadFromRepository);
+      var mediaIndexBuild = TaskCE.Run(() => _mediaFileIndex.Build());
 
-      Task<BackendData?> backendDataTask = _backendDataLoader != null
-                                              ? Task.Run(() => (BackendData?)_backendDataLoader.Load(NoteServices.TaskRunner))
-                                              : Task.FromResult<BackendData?>(null);
+      var backendDataTask = _backendDataLoader != null
+                               ? Task.Run(BackendData? () => _backendDataLoader.Load(NoteServices.TaskRunner))
+                               : Task.FromResult<BackendData?>(null);
 
-      Task.WaitAll(repoLoad, backendDataTask);
+      Task.WaitAll(repoLoad, mediaIndexBuild, backendDataTask);
 
       var backendData = backendDataTask.Result;
       if(backendData != null)
@@ -135,19 +139,35 @@ public class JPCollection
                                     Sentences.Cache.SetStudyingStatuses(sentenceStatuses);
                                  });
       }
+
+      WireMediaIntoNotes(runner);
    }
 
    void LoadFromRepository()
    {
-      using var _ = this.Log().Warning().LogMethodExecutionTime();
+      using var runner = NoteServices.TaskRunner.Current("Loading notes from repository");
 
       var allNotes = _repository.LoadAll();
-
-      using var runner = NoteServices.TaskRunner.Current("Populating caches from file system");
 
       Task.WaitAll(
          runner.RunIndeterminateAsync("Pushing kanji notes into cache", () => Kanji.Cache.AddAllToCache(allNotes.Kanji)),
          runner.RunIndeterminateAsync("Pushing vocab notes into cache", () => Vocab.Cache.AddAllToCache(allNotes.Vocab)),
          runner.RunIndeterminateAsync("Pushing sentence notes into cache", () => Sentences.Cache.AddAllToCache(allNotes.Sentences)));
+   }
+
+   void WireMediaIntoNotes(ITaskProgressRunner runner)
+   {
+      runner.RunIndeterminate("Wiring media into notes",
+                              () =>
+                              {
+                                 foreach(var note in Vocab.All())
+                                    note.Media = _mediaFileIndex.GetNoteMedia(note.GetId());
+
+                                 foreach(var note in Kanji.All())
+                                    note.Media = _mediaFileIndex.GetNoteMedia(note.GetId());
+
+                                 foreach(var note in Sentences.All())
+                                    note.Media = _mediaFileIndex.GetNoteMedia(note.GetId());
+                              });
    }
 }

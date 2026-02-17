@@ -42,7 +42,7 @@ public static class VocabListRenderer
                                               <audio src="{{{vocabNote.Audio.PrimaryAudioPath}}}"></audio><a class="play-button"></a>
                                               <span class="kanji clipboard">{{{vocabNote.GetQuestion()}}}</span>
                                               (<span class="clipboard vocabReading">{{{readings}}}</span>)
-                                              {{{vocabNote.MetaData.MetaTagsHtml(true)}}}
+                                              {{{vocabNote.MetaData.MetaTagsHtml()}}}
                                               <span class="meaning"> {{{vocabNote.GetAnswer()}}}</span>
                                           </div>
                       """;

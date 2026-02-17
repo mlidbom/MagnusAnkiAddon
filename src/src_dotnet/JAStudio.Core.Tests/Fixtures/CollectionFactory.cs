@@ -19,7 +19,7 @@ public static class CollectionFactory
 {
    public static AppScope InjectCollectionWithSelectData(DataNeeded data)
    {
-      var app = TestApp.Reset();
+      var app = TestCoreApp.Reset();
       if(data == DataNeeded.None)
          return new AppScope(app);
 
@@ -52,13 +52,13 @@ public static class CollectionFactory
       return new AppScope(app);
    }
 
-   public class AppScope(App app) : IDisposable
+   public class AppScope(CoreApp coreApp) : IDisposable
    {
-      public App App { get; } = app;
+      public CoreApp CoreApp { get; } = coreApp;
 
       public void Dispose()
       {
-         App.Dispose();
+         CoreApp.Dispose();
       }
    }
 }

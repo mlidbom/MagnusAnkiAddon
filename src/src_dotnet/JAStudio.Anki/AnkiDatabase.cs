@@ -10,9 +10,7 @@ namespace JAStudio.Anki;
 /// </summary>
 public sealed class AnkiDatabase : IDisposable
 {
-   readonly SqliteConnection _connection;
-
-   AnkiDatabase(SqliteConnection connection) => _connection = connection;
+   AnkiDatabase(SqliteConnection connection) => Connection = connection;
 
    /// <summary>
    /// Open the Anki database for reading as an immutable snapshot.
@@ -38,7 +36,7 @@ public sealed class AnkiDatabase : IDisposable
       return new AnkiDatabase(connection);
    }
 
-   public SqliteConnection Connection => _connection;
+   public SqliteConnection Connection { get; }
 
-   public void Dispose() => _connection.Dispose();
+   public void Dispose() => Connection.Dispose();
 }

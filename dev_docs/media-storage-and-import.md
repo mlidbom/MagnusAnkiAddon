@@ -17,40 +17,11 @@ We are building a corpus of analyzed Japanese sentences/vocab for language study
 │    kanji/{bucket}/{id}.json     ← pure language     │
 │    vocab/{bucket}/{id}.json        analysis data    │
 │    sentences/{bucket}/{id}.json    NO media refs    │
-└─────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────┐
-│  Media Repos (one or more separate git repos)       │
-│                                                     │
-│  commercial-001/                                    │
-│    natsume/                                         │
-│      a1/                                            │
-│        a1b2c3d4-....mp3          ← media file       │
-│        a1b2c3d4-....json         ← sidecar metadata │
-│      f7/                                            │
-│        f7e6d5c4-....png                             │
-│        f7e6d5c4-....json                            │
-│    mushishi/                                        │
-│      ...                                            │
-│                                                     │
-│  commercial-002/                                    │
-│    wanikani/                                        │
-│      ...                                            │
-│                                                     │
-│  free-vocab/                                        │
-│    tts/                                             │
-│      3c/                                            │
-│        3c4d5e6f-....mp3                             │
-│        3c4d5e6f-....audio.json                      │
-│    user/                                            │
-│      ...                                            │
-│                                                     │
-│  free-sentence/                                     │
-│    tts/                                             │
-│      ...                                            │
-│                                                     │
-│  free-kanji/                                        │
-│    ...                                              │
+│    media/                       ← media layer       │
+│      metadata/                  ← import rules etc  │
+│      {repo}/                    ← media files +     │
+│        {source}/                   sidecars         │
+│          {bucket}/{guid}.*                          │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -60,6 +31,7 @@ We are building a corpus of analyzed Japanese sentences/vocab for language study
 - **All note↔media association lives in the media layer.** Each media file's sidecar JSON declares which note it belongs to.
 - **Directory structure is organizational, not semantic.** The routing config determines where files land at import time, but the path encodes no meaning — all metadata is in the sidecar JSON.
 - **Sidecar JSON per media file.** Every media file has a companion `.json` file with the same GUID name containing all metadata about that file.
+- **Note scanner is scoped to note directories.** `FileSystemNoteRepository` scans only `kanji/`, `vocab/`, and `sentences/` — it does not walk `media/` or any other subdirectory of `jas_database/`. This avoids both performance issues (thousands of media files) and GUID-parsing failures on non-note JSON files.
 
 ## Sidecar Metadata Format
 
@@ -73,15 +45,11 @@ The serializer is configured with `DefaultIgnoreCondition = JsonIgnoreCondition.
 - **Clean git diffs** — when new optional properties are added to the schema, existing files don't change (no new `"newField": null` lines appearing across thousands of files)
 - **Readable** — opening a sidecar shows only what's relevant to that specific file
 
-The `noteSourceTag` field preserves the full source tag from the note at import time (e.g. `source::anime::natsume::s1::01`). This enables filtering, bulk updates, and re-routing by source without re-parsing note data.
+The `noteSourceTag` field is a `SourceTag` value — a structured, `::` -separated hierarchical identifier (e.g. `source::anime::natsume::s1::01`). `SourceTag` is a domain type that supports hierarchical containment checks (`IsContainedIn`, `Contains`), proper equality, and rejects invalid values (empty strings, empty segments). This enables filtering, bulk updates, and re-routing by source without re-parsing note data.
 
 ### Shared media files
 
 A single media file (e.g. pronunciation audio for 走る) may be referenced by multiple notes — the vocab note for 走る and every sentence note containing 走る. The sidecar uses `noteIds` (plural) to track all associated notes. During import, when a file is encountered that already exists (by original filename), its sidecar is updated to append the new note ID rather than creating a duplicate file.
-
-### `ankiFieldName` — preserving the source field
-
-The `ankiFieldName` field records which Anki note field the media came from (e.g. `"Audio.First"`, `"Audio.Tts"`, `"Screenshot"`). This is critical because the same note can have multiple audio fields with different copyright status — e.g. a vocab note's `Audio.First` is commercial (WaniKani) while `Audio.Tts` is free.
 
 ### Audio Sidecar (`{guid}.audio.json`)
 
@@ -90,7 +58,6 @@ The `ankiFieldName` field records which Anki note field the media came from (e.g
 {
   "noteIds": ["9f8e7d6c-5b4a-3210-fedc-ba9876543210"],
   "noteSourceTag": "source::anime::natsume::s1::01",
-  "ankiFieldName": "Audio",
   "originalFileName": "natsume_ep01_03m22s.mp3",
   "copyright": "Commercial"
 }
@@ -101,7 +68,6 @@ The `ankiFieldName` field records which Anki note field the media came from (e.g
 {
   "noteIds": ["9f8e7d6c-5b4a-3210-fedc-ba9876543210"],
   "noteSourceTag": "source::wani::level05",
-  "ankiFieldName": "Audio",
   "copyright": "Free",
   "tts": {
     "engine": "azure-neural",
@@ -116,7 +82,6 @@ The `ankiFieldName` field records which Anki note field the media came from (e.g
 {
   "noteIds": ["abc12345-6789-0abc-def0-123456789abc"],
   "noteSourceTag": "source::wani::level05",
-  "ankiFieldName": "Audio.First",
   "originalFileName": "走る_audio_b.mp3",
   "copyright": "Commercial"
 }
@@ -131,7 +96,6 @@ The `ankiFieldName` field records which Anki note field the media came from (e.g
     "11223344-5566-7788-99aa-bbccddeeff00"
   ],
   "noteSourceTag": "source::core2000::step01",
-  "ankiFieldName": "Audio.First",
   "originalFileName": "走る_core2k.mp3",
   "copyright": "Commercial"
 }
@@ -144,7 +108,6 @@ The `ankiFieldName` field records which Anki note field the media came from (e.g
 {
   "noteIds": ["9f8e7d6c-5b4a-3210-fedc-ba9876543210"],
   "noteSourceTag": "source::anime::natsume::s1::01",
-  "ankiFieldName": "Screenshot",
   "originalFileName": "natsume_ep01_03m22s.png",
   "copyright": "Commercial"
 }
@@ -166,53 +129,53 @@ Each sidecar schema is independently extensible — adding audio-specific fields
 
 ## Import-Time Routing
 
-A manually maintained config maps **(note type, source tag prefix, field name)** to a storage directory and copyright status. The routing is **per note type** because the same source tag can have entirely different copyright implications depending on whether it's a vocab note or a sentence note.
+Import rules are **flat, atomic instructions**: each rule says "for notes of this type, with this source tag prefix, take media from this specific field, store it in this directory with this copyright." One rule = one (note type, source tag, field) combination.
 
-```json
-{
-  "vocab": {
-    "source::wani::": {
-      "Audio.First":  { "directory": "commercial-002/wanikani", "copyright": "Commercial" },
-      "Audio.Second": { "directory": "commercial-002/wanikani", "copyright": "Commercial" },
-      "Audio.Tts":    { "directory": "free-vocab/tts",          "copyright": "Free" },
-      "Image":        { "directory": "commercial-002/wanikani", "copyright": "Commercial" },
-      "UserImage":    { "directory": "free-vocab/user",         "copyright": "Free" }
-    },
-    "source::core2000::": {
-      "Audio.First":  { "directory": "commercial-003/core2000", "copyright": "Commercial" },
-      "Audio.Tts":    { "directory": "free-vocab/tts",          "copyright": "Free" }
-    }
-  },
-  "sentence": {
-    "source::anime::natsume::": {
-      "Audio":      { "directory": "commercial-001/natsume", "copyright": "Commercial" },
-      "Screenshot": { "directory": "commercial-001/natsume", "copyright": "Commercial" }
-    },
-    "source::anime::mushishi::": {
-      "Audio":      { "directory": "commercial-001/mushishi", "copyright": "Commercial" },
-      "Screenshot": { "directory": "commercial-001/mushishi", "copyright": "Commercial" }
-    },
-    "source::wani::": {
-      "Audio":      { "directory": "free-sentence/tts",       "copyright": "Free" }
-    },
-    "source::core2000::": {
-      "Audio":      { "directory": "commercial-003/core2000", "copyright": "Commercial" }
-    }
-  },
-  "kanji": {
-    "default": {
-      "Audio": { "directory": "free-kanji/audio", "copyright": "Free" },
-      "Image": { "directory": "free-kanji/image", "copyright": "Free" }
-    }
-  }
-}
+**Rules are a positive selection.** They specify exactly what to import. Fields without a matching rule are simply not imported — no error, no warning. This enables incremental workflows: configure a few rules, run the import, inspect results, add more rules, run again. Files already in storage are not affected.
+
+**Rules are disposable.** After a batch runs, its rules have done their job. They can be deleted — no files will match them again since the media is already stored.
+
+### Rule types
+
+```csharp
+// Field enums — typed per note type, compile-time safe
+enum VocabMediaField    { AudioFirst, AudioSecond, AudioTts, Image, UserImage }
+enum SentenceMediaField { Audio, Screenshot }
+enum KanjiMediaField    { Audio, Image }
+
+// One rule = one (note type, source tag, field) → (directory, copyright)
+record VocabImportRule(SourceTag Prefix, VocabMediaField Field, string TargetDirectory, CopyrightStatus Copyright);
+record SentenceImportRule(SourceTag Prefix, SentenceMediaField Field, string TargetDirectory, CopyrightStatus Copyright);
+record KanjiImportRule(SourceTag Prefix, KanjiMediaField Field, string TargetDirectory, CopyrightStatus Copyright);
 ```
 
-At import time, the lookup is: find the note type section → match source tag by longest prefix → find the field name → get directory + copyright. **Unmatched combinations are collected as errors** (see Import Plan Phase 1). No silent fallbacks — an unmatched combination means the routing config is incomplete and must be fixed before the import can run.
+### Example: importing WaniKani vocab media
 
-**This config is import-time only.** Once files are stored, the routing config is not consulted again. The `MediaFileIndex` discovers files by scanning the filesystem.
+```csharp
+// Commercial audio goes to one directory, free TTS to another
+new VocabImportRule(SourceTag.Parse("source::wani"), VocabMediaField.AudioFirst,  "commercial-002/wanikani", CopyrightStatus.Commercial)
+new VocabImportRule(SourceTag.Parse("source::wani"), VocabMediaField.AudioTts,    "free-vocab/tts",          CopyrightStatus.Free)
+new VocabImportRule(SourceTag.Parse("source::wani"), VocabMediaField.Image,       "commercial-002/wanikani", CopyrightStatus.Commercial)
+// AudioSecond and UserImage are not configured — they won't be imported in this batch
+```
 
-This mapping is specific to the initial Anki import. Future imports will specify source/copyright at import time directly, not via magical source tags.
+### Resolution
+
+`MediaImportRuleSet` holds all rules, grouped by note type. Resolution returns `null` for unconfigured combinations:
+
+```csharp
+var ruleSet = new MediaImportRuleSet(vocabRules, sentenceRules, kanjiRules);
+
+ruleSet.TryResolveVocab(SourceTag.Parse("source::wani::level05"), VocabMediaField.AudioFirst);
+// → VocabImportRule("commercial-002/wanikani", Commercial)
+
+ruleSet.TryResolveVocab(SourceTag.Parse("source::wani::level05"), VocabMediaField.AudioSecond);
+// → null (not configured, skip)
+```
+
+Source-tag matching uses hierarchical containment, longest prefix first — same as before.
+
+**This config is import-time only.** Once files are stored, the rules are not consulted again. `MediaStorageService` takes the resolved target directory directly — it has no dependency on routing.
 
 ## Storage Path Structure
 
@@ -234,7 +197,7 @@ free-vocab/tts/3c/3c4d5e6f-a7b8-9012-cdef-123456789012.audio.json
 
 ## Runtime: Building the Domain Model
 
-At startup, `MediaFileIndex` scans all media repositories, reading every `*.audio.json` and `*.image.json` sidecar to build an in-memory index.
+`MediaFileIndex` is lazy-initialized — it scans all media directories under `App.MediaDir` on first access, not at startup. The scan reads every `*.audio.json` and `*.image.json` sidecar to build an in-memory index. The `metadata/` subdirectory is excluded. This means the first operation that touches the index (typically clicking Scan in the import dialog) pays the full cost of the filesystem walk.
 
 **Index lookups:**
 - `NoteId → NoteMedia` — all media for a note, typed (a single media file appears in the results for every note in its `NoteIds` list)
@@ -245,8 +208,20 @@ At startup, `MediaFileIndex` scans all media repositories, reading every `*.audi
 ```csharp
 public enum CopyrightStatus
 {
+    Unknown = 0,   // not yet classified
     Commercial,    // requires verified account or license
     Free           // freely redistributable (TTS, CC-licensed, etc.)
+}
+
+// SourceTag — hierarchical, ::‑separated, validated domain type
+// Supports containment: tag.IsContainedIn(ancestor), tag.Contains(descendant)
+// Serialized to/from JSON as a plain string
+public sealed class SourceTag : IEquatable<SourceTag>
+{
+    public static SourceTag Parse(string value);
+    public IReadOnlyList<string> Segments { get; }
+    public bool IsContainedIn(SourceTag ancestor);
+    public bool Contains(SourceTag descendant);
 }
 
 // Base — common storage/identity data shared by all media types
@@ -254,11 +229,10 @@ public abstract record MediaAttachment
 {
     // Persisted in sidecar JSON
     public required MediaFileId Id { get; init; }
-    public required List<NoteId> NoteIds { get; init; }   // all notes that reference this file
-    public required string NoteSourceTag { get; init; }   // full tag, e.g. "source::anime::natsume::s1::01"
-    public string? AnkiFieldName { get; init; }           // which Anki field this came from, e.g. "Audio.First"
+    public required List<NoteId> NoteIds { get; init; }     // all notes that reference this file
+    public required SourceTag NoteSourceTag { get; init; }   // full tag, e.g. "source::anime::natsume::s1::01"
     public string? OriginalFileName { get; init; }
-    public required CopyrightStatus Copyright { get; init; }
+    public CopyrightStatus Copyright { get; init; } = CopyrightStatus.Unknown;  // not required — defaults for backward compat
 
     // Runtime only — resolved by MediaFileIndex from the filesystem, not serialized
     [JsonIgnore] public string FilePath { get; internal set; } = string.Empty;
@@ -275,15 +249,25 @@ public record TtsInfo(string Engine, string Voice, string Version);
 // Image — extends with image-specific fields (none yet, but will diverge)
 public record ImageAttachment : MediaAttachment;
 
-// Aggregated per note
-public record NoteMedia(
-    IReadOnlyList<AudioAttachment> Audio,
-    IReadOnlyList<ImageAttachment> Images
-);
+// Import rules — flat, atomic, per (note type, source tag, field)
+enum VocabMediaField    { AudioFirst, AudioSecond, AudioTts, Image, UserImage }
+enum SentenceMediaField { Audio, Screenshot }
+enum KanjiMediaField    { Audio, Image }
+
+record VocabImportRule(SourceTag Prefix, VocabMediaField Field, string TargetDirectory, CopyrightStatus Copyright);
+record SentenceImportRule(SourceTag Prefix, SentenceMediaField Field, string TargetDirectory, CopyrightStatus Copyright);
+record KanjiImportRule(SourceTag Prefix, KanjiMediaField Field, string TargetDirectory, CopyrightStatus Copyright);
+
+public class MediaImportRuleSet(List<VocabImportRule>, List<SentenceImportRule>, List<KanjiImportRule>)
+{
+    // Returns null for unconfigured combinations — no error, just not imported
+    public VocabImportRule? TryResolveVocab(SourceTag sourceTag, VocabMediaField field);
+    public SentenceImportRule? TryResolveSentence(SourceTag sourceTag, SentenceMediaField field);
+    public KanjiImportRule? TryResolveKanji(SourceTag sourceTag, KanjiMediaField field);
+}
 ```
 
 The base `MediaAttachment` gives shared storage/serialization/index logic a single type to work with. `MediaFileIndex` can store all attachments as `MediaAttachment` internally, while typed accessors return `AudioAttachment` or `ImageAttachment`.
-```
 
 **Domain notes expose typed media from the index:**
 ```csharp
@@ -317,10 +301,10 @@ The association `note ↔ media` exists only in the media layer's sidecar files 
 Media access is controlled at runtime based on the user's verified accounts:
 
 ```
-noteSourceTag starts with "source::anime::natsume"  →  requires Crunchyroll (or relevant licensor)
-noteSourceTag starts with "source::wani::"           →  requires verified WaniKani account
-copyright == "free"                                  →  always available
-tts != null                                          →  always available
+noteSourceTag.IsContainedIn("source::anime::natsume")  →  requires Crunchyroll (or relevant licensor)
+noteSourceTag.IsContainedIn("source::wani")             →  requires verified WaniKani account
+copyright == Free                                       →  always available
+tts != null                                             →  always available
 ```
 
 A note might have 5 audio attachments. The access layer filters to what the user is entitled to, then the preference layer selects the best one (community-ranked, student-overridable, curator-pinned).
@@ -329,7 +313,7 @@ A note might have 5 audio attachments. The access layer filters to what the user
 
 If a rights holder demands removal of media from a source:
 
-1. Identify all sidecar files matching the source (e.g. `noteSourceTag` starts with `source::anime::natsume::`)
+1. Identify all sidecar files matching the source (e.g. `noteSourceTag.IsContainedIn(SourceTag.Parse("source::anime::natsume"))`)
 2. Delete the media files and their sidecars
 3. Commit the deletion to the media repo
 4. Core corpus is untouched — notes still load, they just have fewer (or no) audio/image options
@@ -352,65 +336,94 @@ This is name-based dedup, not content-based. Acceptable because Anki media files
 
 ## Current Implementation Status
 
-The existing code (`JAStudio.Core.Storage.Media` namespace) implements an earlier version of this design where:
+The storage layer (`JAStudio.Core.Storage.Media`) is implemented and tested:
 
-- Notes stored raw Anki markup (`[sound:file.mp3]`, `<img src="file.jpg">`) in the corpus JSON
-- Media association was embedded in the note data
-- All metadata was encoded in the filesystem path structure
-- No sidecar JSON files
+### Implemented
 
-This needs to be evolved to match the architecture described above.
+| Component | Status |
+|---|---|
+| `SourceTag` | Domain type with `::` hierarchy. `Parse()`, `IsContainedIn()`, `Contains()`, equality, JSON serialization. Rejects empty/invalid values. |
+| `MediaAttachment` / `AudioAttachment` / `ImageAttachment` | Record types with typed `SourceTag NoteSourceTag` field. Audio has `TtsInfo?`, Image is a separate schema. |
+| `SidecarSerializer` | Writes/reads typed sidecar JSON (`*.audio.json` / `*.image.json`). Omits defaults. Custom JSON converters for `NoteId`, `MediaFileId`, `SourceTag`. |
+| `MediaFileId` | GUID-based value type with `Parse`, `TryParse`, `New`. |
+| `MediaFileIndex` | Builds from filesystem scan of sidecar files. Lookups by ID, original filename (case-insensitive), note ID. In-memory `Register()` for newly stored files. |
+| `MediaStorageService` | Stores files with GUID-bucket paths, writes typed sidecars, updates existing sidecars for shared files (dedup by original filename). Takes target directory as parameter — no routing dependency. |
+| `VocabMediaField` / `SentenceMediaField` / `KanjiMediaField` | Per-note-type enums for media fields. Compile-time safe — no string-based field names. |
+| `VocabImportRule` / `SentenceImportRule` / `KanjiImportRule` | Flat atomic rules: one rule = one (source tag, field) → (directory, copyright). |
+| `MediaImportRuleSet` | Holds all rules, resolves by (source tag, field). Returns `null` for unconfigured combinations — fields without rules are silently skipped. Longest prefix match. |
+| `MediaImportPlan` | Output of analysis: `FilesToImport` (ready to execute), `AlreadyStored` (sidecar noteId updates), `Missing` (files not found in Anki). Pure data — no side effects. |
+| `MediaImportAnalyzer` | Analyzes notes against rules. Per-note-type methods: `AnalyzeVocab`, `AnalyzeSentences`, `AnalyzeKanji`. Produces a `MediaImportPlan`. No side effects — reads filesystem and index to classify each media reference. |
+| `MediaImportExecutor` | Executes a `MediaImportPlan` — copies files, writes sidecars, updates noteIds. Note-type agnostic — works only with the flat plan. No analysis, no decision-making. Uses `TaskRunner.RunBatch` for visible progress. |
+| `MediaImportRulePersistence` | Saves/loads rules to `jas_database/media/metadata/media-import-rules.json`. JSON with enum and `SourceTag` converters. Rules are stored in the media layer, not user files. |
+| `MediaImportDialog` | Avalonia dialog (View + ViewModel). Scan discovers un-imported media grouped by source/type. User configures rules (sorted by source tag prefix then target directory), clicks Analyze to see plan counts (`FilesToImport`, `AlreadyStored`, `Missing`), then executes. The Missing count is a clickable link that opens a `MissingFilesDialog` with per-note-type tabs (Vocab, Sentences, Kanji) showing question, note ID, field, and filename in a sortable DataGrid. Double-clicking a row opens the note in Anki's browser. Rules persist across sessions. Accessible from Config > Media import menu. |
+| `MissingFilesDialog` | Avalonia dialog showing files referenced by notes but not found in Anki's media folder, organized in tabs by note type with sortable DataGrid columns. Supports double-click to open the note in Anki. |
 
-### Existing components to evolve:
+### Completed milestones
 
-| Component | Current | Target |
-|---|---|---|
-| Note corpus data (DTOs) | Contains Anki markup audio/image fields | No media fields at all |
-| `MediaStorageService` | Encodes metadata in path | Stores typed sidecar JSON (`*.audio.json` / `*.image.json`) alongside media files |
-| `MediaFileIndex` | Recovers original filename from directory structure | Reads typed sidecars; supports `NoteId → NoteMedia` lookup |
-| `AnkiMediaSyncService` | Hardcodes `anki::audio`/`anki::image` tags | Uses routing config + note source tags to determine storage location and sidecar content |
-| `MediaFileInfo` | `(Id, FullPath, OriginalFileName, Extension)` | Replaced by typed `AudioAttachment` / `ImageAttachment` records built from sidecar data |
-| `MediaRoutingConfig` | Routes by source tag prefix → directory | Same role, but import-time only |
-| `WritableAudioValue` / `WritableImageValue` | Wraps raw Anki markup, parses media refs | Still needed for Anki interop; not used in corpus storage |
-| `JPNote.MediaReferences` | Aggregates media fields from the note | No longer needed on the note — media discovered via index |
+- **Initial media import complete.** All media files from Anki have been imported into the structured media storage layer. The first full batch import ran successfully across all note types.
 
-### Existing tests to adapt:
+### Not yet implemented
 
-- `When_creating_a_MediaFileId` — unchanged
-- `When_building_a_MediaFileIndex` — adapt to read sidecar JSON
-- `When_configuring_media_routing` — unchanged
-- `When_storing_a_media_file` — adapt to write/read sidecar JSON
-- `When_querying_MediaFileIndex_by_original_filename` — adapt to sidecar-based lookup
-- `When_syncing_media_from_anki` — adapt to new routing + sidecar writing
+| Component | Notes |
+|---|---|
+| `NoteMedia` aggregate | Per-note typed media view (`Audio`, `Images`). Not yet needed — media is currently accessed via the index directly. |
+| Removal of media fields from corpus DTOs | Notes still contain Anki markup audio/image fields. Has unresolved design concerns — deferred for later discussion. |
+| Access gating | Runtime filtering by user's verified accounts / copyright status. |
 
-## Import Plan (Fresh from Anki)
+### Test coverage
 
-The import always runs from scratch — wipe the media output folder and re-import everything from Anki. No incremental or crash-recovery logic needed.
+All components have BDD-style tests:
 
-### Phase 1: Plan (no side effects)
+- `When_working_with_SourceTag` — parsing, containment, equality
+- `When_configuring_media_import_routing` — flat rule matching, longest prefix, null for unconfigured fields, per-field copyright verification
+- `When_serializing_a_sidecar` — JSON roundtrip for audio/image, TTS, multiple note IDs, file read/write
+- `When_building_a_MediaFileIndex` — filesystem scan, sidecar parsing, lookups
+- `When_querying_MediaFileIndex_by_original_filename` — exact/case-insensitive lookup, registered attachments
+- `When_storing_a_media_file` — target directory, GUID-bucket paths, sidecar writing, index rebuilding
+- `When_importing_media_from_anki` — analyze → execute flow, plan inspection (files to import, already stored, missing), per-note-type batches, dedup, unconfigured field skipping, typed attachments
+- `When_parsing_media_references` — audio and image regex parsing, apostrophe handling in filenames, multiple references, blank input
 
-Build the complete import plan in memory before touching any files:
+## Import Workflow
 
-1. Load all notes from the corpus; for each note, parse Anki markup fields → extract original filenames and field names
-2. For each media reference, look up `(noteType, sourceTag, fieldName)` in the routing config → get target directory + copyright. **Collect all unmatched combinations as errors — don't stop at the first one.**
-3. Deduplicate by original filename — group noteIds that reference the same file
-4. Check that every referenced file exists in the Anki media folder — collect warnings for missing files
-5. Build a complete `ImportPlan`: list of `PlannedFileCopy` (source path, target path, sidecar content) + summary statistics
+Import is **batch, incremental, and per note type**. Analysis and execution are separate concerns:
 
-**Import plan summary (always presented to user):**
-- Total unique files to copy (audio / image breakdown)
-- Total sidecar files to write
-- Total notes with media / without media
-- Files per target directory (shows distribution across repos)
-- Missing source files (warnings — these will be skipped)
-- Shared files (files referenced by multiple notes)
-- **Unmatched routing combinations (errors) — listed with note type, source tag, and field name**
+- **`MediaImportAnalyzer`** — knows note types, scans notes against rules, produces a `MediaImportPlan`. Pure analysis, no side effects.
+- **`MediaImportPlan`** — flat data: files to import, files already stored, files missing from Anki. Counts for the UI to display.
+- **`MediaImportExecutor`** — takes a plan, executes it. Note-type agnostic, no analysis, no decisions. Should Just Work or explode.
 
-If there are any routing errors, the summary shows them all so the config can be fixed in one pass. **Phase 2 is blocked until there are zero routing errors.**
+### Workflow
 
-### Phase 2: Execute (after user confirms, only if plan is valid)
+1. **Discovery:** The UI scans all notes, checks which media files exist in Anki but not yet in our storage, and presents what's un-imported — grouped by note type and source tag prefix.
+2. **Configure rules:** The user creates import rules for the combinations they want to import now.
+3. **Analyze & review:** `MediaImportAnalyzer.AnalyzeVocab(notes, rules)` → `MediaImportPlan`. UI shows: "2,341 to import, 3 missing from Anki, 847 already stored." The user reviews the plan and adjusts rules until the numbers look right.
+4. **Execute:** User is satisfied with the plan, clicks Run. `MediaImportExecutor.Execute(plan)` — does exactly what the plan promised. No report needed.
+5. **Repeat:** Add more rules, analyze again, review, execute again.
 
-6. Delete all existing media files in the target directories (clean slate)
-7. Execute the planned file copies and write sidecars
+### Example
 
-Stripping media fields from the corpus note JSON is a separate step (done when the corpus DTOs are updated to remove audio/image fields).
+```csharp
+var rules = new[]
+{
+    new VocabImportRule(SourceTag.Parse("source::wani"), VocabMediaField.AudioFirst, "commercial/wani", CopyrightStatus.Commercial),
+    new VocabImportRule(SourceTag.Parse("source::wani"), VocabMediaField.AudioTts,   "free/tts",        CopyrightStatus.Free)
+};
+
+// 1. Analyze — no side effects
+var plan = analyzer.AnalyzeVocab(allVocabNotes, rules);
+// plan.FilesToImport.Count == 2341
+// plan.AlreadyStored.Count == 847
+// plan.Missing.Count == 3
+
+// 2. Execute — copies files, writes sidecars
+executor.Execute(plan);
+```
+
+### Plan review (presented to user before execution)
+
+The `MediaImportPlan` contains all the information the user needs to decide whether to proceed:
+
+- Files to import (audio / image breakdown)
+- Files already in storage (noteIds will be updated)
+- Files missing from Anki media
+
+Execution does exactly what the plan says — no surprises, no separate report needed.

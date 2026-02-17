@@ -125,7 +125,7 @@ public class BrowserMenus
       {
          _services.LocalNoteUpdater.ReparseSentences(sentences);
          AnkiFacade.UIUtils.Refresh();
-         AnkiFacade.UIUtils.ShowTooltip($"Reparsed {sentences.Count} sentence(s)", 3000);
+         AnkiFacade.UIUtils.ShowTooltip($"Reparsed {sentences.Count} sentence(s)");
       });
    }
 
@@ -138,13 +138,13 @@ public class BrowserMenus
          var ankiNoteId = AnkiFacade.GetNoteIdFromCardId(cardId);
 
          // Try each note type collection using external ID mapping
-         JPNote? vocab = _services.App.Collection.Vocab.WithExternalIdOrNone(ankiNoteId);
+         JPNote? vocab = _services.CoreApp.Collection.Vocab.WithExternalIdOrNone(ankiNoteId);
          if(vocab != null) return vocab;
 
-         JPNote? sentence = _services.App.Collection.Sentences.WithExternalIdOrNone(ankiNoteId);
+         JPNote? sentence = _services.CoreApp.Collection.Sentences.WithExternalIdOrNone(ankiNoteId);
          if(sentence != null) return sentence;
 
-         JPNote? kanji = _services.App.Collection.Kanji.WithExternalIdOrNone(ankiNoteId);
+         JPNote? kanji = _services.CoreApp.Collection.Kanji.WithExternalIdOrNone(ankiNoteId);
          return kanji;
       }
       catch(Exception ex)
@@ -162,7 +162,7 @@ public class BrowserMenus
       {
          try
          {
-            var note = _services.App.Collection.Sentences.WithExternalIdOrNone(ankiNoteId);
+            var note = _services.CoreApp.Collection.Sentences.WithExternalIdOrNone(ankiNoteId);
             if(note != null)
             {
                sentences.Add(note);

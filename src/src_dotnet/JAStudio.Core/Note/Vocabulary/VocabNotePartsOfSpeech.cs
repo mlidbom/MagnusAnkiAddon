@@ -7,18 +7,17 @@ namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNotePartsOfSpeech
 {
-   readonly VocabNote _vocab;
    readonly NoteGuard _guard;
    string _value;
 
    public VocabNotePartsOfSpeech(VocabNote vocab, VocabData? data, NoteGuard guard)
    {
-      _vocab = vocab;
+      Vocab = vocab;
       _guard = guard;
       _value = POSSetManager.InternAndHarmonize(data?.PartsOfSpeech ?? string.Empty);
    }
 
-   VocabNote Vocab => _vocab;
+   VocabNote Vocab { get; }
 
    public string RawStringValue() => _value;
 

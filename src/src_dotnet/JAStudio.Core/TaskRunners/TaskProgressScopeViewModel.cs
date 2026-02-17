@@ -15,6 +15,8 @@ public class TaskProgressScopeViewModel : NotifyPropertyChangedBase, IDisposable
    readonly Stopwatch _stopwatch = Stopwatch.StartNew();
    System.Threading.Timer? _timer;
 
+   public int Depth { get; }
+
    string _heading;
 
    public string Heading
@@ -32,15 +34,17 @@ public class TaskProgressScopeViewModel : NotifyPropertyChangedBase, IDisposable
    }
 
    /// <summary>
-   /// Child progress panels displayed within this scope.
-   /// Add/remove on the UI thread since <see cref="ObservableCollection{T}"/>
-   /// is bound to an <c>ItemsControl</c>.
+   /// Child elements displayed within this scope: <see cref="TaskProgressViewModel"/>
+   /// items for individual tasks, and nested <see cref="TaskProgressScopeViewModel"/>
+   /// items for child scopes. Add/remove on the UI thread since
+   /// <see cref="ObservableCollection{T}"/> is bound to an <c>ItemsControl</c>.
    /// </summary>
-   public ObservableCollection<TaskProgressViewModel> Children { get; } = new();
+   public ObservableCollection<NotifyPropertyChangedBase> Children { get; } = new();
 
-   public TaskProgressScopeViewModel(string heading)
+   public TaskProgressScopeViewModel(string heading, int depth)
    {
       _heading = heading;
+      Depth = depth;
       _timer = new System.Threading.Timer(_ => UpdateElapsed(), null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
    }
 

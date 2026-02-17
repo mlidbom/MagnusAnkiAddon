@@ -14,19 +14,17 @@ namespace JAStudio.UI;
 public class AppMenus
 {
    readonly TemporaryServiceCollection _services;
-   readonly AppDialogs _dialogs;
 
-   internal AppMenus(TemporaryServiceCollection services, AppDialogs dialogs)
+   internal AppMenus(TemporaryServiceCollection services)
    {
       _services = services;
-      _dialogs = dialogs;
    }
 
    /// <summary>Called from Python to build right-click context menus.</summary>
    public NoteContextMenu CreateNoteContextMenu() => new(_services);
 
    /// <summary>Called from Python to build the main "Japanese" tools menu.</summary>
-   public JapaneseMainMenu CreateJapaneseMainMenu() => new(_services, _dialogs);
+   public JapaneseMainMenu CreateJapaneseMainMenu() => new(_services);
 
    /// <summary>
    /// Show the context menu popup at the current cursor position.

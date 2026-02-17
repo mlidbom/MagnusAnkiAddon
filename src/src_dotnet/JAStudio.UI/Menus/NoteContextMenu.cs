@@ -25,7 +25,7 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
    // ReSharper disable once MemberCanBePrivate.Global used from python
    public List<SpecMenuItem> BuildVocabContextMenuSpec(NoteId vocabId, string selection, string clipboard)
    {
-      var vocab = _services.App.Collection.Vocab.WithIdOrNone(vocabId);
+      var vocab = _services.CoreApp.Collection.Vocab.WithIdOrNone(vocabId);
       if(vocab == null)
          return [];
 
@@ -47,7 +47,7 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
    // ReSharper disable once MemberCanBePrivate.Global used from python
    public List<SpecMenuItem> BuildKanjiContextMenuSpec(NoteId kanjiId, string selection, string clipboard)
    {
-      var kanji = _services.App.Collection.Kanji.WithIdOrNone(kanjiId);
+      var kanji = _services.CoreApp.Collection.Kanji.WithIdOrNone(kanjiId);
       if(kanji == null)
          return [];
 
@@ -69,7 +69,7 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
    // ReSharper disable once MemberCanBePrivate.Global used from python
    public List<SpecMenuItem> BuildSentenceContextMenuSpec(NoteId sentenceId, string selection, string clipboard)
    {
-      var sentence = _services.App.Collection.Sentences.WithIdOrNone(sentenceId);
+      var sentence = _services.CoreApp.Collection.Sentences.WithIdOrNone(sentenceId);
       if(sentence == null)
          return [];
 
@@ -104,7 +104,7 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
 
    public List<Avalonia.Controls.MenuItem> BuildVocabContextMenu(long vocabId, string selection, string clipboard)
    {
-      var noteId = _services.App.Collection.Vocab.ExternalIdToNoteId(vocabId);
+      var noteId = _services.CoreApp.Collection.Vocab.ExternalIdToNoteId(vocabId);
       if(noteId == null) return [];
       var specs = BuildVocabContextMenuSpec(noteId, selection, clipboard);
       return ConvertToAvaloniaMenuItems(specs);
@@ -112,7 +112,7 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
 
    public List<Avalonia.Controls.MenuItem> BuildKanjiContextMenu(long kanjiId, string selection, string clipboard)
    {
-      var noteId = _services.App.Collection.Kanji.ExternalIdToNoteId(kanjiId);
+      var noteId = _services.CoreApp.Collection.Kanji.ExternalIdToNoteId(kanjiId);
       if(noteId == null) return [];
       var specs = BuildKanjiContextMenuSpec(noteId, selection, clipboard);
       return ConvertToAvaloniaMenuItems(specs);
@@ -120,7 +120,7 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
 
    public List<Avalonia.Controls.MenuItem> BuildSentenceContextMenu(long sentenceId, string selection, string clipboard)
    {
-      var noteId = _services.App.Collection.Sentences.ExternalIdToNoteId(sentenceId);
+      var noteId = _services.CoreApp.Collection.Sentences.ExternalIdToNoteId(sentenceId);
       if(noteId == null) return [];
       var specs = BuildSentenceContextMenuSpec(noteId, selection, clipboard);
       return ConvertToAvaloniaMenuItems(specs);
@@ -164,7 +164,7 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
          WebSearchMenus.BuildWebSearchMenuSpec(() => text),
          BuildMatchingNotesSubmenuSpec(text),
          BuildCreateNoteSubmenuSpec(text),
-         SpecMenuItem.Command(ShortcutFinger.Down1($"Reparse matching sentences"), () => OnReparseMatchingSentences(text))
+         SpecMenuItem.Command(ShortcutFinger.Down1("Reparse matching sentences"), () => OnReparseMatchingSentences(text))
       ];
    }
 
@@ -217,10 +217,10 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
    SpecMenuItem BuildMatchingNotesSubmenuSpec(string text)
    {
       // Find notes that exactly match the search text
-      var vocabs = _services.App.Collection.Vocab.WithQuestionPreferDisambiguationName(text).ToList();
-      var sentences = _services.App.Collection.Sentences.WithQuestion(text);
+      var vocabs = _services.CoreApp.Collection.Vocab.WithQuestionPreferDisambiguationName(text).ToList();
+      var sentences = _services.CoreApp.Collection.Sentences.WithQuestion(text);
       var kanjis = text.Length == 1
-                      ? _services.App.Collection.Kanji.WithAnyKanjiIn([text])
+                      ? _services.CoreApp.Collection.Kanji.WithAnyKanjiIn([text])
                       : [];
 
       // Only show submenu if any notes match
@@ -311,7 +311,7 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
       {
          _services.LocalNoteUpdater.ReparseMatchingSentences(text);
          AnkiFacade.UIUtils.Refresh();
-         AnkiFacade.UIUtils.ShowTooltip($"Reparsed sentences matching: {text}", 3000);
+         AnkiFacade.UIUtils.ShowTooltip($"Reparsed sentences matching: {text}");
       });
    }
 

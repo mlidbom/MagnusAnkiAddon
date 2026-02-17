@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Compze.Utilities.Logging;
+using Avalonia.Threading;
 using JAStudio.Anki;
 using JAStudio.Core.TaskRunners;
 using JAStudio.UI.Menus.UIAgnosticMenuStructure;
 using JAStudio.UI.Utils;
+using JAStudio.UI.Views;
 
 namespace JAStudio.UI.Menus;
 
@@ -16,13 +17,11 @@ namespace JAStudio.UI.Menus;
 public class JapaneseMainMenu
 {
    readonly Core.TemporaryServiceCollection _services;
-   readonly AppDialogs _dialogs;
    readonly OpenInAnkiMenus _openInAnkiMenus;
 
-   public JapaneseMainMenu(Core.TemporaryServiceCollection services, AppDialogs dialogs)
+   public JapaneseMainMenu(Core.TemporaryServiceCollection services)
    {
       _services = services;
-      _dialogs = dialogs;
       _openInAnkiMenus = new OpenInAnkiMenus(_services);
    }
 
@@ -38,8 +37,9 @@ public class JapaneseMainMenu
          ShortcutFinger.Home1("Config"),
          new List<SpecMenuItem>
          {
-            SpecMenuItem.Command(ShortcutFinger.Home1("Options (Ctrl+Shift+S)"), OnOptions),
-            SpecMenuItem.Command(ShortcutFinger.Home2("Readings mappings (Ctrl+Shift+M)"), OnReadingsMappings)
+            SpecMenuItem.Command(ShortcutFinger.Home1("Options (Ctrl+Shift+S)"), () => Dispatcher.UIThread.Invoke(() => new OptionsDialog(_services).PositionNearCursor().Show())),
+            SpecMenuItem.Command(ShortcutFinger.Home2("Readings mappings (Ctrl+Shift+M)"), () => Dispatcher.UIThread.Invoke(() => new ReadingsMappingsDialog(_services).PositionNearCursor().Show())),
+            SpecMenuItem.Command(ShortcutFinger.Home3("Media import"), () => Dispatcher.UIThread.Invoke(() => new MediaImportDialog(_services).PositionNearCursor().Show()))
          }
       );
 
@@ -48,7 +48,7 @@ public class JapaneseMainMenu
          ShortcutFinger.Home2("Lookup"),
          new List<SpecMenuItem>
          {
-            SpecMenuItem.Command(ShortcutFinger.Home1("Open note (Ctrl+O)"), OnOpenNote),
+            SpecMenuItem.Command(ShortcutFinger.Home1("Open note (Ctrl+O)"), () => Dispatcher.UIThread.Invoke(() => NoteSearchDialog.ToggleVisibility(_services))),
             _openInAnkiMenus.BuildOpenInAnkiMenuSpec(getClipboardContent),
             WebSearchMenus.BuildWebSearchMenuSpec(getClipboardContent)
          }
@@ -85,24 +85,10 @@ public class JapaneseMainMenu
          }
       );
 
-   // Config menu actions
-   void OnOptions()
-   {
-      this.Log().Info("OnOptions() called!");
-      this.Log().Info("Calling ShowOptionsDialog()...");
-      _dialogs.ShowOptionsDialog();
-      this.Log().Info("ShowOptionsDialog() completed");
-   }
-
-   void OnReadingsMappings() => _dialogs.ShowReadingsMappingsDialog();
-
    void FlushAllAnkiNotesById()
    {
       using var scope = _services.TaskRunner.Current("Flushing all Anki notes by ID");
       var externalIds = _services.ExternalNoteIdMap.AllExternalIds();
       scope.RunBatch(externalIds, AnkiFacade.Batches.FlushAnkiNote, "Flushing Anki notes");
    }
-
-   // Lookup menu actions
-   void OnOpenNote() => _dialogs.ToggleNoteSearchDialog();
 }

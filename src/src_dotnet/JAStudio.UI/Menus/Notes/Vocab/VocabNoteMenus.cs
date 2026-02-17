@@ -98,7 +98,7 @@ class VocabNoteMenus(Core.TemporaryServiceCollection services)
          var reading = readings[i];
          items.Add(SpecMenuItem.Command(
                       ShortcutFinger.FingerByPriorityOrder(i, $"Homonyms: {reading}"),
-                      () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder().NotesLookup(_services.App.Collection.Vocab.WithReading(reading)))));
+                      () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder().NotesLookup(_services.CoreApp.Collection.Vocab.WithReading(reading)))));
       }
 
       return SpecMenuItem.Submenu(ShortcutFinger.Up1("Homonyms"), items);
@@ -132,7 +132,7 @@ class VocabNoteMenus(Core.TemporaryServiceCollection services)
       if(string.IsNullOrEmpty(ergativeTwinQuestion))
          return null;
 
-      var ergativeTwinNotes = _services.App.Collection.Vocab.WithQuestion(ergativeTwinQuestion);
+      var ergativeTwinNotes = _services.CoreApp.Collection.Vocab.WithQuestion(ergativeTwinQuestion);
       if(!ergativeTwinNotes.Any())
          return null;
 
@@ -187,7 +187,7 @@ class VocabNoteMenus(Core.TemporaryServiceCollection services)
 
    SpecMenuItem BuildCreateCloneToFormMenuSpec(VocabNote vocab)
    {
-      var col = _services.App.Collection;
+      var col = _services.CoreApp.Collection;
       var formsWithNoVocab = vocab.Forms.AllSet()
                                   .Where(form => !col.Vocab.WithQuestion(form).Any())
                                   .ToList();

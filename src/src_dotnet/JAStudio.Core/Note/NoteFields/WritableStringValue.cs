@@ -7,24 +7,23 @@ public class WritableStringValue : IWritableStringValue, IObservable<string>
 {
    readonly NoteGuard _guard;
    readonly SimpleObservable<string> _observable = new();
-   string _value;
 
    public WritableStringValue(string initialValue, NoteGuard guard)
    {
-      _value = initialValue;
+      Value = initialValue;
       _guard = guard;
    }
 
-   public string Value => _value;
+   public string Value { get; private set; }
 
    public void Set(string value)
    {
       var trimmed = value.Trim();
-      if(trimmed != _value)
+      if(trimmed != Value)
       {
          _guard.Update(() =>
          {
-            _value = trimmed;
+            Value = trimmed;
             _observable.OnNext(trimmed);
          });
       }
@@ -32,9 +31,9 @@ public class WritableStringValue : IWritableStringValue, IObservable<string>
 
    public void Empty() => Set(string.Empty);
 
-   public bool HasValue() => !string.IsNullOrEmpty(_value);
+   public bool HasValue() => !string.IsNullOrEmpty(Value);
 
    public IDisposable Subscribe(IObserver<string> observer) => _observable.Subscribe(observer);
 
-   public override string ToString() => _value;
+   public override string ToString() => Value;
 }

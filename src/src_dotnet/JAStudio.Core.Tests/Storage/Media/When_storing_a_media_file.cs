@@ -2,13 +2,16 @@ using System;
 using System.IO;
 using Compze.Utilities.Testing.Must;
 using Compze.Utilities.Testing.XUnit.BDD;
+using JAStudio.Core.Note;
+using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Storage.Media;
+using JAStudio.Core.TaskRunners;
 
 // ReSharper disable InconsistentNaming
 
 namespace JAStudio.Core.Tests.Storage.Media;
 
-public class When_storing_a_media_file : IDisposable
+public class When_storing_a_media_file : TestStartingWithEmptyCollection
 {
    readonly string _tempDir = Path.Combine(Path.GetTempPath(), $"JAStudio_test_{Guid.NewGuid():N}");
    readonly string _mediaRoot;
@@ -19,10 +22,15 @@ public class When_storing_a_media_file : IDisposable
    {
       Directory.CreateDirectory(_tempDir);
       _mediaRoot = Path.Combine(_tempDir, "media");
-      _index = new MediaFileIndex(_mediaRoot);
+      _index = new MediaFileIndex(_mediaRoot, GetService<TaskRunner>());
+      _service = new MediaStorageService(_mediaRoot, _index);
    }
 
-   public void Dispose() => Directory.Delete(_tempDir, recursive: true);
+   public new void Dispose()
+   {
+      base.Dispose();
+      Directory.Delete(_tempDir, recursive: true);
+   }
 
    protected string CreateSourceFile(string content = "fake audio content")
    {
@@ -33,50 +41,31 @@ public class When_storing_a_media_file : IDisposable
       return path;
    }
 
-   protected void InitService(MediaRoutingConfig config) =>
-      _service = new MediaStorageService(_mediaRoot, _index, config);
-
-   public class with_a_matching_routing_rule : When_storing_a_media_file
+   public class with_a_target_directory : When_storing_a_media_file
    {
       readonly MediaFileId _id;
       readonly string? _resolved;
 
-      public with_a_matching_routing_rule()
+      public with_a_target_directory()
       {
-         var config = new MediaRoutingConfig(
-            [new MediaRoutingRule("anime::natsume", "commercial-001")],
-            "general");
-         InitService(config);
-
          var sourceFile = CreateSourceFile();
-         _id = _service.StoreFile(sourceFile, "anime::natsume::s1::01", "natsume_ep01_03m22s.mp3");
+         _id = _service.StoreFile(sourceFile,
+                                  "commercial-001",
+                                  SourceTag.Parse("anime::natsume::s1::01"),
+                                  "natsume_ep01_03m22s.mp3",
+                                  new NoteId(Guid.NewGuid()),
+                                  MediaType.Audio,
+                                  CopyrightStatus.Commercial);
          _resolved = _service.TryResolve(_id);
       }
 
       [XF] public void the_id_is_not_empty() => _id.IsEmpty.Must().BeFalse();
       [XF] public void the_file_is_resolvable() => _resolved.Must().NotBeNull();
       [XF] public void the_file_exists_on_disk() => File.Exists(_resolved!).Must().BeTrue();
-      [XF] public void the_path_contains_the_routed_directory() => _resolved!.Must().Contain("commercial-001");
-      [XF] public void the_path_contains_the_source_tag_hierarchy() => _resolved!.Must().Contain(Path.Combine("anime", "natsume", "s1", "01"));
-      [XF] public void the_path_contains_the_original_filename() => _resolved!.Must().Contain("natsume_ep01_03m22s.mp3");
+      [XF] public void the_path_contains_the_target_directory() => _resolved!.Must().Contain("commercial-001");
+      [XF] public void the_path_uses_guid_bucket() => _resolved!.Must().Contain(Path.DirectorySeparatorChar + _id.ToString()[..2] + Path.DirectorySeparatorChar);
       [XF] public void the_file_ends_with_the_guid() => _resolved!.Must().EndWith($"{_id}.mp3");
-   }
-
-   public class with_default_routing : When_storing_a_media_file
-   {
-      readonly string? _resolved;
-
-      public with_default_routing()
-      {
-         var config = MediaRoutingConfig.Default();
-         InitService(config);
-
-         var sourceFile = CreateSourceFile();
-         var id = _service.StoreFile(sourceFile, "forvo", "走る_forvo.mp3");
-         _resolved = _service.TryResolve(id);
-      }
-
-      [XF] public void the_path_uses_the_general_directory() => _resolved!.Must().Contain("general");
+      [XF] public void a_sidecar_file_is_written() => File.Exists(SidecarSerializer.BuildAudioSidecarPath(_resolved!)).Must().BeTrue();
    }
 
    public class after_storing_a_file : When_storing_a_media_file
@@ -85,11 +74,14 @@ public class When_storing_a_media_file : IDisposable
 
       public after_storing_a_file()
       {
-         var config = MediaRoutingConfig.Default();
-         InitService(config);
-
          var sourceFile = CreateSourceFile();
-         _storedId = _service.StoreFile(sourceFile, "test", "test.mp3");
+         _storedId = _service.StoreFile(sourceFile,
+                                        "general",
+                                        SourceTag.Parse("test"),
+                                        "test.mp3",
+                                        new NoteId(Guid.NewGuid()),
+                                        MediaType.Audio,
+                                        CopyrightStatus.Free);
       }
 
       [XF] public void stored_file_exists() => _service.Exists(_storedId).Must().BeTrue();
@@ -103,17 +95,22 @@ public class When_storing_a_media_file : IDisposable
 
       public when_rebuilding_the_index_from_filesystem()
       {
-         var config = MediaRoutingConfig.Default();
-         InitService(config);
-
          var sourceFile = CreateSourceFile();
-         _id = _service.StoreFile(sourceFile, "anime::natsume::s1::01", "ep01.mp3");
+         _id = _service.StoreFile(sourceFile,
+                                  "general",
+                                  SourceTag.Parse("anime::natsume::s1::01"),
+                                  "ep01.mp3",
+                                  new NoteId(Guid.NewGuid()),
+                                  MediaType.Audio,
+                                  CopyrightStatus.Commercial);
 
-         _freshIndex = new MediaFileIndex(_mediaRoot);
+         _freshIndex = new MediaFileIndex(_mediaRoot, GetService<TaskRunner>());
          _freshIndex.Build();
       }
 
       [XF] public void the_fresh_index_finds_the_file() => _freshIndex.Contains(_id).Must().BeTrue();
       [XF] public void the_original_filename_is_recoverable() => _freshIndex.TryGetInfo(_id)!.OriginalFileName.Must().Be("ep01.mp3");
+      [XF] public void the_sidecar_is_readable() => _freshIndex.TryGetAttachment(_id).Must().NotBeNull();
+      [XF] public void the_copyright_is_preserved() => _freshIndex.TryGetAttachment(_id)!.Copyright.Must().Be(CopyrightStatus.Commercial);
    }
 }

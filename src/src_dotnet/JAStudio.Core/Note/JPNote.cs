@@ -4,6 +4,7 @@ using System.Linq;
 using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Note.CorpusData;
 using JAStudio.Core.Note.NoteFields;
+using JAStudio.Core.Storage.Media;
 using MemoryPack;
 
 namespace JAStudio.Core.Note;
@@ -15,6 +16,8 @@ public abstract class JPNote
    public NoteServices Services { get; }
    bool _persisted;
    byte[]? _lastPersistedSnapshot;
+
+   public NoteMedia Media { get; internal set; } = NoteMedia.Empty;
 
    // Dictionary tracks card suspend status: true = active/unsuspended, false = suspended
    readonly Dictionary<string, bool> _cardStatus = new();
