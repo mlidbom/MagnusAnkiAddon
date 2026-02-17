@@ -32,7 +32,7 @@ public abstract class DictionaryFormsTokenBase : SplitTokenBase
 }
 
 // Dictionary form stem
-public class DictionaryFormStem : DictionaryFormsTokenBase
+class DictionaryFormStem : DictionaryFormsTokenBase
 {
    public DictionaryFormStem(JNToken source, string surface, string baseForm)
       : base(source, surface, baseForm) {}
@@ -41,7 +41,7 @@ public class DictionaryFormStem : DictionaryFormsTokenBase
 }
 
 // Dictionary form inflection
-internal class DictionaryFormInflection : DictionaryFormsTokenBase
+class DictionaryFormInflection : DictionaryFormsTokenBase
 {
    public DictionaryFormInflection(JNToken source, string surface, string baseForm)
       : base(source, surface, baseForm) {}
@@ -50,7 +50,7 @@ internal class DictionaryFormInflection : DictionaryFormsTokenBase
 }
 
 // Godan dictionary form stem
-internal class GodanDictionaryFormStem : DictionaryFormStem
+class GodanDictionaryFormStem : DictionaryFormStem
 {
    public GodanDictionaryFormStem(JNToken source, string surface, string baseForm)
       : base(source, surface, baseForm) {}

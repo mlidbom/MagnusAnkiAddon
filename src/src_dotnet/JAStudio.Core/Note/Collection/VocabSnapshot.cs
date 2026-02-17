@@ -3,7 +3,7 @@ using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.Note.Collection;
 
-internal class VocabSnapshot : CachedNote
+class VocabSnapshot : CachedNote
 {
    public string DisambiguationName { get; }
    public string[] Forms { get; }

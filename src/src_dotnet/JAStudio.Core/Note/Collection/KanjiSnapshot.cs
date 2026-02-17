@@ -2,7 +2,7 @@
 
 namespace JAStudio.Core.Note.Collection;
 
-internal class KanjiSnapshot : CachedNote
+class KanjiSnapshot : CachedNote
 {
    public string[] Radicals { get; }
    public string[] Readings { get; }

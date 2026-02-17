@@ -21,7 +21,7 @@ class Request<T>
    }
 }
 
-internal class JamdictLookupResult
+class JamdictLookupResult
 {
    public List<DictEntry> Entries { get; }
    public List<DictEntry> Names { get; }
