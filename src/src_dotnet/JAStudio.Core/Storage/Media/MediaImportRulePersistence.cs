@@ -16,7 +16,7 @@ public class MediaImportRulePersistence
    };
    
 
-   static string FilePath => Path.Combine(App.MetadataDir, "media-import-rules.json");
+   static string FilePath => Path.Combine(CoreApp.MetadataDir, "media-import-rules.json");
 
    public static PersistedImportRules Load()
    {

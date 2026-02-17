@@ -8,10 +8,10 @@ namespace JAStudio.UI;
 
 public class AppDialogs
 {
-   readonly Core.App _app;
-   TemporaryServiceCollection Services => _app.Services;
+   readonly Core.CoreApp _coreApp;
+   TemporaryServiceCollection Services => _coreApp.Services;
 
-   internal AppDialogs(Core.App app) => _app = app;
+   internal AppDialogs(Core.CoreApp coreApp) => _coreApp = coreApp;
 
    internal void ShowOptionsDialog()
    {

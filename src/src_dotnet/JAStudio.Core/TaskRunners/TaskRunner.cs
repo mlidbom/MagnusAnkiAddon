@@ -51,7 +51,7 @@ public class TaskRunner
 
    internal ITaskProgressRunner Create(IScopePanel? scopePanel, string labelText, bool? visible = null, bool allowCancel = true)
    {
-      visible ??= !App.IsTesting;
+      visible ??= !CoreApp.IsTesting;
 
       if(!visible.Value || scopePanel == null)
       {
@@ -115,7 +115,7 @@ public class TaskRunner
    /// </summary>
    public ITaskProgressRunner Current(string scopeTitle, bool forceHide = false, bool allowCancel = true)
    {
-      var visible = !App.IsTesting && !forceHide;
+      var visible = !CoreApp.IsTesting && !forceHide;
 
       var previousNestingDepth = _nestingDepth.Value;
       var depth = previousNestingDepth + 1;

@@ -24,7 +24,7 @@ namespace JAStudio.UI;
 /// </summary>
 public class JAStudioAppRoot
 {
-   readonly Core.App _app;
+   readonly Core.CoreApp _coreApp;
    CancellationTokenSource? _reloadCts;
    static readonly TimeSpan ReloadDebounceDelay = TimeSpan.FromMilliseconds(500);
 
@@ -37,7 +37,7 @@ public class JAStudioAppRoot
    /// The resolved service collection, derived from the bootstrapped Core.App.
    /// Used by dialog code-behinds to pass services to their ViewModels.
    /// </summary>
-   public TemporaryServiceCollection Services => _app.Services;
+   public TemporaryServiceCollection Services => _coreApp.Services;
 
    /// <summary>Dialog show/toggle methods, extracted from this root.</summary>
    public AppDialogs Dialogs { get; }
@@ -45,11 +45,11 @@ public class JAStudioAppRoot
    /// <summary>Menu factory methods, extracted from this root.</summary>
    public AppMenus Menus { get; }
 
-   JAStudioAppRoot(Core.App app)
+   JAStudioAppRoot(Core.CoreApp coreApp)
    {
-      _app = app;
-      Dialogs = new AppDialogs(app);
-      Menus = new AppMenus(app.Services);
+      _coreApp = coreApp;
+      Dialogs = new AppDialogs(coreApp);
+      Menus = new AppMenus(coreApp.Services);
    }
 
    /// <summary>
@@ -65,7 +65,7 @@ public class JAStudioAppRoot
          Debugger.Launch();
       }
 
-      var app = Core.App.Bootstrap(
+      var app = Core.CoreApp.Bootstrap(
          backendNoteCreator: new AnkiBackendNoteCreator(),
          backendDataLoader: new AnkiBackendDataLoader(),
          environmentPaths: new AnkiEnvironmentPaths());
@@ -76,7 +76,7 @@ public class JAStudioAppRoot
 
       var uiThread = new Thread(() =>
                      {
-                        AppBuilder.Configure<App>()
+                        AppBuilder.Configure<UIApp>()
                                   .UsePlatformDetect()
                                   .StartWithClassicDesktopLifetime(Array.Empty<string>(), ShutdownMode.OnExplicitShutdown);
                      })
@@ -93,7 +93,7 @@ public class JAStudioAppRoot
       uiThread.Start();
 
       // Wait for Avalonia to finish framework initialization
-      App.WaitForInitialization(TimeSpan.FromSeconds(30));
+      UIApp.WaitForInitialization(TimeSpan.FromSeconds(30));
 
       var root = new JAStudioAppRoot(app) { _uiThread = uiThread };
 
@@ -158,7 +158,7 @@ public class JAStudioAppRoot
             if(_profileOpen)
             {
                CancelPendingReload();
-               BackgroundTaskManager.Run(() => _app.Collection.ReloadFromBackend());
+               BackgroundTaskManager.Run(() => _coreApp.Collection.ReloadFromBackend());
             }
 
             break;
@@ -166,11 +166,11 @@ public class JAStudioAppRoot
          case AnkiLifecycleEvent.ProfileClosing:
             _profileOpen = false;
             CancelPendingReload();
-            _app.Collection.ClearCaches();
+            _coreApp.Collection.ClearCaches();
             break;
          case AnkiLifecycleEvent.SyncStarting:
             CancelPendingReload();
-            _app.Collection.ClearCaches();
+            _coreApp.Collection.ClearCaches();
             break;
 
          default:
@@ -181,7 +181,7 @@ public class JAStudioAppRoot
    public void ShutDown()
    {
       using var _ = this.Log().Info().LogMethodExecutionTime();
-      _app.Dispose();
+      _coreApp.Dispose();
       Dispatcher.UIThread.InvokeShutdown();
    }
 
@@ -195,7 +195,7 @@ public class JAStudioAppRoot
       {
          await Task.Delay(ReloadDebounceDelay, cts.Token);
          this.Log().Info("Debounce elapsed \u2014 reloading from backend");
-         _app.Collection.ReloadFromBackend();
+         _coreApp.Collection.ReloadFromBackend();
       });
    }
 

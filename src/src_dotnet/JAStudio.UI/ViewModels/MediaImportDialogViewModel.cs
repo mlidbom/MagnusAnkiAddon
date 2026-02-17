@@ -111,7 +111,7 @@ public partial class MediaImportDialogViewModel : ObservableObject
 
       BackgroundTaskManager.Run(() =>
       {
-         var ankiMediaDir = Core.App.AnkiMediaDir;
+         var ankiMediaDir = Core.CoreApp.AnkiMediaDir;
          var analyzer = new MediaImportAnalyzer(ankiMediaDir, _index);
 
          var vocabRules = BuildVocabRules();

@@ -19,7 +19,7 @@ public class TemporaryServiceCollection : IDisposable
    readonly IServiceLocator _serviceLocator;
    internal TemporaryServiceCollection(IServiceLocator serviceLocator) => _serviceLocator = serviceLocator;
 
-   public App App => _serviceLocator.Resolve<App>();
+   public CoreApp CoreApp => _serviceLocator.Resolve<CoreApp>();
    public ConfigurationStore ConfigurationStore => _serviceLocator.Resolve<ConfigurationStore>();
 
    // Core services

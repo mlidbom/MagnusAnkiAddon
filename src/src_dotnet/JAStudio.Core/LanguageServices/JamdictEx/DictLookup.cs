@@ -229,9 +229,9 @@ public class DictLookup
       return lookupResult.Names;
    }
 
-   public bool MightBeWord(string word) => App.IsTesting || AllWordForms().Contains(word);
+   public bool MightBeWord(string word) => CoreApp.IsTesting || AllWordForms().Contains(word);
 
-   public bool MightBeName(string word) => App.IsTesting || AllNameForms().Contains(word);
+   public bool MightBeName(string word) => CoreApp.IsTesting || AllNameForms().Contains(word);
 
    public bool MightBeEntry(string word) => MightBeWord(word) || MightBeName(word);
 

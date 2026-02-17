@@ -7,13 +7,13 @@ using JAStudio.Core.TestUtils;
 
 namespace JAStudio.Core;
 
-public class App : IDisposable
+public class CoreApp : IDisposable
 {
    public TemporaryServiceCollection Services { get; }
 
    static IEnvironmentPaths? _environmentPaths;
 
-   internal App(
+   internal CoreApp(
       IBackendNoteCreator? backendNoteCreator = null,
       IBackendDataLoader? backendDataLoader = null) =>
       Services = AppBootstrapper.Bootstrap(this, backendNoteCreator, backendDataLoader).Resolve<TemporaryServiceCollection>();
@@ -22,13 +22,13 @@ public class App : IDisposable
 
    public void Dispose() => Services.Dispose();
 
-   public static App Bootstrap(
+   public static CoreApp Bootstrap(
       IBackendNoteCreator? backendNoteCreator = null,
       IBackendDataLoader? backendDataLoader = null,
       IEnvironmentPaths? environmentPaths = null)
    {
       if(environmentPaths != null) _environmentPaths = environmentPaths;
-      return new App(backendNoteCreator, backendDataLoader);
+      return new CoreApp(backendNoteCreator, backendDataLoader);
    }
 
    public JapaneseConfig Config => Services.ConfigurationStore.Config();
@@ -40,7 +40,7 @@ public class App : IDisposable
       {
          if(IsTesting)
          {
-            var assemblyLocation = typeof(App).Assembly.Location;
+            var assemblyLocation = typeof(CoreApp).Assembly.Location;
             return Path.GetDirectoryName(Path.GetDirectoryName(assemblyLocation)) ?? string.Empty;
          }
 

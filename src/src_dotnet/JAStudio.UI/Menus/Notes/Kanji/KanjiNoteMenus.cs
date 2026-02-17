@@ -57,7 +57,7 @@ public class KanjiNoteMenus
                                           () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder().NotesLookup(kanji.GetRadicalsNotes()))),
                      SpecMenuItem.Command(ShortcutFinger.Home4("Kanji"),
                                           () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder().NotesLookup(
-                                                                                    _services.App.Collection.Kanji.WithRadical(kanji.GetQuestion())))),
+                                                                                    _services.CoreApp.Collection.Kanji.WithRadical(kanji.GetQuestion())))),
                      SpecMenuItem.Command(ShortcutFinger.Home5("Sentences"),
                                           () => AnkiFacade.Browser.ExecuteLookup(_services.QueryBuilder().SentenceSearch(kanji.GetQuestion(), exact: true)))
                   };

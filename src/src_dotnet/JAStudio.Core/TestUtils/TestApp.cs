@@ -2,20 +2,20 @@ using JAStudio.Core.Configuration;
 
 namespace JAStudio.Core.TestUtils;
 
-public class TestApp
+public class TestCoreApp
 {
-   readonly App _app;
+   readonly CoreApp _coreApp;
    readonly ConfigurationStore _configurationStore;
 
-   internal TestApp(App app, ConfigurationStore configurationStore)
+   internal TestCoreApp(CoreApp coreApp, ConfigurationStore configurationStore)
    {
-      _app = app;
+      _coreApp = coreApp;
       _configurationStore = configurationStore;
    }
 
-   public static App Reset()
+   public static CoreApp Reset()
    {
-      var app = App.Bootstrap();
+      var app = CoreApp.Bootstrap();
       app.Services.ConfigurationStore.InitForTesting();
       app.Config.SetReadingsMappingsForTesting(TestReadingsMappings);
 

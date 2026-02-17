@@ -5,7 +5,7 @@ using Avalonia.Markup.Xaml;
 
 namespace JAStudio.UI;
 
-public class App : Application
+public class UIApp : Application
 {
    static readonly ManualResetEventSlim Initialized = new();
 

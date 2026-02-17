@@ -99,5 +99,5 @@ public class ConfigurationStore
                             );
    }
 
-   string MappingsFilePath() => Path.Combine(App.UserFilesDir, "readings_mappings.txt");
+   string MappingsFilePath() => Path.Combine(CoreApp.UserFilesDir, "readings_mappings.txt");
 }

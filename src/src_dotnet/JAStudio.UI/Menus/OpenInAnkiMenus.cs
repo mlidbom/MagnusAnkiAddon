@@ -69,7 +69,7 @@ public class OpenInAnkiMenus
             CreateLookupSpec(ShortcutFinger.Home2("By reading part"),
                              () => _services.QueryBuilder().KanjiWithReadingPart(getSearchText())),
             CreateLookupSpec(ShortcutFinger.Home3("By reading exact"),
-                             () => _services.QueryBuilder().NotesLookup(_services.App.Collection.Kanji.WithReading(getSearchText()))),
+                             () => _services.QueryBuilder().NotesLookup(_services.CoreApp.Collection.Kanji.WithReading(getSearchText()))),
             CreateLookupSpec(ShortcutFinger.Home4("With radicals"),
                              () => _services.QueryBuilder().KanjiWithRadicalsInString(getSearchText())),
             CreateLookupSpec(ShortcutFinger.Up1("With meaning"),

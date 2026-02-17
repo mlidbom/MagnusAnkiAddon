@@ -23,7 +23,7 @@ namespace JAStudio.Core;
 static class AppBootstrapper
 {
    internal static IServiceLocator Bootstrap(
-      App app,
+      CoreApp coreApp,
       IBackendNoteCreator? backendNoteCreator = null,
       IBackendDataLoader? backendDataLoader = null)
    {
@@ -32,7 +32,7 @@ static class AppBootstrapper
       var container = new SimpleInjectorDependencyInjectionContainer();
       var registrar = container.Register();
 
-      if(App.IsTesting)
+      if(CoreApp.IsTesting)
       {
          registrar.Register(
             Singleton.For<INoteRepository>().CreatedBy(() => (INoteRepository)new InMemoryNoteRepository()));
@@ -40,12 +40,12 @@ static class AppBootstrapper
       {
          registrar.Register(
             Singleton.For<INoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner) =>
-                                                          (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, App.DatabaseDir)));
+                                                          (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, CoreApp.DatabaseDir)));
       }
 
       registrar.Register(
          Singleton.For<IBackendNoteCreator>().Instance(backendNoteCreator),
-         Singleton.For<App>().Instance(app),
+         Singleton.For<CoreApp>().Instance(coreApp),
          Singleton.For<ConfigurationStore>().CreatedBy((TemporaryServiceCollection services) => new ConfigurationStore(services)),
          Singleton.For<TemporaryServiceCollection>().CreatedBy(() => new TemporaryServiceCollection(container.ServiceLocator)),
          Singleton.For<JapaneseConfig>().CreatedBy((ConfigurationStore store) => store.Config()),
@@ -57,9 +57,9 @@ static class AppBootstrapper
 
          // Media storage
          Singleton.For<MediaFileIndex>().CreatedBy((TaskRunner taskRunner) =>
-                                                      new MediaFileIndex(App.MediaDir, taskRunner)),
+                                                      new MediaFileIndex(CoreApp.MediaDir, taskRunner)),
          Singleton.For<MediaStorageService>().CreatedBy((MediaFileIndex index) =>
-                                                           new MediaStorageService(App.MediaDir, index)),
+                                                           new MediaStorageService(CoreApp.MediaDir, index)),
 
          // Core services
          Singleton.For<Settings>().CreatedBy((JapaneseConfig config) => new Settings(config)),
@@ -69,7 +69,7 @@ static class AppBootstrapper
                                                         new LocalNoteUpdater(taskRunner, vocab, kanji, sentences, config, dictLookup, vocabNoteFactory, fileSystemNoteRepository)),
          Singleton.For<TaskRunner>().CreatedBy((JapaneseConfig config) => new TaskRunner(config)),
          Singleton.For<CardOperations>().CreatedBy(() => new CardOperations()),
-         Singleton.For<TestApp>().CreatedBy((ConfigurationStore configurationStore) => new TestApp(app, configurationStore)),
+         Singleton.For<TestCoreApp>().CreatedBy((ConfigurationStore configurationStore) => new TestCoreApp(coreApp, configurationStore)),
 
          // Services owned by JPCollection — registered as property accessors
          Singleton.For<NoteServices>().CreatedBy(() => new NoteServices(container.ServiceLocator)),
@@ -78,7 +78,7 @@ static class AppBootstrapper
          Singleton.For<VocabNoteGeneratedData>().CreatedBy((JPCollection col) => col.VocabNoteGeneratedData),
          Singleton.For<NoteSerializer>().CreatedBy((NoteServices noteServices) => new NoteSerializer(noteServices)),
          Singleton.For<FileSystemNoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner) =>
-                                                                new FileSystemNoteRepository(serializer, taskRunner, App.DatabaseDir)),
+                                                                new FileSystemNoteRepository(serializer, taskRunner, CoreApp.DatabaseDir)),
          Singleton.For<KanjiNoteMnemonicMaker>().CreatedBy((JapaneseConfig config) => new KanjiNoteMnemonicMaker(config)),
 
          // ViewModels

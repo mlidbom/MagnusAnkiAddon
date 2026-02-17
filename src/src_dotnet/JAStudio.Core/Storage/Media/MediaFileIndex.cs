@@ -27,7 +27,7 @@ public class MediaFileIndex
       _taskRunner = taskRunner;
    }
 
-   string SnapshotPath => Path.Combine(App.MetadataDir, "media-snapshot.bin");
+   string SnapshotPath => Path.Combine(CoreApp.MetadataDir, "media-snapshot.bin");
 
    record ScannedSidecar(string Path, MediaFileId Id, DateTime LastWriteUtc);
 
@@ -202,7 +202,7 @@ public class MediaFileIndex
       var imageSidecars = new List<ScannedSidecar>();
       var mediaFilesByDirectory = new Dictionary<string, List<FileInfo>>(StringComparer.OrdinalIgnoreCase);
 
-      var metadataPrefix = App.MetadataDir + Path.DirectorySeparatorChar;
+      var metadataPrefix = CoreApp.MetadataDir + Path.DirectorySeparatorChar;
 
       foreach(var fi in new DirectoryInfo(_mediaRoot).EnumerateFiles("*", SearchOption.AllDirectories))
       {
