@@ -8,7 +8,7 @@ namespace JAStudio.Core.Tests.Fixtures;
 /// <summary>
 /// Tests ported from test_collection_factory.py
 /// </summary>
-public class CollectionFactoryTests : Specification_using_a_collection
+public class CollectionFactoryTests : SpecificationUsingACollection
 {
    [Fact]
    public void KanjiAddedCorrectly()

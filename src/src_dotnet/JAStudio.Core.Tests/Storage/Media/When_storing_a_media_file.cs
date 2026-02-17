@@ -11,7 +11,7 @@ using JAStudio.Core.TaskRunners;
 
 namespace JAStudio.Core.Tests.Storage.Media;
 
-public class When_storing_a_media_file : Specification_for_an_empty_collection
+public class When_storing_a_media_file : SpecificationStartingWithAnEmptyCollection
 {
    readonly string _tempDir = Path.Combine(Path.GetTempPath(), $"JAStudio_test_{Guid.NewGuid():N}");
    readonly string _mediaRoot;

@@ -8,7 +8,7 @@ using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.Tests.AICreatedSpecs.When_querying_collections;
 
-public class for_vocabs : Specification_for_an_empty_collection, IAIGeneratedSpec
+public class for_vocabs : SpecificationStartingWithAnEmptyCollection, IAIGeneratedSpec
 {
    public class given_three_vocabs : for_vocabs
    {

@@ -9,7 +9,7 @@ using Xunit;
 
 namespace JAStudio.Core.Tests.LanguageServices.TextAnalysis;
 
-public abstract class SentenceAnalysisViewModelCommon : Specification_using_a_collection
+public abstract class SentenceAnalysisViewModelCommon : SpecificationUsingACollection
 {
    protected SentenceAnalysisViewModelCommon(DataNeeded data = DataNeeded.All) : base(data) {}
 

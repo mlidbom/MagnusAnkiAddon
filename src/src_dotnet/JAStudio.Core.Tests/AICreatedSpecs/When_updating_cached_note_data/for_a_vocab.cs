@@ -7,7 +7,7 @@ using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.Tests.AICreatedSpecs.When_updating_cached_note_data;
 
-public class for_a_vocab : Specification_for_an_empty_collection, IAIGeneratedSpec
+public class for_a_vocab : SpecificationStartingWithAnEmptyCollection, IAIGeneratedSpec
 {
    public class after_changing_its_question : for_a_vocab
    {

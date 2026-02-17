@@ -6,7 +6,7 @@ using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.Tests.AICreatedSpecs;
 
-public class When_working_with_a_VocabNote : Specification_for_an_empty_collection, IAIGeneratedSpec
+public class When_working_with_a_VocabNote : SpecificationStartingWithAnEmptyCollection, IAIGeneratedSpec
 {
    public class given_a_newly_created_vocab : When_working_with_a_VocabNote
    {

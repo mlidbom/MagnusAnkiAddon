@@ -6,7 +6,7 @@ using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.Tests.AICreatedSpecs;
 
-public class When_synchronizing_vocab_forms : Specification_for_an_empty_collection, IAIGeneratedSpec
+public class When_synchronizing_vocab_forms : SpecificationStartingWithAnEmptyCollection, IAIGeneratedSpec
 {
    public class after_adding_a_form_that_matches_another_vocabs_question : When_synchronizing_vocab_forms
    {

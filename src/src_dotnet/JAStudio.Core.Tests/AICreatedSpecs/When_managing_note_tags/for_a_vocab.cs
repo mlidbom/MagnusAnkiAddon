@@ -7,7 +7,7 @@ using JAStudio.Core.Note.Vocabulary;
 
 namespace JAStudio.Core.Tests.AICreatedSpecs.When_managing_note_tags;
 
-public class for_a_vocab : Specification_for_an_empty_collection, IAIGeneratedSpec
+public class for_a_vocab : SpecificationStartingWithAnEmptyCollection, IAIGeneratedSpec
 {
    public class given_one_tagged_with_TTSAudio : for_a_vocab
    {

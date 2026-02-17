@@ -7,7 +7,7 @@ using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.Tests.AICreatedSpecs.When_querying_collections;
 
-public class for_kanji : Specification_for_an_empty_collection, IAIGeneratedSpec
+public class for_kanji : SpecificationStartingWithAnEmptyCollection, IAIGeneratedSpec
 {
    public class given_two_kanji : for_kanji
    {

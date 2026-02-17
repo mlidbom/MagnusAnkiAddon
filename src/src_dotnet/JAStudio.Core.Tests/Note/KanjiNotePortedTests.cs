@@ -7,7 +7,7 @@ namespace JAStudio.Core.Tests.Note;
 /// <summary>
 /// Tests ported from test_kanjinote.py
 /// </summary>
-public class KanjiNotePortedTests : Specification_using_a_collection
+public class KanjiNotePortedTests : SpecificationUsingACollection
 {
    public KanjiNotePortedTests() : base(DataNeeded.Kanji) {}
 

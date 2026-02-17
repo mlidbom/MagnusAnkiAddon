@@ -6,7 +6,7 @@ using JAStudio.Core.Note.Collection;
 
 namespace JAStudio.Core.Tests.AICreatedSpecs.When_querying_collections;
 
-public class for_mixed_note_types : Specification_for_an_empty_collection, IAIGeneratedSpec
+public class for_mixed_note_types : SpecificationStartingWithAnEmptyCollection, IAIGeneratedSpec
 {
    public class given_one_of_each_note_type : for_mixed_note_types
    {

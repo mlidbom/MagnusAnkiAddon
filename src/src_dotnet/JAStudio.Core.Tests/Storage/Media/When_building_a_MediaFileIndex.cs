@@ -10,7 +10,7 @@ using JAStudio.Core.TaskRunners;
 
 namespace JAStudio.Core.Tests.Storage.Media;
 
-public class When_building_a_MediaFileIndex : Specification_for_an_empty_collection
+public class When_building_a_MediaFileIndex : SpecificationStartingWithAnEmptyCollection
 {
    readonly string _tempDir = Path.Combine(Path.GetTempPath(), $"JAStudio_test_{Guid.NewGuid():N}");
    readonly MediaFileIndex _index;

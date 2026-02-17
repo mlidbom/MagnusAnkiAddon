@@ -6,7 +6,7 @@ using JAStudio.Core.Note;
 
 namespace JAStudio.Core.Tests.AICreatedSpecs;
 
-public class When_working_with_a_KanjiNote : Specification_for_an_empty_collection, IAIGeneratedSpec
+public class When_working_with_a_KanjiNote : SpecificationStartingWithAnEmptyCollection, IAIGeneratedSpec
 {
    public class given_a_newly_created_kanji : When_working_with_a_KanjiNote
    {

@@ -6,7 +6,7 @@ using JAStudio.Core.Note.Sentences;
 
 namespace JAStudio.Core.Tests.AICreatedSpecs;
 
-public class When_working_with_a_SentenceNote : Specification_for_an_empty_collection, IAIGeneratedSpec
+public class When_working_with_a_SentenceNote : SpecificationStartingWithAnEmptyCollection, IAIGeneratedSpec
 {
    public class given_a_newly_created_sentence : When_working_with_a_SentenceNote
    {

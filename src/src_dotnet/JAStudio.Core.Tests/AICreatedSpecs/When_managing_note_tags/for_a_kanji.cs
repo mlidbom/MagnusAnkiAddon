@@ -6,7 +6,7 @@ using JAStudio.Core.Note;
 
 namespace JAStudio.Core.Tests.AICreatedSpecs.When_managing_note_tags;
 
-public class for_a_kanji : Specification_for_an_empty_collection, IAIGeneratedSpec
+public class for_a_kanji : SpecificationStartingWithAnEmptyCollection, IAIGeneratedSpec
 {
    public class given_one_with_multiple_tags : for_a_kanji
    {

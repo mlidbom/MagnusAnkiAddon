@@ -3,7 +3,7 @@ using Xunit;
 
 namespace JAStudio.Core.Tests.LanguageServices;
 
-public class ConjugationBaseTests : Specification_for_an_empty_collection
+public class ConjugationBaseTests : SpecificationStartingWithAnEmptyCollection
 {
    [Theory]
    // irregular verbs

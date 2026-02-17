@@ -6,7 +6,7 @@ using Xunit;
 
 namespace JAStudio.Core.Tests.Storage;
 
-public class NoteSerializerRoundtripTests : Specification_using_a_collection
+public class NoteSerializerRoundtripTests : SpecificationUsingACollection
 {
    readonly NoteSerializer _serializer;
 

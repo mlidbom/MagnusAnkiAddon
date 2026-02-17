@@ -16,7 +16,7 @@ namespace JAStudio.Core.Tests.Storage;
 /// TEMPORARY test: loads vocab notes from both Anki SQLite and the filesystem repository,
 /// then compares raw fields AND parsed structured data to identify discrepancies. Delete after debugging.
 /// </summary>
-public class AnkiVsFileSystemComparisonTests : Specification_for_an_empty_collection
+public class AnkiVsFileSystemComparisonTests : SpecificationStartingWithAnEmptyCollection
 {
    static readonly string TestDbPath =
       Environment.GetEnvironmentVariable("ANKI_TEST_DB_PATH")

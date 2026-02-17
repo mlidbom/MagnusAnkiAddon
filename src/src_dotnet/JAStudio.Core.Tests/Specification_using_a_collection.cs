@@ -7,14 +7,11 @@ using JAStudio.Core.Tests.Fixtures;
 
 namespace JAStudio.Core.Tests;
 
-public abstract class Specification_using_a_collection : IDisposable
+public abstract class SpecificationUsingACollection(DataNeeded data = DataNeeded.All) : IDisposable
 {
-   protected Specification_using_a_collection(DataNeeded data = DataNeeded.All) =>
-      _appScope = CollectionFactory.InjectCollectionWithSelectData(data);
-
    public void Dispose() => _appScope.Dispose();
 
-   readonly CollectionFactory.AppScope _appScope;
+   readonly CollectionFactory.AppScope _appScope = CollectionFactory.InjectCollectionWithSelectData(data);
 
    protected TService GetService<TService>() where TService : class => _appScope.CoreApp.Services.ServiceLocator.Resolve<TService>();
 
