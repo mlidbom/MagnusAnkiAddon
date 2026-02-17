@@ -22,16 +22,15 @@ public class TaskRunnerScope : ITaskProgressRunner
    readonly bool _visible;
    readonly bool _allowCancel;
    readonly Stopwatch _stopwatch = Stopwatch.StartNew();
-   readonly IScopePanel? _scopePanel;
    readonly int _depth;
    readonly int _previousNestingDepth;
    readonly IScopePanel? _previousParentScope;
    readonly TaskLogEntry? _previousLogEntry;
-   readonly TaskLogEntry _logEntry;
    bool _disposed;
 
-   internal IScopePanel? ScopePanel => _scopePanel;
-   internal TaskLogEntry LogEntry => _logEntry;
+   internal IScopePanel? ScopePanel { get; }
+
+   internal TaskLogEntry LogEntry { get; }
 
    internal TaskRunnerScope(TaskRunner taskRunner, string scopeTitle, bool visible, bool allowCancel, int depth, int previousNestingDepth, IScopePanel? previousParentScope, TaskLogEntry? parentLogEntry)
    {
@@ -43,17 +42,17 @@ public class TaskRunnerScope : ITaskProgressRunner
       _previousNestingDepth = previousNestingDepth;
       _previousParentScope = previousParentScope;
       _previousLogEntry = parentLogEntry;
-      _logEntry = new TaskLogEntry(scopeTitle);
-      parentLogEntry?.AddChild(_logEntry);
-      _scopePanel = visible ? taskRunner.CreateScopePanel(scopeTitle, visible, depth) : null;
+      LogEntry = new TaskLogEntry(scopeTitle);
+      parentLogEntry?.AddChild(LogEntry);
+      ScopePanel = visible ? taskRunner.CreateScopePanel(scopeTitle, visible, depth) : null;
    }
 
    ITaskProgressRunner CreateRunner(string message, bool async = false)
    {
       var logMessage = async ? $"(async) {message}" : message;
       var taskLogEntry = new TaskLogEntry(logMessage);
-      _logEntry.AddChild(taskLogEntry);
-      return new LoggingTaskRunnerWrapper(_taskRunner.Create(_scopePanel, message, _visible, _allowCancel), taskLogEntry);
+      LogEntry.AddChild(taskLogEntry);
+      return new LoggingTaskRunnerWrapper(_taskRunner.Create(ScopePanel, message, _visible, _allowCancel), taskLogEntry);
    }
 
    public List<TOutput> RunBatch<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
@@ -94,14 +93,14 @@ public class TaskRunnerScope : ITaskProgressRunner
       _disposed = true;
 
       _stopwatch.Stop();
-      _logEntry.MarkCompleted();
+      LogEntry.MarkCompleted();
 
       if(_depth == 1)
       {
-         this.Log().Info($"{Environment.NewLine}{_logEntry.FormatTree()}");
+         this.Log().Info($"{Environment.NewLine}{LogEntry.FormatTree()}");
       }
 
-      _scopePanel?.Dispose();
+      ScopePanel?.Dispose();
       _taskRunner.OnScopeDisposed(_previousNestingDepth, _previousParentScope, _previousLogEntry);
    }
 }

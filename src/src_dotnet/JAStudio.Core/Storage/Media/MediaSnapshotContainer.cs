@@ -40,52 +40,52 @@ partial class ImageAttachmentSnapshotData
 static class MediaSnapshotConverter
 {
    public static AudioAttachmentSnapshotData ToSnapshotData(AudioAttachment a) => new()
-   {
-      Id = a.Id.Value,
-      NoteIds = a.NoteIds.ConvertAll(n => n.Value),
-      NoteSourceTag = a.NoteSourceTag.ToString(),
-      OriginalFileName = a.OriginalFileName,
-      Copyright = a.Copyright,
-      FilePath = a.FilePath,
-      TtsEngine = a.Tts?.Engine,
-      TtsVoice = a.Tts?.Voice,
-      TtsVersion = a.Tts?.Version,
-   };
+                                                                                  {
+                                                                                     Id = a.Id.Value,
+                                                                                     NoteIds = a.NoteIds.ConvertAll(n => n.Value),
+                                                                                     NoteSourceTag = a.NoteSourceTag.ToString(),
+                                                                                     OriginalFileName = a.OriginalFileName,
+                                                                                     Copyright = a.Copyright,
+                                                                                     FilePath = a.FilePath,
+                                                                                     TtsEngine = a.Tts?.Engine,
+                                                                                     TtsVoice = a.Tts?.Voice,
+                                                                                     TtsVersion = a.Tts?.Version,
+                                                                                  };
 
    public static ImageAttachmentSnapshotData ToSnapshotData(ImageAttachment i) => new()
-   {
-      Id = i.Id.Value,
-      NoteIds = i.NoteIds.ConvertAll(n => n.Value),
-      NoteSourceTag = i.NoteSourceTag.ToString(),
-      OriginalFileName = i.OriginalFileName,
-      Copyright = i.Copyright,
-      FilePath = i.FilePath,
-   };
+                                                                                  {
+                                                                                     Id = i.Id.Value,
+                                                                                     NoteIds = i.NoteIds.ConvertAll(n => n.Value),
+                                                                                     NoteSourceTag = i.NoteSourceTag.ToString(),
+                                                                                     OriginalFileName = i.OriginalFileName,
+                                                                                     Copyright = i.Copyright,
+                                                                                     FilePath = i.FilePath,
+                                                                                  };
 
    public static AudioAttachment ToAudioAttachment(AudioAttachmentSnapshotData d) => new()
-   {
-      Id = new MediaFileId(d.Id),
-      NoteIds = d.NoteIds.ConvertAll(g => new NoteId(g)),
-      NoteSourceTag = SourceTag.Parse(d.NoteSourceTag),
-      OriginalFileName = d.OriginalFileName,
-      Copyright = d.Copyright,
-      FilePath = d.FilePath,
-      Tts = d.TtsEngine != null ? new TtsInfo(d.TtsEngine, d.TtsVoice ?? "", d.TtsVersion ?? "") : null,
-   };
+                                                                                     {
+                                                                                        Id = new MediaFileId(d.Id),
+                                                                                        NoteIds = d.NoteIds.ConvertAll(g => new NoteId(g)),
+                                                                                        NoteSourceTag = SourceTag.Parse(d.NoteSourceTag),
+                                                                                        OriginalFileName = d.OriginalFileName,
+                                                                                        Copyright = d.Copyright,
+                                                                                        FilePath = d.FilePath,
+                                                                                        Tts = d.TtsEngine != null ? new TtsInfo(d.TtsEngine, d.TtsVoice ?? "", d.TtsVersion ?? "") : null,
+                                                                                     };
 
    public static ImageAttachment ToImageAttachment(ImageAttachmentSnapshotData d) => new()
-   {
-      Id = new MediaFileId(d.Id),
-      NoteIds = d.NoteIds.ConvertAll(g => new NoteId(g)),
-      NoteSourceTag = SourceTag.Parse(d.NoteSourceTag),
-      OriginalFileName = d.OriginalFileName,
-      Copyright = d.Copyright,
-      FilePath = d.FilePath,
-   };
+                                                                                     {
+                                                                                        Id = new MediaFileId(d.Id),
+                                                                                        NoteIds = d.NoteIds.ConvertAll(g => new NoteId(g)),
+                                                                                        NoteSourceTag = SourceTag.Parse(d.NoteSourceTag),
+                                                                                        OriginalFileName = d.OriginalFileName,
+                                                                                        Copyright = d.Copyright,
+                                                                                        FilePath = d.FilePath,
+                                                                                     };
 
    public static MediaSnapshotContainer ToContainer(List<MediaAttachment> audioAttachments, List<MediaAttachment> imageAttachments) => new()
-   {
-      Audio = audioAttachments.ConvertAll(a => ToSnapshotData((AudioAttachment)a)),
-      Images = imageAttachments.ConvertAll(i => ToSnapshotData((ImageAttachment)i)),
-   };
+                                                                                                                                       {
+                                                                                                                                          Audio = audioAttachments.ConvertAll(a => ToSnapshotData((AudioAttachment)a)),
+                                                                                                                                          Images = imageAttachments.ConvertAll(i => ToSnapshotData((ImageAttachment)i)),
+                                                                                                                                       };
 }

@@ -6,7 +6,6 @@ using JAStudio.Core.Note;
 using JAStudio.Core.Note.NoteFields;
 using JAStudio.Core.Storage.Media;
 using JAStudio.Core.TaskRunners;
-using Xunit;
 
 // ReSharper disable InconsistentNaming
 
@@ -50,8 +49,13 @@ public class When_storing_a_media_file : TestStartingWithEmptyCollection
       public with_a_target_directory()
       {
          var sourceFile = CreateSourceFile();
-         _id = _service.StoreFile(sourceFile, "commercial-001", SourceTag.Parse("anime::natsume::s1::01"), "natsume_ep01_03m22s.mp3",
-            new NoteId(Guid.NewGuid()), MediaType.Audio, CopyrightStatus.Commercial);
+         _id = _service.StoreFile(sourceFile,
+                                  "commercial-001",
+                                  SourceTag.Parse("anime::natsume::s1::01"),
+                                  "natsume_ep01_03m22s.mp3",
+                                  new NoteId(Guid.NewGuid()),
+                                  MediaType.Audio,
+                                  CopyrightStatus.Commercial);
          _resolved = _service.TryResolve(_id);
       }
 
@@ -71,8 +75,13 @@ public class When_storing_a_media_file : TestStartingWithEmptyCollection
       public after_storing_a_file()
       {
          var sourceFile = CreateSourceFile();
-         _storedId = _service.StoreFile(sourceFile, "general", SourceTag.Parse("test"), "test.mp3",
-            new NoteId(Guid.NewGuid()), MediaType.Audio, CopyrightStatus.Free);
+         _storedId = _service.StoreFile(sourceFile,
+                                        "general",
+                                        SourceTag.Parse("test"),
+                                        "test.mp3",
+                                        new NoteId(Guid.NewGuid()),
+                                        MediaType.Audio,
+                                        CopyrightStatus.Free);
       }
 
       [XF] public void stored_file_exists() => _service.Exists(_storedId).Must().BeTrue();
@@ -87,8 +96,13 @@ public class When_storing_a_media_file : TestStartingWithEmptyCollection
       public when_rebuilding_the_index_from_filesystem()
       {
          var sourceFile = CreateSourceFile();
-         _id = _service.StoreFile(sourceFile, "general", SourceTag.Parse("anime::natsume::s1::01"), "ep01.mp3",
-            new NoteId(Guid.NewGuid()), MediaType.Audio, CopyrightStatus.Commercial);
+         _id = _service.StoreFile(sourceFile,
+                                  "general",
+                                  SourceTag.Parse("anime::natsume::s1::01"),
+                                  "ep01.mp3",
+                                  new NoteId(Guid.NewGuid()),
+                                  MediaType.Audio,
+                                  CopyrightStatus.Commercial);
 
          _freshIndex = new MediaFileIndex(_mediaRoot, GetService<TaskRunner>());
          _freshIndex.Build();

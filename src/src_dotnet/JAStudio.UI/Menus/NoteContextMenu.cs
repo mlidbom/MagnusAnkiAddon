@@ -164,7 +164,7 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
          WebSearchMenus.BuildWebSearchMenuSpec(() => text),
          BuildMatchingNotesSubmenuSpec(text),
          BuildCreateNoteSubmenuSpec(text),
-         SpecMenuItem.Command(ShortcutFinger.Down1($"Reparse matching sentences"), () => OnReparseMatchingSentences(text))
+         SpecMenuItem.Command(ShortcutFinger.Down1("Reparse matching sentences"), () => OnReparseMatchingSentences(text))
       ];
    }
 
@@ -311,7 +311,7 @@ public class NoteContextMenu(Core.TemporaryServiceCollection services)
       {
          _services.LocalNoteUpdater.ReparseMatchingSentences(text);
          AnkiFacade.UIUtils.Refresh();
-         AnkiFacade.UIUtils.ShowTooltip($"Reparsed sentences matching: {text}", 3000);
+         AnkiFacade.UIUtils.ShowTooltip($"Reparsed sentences matching: {text}");
       });
    }
 

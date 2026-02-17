@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.IO;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.NoteFields;
@@ -41,8 +40,7 @@ public class MediaStorageService
          var sidecarPath = SidecarSerializer.BuildAudioSidecarPath(destPath);
          SidecarSerializer.WriteAudioSidecar(sidecarPath, audio);
          attachment = audio;
-      }
-      else
+      } else
       {
          var image = new ImageAttachment
                      {
@@ -74,8 +72,7 @@ public class MediaStorageService
       {
          var sidecarPath = SidecarSerializer.BuildAudioSidecarPath(existing.FilePath);
          SidecarSerializer.WriteAudioSidecar(sidecarPath, audio);
-      }
-      else if(existing is ImageAttachment image)
+      } else if(existing is ImageAttachment image)
       {
          var sidecarPath = SidecarSerializer.BuildImageSidecarPath(existing.FilePath);
          SidecarSerializer.WriteImageSidecar(sidecarPath, image);
@@ -95,4 +92,3 @@ public class MediaStorageService
       return Path.Combine(_mediaRoot, targetDirectory, bucket, $"{id}{extension}");
    }
 }
-

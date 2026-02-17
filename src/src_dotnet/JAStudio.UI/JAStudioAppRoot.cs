@@ -24,7 +24,7 @@ namespace JAStudio.UI;
 /// </summary>
 public class JAStudioAppRoot
 {
-   readonly Core.CoreApp _coreApp;
+   readonly CoreApp _coreApp;
    CancellationTokenSource? _reloadCts;
    static readonly TimeSpan ReloadDebounceDelay = TimeSpan.FromMilliseconds(500);
 
@@ -45,7 +45,7 @@ public class JAStudioAppRoot
    /// <summary>Menu factory methods, extracted from this root.</summary>
    public AppMenus Menus { get; }
 
-   JAStudioAppRoot(Core.CoreApp coreApp)
+   JAStudioAppRoot(CoreApp coreApp)
    {
       _coreApp = coreApp;
       Dialogs = new AppDialogs(coreApp);
@@ -65,7 +65,7 @@ public class JAStudioAppRoot
          Debugger.Launch();
       }
 
-      var app = Core.CoreApp.Bootstrap(
+      var app = CoreApp.Bootstrap(
          backendNoteCreator: new AnkiBackendNoteCreator(),
          backendDataLoader: new AnkiBackendDataLoader(),
          environmentPaths: new AnkiEnvironmentPaths());

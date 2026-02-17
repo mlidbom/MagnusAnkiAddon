@@ -8,13 +8,12 @@ namespace JAStudio.Core.Storage.Media;
 public class MediaImportRulePersistence
 {
    static readonly JsonSerializerOptions JsonOptions = new()
-   {
-      WriteIndented = true,
-      PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-      DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
-      Converters = { new JsonStringEnumConverter(), new SourceTagJsonConverter() }
-   };
-   
+                                                       {
+                                                          WriteIndented = true,
+                                                          PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                                                          DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
+                                                          Converters = { new JsonStringEnumConverter(), new SourceTagJsonConverter() }
+                                                       };
 
    static string FilePath => Path.Combine(CoreApp.MetadataDir, "media-import-rules.json");
 

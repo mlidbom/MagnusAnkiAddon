@@ -10,7 +10,7 @@ namespace JAStudio.UI.Views;
 
 public partial class MissingFilesDialog : Window
 {
-   Action<NoteId>? _openNote;
+   readonly Action<NoteId>? _openNote;
 
    public MissingFilesDialog() => InitializeComponent();
 

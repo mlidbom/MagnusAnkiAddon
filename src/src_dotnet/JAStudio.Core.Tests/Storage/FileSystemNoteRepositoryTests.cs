@@ -5,7 +5,6 @@ using System.Threading;
 using JAStudio.Core.Note;
 using JAStudio.Core.Storage;
 using JAStudio.Core.TaskRunners;
-using JAStudio.Core.Tests.Fixtures;
 using Xunit;
 
 namespace JAStudio.Core.Tests.Storage;
@@ -16,7 +15,7 @@ public class FileSystemNoteRepositoryTests : CollectionUsingTest, IDisposable
    readonly string _tempDir;
    readonly FileSystemNoteRepository _repo;
 
-   public FileSystemNoteRepositoryTests() : base(DataNeeded.All)
+   public FileSystemNoteRepositoryTests() : base()
    {
       _serializer = GetService<NoteSerializer>();
       _tempDir = Path.Combine(Path.GetTempPath(), $"JAStudio_test_{Guid.NewGuid():N}");

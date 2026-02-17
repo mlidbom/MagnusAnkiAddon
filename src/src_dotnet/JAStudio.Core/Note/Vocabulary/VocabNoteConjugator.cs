@@ -6,15 +6,13 @@ namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteConjugator
 {
-   readonly VocabNote _vocab;
+   public VocabNoteConjugator(VocabNote vocab) => Vocab = vocab;
 
-   public VocabNoteConjugator(VocabNote vocab) => _vocab = vocab;
-
-   VocabNote Vocab => _vocab;
+   VocabNote Vocab { get; }
 
    List<string> GetStemsForForm(string form)
    {
-      return Conjugator.GetWordStems(form, _vocab.PartsOfSpeech.IsIchidan(), _vocab.PartsOfSpeech.IsGodan())
+      return Conjugator.GetWordStems(form, Vocab.PartsOfSpeech.IsIchidan(), Vocab.PartsOfSpeech.IsGodan())
                        .Where(stem => stem != form)
                        .ToList();
    }

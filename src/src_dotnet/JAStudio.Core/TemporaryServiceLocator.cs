@@ -16,27 +16,26 @@ public class TemporaryServiceCollection : IDisposable
 {
    public static TemporaryServiceCollection Instance { get; internal set; } = null!;
 
-   readonly IServiceLocator _serviceLocator;
-   internal TemporaryServiceCollection(IServiceLocator serviceLocator) => _serviceLocator = serviceLocator;
+   internal TemporaryServiceCollection(IServiceLocator serviceLocator) => ServiceLocator = serviceLocator;
 
-   public CoreApp CoreApp => _serviceLocator.Resolve<CoreApp>();
-   public ConfigurationStore ConfigurationStore => _serviceLocator.Resolve<ConfigurationStore>();
+   public CoreApp CoreApp => ServiceLocator.Resolve<CoreApp>();
+   public ConfigurationStore ConfigurationStore => ServiceLocator.Resolve<ConfigurationStore>();
 
    // Core services
-   public LocalNoteUpdater LocalNoteUpdater => _serviceLocator.Resolve<LocalNoteUpdater>();
-   public TaskRunner TaskRunner => _serviceLocator.Resolve<TaskRunner>();
-   public CardOperations CardOperations => _serviceLocator.Resolve<CardOperations>();
-   public ExternalNoteIdMap ExternalNoteIdMap => _serviceLocator.Resolve<ExternalNoteIdMap>();
+   public LocalNoteUpdater LocalNoteUpdater => ServiceLocator.Resolve<LocalNoteUpdater>();
+   public TaskRunner TaskRunner => ServiceLocator.Resolve<TaskRunner>();
+   public CardOperations CardOperations => ServiceLocator.Resolve<CardOperations>();
+   public ExternalNoteIdMap ExternalNoteIdMap => ServiceLocator.Resolve<ExternalNoteIdMap>();
 
    // Note services
-   public NoteServices NoteServices => _serviceLocator.Resolve<NoteServices>();
-   public VocabNoteFactory VocabNoteFactory => _serviceLocator.Resolve<VocabNoteFactory>();
+   public NoteServices NoteServices => ServiceLocator.Resolve<NoteServices>();
+   public VocabNoteFactory VocabNoteFactory => ServiceLocator.Resolve<VocabNoteFactory>();
 
-   public IServiceLocator ServiceLocator => _serviceLocator;
+   public IServiceLocator ServiceLocator { get; }
 
-   public Renderers Renderers => new Renderers(_serviceLocator);
+   public Renderers Renderers => new Renderers(ServiceLocator);
 
-   public void Dispose() => _serviceLocator.Dispose();
+   public void Dispose() => ServiceLocator.Dispose();
 }
 
 public class Renderers

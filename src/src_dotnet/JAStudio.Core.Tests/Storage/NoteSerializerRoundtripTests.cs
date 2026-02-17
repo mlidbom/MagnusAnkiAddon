@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.Note;
 using JAStudio.Core.Storage;
-using JAStudio.Core.Tests.Fixtures;
 using Xunit;
 
 namespace JAStudio.Core.Tests.Storage;
@@ -11,7 +10,7 @@ public class NoteSerializerRoundtripTests : CollectionUsingTest
 {
    readonly NoteSerializer _serializer;
 
-   public NoteSerializerRoundtripTests() : base(DataNeeded.All) => _serializer = GetService<NoteSerializer>();
+   public NoteSerializerRoundtripTests() : base() => _serializer = GetService<NoteSerializer>();
 
    [Fact]
    public void AllKanjiNotes_RoundtripToIdenticalJson()

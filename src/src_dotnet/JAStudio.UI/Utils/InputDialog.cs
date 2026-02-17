@@ -120,7 +120,7 @@ public class InputDialog : Window
    public static string? ShowAsync(string prompt, string initialValue = "")
    {
       var dialog = new InputDialog(prompt, initialValue);
-      WindowPositioner.PositionNearCursor(dialog);
+      dialog.PositionNearCursor();
       dialog.Show();
       return dialog._resultSource.Task.Result;
    }

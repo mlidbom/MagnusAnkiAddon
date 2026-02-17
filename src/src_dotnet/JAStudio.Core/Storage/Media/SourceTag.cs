@@ -20,7 +20,7 @@ public sealed class SourceTag : IEquatable<SourceTag>
    public static SourceTag Parse(string value)
    {
       ArgumentException.ThrowIfNullOrWhiteSpace(value);
-      var segments = value.Split(Separator, StringSplitOptions.None);
+      var segments = value.Split(Separator);
       if(segments.Any(string.IsNullOrWhiteSpace))
          throw new FormatException($"Source tag '{value}' contains empty segments.");
       return new SourceTag(value, segments);
@@ -29,8 +29,8 @@ public sealed class SourceTag : IEquatable<SourceTag>
    public IReadOnlyList<string> Segments => _segments;
 
    public bool IsContainedIn(SourceTag ancestor) => _value.StartsWith(ancestor._value, StringComparison.Ordinal)
-                                                     && (_value.Length == ancestor._value.Length
-                                                         || _value[ancestor._value.Length..].StartsWith(Separator, StringComparison.Ordinal));
+                                                 && (_value.Length == ancestor._value.Length
+                                                  || _value[ancestor._value.Length..].StartsWith(Separator, StringComparison.Ordinal));
 
    public bool Contains(SourceTag descendant) => descendant.IsContainedIn(this);
 

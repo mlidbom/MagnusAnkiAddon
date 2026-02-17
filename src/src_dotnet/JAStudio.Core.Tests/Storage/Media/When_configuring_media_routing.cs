@@ -1,8 +1,6 @@
-using System;
 using Compze.Utilities.Testing.Must;
 using Compze.Utilities.Testing.XUnit.BDD;
 using JAStudio.Core.Storage.Media;
-using Xunit;
 
 // ReSharper disable InconsistentNaming
 

@@ -58,12 +58,11 @@ public class SentenceCounts
 
 public class VocabNoteSentences
 {
-   readonly VocabNote _vocab;
    SentenceCounts? _counts;
 
-   public VocabNoteSentences(VocabNote vocab) => _vocab = vocab;
+   public VocabNoteSentences(VocabNote vocab) => Vocab = vocab;
 
-   VocabNote Vocab => _vocab;
+   VocabNote Vocab { get; }
 
    public SentenceCounts Counts()
    {

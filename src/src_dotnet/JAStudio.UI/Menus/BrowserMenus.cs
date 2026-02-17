@@ -125,7 +125,7 @@ public class BrowserMenus
       {
          _services.LocalNoteUpdater.ReparseSentences(sentences);
          AnkiFacade.UIUtils.Refresh();
-         AnkiFacade.UIUtils.ShowTooltip($"Reparsed {sentences.Count} sentence(s)", 3000);
+         AnkiFacade.UIUtils.ShowTooltip($"Reparsed {sentences.Count} sentence(s)");
       });
    }
 

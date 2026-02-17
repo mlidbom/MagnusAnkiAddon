@@ -90,7 +90,7 @@ public partial class MediaImportDialogViewModel : ObservableObject
          var sentenceFiles = ScanNotes(_sentenceCollection.All());
          var kanjiFiles = ScanNotes(_kanjiCollection.All());
 
-         Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+         Dispatcher.UIThread.Invoke(() =>
          {
             VocabTab.SetScannedFiles(vocabFiles);
             SentenceTab.SetScannedFiles(sentenceFiles);
@@ -111,7 +111,7 @@ public partial class MediaImportDialogViewModel : ObservableObject
 
       BackgroundTaskManager.Run(() =>
       {
-         var ankiMediaDir = Core.CoreApp.AnkiMediaDir;
+         var ankiMediaDir = CoreApp.AnkiMediaDir;
          var analyzer = new MediaImportAnalyzer(ankiMediaDir, _index);
 
          var vocabRules = BuildVocabRules();
@@ -124,7 +124,7 @@ public partial class MediaImportDialogViewModel : ObservableObject
 
          var merged = MergePlans(vocabPlan, sentencePlan, kanjiPlan);
 
-         Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+         Dispatcher.UIThread.Invoke(() =>
          {
             _vocabPlan = vocabPlan;
             _sentencePlan = sentencePlan;
@@ -153,7 +153,7 @@ public partial class MediaImportDialogViewModel : ObservableObject
          var executor = new MediaImportExecutor(_storageService, _taskRunner);
          executor.Execute(plan);
 
-         Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+         Dispatcher.UIThread.Invoke(() =>
          {
             StatusText = $"Import complete. {plan.FilesToImport.Count} files imported, {plan.AlreadyStored.Count} references updated.";
          });
@@ -164,11 +164,11 @@ public partial class MediaImportDialogViewModel : ObservableObject
    void SaveRules()
    {
       var persisted = new PersistedImportRules
-      {
-         VocabRules = BuildVocabRules(),
-         SentenceRules = BuildSentenceRules(),
-         KanjiRules = BuildKanjiRules()
-      };
+                      {
+                         VocabRules = BuildVocabRules(),
+                         SentenceRules = BuildSentenceRules(),
+                         KanjiRules = BuildKanjiRules()
+                      };
       MediaImportRulePersistence.Save(persisted);
       StatusText = "Rules saved.";
    }
@@ -268,13 +268,14 @@ public partial class MediaImportDialogViewModel : ObservableObject
          var sourceTag = SourceTag.Parse(r.SourceTagPrefix);
          object rule = typeof(TRule).Name switch
          {
-            nameof(VocabImportRule) => new VocabImportRule(sourceTag, (VocabMediaField)(object)field, r.TargetDirectory, copyright),
+            nameof(VocabImportRule)    => new VocabImportRule(sourceTag, (VocabMediaField)(object)field, r.TargetDirectory, copyright),
             nameof(SentenceImportRule) => new SentenceImportRule(sourceTag, (SentenceMediaField)(object)field, r.TargetDirectory, copyright),
-            nameof(KanjiImportRule) => new KanjiImportRule(sourceTag, (KanjiMediaField)(object)field, r.TargetDirectory, copyright),
-            _ => throw new InvalidOperationException($"Unknown rule type: {typeof(TRule).Name}")
+            nameof(KanjiImportRule)    => new KanjiImportRule(sourceTag, (KanjiMediaField)(object)field, r.TargetDirectory, copyright),
+            _                          => throw new InvalidOperationException($"Unknown rule type: {typeof(TRule).Name}")
          };
          result.Add((TRule)rule);
       }
+
       return result;
    }
 
@@ -282,11 +283,11 @@ public partial class MediaImportDialogViewModel : ObservableObject
    {
       var persisted = MediaImportRulePersistence.Load();
       VocabTab.LoadRules(persisted.VocabRules.Select(r => new EditableImportRule
-         { SourceTagPrefix = r.Prefix.ToString(), SelectedField = r.Field.ToString(), TargetDirectory = r.TargetDirectory, SelectedCopyright = r.Copyright.ToString() }));
+                                                          { SourceTagPrefix = r.Prefix.ToString(), SelectedField = r.Field.ToString(), TargetDirectory = r.TargetDirectory, SelectedCopyright = r.Copyright.ToString() }));
       SentenceTab.LoadRules(persisted.SentenceRules.Select(r => new EditableImportRule
-         { SourceTagPrefix = r.Prefix.ToString(), SelectedField = r.Field.ToString(), TargetDirectory = r.TargetDirectory, SelectedCopyright = r.Copyright.ToString() }));
+                                                                { SourceTagPrefix = r.Prefix.ToString(), SelectedField = r.Field.ToString(), TargetDirectory = r.TargetDirectory, SelectedCopyright = r.Copyright.ToString() }));
       KanjiTab.LoadRules(persisted.KanjiRules.Select(r => new EditableImportRule
-         { SourceTagPrefix = r.Prefix.ToString(), SelectedField = r.Field.ToString(), TargetDirectory = r.TargetDirectory, SelectedCopyright = r.Copyright.ToString() }));
+                                                          { SourceTagPrefix = r.Prefix.ToString(), SelectedField = r.Field.ToString(), TargetDirectory = r.TargetDirectory, SelectedCopyright = r.Copyright.ToString() }));
    }
 
    List<VocabImportRule> BuildVocabRules() => BuildRulesFromEditableList<VocabImportRule, VocabMediaField>(VocabTab.Rules.ToList());
@@ -315,10 +316,10 @@ public partial class MediaImportDialogViewModel : ObservableObject
    static string GetFieldName(JPNote note, MediaReference mediaRef) =>
       note switch
       {
-         VocabNote v => IdentifyVocabField(v, mediaRef),
+         VocabNote v    => IdentifyVocabField(v, mediaRef),
          SentenceNote s => IdentifySentenceField(s, mediaRef),
-         KanjiNote k => IdentifyKanjiField(k, mediaRef),
-         _ => "Unknown"
+         KanjiNote k    => IdentifyKanjiField(k, mediaRef),
+         _              => "Unknown"
       };
 
    static string IdentifyVocabField(VocabNote v, MediaReference mediaRef)
@@ -378,6 +379,7 @@ public partial class MediaImportDialogViewModel : ObservableObject
          merged.AlreadyStored.AddRange(plan.AlreadyStored);
          merged.Missing.AddRange(plan.Missing);
       }
+
       return merged;
    }
 }

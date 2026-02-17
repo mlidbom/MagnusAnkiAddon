@@ -7,9 +7,7 @@ namespace JAStudio.UI.Dialogs;
 
 public partial class TaskProgressDialog : Window
 {
-   bool _wasCanceled;
-
-   public bool WasCanceled => _wasCanceled;
+   public bool WasCanceled { get; private set; }
 
    public TaskProgressDialog()
    {
@@ -72,6 +70,6 @@ public partial class TaskProgressDialog : Window
 
    void OnCancelClick(object? sender, RoutedEventArgs e)
    {
-      _wasCanceled = true;
+      WasCanceled = true;
    }
 }

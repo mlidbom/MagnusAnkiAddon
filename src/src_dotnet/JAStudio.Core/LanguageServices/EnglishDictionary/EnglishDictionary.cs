@@ -108,7 +108,7 @@ public class EnglishDictionary
                var lowerWord = word.ToLowerInvariant();
                if(!WordMap.ContainsKey(lowerWord))
                {
-                  var englishWord = new EnglishWord(word, "no-definition", "");
+                  var englishWord = new EnglishWord(word, "no-definition");
                   Words.Add(englishWord);
                   WordMap[lowerWord] = englishWord;
                }

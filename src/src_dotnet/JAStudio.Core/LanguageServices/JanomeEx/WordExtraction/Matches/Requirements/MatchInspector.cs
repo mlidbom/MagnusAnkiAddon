@@ -11,11 +11,10 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches.Require
 /// </summary>
 public class MatchInspector
 {
-   readonly Match _match;
+   internal MatchInspector(Match match) => Match = match;
 
-   internal MatchInspector(Match match) => _match = match;
+   public Match Match { get; }
 
-   public Match Match => _match;
    public CandidateWordVariant Variant => Match.Variant;
    public CandidateWord Word => Variant.Word;
    public Settings Settings => Word.Analysis.Services.Settings;

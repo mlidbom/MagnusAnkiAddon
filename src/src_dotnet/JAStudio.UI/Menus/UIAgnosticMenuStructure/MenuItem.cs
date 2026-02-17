@@ -88,19 +88,17 @@ public abstract class SpecMenuItem
 
    sealed class CommandSpec : SpecMenuItem
    {
-      readonly bool _isEnabled;
-
       public override SpecMenuItemKind Kind => SpecMenuItemKind.Command;
       public override Action Action { get; }
       public override string? KeyboardShortcut { get; }
-      public override bool IsEnabled => _isEnabled;
+      public override bool IsEnabled { get; }
 
       internal CommandSpec(string name, Action action, char? acceleratorKey, string? shortcut, bool enabled)
          : base(name, acceleratorKey)
       {
          Action = action;
          KeyboardShortcut = shortcut;
-         _isEnabled = enabled;
+         IsEnabled = enabled;
       }
    }
 

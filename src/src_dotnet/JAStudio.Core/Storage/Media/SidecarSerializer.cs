@@ -33,11 +33,11 @@ public static class SidecarSerializer
 
    public static AudioAttachment DeserializeAudio(string json) =>
       JsonSerializer.Deserialize<AudioAttachment>(json, Options)
-      ?? throw new JsonException("Failed to deserialize AudioAttachment");
+   ?? throw new JsonException("Failed to deserialize AudioAttachment");
 
    public static ImageAttachment DeserializeImage(string json) =>
       JsonSerializer.Deserialize<ImageAttachment>(json, Options)
-      ?? throw new JsonException("Failed to deserialize ImageAttachment");
+   ?? throw new JsonException("Failed to deserialize ImageAttachment");
 
    public static bool IsSidecarFile(string filePath) => filePath.EndsWith(SidecarJsonExtension, StringComparison.OrdinalIgnoreCase);
 

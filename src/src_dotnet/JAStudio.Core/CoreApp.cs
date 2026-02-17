@@ -51,7 +51,7 @@ public class CoreApp : IDisposable
 
    public static string AnkiMediaDir =>
       _environmentPaths?.AnkiMediaDir
-          ?? throw new InvalidOperationException("IEnvironmentPaths must be provided for non-testing mode. Call App.Bootstrap() with an IEnvironmentPaths implementation.");
+   ?? throw new InvalidOperationException("IEnvironmentPaths must be provided for non-testing mode. Call App.Bootstrap() with an IEnvironmentPaths implementation.");
 
    public static string UserFilesDir => Path.Combine(AddonRootDir, "user_files");
 

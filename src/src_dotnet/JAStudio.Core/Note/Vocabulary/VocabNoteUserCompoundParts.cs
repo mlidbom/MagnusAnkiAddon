@@ -10,18 +10,18 @@ namespace JAStudio.Core.Note.Vocabulary;
 
 public class VocabNoteUserCompoundParts
 {
-   readonly VocabNote _vocab;
    readonly NoteGuard _guard;
    List<string> _parts;
 
    public VocabNoteUserCompoundParts(VocabNote vocab, VocabData? data, NoteGuard guard)
    {
-      _vocab = vocab;
+      Vocab = vocab;
       _guard = guard;
       _parts = data?.UserCompounds != null ? new List<string>(data.UserCompounds) : [];
    }
 
-   VocabNote Vocab => _vocab;
+   VocabNote Vocab { get; }
+
    JPCollection Collection => Vocab.Collection;
 
    public List<string> Primary()

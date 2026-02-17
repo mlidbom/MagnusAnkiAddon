@@ -10,9 +10,8 @@ namespace JAStudio.Core.Note.Sentences.Serialization;
 public class SentenceConfigurationSerializer
 {
    static string _emptyObjectJson = "";
-   static readonly SentenceConfigurationSerializer _instance = new();
 
-   public static SentenceConfigurationSerializer Instance => _instance;
+   public static SentenceConfigurationSerializer Instance { get; } = new();
 
    SentenceConfigurationSerializer()
    {

@@ -55,10 +55,10 @@ public class When_importing_media_from_anki : TestStartingWithEmptyCollection, I
          note.Image.SetRawValue("<img src=\"vocab_image.jpg\">");
 
          _plan = _analyzer.AnalyzeVocab([note],
-         [
-            new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.AudioFirst, "general", CopyrightStatus.Free),
-            new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.Image, "general", CopyrightStatus.Free)
-         ]);
+                                        [
+                                           new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.AudioFirst, "general", CopyrightStatus.Free),
+                                           new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.Image, "general", CopyrightStatus.Free)
+                                        ]);
          _executor.Execute(_plan);
       }
 
@@ -82,7 +82,7 @@ public class When_importing_media_from_anki : TestStartingWithEmptyCollection, I
          note.Audio.SetRawValue("[sound:kanji_audio.mp3]");
 
          var plan = _analyzer.AnalyzeKanji([note],
-            [new KanjiImportRule(SourceTag.Parse("anki"), KanjiMediaField.Audio, "general", CopyrightStatus.Free)]);
+                                           [new KanjiImportRule(SourceTag.Parse("anki"), KanjiMediaField.Audio, "general", CopyrightStatus.Free)]);
          _executor.Execute(plan);
       }
 
@@ -104,10 +104,10 @@ public class When_importing_media_from_anki : TestStartingWithEmptyCollection, I
          note.Screenshot.SetRawValue("<img src=\"screenshot.png\">");
 
          var plan = _analyzer.AnalyzeSentences([note],
-         [
-            new SentenceImportRule(SourceTag.Parse("anki"), SentenceMediaField.Audio, "general", CopyrightStatus.Free),
-            new SentenceImportRule(SourceTag.Parse("anki"), SentenceMediaField.Screenshot, "general", CopyrightStatus.Free)
-         ]);
+                                               [
+                                                  new SentenceImportRule(SourceTag.Parse("anki"), SentenceMediaField.Audio, "general", CopyrightStatus.Free),
+                                                  new SentenceImportRule(SourceTag.Parse("anki"), SentenceMediaField.Screenshot, "general", CopyrightStatus.Free)
+                                               ]);
          _executor.Execute(plan);
       }
 
@@ -156,7 +156,7 @@ public class When_importing_media_from_anki : TestStartingWithEmptyCollection, I
          note.Audio.First.SetRawValue("[sound:missing_audio.mp3]");
 
          _plan = _analyzer.AnalyzeVocab([note],
-            [new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.AudioFirst, "general", CopyrightStatus.Free)]);
+                                        [new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.AudioFirst, "general", CopyrightStatus.Free)]);
          _executor.Execute(_plan);
       }
 
@@ -180,7 +180,7 @@ public class When_importing_media_from_anki : TestStartingWithEmptyCollection, I
 
          // Only configure AudioFirst — Image has no rule
          _plan = _analyzer.AnalyzeVocab([note],
-            [new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.AudioFirst, "general", CopyrightStatus.Free)]);
+                                        [new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.AudioFirst, "general", CopyrightStatus.Free)]);
          _executor.Execute(_plan);
       }
 
@@ -209,10 +209,10 @@ public class When_importing_media_from_anki : TestStartingWithEmptyCollection, I
          note.Image.SetRawValue("<img src=\"routed_image.jpg\">");
 
          var plan = _analyzer.AnalyzeVocab([note],
-         [
-            new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.AudioFirst, "general", CopyrightStatus.Free),
-            new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.Image, "general", CopyrightStatus.Free)
-         ]);
+                                           [
+                                              new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.AudioFirst, "general", CopyrightStatus.Free),
+                                              new VocabImportRule(SourceTag.Parse("anki"), VocabMediaField.Image, "general", CopyrightStatus.Free)
+                                           ]);
          _executor.Execute(plan);
 
          foreach(var attachment in _index.All)

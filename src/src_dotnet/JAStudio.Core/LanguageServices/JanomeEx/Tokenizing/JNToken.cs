@@ -12,8 +12,6 @@ public class JNToken : IAnalysisToken
    readonly string _surface;
 
    // Standard references instead of WeakRef (C# has better GC)
-   JNToken? _previous;
-   JNToken? _next;
 
    public JNToken(
       JNPartsOfSpeech partsOfSpeech,
@@ -53,17 +51,9 @@ public class JNToken : IAnalysisToken
    public string NodeType { get; }
    public JNPartsOfSpeech PartsOfSpeech { get; }
 
-   public JNToken? Next
-   {
-      get => _next;
-      internal set => _next = value;
-   }
+   public JNToken? Next { get; internal set; }
 
-   public JNToken? Previous
-   {
-      get => _previous;
-      internal set => _previous = value;
-   }
+   public JNToken? Previous { get; internal set; }
 
    public override string ToString() =>
       string.Concat(

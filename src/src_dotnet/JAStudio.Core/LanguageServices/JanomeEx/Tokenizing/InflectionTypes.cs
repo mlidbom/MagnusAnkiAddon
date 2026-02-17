@@ -1,6 +1,7 @@
 #pragma warning disable IDE0051 //unused members
 
 using System.Collections.Generic;
+
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable MemberCanBePrivate.Global

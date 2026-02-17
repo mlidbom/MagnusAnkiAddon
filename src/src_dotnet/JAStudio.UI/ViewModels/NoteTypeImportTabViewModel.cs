@@ -4,10 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using JAStudio.Core.Note;
-using JAStudio.Core.Note.NoteFields;
-using JAStudio.Core.Note.Sentences;
-using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.Storage.Media;
 
 namespace JAStudio.UI.ViewModels;
@@ -16,7 +12,6 @@ public partial class NoteTypeImportTabViewModel<TRule> : ObservableObject where 
 {
    readonly Func<List<EditableImportRule>, List<TRule>> _buildRules;
    readonly Func<SourceTag, string, TRule?> _tryResolve;
-   readonly List<string> _fieldNames;
 
    // All un-imported media references discovered by scanning, before rule classification
    List<ScannedMediaFile> _allScannedFiles = [];
@@ -33,13 +28,13 @@ public partial class NoteTypeImportTabViewModel<TRule> : ObservableObject where 
       Func<SourceTag, string, TRule?> tryResolve)
    {
       NoteTypeName = noteTypeName;
-      _fieldNames = fieldNames;
+      FieldNames = fieldNames;
       _buildRules = buildRules;
       _tryResolve = tryResolve;
    }
 
    public string NoteTypeName { get; private set; } = "";
-   public List<string> FieldNames => _fieldNames;
+   public List<string> FieldNames { get; }
 
    public ObservableCollection<EditableImportRule> Rules { get; } = [];
    public ObservableCollection<UnmappedMediaGroup> UnmappedGroups { get; } = [];
@@ -93,8 +88,7 @@ public partial class NoteTypeImportTabViewModel<TRule> : ObservableObject where 
             var editableRule = FindMatchingEditableRule(matchingDomainRule);
             if(editableRule != null) editableRule.MatchCount++;
             totalMapped++;
-         }
-         else
+         } else
          {
             var key = (file.SourceTag, file.FieldName);
             unmapped[key] = unmapped.GetValueOrDefault(key) + 1;
@@ -132,20 +126,20 @@ public partial class NoteTypeImportTabViewModel<TRule> : ObservableObject where 
       return domainRule switch
       {
          VocabImportRule vr => Rules.FirstOrDefault(r =>
-            r.IsValid &&
-            r.SourceTagPrefix == vr.Prefix.ToString() &&
-            r.SelectedField == vr.Field.ToString() &&
-            r.TargetDirectory == vr.TargetDirectory),
+                                                       r.IsValid &&
+                                                       r.SourceTagPrefix == vr.Prefix.ToString() &&
+                                                       r.SelectedField == vr.Field.ToString() &&
+                                                       r.TargetDirectory == vr.TargetDirectory),
          SentenceImportRule sr => Rules.FirstOrDefault(r =>
-            r.IsValid &&
-            r.SourceTagPrefix == sr.Prefix.ToString() &&
-            r.SelectedField == sr.Field.ToString() &&
-            r.TargetDirectory == sr.TargetDirectory),
+                                                          r.IsValid &&
+                                                          r.SourceTagPrefix == sr.Prefix.ToString() &&
+                                                          r.SelectedField == sr.Field.ToString() &&
+                                                          r.TargetDirectory == sr.TargetDirectory),
          KanjiImportRule kr => Rules.FirstOrDefault(r =>
-            r.IsValid &&
-            r.SourceTagPrefix == kr.Prefix.ToString() &&
-            r.SelectedField == kr.Field.ToString() &&
-            r.TargetDirectory == kr.TargetDirectory),
+                                                       r.IsValid &&
+                                                       r.SourceTagPrefix == kr.Prefix.ToString() &&
+                                                       r.SelectedField == kr.Field.ToString() &&
+                                                       r.TargetDirectory == kr.TargetDirectory),
          _ => null
       };
    }
@@ -157,6 +151,7 @@ public partial class NoteTypeImportTabViewModel<TRule> : ObservableObject where 
          r.RemoveSelfCommand = new RelayCommand(() => RemoveRule(r));
          Rules.Add(r);
       }
+
       SortRules();
    }
 
@@ -175,5 +170,4 @@ public partial class NoteTypeImportTabViewModel<TRule> : ObservableObject where 
 }
 
 public record ScannedMediaFile(string SourceTag, string FieldName, string FileName);
-
 public record UnmappedMediaGroup(string SourcePrefix, string FieldName, int FileCount);

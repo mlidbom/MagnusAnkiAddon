@@ -96,12 +96,12 @@ public class MediaFileIndex
       var scan = runner.RunIndeterminate("Scanning media files", ScanMediaFiles);
 
       var changes = runner.RunIndeterminate("Finding sidecar changes",
-         () => FindChanges(container, scan, snapshotTimestamp));
+                                            () => FindChanges(container, scan, snapshotTimestamp));
 
       if(changes.HasChanges)
       {
          container = runner.RunIndeterminate("Patching snapshot with changes",
-            () => PatchSnapshot(container, changes, scan.MediaFilesByDirectory));
+                                             () => PatchSnapshot(container, changes, scan.MediaFilesByDirectory));
 
          var snapshotToSave = container;
          BackgroundTaskManager.Run(() => SaveSnapshot(snapshotToSave));
@@ -138,8 +138,11 @@ public class MediaFileIndex
       var deletedAudioCount = container.Audio.Count(d => !currentAudioIds.Contains(d.Id));
       var deletedImageCount = container.Images.Count(d => !currentImageIds.Contains(d.Id));
 
-      return new SidecarChanges(changedAudio, changedImages, currentAudioIds, currentImageIds,
-         deletedAudioCount + deletedImageCount);
+      return new SidecarChanges(changedAudio,
+                                changedImages,
+                                currentAudioIds,
+                                currentImageIds,
+                                deletedAudioCount + deletedImageCount);
    }
 
    MediaSnapshotContainer PatchSnapshot(MediaSnapshotContainer container, SidecarChanges changes, Dictionary<string, List<FileInfo>> mediaFilesByDirectory)
@@ -165,10 +168,10 @@ public class MediaFileIndex
          imageMap.Remove(id);
 
       return new MediaSnapshotContainer
-      {
-         Audio = audioMap.Values.ToList(),
-         Images = imageMap.Values.ToList(),
-      };
+             {
+                Audio = audioMap.Values.ToList(),
+                Images = imageMap.Values.ToList(),
+             };
    }
 
    void SaveSnapshot(MediaSnapshotContainer container)
