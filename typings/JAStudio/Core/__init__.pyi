@@ -1,16 +1,25 @@
 import typing, abc
+from JAStudio.Core.UI.Web.Kanji import KanjiNoteRenderer
+from JAStudio.Core.UI.Web.Sentence import SentenceNoteRenderer
+from JAStudio.Core.UI.Web.Vocab import VocabNoteRenderer
 from JAStudio.Core.Note import IBackendNoteCreator, NoteId, CardOperations, ExternalNoteIdMap, NoteServices
 from System.Collections.Generic import Dictionary_2, List_1
 from JAStudio.Core.Note.Collection import CardStudyingStatus, JPCollection
 from System import IDisposable
 from JAStudio.Core.Configuration import JapaneseConfig, ConfigurationStore
 from JAStudio.Core.TaskRunners import TaskRunner
-from JAStudio.Core.UI.Web.Kanji import KanjiNoteRenderer
-from JAStudio.Core.UI.Web.Sentence import SentenceNoteRenderer
-from JAStudio.Core.UI.Web.Vocab import VocabNoteRenderer
 from JAStudio.Core.Batches import LocalNoteUpdater
 from Compze.Utilities.DependencyInjection.Abstractions import IServiceLocator
 from JAStudio.Core.Note.Vocabulary import VocabNoteFactory
+
+class AnkiHTMLRenderers:
+    @property
+    def KanjiNoteRenderer(self) -> KanjiNoteRenderer: ...
+    @property
+    def SentenceNoteRenderer(self) -> SentenceNoteRenderer: ...
+    @property
+    def VocabNoteRenderer(self) -> VocabNoteRenderer: ...
+
 
 class AppBootstrapper(abc.ABC):
     @staticmethod
@@ -62,15 +71,6 @@ class IEnvironmentPaths(typing.Protocol):
     def UserFilesDir(self) -> str: ...
 
 
-class Renderers:
-    @property
-    def KanjiNoteRenderer(self) -> KanjiNoteRenderer: ...
-    @property
-    def SentenceNoteRenderer(self) -> SentenceNoteRenderer: ...
-    @property
-    def VocabNoteRenderer(self) -> VocabNoteRenderer: ...
-
-
 class StringExtensions(abc.ABC):
     InvisibleSpace : str
     @staticmethod
@@ -86,6 +86,8 @@ class StringExtensions(abc.ABC):
 
 
 class TemporaryServiceCollection(IDisposable):
+    @property
+    def AnkiHTMLRenderers(self) -> AnkiHTMLRenderers: ...
     @property
     def CardOperations(self) -> CardOperations: ...
     @property
@@ -104,8 +106,6 @@ class TemporaryServiceCollection(IDisposable):
     def LocalNoteUpdater(self) -> LocalNoteUpdater: ...
     @property
     def NoteServices(self) -> NoteServices: ...
-    @property
-    def Renderers(self) -> Renderers: ...
     @property
     def ServiceLocator(self) -> IServiceLocator: ...
     @property

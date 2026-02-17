@@ -10,7 +10,7 @@ namespace JAStudio.UI;
 // ReSharper disable UnusedMember.Global //used from python
 /// <summary>
 /// Factory methods for building menus (context menus, toolbar menus, browser menus).
-/// Exposed via <see cref="JAStudioAppRoot.Menus"/>.
+/// Exposed via <see cref="JAStudioAnkiAppRoot.Menus"/>.
 /// </summary>
 public class AnkiMenus
 {

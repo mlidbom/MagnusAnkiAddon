@@ -25,14 +25,14 @@ def init() -> None:
 
 def _init_dot_net_app() -> None:
     global dotnet_ui_root
-    from JAStudio.UI import JAStudioAppRoot
+    from JAStudio.UI import JAStudioAnkiAppRoot
     from System import Action
 
     from jastudio.configuration.configuration_value import get_config_json, write_config_dict_json
 
     config_json = get_config_json()
     config_update_callback = Action[str](write_config_dict_json)  # pyright: ignore [reportCallIssue]
-    dotnet_ui_root = JAStudioAppRoot.Initialize(config_json, config_update_callback)
+    dotnet_ui_root = JAStudioAnkiAppRoot.Initialize(config_json, config_update_callback)
 
     def shutdown_dot_net() -> None:
         mylog.info("Shutting down DotNet UI")

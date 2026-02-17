@@ -5,9 +5,6 @@ using JAStudio.Core.Configuration;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.TaskRunners;
-using JAStudio.Core.UI.Web.Kanji;
-using JAStudio.Core.UI.Web.Sentence;
-using JAStudio.Core.UI.Web.Vocab;
 
 namespace JAStudio.Core;
 
@@ -33,17 +30,8 @@ public class TemporaryServiceCollection : IDisposable
 
    public IServiceLocator ServiceLocator { get; }
 
-   public Renderers Renderers => new Renderers(ServiceLocator);
+   // ReSharper disable once UnusedMember.Global used from python
+   public AnkiHTMLRenderers AnkiHTMLRenderers => ServiceLocator.Resolve<AnkiHTMLRenderers>();
 
    public void Dispose() => ServiceLocator.Dispose();
-}
-
-public class Renderers
-{
-   readonly IServiceLocator _serviceLocator;
-   internal Renderers(IServiceLocator serviceLocator) => _serviceLocator = serviceLocator;
-
-   public VocabNoteRenderer VocabNoteRenderer => _serviceLocator.Resolve<VocabNoteRenderer>();
-   public SentenceNoteRenderer SentenceNoteRenderer => _serviceLocator.Resolve<SentenceNoteRenderer>();
-   public KanjiNoteRenderer KanjiNoteRenderer => _serviceLocator.Resolve<KanjiNoteRenderer>();
 }

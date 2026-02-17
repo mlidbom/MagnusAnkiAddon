@@ -150,7 +150,7 @@ public class MediaFileIndex
                                 deletedAudioCount + deletedImageCount);
    }
 
-   MediaSnapshotContainer PatchSnapshot(MediaSnapshotContainer container, SidecarChanges changes, Dictionary<string, List<FileInfo>> mediaFilesByDirectory)
+   static MediaSnapshotContainer PatchSnapshot(MediaSnapshotContainer container, SidecarChanges changes, Dictionary<string, List<FileInfo>> mediaFilesByDirectory)
    {
       var audioMap = container.Audio.ToDictionary(d => d.Id);
       var imageMap = container.Images.ToDictionary(d => d.Id);
@@ -301,7 +301,7 @@ public class MediaFileIndex
      .then(() => _byId.TryGetValue(id, out var attachment) ? attachment.FilePath : null);
 
    public MediaAttachment? TryGetAttachment(MediaFileId id) => EnsureInitialized()
-     .then(() => _byId.TryGetValue(id, out var attachment) ? attachment : null);
+     .then(() => _byId.GetValueOrDefault(id));
 
    public MediaFileInfo? TryGetInfo(MediaFileId id) => EnsureInitialized()
      .then(() => _byId.TryGetValue(id, out var attachment)
@@ -326,7 +326,7 @@ public class MediaFileIndex
      .then(() => _byOriginalFileName.ContainsKey(originalFileName));
 
    public MediaAttachment? TryGetByOriginalFileName(string originalFileName) => EnsureInitialized()
-     .then(() => _byOriginalFileName.TryGetValue(originalFileName, out var attachment) ? attachment : null);
+     .then(() => _byOriginalFileName.GetValueOrDefault(originalFileName));
 
    public void Register(MediaAttachment attachment)
    {

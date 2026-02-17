@@ -16,13 +16,8 @@ using JAStudio.UI.Utils;
 
 namespace JAStudio.UI;
 
-/// <summary>
-/// Composition root for the Anki addon.
-/// Bootstraps Core.App, initializes Avalonia, and provides factory methods
-/// for creating menus and showing dialogs.
-/// Python calls Initialize() once at startup, then uses the returned instance.
-/// </summary>
-public class JAStudioAppRoot
+// ReSharper disable once UnusedType.Global used from python
+public class JAStudioAnkiAppRoot
 {
    readonly CoreApp _coreApp;
    CancellationTokenSource? _reloadCts;
@@ -33,32 +28,24 @@ public class JAStudioAppRoot
    Thread? _uiThread;
 #pragma warning restore CS0414
 
-   /// <summary>
-   /// The resolved service collection, derived from the bootstrapped Core.App.
-   /// Used by dialog code-behinds to pass services to their ViewModels.
-   /// </summary>
+   // ReSharper disable once MemberCanBePrivate.Global used from python
    public TemporaryServiceCollection Services => _coreApp.Services;
 
-   /// <summary>Dialog show/toggle methods, extracted from this root.</summary>
+   // ReSharper disable once UnusedAutoPropertyAccessor.Global used from python
    public AnkiDialogs Dialogs { get; }
 
-   /// <summary>Menu factory methods, extracted from this root.</summary>
+   // ReSharper disable once UnusedAutoPropertyAccessor.Global used from python
    public AnkiMenus Menus { get; }
 
-   JAStudioAppRoot(CoreApp coreApp)
+   JAStudioAnkiAppRoot(CoreApp coreApp)
    {
       _coreApp = coreApp;
       Dialogs = new AnkiDialogs(coreApp);
       Menus = new AnkiMenus(coreApp.Services);
    }
 
-   /// <summary>
-   /// Bootstrap Core.App, initialize Avalonia, and return the composition root.
-   /// Call once at addon startup.
-   /// </summary>
-   /// <param name="configJson">JSON-serialized configuration dictionary from the Anki addon.</param>
-   /// <param name="configUpdateCallback">Callback that receives updated config JSON to persist back to Anki.</param>
-   public static JAStudioAppRoot Initialize(string configJson, Action<string> configUpdateCallback)
+   // ReSharper disable once UnusedMember.Global // ReSharper disable once UnusedAutoPropertyAccessor.Global used from python
+   public static JAStudioAnkiAppRoot Initialize(string configJson, Action<string> configUpdateCallback)
    {
       if(!Environment.GetEnvironmentVariable("DEBUG_JASTUDIO").IsNullEmptyOrWhiteSpace())
       {
@@ -71,7 +58,6 @@ public class JAStudioAppRoot
          backendDataLoader: new AnkiBackendDataLoader());
       CompzeLogger.LogLevel = LogLevel.Info;
 
-      // Initialize the C# configuration system with the Anki addon config
       app.Services.ConfigurationStore.InitJson(configJson, configUpdateCallback);
 
       var uiThread = new Thread(() =>
@@ -92,12 +78,11 @@ public class JAStudioAppRoot
 
       uiThread.Start();
 
-      // Wait for Avalonia to finish framework initialization
       UIApp.WaitForInitialization(TimeSpan.FromSeconds(30));
 
-      var root = new JAStudioAppRoot(app) { _uiThread = uiThread };
+      var root = new JAStudioAnkiAppRoot(app) { _uiThread = uiThread };
 
-      // Set up task runner factories
+      // TODO: urgent:  this is a wiring concern and should probably not be here
       root.Services.TaskRunner.SetUiScopePanelFactory((scopeTitle, depth, parentScope) =>
       {
          var viewModel = new TaskProgressScopeViewModel(scopeTitle, depth);
@@ -117,6 +102,7 @@ public class JAStudioAppRoot
          return new AvaloniaTaskProgressRunner(avaloniaScope.ViewModel, labelText, allowCancel);
       });
 
+      //TODO: urgent: this is a bleeding mess of a dependency, implementing a vital part of a component through a callback here. Jeez!
       // Keep the progress dialog window open across nested task scopes
       root.Services.TaskRunner.SetDialogLifetimeCallbacks(
          () => Dispatcher.UIThread.Invoke(MultiTaskProgressDialog.Hold),
@@ -124,6 +110,7 @@ public class JAStudioAppRoot
 
       BackgroundTaskManagerSetup.Initialize();
 
+      // TODO: urgent:  this is a wiring concern and should probably not be here
       // Register card operations so Core can suspend/unsuspend cards via the backend API
       root.Services.CardOperations.SetImplementation(new AnkiCardOperationsImpl(root.Services.ExternalNoteIdMap));
 
@@ -132,17 +119,7 @@ public class JAStudioAppRoot
 
    bool _profileOpen = false;
 
-   /// <summary>
-   /// Handle a lifecycle event from the Anki host.
-   /// Python calls this instead of managing complex init/destruct cycles.
-   /// </summary>
-   /// <remarks>
-   /// Reload events are debounced: when Anki starts it often fires ProfileOpened
-   /// immediately followed by SyncStarting → SyncCompleted, so we wait briefly
-   /// before actually loading to avoid redundant expensive reloads.
-   /// Clear events (SyncStarting, ProfileClosing) cancel any pending reload and
-   /// clear caches immediately.
-   /// </remarks>
+   // ReSharper disable once UnusedMember.Global used from python
    public void HandleAnkiLifecycleEvent(AnkiLifecycleEvent lifecycleEvent)
    {
       this.Log().Info($"HandleAnkiLifecycleEvent({lifecycleEvent})");
@@ -178,6 +155,7 @@ public class JAStudioAppRoot
       }
    }
 
+   // ReSharper disable once UnusedMember.Global used from python
    public void ShutDown()
    {
       using var _ = this.Log().Info().LogMethodExecutionTime();
@@ -209,20 +187,10 @@ public class JAStudioAppRoot
       }
    }
 
-   // ── UI thread helpers ──
-
-   /// <summary>
-   /// Run an action on the Avalonia UI thread.
-   /// </summary>
-   public void RunOnUIThread(Action action)
-   {
-      Dispatcher.UIThread.Post(action);
-   }
-
    /// <summary>
    /// Shutdown Avalonia. Call at addon unload.
    /// </summary>
-   public void Shutdown()
+   public void ShutdownUIFramework()
    {
       Dispatcher.UIThread.Invoke(() =>
       {

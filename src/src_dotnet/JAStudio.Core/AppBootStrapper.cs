@@ -1,5 +1,6 @@
 ﻿using Compze.Utilities.Contracts;
 using Compze.Utilities.DependencyInjection;
+using Compze.Utilities.DependencyInjection.Abstractions;
 using Compze.Utilities.DependencyInjection.SimpleInjector;
 using JAStudio.Core.Batches;
 using JAStudio.Core.Configuration;
@@ -46,9 +47,11 @@ public static class AppBootstrapper
       registrar.Register(
          Singleton.For<IBackendNoteCreator>().Instance(backendNoteCreator),
          Singleton.For<IEnvironmentPaths>().Instance(paths),
+         Singleton.For<IServiceLocator>().CreatedBy(() => container.ServiceLocator),
+         Singleton.For<AnkiHTMLRenderers>().CreatedBy((IServiceLocator serviceLocator) => new AnkiHTMLRenderers(serviceLocator)),
          Singleton.For<CoreApp>().CreatedBy((TemporaryServiceCollection services) => new CoreApp(services, paths)),
-         Singleton.For<ConfigurationStore>().CreatedBy((TemporaryServiceCollection services) => new ConfigurationStore(readingsMappingsSource)),
-         Singleton.For<TemporaryServiceCollection>().CreatedBy(() => new TemporaryServiceCollection(container.ServiceLocator)),
+         Singleton.For<ConfigurationStore>().CreatedBy(() => new ConfigurationStore(readingsMappingsSource)),
+         Singleton.For<TemporaryServiceCollection>().CreatedBy((IServiceLocator serviceLocator) => new TemporaryServiceCollection(serviceLocator)),
          Singleton.For<JapaneseConfig>().CreatedBy((ConfigurationStore store) => store.Config()),
          Singleton.For<JPCollection>().CreatedBy((NoteServices noteServices, JapaneseConfig config, INoteRepository noteRepository, MediaFileIndex mediaFileIndex) =>
                                                     new JPCollection(backendNoteCreator, noteServices, config, noteRepository, mediaFileIndex, backendDataLoader)),
@@ -68,11 +71,11 @@ public static class AppBootstrapper
          Singleton.For<ExternalNoteIdMap>().CreatedBy(() => new ExternalNoteIdMap()),
          Singleton.For<LocalNoteUpdater>().CreatedBy((TaskRunner taskRunner, VocabCollection vocab, KanjiCollection kanji, SentenceCollection sentences, JapaneseConfig config, DictLookup dictLookup, VocabNoteFactory vocabNoteFactory, FileSystemNoteRepository fileSystemNoteRepository) =>
                                                         new LocalNoteUpdater(taskRunner, vocab, kanji, sentences, config, dictLookup, vocabNoteFactory, fileSystemNoteRepository)),
-         Singleton.For<TaskRunner>().CreatedBy((JapaneseConfig config) => new TaskRunner()),
+         Singleton.For<TaskRunner>().CreatedBy(() => new TaskRunner()),
          Singleton.For<CardOperations>().CreatedBy(() => new CardOperations()),
 
          // Services owned by JPCollection — registered as property accessors
-         Singleton.For<NoteServices>().CreatedBy(() => new NoteServices(container.ServiceLocator)),
+         Singleton.For<NoteServices>().CreatedBy((IServiceLocator serviceLocator) => new NoteServices(serviceLocator)),
          Singleton.For<DictLookup>().CreatedBy((JPCollection col) => col.DictLookup),
          Singleton.For<VocabNoteFactory>().CreatedBy((JPCollection col) => col.VocabNoteFactory),
          Singleton.For<VocabNoteGeneratedData>().CreatedBy((JPCollection col) => col.VocabNoteGeneratedData),
