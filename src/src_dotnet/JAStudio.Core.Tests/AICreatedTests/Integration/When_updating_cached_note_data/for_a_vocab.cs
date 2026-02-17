@@ -1,20 +1,19 @@
 using Compze.Utilities.Testing.Must;
 using Compze.Utilities.Testing.XUnit.BDD;
-using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Note.Vocabulary;
 
 // ReSharper disable InconsistentNaming
 
-namespace JAStudio.Core.Tests.AICreatedTests.Integration;
+namespace JAStudio.Core.Tests.AICreatedTests.Integration.When_updating_cached_note_data;
 
-public class When_updating_cached_note_data : TestStartingWithEmptyCollection, IAIGeneratedTestClass
+public class for_a_vocab : TestStartingWithEmptyCollection, IAIGeneratedTestClass
 {
-   public class after_changing_a_vocabs_question : When_updating_cached_note_data
+   public class after_changing_its_question : for_a_vocab
    {
       readonly VocabNote _vocab;
 
-      public after_changing_a_vocabs_question()
+      public after_changing_its_question()
       {
          _vocab = CreateVocab("食べる", "to eat", "たべる");
          _vocab.GetQuestion();
@@ -32,9 +31,9 @@ public class When_updating_cached_note_data : TestStartingWithEmptyCollection, I
          GetService<VocabCollection>().WithQuestion("飲む")[0].Must().Be(_vocab);
    }
 
-   public class after_adding_a_form_to_a_vocab : When_updating_cached_note_data
+   public class after_adding_a_form : for_a_vocab
    {
-      public after_adding_a_form_to_a_vocab()
+      public after_adding_a_form()
       {
          var vocab = CreateVocab("食べる", "to eat", "たべる");
          vocab.Forms.Add("taberu-form");
@@ -47,7 +46,7 @@ public class When_updating_cached_note_data : TestStartingWithEmptyCollection, I
          GetService<VocabCollection>().WithQuestion("食べる").Count.Must().Be(1);
    }
 
-   public class after_adding_and_then_removing_a_form : When_updating_cached_note_data
+   public class after_adding_and_then_removing_a_form : for_a_vocab
    {
       readonly VocabNote _vocab;
 
@@ -65,25 +64,7 @@ public class When_updating_cached_note_data : TestStartingWithEmptyCollection, I
          GetService<VocabCollection>().WithQuestion("食べる").Count.Must().Be(1);
    }
 
-   public class after_changing_a_kanjis_question : When_updating_cached_note_data
-   {
-      readonly KanjiNote _kanji;
-
-      public after_changing_a_kanjis_question()
-      {
-         _kanji = CreateKanji("食", "eat", "ショク", "た");
-         _kanji.SetQuestion("飲");
-         _kanji.UpdateGeneratedData();
-      }
-
-      [XF] public void the_old_character_no_longer_finds_it() =>
-         GetService<KanjiCollection>().WithKanji("食").Must().BeNull();
-
-      [XF] public void the_new_character_finds_it() =>
-         GetService<KanjiCollection>().WithKanji("飲").Must().Be(_kanji);
-   }
-
-   public class after_multiple_updates : When_updating_cached_note_data
+   public class after_multiple_updates : for_a_vocab
    {
       readonly VocabNote _vocab;
 
