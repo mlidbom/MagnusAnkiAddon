@@ -33,7 +33,7 @@ public class QueryBuilder
    /// <summary>
    /// Combines clauses with OR, wrapping in parentheses if multiple clauses.
    /// </summary>
-   string OrClauses(IEnumerable<string> clauses)
+   static string OrClauses(IEnumerable<string> clauses)
    {
       var clauseList = clauses.ToList();
       return clauseList.Count == 1 ? clauseList[0] : $"({string.Join(" OR ", clauseList)})";
@@ -42,7 +42,7 @@ public class QueryBuilder
    /// <summary>
    /// Creates a field search for whole word matches using regex word boundaries.
    /// </summary>
-   string FieldContainsWord(string field, params string[] words)
+   static string FieldContainsWord(string field, params string[] words)
    {
       return OrClauses(words.Select(word => $"\"{field}:re:\\\\b{word}\\\\b\""));
    }
@@ -50,7 +50,7 @@ public class QueryBuilder
    /// <summary>
    /// Creates a field search for substring matches using wildcards.
    /// </summary>
-   string FieldContainsString(string field, params string[] words)
+   static string FieldContainsString(string field, params string[] words)
    {
       return OrClauses(words.Select(word => $"\"{field}:*{word}*\""));
    }
@@ -174,13 +174,13 @@ public class QueryBuilder
    /// Creates a vocab clause for a single form.
    /// Ported from vocab_clause()
    /// </summary>
-   string VocabClause(string form) => FieldContainsWord(AnkiFieldNames.Vocab.Forms, form);
+   static string VocabClause(string form) => FieldContainsWord(AnkiFieldNames.Vocab.Forms, form);
 
    /// <summary>
    /// Search for vocab notes matching any of the given dictionary forms.
    /// Ported from vocabs_lookup()
    /// </summary>
-   public string VocabsLookup(IEnumerable<string> dictionaryForms)
+   static string VocabsLookup(IEnumerable<string> dictionaryForms)
    {
       var forms = dictionaryForms.ToList();
       var clauses = forms.Select(VocabClause);
@@ -224,7 +224,7 @@ public class QueryBuilder
    /// Search for exact matches excluding sentence notes.
    /// Ported from exact_matches_no_sentences()
    /// </summary>
-   public string ExactMatchesNoSentences(string question) => $"({ExactMatches(question)}) -{Builtin.Note}:{NoteTypes.Sentence}";
+   string ExactMatchesNoSentences(string question) => $"({ExactMatches(question)}) -{Builtin.Note}:{NoteTypes.Sentence}";
 
    /// <summary>
    /// Search for exact matches on reading cards, excluding sentences and excluded decks.

@@ -43,13 +43,7 @@ public class VocabNoteQuestion
          DisambiguationName = value;
          var parts = DisambiguationName.Split(DisambiguationMarker);
 
-         if(parts.Length != 2)
-         {
-            Raw = InvalidQuestionMessage;
-         } else
-         {
-            Raw = parts[0];
-         }
+         Raw = parts.Length == 2 ? parts[0] : InvalidQuestionMessage;
       } else
       {
          Raw = value;

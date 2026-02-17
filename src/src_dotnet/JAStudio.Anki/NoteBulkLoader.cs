@@ -37,8 +37,8 @@ public static class NoteBulkLoader
    public static AnkiBulkLoadResult LoadAllNotesOfType(string dbFilePath, string noteTypeName, Func<Guid, NoteId> idFactory)
    {
       using var db = AnkiDatabase.OpenReadOnly(dbFilePath);
-      var (noteTypeId, fieldMap, fieldCount) = GetNoteTypeInfo(db.Connection, noteTypeName);
-      return LoadNotes(db.Connection, noteTypeId, fieldMap, fieldCount, idFactory);
+      var (noteTypeId, fieldMap) = GetNoteTypeInfo(db.Connection, noteTypeName);
+      return LoadNotes(db.Connection, noteTypeId, fieldMap, idFactory);
    }
 
    /// <summary>
@@ -53,7 +53,7 @@ public static class NoteBulkLoader
       foreach(var noteTypeName in NoteTypes.AllList)
       {
          var idFactory = NoteTypes.IdFactoryFromName(noteTypeName);
-         var (noteTypeId, fieldMap, _) = GetNoteTypeInfo(db.Connection, noteTypeName);
+         var (noteTypeId, fieldMap) = GetNoteTypeInfo(db.Connection, noteTypeName);
 
          if(!fieldMap.TryGetValue(AnkiFieldNames.JasNoteId, out var jasNoteIdOrdinal))
             continue;
@@ -84,7 +84,7 @@ public static class NoteBulkLoader
       return result;
    }
 
-   static (long noteTypeId, Dictionary<string, int> fieldMap, int fieldCount) GetNoteTypeInfo(SqliteConnection connection, string noteTypeName)
+   static (long noteTypeId, Dictionary<string, int> fieldMap) GetNoteTypeInfo(SqliteConnection connection, string noteTypeName)
    {
       // Get note type ID.
       // The notetypes.name column has COLLATE unicase (Anki custom). To avoid depending on that
@@ -120,10 +120,10 @@ public static class NoteBulkLoader
          fieldMap[name] = ord;
       }
 
-      return (noteTypeId.Value, fieldMap, fieldMap.Count);
+      return (noteTypeId.Value, fieldMap);
    }
 
-   static AnkiBulkLoadResult LoadNotes(SqliteConnection connection, long noteTypeId, Dictionary<string, int> fieldMap, int fieldCount, Func<Guid, NoteId> idFactory)
+   static AnkiBulkLoadResult LoadNotes(SqliteConnection connection, long noteTypeId, Dictionary<string, int> fieldMap, Func<Guid, NoteId> idFactory)
    {
       using var cmd = connection.CreateCommand();
       cmd.CommandText = """
