@@ -14,7 +14,7 @@ class DialogProgressPresenter
    int _openScopes;
 
    /// <summary>Root view model for the task progress dialog. The UI layer observes this to manage dialog visibility and content.</summary>
-   internal TaskProgressDialogViewModel DialogViewModel { get; } = new();
+   TaskProgressDialogViewModel DialogViewModel { get; } = new();
 
    internal DialogProgressPresenter(IUIThreadDispatcher dispatcher)
    {
