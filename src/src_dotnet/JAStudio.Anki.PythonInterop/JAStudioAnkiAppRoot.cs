@@ -36,6 +36,9 @@ public class JAStudioAnkiAppRoot
 
    // ReSharper disable once UnusedAutoPropertyAccessor.Global used from python
    public PythonAnkiMenus Menus { get; }
+   
+   // ReSharper disable once UnusedAutoPropertyAccessor.Global used from python
+   public bool IsInitialized => _coreApp.Collection.IsInitialized;
 
    JAStudioAnkiAppRoot(CoreApp coreApp)
    {
@@ -76,6 +79,8 @@ public class JAStudioAnkiAppRoot
       UIApp.WaitForInitialization(TimeSpan.FromSeconds(30));
 
       var root = new JAStudioAnkiAppRoot(app) { _uiThread = uiThread };
+
+      root._coreApp.Collection.OnInitialized(() => AnkiFacade.UIUtils.Refresh());
 
       root._cardServer.Start();
 

@@ -25,8 +25,7 @@ def noop_gc_now(_self: AnkiQt) -> None:
 
 # noinspection Annotator
 def visible_garbage_collection(_self: AnkiQt) -> None:
-    if (not app.config().EnableAutomaticGarbageCollection.Value
-            and app.is_initialized()):
+    if not app.config().EnableAutomaticGarbageCollection.Value:
         ex_gc.collect_on_ui_thread_and_display_message("Garbage collection triggered by anki internal code")
 
 def init() -> None:

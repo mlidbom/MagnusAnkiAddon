@@ -24,6 +24,9 @@ public class PreRenderingContentRenderer<TNote> where TNote : JPNote
    /// </summary>
    public string Render(TNote note, string html, string typeOfDisplay)
    {
+      if(!note.Collection.IsInitialized)
+         return Mine.AppStillLoadingMessage;
+
       if(DisplayType.IsDisplayingReviewQuestion(typeOfDisplay))
       {
          SchedulePrerender(note);

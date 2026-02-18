@@ -6,11 +6,9 @@ from autoslot import Slots
 from PyQt6.QtWidgets import QApplication
 from typed_linq_collections.q_iterable import query
 
-from jastudio.ankiutils import app
 from jastudio.ui import dotnet_ui_root
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
 
     from anki.notes import Note
     from JAStudio.Core.Note import JPNote
@@ -25,25 +23,17 @@ from aqt.editor import Editor
 from aqt.reviewer import RefreshNeeded
 from aqt.utils import tooltip
 from aqt.webview import AnkiWebView, AnkiWebViewKind
-from jaspythonutils.sysutils import timeutil
 from jaspythonutils.sysutils.typed import checked_cast, non_optional
 
 from jastudio.ankiutils.audio_suppressor import audio_suppressor
 from jastudio.ankiutils.ui_utils_interface import IUIUtils
 from jastudio.sysutils import app_thread_pool
 
-_ANSWER_DISPLAY_TYPES = {"reviewAnswer", "previewAnswer", "clayoutAnswer"}
 
 def main_window() -> AnkiQt: return non_optional(aqt.mw)
 
-def is_displaytype_displaying_answer(display_type: str) -> bool:
-    return display_type in _ANSWER_DISPLAY_TYPES
-
 def is_displaytype_displaying_review_question(display_type: str) -> bool:
     return display_type == "reviewQuestion"
-
-def is_displaytype_displaying_review_answer(display_type: str) -> bool:
-    return display_type == "reviewAnswer"
 
 def is_reviewer_display_type(display_type: str) -> bool:
     return display_type.startswith("review")
@@ -83,14 +73,8 @@ class UIUtils(IUIUtils, Slots):
         return len(edit_current) > 0
 
     @override
-    def run_ui_action(self, callback: Callable[[], None]) -> None:
-        time = timeutil.time_execution(callback)
-        self.refresh()
-        tooltip(f"done in {time}")
-
-    @override
     def refresh(self, refresh_browser: bool = True) -> None:
-        if not app.is_initialized():
+        if not dotnet_ui_root.IsInitialized:
             return
 
         def force_previewer_rerender() -> None:

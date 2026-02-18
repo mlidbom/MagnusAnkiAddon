@@ -17,8 +17,12 @@ public class AppendingPrerenderer<TNote> where TNote : JPNote
 
    public AppendingPrerenderer(Func<TNote, string> renderMethod) => _renderMethod = renderMethod;
 
+   // ReSharper disable once UnusedMember.Global used from python
    public string Render(TNote note, string html, string typeOfDisplay)
    {
+      if(!note.Collection.IsInitialized)
+         return Mine.AppStillLoadingMessage;
+
       if(DisplayType.IsDisplayingReviewQuestion(typeOfDisplay))
       {
          SchedulePrerender(note);
