@@ -1,0 +1,42 @@
+﻿<!--###everything below here should be identical for reading and listening cards###-->
+<div id="container1">
+    <div id="container2" class="{{Tags}} card{{Card}}">
+        <!--######-->
+        <div class="topSection">
+            <div class="image">{{Screenshot}}</div>
+
+            <div id="answerSection">
+                <div id="expressionAndReading">
+                    {{#__question}}
+                        <div class="expression user clipboard">##USER_QUESTION##</div>{{/__question}}
+                    <div class="expression clipboard {{#__question}}overridden{{/__question}}">##SOURCE_QUESTION##</div>
+                    <div class="reading">{{furigana::Reading}}</div>
+                </div>
+
+                {{#__answer}}
+                    <div class="meaning user clipboard">{{__answer}}</div>
+                {{/__answer}}
+                <div class="meaning clipboard {{#__answer}}overridden{{/__answer}} {{#__answer_analysis}}overridden{{/__answer_analysis}}">{{source_answer}}</div>
+                {{#__answer_analysis}}
+                    <div class="meaning user analysis clipboard">{{__answer_analysis}}</div>
+                {{/__answer_analysis}}
+            </div>
+        </div>
+
+        <div class="bottomSection">
+            {{#__comments}}
+                <div class="user comments short  page_section"><div class="page_section_title">user comments</div>{{__comments}}</div>
+            {{/__comments}}
+            {{#Comments}}
+                <div class="comments page_section"><div class="page_section_title">source comments</div>{{Comments}}</div>
+            {{/Comments}}
+        </div>
+
+        ##SENTENCE_ANALYSIS##
+
+    </div>
+    <!--######-->
+
+</div>
+
+<script src="__magnus_js.js"></script>

@@ -17,4 +17,8 @@
       <ProjectReference Include="..\JAStudio.Core\JAStudio.Core.csproj" />
    </ItemGroup>
 
+   <ItemGroup>
+     <PackageReference Include="AspNetCore.SassCompiler" Version="1.97.1" />
+   </ItemGroup>
+
 </Project>

@@ -1,0 +1,63 @@
+﻿{{_primary_readings_tts_audio}}
+<div id="container1">
+    <div id="container2" class="{{Tags}} card{{Card}}">
+        <!--######-->
+
+        ##BLAZOR_IFRAME##
+
+        <div class="mainContent kanji{{Card}}">
+            <div class="front-and-answer">
+                <div class="kanjiContainer">
+                    <div class="kanji">
+                        ::::::::::<span class="clipboard">{{Q}}</span>::::::::::
+                        {{#__confused_with}} !<span class="clipboard">{{__confused_with}}</span>{{/__confused_with}}
+                        {{#__similar_meaning}}=<span class="clipboard">{{__similar_meaning}}</span>{{/__similar_meaning}}
+                    </div>
+                </div>
+
+                {{#__answer}}<div class="meaning user">{{__answer}}</div>{{/__answer}}
+                <!--<div id="userImage">{{_image}}</div>-->
+                {{#__explanation}}<div class="userExplanation">	{{__explanation}}</div>{{/__explanation}}
+                {{#__references}}<div class="reference_url">{{__references}}</div>{{/__references}}
+
+
+                {{^__answer}}<div class="meaning">{{source_answer}}</div>{{/__answer}}
+
+                <div class="vocabList">
+                    <div class="vocabEntry"></div>
+                    <div class="vocabEntry"></div>
+                    <div class="vocabEntry"></div>
+                </div>
+
+                <div>
+                    <div class="itemInfo">
+                        <div>
+                            <div class="text ">
+                                ##KANJI_READINGS##
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+
+                <div class="mnemonics user page_section">
+                    <div class="page_section_title">mnemonic</div>
+                    {{#__mnemonic}}<div>{{__mnemonic}}</div>{{/__mnemonic}}
+                    {{^__mnemonic}}<div>{{Meaning_Mnemonic}}</div>{{/__mnemonic}}
+                </div>
+
+                ##DEPENDENCIES_LIST##
+
+                ##VOCAB_LIST##
+
+                ##KANJI_LIST##
+
+            </div>
+        </div>
+
+        <!--######-->
+    </div>
+</div>
+
+<script src="__magnus_js.js"></script>

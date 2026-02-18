@@ -36,4 +36,5 @@ snapshot_sentences.json
 snapshot_vocab.json
 /venv/
 /dev_docs/resharper-report.txt
+/src/src_dotnet/JAStudio.Web/wwwroot/css/
 /dev_docs/scratch.txt

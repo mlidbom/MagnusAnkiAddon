@@ -1,0 +1,65 @@
+@import "030_universal";
+
+.card {
+    font-family: "Meiryo UI", "Meiryo", "MS Mincho", "Yu Mincho", "UD Digi Kyokasho NP-R", "Hiragino Kaku Gothic Pro W3", serif;
+}
+
+@font-face {
+    font-family: "Hiragino Kaku Gothic Pro W3";
+    src: url("../collection.media/_hirakakyprow3.otf");
+}
+
+.card #container1 #container2 {
+
+    /* FONTS & COLORS */
+    primary { text-decoration: underline; }
+    obsolete { text-decoration: line-through; }
+    .meaning { color: var(--colorTextMeaning); }
+
+    .reading { color: var(--colorTextReading); }
+
+    ja, tag { color: var(--colorTextGreen); }
+
+    //The tags that we the right click to select:
+    .clipboard, ja, .headword-term, rad, radical, voc, vocab, kan, kanji, read, reading {
+        &:hover { cursor: pointer; }
+    }
+
+    /* highlights */
+    & {
+        rad, radical, kan, kanji, read, reading, voc, vocabulary, vocab, .primaryVocab { color: var(--colorHighlightText); }
+
+        rad, radical, kan, kanji, read, compound-reading, reading, voc, vocabulary, vocab {
+            display: inline-block;
+            line-height: 1;
+        }
+
+        rad, radical { background-color: var(--colorBgRad)}
+        kan, kanji { background-color: var(--colorBgKan); }
+        voc, vocabulary, vocab, .primaryVocab { background-color: var(--colorBgVoc); }
+        compound-reading { background-color: color-mix(in lch, var(--colorBgCard), white 10%); padding-left: 5px; padding-right: 5px; }
+        read, reading { background-color: var(--colorBgRead); }
+    }
+
+    /*LAYOUT*/
+    .userExplanation { display: inline-block;
+        max-width: $maxWidth;
+        text-align: left; }
+
+    .vocab_tag_list {
+        display: inline;
+        .vocab_tag {
+            display: inline;
+            color: var(--colorTextGreen);
+            &:not(:last-child):after {
+                content: "|";
+                color: darkgray;
+            }
+
+            &.vocab_tag_in_no_sentences { color: var(--colorTextWarningRed); }
+            &.vocab_tag_in_sentences { color: darkgray; }
+            &.in_studying_sentences { color: var(--colorTextGreen); }
+
+        }
+    }
+}
