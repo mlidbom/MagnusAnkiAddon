@@ -42,4 +42,14 @@ public class CardServerTests : IAsyncLifetime
       var html = await response.Content.ReadAsStringAsync();
       Assert.Contains("sentence", html);
    }
+
+   [Fact]
+   public async Task Blazor_web_js_is_served()
+   {
+      var response = await _http.GetAsync($"{_server.BaseUrl}/_framework/blazor.web.js");
+      response.EnsureSuccessStatusCode();
+
+      var content = await response.Content.ReadAsStringAsync();
+      Assert.True(content.Length > 1000, "blazor.web.js should be a substantial script file");
+   }
 }

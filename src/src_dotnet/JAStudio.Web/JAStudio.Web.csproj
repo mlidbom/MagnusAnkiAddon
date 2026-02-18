@@ -4,8 +4,11 @@
       <TargetFramework>net10.0</TargetFramework>
       <ImplicitUsings>disable</ImplicitUsings>
       <Nullable>enable</Nullable>
-      <!-- No entry point — server is started programmatically from the addon -->
-      <OutputType>Library</OutputType>
+      <!-- Server is started programmatically from the addon, not via a Main entry point.
+           We keep OutputType=Exe so the SDK generates static web asset manifests (blazor.web.js etc.)
+           but suppress the entry point error since we have no Program.cs. -->
+      <OutputType>Exe</OutputType>
+      <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
       <!-- Copy all dependencies to output for pythonnet consumption -->
       <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
    </PropertyGroup>

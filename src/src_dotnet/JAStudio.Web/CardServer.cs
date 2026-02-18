@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,8 +32,16 @@ public class CardServer
       // Prevent ASP.NET from scanning for hosting startup assemblies (we're hosted in Anki's process)
       Environment.SetEnvironmentVariable("ASPNETCORE_PREVENTHOSTINGSTARTUP", "true");
 
-      var builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = "Production" });
+      var assemblyDir = Path.GetDirectoryName(typeof(CardServer).Assembly.Location)!;
+      var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+      {
+         EnvironmentName = "Production",
+         ApplicationName = typeof(CardServer).Assembly.GetName().Name!,
+         ContentRootPath = assemblyDir,
+         WebRootPath = Path.Combine(assemblyDir, "wwwroot"),
+      });
       builder.WebHost.ConfigureKestrel(options => options.Listen(System.Net.IPAddress.Loopback, 0));
+      builder.WebHost.UseStaticWebAssets();
 
       builder.Services.AddRazorComponents()
                       .AddInteractiveServerComponents();
