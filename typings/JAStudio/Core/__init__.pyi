@@ -25,7 +25,7 @@ class AppBootstrapper(abc.ABC):
     @staticmethod
     def BootstrapForTests() -> CoreApp: ...
     @staticmethod
-    def BootstrapProduction(deps: IBootstrapDependencies) -> CoreApp: ...
+    def BootstrapProduction(deps: IEnvironmentSpecificDependenciesRegistrar) -> CoreApp: ...
 
 
 class BackendData:
@@ -56,11 +56,6 @@ class IBackendDataLoader(typing.Protocol):
     def Load(self, taskRunner: TaskRunner) -> BackendData: ...
 
 
-class IBootstrapDependencies(typing.Protocol):
-    @abc.abstractmethod
-    def WireEnvironmentSpecificServices(self, registrar: IComponentRegistrar) -> None: ...
-
-
 class IEnvironmentPaths(typing.Protocol):
     @property
     def AddonRootDir(self) -> str: ...
@@ -74,6 +69,11 @@ class IEnvironmentPaths(typing.Protocol):
     def MetadataDir(self) -> str: ...
     @property
     def UserFilesDir(self) -> str: ...
+
+
+class IEnvironmentSpecificDependenciesRegistrar(typing.Protocol):
+    @abc.abstractmethod
+    def WireEnvironmentSpecificServices(self, registrar: IComponentRegistrar) -> None: ...
 
 
 class StringExtensions(abc.ABC):

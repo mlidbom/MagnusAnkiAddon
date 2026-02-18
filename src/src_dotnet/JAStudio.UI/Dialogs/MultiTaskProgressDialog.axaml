@@ -2,6 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dialogs="clr-namespace:JAStudio.UI.Dialogs"
+        xmlns:taskRunners="clr-namespace:JAStudio.Core.TaskRunners;assembly=JAStudio.Core"
         mc:Ignorable="d" d:DesignWidth="780" d:DesignHeight="300"
         x:Class="JAStudio.UI.Dialogs.MultiTaskProgressDialog"
         Title="Running background tasks"
@@ -12,6 +14,17 @@
         ShowInTaskbar="False">
 
     <ScrollViewer MaxHeight="600">
-        <StackPanel x:Name="PanelContainer" Spacing="4" Margin="10,8"/>
+        <ItemsControl ItemsSource="{Binding RootScopes}" Margin="10,8">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Spacing="4"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.DataTemplates>
+                <DataTemplate DataType="{x:Type taskRunners:TaskProgressScopeViewModel}">
+                    <dialogs:TaskProgressScopePanel />
+                </DataTemplate>
+            </ItemsControl.DataTemplates>
+        </ItemsControl>
     </ScrollViewer>
 </Window>

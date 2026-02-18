@@ -24,7 +24,4 @@ public interface ITaskProgressRunner : IDisposable
    TResult RunIndeterminate<TResult>(string message, [InstantHandle] Func<TResult> action);
    Task<TResult> RunIndeterminateAsync<TResult>(string message, Func<TResult> action);
    Task RunIndeterminateAsync(string message, Action action) => RunIndeterminateAsync(message, action.AsFunc());
-
-   void SetLabelText(string text);
-   bool IsHidden();
 }

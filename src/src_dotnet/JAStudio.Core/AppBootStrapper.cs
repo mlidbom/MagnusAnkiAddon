@@ -63,7 +63,7 @@ public static class AppBootstrapper
          Singleton.For<ExternalNoteIdMap>().CreatedBy(() => new ExternalNoteIdMap()),
          Singleton.For<LocalNoteUpdater>().CreatedBy((TaskRunner taskRunner, VocabCollection vocab, KanjiCollection kanji, SentenceCollection sentences, JapaneseConfig config, DictLookup dictLookup, VocabNoteFactory vocabNoteFactory, FileSystemNoteRepository fileSystemNoteRepository) =>
                                                         new LocalNoteUpdater(taskRunner, vocab, kanji, sentences, config, dictLookup, vocabNoteFactory, fileSystemNoteRepository)),
-         Singleton.For<TaskRunner>().CreatedBy((ITaskProgressUI taskProgressUI) => new TaskRunner(taskProgressUI)),
+         Singleton.For<TaskRunner>().CreatedBy((IUIThreadDispatcher dispatcher) => new TaskRunner(dispatcher)),
          Singleton.For<BackgroundTaskManager>().CreatedBy((IFatalErrorHandler fatalErrorHandler) => new BackgroundTaskManager(fatalErrorHandler)),
 
          // Services owned by JPCollection — registered as property accessors

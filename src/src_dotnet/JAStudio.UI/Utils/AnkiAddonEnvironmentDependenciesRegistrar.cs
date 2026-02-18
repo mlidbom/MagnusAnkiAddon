@@ -6,7 +6,6 @@ using JAStudio.Core;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.Note;
 using JAStudio.Core.TaskRunners;
-using JAStudio.UI.Dialogs;
 
 namespace JAStudio.UI.Utils;
 
@@ -22,7 +21,7 @@ class AnkiAddonEnvironmentDependenciesRegistrar(string configJson, Action<string
          Singleton.For<IBackendNoteCreator>().Instance(new AnkiBackendNoteCreator()),
          Singleton.For<IBackendDataLoader>().Instance(new AnkiBackendDataLoader()),
          Singleton.For<IFatalErrorHandler>().Instance(new AvaloniaFatalErrorHandler()),
-         Singleton.For<ITaskProgressUI>().Instance(new AvaloniaTaskProgressUI()),
+         Singleton.For<IUIThreadDispatcher>().Instance(new AvaloniaUIThreadDispatcher()),
          Singleton.For<IConfigDictSource>().Instance(new AnkiConfigDictSource(_configJson, _configUpdateCallback)),
          Singleton.For<IReadingsMappingsSource>().CreatedBy((IEnvironmentPaths paths) => new FileReadingsMappingsSource(paths)),
          Singleton.For<ICardOperations>().CreatedBy((ExternalNoteIdMap idMap) => (ICardOperations)new AnkiCardOperationsImpl(idMap))

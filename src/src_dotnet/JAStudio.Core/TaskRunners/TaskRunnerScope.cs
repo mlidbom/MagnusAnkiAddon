@@ -9,7 +9,7 @@ namespace JAStudio.Core.TaskRunners;
 /// <summary>
 /// A scoped task runner obtained from <see cref="TaskRunner.Current"/>.
 /// Each method call creates its own progress panel for the duration of that call.
-/// The scope itself owns a <see cref="IScopePanel"/> that displays a heading
+/// The scope owns a <see cref="TaskProgressScopeViewModel"/> that displays a heading
 /// and elapsed time, and logs total elapsed time on dispose.
 /// The dialog window is held open by <see cref="TaskRunner"/> from the outermost
 /// scope until it is disposed, so panels can come and go without the window
@@ -18,73 +18,74 @@ namespace JAStudio.Core.TaskRunners;
 class TaskRunnerScope : ITaskProgressRunner
 {
    readonly TaskRunner _taskRunner;
-   readonly string _scopeTitle;
+   readonly IUIThreadDispatcher _dispatcher;
    readonly bool _visible;
    readonly bool _allowCancel;
    readonly Stopwatch _stopwatch = Stopwatch.StartNew();
    readonly int _depth;
    readonly int _previousNestingDepth;
-   readonly IScopePanel? _previousParentScope;
+   readonly TaskProgressScopeViewModel? _previousParentScopeViewmodel;
    readonly TaskLogEntry? _previousLogEntry;
    bool _disposed;
 
-   internal IScopePanel? ScopePanel { get; }
+   internal TaskProgressScopeViewModel? ScopeViewModel { get; }
 
    internal TaskLogEntry LogEntry { get; }
 
-   internal TaskRunnerScope(TaskRunner taskRunner, string scopeTitle, bool visible, bool allowCancel, int depth, int previousNestingDepth, IScopePanel? previousParentScope, TaskLogEntry? parentLogEntry)
+   internal TaskRunnerScope(TaskRunner taskRunner, IUIThreadDispatcher dispatcher, string scopeTitle, bool visible, bool allowCancel, int depth, int previousNestingDepth, TaskProgressScopeViewModel? previousParentScopeViewmodel, TaskLogEntry? parentLogEntry)
    {
       _taskRunner = taskRunner;
-      _scopeTitle = scopeTitle;
+      _dispatcher = dispatcher;
       _allowCancel = allowCancel;
       _visible = visible;
       _depth = depth;
       _previousNestingDepth = previousNestingDepth;
-      _previousParentScope = previousParentScope;
+      _previousParentScopeViewmodel = previousParentScopeViewmodel;
       _previousLogEntry = parentLogEntry;
-      LogEntry = new TaskLogEntry(_scopeTitle);
+      LogEntry = new TaskLogEntry(scopeTitle);
       parentLogEntry?.AddChild(LogEntry);
-      //todo: should the UI controls not use the scope itself, or a viewmodel wrapping it, to maintain their state? Should the scope know anything about UI panels?
-      ScopePanel = visible ? taskRunner.CreateScopePanel(_scopeTitle, visible, depth) : null;
-   }
-
-   ITaskProgressRunner CreateRunner(string message, bool async = false)
-   {
-      var logMessage = async ? $"(async) {message}" : message;
-      var taskLogEntry = new TaskLogEntry(logMessage);
-      LogEntry.AddChild(taskLogEntry);
-      return new LoggingTaskRunnerWrapper(_taskRunner.Create(ScopePanel, message, _visible, _allowCancel), taskLogEntry);
+      ScopeViewModel = visible ? taskRunner.CreateScopeViewModel(scopeTitle, visible, depth) : null;
    }
 
    public List<TOutput> RunBatch<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
    {
-      using var runner = CreateRunner(message);
-      return runner.RunBatch(items, processItem, message, threads);
+      var taskLogEntry = new TaskLogEntry(message);
+      LogEntry.AddChild(taskLogEntry);
+      using var runner = _taskRunner.CreateRunner(ScopeViewModel, message, _visible, _allowCancel);
+      var result = runner.RunBatch(items, processItem, message, threads);
+      taskLogEntry.MarkCompleted();
+      return result;
    }
 
    public TResult RunIndeterminate<TResult>(string message, Func<TResult> action)
    {
-      using var runner = CreateRunner(message);
-      return runner.RunIndeterminate(message, action);
+      var taskLogEntry = new TaskLogEntry(message);
+      LogEntry.AddChild(taskLogEntry);
+      using var runner = _taskRunner.CreateRunner(ScopeViewModel, message, _visible, _allowCancel);
+      var result = runner.RunIndeterminate(message, action);
+      taskLogEntry.MarkCompleted();
+      return result;
    }
 
    public async Task<List<TOutput>> RunBatchAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threadCount)
    {
-      using var runner = CreateRunner(message, async: true);
-      return await runner.RunBatchAsync(items, processItem, message, threadCount);
+      var taskLogEntry = new TaskLogEntry($"(async) {message}");
+      LogEntry.AddChild(taskLogEntry);
+      using var runner = _taskRunner.CreateRunner(ScopeViewModel, message, _visible, _allowCancel);
+      var result = await runner.RunBatchAsync(items, processItem, message, threadCount);
+      taskLogEntry.MarkCompleted();
+      return result;
    }
 
    public async Task<TResult> RunIndeterminateAsync<TResult>(string message, Func<TResult> action)
    {
-      using var runner = CreateRunner(message, async: true);
-      return await runner.RunIndeterminateAsync(message, action);
+      var taskLogEntry = new TaskLogEntry($"(async) {message}");
+      LogEntry.AddChild(taskLogEntry);
+      using var runner = _taskRunner.CreateRunner(ScopeViewModel, message, _visible, _allowCancel);
+      var result = await runner.RunIndeterminateAsync(message, action);
+      taskLogEntry.MarkCompleted();
+      return result;
    }
-
-   public void SetLabelText(string text)
-   { /* No persistent panel — each method manages its own */
-   }
-
-   public bool IsHidden() => !_visible;
 
    public void Dispose()
    {
@@ -99,7 +100,15 @@ class TaskRunnerScope : ITaskProgressRunner
          this.Log().Info($"{Environment.NewLine}{LogEntry.FormatTree()}");
       }
 
-      ScopePanel?.Dispose();
-      _taskRunner.OnScopeDisposed(_previousNestingDepth, _previousParentScope, _previousLogEntry);
+      if(ScopeViewModel != null)
+      {
+         ScopeViewModel.Dispose();
+         if(_previousParentScopeViewmodel != null)
+            _dispatcher.PostToUIThread(() => _previousParentScopeViewmodel.Children.Remove(ScopeViewModel));
+         else
+            _dispatcher.PostToUIThread(() => _taskRunner.DialogViewModel.RootScopes.Remove(ScopeViewModel));
+      }
+
+      _taskRunner.OnScopeDisposed(_previousNestingDepth, _previousParentScopeViewmodel, _previousLogEntry);
    }
 }

@@ -1,52 +1,42 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Threading;
 using Compze.Utilities.Logging;
 using Compze.Utilities.SystemCE.ThreadingCE.TasksCE;
-using JAStudio.Core.TaskRunners;
 
-namespace JAStudio.UI.Dialogs;
+namespace JAStudio.Core.TaskRunners;
 
-class AvaloniaTaskProgressRunner : ITaskProgressRunner
+/// <summary>
+/// Task progress runner that updates a <see cref="TaskProgressScopeViewModel"/>'s children
+/// with live progress information. Uses <see cref="IUIThreadDispatcher"/> for thread-safe
+/// access to the view model's <c>Children</c> collection.
+/// </summary>
+class VisibleTaskRunner(TaskProgressScopeViewModel scopeViewModel, IUIThreadDispatcher dispatcher, string labelText, bool allowCancel) : ITaskProgressRunner
 {
    TaskProgressViewModel? _viewModel;
-   readonly TaskProgressScopeViewModel _scopeViewModel;
-   readonly bool _allowCancel;
-   string _labelText;
-
-   public AvaloniaTaskProgressRunner(TaskProgressScopeViewModel scopeViewModel, string labelText, bool allowCancel)
-   {
-      _scopeViewModel = scopeViewModel;
-      _allowCancel = allowCancel;
-      _labelText = labelText;
-   }
+   readonly TaskProgressScopeViewModel _scopeViewModel = scopeViewModel;
+   readonly IUIThreadDispatcher _dispatcher = dispatcher;
+   readonly bool _allowCancel = allowCancel;
+   string _labelText = labelText;
 
    TaskProgressViewModel EnsureSpinnerViewModel()
    {
       if(_viewModel != null) return _viewModel;
       _viewModel = new TaskProgressViewModel { Message = _labelText, IsCancelVisible = _allowCancel };
-      Dispatcher.UIThread.Invoke(() => _scopeViewModel.Children.Add(_viewModel));
+      _dispatcher.InvokeSynchronouslyOnUIThread(() => _scopeViewModel.Children.Add(_viewModel));
       return _viewModel;
    }
 
    BatchTaskProgressViewModel EnsureBatchViewModel()
    {
-      if(_viewModel is BatchTaskProgressViewModel batch) return batch;
+      if(_viewModel is BatchTaskProgressViewModel batchViewModel) return batchViewModel;
       if(_viewModel != null) throw new InvalidOperationException("Cannot switch from spinner to batch mode within the same runner.");
       var batchVm = new BatchTaskProgressViewModel { Message = _labelText, IsCancelVisible = _allowCancel };
       _viewModel = batchVm;
-      Dispatcher.UIThread.Invoke(() => _scopeViewModel.Children.Add(batchVm));
+      _dispatcher.InvokeSynchronouslyOnUIThread(() => _scopeViewModel.Children.Add(batchVm));
       return batchVm;
-   }
-
-   public bool IsHidden() => false;
-
-   public void SetLabelText(string text)
-   {
-      _labelText = text;
-      if(_viewModel != null) _viewModel.Message = text;
    }
 
    public TResult RunIndeterminate<TResult>(string message, Func<TResult> action)
@@ -57,16 +47,14 @@ class AvaloniaTaskProgressRunner : ITaskProgressRunner
 
       var task = TaskCE.Run(action);
 
-      // Wait for completion, processing UI events
+      // Wait for completion, processing UI events to keep the dialog responsive
       while(!task.IsCompleted)
       {
-         if(Dispatcher.UIThread.CheckAccess())
-            Dispatcher.UIThread.RunJobs();
+         if(_dispatcher.CurrentThreadIsUIThread())
+            _dispatcher.PumpEventsToKeepUIResponsive();
          else
-            System.Threading.Thread.Sleep(50);
+            Thread.Sleep(50);
       }
-
-      if(task.IsFaulted) throw task.Exception!.InnerException!;
 
       return task.Result;
    }
@@ -96,18 +84,18 @@ class AvaloniaTaskProgressRunner : ITaskProgressRunner
 
       void UpdateProgress()
       {
-         var current = System.Threading.Interlocked.Increment(ref completed);
+         var current = Interlocked.Increment(ref completed);
          var nowTicks = Stopwatch.GetTimestamp();
-         var lastTicks = System.Threading.Interlocked.Read(ref lastRefreshTicks);
+         var lastTicks = Interlocked.Read(ref lastRefreshTicks);
          var elapsedSinceRefresh = (nowTicks - lastTicks) * 1000.0 / Stopwatch.Frequency;
 
          if(elapsedSinceRefresh > 100 || current == totalItems)
          {
-            System.Threading.Interlocked.Exchange(ref lastRefreshTicks, nowTicks);
+            Interlocked.Exchange(ref lastRefreshTicks, nowTicks);
             vm.UpdateProgressWithTiming(current, totalItems, stopwatch);
 
-            if(Dispatcher.UIThread.CheckAccess())
-               Dispatcher.UIThread.RunJobs();
+            if(_dispatcher.CurrentThreadIsUIThread())
+               _dispatcher.PumpEventsToKeepUIResponsive();
          }
       }
 
@@ -143,11 +131,9 @@ class AvaloniaTaskProgressRunner : ITaskProgressRunner
    public async Task<List<TOutput>> RunBatchAsync<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads) =>
       await TaskCE.Run(() => RunBatch(items, processItem, message, threads));
 
-   public void Close()
+   public void Dispose()
    {
       if(_viewModel != null)
-         Dispatcher.UIThread.Post(() => _scopeViewModel.Children.Remove(_viewModel));
+         _dispatcher.PostToUIThread(() => _scopeViewModel.Children.Remove(_viewModel));
    }
-
-   public void Dispose() => Close();
 }
