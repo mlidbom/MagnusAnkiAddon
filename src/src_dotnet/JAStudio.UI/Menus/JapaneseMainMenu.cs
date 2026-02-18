@@ -63,7 +63,7 @@ public class JapaneseMainMenu
             SpecMenuItem.Command(ShortcutFinger.Home2("Convert Immersion Kit sentences"), () => _services.BackgroundTaskManager.Run(AnkiFacade.Batches.ConvertImmersionKitSentences)),
             SpecMenuItem.Command(ShortcutFinger.Home3("Update everything except reanalysing sentences"), () => _services.BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.UpdateAll())),
             SpecMenuItem.Command(ShortcutFinger.Home4("Create vocab notes for parsed words"), () => _services.BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.CreateMissingVocabWithDictionaryEntries())),
-            SpecMenuItem.Command(ShortcutFinger.Home5("Regenerate vocab source answers from jamdict"), () => _services.BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.RegenerateJamdictVocabAnswers())),
+            SpecMenuItem.Command(ShortcutFinger.Home5("Regenerate vocab source answers from dictionary"), () => _services.BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.RegenerateJamdictVocabAnswers())),
             SpecMenuItem.Command(ShortcutFinger.Up1("Force flush all cached notes"), () => _services.BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.ForceFlushAllNotes())),
             SpecMenuItem.Command(ShortcutFinger.Up2("Force flush all Anki notes by ID"), () => _services.BackgroundTaskManager.Run(FlushAllAnkiNotesById)),
             SpecMenuItem.Command(ShortcutFinger.Up3("Write file system repository"), () => _services.BackgroundTaskManager.Run(() => _services.LocalNoteUpdater.WriteFileSystemRepository()))

@@ -13,8 +13,6 @@ $pipLibrariesToCopy = @(
     "pyperclip",
     "beartype",
     "jamdict", "jamdict_data", "puchikarui", "chirptext",
-    "pykakasi", "jaconv", "deprecated", "wrapt",
-    "romkan",
     "autoslot.py"
 )
 

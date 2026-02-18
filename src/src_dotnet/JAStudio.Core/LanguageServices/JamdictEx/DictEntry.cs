@@ -2,6 +2,9 @@ using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.Note.Vocabulary;
+using Wacton.Desu.Enums;
+using Wacton.Desu.Japanese;
+using NameEntry = Wacton.Desu.Names.INameEntry;
 
 namespace JAStudio.Core.LanguageServices.JamdictEx;
 
@@ -11,32 +14,31 @@ public class SenseEX
    public FrozenSet<string> Pos { get; }
    public bool IsKanaOnly { get; }
 
-   public SenseEX(dynamic source)
+   internal SenseEX(ISense source, IEnumerable<PartOfSpeech>? inheritedPos = null)
    {
-      // Extract glosses - replace spaces with dashes
-      Glosses = [];
-      foreach(var gloss in source.gloss)
-      {
-         Glosses.Add(((string)gloss.text).Replace(" ", "-"));
-      }
+      Glosses = source.Glosses
+                      .Where(g => g.Language.Equals(Language.English))
+                      .Select(g => g.Term.Replace(" ", "-"))
+                      .ToList();
 
-      // POSSetManager handles JMDict -> our names mapping and interning
-      var posList = new List<string>();
-      foreach(var pos in source.pos)
-      {
-         posList.Add((string)pos);
-      }
+      var pos = source.PartsOfSpeech.ToList();
+      if(!pos.Any() && inheritedPos != null)
+         pos = inheritedPos.ToList();
 
+      var posList = pos.Select(p => p.Code).ToList();
       Pos = POSSetManager.InternAndHarmonizeFromList(posList);
 
-      // Check if kana only
-      var miscList = new List<string>();
-      foreach(var misc in source.misc)
-      {
-         miscList.Add((string)misc);
-      }
+      IsKanaOnly = source.Miscellanea.Any(m => m.Code == Miscellaneous.UsuallyKanaAlone.Code);
+   }
 
-      IsKanaOnly = miscList.Contains("word usually written using kana alone");
+   internal SenseEX(Wacton.Desu.Names.ITranslation source)
+   {
+      Glosses = source.Transcriptions
+                      .Select(t => t.Replace(" ", "-"))
+                      .ToList();
+
+      Pos = FrozenSet<string>.Empty;
+      IsKanaOnly = false;
    }
 
    public bool IsTransitiveVerb() => POSSetManager.IsTransitiveVerb(Pos);
@@ -84,14 +86,16 @@ public class KanaFormEX
    public string Text { get; }
    public List<string> PriorityTags { get; }
 
-   public KanaFormEX(dynamic source)
+   internal KanaFormEX(IReading source)
    {
-      Text = (string)source.text;
-      PriorityTags = [];
-      foreach(var pri in source.pri)
-      {
-         PriorityTags.Add((string)pri);
-      }
+      Text = source.Text;
+      PriorityTags = source.Priorities.Select(p => p.Code).ToList();
+   }
+
+   internal KanaFormEX(Wacton.Desu.Names.IReading source)
+   {
+      Text = source.Text;
+      PriorityTags = source.Priorities.Select(p => p.Code).ToList();
    }
 }
 
@@ -100,14 +104,16 @@ public class KanjiFormEX
    public string Text { get; }
    public List<string> PriorityTags { get; }
 
-   public KanjiFormEX(dynamic source)
+   internal KanjiFormEX(IKanji source)
    {
-      Text = (string)source.text;
-      PriorityTags = [];
-      foreach(var pri in source.pri)
-      {
-         PriorityTags.Add((string)pri);
-      }
+      Text = source.Text;
+      PriorityTags = source.Priorities.Select(p => p.Code).ToList();
+   }
+
+   internal KanjiFormEX(Wacton.Desu.Names.IKanji source)
+   {
+      Text = source.Text;
+      PriorityTags = source.Priorities.Select(p => p.Code).ToList();
    }
 }
 
@@ -117,26 +123,38 @@ public sealed class DictEntry
    public List<KanjiFormEX> KanjiForms { get; }
    public List<SenseEX> Senses { get; }
 
-   public DictEntry(dynamic source)
+   DictEntry(List<KanaFormEX> kanaForms, List<KanjiFormEX> kanjiForms, List<SenseEX> senses)
    {
-      KanaForms = [];
-      foreach(var kanaForm in source.kana_forms)
-      {
-         KanaForms.Add(new KanaFormEX(kanaForm));
-      }
-
-      KanjiForms = [];
-      foreach(var kanjiForm in source.kanji_forms)
-      {
-         KanjiForms.Add(new KanjiFormEX(kanjiForm));
-      }
-
-      Senses = [];
-      foreach(var sense in source.senses)
-      {
-         Senses.Add(new SenseEX(sense));
-      }
+      KanaForms = kanaForms;
+      KanjiForms = kanjiForms;
+      Senses = senses;
    }
+
+   internal static DictEntry FromDesu(IJapaneseEntry source)
+   {
+      var senses = new List<SenseEX>();
+      IEnumerable<PartOfSpeech> lastPos = [];
+
+      foreach(var sense in source.Senses)
+      {
+         var currentPos = sense.PartsOfSpeech.ToList();
+         if(currentPos.Any())
+            lastPos = currentPos;
+
+         var senseEx = new SenseEX(sense, lastPos);
+         if(senseEx.Glosses.Any())
+            senses.Add(senseEx);
+      }
+
+      return new(source.Readings.Select(r => new KanaFormEX(r)).ToList(),
+                 source.Kanjis.Select(k => new KanjiFormEX(k)).ToList(),
+                 senses);
+   }
+
+   internal static DictEntry FromDesuName(NameEntry source) =>
+      new(source.Readings.Select(r => new KanaFormEX(r)).ToList(),
+          source.Kanjis.Select(k => new KanjiFormEX(k)).ToList(),
+          source.Translations.Select(t => new SenseEX(t)).ToList());
 
    public List<string> KanaFormsText() => KanaForms.Select(it => it.Text).ToList();
    public List<string> KanjiFormsText() => KanjiForms.Select(it => it.Text).ToList();
@@ -146,32 +164,14 @@ public sealed class DictEntry
       return !KanjiForms.Any() || Senses.Any(sense => sense.IsKanaOnly);
    }
 
-   public static List<DictEntry> Create(IEnumerable<DictEntry> entries) => entries.ToList();
-
-   /// <summary>
-   /// Creates DictEntry list from Python entries. Must be called while holding the GIL.
-   /// </summary>
-   internal static List<DictEntry> CreateFromPythonEntries(dynamic pythonEntries)
-   {
-      var result = new List<DictEntry>();
-      foreach(var entry in pythonEntries)
-      {
-         result.Add(new DictEntry(entry));
-      }
-
-      return result;
-   }
-
    public bool HasMatchingKanaForm(string search)
    {
-      // TODO: this converting to hiragana is worrisome. Is this really the behavior we want? What false positives might we run into?
       search = KanaUtils.KatakanaToHiragana(search);
       return KanaForms.Any(form => search == KanaUtils.KatakanaToHiragana(form.Text));
    }
 
    public bool HasMatchingKanjiForm(string search)
    {
-      // TODO: this converting to hiragana is worrisome. Is this really the behavior we want? What false positives might we run into?
       search = KanaUtils.KatakanaToHiragana(search);
       return KanjiForms.Any(form => search == KanaUtils.KatakanaToHiragana(form.Text));
    }

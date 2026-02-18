@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using Compze.Utilities.Logging;
 using Compze.Utilities.SystemCE;
-using JAStudio.Core.Configuration;
 using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Note.Vocabulary;
 
@@ -15,20 +12,15 @@ public class DictLookup
 {
    readonly JPCollection _collection;
 
-   internal DictLookup(JPCollection collection, JapaneseConfig config)
+   internal DictLookup(JPCollection collection)
    {
       _collection = collection;
-      _jamdictThreadingWrapper = JamdictThreadingWrapper.GetInstance(config);
-      _allWordForms = new LazyCE<HashSet<string>>(FindAllWords);
-      _allNameForms = new LazyCE<HashSet<string>>(FindAllNames);
+      _desuDictionary = new LazyCE<DesuDictionary>(() => DesuDictionary.GetInstance());
    }
 
-   public static void ShutDownJamdict() => JamdictThreadingWrapper.ShutDown();
+   public static void ShutDownJamdict() => DesuDictionary.ShutDown();
 
-   readonly JamdictThreadingWrapper _jamdictThreadingWrapper;
-
-   readonly LazyCE<HashSet<string>> _allWordForms;
-   readonly LazyCE<HashSet<string>> _allNameForms;
+   readonly LazyCE<DesuDictionary> _desuDictionary;
 
    // Cache dictionaries for @cache decorator equivalent
    static readonly ConcurrentDictionary<(string, string), DictLookupResult> TryLookupWithReadingCache = new();
@@ -36,48 +28,8 @@ public class DictLookup
    static readonly ConcurrentDictionary<string, List<DictEntry>> LookupNameRawCache = new();
    static readonly ConcurrentDictionary<string, bool> IsWordCache = new();
 
-   HashSet<string> FindAllWords()
-   {
-      var stopwatch = Stopwatch.StartNew();
-      this.Log().Info("Prepopulating all word forms from jamdict.");
-
-      var kanjiFormsQuery = "SELECT distinct text FROM Kanji";
-      var kanaFormsQuery = "SELECT distinct text FROM Kana";
-
-      var kanjiForms = _jamdictThreadingWrapper.RunStringQuery(kanjiFormsQuery);
-      var kanaForms = _jamdictThreadingWrapper.RunStringQuery(kanaFormsQuery);
-
-      var result = new HashSet<string>(kanjiForms);
-      result.UnionWith(kanaForms);
-
-      stopwatch.Stop();
-      this.Log().Info($"Prepopulating all word forms from jamdict completed in {stopwatch.ElapsedMilliseconds}ms");
-
-      return result;
-   }
-
-   HashSet<string> FindAllNames()
-   {
-      var stopwatch = Stopwatch.StartNew();
-      this.Log().Info("Prepopulating all name forms from jamdict.");
-
-      var kanjiFormsQuery = "SELECT distinct text FROM NEKanji";
-      var kanaFormsQuery = "SELECT distinct text FROM NEKana";
-
-      var kanjiForms = _jamdictThreadingWrapper.RunStringQuery(kanjiFormsQuery);
-      var kanaForms = _jamdictThreadingWrapper.RunStringQuery(kanaFormsQuery);
-
-      var result = new HashSet<string>(kanjiForms);
-      result.UnionWith(kanaForms);
-
-      stopwatch.Stop();
-      this.Log().Info($"Prepopulating all name forms from jamdict completed in {stopwatch.ElapsedMilliseconds}ms");
-
-      return result;
-   }
-
-   HashSet<string> AllNameForms() => _allNameForms.Value;
-   HashSet<string> AllWordForms() => _allWordForms.Value;
+   HashSet<string> AllNameForms() => CoreApp.IsTesting ? [] : _desuDictionary.Value.AllNameForms;
+   HashSet<string> AllWordForms() => CoreApp.IsTesting ? [] : _desuDictionary.Value.AllWordForms;
 
    public DictLookupResult LookupVocabWordOrName(VocabNote vocab)
    {
@@ -200,8 +152,7 @@ public class DictLookup
 
    List<DictEntry> LookupWordRawInner(string word)
    {
-      var lookupResult = _jamdictThreadingWrapper.Lookup(word, includeNames: false);
-      var entries = lookupResult.Entries;
+      var entries = _desuDictionary.Value.LookupWord(word);
 
       if(!KanaUtils.IsOnlyKana(word))
       {
@@ -223,8 +174,7 @@ public class DictLookup
 
    List<DictEntry> LookupNameRawInner(string word)
    {
-      var lookupResult = _jamdictThreadingWrapper.Lookup(word, includeNames: true);
-      return lookupResult.Names;
+      return _desuDictionary.Value.LookupName(word);
    }
 
    public bool MightBeWord(string word) => CoreApp.IsTesting || AllWordForms().Contains(word);

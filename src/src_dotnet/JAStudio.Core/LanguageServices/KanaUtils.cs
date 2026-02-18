@@ -1,15 +1,12 @@
 using System;
 using System.Linq;
-using JAStudio.PythonInterop.Kana;
+using MyNihongo.KanaConverter;
 
 namespace JAStudio.Core.LanguageServices;
 
 public static class KanaUtils
 {
-   const string FullWidthSpace = "　";
-
-   static readonly Lazy<PykakasiWrapper> _pykakasi = new(() => new PykakasiWrapper());
-   static readonly Lazy<RomkanWrapper> _romkan = new(() => new RomkanWrapper());
+   const string FullWidthSpace = "\u3000";
 
    public static string PadToLength(string value, int targetLength)
    {
@@ -62,11 +59,33 @@ public static class KanaUtils
       return text.Where(CharacterIsKanji).Select(ch => ch.ToString()).ToArray();
    }
 
-   public static string Romanize(string text) => _pykakasi.Value.Romanize(text);
+   public static string Romanize(string text)
+   {
+      if(string.IsNullOrEmpty(text))
+         return string.Empty;
 
-   public static string RomajiToHiragana(string romaji) => _romkan.Value.ToHiragana(romaji);
+      // Strip trailing small tsu (っ/ッ) before romanization
+      if(text.EndsWith("っ") || text.EndsWith("ッ"))
+         text = text[..^1];
 
-   public static string RomajiToKatakana(string romaji) => _romkan.Value.ToKatakana(romaji);
+      return text.ToRomaji(UnrecognisedCharacterPolicy.Append);
+   }
+
+   public static string RomajiToHiragana(string romaji)
+   {
+      if(string.IsNullOrEmpty(romaji))
+         return string.Empty;
+
+      return romaji.ToHiragana(UnrecognisedCharacterPolicy.Append);
+   }
+
+   public static string RomajiToKatakana(string romaji)
+   {
+      if(string.IsNullOrEmpty(romaji))
+         return string.Empty;
+
+      return romaji.ToKatakana(UnrecognisedCharacterPolicy.Append);
+   }
 
    public static string AnythingToHiragana(string text) => IsOnlyKana(text) ? KatakanaToHiragana(text) : RomajiToHiragana(text);
 }
