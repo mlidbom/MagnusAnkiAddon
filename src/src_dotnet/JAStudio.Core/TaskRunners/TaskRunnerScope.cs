@@ -18,7 +18,6 @@ namespace JAStudio.Core.TaskRunners;
 class TaskRunnerScope : ITaskProgressRunner
 {
    readonly TaskRunner _taskRunner;
-   readonly IUIThreadDispatcher _dispatcher;
    readonly bool _visible;
    readonly bool _allowCancel;
    readonly Stopwatch _stopwatch = Stopwatch.StartNew();
@@ -32,10 +31,9 @@ class TaskRunnerScope : ITaskProgressRunner
 
    internal TaskLogEntry LogEntry { get; }
 
-   internal TaskRunnerScope(TaskRunner taskRunner, IUIThreadDispatcher dispatcher, string scopeTitle, bool visible, bool allowCancel, int depth, int previousNestingDepth, TaskProgressScopeViewModel? previousParentScopeViewmodel, TaskLogEntry? parentLogEntry)
+   internal TaskRunnerScope(TaskRunner taskRunner, string scopeTitle, bool visible, bool allowCancel, int depth, int previousNestingDepth, TaskProgressScopeViewModel? previousParentScopeViewmodel, TaskLogEntry? parentLogEntry)
    {
       _taskRunner = taskRunner;
-      _dispatcher = dispatcher;
       _allowCancel = allowCancel;
       _visible = visible;
       _depth = depth;
@@ -100,15 +98,6 @@ class TaskRunnerScope : ITaskProgressRunner
          this.Log().Info($"{Environment.NewLine}{LogEntry.FormatTree()}");
       }
 
-      if(ScopeViewModel != null)
-      {
-         ScopeViewModel.Dispose();
-         if(_previousParentScopeViewmodel != null)
-            _dispatcher.PostToUIThread(() => _previousParentScopeViewmodel.Children.Remove(ScopeViewModel));
-         else
-            _dispatcher.PostToUIThread(() => _taskRunner.DialogViewModel.RootScopes.Remove(ScopeViewModel));
-      }
-
-      _taskRunner.OnScopeDisposed(_previousNestingDepth, _previousParentScopeViewmodel, _previousLogEntry);
+      _taskRunner.OnScopeDisposed(ScopeViewModel, _previousNestingDepth, _previousParentScopeViewmodel, _previousLogEntry);
    }
 }

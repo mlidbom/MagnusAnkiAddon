@@ -72,14 +72,23 @@ public class TaskRunner
          _dispatcher.InvokeSynchronouslyOnUIThread(() => DialogViewModel.IsVisible = true);
       }
 
-      var scope = new TaskRunnerScope(this, _dispatcher, scopeTitle, visible, allowCancel, depth, previousNestingDepth, _parentScopeViewmodel.Value, _currentLogEntry.Value);
+      var scope = new TaskRunnerScope(this, scopeTitle, visible, allowCancel, depth, previousNestingDepth, _parentScopeViewmodel.Value, _currentLogEntry.Value);
       _parentScopeViewmodel.Value = scope.ScopeViewModel;
       _currentLogEntry.Value = scope.LogEntry;
       return scope;
    }
 
-   internal void OnScopeDisposed(int previousNestingDepth, TaskProgressScopeViewModel? previousParentScopeVM, TaskLogEntry? previousLogEntry)
+   internal void OnScopeDisposed(TaskProgressScopeViewModel? disposedScopeVM, int previousNestingDepth, TaskProgressScopeViewModel? previousParentScopeVM, TaskLogEntry? previousLogEntry)
    {
+      if(disposedScopeVM != null)
+      {
+         disposedScopeVM.Dispose();
+         if(previousParentScopeVM != null)
+            _dispatcher.PostToUIThread(() => previousParentScopeVM.Children.Remove(disposedScopeVM));
+         else
+            _dispatcher.PostToUIThread(() => DialogViewModel.RootScopes.Remove(disposedScopeVM));
+      }
+
       _nestingDepth.Value = previousNestingDepth;
       _parentScopeViewmodel.Value = previousParentScopeVM;
       _currentLogEntry.Value = previousLogEntry;
