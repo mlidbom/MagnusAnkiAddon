@@ -37,10 +37,29 @@ public class CardServer
       builder.Services.AddRazorComponents()
                       .AddInteractiveServerComponents();
 
+      builder.Services.AddCors(options =>
+         options.AddDefaultPolicy(policy =>
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()));
+
       _app = builder.Build();
 
+      _app.UseCors();
       _app.UseStaticFiles();
       _app.UseAntiforgery();
+
+      // UseAntiforgery() adds 'frame-ancestors: self' which blocks cross-origin iframes.
+      // Override it so Anki's reviewer webview (on a different port) can frame our pages.
+      _app.Use(async (context, next) =>
+      {
+         context.Response.OnStarting(() =>
+         {
+            context.Response.Headers["Content-Security-Policy"] = "frame-ancestors *";
+            return Task.CompletedTask;
+         });
+         await next();
+      });
 
       _app.MapRazorComponents<Components.App>()
           .AddInteractiveServerRenderMode();

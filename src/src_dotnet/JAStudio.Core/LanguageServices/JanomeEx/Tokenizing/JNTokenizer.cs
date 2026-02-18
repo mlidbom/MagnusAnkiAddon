@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Compze.Utilities.SystemCE;
 using MeCab;
@@ -22,7 +24,14 @@ public sealed class JNTokenizer
 
    JNTokenizer()
    {
-      _tagger = MeCabTagger.Create();
+      // MeCab defaults to looking for dic/ relative to CWD which doesn't work when hosted inside Anki.
+      // Resolve relative to the assembly location instead.
+      var assemblyDir = Path.GetDirectoryName(typeof(JNTokenizer).Assembly.Location)
+                        ?? throw new InvalidOperationException("Cannot determine assembly directory");
+      var dicDir = Path.Combine(assemblyDir, "dic");
+
+      var param = new MeCabParam { DicDir = dicDir };
+      _tagger = MeCabTagger.Create(param);
    }
 
    public JNTokenizeResult Tokenize(string text, string? cachedSerializedTokens = null)

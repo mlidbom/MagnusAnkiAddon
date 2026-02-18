@@ -76,6 +76,23 @@ def copy_binaries(workspace_root: Path) -> None:
                     mylog.warning(f"  Skipped (locked): {src_file.name}")
                     skipped += 1
 
+        # Copy subdirectories (e.g. dic/ for MeCab dictionary)
+        for subdir in build_output.iterdir():
+            if subdir.is_dir() and subdir.name in ("dic",):
+                dest_subdir = dest / subdir.name
+                dest_subdir.mkdir(parents=True, exist_ok=True)
+                for src_file in subdir.iterdir():
+                    if src_file.is_file():
+                        dest_file = dest_subdir / src_file.name
+                        if dest_file.exists() and _md5(src_file) == _md5(dest_file):
+                            continue
+                        try:
+                            shutil.copy2(src_file, dest_file)
+                            copied += 1
+                        except OSError:
+                            mylog.warning(f"  Skipped (locked): {src_file.name}")
+                            skipped += 1
+
     if copied > 0 or skipped > 0:
         mylog.info(f"Runtime binaries: {copied} copied, {skipped} skipped (locked)")
     else:
