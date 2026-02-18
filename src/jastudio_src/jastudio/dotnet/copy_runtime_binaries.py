@@ -14,7 +14,7 @@ from jastudio import mylog
 if TYPE_CHECKING:
     from pathlib import Path
 
-_FILE_PATTERNS = ("*.dll", "*.deps.json", "*.runtimeconfig.json")
+_FILE_PATTERNS = ("*.dll", "*.deps.json", "*.runtimeconfig.json", "*.staticwebassets.runtime.json", "*.staticwebassets.endpoints.json")
 
 
 def _find_build_output(src_dotnet: Path) -> list[Path]:

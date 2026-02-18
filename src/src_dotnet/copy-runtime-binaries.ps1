@@ -15,7 +15,7 @@ if (-not (Test-Path $DestDir)) {
     New-Item -ItemType Directory -Path $DestDir -Force | Out-Null
 }
 
-$filesToCopy = @("*.dll", "*.deps.json", "*.runtimeconfig.json")
+$filesToCopy = @("*.dll", "*.deps.json", "*.runtimeconfig.json", "*.staticwebassets.runtime.json", "*.staticwebassets.endpoints.json")
 $copied = 0
 $skipped = 0
 
