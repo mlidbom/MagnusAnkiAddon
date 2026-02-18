@@ -134,3 +134,5 @@ This project is actively porting UI from Python/PyQt6 to C#/Avalonia. **Use Pyth
 
 The project uses a virtual environment at `venv/`. Python dependencies are managed via `requirements.txt`.
 On Linux, run `./setup-dev.sh` to create the venv and install all dependencies.
+
+**⚠️ CRITICAL:** The virtual environment directory MUST be named `venv/` (not `.venv/`). All scripts, CI workflows, and tool configurations expect this exact path. If you encounter a `.venv/` directory, it was created by a misconfigured prior setup and should be removed. Always create or use `venv/` instead.
