@@ -1,15 +1,10 @@
 using JAStudio.Core.LanguageServices;
-using JAStudio.PythonInterop.Utilities;
 using Xunit;
 
 namespace JAStudio.Core.Specifications.LanguageServices;
 
 public class KanaUtilsTests
 {
-   public KanaUtilsTests()
-   {
-      PythonEnvironment.EnsureInitialized();
-   }
 
    // Ported from test_kana_utils.py
    [Theory]
@@ -20,6 +15,7 @@ public class KanaUtilsTests
    [InlineData("じゃっつ", "jattsu", "じゃっつ", "ジャッツ")]
    [InlineData("ジャッ", "ja", "じゃ", "ジャ")]
    [InlineData("じゃっ", "ja", "じゃ", "ジャ")]
+   [InlineData("こんにちは", "konnichiha", "こんにちは", "コンニチハ")]
    [InlineData("キャク", "kyaku", "きゃく", "キャク")]
    [InlineData("チャ", "cha", "ちゃ", "チャ")]
    public void RomajiKanaRoundtripping(string kana, string expectedRomaji, string expectedHiragana, string expectedKatakana)
@@ -57,19 +53,6 @@ public class KanaUtilsTests
    }
 
    [Fact]
-   public void Should_Romanize_Japanese_Text()
-   {
-      // Arrange
-      var japanese = "こんにちは";
-
-      // Act
-      var romaji = KanaUtils.Romanize(japanese);
-
-      // Assert - pykakasi uses "ha" for は in this context
-      Assert.Equal("konnichiha", romaji);
-   }
-
-   [Fact]
    public void Should_Handle_Trailing_Small_Tsu()
    {
       // Arrange
@@ -91,8 +74,8 @@ public class KanaUtilsTests
       // Act
       var hiragana = KanaUtils.RomajiToHiragana(romaji);
 
-      // Assert - romkan doesn't double 'n' before certain consonants
-      Assert.Equal("こんいちわ", hiragana);
+      // Assert
+      Assert.Equal("こんにちわ", hiragana);
    }
 
    [Fact]
@@ -104,8 +87,8 @@ public class KanaUtilsTests
       // Act
       var katakana = KanaUtils.RomajiToKatakana(romaji);
 
-      // Assert - romkan doesn't double 'n' before certain consonants
-      Assert.Equal("コンイチワ", katakana);
+      // Assert
+      Assert.Equal("コンニチワ", katakana);
    }
 
    [Fact]
@@ -184,7 +167,7 @@ public class KanaUtilsTests
       // Act
       var hiragana = KanaUtils.AnythingToHiragana(romaji);
 
-      // Assert - romkan doesn't double 'n' before certain consonants
-      Assert.Equal("こんいちわ", hiragana);
+      // Assert
+      Assert.Equal("こんにちわ", hiragana);
    }
 }

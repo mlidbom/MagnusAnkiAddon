@@ -28,7 +28,7 @@ source venv/bin/activate
 
 pip install --quiet --upgrade pip
 
-# Install packages needed by .NET tests (pythonnet, Janome, jamdict, pykakasi)
+# Install packages needed by .NET tests (pythonnet, Janome, jamdict)
 # and by Python tests (pytest, beartype, etc.)
 pip install --quiet \
   pytest \
@@ -38,8 +38,6 @@ pip install --quiet \
   pyperclip \
   autoslot \
   Janome \
-  pykakasi \
-  python-romkan-ng \
   pythonnet \
   "jamdict==0.1a11.post2" \
   "jamdict-data-fix==1.5.1a2"
