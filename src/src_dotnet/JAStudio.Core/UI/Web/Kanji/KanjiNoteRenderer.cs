@@ -7,6 +7,7 @@ namespace JAStudio.Core.UI.Web.Kanji;
 /// </summary>
 public class KanjiNoteRenderer
 {
+   // ReSharper disable once UnusedMember.Global called from python
    public AppendingPrerenderer<KanjiNote> CreateRenderer() => new(RenderBlazorIframe);
 
    static string RenderBlazorIframe(KanjiNote note)
