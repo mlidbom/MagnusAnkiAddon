@@ -1,8 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using Compze.Utilities.SystemCE;
-using Compze.Utilities.SystemCE.ThreadingCE.ResourceAccess;
-using JAStudio.PythonInterop.Utilities;
-using Python.Runtime;
+using MeCab;
 
 namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;
 
@@ -12,67 +11,33 @@ public sealed class JNTokenizer
 
    public static JNTokenizer GetInstance() => Instance.Value;
 
-   readonly IMonitorCE _monitor = IMonitorCE.WithDefaultTimeout();
-
-   static readonly HashSet<string> CharactersThatMayConfuseJanomeSoWeReplaceThemWithOrdinaryFullWidthSpaces =
+   static readonly HashSet<string> CharactersThatMayConfuseTokenizerSoWeReplaceThemWithOrdinaryFullWidthSpaces =
       ["!", "！", "|", "（", "）"];
 
-   /// <summary>The invisible space character (U+200B) used as field separator in the serialized token string from Python.</summary>
+   /// <summary>The invisible space character (U+200B) used as field separator in the serialized token string.</summary>
    const string FieldSeparator = StringExtensions.InvisibleSpace;
 
-   const string WrapperPythonCode =
-      $"""
-      from janome.tokenizer import Tokenizer
-
-      _FIELD_SEPARATOR = "{FieldSeparator}"
-      _tokenizer = Tokenizer()
-
-      def _sanitize(value):
-          if value is None:
-              return ""
-          return str(value).replace("\n", " ").replace("\r", " ")
-
-      def tokenize_to_string(text):
-          lines = []
-          for token in _tokenizer.tokenize(text):
-              fields = _FIELD_SEPARATOR.join([
-                  _sanitize(token.part_of_speech),
-                  _sanitize(token.base_form),
-                  _sanitize(token.surface),
-                  _sanitize(token.infl_type),
-                  _sanitize(token.infl_form),
-                  _sanitize(token.reading),
-                  _sanitize(token.phonetic),
-                  _sanitize(token.node_type),
-              ])
-              lines.append(fields)
-          return "\n".join(lines)
-      """;
-
-   readonly PythonObjectWrapper _wrapper;
+   readonly MeCabTagger _tagger;
+   readonly object _lock = new();
 
    JNTokenizer()
    {
-      _wrapper = PythonEnvironment.Use(() =>
-      {
-         var module = PyModule.FromString("janome_tokenizer_wrapper", WrapperPythonCode);
-         return new PythonObjectWrapper(module);
-      });
+      _tagger = MeCabTagger.Create();
    }
 
    public JNTokenizeResult Tokenize(string text, string? cachedSerializedTokens = null)
    {
-      // Apparently janome does not fully understand that invisible spaces are word separators,
-      // so we replace them with ordinary spaces since they are not anything that should need to be parsed
+      // The tokenizer does not fully understand that invisible spaces are word separators,
+      // so we replace them with a sentinel token since they are not anything that should need to be parsed
       var sanitizedText = text.Replace(StringExtensions.InvisibleSpace, JNToken.SplitterTokenText);
 
-      foreach(var character in CharactersThatMayConfuseJanomeSoWeReplaceThemWithOrdinaryFullWidthSpaces)
+      foreach(var character in CharactersThatMayConfuseTokenizerSoWeReplaceThemWithOrdinaryFullWidthSpaces)
       {
          sanitizedText = sanitizedText.Replace(character, " ");
       }
 
-      // Use cached serialized tokens if available, otherwise call Python (the expensive part)
-      var serialized = cachedSerializedTokens ?? _monitor.Read(() => _wrapper.Use(module => (string)module.tokenize_to_string(sanitizedText)));
+      // Use cached serialized tokens if available, otherwise tokenize with MeCab
+      var serialized = cachedSerializedTokens ?? TokenizeToSerializedString(sanitizedText);
 
       var jnTokens = ParseSerializedTokens(serialized);
 
@@ -92,6 +57,50 @@ public sealed class JNTokenizer
 
       return new JNTokenizeResult(new JNTokenizedText(text, jnTokens), serialized);
    }
+
+   string TokenizeToSerializedString(string text)
+   {
+      lock(_lock)
+      {
+         var lines = new List<string>();
+
+         foreach(var node in _tagger.ParseToNodes(text))
+         {
+            if(node.CharType == 0) continue; // Skip BOS/EOS nodes
+
+            var features = node.Feature.Split(',');
+
+            // IPAdic feature CSV format: POS,sub1,sub2,sub3,inflType,inflForm,baseForm,reading,phonetic
+            var partOfSpeech = string.Join(",", features.Take(4));
+            var inflType = GetFeatureOrEmpty(features, 4);
+            var inflForm = GetFeatureOrEmpty(features, 5);
+            var baseForm = GetFeatureOrEmpty(features, 6);
+            var reading = GetFeatureOrEmpty(features, 7);
+            var phonetic = GetFeatureOrEmpty(features, 8);
+
+            var fields = string.Join(FieldSeparator, [
+               partOfSpeech,
+               Sanitize(baseForm),
+               Sanitize(node.Surface),
+               Sanitize(inflType),
+               Sanitize(inflForm),
+               Sanitize(reading),
+               Sanitize(phonetic),
+               "" // node_type — not actively used in the codebase
+            ]);
+
+            lines.Add(fields);
+         }
+
+         return string.Join("\n", lines);
+      }
+   }
+
+   static string GetFeatureOrEmpty(string[] features, int index) =>
+      index < features.Length ? features[index] : "";
+
+   static string Sanitize(string? value) =>
+      string.IsNullOrEmpty(value) ? "" : value.Replace("\n", " ").Replace("\r", " ");
 
    static List<JNToken> ParseSerializedTokens(string serialized)
    {
