@@ -24,6 +24,7 @@
       <PackageReference Include="MemoryPack" Version="1.21.4" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
       <PackageReference Include="SimpleInjector" Version="5.5.0" />
+      <PackageReference Include="Wacton.Desu" Version="6.2.0" />
    </ItemGroup>
 
    <ItemGroup>
