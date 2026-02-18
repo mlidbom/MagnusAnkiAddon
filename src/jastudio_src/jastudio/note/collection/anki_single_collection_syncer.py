@@ -5,9 +5,9 @@ from typing import TYPE_CHECKING
 from anki.notes import NoteId
 from autoslot import Slots
 from jaspythonutils.sysutils.typed import non_optional
+from JAStudio.Anki.PythonInterop import NoteUpdatePythonAdapter
 from jastudio.ankiutils import app
 from JAStudio.Core.Note import JPNote
-from JAStudio.Anki.PythonInterop import NoteUpdatePythonAdapter
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
 
 if TYPE_CHECKING:
