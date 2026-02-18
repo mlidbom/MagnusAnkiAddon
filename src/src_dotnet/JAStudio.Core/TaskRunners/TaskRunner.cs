@@ -4,16 +4,9 @@ namespace JAStudio.Core.TaskRunners;
 
 public class TaskRunner
 {
-   readonly IUIThreadDispatcher _dispatcher;
+   readonly DialogProgressPresenter _dialogPresenter;
 
-   /// <summary>Root view model for the task progress dialog. The UI layer observes this to manage dialog visibility and content. </summary>
-   internal TaskProgressDialogViewModel DialogViewModel { get; } = new();
-
-   internal TaskRunner(IUIThreadDispatcher dispatcher)
-   {
-      _dispatcher = dispatcher;
-      dispatcher.OnTaskRunnerInstantiated(DialogViewModel);
-   }
+   internal TaskRunner(DialogProgressPresenter dialogPresenter) => _dialogPresenter = dialogPresenter;
 
    internal ITaskProgressRunner CreateRunner(TaskProgressScopeViewModel? scopeViewModel, string labelText, bool? visible = null, bool allowCancel = true)
    {
@@ -24,29 +17,8 @@ public class TaskRunner
          return new InvisibleTaskRunner(labelText);
       }
 
-      var presenter = new ScopeProgressPresenter(scopeViewModel, _dispatcher, allowCancel);
-      return new VisibleTaskRunner(presenter, allowCancel);
+      return new VisibleTaskRunner(_dialogPresenter.CreateScopePresenter(scopeViewModel, allowCancel), allowCancel);
    }
-
-   internal TaskProgressScopeViewModel? CreateScopeViewModel(string scopeTitle, bool visible, int depth)
-   {
-      if(!visible) return null;
-
-      var viewmodel = new TaskProgressScopeViewModel(scopeTitle, depth);
-      var parentViewmodel = _parentScopeViewmodel.Value;
-      if(parentViewmodel != null)
-      {
-         _dispatcher.InvokeSynchronouslyOnUIThread(() => parentViewmodel.Children.Add(viewmodel));
-      } else
-      {
-         _dispatcher.InvokeSynchronouslyOnUIThread(() => DialogViewModel.RootScopes.Add(viewmodel));
-      }
-
-      return viewmodel;
-   }
-
-   /// <summary>Tracks the number of currently open scopes across all threads. Used solely for dialog lifetime management (show/hide). Thread-safe via <see cref="Interlocked"/>.</summary>
-   int _openScopes;
 
    /// <summary>Tracks the logical nesting depth per async call chain. Parallel siblings calling <see cref="Current"/> from the same parent scope each inherit the parent's depth and thus land at the same visual level.</summary>
    readonly AsyncLocal<int> _nestingDepth = new();
@@ -67,35 +39,27 @@ public class TaskRunner
       var depth = previousNestingDepth + 1;
       _nestingDepth.Value = depth;
 
-      if(Interlocked.Increment(ref _openScopes) == 1 && visible)
-      {
-         _dispatcher.InvokeSynchronouslyOnUIThread(() => DialogViewModel.IsVisible = true);
-      }
+      if(visible)
+         _dialogPresenter.ShowDialog();
 
-      var scope = new TaskRunnerScope(this, scopeTitle, visible, allowCancel, depth, previousNestingDepth, _parentScopeViewmodel.Value, _currentLogEntry.Value);
-      _parentScopeViewmodel.Value = scope.ScopeViewModel;
+      var scopeViewModel = visible ? _dialogPresenter.AddScope(scopeTitle, depth, _parentScopeViewmodel.Value) : null;
+
+      var scope = new TaskRunnerScope(this, scopeTitle, visible, allowCancel, depth, previousNestingDepth, _parentScopeViewmodel.Value, _currentLogEntry.Value, scopeViewModel);
+      _parentScopeViewmodel.Value = scopeViewModel;
       _currentLogEntry.Value = scope.LogEntry;
       return scope;
    }
 
-   internal void OnScopeDisposed(TaskProgressScopeViewModel? disposedScopeVM, int previousNestingDepth, TaskProgressScopeViewModel? previousParentScopeVM, TaskLogEntry? previousLogEntry)
+   internal void OnScopeDisposed(TaskProgressScopeViewModel? disposedScopeVM, bool visible, int previousNestingDepth, TaskProgressScopeViewModel? previousParentScopeVM, TaskLogEntry? previousLogEntry)
    {
       if(disposedScopeVM != null)
-      {
-         disposedScopeVM.Dispose();
-         if(previousParentScopeVM != null)
-            _dispatcher.PostToUIThread(() => previousParentScopeVM.Children.Remove(disposedScopeVM));
-         else
-            _dispatcher.PostToUIThread(() => DialogViewModel.RootScopes.Remove(disposedScopeVM));
-      }
+         _dialogPresenter.RemoveScope(disposedScopeVM, previousParentScopeVM);
 
       _nestingDepth.Value = previousNestingDepth;
       _parentScopeViewmodel.Value = previousParentScopeVM;
       _currentLogEntry.Value = previousLogEntry;
 
-      if(Interlocked.Decrement(ref _openScopes) == 0)
-      {
-         _dispatcher.PostToUIThread(() => DialogViewModel.IsVisible = false);
-      }
+      if(visible)
+         _dialogPresenter.HideDialogIfNoOpenScopes();
    }
 }

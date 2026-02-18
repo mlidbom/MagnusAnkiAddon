@@ -31,7 +31,7 @@ class TaskRunnerScope : ITaskProgressRunner
 
    internal TaskLogEntry LogEntry { get; }
 
-   internal TaskRunnerScope(TaskRunner taskRunner, string scopeTitle, bool visible, bool allowCancel, int depth, int previousNestingDepth, TaskProgressScopeViewModel? previousParentScopeViewmodel, TaskLogEntry? parentLogEntry)
+   internal TaskRunnerScope(TaskRunner taskRunner, string scopeTitle, bool visible, bool allowCancel, int depth, int previousNestingDepth, TaskProgressScopeViewModel? previousParentScopeViewmodel, TaskLogEntry? parentLogEntry, TaskProgressScopeViewModel? scopeViewModel)
    {
       _taskRunner = taskRunner;
       _allowCancel = allowCancel;
@@ -42,7 +42,7 @@ class TaskRunnerScope : ITaskProgressRunner
       _previousLogEntry = parentLogEntry;
       LogEntry = new TaskLogEntry(scopeTitle);
       parentLogEntry?.AddChild(LogEntry);
-      ScopeViewModel = visible ? taskRunner.CreateScopeViewModel(scopeTitle, visible, depth) : null;
+      ScopeViewModel = scopeViewModel;
    }
 
    public List<TOutput> RunBatch<TInput, TOutput>(List<TInput> items, Func<TInput, TOutput> processItem, string message, ThreadCount threads)
@@ -98,6 +98,6 @@ class TaskRunnerScope : ITaskProgressRunner
          this.Log().Info($"{Environment.NewLine}{LogEntry.FormatTree()}");
       }
 
-      _taskRunner.OnScopeDisposed(ScopeViewModel, _previousNestingDepth, _previousParentScopeViewmodel, _previousLogEntry);
+      _taskRunner.OnScopeDisposed(ScopeViewModel, _visible, _previousNestingDepth, _previousParentScopeViewmodel, _previousLogEntry);
    }
 }

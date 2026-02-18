@@ -20,7 +20,7 @@ public class TaskProgressDialogViewModel : NotifyPropertyChangedBase
    /// <summary>
    /// Top-level scope view models. Each entry becomes a root panel in the dialog.
    /// Nested scopes are children of their parent scope's <see cref="TaskProgressScopeViewModel.Children"/>.
-   /// Must be modified on the UI thread (the <see cref="TaskRunner"/> handles this via <see cref="IUIThreadDispatcher"/>).
+   /// Must be modified on the UI thread (the <see cref="DialogProgressPresenter"/> handles this via <see cref="IUIThreadDispatcher"/>).
    /// </summary>
    public ObservableCollection<TaskProgressScopeViewModel> RootScopes { get; } = [];
 }
