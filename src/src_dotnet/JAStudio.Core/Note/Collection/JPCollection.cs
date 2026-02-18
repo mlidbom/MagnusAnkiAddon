@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Compze.Utilities.Logging;
 using Compze.Utilities.SystemCE.ThreadingCE.TasksCE;
-using JAStudio.Core.Configuration;
 using JAStudio.Core.LanguageServices.JamdictEx;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.Core.Storage;
@@ -59,7 +58,6 @@ public class JPCollection
    public JPCollection(
       IBackendNoteCreator backendNoteCreator,
       NoteServices noteServices,
-      JapaneseConfig config,
       INoteRepository noteRepository,
       MediaFileIndex mediaFileIndex,
       IBackendDataLoader backendDataLoader)
@@ -70,7 +68,7 @@ public class JPCollection
       _repository = noteRepository;
       _mediaFileIndex = mediaFileIndex;
       _backendDataLoader = backendDataLoader;
-      DictLookup = new DictLookup(this, config);
+      DictLookup = new DictLookup(this);
       VocabNoteGeneratedData = new VocabNoteGeneratedData(DictLookup);
       VocabNoteFactory = new VocabNoteFactory(DictLookup, this, noteServices);
 

@@ -1,6 +1,5 @@
 import typing, abc
 from JAStudio.Core.Note import NoteData, NoteId, IBackendNoteCreator, NoteServices, JPNote, KanjiNote
-from JAStudio.Core.Configuration import JapaneseConfig
 from JAStudio.Core.Storage import INoteRepository
 from JAStudio.Core.Storage.Media import MediaFileIndex
 from JAStudio.Core import IBackendDataLoader
@@ -35,7 +34,7 @@ class IExternalNoteUpdateHandler(typing.Protocol):
 
 
 class JPCollection:
-    def __init__(self, backendNoteCreator: IBackendNoteCreator, noteServices: NoteServices, config: JapaneseConfig, noteRepository: INoteRepository, mediaFileIndex: MediaFileIndex, backendDataLoader: IBackendDataLoader) -> None: ...
+    def __init__(self, backendNoteCreator: IBackendNoteCreator, noteServices: NoteServices, noteRepository: INoteRepository, mediaFileIndex: MediaFileIndex, backendDataLoader: IBackendDataLoader) -> None: ...
     @property
     def DictLookup(self) -> DictLookup: ...
     @property

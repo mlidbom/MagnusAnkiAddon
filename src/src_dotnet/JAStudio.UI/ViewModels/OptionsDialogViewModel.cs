@@ -207,11 +207,6 @@ partial class OptionsDialogViewModel : ObservableObject
    partial void OnLoadStudioInForegroundChanged(bool value) =>
       _config.LoadStudioInForeground.Value = value;
 
-   [ObservableProperty] bool _loadJamdictDbIntoMemory;
-
-   partial void OnLoadJamdictDbIntoMemoryChanged(bool value) =>
-      _config.LoadJamdictDbIntoMemory.Value = value;
-
    [ObservableProperty] bool _preCacheCardStudyingStatus;
 
    partial void OnPreCacheCardStudyingStatusChanged(bool value) =>
@@ -314,7 +309,6 @@ partial class OptionsDialogViewModel : ObservableObject
 
       // Performance and Memory
       LoadStudioInForeground = _config.LoadStudioInForeground.Value;
-      LoadJamdictDbIntoMemory = _config.LoadJamdictDbIntoMemory.Value;
       PreCacheCardStudyingStatus = _config.PreCacheCardStudyingStatus.Value;
       PreventAnkiFromGarbageCollectingEveryTimeAWindowCloses = _config.PreventAnkiFromGarbageCollectingEveryTimeAWindowCloses.Value;
       DisableAllAutomaticGarbageCollection = _config.DisableAllAutomaticGarbageCollection.Value;

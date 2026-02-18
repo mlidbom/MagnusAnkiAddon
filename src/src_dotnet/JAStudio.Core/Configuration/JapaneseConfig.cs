@@ -53,7 +53,6 @@ public class JapaneseConfig
    public List<ConfigurationValue<bool>> SentenceViewToggles { get; }
 
    // Performance toggles
-   public ConfigurationValue<bool> LoadJamdictDbIntoMemory { get; }
    public ConfigurationValue<bool> PreCacheCardStudyingStatus { get; }
    public ConfigurationValue<bool> PreventAnkiFromGarbageCollectingEveryTimeAWindowCloses { get; }
    public ConfigurationValue<bool> DisableAllAutomaticGarbageCollection { get; }
@@ -152,7 +151,6 @@ public class JapaneseConfig
       ];
 
       // performance toggles
-      LoadJamdictDbIntoMemory = Add(New("load_jamdict_db_into_memory", "Load Jamdict DB into memory [Requires restart]", false, To.Bool));
       PreCacheCardStudyingStatus = Add(New("pre_cache_card_studying_status", "Cache card studying status on startup. Only disable for dev/testing purposes. [Requires restart]", false, To.Bool));
       PreventAnkiFromGarbageCollectingEveryTimeAWindowCloses = Add(New("prevent_anki_from_garbage_collecting_every_time_a_window_closes", "Prevent Anki from garbage collecting every time a window closes, causing a short hang every time. [Requires restart]", true, To.Bool));
       DisableAllAutomaticGarbageCollection = Add(New("disable_periodic_garbage_collection", "Prevent all automatic garbage collection. Will stop the mini-hangs but memory usage will grow gradually. [Requires restart]", false, To.Bool));

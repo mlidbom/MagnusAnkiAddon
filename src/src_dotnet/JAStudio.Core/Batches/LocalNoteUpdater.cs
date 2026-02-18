@@ -344,9 +344,9 @@ public class LocalNoteUpdater
 
    public void RegenerateJamdictVocabAnswers()
    {
-      using var scope = _taskRunner.Current("Regenerating vocab source answers from jamdict");
+      using var scope = _taskRunner.Current("Regenerating vocab source answers from dictionary");
       var vocabNotes = _vocab.All().ToList();
-      scope.RunBatch(vocabNotes, it => { it.GenerateAndSetAnswer(); }, "Regenerating vocab source answers from jamdict");
+      scope.RunBatch(vocabNotes, it => { it.GenerateAndSetAnswer(); }, "Regenerating vocab source answers from dictionary");
    }
 
    public void ForceFlushAllNotes()
