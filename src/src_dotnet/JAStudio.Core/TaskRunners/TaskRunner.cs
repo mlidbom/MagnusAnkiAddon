@@ -24,15 +24,14 @@ public class TaskRunner
       var visible = !CoreApp.IsTesting && !forceHide;
 
       var previousNestingDepth = _nestingDepth.Value;
-      var depth = previousNestingDepth + 1;
-      _nestingDepth.Value = depth;
+      _nestingDepth.Value += 1;
 
       if(visible)
          _dialogPresenter.ShowDialog();
 
-      var scopeViewModel = visible ? _dialogPresenter.AddScope(scopeTitle, depth, _parentScopeViewmodel.Value) : null;
+      var scopeViewModel = visible ? _dialogPresenter.AddScope(scopeTitle, _nestingDepth.Value, _parentScopeViewmodel.Value) : null;
 
-      var scope = new TaskRunnerScope(this, scopeTitle, visible, allowCancel, depth, previousNestingDepth, _parentScopeViewmodel.Value, _currentLogEntry.Value, scopeViewModel);
+      var scope = new TaskRunnerScope(this, scopeTitle, visible, allowCancel, _nestingDepth.Value, previousNestingDepth, _parentScopeViewmodel.Value, _currentLogEntry.Value, scopeViewModel);
       _parentScopeViewmodel.Value = scopeViewModel;
       _currentLogEntry.Value = scope.LogEntry;
       return scope;
