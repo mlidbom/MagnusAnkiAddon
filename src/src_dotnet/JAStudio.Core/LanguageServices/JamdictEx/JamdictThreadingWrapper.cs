@@ -33,23 +33,52 @@ class JamdictLookupResult
    }
 }
 
-class JamdictThreadingWrapper
+class JamdictThreadingWrapper : IDisposable
 {
+   static readonly object Lock = new();
+   static JamdictThreadingWrapper? _instance;
+
+   public static JamdictThreadingWrapper GetInstance(JapaneseConfig config)
+   {
+      if(_instance != null) return _instance;
+      lock(Lock)
+      {
+         return _instance ??= new JamdictThreadingWrapper(config);
+      }
+   }
+
+   public static void ShutDown()
+   {
+      lock(Lock)
+      {
+         _instance?.Dispose();
+         _instance = null;
+      }
+   }
+
    readonly BlockingCollection<object> _queue;
 
    // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
    readonly Thread _thread;
    dynamic? _jamdict;
-   readonly bool _running = false;
+   volatile bool _running;
    readonly JapaneseConfig _config;
 
-   public JamdictThreadingWrapper(JapaneseConfig config)
+   JamdictThreadingWrapper(JapaneseConfig config)
    {
       _config = config;
       _running = true;
       _queue = new BlockingCollection<object>();
       _thread = new Thread(Worker) { IsBackground = true };
       _thread.Start();
+   }
+
+   public void Dispose()
+   {
+      _running = false;
+      _queue.CompleteAdding();
+      _thread.Join(TimeSpan.FromSeconds(5));
+      _queue.Dispose();
    }
 
    dynamic CreateJamdict()

@@ -37,10 +37,6 @@ public static class AppBootstrapper
       environmentSpecificDependenciesRegistrar.WireEnvironmentSpecificServices(registrar);
 
       registrar.Register(
-         Singleton.For<INoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner, BackgroundTaskManager bgTasks, IEnvironmentPaths paths) =>
-                                                       (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, bgTasks, paths)));
-
-      registrar.Register(
          Singleton.For<IServiceLocator>().CreatedBy(() => container.ServiceLocator),
          Singleton.For<AnkiHTMLRenderers>().CreatedBy((IServiceLocator serviceLocator) => new AnkiHTMLRenderers(serviceLocator)),
          Singleton.For<CoreApp>().CreatedBy((TemporaryServiceCollection services, IEnvironmentPaths paths) => new CoreApp(services, paths)),

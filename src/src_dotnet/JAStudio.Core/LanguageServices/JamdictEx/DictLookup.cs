@@ -18,10 +18,12 @@ public class DictLookup
    internal DictLookup(JPCollection collection, JapaneseConfig config)
    {
       _collection = collection;
-      _jamdictThreadingWrapper = new JamdictThreadingWrapper(config);
+      _jamdictThreadingWrapper = JamdictThreadingWrapper.GetInstance(config);
       _allWordForms = new LazyCE<HashSet<string>>(FindAllWords);
       _allNameForms = new LazyCE<HashSet<string>>(FindAllNames);
    }
+
+   public static void ShutDownJamdict() => JamdictThreadingWrapper.ShutDown();
 
    readonly JamdictThreadingWrapper _jamdictThreadingWrapper;
 

@@ -5,6 +5,7 @@ using JAStudio.Anki;
 using JAStudio.Core;
 using JAStudio.Core.Configuration;
 using JAStudio.Core.Note;
+using JAStudio.Core.Storage;
 using JAStudio.Core.TaskRunners;
 
 namespace JAStudio.UI.Utils;
@@ -18,6 +19,8 @@ class AnkiAddonEnvironmentDependenciesRegistrar(string configJson, Action<string
    {
       registrar.Register(
          Singleton.For<IEnvironmentPaths>().Instance(new AnkiEnvironmentPaths()),
+         Singleton.For<INoteRepository>().CreatedBy((NoteSerializer serializer, TaskRunner taskRunner, BackgroundTaskManager bgTasks, IEnvironmentPaths paths) =>
+                                                       (INoteRepository)new FileSystemNoteRepository(serializer, taskRunner, bgTasks, paths)),
          Singleton.For<IBackendNoteCreator>().Instance(new AnkiBackendNoteCreator()),
          Singleton.For<IBackendDataLoader>().Instance(new AnkiBackendDataLoader()),
          Singleton.For<IFatalErrorHandler>().Instance(new AvaloniaFatalErrorHandler()),
