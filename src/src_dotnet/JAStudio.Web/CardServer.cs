@@ -28,7 +28,7 @@ public class CardServer
    public void Start()
    {
       var builder = WebApplication.CreateBuilder();
-      builder.WebHost.ConfigureKestrel(options => options.ListenLocalhost(0));
+      builder.WebHost.ConfigureKestrel(options => options.Listen(System.Net.IPAddress.Loopback, 0));
 
       builder.Services.AddRazorComponents()
                       .AddInteractiveServerComponents();
@@ -44,7 +44,8 @@ public class CardServer
       _app.RunAsync();
 
       // Resolve the actual port assigned by the OS
-      Port = new Uri(_app.Urls.First()).Port;
+      var address = _app.Urls.First();
+      Port = new Uri(address).Port;
       Console.WriteLine($"[CardServer] Listening on {BaseUrl}");
    }
 
