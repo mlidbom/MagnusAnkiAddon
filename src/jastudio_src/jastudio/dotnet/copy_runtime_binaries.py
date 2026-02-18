@@ -17,21 +17,23 @@ if TYPE_CHECKING:
 _FILE_PATTERNS = ("*.dll", "*.deps.json", "*.runtimeconfig.json")
 
 
-def _find_build_output(src_dotnet: Path) -> Path | None:
-    """Find the most recently built JAStudio.UI output directory."""
-    bin_root = src_dotnet / "JAStudio.UI" / "bin"
-    if not bin_root.exists():
-        return None
+def _find_build_output(src_dotnet: Path) -> list[Path]:
+    """Find the most recently built output directories for JAStudio.UI and JAStudio.Web."""
+    results: list[Path] = []
+    for project_name, marker_dll in [("JAStudio.UI", "JAStudio.UI.dll"), ("JAStudio.Web", "JAStudio.Web.dll"), ("JAStudio.Anki.PythonInterop", "JAStudio.Anki.PythonInterop.dll")]:
+        bin_root = src_dotnet / project_name / "bin"
+        if not bin_root.exists():
+            continue
 
-    candidates: list[tuple[float, Path]] = []
-    for marker in bin_root.rglob("JAStudio.UI.dll"):
-        candidates.append((marker.stat().st_mtime, marker.parent))
+        candidates: list[tuple[float, Path]] = []
+        for marker in bin_root.rglob(marker_dll):
+            candidates.append((marker.stat().st_mtime, marker.parent))
 
-    if not candidates:
-        return None
+        if candidates:
+            candidates.sort(key=lambda c: c[0], reverse=True)
+            results.append(candidates[0][1])
 
-    candidates.sort(key=lambda c: c[0], reverse=True)
-    return candidates[0][1]
+    return results
 
 
 def _md5(path: Path) -> str:
@@ -51,8 +53,8 @@ def copy_binaries(workspace_root: Path) -> None:
     src_dotnet = workspace_root / "src_dotnet"
     dest = workspace_root / "runtime_binaries"
 
-    build_output = _find_build_output(src_dotnet)
-    if build_output is None:
+    build_outputs = _find_build_output(src_dotnet)
+    if not build_outputs:
         mylog.info("No .NET build output found — using existing runtime_binaries (if any)")
         return
 
@@ -61,17 +63,18 @@ def copy_binaries(workspace_root: Path) -> None:
     copied = 0
     skipped = 0
 
-    for pattern in _FILE_PATTERNS:
-        for src_file in build_output.glob(pattern):
-            dest_file = dest / src_file.name
-            if dest_file.exists() and _md5(src_file) == _md5(dest_file):
-                continue
-            try:
-                shutil.copy2(src_file, dest_file)
-                copied += 1
-            except OSError:
-                mylog.warning(f"  Skipped (locked): {src_file.name}")
-                skipped += 1
+    for build_output in build_outputs:
+        for pattern in _FILE_PATTERNS:
+            for src_file in build_output.glob(pattern):
+                dest_file = dest / src_file.name
+                if dest_file.exists() and _md5(src_file) == _md5(dest_file):
+                    continue
+                try:
+                    shutil.copy2(src_file, dest_file)
+                    copied += 1
+                except OSError:
+                    mylog.warning(f"  Skipped (locked): {src_file.name}")
+                    skipped += 1
 
     if copied > 0 or skipped > 0:
         mylog.info(f"Runtime binaries: {copied} copied, {skipped} skipped (locked)")

@@ -28,7 +28,10 @@ public class CardServer
    // ReSharper disable once UnusedMember.Global — called from Python
    public void Start()
    {
-      var builder = WebApplication.CreateBuilder();
+      // Prevent ASP.NET from scanning for hosting startup assemblies (we're hosted in Anki's process)
+      Environment.SetEnvironmentVariable("ASPNETCORE_PREVENTHOSTINGSTARTUP", "true");
+
+      var builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = "Production" });
       builder.WebHost.ConfigureKestrel(options => options.Listen(System.Net.IPAddress.Loopback, 0));
 
       builder.Services.AddRazorComponents()
