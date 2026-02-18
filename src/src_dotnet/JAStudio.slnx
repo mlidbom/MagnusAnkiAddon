@@ -2,6 +2,7 @@
    <Project Path="JAStudio.Anki\JAStudio.Anki.csproj" />
    <Project Path="JAStudio.Core.Specifications/JAStudio.Core.Specifications.csproj" />
    <Project Path="JAStudio.Core\JAStudio.Core.csproj" />
+   <Project Path="JAStudio.Dictionary\JAStudio.Dictionary.csproj" />
    <Project Path="JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
    <Project Path="JAStudio.UI.Specifications/JAStudio.UI.Specifications.csproj" />
    <Project Path="JAStudio.UI\JAStudio.UI.csproj" />

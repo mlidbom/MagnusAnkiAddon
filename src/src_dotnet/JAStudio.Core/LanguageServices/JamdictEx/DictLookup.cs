@@ -15,12 +15,12 @@ public class DictLookup
    internal DictLookup(JPCollection collection)
    {
       _collection = collection;
-      _desuDictionary = new LazyCE<DesuDictionary>(() => DesuDictionary.GetInstance());
+      _dictionaryProvider = new LazyCE<DictionaryProvider>(() => DictionaryProvider.GetInstance());
    }
 
-   public static void ShutDownJamdict() => DesuDictionary.ShutDown();
+   public static void ShutDownJamdict() => DictionaryProvider.ShutDown();
 
-   readonly LazyCE<DesuDictionary> _desuDictionary;
+   readonly LazyCE<DictionaryProvider> _dictionaryProvider;
 
    // Cache dictionaries for @cache decorator equivalent
    static readonly ConcurrentDictionary<(string, string), DictLookupResult> TryLookupWithReadingCache = new();
@@ -28,8 +28,8 @@ public class DictLookup
    static readonly ConcurrentDictionary<string, List<DictEntry>> LookupNameRawCache = new();
    static readonly ConcurrentDictionary<string, bool> IsWordCache = new();
 
-   HashSet<string> AllNameForms() => CoreApp.IsTesting ? [] : _desuDictionary.Value.AllNameForms;
-   HashSet<string> AllWordForms() => CoreApp.IsTesting ? [] : _desuDictionary.Value.AllWordForms;
+   bool WordFormExists(string text) => !CoreApp.IsTesting && _dictionaryProvider.Value.WordFormExists(text);
+   bool NameFormExists(string text) => !CoreApp.IsTesting && _dictionaryProvider.Value.NameFormExists(text);
 
    public DictLookupResult LookupVocabWordOrName(VocabNote vocab)
    {
@@ -152,7 +152,7 @@ public class DictLookup
 
    List<DictEntry> LookupWordRawInner(string word)
    {
-      var entries = _desuDictionary.Value.LookupWord(word);
+      var entries = _dictionaryProvider.Value.LookupWord(word);
 
       if(!KanaUtils.IsOnlyKana(word))
       {
@@ -174,12 +174,12 @@ public class DictLookup
 
    List<DictEntry> LookupNameRawInner(string word)
    {
-      return _desuDictionary.Value.LookupName(word);
+      return _dictionaryProvider.Value.LookupName(word);
    }
 
-   public bool MightBeWord(string word) => CoreApp.IsTesting || AllWordForms().Contains(word);
+   public bool MightBeWord(string word) => CoreApp.IsTesting || WordFormExists(word);
 
-   public bool MightBeName(string word) => CoreApp.IsTesting || AllNameForms().Contains(word);
+   public bool MightBeName(string word) => CoreApp.IsTesting || NameFormExists(word);
 
    public bool MightBeEntry(string word) => MightBeWord(word) || MightBeName(word);
 

@@ -1,25 +1,27 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Compze.Utilities.Logging;
-using Wacton.Desu.Japanese;
-using NameDictionary = Wacton.Desu.Names.NameDictionary;
-using INameEntry = Wacton.Desu.Names.INameEntry;
+using JAStudio.Dictionary;
 
 namespace JAStudio.Core.LanguageServices.JamdictEx;
 
-class DesuDictionary
+class DictionaryProvider
 {
    static readonly object Lock = new();
-   static DesuDictionary? _instance;
+   static DictionaryProvider? _instance;
+   static string? _dbDir;
 
-   public static DesuDictionary GetInstance()
+   public static void SetDatabaseDir(string dir) => _dbDir = dir;
+
+   public static DictionaryProvider GetInstance()
    {
       if(_instance != null) return _instance;
       lock(Lock)
       {
-         return _instance ??= new DesuDictionary();
+         return _instance ??= new DictionaryProvider();
       }
    }
 
@@ -27,130 +29,32 @@ class DesuDictionary
    {
       lock(Lock)
       {
+         var old = _instance;
          _instance = null;
+         try { old?._db.Dispose(); } catch { /* Connection may already be closed */ }
       }
    }
 
-   readonly Dictionary<string, List<IJapaneseEntry>> _wordsByKanji;
-   readonly Dictionary<string, List<IJapaneseEntry>> _wordsByReading;
-   readonly Dictionary<string, List<INameEntry>> _namesByKanji;
-   readonly Dictionary<string, List<INameEntry>> _namesByReading;
-   readonly HashSet<string> _allWordForms;
-   readonly HashSet<string> _allNameForms;
+   readonly JMDictDatabase _db;
 
-   DesuDictionary()
+   DictionaryProvider()
    {
+      var dir = _dbDir ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "JAStudio");
+      Directory.CreateDirectory(dir);
+      var dbPath = Path.Combine(dir, "jmdict.db");
+
       var stopwatch = Stopwatch.StartNew();
-      this.Log().Info("Loading Desu dictionaries...");
-
-      var japaneseEntries = JapaneseDictionary.ParseEntries().ToList();
-      _wordsByKanji = new Dictionary<string, List<IJapaneseEntry>>();
-      _wordsByReading = new Dictionary<string, List<IJapaneseEntry>>();
-
-      foreach(var entry in japaneseEntries)
-      {
-         foreach(var kanji in entry.Kanjis)
-         {
-            if(!_wordsByKanji.TryGetValue(kanji.Text, out var list))
-            {
-               list = [];
-               _wordsByKanji[kanji.Text] = list;
-            }
-
-            list.Add(entry);
-         }
-
-         foreach(var reading in entry.Readings)
-         {
-            if(!_wordsByReading.TryGetValue(reading.Text, out var list))
-            {
-               list = [];
-               _wordsByReading[reading.Text] = list;
-            }
-
-            list.Add(entry);
-         }
-      }
-
-      _allWordForms = new HashSet<string>(_wordsByKanji.Keys);
-      _allWordForms.UnionWith(_wordsByReading.Keys);
-
-      this.Log().Info($"Loaded {japaneseEntries.Count} Japanese word entries in {stopwatch.ElapsedMilliseconds}ms");
-
-      stopwatch.Restart();
-      var nameEntries = NameDictionary.ParseEntries().ToList();
-      _namesByKanji = new Dictionary<string, List<INameEntry>>();
-      _namesByReading = new Dictionary<string, List<INameEntry>>();
-
-      foreach(var entry in nameEntries)
-      {
-         foreach(var kanji in entry.Kanjis)
-         {
-            if(!_namesByKanji.TryGetValue(kanji.Text, out var list))
-            {
-               list = [];
-               _namesByKanji[kanji.Text] = list;
-            }
-
-            list.Add(entry);
-         }
-
-         foreach(var reading in entry.Readings)
-         {
-            if(!_namesByReading.TryGetValue(reading.Text, out var list))
-            {
-               list = [];
-               _namesByReading[reading.Text] = list;
-            }
-
-            list.Add(entry);
-         }
-      }
-
-      _allNameForms = new HashSet<string>(_namesByKanji.Keys);
-      _allNameForms.UnionWith(_namesByReading.Keys);
-
-      this.Log().Info($"Loaded {nameEntries.Count} name entries in {stopwatch.ElapsedMilliseconds}ms");
+      this.Log().Info("Opening JMDict database...");
+      _db = JMDictDatabase.OpenOrGenerate(dbPath, msg => this.Log().Info(msg));
+      this.Log().Info($"JMDict database ready in {stopwatch.ElapsedMilliseconds}ms");
    }
 
-   public HashSet<string> AllWordForms => _allWordForms;
-   public HashSet<string> AllNameForms => _allNameForms;
+   public List<DictEntry> LookupWord(string word) =>
+      _db.LookupWord(word).Select(DictEntry.FromWord).ToList();
 
-   public List<DictEntry> LookupWord(string word)
-   {
-      var entries = new List<IJapaneseEntry>();
+   public List<DictEntry> LookupName(string word) =>
+      _db.LookupName(word).Select(DictEntry.FromName).ToList();
 
-      if(_wordsByKanji.TryGetValue(word, out var kanjiMatches))
-         entries.AddRange(kanjiMatches);
-
-      if(_wordsByReading.TryGetValue(word, out var readingMatches))
-      {
-         foreach(var entry in readingMatches)
-         {
-            if(!entries.Contains(entry))
-               entries.Add(entry);
-         }
-      }
-
-      return entries.Select(e => DictEntry.FromDesu(e)).ToList();
-   }
-
-   public List<DictEntry> LookupName(string word)
-   {
-      var entries = new List<INameEntry>();
-
-      if(_namesByKanji.TryGetValue(word, out var kanjiMatches))
-         entries.AddRange(kanjiMatches);
-
-      if(_namesByReading.TryGetValue(word, out var readingMatches))
-      {
-         foreach(var entry in readingMatches)
-         {
-            if(!entries.Contains(entry))
-               entries.Add(entry);
-         }
-      }
-
-      return entries.Select(e => DictEntry.FromDesuName(e)).ToList();
-   }
+   public bool WordFormExists(string text) => _db.WordFormExists(text);
+   public bool NameFormExists(string text) => _db.NameFormExists(text);
 }
