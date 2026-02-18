@@ -1,0 +1,17 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Debug -Magnus" type="RunNativeExe" factoryName="Native Executable">
+    <option name="EXE_PATH" value="$USER_HOME$/AppData/Local/AnkiProgramFiles/.venv/Scripts/pythonw.exe" />
+    <option name="PROGRAM_PARAMETERS" value=" -c &quot;import aqt, sys; sys.argv[0] = 'Anki'; aqt.run()&quot; -p Magnus" />
+    <option name="WORKING_DIRECTORY" value="$USER_HOME$/AppData/Local/AnkiProgramFiles/.venv/Scripts" />
+    <option name="PASS_PARENT_ENVS" value="1" />
+    <envs>
+      <env name="DEBUG_JASTUDIO" value="1" />
+    </envs>
+    <option name="ENV_FILE_PATHS" value="" />
+    <option name="REDIRECT_INPUT_PATH" value="" />
+    <option name="MIXED_MODE_DEBUG" value="0" />
+    <method v="2">
+      <option name="Build Solution" enabled="true" />
+    </method>
+  </configuration>
+</component>
