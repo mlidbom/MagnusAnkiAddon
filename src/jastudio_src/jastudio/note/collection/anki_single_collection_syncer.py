@@ -7,6 +7,7 @@ from autoslot import Slots
 from jaspythonutils.sysutils.typed import non_optional
 from jastudio.ankiutils import app
 from JAStudio.Core.Note import JPNote
+from JAStudio.Anki.PythonInterop import NoteUpdatePythonAdapter
 from jastudio.note.jpnotedata_shim import JPNoteDataShim
 
 if TYPE_CHECKING:
@@ -23,7 +24,7 @@ class AnkiSingleCollectionSyncer[TNote: JPNote](Slots):
         self._note_type_name: str = note_type_name
         self._is_updating_anki_note: bool = False
 
-        self._anki_sync_handler.OnNoteUpdated(self._update_anki_note)
+        NoteUpdatePythonAdapter.Register(self._anki_sync_handler, self._update_anki_note)
 
         cache_runner.connect_will_remove(self._on_will_be_removed)
         cache_runner.connect_note_addded(self._on_added)

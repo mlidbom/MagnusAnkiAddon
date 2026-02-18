@@ -7,8 +7,9 @@ using JAStudio.Core.Configuration;
 using JAStudio.Core.Note;
 using JAStudio.Core.Storage;
 using JAStudio.Core.TaskRunners;
+using JAStudio.UI.Utils;
 
-namespace JAStudio.UI.Utils;
+namespace JAStudio.Anki.PythonInterop;
 
 class AnkiAddonEnvironmentDependenciesRegistrar(string configJson, Action<string> configUpdateCallback) : IEnvironmentSpecificDependenciesRegistrar
 {

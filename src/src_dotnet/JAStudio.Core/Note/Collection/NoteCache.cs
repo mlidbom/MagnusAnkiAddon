@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Compze.Utilities.SystemCE.LinqCE;
 using Compze.Utilities.SystemCE.ThreadingCE.ResourceAccess;
-using JAStudio.PythonInterop;
 
 namespace JAStudio.Core.Note.Collection;
 
@@ -28,16 +27,9 @@ abstract class NoteCacheBase<TNote>(Func<NoteServices, NoteData, TNote> noteCons
    readonly NoteServices _noteServices = noteServices;
    protected readonly IMonitorCE _monitor = IMonitorCE.WithDefaultTimeout();
 
-   public void OnNoteUpdated(dynamic listener)
-   {
-      Action<TNote> callback = PythonDotNetShim.Action.ToDotNet<TNote>(listener);
-      _updateListeners.Add(callback);
-   }
+   public void OnNoteUpdated(Action<JPNote> listener) => _updateListeners.Add(note => listener(note));
 
-   public void OnNoteUpdated(Action<TNote> listener)
-   {
-      _updateListeners.Add(listener);
-   }
+   public void OnNoteUpdated(Action<TNote> listener) => _updateListeners.Add(listener);
 
    public TNote? WithIdOrNone(NoteId noteId) => _monitor.Read(() => WithIdOrNoneCore(noteId));
    protected TNote? WithIdOrNoneCore(NoteId noteId) => _byId.TryGetValue(noteId, out var note) ? note : null;

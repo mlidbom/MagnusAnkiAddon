@@ -11,7 +11,7 @@ namespace JAStudio.UI.Utils;
 /// Connects the <see cref="MultiTaskProgressDialog"/> to the
 /// <see cref="TaskProgressDialogViewModel"/> for dialog lifecycle management.
 /// </summary>
-class AvaloniaUIThreadDispatcher : IUIThreadDispatcher
+public class AvaloniaUIThreadDispatcher : IUIThreadDispatcher
 {
    public void PostToUIThread(Action action) => Dispatcher.UIThread.Post(action);
    public void InvokeSynchronouslyOnUIThread(Action action) => Dispatcher.UIThread.Invoke(action);
