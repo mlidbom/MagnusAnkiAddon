@@ -8,11 +8,7 @@ using Compze.Utilities.SystemCE.ThreadingCE.TasksCE;
 
 namespace JAStudio.Core.TaskRunners;
 
-/// <summary>
-/// Task progress runner that shows live progress in the UI.
-/// Delegates all presentation concerns (VM lifecycle, UI thread dispatch,
-/// event pumping) to <see cref="ScopeProgressPresenter"/>.
-/// </summary>
+/// <summary>Task progress runner that shows live progress in the UI.</summary>
 class VisibleTaskRunner(ScopeProgressPresenter presenter, bool allowCancel) : ITaskProgressRunner
 {
    readonly ScopeProgressPresenter _presenter = presenter;
