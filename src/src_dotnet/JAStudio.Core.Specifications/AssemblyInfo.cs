@@ -3,4 +3,4 @@ using Xunit;
 
 // Enable parallel test execution — no shared static state
 [assembly: CollectionBehavior(DisableTestParallelization = false)]
-[assembly: AssemblyFixture(typeof(JamdictCleanupFixture))]
+[assembly: AssemblyFixture(typeof(PythonServicesCleanupFixture))]

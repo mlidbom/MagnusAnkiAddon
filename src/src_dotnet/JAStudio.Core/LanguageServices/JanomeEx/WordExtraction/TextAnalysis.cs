@@ -10,7 +10,7 @@ public sealed class TextAnalysis
 {
    public const string Version = "text_analysis_0.1";
 
-   static readonly JNTokenizer Tokenizer = new();
+   static readonly JNTokenizer Tokenizer = JNTokenizer.GetInstance();
 
    public AnalysisServices Services { get; }
    public bool ForUI { get; }

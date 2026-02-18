@@ -12,7 +12,7 @@ public class ExploreTokenPartOfSpeechInformationTests : IDisposable
 {
    readonly JNTokenizer _tokenizer;
 
-   public ExploreTokenPartOfSpeechInformationTests() => _tokenizer = new JNTokenizer();
+   public ExploreTokenPartOfSpeechInformationTests() => _tokenizer = JNTokenizer.GetInstance();
 
    public void Dispose() {}
 

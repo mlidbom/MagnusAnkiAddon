@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Compze.Utilities.SystemCE;
 using Compze.Utilities.SystemCE.ThreadingCE.ResourceAccess;
 using JAStudio.PythonInterop.Utilities;
 using Python.Runtime;
@@ -7,6 +8,10 @@ namespace JAStudio.Core.LanguageServices.JanomeEx.Tokenizing;
 
 public sealed class JNTokenizer
 {
+   static readonly LazyCE<JNTokenizer> Instance = new(() => new JNTokenizer());
+
+   public static JNTokenizer GetInstance() => Instance.Value;
+
    readonly IMonitorCE _monitor = IMonitorCE.WithDefaultTimeout();
 
    static readonly HashSet<string> CharactersThatMayConfuseJanomeSoWeReplaceThemWithOrdinaryFullWidthSpaces =
@@ -46,7 +51,7 @@ public sealed class JNTokenizer
 
    readonly PythonObjectWrapper _wrapper;
 
-   public JNTokenizer()
+   JNTokenizer()
    {
       _wrapper = PythonEnvironment.Use(() =>
       {
