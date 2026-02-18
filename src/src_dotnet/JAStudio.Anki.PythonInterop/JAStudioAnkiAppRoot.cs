@@ -10,6 +10,7 @@ using Compze.Utilities.SystemCE;
 using JAStudio.Anki;
 using JAStudio.Core;
 using JAStudio.UI;
+using JAStudio.Web;
 
 namespace JAStudio.Anki.PythonInterop;
 
@@ -17,6 +18,7 @@ namespace JAStudio.Anki.PythonInterop;
 public class JAStudioAnkiAppRoot
 {
    readonly CoreApp _coreApp;
+   readonly CardServer _cardServer = new();
    CancellationTokenSource? _reloadCts;
    static readonly TimeSpan ReloadDebounceDelay = TimeSpan.FromMilliseconds(500);
 
@@ -75,6 +77,8 @@ public class JAStudioAnkiAppRoot
 
       var root = new JAStudioAnkiAppRoot(app) { _uiThread = uiThread };
 
+      root._cardServer.Start();
+
       return root;
    }
 
@@ -120,6 +124,7 @@ public class JAStudioAnkiAppRoot
    public void ShutDown()
    {
       using var _ = this.Log().Info().LogMethodExecutionTime();
+      _cardServer.StopAsync().GetAwaiter().GetResult();
       _coreApp.Dispose();
       Dispatcher.UIThread.InvokeShutdown();
    }

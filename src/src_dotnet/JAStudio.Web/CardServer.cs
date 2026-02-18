@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using JAStudio.Core.UI.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,6 +47,7 @@ public class CardServer
       // Resolve the actual port assigned by the OS
       var address = _app.Urls.First();
       Port = new Uri(address).Port;
+      CardServerUrl.BaseUrl = BaseUrl;
       Console.WriteLine($"[CardServer] Listening on {BaseUrl}");
    }
 

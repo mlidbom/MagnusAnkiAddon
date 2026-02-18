@@ -2,6 +2,15 @@ import typing, abc
 from System.Collections.Generic import Dictionary_2
 from System import Func_2
 
+class CardServerUrl(abc.ABC):
+    @classmethod
+    @property
+    def BaseUrl(cls) -> str: ...
+    @classmethod
+    @BaseUrl.setter
+    def BaseUrl(cls, value: str) -> str: ...
+
+
 class PreRenderingContentRenderer_GenericClasses(abc.ABCMeta):
     Generic_PreRenderingContentRenderer_GenericClasses_PreRenderingContentRenderer_1_TNote = typing.TypeVar('Generic_PreRenderingContentRenderer_GenericClasses_PreRenderingContentRenderer_1_TNote')
     def __getitem__(self, types : typing.Type[Generic_PreRenderingContentRenderer_GenericClasses_PreRenderingContentRenderer_1_TNote]) -> typing.Type[PreRenderingContentRenderer_1[Generic_PreRenderingContentRenderer_GenericClasses_PreRenderingContentRenderer_1_TNote]]: ...
