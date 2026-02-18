@@ -4,23 +4,41 @@
 
 @if(_note != null)
 {
-    <div class="card">
-    <div id="container1">
-    <div id="container2">
-    <div class="mainContent kanjiReading">
-        <KanjiCardHeader Note="_note" />
-        <div>
-            <KanjiMnemonic Note="_note" />
-            <KanjiDependencies Note="_note" />
-            <KanjiVocabList Note="_note" />
-            <KanjiList Note="_note" />
+    @if(IsFront)
+    {
+        <div class="card">
+            <div id="container1">
+                <div id="container2">
+                    <div class="mainContent">
+                        <div class="front-and-answer">
+                            <div>
+                                <div class="kanji">::::::::::<span class="clipboard">@_note.GetQuestion()</span>::::::::::
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    </div>
-    </div>
-    </div>
-}
-else
+    } else
+    {
+        <div class="card">
+            <div id="container1">
+                <div id="container2">
+                    <div class="mainContent kanjiReading">
+                        <KanjiCardHeader Note="_note"/>
+                        <div>
+                            <KanjiMnemonic Note="_note"/>
+                            <KanjiDependencies Note="_note"/>
+                            <KanjiVocabList Note="_note"/>
+                            <KanjiList Note="_note"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+} else
 {
     <p>Note not found (ID: @NoteId)</p>
 }
@@ -32,12 +50,14 @@ else
     [Inject] public JPCollection Collection { get; set; } = null!;
 
     KanjiNote? _note;
+    bool IsFront => string.Equals(Side, "front", StringComparison.OrdinalIgnoreCase);
 
     protected override void OnParametersSet()
     {
-        if(NoteId is { } id)
+        if(NoteId is {} id)
         {
             _note = Collection.NoteFromExternalId(id) as KanjiNote;
         }
     }
+
 }

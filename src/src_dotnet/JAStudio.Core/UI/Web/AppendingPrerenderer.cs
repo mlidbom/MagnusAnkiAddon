@@ -13,9 +13,14 @@ namespace JAStudio.Core.UI.Web;
 public class AppendingPrerenderer<TNote> where TNote : JPNote
 {
    readonly Func<TNote, string> _renderMethod;
+   readonly Func<TNote, string>? _frontRenderMethod;
    Task<string>? _prerenderedTask;
 
-   public AppendingPrerenderer(Func<TNote, string> renderMethod) => _renderMethod = renderMethod;
+   public AppendingPrerenderer(Func<TNote, string> renderMethod, Func<TNote, string>? frontRenderMethod = null)
+   {
+      _renderMethod = renderMethod;
+      _frontRenderMethod = frontRenderMethod;
+   }
 
    // ReSharper disable once UnusedMember.Global used from python
    public string Render(TNote note, string html, string typeOfDisplay)
@@ -23,9 +28,12 @@ public class AppendingPrerenderer<TNote> where TNote : JPNote
       if(!note.Collection.IsInitialized)
          return Mine.AppStillLoadingMessage;
 
-      if(DisplayType.IsDisplayingReviewQuestion(typeOfDisplay))
+      if(DisplayType.IsDisplayingQuestion(typeOfDisplay))
       {
-         SchedulePrerender(note);
+         if(DisplayType.IsDisplayingReviewQuestion(typeOfDisplay))
+            SchedulePrerender(note);
+         if(_frontRenderMethod != null)
+            return _frontRenderMethod(note);
       } else if(DisplayType.IsDisplayingReviewAnswer(typeOfDisplay) && _prerenderedTask != null)
       {
          html = ApplyPrerendered(html);

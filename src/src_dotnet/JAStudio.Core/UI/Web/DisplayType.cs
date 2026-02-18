@@ -10,7 +10,10 @@ static class DisplayType
    public const string ReviewQuestion = "reviewQuestion";
    public const string ReviewAnswer = "reviewAnswer";
 
+   static readonly HashSet<string> QuestionTypes = ["reviewQuestion", "previewQuestion", "clayoutQuestion"];
    static readonly HashSet<string> AnswerTypes = ["reviewAnswer", "previewAnswer", "clayoutAnswer"];
+
+   public static bool IsDisplayingQuestion(string displayType) => QuestionTypes.Contains(displayType);
 
    public static bool IsDisplayingAnswer(string displayType) => AnswerTypes.Contains(displayType);
 

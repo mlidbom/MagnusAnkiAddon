@@ -52,6 +52,26 @@ public class CardServerTests : IAsyncLifetime
    }
 
    [Fact]
+   public async Task Kanji_card_front_renders_question()
+   {
+      var collection = _appScope.CoreApp.Collection;
+      var kanjiNote = collection.Kanji.WithKanji("病")!;
+      const long fakeExternalId = 99002;
+      collection.NoteServices.ExternalNoteIdMap.Register(fakeExternalId, kanjiNote.GetId());
+
+      var response = await _http.GetAsync($"{_server.BaseUrl}/card/kanji/front?NoteId={fakeExternalId}");
+      response.EnsureSuccessStatusCode();
+
+      var html = await response.Content.ReadAsStringAsync();
+
+      // The front side should contain the kanji character (Blazor encodes CJK as HTML entities)
+      Assert.Contains("&#x75C5;", html, System.StringComparison.Ordinal);
+      Assert.Contains("clipboard", html, System.StringComparison.Ordinal);
+      // The front side should NOT contain back-side content like readings or mnemonics
+      Assert.DoesNotContain("mnemonic", html, System.StringComparison.Ordinal);
+   }
+
+   [Fact]
    public async Task Blazor_web_js_is_served()
    {
       var response = await _http.GetAsync($"{_server.BaseUrl}/_framework/blazor.web.js");
