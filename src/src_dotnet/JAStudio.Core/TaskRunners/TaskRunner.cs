@@ -50,13 +50,13 @@ public class TaskRunner
       return scope;
    }
 
-   internal void OnScopeDisposed(TaskProgressScopeViewModel? disposedScopeVM, bool visible, int previousNestingDepth, TaskProgressScopeViewModel? previousParentScopeVM, TaskLogEntry? previousLogEntry)
+   internal void OnScopeDisposed(TaskProgressScopeViewModel? disposedScopeViewmodel, bool visible, int previousNestingDepth, TaskProgressScopeViewModel? previousParentScopeViewmodel, TaskLogEntry? previousLogEntry)
    {
-      if(disposedScopeVM != null)
-         _dialogPresenter.RemoveScope(disposedScopeVM, previousParentScopeVM);
+      if(disposedScopeViewmodel != null)
+         _dialogPresenter.RemoveScope(disposedScopeViewmodel, previousParentScopeViewmodel);
 
       _nestingDepth.Value = previousNestingDepth;
-      _parentScopeViewmodel.Value = previousParentScopeVM;
+      _parentScopeViewmodel.Value = previousParentScopeViewmodel;
       _currentLogEntry.Value = previousLogEntry;
 
       if(visible)
