@@ -1,6 +1,7 @@
-from JAStudio.Core.UI.Web import PreRenderingContentRenderer_1
+from JAStudio.Core.UI.Web import AppendingPrerenderer_1
 from JAStudio.Core.Note import KanjiNote
 
 class KanjiNoteRenderer:
-    def CreateRenderer(self) -> PreRenderingContentRenderer_1[KanjiNote]: ...
+    def __init__(self) -> None: ...
+    def CreateRenderer(self) -> AppendingPrerenderer_1[KanjiNote]: ...
 

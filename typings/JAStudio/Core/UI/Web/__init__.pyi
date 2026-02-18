@@ -1,6 +1,18 @@
 import typing, abc
-from System.Collections.Generic import Dictionary_2
 from System import Func_2
+from System.Collections.Generic import Dictionary_2
+
+class AppendingPrerenderer_GenericClasses(abc.ABCMeta):
+    Generic_AppendingPrerenderer_GenericClasses_AppendingPrerenderer_1_TNote = typing.TypeVar('Generic_AppendingPrerenderer_GenericClasses_AppendingPrerenderer_1_TNote')
+    def __getitem__(self, types : typing.Type[Generic_AppendingPrerenderer_GenericClasses_AppendingPrerenderer_1_TNote]) -> typing.Type[AppendingPrerenderer_1[Generic_AppendingPrerenderer_GenericClasses_AppendingPrerenderer_1_TNote]]: ...
+
+AppendingPrerenderer : AppendingPrerenderer_GenericClasses
+
+AppendingPrerenderer_1_TNote = typing.TypeVar('AppendingPrerenderer_1_TNote')
+class AppendingPrerenderer_1(typing.Generic[AppendingPrerenderer_1_TNote]):
+    def __init__(self, renderMethod: Func_2[AppendingPrerenderer_1_TNote, str]) -> None: ...
+    def Render(self, note: AppendingPrerenderer_1_TNote, html: str, typeOfDisplay: str) -> str: ...
+
 
 class CardServerUrl(abc.ABC):
     @classmethod

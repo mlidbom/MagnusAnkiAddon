@@ -1,21 +1,13 @@
-using System;
-using System.Collections.Generic;
 using JAStudio.Core.Note;
 
 namespace JAStudio.Core.UI.Web.Kanji;
 
 /// <summary>
-/// Factory for creating PreRenderingContentRenderer with KanjiNote tag mappings.
+/// Creates an AppendingPrerenderer that renders the Blazor iframe for kanji cards.
 /// </summary>
 public class KanjiNoteRenderer
 {
-   public PreRenderingContentRenderer<KanjiNote> CreateRenderer()
-   {
-      return new PreRenderingContentRenderer<KanjiNote>(new Dictionary<string, Func<KanjiNote, string>>
-                                                        {
-                                                           ["##BLAZOR_IFRAME##"] = RenderBlazorIframe,
-                                                        });
-   }
+   public AppendingPrerenderer<KanjiNote> CreateRenderer() => new(RenderBlazorIframe);
 
    static string RenderBlazorIframe(KanjiNote note)
    {
