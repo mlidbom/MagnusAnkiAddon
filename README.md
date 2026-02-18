@@ -9,3 +9,40 @@ Turns anki into a full featured tool for studying japanese in anki. A short samp
 * Listing all kanji in a word and navigating to them
 * Tracking words relationships such as synonyms, antonyms,
 
+## Development Setup
+
+### Windows
+
+**Prerequisites:**
+- .NET 10.0 SDK
+- Python 3.13
+- Git with long paths enabled
+
+**One-time setup:**
+```powershell
+.\setup-dev.ps1
+```
+
+This script will:
+1. Enable Git long paths support (required for Compze submodule)
+2. Initialize git submodules
+3. Create Python virtual environment
+4. Install Python dependencies
+5. Build the .NET solution
+
+**Quick commands:**
+```powershell
+dotnet build src\src_dotnet\JAStudio.slnx -c Debug   # Fast .NET build
+dotnet test src\src_dotnet\JAStudio.slnx             # .NET tests
+venv\Scripts\python.exe -m pytest                     # Python tests
+.\full-build.ps1                                      # Full validation (build + stubs + type check)
+```
+
+### Linux / CI
+
+```bash
+./setup-dev.sh                                        # One-time setup
+JASTUDIO_VENV_PATH="$(pwd)/venv" dotnet test src/src_dotnet/JAStudio.slnx --filter "FullyQualifiedName!~BulkLoaderTests"
+source venv/bin/activate && pytest
+```
+

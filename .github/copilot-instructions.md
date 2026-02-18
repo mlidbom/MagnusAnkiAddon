@@ -2,6 +2,26 @@
 
 JAStudio is a Japanese language learning tool that runs as an Anki addon. The core logic and UI are in C#/Avalonia, loaded into Anki's Python process via pythonnet. Python serves only as a thin integration layer with Anki's APIs.
 
+## Background Agent Setup
+
+**⚠️ CRITICAL for background agents (task/explore/etc):**
+
+If you are a **background agent** running in a VS Code worktree, you MUST run this setup script before attempting any builds or tests:
+
+```powershell
+.\setup-agent.ps1
+```
+
+This script will:
+- Enable Git long paths (required for Compze submodule)
+- Initialize git submodules
+- Create Python venv and install dependencies
+- Build the .NET solution
+
+The script is idempotent and will skip steps that are already complete.
+
+**⚠️ For foreground/local agents:** Do NOT run `.\setup-agent.ps1` - the human developer has already set up their environment. You can proceed directly to builds and tests.
+
 ## Quick Reference
 
 ```powershell
@@ -92,9 +112,9 @@ No task should be considered complete until:
 
 Do **not** suppress type errors with `# pyright: ignore` or `# type: ignore` comments. The code should almost always be fixed or restructured to satisfy the type checker. If you cannot find a way to make the type checker understand the code, ask for permission before adding a suppression.
 
-## Linux / CI Agent Setup
+## Background Agent Setup (Linux/CI)
 
-When developing on Linux (e.g. GitHub Actions runners, Copilot coding agents):
+When running on Linux (e.g. GitHub Actions runners):
 
 ```bash
 ./setup-dev.sh                      # One-time: creates venv, installs deps, builds .NET
