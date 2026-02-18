@@ -7,7 +7,7 @@ namespace JAStudio.Web.Specifications;
 
 public class CardServerTests : IAsyncLifetime
 {
-   readonly CollectionFactory.AppScope _appScope = CollectionFactory.InjectCollectionWithSelectData(DataNeeded.Kanji);
+   readonly CollectionFactory.AppScope _appScope = CollectionFactory.InjectCollectionWithSelectData(DataNeeded.Kanji | DataNeeded.Vocabulary);
    readonly CardServer _server = new();
    readonly HttpClient _http = new();
 
@@ -79,5 +79,22 @@ public class CardServerTests : IAsyncLifetime
 
       var content = await response.Content.ReadAsStringAsync();
       Assert.True(content.Length > 1000, "blazor.web.js should be a substantial script file");
+   }
+
+   [Fact]
+   public async Task Vocab_card_front_renders_question()
+   {
+      var collection = _appScope.CoreApp.Collection;
+      var vocabNote = collection.Vocab.WithQuestion("入れる")[0];
+      const long fakeExternalId = 99003;
+      collection.NoteServices.ExternalNoteIdMap.Register(fakeExternalId, vocabNote.GetId());
+
+      var response = await _http.GetAsync($"{_server.BaseUrl}/card/vocab/front?NoteId={fakeExternalId}");
+      response.EnsureSuccessStatusCode();
+
+      var html = await response.Content.ReadAsStringAsync();
+
+      // The front side should contain the question text
+      Assert.Contains("question", html, System.StringComparison.Ordinal);
    }
 }

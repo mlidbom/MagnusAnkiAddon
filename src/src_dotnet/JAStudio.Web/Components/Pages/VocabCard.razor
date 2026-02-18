@@ -1,0 +1,48 @@
+@page "/card/vocab/{Side}"
+@using JAStudio.Core.Note
+@using JAStudio.Core.Note.Collection
+@using JAStudio.Core.Note.Vocabulary
+
+<HeadContent>
+    <link rel="stylesheet" href="/css/vocab-card.css" />
+</HeadContent>
+
+@if(_note != null)
+{
+    @if(IsFront)
+    {
+        <div class="card">
+            <div id="container1">
+                <div id="container2">
+                    <div class="front-and-answer">
+                        <div class="question">@_note.GetQuestion()</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    } else
+    {
+        <p>Back side not yet implemented</p>
+    }
+} else
+{
+    <p>Note not found (ID: @NoteId)</p>
+}
+
+@code {
+    [Parameter] public string Side { get; set; } = "";
+    [SupplyParameterFromQuery] public long? NoteId { get; set; }
+
+    [Inject] public JPCollection Collection { get; set; } = null!;
+
+    VocabNote? _note;
+    bool IsFront => string.Equals(Side, "front", StringComparison.OrdinalIgnoreCase);
+
+    protected override void OnParametersSet()
+    {
+        if(NoteId is {} id)
+        {
+            _note = Collection.NoteFromExternalId(id) as VocabNote;
+        }
+    }
+}

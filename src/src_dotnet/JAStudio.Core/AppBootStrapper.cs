@@ -85,7 +85,7 @@ public static class AppBootstrapper
          Singleton.For<SentenceRenderer>().CreatedBy((JapaneseConfig config) => new SentenceRenderer(config)),
 
          // Note renderers
-         Singleton.For<VocabNoteRenderer>().CreatedBy((RelatedVocabsRenderer relatedVocabs, VocabKanjiListRenderer vocabKanjiList) => new VocabNoteRenderer(relatedVocabs, vocabKanjiList)),
+         Singleton.For<VocabNoteRenderer>().CreatedBy(() => new VocabNoteRenderer()),
          Singleton.For<SentenceNoteRenderer>().CreatedBy((SentenceRenderer sentenceRenderer, UdSentenceBreakdownRenderer udRenderer) => new SentenceNoteRenderer(sentenceRenderer, udRenderer)),
          Singleton.For<KanjiNoteRenderer>().CreatedBy(() => new KanjiNoteRenderer())
       );
