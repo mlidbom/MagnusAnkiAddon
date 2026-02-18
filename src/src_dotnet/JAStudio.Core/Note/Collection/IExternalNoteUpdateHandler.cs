@@ -1,3 +1,4 @@
+// ReSharper disable UnusedMember.Global used from python
 namespace JAStudio.Core.Note.Collection;
 
 public interface IExternalNoteUpdateHandler
@@ -6,10 +7,5 @@ public interface IExternalNoteUpdateHandler
    void ExternalNoteWillFlush(long externalNoteId, NoteData data);
    void ExternalNoteRemoved(long externalNoteId);
    void OnNoteUpdated(dynamic listener);
-
-   /// <summary>
-   /// Returns the external long note ID for the given domain NoteId.
-   /// Used by the Python sync layer to find the external note when syncing changes back.
-   /// </summary>
    long GetExternalNoteId(NoteId noteId);
 }
