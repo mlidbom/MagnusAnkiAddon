@@ -1,0 +1,32 @@
+@page "/card/kanji/{Side}"
+@using JAStudio.Core.Note
+@using JAStudio.Core.Note.Collection
+
+@if(_note != null)
+{
+    <KanjiReadings Note="_note" />
+    <KanjiDependencies Note="_note" />
+    <KanjiVocabList Note="_note" />
+    <KanjiList Note="_note" />
+}
+else
+{
+    <p>Note not found (ID: @NoteId)</p>
+}
+
+@code {
+    [Parameter] public string Side { get; set; } = "";
+    [SupplyParameterFromQuery] public long? NoteId { get; set; }
+
+    [Inject] public JPCollection Collection { get; set; } = null!;
+
+    KanjiNote? _note;
+
+    protected override void OnParametersSet()
+    {
+        if(NoteId is { } id)
+        {
+            _note = Collection.NoteFromExternalId(id) as KanjiNote;
+        }
+    }
+}

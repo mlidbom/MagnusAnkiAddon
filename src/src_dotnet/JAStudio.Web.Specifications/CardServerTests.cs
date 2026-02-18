@@ -1,11 +1,13 @@
 using System.Net.Http;
 using System.Threading.Tasks;
+using JAStudio.Core.Specifications.Fixtures;
 using Xunit;
 
 namespace JAStudio.Web.Specifications;
 
 public class CardServerTests : IAsyncLifetime
 {
+   readonly CollectionFactory.AppScope _appScope = CollectionFactory.InjectCollectionWithSelectData(DataNeeded.Kanji);
    readonly CardServer _server = new();
    readonly HttpClient _http = new();
 
@@ -19,13 +21,12 @@ public class CardServerTests : IAsyncLifetime
    {
       _http.Dispose();
       await _server.StopAsync();
+      _appScope.Dispose();
    }
 
    [Fact]
-   public async Task Server_starts_and_serves_home_page()
+   public async Task Home_page_returns_200()
    {
-      Assert.True(_server.Port > 0, "Server should bind to a port");
-
       var response = await _http.GetAsync($"{_server.BaseUrl}/");
       response.EnsureSuccessStatusCode();
 
@@ -34,13 +35,20 @@ public class CardServerTests : IAsyncLifetime
    }
 
    [Fact]
-   public async Task Card_endpoint_returns_html_with_route_parameters()
+   public async Task Kanji_card_endpoint_renders_readings()
    {
-      var response = await _http.GetAsync($"{_server.BaseUrl}/card/sentence/back?NoteId=12345");
+      var collection = _appScope.CoreApp.Collection;
+      var kanjiNote = collection.Kanji.WithKanji("病")!;
+      const long fakeExternalId = 99001;
+      collection.NoteServices.ExternalNoteIdMap.Register(fakeExternalId, kanjiNote.GetId());
+
+      var response = await _http.GetAsync($"{_server.BaseUrl}/card/kanji/back?NoteId={fakeExternalId}");
       response.EnsureSuccessStatusCode();
 
       var html = await response.Content.ReadAsStringAsync();
-      Assert.Contains("sentence", html);
+
+      // The response should contain the kanji readings rendered by Blazor SSR
+      Assert.Contains("ビョウ", html, System.StringComparison.Ordinal);
    }
 
    [Fact]

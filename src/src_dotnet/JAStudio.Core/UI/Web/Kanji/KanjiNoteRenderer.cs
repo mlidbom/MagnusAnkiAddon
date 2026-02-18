@@ -17,7 +17,7 @@ public class KanjiNoteRenderer
    {
       return new PreRenderingContentRenderer<KanjiNote>(new Dictionary<string, Func<KanjiNote, string>>
                                                         {
-                                                           ["##BLAZOR_IFRAME##"] = _ => RenderBlazorIframe(),
+                                                           ["##BLAZOR_IFRAME##"] = RenderBlazorIframe,
                                                            ["##DEPENDENCIES_LIST##"] = DependenciesRenderer.RenderDependenciesList,
                                                            ["##MNEMONIC##"] = MnemonicRenderer.RenderMnemonic,
                                                            ["##KANJI_READINGS##"] = ReadingsRenderer.RenderKatakanaOnyomi,
@@ -26,10 +26,11 @@ public class KanjiNoteRenderer
                                                         });
    }
 
-   static string RenderBlazorIframe()
+   static string RenderBlazorIframe(KanjiNote note)
    {
       var baseUrl = CardServerUrl.BaseUrl;
       if(baseUrl == null) return "<!-- CardServer not running -->";
-      return $"""<iframe src="{baseUrl}/" style="width:100%;height:120px;border:1px solid #444;border-radius:4px;" frameborder="0"></iframe>""";
+      var externalId = note.Collection.GetExternalNoteId(note.GetId());
+      return $"""<iframe src="{baseUrl}/card/kanji/back?NoteId={externalId}" style="width:100%;min-height:200px;border:1px solid #444;border-radius:4px;" frameborder="0"></iframe>""";
    }
 }

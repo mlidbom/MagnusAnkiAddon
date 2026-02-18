@@ -20,6 +20,7 @@
 
    <ItemGroup>
       <ProjectReference Include="..\JAStudio.Web\JAStudio.Web.csproj"/>
+      <ProjectReference Include="..\JAStudio.Core.Specifications\JAStudio.Core.Specifications.csproj"/>
    </ItemGroup>
 
    <ItemGroup>

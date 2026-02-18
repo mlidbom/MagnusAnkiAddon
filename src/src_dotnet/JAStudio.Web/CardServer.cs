@@ -3,6 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using JAStudio.Core;
+using JAStudio.Core.Note.Collection;
 using JAStudio.Core.UI.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -45,6 +47,11 @@ public class CardServer
 
       builder.Services.AddRazorComponents()
                       .AddInteractiveServerComponents();
+
+      // Bridge domain services from the Compze service locator into Blazor DI.
+      // These are singletons managed by the Core bootstrapper.
+      builder.Services.AddSingleton(_ => TemporaryServiceCollection.Instance.CoreApp.Collection);
+      builder.Services.AddSingleton(_ => TemporaryServiceCollection.Instance.CoreApp.Collection.Kanji);
 
       builder.Services.AddCors(options =>
          options.AddDefaultPolicy(policy =>
