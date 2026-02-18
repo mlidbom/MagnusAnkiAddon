@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+   <PropertyGroup>
+      <TargetFramework>net10.0</TargetFramework>
+      <ImplicitUsings>disable</ImplicitUsings>
+      <Nullable>enable</Nullable>
+   </PropertyGroup>
+
+   <ItemGroup>
+      <ProjectReference Include="..\JAStudio.Core\JAStudio.Core.csproj" />
+      <ProjectReference Include="..\JAStudio.Anki\JAStudio.Anki.csproj" />
+      <ProjectReference Include="..\JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
+      <ProjectReference Include="..\JAStudio.UI\JAStudio.UI.csproj" />
+   </ItemGroup>
+
+   <ItemGroup>
+      <PackageReference Include="Avalonia" Version="11.2.5" />
+      <PackageReference Include="Compze.Utilities.Logging" Version="0.1.0-alpha.3" />
+   </ItemGroup>
+
+</Project>

@@ -1,25 +1,17 @@
 import typing, abc
 from JAStudio.Core import IBackendDataLoader, BackendData, IEnvironmentPaths
 from JAStudio.Core.TaskRunners import TaskRunner
-from JAStudio.Core.Note import IBackendNoteCreator, KanjiNote, NoteData, NoteId, ICardOperations, ExternalNoteIdMap, JPNote
-from System import Action, IDisposable, Func_2, Guid
-from JAStudio.Core.Note.Sentences import SentenceNote
-from JAStudio.Core.Note.Vocabulary import VocabNote
 from System.Collections.Generic import List_1, Dictionary_2, IReadOnlyList_1, IEnumerable_1
+from JAStudio.Core.Note import NoteData, NoteId, ICardOperations, ExternalNoteIdMap, JPNote, KanjiNote
+from System import IDisposable, Func_2, Guid
 from Microsoft.Data.Sqlite import SqliteConnection
 from JAStudio.Core.Note.Collection import CardStudyingStatus, VocabCollection, KanjiCollection
 from JAStudio.Core.LanguageServices.JanomeEx import AnalysisServices
+from JAStudio.Core.Note.Vocabulary import VocabNote
 
 class AnkiBackendDataLoader(IBackendDataLoader):
     def __init__(self) -> None: ...
     def Load(self, taskRunner: TaskRunner) -> BackendData: ...
-
-
-class AnkiBackendNoteCreator(IBackendNoteCreator):
-    def __init__(self) -> None: ...
-    def CreateKanji(self, note: KanjiNote, callback: Action) -> None: ...
-    def CreateSentence(self, note: SentenceNote, callback: Action) -> None: ...
-    def CreateVocab(self, note: VocabNote, callback: Action) -> None: ...
 
 
 class AnkiBulkLoadResult:

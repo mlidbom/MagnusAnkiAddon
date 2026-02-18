@@ -17,7 +17,7 @@ public class UIApp : Application
       Initialized.Set();
    }
 
-   internal static void WaitForInitialization(TimeSpan timeout)
+   public static void WaitForInitialization(TimeSpan timeout)
    {
       if(!Initialized.Wait(timeout))
       {

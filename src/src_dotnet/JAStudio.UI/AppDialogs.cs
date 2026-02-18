@@ -13,7 +13,7 @@ public class AnkiDialogs
    readonly CoreApp _coreApp;
    TemporaryServiceCollection Services => _coreApp.Services;
 
-   internal AnkiDialogs(CoreApp coreApp) => _coreApp = coreApp;
+   public AnkiDialogs(CoreApp coreApp) => _coreApp = coreApp;
 
    internal void ShowReadingsMappingsDialog()
    {

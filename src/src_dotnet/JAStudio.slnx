@@ -1,5 +1,6 @@
 <Solution>
    <Project Path="JAStudio.Anki\JAStudio.Anki.csproj" />
+   <Project Path="JAStudio.Anki.PythonInterop\JAStudio.Anki.PythonInterop.csproj" />
    <Project Path="JAStudio.Core.Specifications/JAStudio.Core.Specifications.csproj" />
    <Project Path="JAStudio.Core\JAStudio.Core.csproj" />
    <Project Path="JAStudio.Dictionary\JAStudio.Dictionary.csproj" />

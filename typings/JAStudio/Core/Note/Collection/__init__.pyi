@@ -1,5 +1,6 @@
 import typing, abc
-from JAStudio.Core.Note import NoteData, NoteId, IBackendNoteCreator, NoteServices, JPNote, KanjiNote
+from JAStudio.Core.Note import NoteData, NoteId, JPNote, IBackendNoteCreator, NoteServices, KanjiNote
+from System import Action_1
 from JAStudio.Core.Storage import INoteRepository
 from JAStudio.Core.Storage.Media import MediaFileIndex
 from JAStudio.Core import IBackendDataLoader
@@ -30,7 +31,7 @@ class IExternalNoteUpdateHandler(typing.Protocol):
     @abc.abstractmethod
     def GetExternalNoteId(self, noteId: NoteId) -> int: ...
     @abc.abstractmethod
-    def OnNoteUpdated(self, listener: typing.Any) -> None: ...
+    def OnNoteUpdated(self, listener: Action_1[JPNote]) -> None: ...
 
 
 class JPCollection:

@@ -9,9 +9,9 @@ using Compze.Utilities.Logging;
 using Compze.Utilities.SystemCE;
 using JAStudio.Anki;
 using JAStudio.Core;
-using JAStudio.UI.Utils;
+using JAStudio.UI;
 
-namespace JAStudio.UI;
+namespace JAStudio.Anki.PythonInterop;
 
 // ReSharper disable once UnusedType.Global used from python
 public class JAStudioAnkiAppRoot
@@ -33,13 +33,13 @@ public class JAStudioAnkiAppRoot
    public AnkiDialogs Dialogs { get; }
 
    // ReSharper disable once UnusedAutoPropertyAccessor.Global used from python
-   public AnkiMenus Menus { get; }
+   public PythonAnkiMenus Menus { get; }
 
    JAStudioAnkiAppRoot(CoreApp coreApp)
    {
       _coreApp = coreApp;
       Dialogs = new AnkiDialogs(coreApp);
-      Menus = new AnkiMenus(coreApp.Services);
+      Menus = new PythonAnkiMenus(new AnkiMenus(coreApp.Services));
    }
 
    // ReSharper disable once UnusedMember.Global // ReSharper disable once UnusedAutoPropertyAccessor.Global used from python

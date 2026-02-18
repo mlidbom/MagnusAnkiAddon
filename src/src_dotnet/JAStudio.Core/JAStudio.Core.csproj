@@ -8,7 +8,6 @@
 
    <ItemGroup>
       <ProjectReference Include="..\JAStudio.Dictionary\JAStudio.Dictionary.csproj" />
-      <ProjectReference Include="..\JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
    </ItemGroup>
 
    <ItemGroup>

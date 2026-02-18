@@ -54,7 +54,7 @@ $UiRid = if ($IsWindows -or (-not (Test-Path variable:IsWindows))) { "win-x64" }
 $args = @(
     $StubGenDll,
     "--dest-path", $TypingsPath,
-    "--target-dlls", "JAStudio.Core${Sep}bin${Sep}${Configuration}${Sep}net10.0${Sep}JAStudio.Core.dll,JAStudio.PythonInterop${Sep}bin${Sep}${Configuration}${Sep}net10.0${Sep}JAStudio.PythonInterop.dll,JAStudio.Anki${Sep}bin${Sep}${Configuration}${Sep}net10.0${Sep}JAStudio.Anki.dll,JAStudio.UI${Sep}bin${Sep}${Configuration}${Sep}net10.0${Sep}${UiRid}${Sep}JAStudio.UI.dll"
+    "--target-dlls", "JAStudio.Core${Sep}bin${Sep}${Configuration}${Sep}net10.0${Sep}JAStudio.Core.dll,JAStudio.PythonInterop${Sep}bin${Sep}${Configuration}${Sep}net10.0${Sep}JAStudio.PythonInterop.dll,JAStudio.Anki${Sep}bin${Sep}${Configuration}${Sep}net10.0${Sep}JAStudio.Anki.dll,JAStudio.UI${Sep}bin${Sep}${Configuration}${Sep}net10.0${Sep}${UiRid}${Sep}JAStudio.UI.dll,JAStudio.Anki.PythonInterop${Sep}bin${Sep}${Configuration}${Sep}net10.0${Sep}JAStudio.Anki.PythonInterop.dll"
 )
 
 if ($OnlyTargetTypes) {

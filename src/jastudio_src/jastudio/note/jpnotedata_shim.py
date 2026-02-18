@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from JAStudio.Core.Note import NoteData
+from JAStudio.Anki.PythonInterop import NoteDataPythonAdapter
 
 if TYPE_CHECKING:
     from anki.notes import Note
-    from JAStudio.Core.Note import JPNote
+    from JAStudio.Core.Note import JPNote, NoteData
 
 class JPNoteDataShim:
     @classmethod
@@ -17,7 +17,7 @@ class JPNoteDataShim:
 
         jp_note_data = JPNoteData(note.id, fields, note.tags)
 
-        return NoteData.FromPythonNoteData(jp_note_data)
+        return NoteDataPythonAdapter.FromPython(jp_note_data)
 
     @classmethod
     def sync_note_to_anki_note(cls, jp_note: JPNote, note: Note) -> None:

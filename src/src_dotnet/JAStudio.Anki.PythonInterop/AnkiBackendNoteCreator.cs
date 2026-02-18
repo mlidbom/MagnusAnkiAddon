@@ -3,9 +3,8 @@ using JAStudio.Core.Note;
 using JAStudio.Core.Note.Sentences;
 using JAStudio.Core.Note.Vocabulary;
 using JAStudio.PythonInterop.Utilities;
-using Python.Runtime;
 
-namespace JAStudio.Anki;
+namespace JAStudio.Anki.PythonInterop;
 
 public class AnkiBackendNoteCreator : IBackendNoteCreator
 {
@@ -15,8 +14,8 @@ public class AnkiBackendNoteCreator : IBackendNoteCreator
    {
       using(PythonEnvironment.LockGil())
       {
-         dynamic noteCreatorModule = Py.Import("jastudio.note.anki_backend_note_creator");
-         _noteCreator = new PythonObjectWrapper(noteCreatorModule.AnkiBackendNoteCreator());
+         _noteCreator = PythonEnvironment.Import("jastudio.note.anki_backend_note_creator")
+            .Use(module => new PythonObjectWrapper(module.AnkiBackendNoteCreator()));
       }
    }
 
