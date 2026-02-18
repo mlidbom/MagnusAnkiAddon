@@ -1,5 +1,7 @@
 @using JAStudio.Core.Note
 @using JAStudio.Core.Note.Vocabulary
+@using JAStudio.Core.Storage.Media
+@using JAStudio.Web
 
 @if(_vocabs.Count > 0)
 {
@@ -9,7 +11,11 @@
             @foreach(var vocab in _vocabs)
             {
                 <div class="kanjiVocabEntry @CreateClasses(vocab)">
-                    <audio src="@vocab.Audio.PrimaryAudioPath"></audio><a class="play-button"></a>
+                    @{ var bestAudio = AudioSelector.SelectBest(vocab.Media.Audio); }
+                    @if(bestAudio != null)
+                    {
+                        <audio src="/media/@bestAudio.Id"></audio><a class="play-button"></a>
+                    }
                     <span class="kanji clipboard">@vocab.GetQuestion()</span>
                     (<span class="clipboard vocabReading">@((MarkupString)string.Join(", ", Note.TagVocabReadings(vocab)))</span>)
                     @((MarkupString)vocab.MetaData.MetaTagsHtml())

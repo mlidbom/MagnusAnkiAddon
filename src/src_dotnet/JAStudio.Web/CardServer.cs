@@ -5,9 +5,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using JAStudio.Core;
 using JAStudio.Core.Note.Collection;
+using JAStudio.Core.Storage.Media;
 using JAStudio.Core.UI.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace JAStudio.Web;
@@ -52,6 +54,7 @@ public class CardServer
       // These are singletons managed by the Core bootstrapper.
       builder.Services.AddSingleton(_ => TemporaryServiceCollection.Instance.CoreApp.Collection);
       builder.Services.AddSingleton(_ => TemporaryServiceCollection.Instance.CoreApp.Collection.Kanji);
+      builder.Services.AddSingleton(_ => TemporaryServiceCollection.Instance.ServiceLocator.Resolve<MediaFileIndex>());
 
       builder.Services.AddCors(options =>
          options.AddDefaultPolicy(policy =>
@@ -79,6 +82,26 @@ public class CardServer
 
       _app.MapRazorComponents<Components.App>()
           .AddInteractiveServerRenderMode();
+
+      // Serve media files from the storage directory by MediaFileId (GUID).
+      // URL: /media/{guid}
+      _app.MapGet("/media/{id}", (string id, MediaFileIndex index) =>
+      {
+         var mediaId = MediaFileId.Parse(id);
+         var attachment = index.TryGetAttachment(mediaId)
+                       ?? throw new InvalidOperationException($"No media attachment found for ID {id}");
+
+         var contentType = Path.GetExtension(attachment.FilePath).ToLowerInvariant() switch
+         {
+            ".mp3" => "audio/mpeg",
+            ".ogg" => "audio/ogg",
+            ".wav" => "audio/wav",
+            ".m4a" => "audio/mp4",
+            _ => "application/octet-stream"
+         };
+
+         return Results.File(attachment.FilePath, contentType, enableRangeProcessing: true);
+      });
 
       _app.RunAsync();
 
