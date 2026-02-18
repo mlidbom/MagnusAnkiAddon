@@ -8,18 +8,6 @@ public class TaskRunner
 
    internal TaskRunner(DialogProgressPresenter dialogPresenter) => _dialogPresenter = dialogPresenter;
 
-   internal ITaskProgressRunner CreateRunner(TaskProgressScopeViewModel? scopeViewModel, string labelText, bool? visible = null, bool allowCancel = true)
-   {
-      visible ??= !CoreApp.IsTesting;
-
-      if(!visible.Value || scopeViewModel == null)
-      {
-         return new InvisibleTaskRunner(labelText);
-      }
-
-      return new VisibleTaskRunner(_dialogPresenter.CreateScopePresenter(scopeViewModel, allowCancel), allowCancel);
-   }
-
    /// <summary>Tracks the logical nesting depth per async call chain. Parallel siblings calling <see cref="Current"/> from the same parent scope each inherit the parent's depth and thus land at the same visual level.</summary>
    readonly AsyncLocal<int> _nestingDepth = new();
 
@@ -48,6 +36,18 @@ public class TaskRunner
       _parentScopeViewmodel.Value = scopeViewModel;
       _currentLogEntry.Value = scope.LogEntry;
       return scope;
+   }
+
+   internal ITaskProgressRunner CreateRunner(TaskProgressScopeViewModel? scopeViewModel, string labelText, bool? visible = null, bool allowCancel = true)
+   {
+      visible ??= !CoreApp.IsTesting;
+
+      if(!visible.Value || scopeViewModel == null)
+      {
+         return new InvisibleTaskRunner(labelText);
+      }
+
+      return new VisibleTaskRunner(_dialogPresenter.CreateScopePresenter(scopeViewModel, allowCancel), allowCancel);
    }
 
    internal void OnScopeDisposed(TaskProgressScopeViewModel? disposedScopeViewmodel, bool visible, int previousNestingDepth, TaskProgressScopeViewModel? previousParentScopeViewmodel, TaskLogEntry? previousLogEntry)
