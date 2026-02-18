@@ -1,8 +1,6 @@
 /mpv.exe
 __pycache__/
 /src/jastudio_src/_lib/jamdict_data/jamdict.db
-/src/tests/collection.anki2.bak
-collection.anki2
 /src/jastudio_src/_lib/
 !/src/jastudio_src/_lib/__init__.py
 /src/jastudio_src/user_files/logs/MagnusAddon.log

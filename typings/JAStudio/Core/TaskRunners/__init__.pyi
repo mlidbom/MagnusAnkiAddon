@@ -1,12 +1,13 @@
 import typing, abc
-from System import Action, Func_1, Exception, IDisposable, Action_1, Func_2, TimeSpan, IEquatable_1
+from System import IDisposable, Action, Func_1, Exception, Action_1, Func_2, TimeSpan, IEquatable_1
 from System.Threading.Tasks import Task, Task_1, ParallelOptions
 from System.Diagnostics import Stopwatch
 from System.Collections.Generic import List_1, IEnumerable_1
 from System.ComponentModel import INotifyPropertyChanged
 from System.Collections.ObjectModel import ObservableCollection_1
 
-class BackgroundTaskManager:
+class BackgroundTaskManager(IDisposable):
+    def Dispose(self) -> None: ...
     def Run(self, action: Action) -> None: ...
     def RunAsync(self, action: Func_1[Task]) -> None: ...
 
