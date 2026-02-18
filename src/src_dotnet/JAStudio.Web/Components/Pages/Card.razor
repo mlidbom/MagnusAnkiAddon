@@ -1,0 +1,13 @@
+@page "/card/{NoteType}/{Side}"
+
+<h1>JAStudio Card Server</h1>
+<p>Note type: @NoteType</p>
+<p>Side: @Side</p>
+<p>Note ID: @NoteId</p>
+<p>The server is running. Card rendering will go here.</p>
+
+@code {
+    [Parameter] public string NoteType { get; set; } = "";
+    [Parameter] public string Side { get; set; } = "";
+    [SupplyParameterFromQuery] public long? NoteId { get; set; }
+}

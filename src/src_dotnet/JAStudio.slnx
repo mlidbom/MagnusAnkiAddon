@@ -8,4 +8,5 @@
    <Project Path="JAStudio.UI.Specifications/JAStudio.UI.Specifications.csproj" />
    <Project Path="JAStudio.UI\JAStudio.UI.csproj" />
    <Project Path="JAStudio.UI.DesktopHost\JAStudio.UI.DesktopHost.csproj" />
+   <Project Path="JAStudio.Web\JAStudio.Web.csproj" />
 </Solution>

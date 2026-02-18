@@ -44,6 +44,20 @@ Anki template (static, set once, never changed)
 
 Python hook (2 lines)
   └── Returns: <iframe src="http://localhost:PORT/card/TYPE/SIDE?nid=NID">
+```
+
+### Python Integration — Zero Changes Required
+
+The existing Python hook infrastructure does not need to change at all. The current rendering path:
+
+```
+Anki hook → DotNetPrerenderingContentRendererAnkiShim.render()
+  → resolves note via NoteFromExternalId(card.nid)
+  → calls C# PreRenderingContentRenderer<TNote>.Render(note, html, type_of_display)
+  → returns modified HTML string to Anki
+```
+
+The Python shim (`dotnet_rendering_content_renderer_anki_shim.py`) passes the HTML string to C# and returns whatever C# gives back. It doesn't care what that HTML contains. So the change is entirely inside the C# `Render()` method — instead of performing `##TAG##` replacements on the incoming HTML, it simply returns an iframe pointing at the Blazor server. The Python shim, the hook wiring, the note resolution — all unchanged.
 
 Kestrel web server (in-process via pythonnet)
   ├── /card/{noteType}/{side}?nid={id}   → Razor-rendered full HTML page
