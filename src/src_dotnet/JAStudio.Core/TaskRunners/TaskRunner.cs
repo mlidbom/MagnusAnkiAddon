@@ -24,7 +24,8 @@ public class TaskRunner
          return new InvisibleTaskRunner(labelText);
       }
 
-      return new VisibleTaskRunner(scopeViewModel, _dispatcher, labelText, allowCancel);
+      var presenter = new ScopeProgressPresenter(scopeViewModel, _dispatcher, allowCancel);
+      return new VisibleTaskRunner(presenter, allowCancel);
    }
 
    internal TaskProgressScopeViewModel? CreateScopeViewModel(string scopeTitle, bool visible, int depth)
