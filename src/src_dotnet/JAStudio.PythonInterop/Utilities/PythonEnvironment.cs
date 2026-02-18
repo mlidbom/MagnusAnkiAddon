@@ -152,23 +152,30 @@ public static class PythonEnvironment
          return FindPythonSharedLibraryLinux(basePython);
       }
 
-      return FindPythonDllWindows(venvPath);
+      return FindPythonDllWindows(venvPath, basePython);
    }
 
-   static string? FindPythonDllWindows(string venvPath)
+   static string? FindPythonDllWindows(string venvPath, string basePython)
    {
+      // Try venv\Scripts first (some setups copy the DLL there)
       var venvScripts = Path.Combine(venvPath, "Scripts");
-
       if(Directory.Exists(venvScripts))
       {
          var venvDll = Directory.GetFiles(venvScripts, "python3??.dll")
                                 .OrderByDescending(f => f)
                                 .FirstOrDefault();
-
          if(venvDll != null)
-         {
             return venvDll;
-         }
+      }
+
+      // Fall back to base Python installation (standard Windows venv behavior)
+      if(Directory.Exists(basePython))
+      {
+         var baseDll = Directory.GetFiles(basePython, "python3??.dll")
+                                .OrderByDescending(f => f)
+                                .FirstOrDefault();
+         if(baseDll != null)
+            return baseDll;
       }
 
       return null;
