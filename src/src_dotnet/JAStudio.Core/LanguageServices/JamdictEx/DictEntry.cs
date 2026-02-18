@@ -2,167 +2,38 @@ using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
 using JAStudio.Core.Note.Vocabulary;
-using Wacton.Desu.Enums;
-using Wacton.Desu.Japanese;
-using NameEntry = Wacton.Desu.Names.INameEntry;
+using JAStudio.Dictionary;
 
 namespace JAStudio.Core.LanguageServices.JamdictEx;
 
-public class SenseEX
-{
-   public List<string> Glosses { get; }
-   public FrozenSet<string> Pos { get; }
-   public bool IsKanaOnly { get; }
-
-   internal SenseEX(ISense source, IEnumerable<PartOfSpeech>? inheritedPos = null)
-   {
-      Glosses = source.Glosses
-                      .Where(g => g.Language.Equals(Language.English))
-                      .Select(g => g.Term.Replace(" ", "-"))
-                      .ToList();
-
-      var pos = source.PartsOfSpeech.ToList();
-      if(!pos.Any() && inheritedPos != null)
-         pos = inheritedPos.ToList();
-
-      var posList = pos.Select(p => p.Code).ToList();
-      Pos = POSSetManager.InternAndHarmonizeFromList(posList);
-
-      IsKanaOnly = source.Miscellanea.Any(m => m.Code == Miscellaneous.UsuallyKanaAlone.Code);
-   }
-
-   internal SenseEX(Wacton.Desu.Names.ITranslation source)
-   {
-      Glosses = source.Transcriptions
-                      .Select(t => t.Replace(" ", "-"))
-                      .ToList();
-
-      Pos = FrozenSet<string>.Empty;
-      IsKanaOnly = false;
-   }
-
-   public bool IsTransitiveVerb() => POSSetManager.IsTransitiveVerb(Pos);
-   public bool IsIntransitiveVerb() => POSSetManager.IsIntransitiveVerb(Pos);
-
-   bool AllGlossesStartWith(string prefix) => Glosses.All(it => it.StartsWith(prefix));
-
-   public bool IsToBeVerb() => AllGlossesStartWith("to-be-");
-
-   public string FormatGlosses()
-   {
-      if(POSSetManager.IsVerb(Pos))
-      {
-         var typeMarker = "{?}";
-         if(IsTransitiveVerb()) typeMarker = "{}";
-         if(IsIntransitiveVerb()) typeMarker = ":";
-
-         var startGroup = "{";
-         var endGroup = "}";
-         if(Glosses.Count == 1)
-         {
-            startGroup = "";
-            endGroup = "";
-         }
-
-         if(IsToBeVerb())
-         {
-            return $"to-be:{startGroup}{string.Join("/", Glosses.Select(it => RemovePrefix(it, "to-be-")))}{endGroup}";
-         }
-
-         if(AllGlossesStartWith("to-"))
-         {
-            return $"to{typeMarker}{startGroup}{string.Join("/", Glosses.Select(it => RemovePrefix(it, "to-")))}{endGroup}";
-         }
-      }
-
-      return string.Join("/", Glosses);
-   }
-
-   static string RemovePrefix(string text, string prefix) => text.StartsWith(prefix) ? text.Substring(prefix.Length) : text;
-}
-
-public class KanaFormEX
-{
-   public string Text { get; }
-   public List<string> PriorityTags { get; }
-
-   internal KanaFormEX(IReading source)
-   {
-      Text = source.Text;
-      PriorityTags = source.Priorities.Select(p => p.Code).ToList();
-   }
-
-   internal KanaFormEX(Wacton.Desu.Names.IReading source)
-   {
-      Text = source.Text;
-      PriorityTags = source.Priorities.Select(p => p.Code).ToList();
-   }
-}
-
-public class KanjiFormEX
-{
-   public string Text { get; }
-   public List<string> PriorityTags { get; }
-
-   internal KanjiFormEX(IKanji source)
-   {
-      Text = source.Text;
-      PriorityTags = source.Priorities.Select(p => p.Code).ToList();
-   }
-
-   internal KanjiFormEX(Wacton.Desu.Names.IKanji source)
-   {
-      Text = source.Text;
-      PriorityTags = source.Priorities.Select(p => p.Code).ToList();
-   }
-}
-
 public sealed class DictEntry
 {
-   public List<KanaFormEX> KanaForms { get; }
-   public List<KanjiFormEX> KanjiForms { get; }
-   public List<SenseEX> Senses { get; }
+   public IReadOnlyList<WordReading> KanaForms { get; }
+   public IReadOnlyList<WordKanji> KanjiForms { get; }
+   public IReadOnlyList<WordSense> Senses { get; }
+   readonly IReadOnlyList<FrozenSet<string>> _harmonizedPos;
 
-   DictEntry(List<KanaFormEX> kanaForms, List<KanjiFormEX> kanjiForms, List<SenseEX> senses)
+   DictEntry(IReadOnlyList<WordReading> kanaForms, IReadOnlyList<WordKanji> kanjiForms, IReadOnlyList<WordSense> senses)
    {
       KanaForms = kanaForms;
       KanjiForms = kanjiForms;
       Senses = senses;
+      _harmonizedPos = senses.Select(s => POSSetManager.InternAndHarmonizeFromList(s.PartsOfSpeech.ToList())).ToList();
    }
 
-   internal static DictEntry FromDesu(IJapaneseEntry source)
-   {
-      var senses = new List<SenseEX>();
-      IEnumerable<PartOfSpeech> lastPos = [];
+   internal static DictEntry FromWord(WordEntry source) =>
+      new(source.Readings, source.Kanjis, source.Senses);
 
-      foreach(var sense in source.Senses)
-      {
-         var currentPos = sense.PartsOfSpeech.ToList();
-         if(currentPos.Any())
-            lastPos = currentPos;
-
-         var senseEx = new SenseEX(sense, lastPos);
-         if(senseEx.Glosses.Any())
-            senses.Add(senseEx);
-      }
-
-      return new(source.Readings.Select(r => new KanaFormEX(r)).ToList(),
-                 source.Kanjis.Select(k => new KanjiFormEX(k)).ToList(),
-                 senses);
-   }
-
-   internal static DictEntry FromDesuName(NameEntry source) =>
-      new(source.Readings.Select(r => new KanaFormEX(r)).ToList(),
-          source.Kanjis.Select(k => new KanjiFormEX(k)).ToList(),
-          source.Translations.Select(t => new SenseEX(t)).ToList());
+   internal static DictEntry FromName(NameEntry source) =>
+      new(source.Readings.Select(r => new WordReading(r.Text, r.Priorities)).ToList(),
+          source.Kanjis.Select(k => new WordKanji(k.Text, k.Priorities)).ToList(),
+          source.Translations.Select(t => new WordSense(t.Transcriptions, [], [])).ToList());
 
    public List<string> KanaFormsText() => KanaForms.Select(it => it.Text).ToList();
    public List<string> KanjiFormsText() => KanjiForms.Select(it => it.Text).ToList();
 
-   public bool IsKanaOnly()
-   {
-      return !KanjiForms.Any() || Senses.Any(sense => sense.IsKanaOnly);
-   }
+   public bool IsKanaOnly() =>
+      KanjiForms.Count == 0 || Senses.Any(sense => sense.Miscellanea.Contains("word usually written using kana alone"));
 
    public bool HasMatchingKanaForm(string search)
    {
@@ -190,46 +61,71 @@ public sealed class DictEntry
       return kanjiSet;
    }
 
-   public bool IsTransitiveVerb() => Senses.All(it => it.IsTransitiveVerb());
-   public bool IsIntransitiveVerb() => Senses.All(it => it.IsIntransitiveVerb());
-   public bool IsToBeVerb() => Senses.All(it => it.IsToBeVerb());
+   public FrozenSet<string> HarmonizedPos(int senseIndex) => _harmonizedPos[senseIndex];
+
+   public bool IsTransitiveVerb() => _harmonizedPos.All(pos => POSSetManager.IsTransitiveVerb(pos));
+   public bool IsIntransitiveVerb() => _harmonizedPos.All(pos => POSSetManager.IsIntransitiveVerb(pos));
+   public bool IsToBeVerb() => Senses.All(s => s.Glosses.All(g => g.StartsWith("to be ")));
 
    public HashSet<string> PartsOfSpeech()
    {
       var result = new HashSet<string>();
-      foreach(var sense in Senses)
-      {
-         result.UnionWith(sense.Pos);
-      }
-
+      foreach(var posSet in _harmonizedPos)
+         result.UnionWith(posSet);
       return result;
    }
 
    public string FormatAnswer()
    {
-      var defaultFormat = string.Join(" | ", Senses.Select(it => it.FormatGlosses()));
+      string FormatSenseGlosses(int senseIndex)
+      {
+         var sense = Senses[senseIndex];
+         var pos = _harmonizedPos[senseIndex];
+         var glosses = sense.Glosses.Select(g => g.Replace(" ", "-")).ToList();
+
+         if(POSSetManager.IsVerb(pos))
+         {
+            var typeMarker = "{?}";
+            if(POSSetManager.IsTransitiveVerb(pos)) typeMarker = "{}";
+            if(POSSetManager.IsIntransitiveVerb(pos)) typeMarker = ":";
+
+            var startGroup = "{";
+            var endGroup = "}";
+            if(glosses.Count == 1)
+            {
+               startGroup = "";
+               endGroup = "";
+            }
+
+            bool AllStart(string prefix) => glosses.All(it => it.StartsWith(prefix));
+
+            if(AllStart("to-be-"))
+               return $"to-be:{startGroup}{string.Join("/", glosses.Select(it => RemovePrefix(it, "to-be-")))}{endGroup}";
+
+            if(AllStart("to-"))
+               return $"to{typeMarker}{startGroup}{string.Join("/", glosses.Select(it => RemovePrefix(it, "to-")))}{endGroup}";
+         }
+
+         return string.Join("/", glosses);
+      }
+
+      var defaultFormat = string.Join(" | ", Enumerable.Range(0, Senses.Count).Select(FormatSenseGlosses));
 
       if(IsToBeVerb())
-      {
          return $"to-be: {defaultFormat.Replace("to-be:", "").Replace("{", "").Replace("}", "")}";
-      }
 
       if(IsTransitiveVerb())
-      {
          return $"to{{}} {defaultFormat.Replace("to{}", "").Replace("{", "").Replace("}", "")}";
-      }
 
       if(IsIntransitiveVerb())
       {
          if(defaultFormat.Contains("to-be:"))
-         {
             return $"to: {defaultFormat.Replace("to-be:", "be-").Replace("to:", "")}";
-         } else
-         {
-            return $"to: {defaultFormat.Replace("to:", "").Replace("{", "").Replace("}", "")}";
-         }
+         return $"to: {defaultFormat.Replace("to:", "").Replace("{", "").Replace("}", "")}";
       }
 
       return defaultFormat;
    }
+
+   static string RemovePrefix(string text, string prefix) => text.StartsWith(prefix) ? text.Substring(prefix.Length) : text;
 }

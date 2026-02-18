@@ -43,13 +43,13 @@ public class DictLookupResult
       var kanaTags = Entries
                     .SelectMany(entry => entry.KanaForms)
                     .Where(it => it.Text == Word)
-                    .SelectMany(it => it.PriorityTags)
+                    .SelectMany(it => it.Priorities)
                     .ToHashSet();
 
       var kanjiTags = Entries
                      .SelectMany(entry => entry.KanjiForms)
                      .Where(it => it.Text == Word)
-                     .SelectMany(it => it.PriorityTags)
+                     .SelectMany(it => it.Priorities)
                      .ToHashSet();
 
       var tags = new HashSet<string>(kanaTags);

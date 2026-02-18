@@ -7,6 +7,7 @@
    </PropertyGroup>
 
    <ItemGroup>
+      <ProjectReference Include="..\JAStudio.Dictionary\JAStudio.Dictionary.csproj" />
       <ProjectReference Include="..\JAStudio.PythonInterop\JAStudio.PythonInterop.csproj" />
    </ItemGroup>
 
@@ -26,7 +27,6 @@
       <PackageReference Include="MyNihongo.KanaConverter" Version="1.0.5" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
       <PackageReference Include="SimpleInjector" Version="5.5.0" />
-      <PackageReference Include="Wacton.Desu" Version="6.2.0" />
    </ItemGroup>
 
    <ItemGroup>
