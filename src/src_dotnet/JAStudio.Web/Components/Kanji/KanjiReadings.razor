@@ -1,13 +1,9 @@
 @using JAStudio.Core.LanguageServices
 @using JAStudio.Core.Note
 
-<div class="readings">
-    <span class="reading">@((MarkupString)OnReadings)</span>
-    <span class="readingsSeparator">|</span>
-    <span class="reading">@((MarkupString)KunReadings)</span>
-    <span class="readingsSeparator">|</span>
-    <span class="reading">@((MarkupString)NanReadings)</span>
-</div>
+<span class="reading">@((MarkupString)OnReadings)</span> <span class="readingsSeparator">|</span>
+<span class="reading">@((MarkupString)KunReadings)</span> <span class="readingsSeparator">|</span>
+<span class="reading">@((MarkupString)NanReadings)</span>
 
 @code {
     [Parameter, EditorRequired] public KanjiNote Note { get; set; } = null!;

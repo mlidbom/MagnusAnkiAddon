@@ -87,7 +87,7 @@ public static class AppBootstrapper
          // Note renderers
          Singleton.For<VocabNoteRenderer>().CreatedBy((RelatedVocabsRenderer relatedVocabs, VocabKanjiListRenderer vocabKanjiList) => new VocabNoteRenderer(relatedVocabs, vocabKanjiList)),
          Singleton.For<SentenceNoteRenderer>().CreatedBy((SentenceRenderer sentenceRenderer, UdSentenceBreakdownRenderer udRenderer) => new SentenceNoteRenderer(sentenceRenderer, udRenderer)),
-         Singleton.For<KanjiNoteRenderer>().CreatedBy((KanjiListRenderer kanjiList) => new KanjiNoteRenderer(kanjiList))
+         Singleton.For<KanjiNoteRenderer>().CreatedBy(() => new KanjiNoteRenderer())
       );
 
       TemporaryServiceCollection.Instance = container.ServiceLocator.Resolve<TemporaryServiceCollection>();
