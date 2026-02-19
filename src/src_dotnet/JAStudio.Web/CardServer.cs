@@ -74,8 +74,6 @@ public class CardServer
       builder.Services.AddRazorComponents()
                       .AddInteractiveServerComponents();
 
-      builder.Services.AddHttpClient();
-
       // Bridge domain services from the Compze service locator into Blazor DI.
       // These are singletons managed by the Core bootstrapper.
       builder.Services.AddSingleton(_ => TemporaryServiceCollection.Instance.CoreApp.Collection);

@@ -15,7 +15,7 @@
                         @{ var bestAudio = AudioSelector.SelectBest(vocab.Media.Audio); }
                         @if(bestAudio != null)
                         {
-                            <audio src="/media/@bestAudio.Id"></audio><a class="play-button"></a>
+                            <audio src="/media/@bestAudio.Id"></audio><span class="play-button"></span>
                         }
                         <span class="kanji clipboard">@vocab.GetQuestion()</span>
                         (<span class="clipboard vocabReading">@((MarkupString)string.Join(", ", Note.TagVocabReadings(vocab)))</span>)
