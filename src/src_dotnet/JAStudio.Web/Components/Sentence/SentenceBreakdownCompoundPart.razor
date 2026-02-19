@@ -1,0 +1,18 @@
+@using JAStudio.Core.UI.Web.Sentence
+
+<li class="sentenceVocabEntry compound_part @CompoundPart.MetaTagsString">
+    <div class="sentenceVocabEntryDiv">
+        <audio src="@CompoundPart.AudioPath"></audio><a class="play-button"></a>
+        <span class="vocabQuestion clipboard">@CompoundPart.Question</span>
+        @if(CompoundPart.DisplayReadings)
+        {
+            <span class="vocabHitReadings clipboard">@CompoundPart.Readings</span>
+        }
+        @((MarkupString)CompoundPart.MetaTagsHtml)
+        <span class="vocabAnswer">@CompoundPart.Answer</span>
+    </div>
+</li>
+
+@code {
+    [Parameter, EditorRequired] public CompoundPartViewModel CompoundPart { get; set; } = null!;
+}

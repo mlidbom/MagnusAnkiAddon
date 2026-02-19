@@ -1,0 +1,39 @@
+@using JAStudio.Core.Configuration
+@using JAStudio.Core.UI.Web.Sentence
+@using JAStudio.Core.ViewModels.KanjiList
+
+<li class="sentenceVocabEntry depth1 word_priority_very_high @Match.MetaTagsString">
+    <div class="sentenceVocabEntryDiv">
+        <SentenceInvalidForDisplay Match="Match" Settings="Settings" />
+        <audio src="@Match.AudioPath"></audio><a class="play-button"></a>
+        <span class="vocabQuestion clipboard">@Match.ParsedForm</span>
+        @if(Match.DisplayVocabForm)
+        {
+            <span class="vocabHitForm clipboard">@Match.VocabForm</span>
+        }
+        @if(Match.DisplayReadings)
+        {
+            <span class="vocabHitReadings clipboard">@Match.Readings</span>
+        }
+        @((MarkupString)Match.MetaTagsHtml)
+        <span class="vocabAnswer">@Match.Answer</span>
+    </div>
+</li>
+
+@if(Match.ShowCompoundParts)
+{
+    @foreach(var compoundPart in Match.CompoundParts)
+    {
+        <SentenceBreakdownCompoundPart CompoundPart="compoundPart" />
+    }
+}
+
+<li class="sentenceVocabEntry depth1 word_priority_very_high @Match.MetaTagsString">
+    <SentenceBreakdownKanji Match="Match" KanjiListViewModelFactory="KanjiListViewModelFactory" />
+</li>
+
+@code {
+    [Parameter, EditorRequired] public MatchViewModel Match { get; set; } = null!;
+    [Parameter, EditorRequired] public Settings Settings { get; set; } = null!;
+    [Parameter, EditorRequired] public SentenceKanjiListViewModel KanjiListViewModelFactory { get; set; } = null!;
+}

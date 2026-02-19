@@ -1,0 +1,15 @@
+@using JAStudio.Core.Note.Sentences
+
+<div id="answerSection">
+    @if(!string.IsNullOrEmpty(Note.User.Answer.Value))
+    {
+        <div class="meaning user clipboard">@((MarkupString)Note.User.Answer.Value)</div>
+    }
+    <div class="meaning clipboard @(HasUserAnswer ? "overridden" : "")">@((MarkupString)Note.SourceAnswer.Value)</div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public SentenceNote Note { get; set; } = null!;
+
+    bool HasUserAnswer => !string.IsNullOrEmpty(Note.User.Answer.Value);
+}

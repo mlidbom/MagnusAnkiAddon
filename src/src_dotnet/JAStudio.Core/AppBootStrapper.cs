@@ -86,7 +86,7 @@ public static class AppBootstrapper
 
          // Note renderers
          Singleton.For<VocabNoteRenderer>().CreatedBy(() => new VocabNoteRenderer()),
-         Singleton.For<SentenceNoteRenderer>().CreatedBy((SentenceRenderer sentenceRenderer, UdSentenceBreakdownRenderer udRenderer) => new SentenceNoteRenderer(sentenceRenderer, udRenderer)),
+         Singleton.For<SentenceNoteRenderer>().CreatedBy(() => new SentenceNoteRenderer()),
          Singleton.For<KanjiNoteRenderer>().CreatedBy(() => new KanjiNoteRenderer())
       );
 

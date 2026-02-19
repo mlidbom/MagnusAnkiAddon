@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using JAStudio.Core;
+using JAStudio.Core.Configuration;
 using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Storage.Media;
 using JAStudio.Core.UI.Web;
@@ -58,6 +59,8 @@ public class CardServer
       builder.Services.AddSingleton(_ => TemporaryServiceCollection.Instance.CoreApp.Collection.Vocab);
       builder.Services.AddSingleton(_ => TemporaryServiceCollection.Instance.ServiceLocator.Resolve<MediaFileIndex>());
       builder.Services.AddSingleton(_ => TemporaryServiceCollection.Instance.ServiceLocator.Resolve<SentenceKanjiListViewModel>());
+      builder.Services.AddSingleton(_ => TemporaryServiceCollection.Instance.ServiceLocator.Resolve<Settings>());
+      builder.Services.AddSingleton(_ => TemporaryServiceCollection.Instance.ServiceLocator.Resolve<JapaneseConfig>());
 
       builder.Services.AddCors(options =>
          options.AddDefaultPolicy(policy =>

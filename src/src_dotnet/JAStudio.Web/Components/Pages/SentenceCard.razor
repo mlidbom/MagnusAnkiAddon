@@ -1,0 +1,82 @@
+@page "/card/sentence/{Side}"
+@using JAStudio.Core.Configuration
+@using JAStudio.Core.Note
+@using JAStudio.Core.Note.Collection
+@using JAStudio.Core.Note.Sentences
+@using JAStudio.Core.UI.Web.Sentence
+@using JAStudio.Core.ViewModels.KanjiList
+
+<HeadContent>
+    <link rel="stylesheet" href="/css/sentence-card.css" />
+</HeadContent>
+
+@if(_note != null)
+{
+    @if(IsFront && IsListening)
+    {
+        @* Listening front: empty — Anki plays audio via mustache template *@
+    }
+    else if(IsFront)
+    {
+        <div class="card">
+            <div id="container1">
+                <div id="container2">
+                    <div class="expression">@_note.GetQuestion()</div>
+                </div>
+            </div>
+        </div>
+    } else
+    {
+        <div class="card">
+            <div id="container1">
+                <div id="container2" class="@(string.Join(" ", _note.Tags.ToStringList())) card@CardType">
+
+                    <div class="topSection">
+                        @if(!string.IsNullOrEmpty(_note.Screenshot.RawValue()))
+                        {
+                            <div class="image">@((MarkupString)_note.Screenshot.RawValue())</div>
+                        }
+
+                        <div id="answerSection">
+                            <SentenceExpression Note="_note" Config="Config" />
+
+                            <SentenceAnswer Note="_note" />
+                        </div>
+                    </div>
+
+                    <SentenceComments Note="_note" />
+
+                    <SentenceBreakdown Note="_note" Settings="Settings" Config="Config" Vocab="Vocab" KanjiListViewModelFactory="KanjiListViewModelFactory" />
+
+                </div>
+            </div>
+        </div>
+    }
+} else
+{
+    <p>Note not found (ID: @NoteId)</p>
+}
+
+@code {
+    [Parameter] public string Side { get; set; } = "";
+    [SupplyParameterFromQuery] public long? NoteId { get; set; }
+    [SupplyParameterFromQuery] public string? CardType { get; set; }
+
+    [Inject] public JPCollection Collection { get; set; } = null!;
+    [Inject] public Settings Settings { get; set; } = null!;
+    [Inject] public JapaneseConfig Config { get; set; } = null!;
+    [Inject] public VocabCollection Vocab { get; set; } = null!;
+    [Inject] public SentenceKanjiListViewModel KanjiListViewModelFactory { get; set; } = null!;
+
+    SentenceNote? _note;
+    bool IsFront => string.Equals(Side, "front", StringComparison.OrdinalIgnoreCase);
+    bool IsListening => string.Equals(CardType, CardTypes.Listening, StringComparison.OrdinalIgnoreCase);
+
+    protected override void OnParametersSet()
+    {
+        if(NoteId is {} id)
+        {
+            _note = Collection.NoteFromExternalId(id) as SentenceNote;
+        }
+    }
+}

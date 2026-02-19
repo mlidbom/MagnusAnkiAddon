@@ -1,0 +1,29 @@
+@using JAStudio.Core.Configuration
+@using JAStudio.Core.Note.Collection
+@using JAStudio.Core.Note.Sentences
+@using JAStudio.Core.UI.Web.Sentence
+@using JAStudio.Core.ViewModels.KanjiList
+
+@{
+    var sentenceAnalysis = new SentenceViewModel(Note, Settings, Vocab);
+}
+
+<div class="breakdown page_section">
+    <div class="page_section_title">Sentence breakdown  #  <SentenceViewSettings Config="Config" /></div>
+    <ul class="sentenceVocabList userExtra depth1">
+        @foreach(var match in sentenceAnalysis.DisplayedMatches)
+        {
+            <SentenceBreakdownEntry Match="match" Settings="Settings" KanjiListViewModelFactory="KanjiListViewModelFactory" />
+        }
+    </ul>
+</div>
+
+<SentenceTokens Analysis="sentenceAnalysis.Analysis" Settings="Settings" />
+
+@code {
+    [Parameter, EditorRequired] public SentenceNote Note { get; set; } = null!;
+    [Parameter, EditorRequired] public Settings Settings { get; set; } = null!;
+    [Parameter, EditorRequired] public JapaneseConfig Config { get; set; } = null!;
+    [Parameter, EditorRequired] public VocabCollection Vocab { get; set; } = null!;
+    [Parameter, EditorRequired] public SentenceKanjiListViewModel KanjiListViewModelFactory { get; set; } = null!;
+}

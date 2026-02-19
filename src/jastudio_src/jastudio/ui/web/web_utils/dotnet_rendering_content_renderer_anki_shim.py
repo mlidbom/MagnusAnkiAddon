@@ -31,5 +31,5 @@ class DotNetPrerenderingContentRendererAnkiShim[TNote: JPNote](Slots):
         if not isinstance(note, self._cls):
             return html
 
-        card_template_name: str = card.template()["name"]  # pyright: ignore[reportAny]
+        card_template_name = str(card.template()["name"])  # pyright: ignore[reportAny]
         return self._renderer.Render(note, html, type_of_display, card_template_name)

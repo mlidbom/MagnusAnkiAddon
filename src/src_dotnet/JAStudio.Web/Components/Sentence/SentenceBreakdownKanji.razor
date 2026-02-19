@@ -1,0 +1,28 @@
+@using JAStudio.Core.UI.Web.Sentence
+@using JAStudio.Core.ViewModels.KanjiList
+
+@if(Match.ShowKanji)
+{
+    var viewModel = KanjiListViewModelFactory.Create(Match.Kanji);
+    <div class="vocab_kanji_list">
+        @foreach(var kanji in viewModel.KanjiList)
+        {
+            <div class="kanji_item @(string.Join(" ", kanji.Kanji.GetMetaTags()))">
+                <div class="kanji_main">
+                    <span class="kanji_kanji clipboard">@kanji.Question()</span>
+                    <span class="kanji_answer">@kanji.Answer()</span>
+                    <span class="kanji_readings">@((MarkupString)kanji.Readings())</span>
+                </div>
+                @if(Match.ShowKanjiMnemonics && !string.IsNullOrEmpty(kanji.Mnemonic()))
+                {
+                    <div class="kanji_mnemonic">@((MarkupString)kanji.Mnemonic())</div>
+                }
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public MatchViewModel Match { get; set; } = null!;
+    [Parameter, EditorRequired] public SentenceKanjiListViewModel KanjiListViewModelFactory { get; set; } = null!;
+}

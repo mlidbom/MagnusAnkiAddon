@@ -6,7 +6,7 @@ from JAStudio.Core.Note.Vocabulary import VocabNote
 from JAStudio.Core.Note.Sentences import SentenceConfiguration, SentenceNote
 from JAStudio.Core.Note import NoteId
 from JAStudio.Core.LanguageServices.JanomeEx.WordExtraction.Matches import Match, VocabMatch
-from JAStudio.Core.UI.Web import PreRenderingContentRenderer_1
+from JAStudio.Core.UI.Web import AppendingPrerenderer_1
 
 class CandidateWordVariantViewModel:
     def __init__(self, variant: CandidateWordVariant, settings: Settings, vocab: VocabCollection) -> None: ...
@@ -107,7 +107,8 @@ class MatchViewModel:
 
 
 class SentenceNoteRenderer:
-    def CreateRenderer(self) -> PreRenderingContentRenderer_1[SentenceNote]: ...
+    def __init__(self) -> None: ...
+    def CreateRenderer(self) -> AppendingPrerenderer_1[SentenceNote]: ...
 
 
 class SentenceViewModel:
