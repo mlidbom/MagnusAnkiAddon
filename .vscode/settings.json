@@ -21,14 +21,18 @@
         "submodules/Compze/Compze.InternalizedSourceReferences/**": true,
         "submodules/pythonnet-stub-generator/**": true,
         ".idea/**": true,
-        "typings/**": true
+        "typings/**": true,
+        "**/obj/**": true,
+        "**/bin/**": true
     },
     "files.watcherExclude": {
         "src/jas_database/**": true,
         "submodules/Compze/Compze.InternalizedSourceReferences/**": true,
         "submodules/pythonnet-stub-generator/**": true,
         ".idea/**": true,
-        "typings/**": true
+        "typings/**": true,
+        "**/obj/**": true,
+        "**/bin/**": true
     },
     "python.analysis.inlayHints.callArgumentNames": "all",
     "python.analysis.inlayHints.variableTypes": true,
