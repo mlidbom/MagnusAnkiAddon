@@ -8,14 +8,16 @@
         <div class="page_section_title">radicals</div>
         @foreach(var radical in _radicals)
         {
-            <div class="dependency @(string.Join(" ", radical.GetMetaTags()))">
-                <div class="dependency_heading">
-                    <div class="dependency_character clipboard">@radical.GetQuestion()</div>
-                    <div class="dependency_name clipboard">@radical.GetAnswer()</div>
-                    <div class="dependency_readings">@((MarkupString)HighlightPrimaryReadingSources(FormatReadings(radical)))</div>
+            <NoteLink Note="radical">
+                <div class="dependency @(string.Join(" ", radical.GetMetaTags()))">
+                    <div class="dependency_heading">
+                        <div class="dependency_character clipboard">@radical.GetQuestion()</div>
+                        <div class="dependency_name clipboard">@radical.GetAnswer()</div>
+                        <div class="dependency_readings">@((MarkupString)HighlightPrimaryReadingSources(FormatReadings(radical)))</div>
+                    </div>
+                    <div class="dependency_mnemonic">@((MarkupString)radical.ActiveMnemonic)</div>
                 </div>
-                <div class="dependency_mnemonic">@((MarkupString)radical.ActiveMnemonic)</div>
-            </div>
+            </NoteLink>
         }
     </div>
 }
