@@ -39,10 +39,9 @@ public class CardServerTests : IAsyncLifetime
    {
       var collection = _appScope.CoreApp.Collection;
       var kanjiNote = collection.Kanji.WithKanji("病")!;
-      const long fakeExternalId = 99001;
-      collection.NoteServices.ExternalNoteIdMap.Register(fakeExternalId, kanjiNote.GetId());
+      var noteId = kanjiNote.GetId();
 
-      var response = await _http.GetAsync($"{_server.BaseUrl}/card/kanji/back?NoteId={fakeExternalId}");
+      var response = await _http.GetAsync($"{_server.BaseUrl}/card/kanji/back?NoteId={noteId}");
       response.EnsureSuccessStatusCode();
 
       var html = await response.Content.ReadAsStringAsync();
@@ -56,10 +55,9 @@ public class CardServerTests : IAsyncLifetime
    {
       var collection = _appScope.CoreApp.Collection;
       var kanjiNote = collection.Kanji.WithKanji("病")!;
-      const long fakeExternalId = 99002;
-      collection.NoteServices.ExternalNoteIdMap.Register(fakeExternalId, kanjiNote.GetId());
+      var noteId = kanjiNote.GetId();
 
-      var response = await _http.GetAsync($"{_server.BaseUrl}/card/kanji/front?NoteId={fakeExternalId}");
+      var response = await _http.GetAsync($"{_server.BaseUrl}/card/kanji/front?NoteId={noteId}");
       response.EnsureSuccessStatusCode();
 
       var html = await response.Content.ReadAsStringAsync();
@@ -86,10 +84,9 @@ public class CardServerTests : IAsyncLifetime
    {
       var collection = _appScope.CoreApp.Collection;
       var vocabNote = collection.Vocab.WithQuestion("入れる")[0];
-      const long fakeExternalId = 99003;
-      collection.NoteServices.ExternalNoteIdMap.Register(fakeExternalId, vocabNote.GetId());
+      var noteId = vocabNote.GetId();
 
-      var response = await _http.GetAsync($"{_server.BaseUrl}/card/vocab/front?NoteId={fakeExternalId}");
+      var response = await _http.GetAsync($"{_server.BaseUrl}/card/vocab/front?NoteId={noteId}");
       response.EnsureSuccessStatusCode();
 
       var html = await response.Content.ReadAsStringAsync();

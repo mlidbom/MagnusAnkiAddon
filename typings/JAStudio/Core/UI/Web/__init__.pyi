@@ -1,5 +1,5 @@
 import typing, abc
-from System import Func_4, Func_2
+from System import Func_5, Func_2
 from System.Collections.Generic import Dictionary_2
 
 class AppendingPrerenderer_GenericClasses(abc.ABCMeta):
@@ -10,7 +10,7 @@ AppendingPrerenderer : AppendingPrerenderer_GenericClasses
 
 AppendingPrerenderer_1_TNote = typing.TypeVar('AppendingPrerenderer_1_TNote')
 class AppendingPrerenderer_1(typing.Generic[AppendingPrerenderer_1_TNote]):
-    def __init__(self, renderIframe: Func_4[AppendingPrerenderer_1_TNote, str, str, str]) -> None: ...
+    def __init__(self, renderIframe: Func_5[AppendingPrerenderer_1_TNote, str, str, str, str]) -> None: ...
     def Render(self, note: AppendingPrerenderer_1_TNote, html: str, typeOfDisplay: str, cardTemplateName: str) -> str: ...
 
 

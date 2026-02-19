@@ -64,7 +64,7 @@
 
 @code {
     [Parameter] public string Side { get; set; } = "";
-    [SupplyParameterFromQuery] public long? NoteId { get; set; }
+    [SupplyParameterFromQuery] public string? NoteId { get; set; }
     [SupplyParameterFromQuery] public string? CardType { get; set; }
 
     [Inject] public JPCollection Collection { get; set; } = null!;
@@ -81,7 +81,7 @@
     {
         if(NoteId is {} id)
         {
-            _note = Collection.NoteFromExternalId(id) as SentenceNote;
+            _note = Collection.NoteFromNoteId(JAStudio.Core.Note.NoteId.Parse(id)) as SentenceNote;
         }
     }
 }

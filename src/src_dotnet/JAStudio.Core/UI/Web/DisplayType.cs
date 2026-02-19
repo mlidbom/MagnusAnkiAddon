@@ -20,4 +20,6 @@ static class DisplayType
    public static bool IsDisplayingReviewQuestion(string displayType) => displayType == ReviewQuestion;
 
    public static bool IsDisplayingReviewAnswer(string displayType) => displayType == ReviewAnswer;
+
+   public static bool IsReview(string displayType) => displayType.StartsWith("review");
 }

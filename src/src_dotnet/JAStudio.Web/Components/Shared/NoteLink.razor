@@ -1,0 +1,44 @@
+@using JAStudio.Core.Note
+@using JAStudio.Core.Note.Vocabulary
+@using JAStudio.Core.Note.Sentences
+@using Microsoft.AspNetCore.WebUtilities
+
+<a class="note-link" href="@CardUrl()" @onclick="Navigate" @onclick:preventDefault>@ChildContent</a>
+
+@code {
+    [Parameter, EditorRequired] public JPNote Note { get; set; } = null!;
+    [Parameter, EditorRequired] public RenderFragment ChildContent { get; set; } = null!;
+
+    [Inject] public NavigationManager Navigation { get; set; } = null!;
+    [Inject] public IHttpClientFactory HttpClientFactory { get; set; } = null!;
+
+    string NoteType => Note switch
+    {
+        VocabNote => "vocab",
+        KanjiNote => "kanji",
+        SentenceNote => "sentence",
+        _ => "vocab"
+    };
+
+    string CardUrl() => $"/card/{NoteType}/back?NoteId={Note.GetId()}";
+
+    bool IsReviewContext()
+    {
+        var uri = new Uri(Navigation.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+        return query.TryGetValue("DisplayContext", out var value) && value == "review";
+    }
+
+    async Task Navigate()
+    {
+        if(IsReviewContext())
+        {
+            using var http = HttpClientFactory.CreateClient();
+            await http.GetAsync($"{Navigation.BaseUri}api/open-in-browser/{NoteType}/{Note.GetId()}");
+        }
+        else
+        {
+            Navigation.NavigateTo(CardUrl());
+        }
+    }
+}

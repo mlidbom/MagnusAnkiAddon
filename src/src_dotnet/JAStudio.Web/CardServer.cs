@@ -1,6 +1,8 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using JAStudio.Core;
@@ -29,7 +31,8 @@ public class CardServer
    public string BaseUrl => $"http://localhost:{Port}";
 
    /// <summary>
-   /// Starts the Kestrel web server on a random available port.
+   /// Starts the Kestrel web server, reusing the previously saved port if available.
+   /// Falls back to an OS-assigned port if the saved port is unavailable.
    /// Call from Python on addon startup.
    /// </summary>
    // ReSharper disable once UnusedMember.Global — called from Python
@@ -38,6 +41,25 @@ public class CardServer
       // Prevent ASP.NET from scanning for hosting startup assemblies (we're hosted in Anki's process)
       Environment.SetEnvironmentVariable("ASPNETCORE_PREVENTHOSTINGSTARTUP", "true");
 
+      var preferredPort = LoadSavedPort();
+      if(preferredPort > 0)
+      {
+         try
+         {
+            StartOnPort(preferredPort);
+            return;
+         }
+         catch(IOException)
+         {
+            Console.WriteLine($"[CardServer] Port {preferredPort} unavailable, falling back to OS-assigned port");
+         }
+      }
+
+      StartOnPort(0);
+   }
+
+   void StartOnPort(int port)
+   {
       var assemblyDir = Path.GetDirectoryName(typeof(CardServer).Assembly.Location)!;
       var builder = WebApplication.CreateBuilder(new WebApplicationOptions
       {
@@ -46,11 +68,13 @@ public class CardServer
          ContentRootPath = assemblyDir,
          WebRootPath = Path.Combine(assemblyDir, "wwwroot"),
       });
-      builder.WebHost.ConfigureKestrel(options => options.Listen(System.Net.IPAddress.Loopback, 0));
+      builder.WebHost.ConfigureKestrel(options => options.Listen(IPAddress.Loopback, port));
       builder.WebHost.UseStaticWebAssets();
 
       builder.Services.AddRazorComponents()
                       .AddInteractiveServerComponents();
+
+      builder.Services.AddHttpClient();
 
       // Bridge domain services from the Compze service locator into Blazor DI.
       // These are singletons managed by the Core bootstrapper.
@@ -114,12 +138,22 @@ public class CardServer
          return Results.File(attachment.FilePath, contentType, enableRangeProcessing: true);
       });
 
+      // API endpoint for opening a note card in the system browser.
+      // Called by NoteLink when clicked during review mode (avoids navigating away from the reviewed card).
+      _app.MapGet("/api/open-in-browser/{noteType}/{noteId}", (string noteType, string noteId) =>
+      {
+         var url = $"{BaseUrl}/card/{noteType}/back?NoteId={noteId}";
+         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+         return Results.Ok();
+      });
+
       _app.RunAsync();
 
       // Resolve the actual port assigned by the OS
       var address = _app.Urls.First();
       Port = new Uri(address).Port;
       CardServerUrl.BaseUrl = BaseUrl;
+      SavePort(Port);
       Console.WriteLine($"[CardServer] Listening on {BaseUrl}");
    }
 
@@ -135,6 +169,42 @@ public class CardServer
          await _app.DisposeAsync();
          _app = null;
          Console.WriteLine("[CardServer] Stopped");
+      }
+   }
+
+   static string PortFilePath => Path.Combine(
+      Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+      "JAStudio",
+      "cardserver-port.txt");
+
+   /// <summary>
+   /// Returns the previously saved port, or 0 (let OS pick) if none saved or the saved port is unavailable.
+   /// </summary>
+   static int LoadSavedPort()
+   {
+      try
+      {
+         if(!File.Exists(PortFilePath)) return 0;
+         var text = File.ReadAllText(PortFilePath).Trim();
+         return int.TryParse(text, out var port) && port > 0 ? port : 0;
+      }
+      catch
+      {
+         return 0;
+      }
+   }
+
+   static void SavePort(int port)
+   {
+      try
+      {
+         var dir = Path.GetDirectoryName(PortFilePath)!;
+         Directory.CreateDirectory(dir);
+         File.WriteAllText(PortFilePath, port.ToString());
+      }
+      catch(Exception ex)
+      {
+         Console.WriteLine($"[CardServer] Failed to save port: {ex.Message}");
       }
    }
 }

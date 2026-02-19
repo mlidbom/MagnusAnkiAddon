@@ -10,21 +10,23 @@
             <div>
                 @foreach(var vocab in Vocabs)
                 {
-                    <div class="relatedVocab @(string.Join(" ", vocab.GetMetaTags()))">
-                        @{ var bestAudio = AudioSelector.SelectBest(vocab.Media.Audio); }
-                        @if(bestAudio != null)
-                        {
-                            <audio src="/media/@bestAudio.Id"></audio><a class="play-button"></a>
-                        }
-                        <span class="question clipboard">@vocab.Question.DisambiguationName</span>
-                        @{ var readings = string.Join(", ", vocab.GetReadings()); }
-                        @if(ShowReadings && readings != vocab.GetQuestion())
-                        {
-                            <span class="clipboard vocabReading">@readings</span>
-                        }
-                        @((MarkupString)vocab.MetaData.MetaTagsHtml(noSentenceStatistics: NoSentenceStatistics))
-                        <span class="meaning"> @((MarkupString)vocab.GetAnswer())</span>
-                    </div>
+                    <NoteLink Note="vocab">
+                        <div class="relatedVocab @(string.Join(" ", vocab.GetMetaTags()))">
+                            @{ var bestAudio = AudioSelector.SelectBest(vocab.Media.Audio); }
+                            @if(bestAudio != null)
+                            {
+                                <audio src="/media/@bestAudio.Id"></audio><a class="play-button"></a>
+                            }
+                            <span class="question clipboard">@vocab.Question.DisambiguationName</span>
+                            @{ var readings = string.Join(", ", vocab.GetReadings()); }
+                            @if(ShowReadings && readings != vocab.GetQuestion())
+                            {
+                                <span class="clipboard vocabReading">@readings</span>
+                            }
+                            @((MarkupString)vocab.MetaData.MetaTagsHtml(noSentenceStatistics: NoSentenceStatistics))
+                            <span class="meaning"> @((MarkupString)vocab.GetAnswer())</span>
+                        </div>
+                    </NoteLink>
                 }
             </div>
         </div>

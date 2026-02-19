@@ -9,7 +9,9 @@
         {
             <audio src="/media/@bestAudio.Id"></audio><a class="play-button"></a>
         }
-        <span class="vocabQuestion clipboard">@CompoundPart.Question</span>
+        <NoteLink Note="CompoundPart.VocabNote">
+            <span class="vocabQuestion clipboard">@CompoundPart.Question</span>
+        </NoteLink>
         @if(CompoundPart.DisplayReadings)
         {
             <span class="vocabHitReadings clipboard">@CompoundPart.Readings</span>

@@ -10,11 +10,11 @@ public class VocabNoteRenderer
    // ReSharper disable once UnusedMember.Global called from python
    public AppendingPrerenderer<VocabNote> CreateRenderer() => new(RenderIframe);
 
-   static string RenderIframe(VocabNote note, string cardTemplateName, string side)
+   static string RenderIframe(VocabNote note, string cardTemplateName, string side, string displayContext)
    {
       var baseUrl = CardServerUrl.BaseUrl;
       if(baseUrl == null) return "<!-- CardServer not running -->";
-      var externalId = note.Collection.GetExternalNoteId(note.GetId());
-      return $"""<iframe src="{baseUrl}/card/vocab/{side}?NoteId={externalId}&CardType={cardTemplateName}" style="position:fixed;inset:0;width:100%;height:100%;border:none;" frameborder="0"></iframe>""";
+      var noteId = note.GetId();
+      return $"""<iframe src="{baseUrl}/card/vocab/{side}?NoteId={noteId}&CardType={cardTemplateName}&DisplayContext={displayContext}" style="position:fixed;inset:0;width:100%;height:100%;border:none;" frameborder="0"></iframe>""";
    }
 }

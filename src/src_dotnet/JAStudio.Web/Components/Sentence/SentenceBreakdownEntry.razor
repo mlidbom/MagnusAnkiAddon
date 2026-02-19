@@ -12,7 +12,16 @@
         {
             <audio src="/media/@bestAudio.Id"></audio><a class="play-button"></a>
         }
-        <span class="vocabQuestion clipboard">@Match.ParsedForm</span>
+        @if(Match.VocabMatch != null)
+        {
+            <NoteLink Note="Match.VocabMatch.Vocab">
+                <span class="vocabQuestion clipboard">@Match.ParsedForm</span>
+            </NoteLink>
+        }
+        else
+        {
+            <span class="vocabQuestion clipboard">@Match.ParsedForm</span>
+        }
         @if(Match.DisplayVocabForm)
         {
             <span class="vocabHitForm clipboard">@Match.VocabForm</span>

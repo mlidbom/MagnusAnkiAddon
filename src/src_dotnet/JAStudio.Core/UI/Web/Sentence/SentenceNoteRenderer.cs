@@ -10,11 +10,11 @@ public class SentenceNoteRenderer
    // ReSharper disable once UnusedMember.Global called from python
    public AppendingPrerenderer<SentenceNote> CreateRenderer() => new(RenderIframe);
 
-   static string RenderIframe(SentenceNote note, string cardTemplateName, string side)
+   static string RenderIframe(SentenceNote note, string cardTemplateName, string side, string displayContext)
    {
       var baseUrl = CardServerUrl.BaseUrl;
       if(baseUrl == null) return "<!-- CardServer not running -->";
-      var externalId = note.Collection.GetExternalNoteId(note.GetId());
-      return $"""<iframe src="{baseUrl}/card/sentence/{side}?NoteId={externalId}&CardType={cardTemplateName}" style="position:fixed;inset:0;width:100%;height:100%;border:none;" frameborder="0"></iframe>""";
+      var noteId = note.GetId();
+      return $"""<iframe src="{baseUrl}/card/sentence/{side}?NoteId={noteId}&CardType={cardTemplateName}&DisplayContext={displayContext}" style="position:fixed;inset:0;width:100%;height:100%;border:none;" frameborder="0"></iframe>""";
    }
 }
