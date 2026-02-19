@@ -103,6 +103,11 @@ public class CardServer
             ".ogg" => "audio/ogg",
             ".wav" => "audio/wav",
             ".m4a" => "audio/mp4",
+            ".jpg" or ".jpeg" => "image/jpeg",
+            ".png" => "image/png",
+            ".gif" => "image/gif",
+            ".webp" => "image/webp",
+            ".svg" => "image/svg+xml",
             _ => "application/octet-stream"
          };
 

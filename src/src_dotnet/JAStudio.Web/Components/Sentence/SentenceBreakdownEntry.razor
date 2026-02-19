@@ -1,11 +1,17 @@
 @using JAStudio.Core.Configuration
+@using JAStudio.Core.Storage.Media
 @using JAStudio.Core.UI.Web.Sentence
 @using JAStudio.Core.ViewModels.KanjiList
+@using JAStudio.Web
 
 <li class="sentenceVocabEntry depth1 word_priority_very_high @Match.MetaTagsString">
     <div class="sentenceVocabEntryDiv">
         <SentenceInvalidForDisplay Match="Match" Settings="Settings" />
-        <audio src="@Match.AudioPath"></audio><a class="play-button"></a>
+        @{ var bestAudio = Match.VocabMatch != null ? AudioSelector.SelectBest(Match.VocabMatch.Vocab.Media.Audio) : null; }
+        @if(bestAudio != null)
+        {
+            <audio src="/media/@bestAudio.Id"></audio><a class="play-button"></a>
+        }
         <span class="vocabQuestion clipboard">@Match.ParsedForm</span>
         @if(Match.DisplayVocabForm)
         {

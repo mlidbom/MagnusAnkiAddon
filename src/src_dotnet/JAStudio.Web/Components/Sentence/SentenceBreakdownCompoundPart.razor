@@ -1,8 +1,14 @@
+@using JAStudio.Core.Storage.Media
 @using JAStudio.Core.UI.Web.Sentence
+@using JAStudio.Web
 
 <li class="sentenceVocabEntry compound_part @CompoundPart.MetaTagsString">
     <div class="sentenceVocabEntryDiv">
-        <audio src="@CompoundPart.AudioPath"></audio><a class="play-button"></a>
+        @{ var bestAudio = AudioSelector.SelectBest(CompoundPart.VocabNote.Media.Audio); }
+        @if(bestAudio != null)
+        {
+            <audio src="/media/@bestAudio.Id"></audio><a class="play-button"></a>
+        }
         <span class="vocabQuestion clipboard">@CompoundPart.Question</span>
         @if(CompoundPart.DisplayReadings)
         {

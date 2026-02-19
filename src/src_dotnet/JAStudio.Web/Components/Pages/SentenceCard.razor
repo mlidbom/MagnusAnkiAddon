@@ -32,9 +32,14 @@
                 <div id="container2" class="@(string.Join(" ", _note.Tags.ToStringList())) card@CardType">
 
                     <div class="topSection">
-                        @if(!string.IsNullOrEmpty(_note.Screenshot.RawValue()))
+                        @if(_note.Media.Images.Count > 0)
                         {
-                            <div class="image">@((MarkupString)_note.Screenshot.RawValue())</div>
+                            <div class="image">
+                                @foreach(var image in _note.Media.Images)
+                                {
+                                    <img src="/media/@image.Id" />
+                                }
+                            </div>
                         }
 
                         <div id="answerSection">
