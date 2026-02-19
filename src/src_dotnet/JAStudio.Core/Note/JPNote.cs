@@ -132,7 +132,7 @@ public abstract class JPNote
 
    public abstract List<MediaReference> MediaReferences { get; }
 
-   public abstract CorpusDataBase ToCorpusData();
+   public abstract CorpusObjectData ToCorpusData();
 
    byte[] TakeSnapshot() => MemoryPackSerializer.Serialize(ToCorpusData());
 

@@ -10,7 +10,7 @@ using MemoryPack;
 namespace JAStudio.Core.Note.CorpusData;
 
 [MemoryPackable]
-public partial class VocabData : CorpusDataBase
+public partial class VocabData : CorpusObjectData
 {
    static readonly VocabNoteMatchingRulesSerializer MatchingRulesSerializer = new();
    static readonly IObjectSerializer<RelatedVocabData> RelatedVocabSerializer = RelatedVocabData.Serializer();

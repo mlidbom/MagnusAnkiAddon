@@ -55,7 +55,7 @@ public class SentenceNote : JPNote
       Services.Collection.Sentences.Cache.JpNoteUpdated(this);
    }
 
-   public override CorpusDataBase ToCorpusData() => SentenceNoteConverter.ToCorpusData(this);
+   public override CorpusObjectData ToCorpusData() => SentenceNoteConverter.ToCorpusData(this);
 
    public override List<MediaReference> MediaReferences
    {

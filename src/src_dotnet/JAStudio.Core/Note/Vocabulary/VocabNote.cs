@@ -67,7 +67,7 @@ public class VocabNote : JPNote
       Services.Collection.Vocab.Cache.JpNoteUpdated(this);
    }
 
-   public override CorpusDataBase ToCorpusData() => VocabNoteConverter.ToCorpusData(this);
+   public override CorpusObjectData ToCorpusData() => VocabNoteConverter.ToCorpusData(this);
 
    public override string GetQuestion() => Question.Raw;
 

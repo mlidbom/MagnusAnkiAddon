@@ -5,7 +5,7 @@ using MemoryPack;
 namespace JAStudio.Core.Note.CorpusData;
 
 [MemoryPackable]
-public partial class KanjiData : CorpusDataBase
+public partial class KanjiData : CorpusObjectData
 {
    public string Kanji { get; init; } = string.Empty;
    public string SourceAnswer { get; init; } = string.Empty;

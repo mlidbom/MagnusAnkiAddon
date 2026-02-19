@@ -65,7 +65,7 @@ public class KanjiNote : JPNote
       Services.Collection.Kanji.Cache.JpNoteUpdated(this);
    }
 
-   public override CorpusDataBase ToCorpusData() => KanjiNoteConverter.ToCorpusData(this);
+   public override CorpusObjectData ToCorpusData() => KanjiNoteConverter.ToCorpusData(this);
 
    public override string GetQuestion() => _question.Value;
 

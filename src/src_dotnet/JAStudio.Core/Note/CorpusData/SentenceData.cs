@@ -10,7 +10,7 @@ using MemoryPack;
 namespace JAStudio.Core.Note.CorpusData;
 
 [MemoryPackable]
-public partial class SentenceData : CorpusDataBase
+public partial class SentenceData : CorpusObjectData
 {
    static readonly ISentenceConfigurationSerializer ConfigSerializer = ISentenceConfigurationSerializer.Instance;
    static readonly ParsingResultSerializer ParsingSerializer = new();

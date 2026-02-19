@@ -12,7 +12,7 @@ namespace JAStudio.Core.Note.CorpusData;
 [MemoryPackUnion(0, typeof(VocabData))]
 [MemoryPackUnion(1, typeof(KanjiData))]
 [MemoryPackUnion(2, typeof(SentenceData))]
-public abstract partial class CorpusDataBase : IIdentifiableByGuid
+public abstract partial class CorpusObjectData : IIdentifiableByGuid
 {
    public Guid Id { get; init; }
    public List<string> Tags { get; init; } = [];
