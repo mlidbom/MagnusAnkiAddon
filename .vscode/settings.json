@@ -13,7 +13,22 @@
     "python.terminal.activateEnvironment": true,
     "python.terminal.activateEnvInCurrentTerminal": true,
     "search.exclude": {
-        "**/language_services/english_dictionary/**": true
+        "**/language_services/english_dictionary/**": true,
+        "src/jas_database/**": true
+    },
+    "files.exclude": {
+        "src/jas_database/**": true,
+        "submodules/Compze/Compze.InternalizedSourceReferences/**": true,
+        "submodules/pythonnet-stub-generator/**": true,
+        ".idea/**": true,
+        "typings/**": true
+    },
+    "files.watcherExclude": {
+        "src/jas_database/**": true,
+        "submodules/Compze/Compze.InternalizedSourceReferences/**": true,
+        "submodules/pythonnet-stub-generator/**": true,
+        ".idea/**": true,
+        "typings/**": true
     },
     "python.analysis.inlayHints.callArgumentNames": "all",
     "python.analysis.inlayHints.variableTypes": true,
