@@ -204,8 +204,10 @@ public class FileSystemNoteRepositoryTests : SpecificationUsingACollection, IDis
       var loaded = _repo.LoadAll();
       AssertAllNotesDataMatch(allData, loaded);
 
-      // Snapshot should have been created
-      Assert.True(File.Exists(Path.Combine(_tempDir, "snapshot.bin")));
+      // Per-type snapshots should have been created
+      Assert.True(File.Exists(Path.Combine(_tempDir, "kanji", "snapshot.bin")));
+      Assert.True(File.Exists(Path.Combine(_tempDir, "vocab", "snapshot.bin")));
+      Assert.True(File.Exists(Path.Combine(_tempDir, "sentences", "snapshot.bin")));
    }
 
    // --- Helpers ---

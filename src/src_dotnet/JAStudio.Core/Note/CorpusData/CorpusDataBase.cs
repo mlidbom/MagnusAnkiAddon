@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using JAStudio.Core.Storage;
 using MemoryPack;
 
 namespace JAStudio.Core.Note.CorpusData;
@@ -11,7 +12,7 @@ namespace JAStudio.Core.Note.CorpusData;
 [MemoryPackUnion(0, typeof(VocabData))]
 [MemoryPackUnion(1, typeof(KanjiData))]
 [MemoryPackUnion(2, typeof(SentenceData))]
-public abstract partial class CorpusDataBase
+public abstract partial class CorpusDataBase : IIdentifiableByGuid
 {
    public Guid Id { get; init; }
    public List<string> Tags { get; init; } = [];
