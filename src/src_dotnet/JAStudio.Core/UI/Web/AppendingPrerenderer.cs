@@ -15,6 +15,10 @@ public class AppendingPrerenderer<TNote> where TNote : JPNote
    readonly Func<TNote, string, string, string> _renderIframe;
    Task<string>? _prerenderedTask;
 
+   static string HostStylesheet => CardServerUrl.BaseUrl is {} baseUrl
+      ? $"""<link rel="stylesheet" href="{baseUrl}/css/jas_anki_card_template_styles.css">"""
+      : "";
+
    /// <param name="renderIframe">Given a note, card template name, and side (front/back), returns the iframe HTML.</param>
    public AppendingPrerenderer(Func<TNote, string, string, string> renderIframe) => _renderIframe = renderIframe;
 
@@ -51,7 +55,7 @@ public class AppendingPrerenderer<TNote> where TNote : JPNote
    {
       using(StopWatch.LogWarningIfSlowerThan(0.5, "prerendering"))
       {
-         return _renderIframe(note, cardTemplateName, side);
+         return HostStylesheet + _renderIframe(note, cardTemplateName, side);
       }
    }
 
