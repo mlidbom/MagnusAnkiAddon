@@ -34,21 +34,16 @@ public class JPCollection
       return Sentences.WithIdOrNone(noteId);
    }
 
-   /// <summary>
-   /// Look up a note by its external long ID. Used at the Python boundary where
-   /// only external IDs are available (e.g. from card.nid, note.id).
-   /// </summary>
+   /// <summary> Look up a note by its external long ID./// </summary>
+   // ReSharper disable once UnusedMember.Global called from python
    public JPNote? NoteFromExternalId(long externalNoteId)
    {
       var noteId = NoteServices.ExternalNoteIdMap.FromExternalId(externalNoteId);
       return noteId != null ? NoteFromNoteId(noteId) : null;
    }
 
-   /// <summary>
-   /// Returns the external long note ID for the given domain NoteId.
-   /// Used at the Python boundary where the external numeric ID is needed.
-   /// Returns 0 if no mapping found.
-   /// </summary>
+   /// <summary> Returns the external long note ID for the given domain NoteId. Returns 0 if no mapping is found.</summary>
+   // ReSharper disable once UnusedMember.Global called from python
    public long GetExternalNoteId(NoteId noteId) => NoteServices.ExternalNoteIdMap.ToExternalId(noteId) ?? 0;
 
    public NoteServices NoteServices { get; }
@@ -56,10 +51,8 @@ public class JPCollection
    public DictLookup DictLookup { get; }
    public VocabNoteGeneratedData VocabNoteGeneratedData { get; }
 
-   public void UpdateCardStudyingStatus(long cardId)
-   {
-      throw new NotImplementedException();
-   }
+   // ReSharper disable once UnusedMember.Global called from python
+   public void UpdateCardStudyingStatus(long cardId) => throw new NotImplementedException();
 
    public JPCollection(
       IBackendNoteCreator backendNoteCreator,
