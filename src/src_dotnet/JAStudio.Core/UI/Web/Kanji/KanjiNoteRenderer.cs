@@ -1,27 +1,20 @@
-using System;
-using System.Collections.Generic;
 using JAStudio.Core.Note;
 
 namespace JAStudio.Core.UI.Web.Kanji;
 
 /// <summary>
-/// Factory for creating PreRenderingContentRenderer with KanjiNote tag mappings.
+/// Creates an AppendingPrerenderer that renders the Blazor iframe for kanji cards.
 /// </summary>
 public class KanjiNoteRenderer
 {
-   readonly KanjiListRenderer _kanjiListRenderer;
+   // ReSharper disable once UnusedMember.Global called from python
+   public AppendingPrerenderer<KanjiNote> CreateRenderer() => new(RenderIframe);
 
-   internal KanjiNoteRenderer(KanjiListRenderer kanjiListRenderer) => _kanjiListRenderer = kanjiListRenderer;
-
-   public PreRenderingContentRenderer<KanjiNote> CreateRenderer()
+   static string RenderIframe(KanjiNote note, string cardTemplateName, string side, string displayContext)
    {
-      return new PreRenderingContentRenderer<KanjiNote>(new Dictionary<string, Func<KanjiNote, string>>
-                                                        {
-                                                           ["##DEPENDENCIES_LIST##"] = DependenciesRenderer.RenderDependenciesList,
-                                                           ["##MNEMONIC##"] = MnemonicRenderer.RenderMnemonic,
-                                                           ["##KANJI_READINGS##"] = ReadingsRenderer.RenderKatakanaOnyomi,
-                                                           ["##VOCAB_LIST##"] = VocabListRenderer.GenerateVocabHtmlList,
-                                                           ["##KANJI_LIST##"] = note => _kanjiListRenderer.KanjiKanjiList(note),
-                                                        });
+      var baseUrl = CardServerUrl.BaseUrl;
+      if(baseUrl == null) return "<!-- CardServer not running -->";
+      var noteId = note.GetId();
+      return $"""<iframe src="{baseUrl}/card/kanji/{side}?NoteId={noteId}&CardType={cardTemplateName}&DisplayContext={displayContext}" style="position:fixed;inset:0;width:100%;height:100%;border:none;" frameborder="0"></iframe>""";
    }
 }

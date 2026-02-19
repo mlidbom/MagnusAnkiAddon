@@ -1,0 +1,10 @@
+@using JAStudio.Core.Note.Vocabulary
+
+@if(!string.IsNullOrEmpty(Note.User.Explanation.Value))
+{
+    <div id="__explanation" class="user">@((MarkupString)Note.User.Explanation.Value)</div>
+}
+
+@code {
+    [Parameter, EditorRequired] public VocabNote Note { get; set; } = null!;
+}

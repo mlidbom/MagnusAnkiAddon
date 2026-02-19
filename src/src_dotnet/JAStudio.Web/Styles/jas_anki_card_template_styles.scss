@@ -1,0 +1,9 @@
+// Minimal styles for the Anki card webview (the host page that contains the Blazor iframe).
+// Prevents white flash while the iframe loads by setting the background color immediately.
+// Link this CSS in the "Styling" section of each Anki note type.
+@import "_010_colors.scss";
+
+html, body {
+   margin: 0;
+   background: var(--colorBgCard);
+}

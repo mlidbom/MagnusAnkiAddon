@@ -16,9 +16,6 @@ if typing.TYPE_CHECKING:
     from JAStudio.Core.Note import JPNote
     from PyQt6.QtWidgets import QMenu
 
-def build_browser_right_click_menu(root_menu: QMenu, note: JPNote) -> None:
-    build_right_click_menu(root_menu, note, "", "")
-
 def build_right_click_menu_webview_hook(view: AnkiWebView, root_menu: QMenu) -> None:
     selection = non_optional(view.page()).selectedText().strip()
     clipboard = pyperclip.paste().strip()
@@ -28,8 +25,8 @@ def build_right_click_menu_webview_hook(view: AnkiWebView, root_menu: QMenu) -> 
 
 # noinspection PyTypeHints
 def build_right_click_menu(right_click_menu: QMenu, note: JPNote | None, selection: str, clipboard: str) -> None:
-    import jastudio.ankiutils.app
-    if not jastudio.ankiutils.app.is_initialized():
+    from jastudio.ui import dotnet_ui_root
+    if not dotnet_ui_root.IsInitialized:
         right_click_menu.addAction(Mine.AppStillLoadingMessage)  # pyright: ignore[reportUnknownMemberType]
         return
 
@@ -50,7 +47,6 @@ def build_right_click_menu(right_click_menu: QMenu, note: JPNote | None, selecti
         else:
             specs = menu_builder.BuildGenericContextMenuSpec(selection, clipboard)
 
-
         qt_menu_adapter.add_to_qt_menu(right_click_menu, specs)
     except Exception as e:
         from jastudio import mylog
@@ -61,7 +57,6 @@ def build_right_click_menu(right_click_menu: QMenu, note: JPNote | None, selecti
         right_click_menu.addAction("⚠️ C# Menu Error (check console)")  # pyright: ignore[reportUnknownMemberType]
 
     ExQmenu.disable_empty_submenus(right_click_menu)
-
 
 def init() -> None:
     gui_hooks.webview_will_show_context_menu.append(build_right_click_menu_webview_hook)  # pyright: ignore[reportUnknownMemberType]

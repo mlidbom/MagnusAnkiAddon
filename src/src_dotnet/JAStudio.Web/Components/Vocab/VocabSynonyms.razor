@@ -1,0 +1,18 @@
+@using JAStudio.Core.LanguageServices
+@using JAStudio.Core.Note.Vocabulary
+
+<RelatedVocabList Vocabs="_vocabs" Title="synonyms" CssClass="similar"/>
+
+@code {
+    [Parameter, EditorRequired] public VocabNote Note { get; set; } = null!;
+
+    List<VocabNote> _vocabs = [];
+
+    protected override void OnParametersSet()
+    {
+        var synonymNotes = Note.RelatedNotes.Synonyms.Notes();
+        var perfectSynonyms = Note.RelatedNotes.PerfectSynonyms.Notes().ToHashSet();
+        synonymNotes = synonymNotes.Where(s => !perfectSynonyms.Contains(s)).ToList();
+        _vocabs = VocabNoteSorting.SortVocabListByStudyingStatus(synonymNotes);
+    }
+}

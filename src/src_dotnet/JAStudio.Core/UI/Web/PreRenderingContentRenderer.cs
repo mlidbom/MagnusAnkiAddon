@@ -22,8 +22,11 @@ public class PreRenderingContentRenderer<TNote> where TNote : JPNote
    /// <summary>
    /// Main entry point. Dispatches based on display type.
    /// </summary>
-   public string Render(TNote note, string html, string typeOfDisplay)
+   public string Render(TNote note, string html, string typeOfDisplay, string cardTemplateName)
    {
+      if(!note.Collection.IsInitialized)
+         return Mine.AppStillLoadingMessage;
+
       if(DisplayType.IsDisplayingReviewQuestion(typeOfDisplay))
       {
          SchedulePrerender(note);

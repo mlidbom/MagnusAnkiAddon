@@ -1,0 +1,57 @@
+@using System.Text.RegularExpressions
+@using JAStudio.Core.LanguageServices
+@using JAStudio.Core.Note
+@using JAStudio.Core.Note.Collection
+@using JAStudio.Core.ViewModels.KanjiList
+
+@if(_kanjiItems.Count > 0)
+{
+    <div id="kanji_list" class="page_section">
+        <div class="page_section_title">kanji</div>
+        @foreach(var kanji in _kanjiItems)
+        {
+            <div class="kanji_item @(string.Join(" ", kanji.Kanji.GetMetaTags()))">
+                <div class="kanji_main">
+                    <span class="kanji_kanji clipboard">@kanji.Question()</span>
+                    <span class="kanji_readings">@((MarkupString)HighlightInheritedReading(kanji.Readings()))</span>
+                    <span class="kanji_answer">@((MarkupString)kanji.Answer())</span>
+                </div>
+                <div class="kanji_mnemonic">@((MarkupString)kanji.Mnemonic())</div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public KanjiNote Note { get; set; } = null!;
+
+    [Inject] public KanjiCollection KanjiCollection { get; set; } = null!;
+
+    List<KanjiViewModel> _kanjiItems = [];
+
+    protected override void OnParametersSet()
+    {
+        var kanjis = KanjiCollection.WithRadical(Note.GetQuestion())
+                                    .Where(k => !Equals(k, Note))
+                                    .OrderBy(k => k.IsStudying() ? 0 : 1)
+                                    .ToList();
+        _kanjiItems = kanjis.Select(k => new KanjiViewModel(k)).ToList();
+    }
+
+    string HighlightInheritedReading(string text)
+    {
+        foreach(var reading in Note.ReadingsClean)
+        {
+            var hiragana = KanaUtils.KatakanaToHiragana(reading);
+            var katakana = KanaUtils.HiraganaToKatakana(reading);
+
+            text = Regex.Replace(text,
+                $@"\b{Regex.Escape(hiragana)}\b",
+                $"<inherited-reading>{hiragana}</inherited-reading>");
+            text = Regex.Replace(text,
+                $@"\b{Regex.Escape(katakana)}\b",
+                $"<inherited-reading>{katakana}</inherited-reading>");
+        }
+        return text;
+    }
+}

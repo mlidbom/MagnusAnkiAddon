@@ -1,11 +1,12 @@
-from JAStudio.Core.UI.Web import PreRenderingContentRenderer_1
+from JAStudio.Core.UI.Web import AppendingPrerenderer_1
 from JAStudio.Core.Note.Vocabulary import VocabNote
 from JAStudio.Core.Note.Sentences import ParsedMatch, SentenceNote, ParsingResult
 from System.Collections.Generic import List_1, HashSet_1
 from JAStudio.Core.Note import NoteId
 
 class VocabNoteRenderer:
-    def CreateRenderer(self) -> PreRenderingContentRenderer_1[VocabNote]: ...
+    def __init__(self) -> None: ...
+    def CreateRenderer(self) -> AppendingPrerenderer_1[VocabNote]: ...
 
 
 class VocabSentenceMatchViewModel:

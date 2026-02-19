@@ -1,30 +1,20 @@
-using System;
-using System.Collections.Generic;
 using JAStudio.Core.Note.Sentences;
 
 namespace JAStudio.Core.UI.Web.Sentence;
 
 /// <summary>
-/// Factory for creating PreRenderingContentRenderer with SentenceNote tag mappings.
+/// Creates an AppendingPrerenderer that renders the Blazor iframe for sentence cards.
 /// </summary>
 public class SentenceNoteRenderer
 {
-   readonly SentenceRenderer _sentenceRenderer;
-   readonly UdSentenceBreakdownRenderer _udSentenceBreakdownRenderer;
+   // ReSharper disable once UnusedMember.Global called from python
+   public AppendingPrerenderer<SentenceNote> CreateRenderer() => new(RenderIframe);
 
-   internal SentenceNoteRenderer(SentenceRenderer sentenceRenderer, UdSentenceBreakdownRenderer udSentenceBreakdownRenderer)
+   static string RenderIframe(SentenceNote note, string cardTemplateName, string side, string displayContext)
    {
-      _sentenceRenderer = sentenceRenderer;
-      _udSentenceBreakdownRenderer = udSentenceBreakdownRenderer;
-   }
-
-   public PreRenderingContentRenderer<SentenceNote> CreateRenderer()
-   {
-      return new PreRenderingContentRenderer<SentenceNote>(new Dictionary<string, Func<SentenceNote, string>>
-                                                           {
-                                                              ["##USER_QUESTION##"] = note => _sentenceRenderer.RenderUserQuestion(note),
-                                                              ["##SOURCE_QUESTION##"] = note => _sentenceRenderer.RenderSourceQuestion(note),
-                                                              ["##SENTENCE_ANALYSIS##"] = note => _udSentenceBreakdownRenderer.RenderSentenceAnalysis(note),
-                                                           });
+      var baseUrl = CardServerUrl.BaseUrl;
+      if(baseUrl == null) return "<!-- CardServer not running -->";
+      var noteId = note.GetId();
+      return $"""<iframe src="{baseUrl}/card/sentence/{side}?NoteId={noteId}&CardType={cardTemplateName}&DisplayContext={displayContext}" style="position:fixed;inset:0;width:100%;height:100%;border:none;" frameborder="0"></iframe>""";
    }
 }

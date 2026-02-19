@@ -1,0 +1,56 @@
+@using System.Text.RegularExpressions
+@using JAStudio.Core.LanguageServices
+@using JAStudio.Core.Note
+
+@if(_radicals.Count > 0)
+{
+    <div id="dependencies_list" class="page_section">
+        <div class="page_section_title">radicals</div>
+        @foreach(var radical in _radicals)
+        {
+            <NoteLink Note="radical">
+                <div class="dependency @(string.Join(" ", radical.GetMetaTags()))">
+                    <div class="dependency_heading">
+                        <div class="dependency_character clipboard">@radical.GetQuestion()</div>
+                        <div class="dependency_name clipboard">@radical.GetAnswer()</div>
+                        <div class="dependency_readings">@((MarkupString)HighlightPrimaryReadingSources(FormatReadings(radical)))</div>
+                    </div>
+                    <div class="dependency_mnemonic">@((MarkupString)radical.ActiveMnemonic)</div>
+                </div>
+            </NoteLink>
+        }
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public KanjiNote Note { get; set; } = null!;
+
+    List<KanjiNote> _radicals = [];
+
+    protected override void OnParametersSet() => _radicals = Note.GetRadicalsNotes();
+
+    string FormatReadings(KanjiNote kanji)
+    {
+        var separator = """<span class="readingsSeparator">|</span>""";
+        var readingsOn = string.Join(", ", kanji.ReadingOnListHtml.Select(KanaUtils.HiraganaToKatakana));
+        var readingsKun = string.Join(", ", kanji.ReadingKunListHtml);
+        return $"{readingsOn} {separator} {readingsKun}";
+    }
+
+    string HighlightPrimaryReadingSources(string text)
+    {
+        foreach(var reading in Note.ReadingsClean)
+        {
+            var hiragana = KanaUtils.KatakanaToHiragana(reading);
+            var katakana = KanaUtils.HiraganaToKatakana(reading);
+
+            text = Regex.Replace(text,
+                $@"\b{Regex.Escape(hiragana)}\b",
+                $"<primary-reading-source>{hiragana}</primary-reading-source>");
+            text = Regex.Replace(text,
+                $@"\b{Regex.Escape(katakana)}\b",
+                $"<primary-reading-source>{katakana}</primary-reading-source>");
+        }
+        return text;
+    }
+}

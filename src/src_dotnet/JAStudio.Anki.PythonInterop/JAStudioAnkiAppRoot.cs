@@ -10,6 +10,7 @@ using Compze.Utilities.SystemCE;
 using JAStudio.Anki;
 using JAStudio.Core;
 using JAStudio.UI;
+using JAStudio.Web;
 
 namespace JAStudio.Anki.PythonInterop;
 
@@ -17,6 +18,7 @@ namespace JAStudio.Anki.PythonInterop;
 public class JAStudioAnkiAppRoot
 {
    readonly CoreApp _coreApp;
+   readonly CardServer _cardServer = new();
    CancellationTokenSource? _reloadCts;
    static readonly TimeSpan ReloadDebounceDelay = TimeSpan.FromMilliseconds(500);
 
@@ -34,6 +36,9 @@ public class JAStudioAnkiAppRoot
 
    // ReSharper disable once UnusedAutoPropertyAccessor.Global used from python
    public PythonAnkiMenus Menus { get; }
+   
+   // ReSharper disable once UnusedAutoPropertyAccessor.Global used from python
+   public bool IsInitialized => _coreApp.Collection.IsInitialized;
 
    JAStudioAnkiAppRoot(CoreApp coreApp)
    {
@@ -74,6 +79,10 @@ public class JAStudioAnkiAppRoot
       UIApp.WaitForInitialization(TimeSpan.FromSeconds(30));
 
       var root = new JAStudioAnkiAppRoot(app) { _uiThread = uiThread };
+
+      root._coreApp.Collection.OnInitialized(() => AnkiFacade.UIUtils.Refresh());
+
+      root._cardServer.Start();
 
       return root;
    }
@@ -120,6 +129,7 @@ public class JAStudioAnkiAppRoot
    public void ShutDown()
    {
       using var _ = this.Log().Info().LogMethodExecutionTime();
+      _cardServer.StopAsync().GetAwaiter().GetResult();
       _coreApp.Dispose();
       Dispatcher.UIThread.InvokeShutdown();
    }

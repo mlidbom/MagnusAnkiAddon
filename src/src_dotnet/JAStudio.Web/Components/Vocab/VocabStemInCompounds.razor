@@ -1,0 +1,20 @@
+@using JAStudio.Core.Note.Collection
+@using JAStudio.Core.Note.Vocabulary
+
+<RelatedVocabList Vocabs="_vocabs" Title="masu stem is part of compound" CssClass="in_compound_words"/>
+
+@code {
+    [Parameter, EditorRequired] public VocabNote Note { get; set; } = null!;
+
+    [Inject] public VocabCollection VocabCollection { get; set; } = null!;
+
+    List<VocabNote> _vocabs = [];
+
+    protected override void OnParametersSet()
+    {
+        var masuStem = Note.Question.Stems().MasuStem();
+        _vocabs = masuStem != null
+                     ? VocabCollection.WithCompoundPart(masuStem).Take(30).ToList()
+                     : [];
+    }
+}

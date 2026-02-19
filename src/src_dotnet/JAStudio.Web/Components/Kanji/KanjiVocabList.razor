@@ -1,0 +1,63 @@
+@using JAStudio.Core.Note
+@using JAStudio.Core.Note.Vocabulary
+@using JAStudio.Core.Storage.Media
+@using JAStudio.Web
+
+@if(_vocabs.Count > 0)
+{
+    <div class="kanjiVocabList page_section">
+        <div class="page_section_title">vocabulary</div>
+        <div>
+            @foreach(var vocab in _vocabs)
+            {
+                <NoteLink Note="vocab">
+                    <div class="kanjiVocabEntry @CreateClasses(vocab)">
+                        @{ var bestAudio = AudioSelector.SelectBest(vocab.Media.Audio); }
+                        @if(bestAudio != null)
+                        {
+                            <audio src="/media/@bestAudio.Id"></audio><span class="play-button"></span>
+                        }
+                        <span class="kanji clipboard">@vocab.GetQuestion()</span>
+                        (<span class="clipboard vocabReading">@((MarkupString)string.Join(", ", Note.TagVocabReadings(vocab)))</span>)
+                        @((MarkupString)vocab.MetaData.MetaTagsHtml())
+                        <span class="meaning"> @((MarkupString)vocab.GetAnswer())</span>
+                    </div>
+                </NoteLink>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public KanjiNote Note { get; set; } = null!;
+
+    List<VocabNote> _vocabs = [];
+    bool _hasRealPrimaryVocabs;
+    HashSet<string> _primaryVocabs = [];
+
+    protected override void OnParametersSet()
+    {
+        _vocabs = Note.GetVocabNotesSorted();
+        _primaryVocabs = [..Note.PrimaryVocabsOrDefaults];
+        _hasRealPrimaryVocabs = Note.PrimaryVocab.Count > 0;
+    }
+
+    string CreateClasses(VocabNote vocab)
+    {
+        var classes = string.Join(" ", vocab.GetMetaTags());
+
+        var vocabReadings = vocab.GetReadings();
+        if(_primaryVocabs.Contains(vocab.GetQuestion()) ||
+           (vocabReadings.Count > 0 && Note.PrimaryVocab.Contains(vocabReadings[0])))
+        {
+            classes += _hasRealPrimaryVocabs ? " primary_vocab" : " default_primary_vocab";
+        }
+
+        if(!vocab.GetQuestion().Contains(Note.GetQuestion()))
+        {
+            classes += " not_matching_kanji";
+        }
+
+        return classes;
+    }
+}

@@ -1,0 +1,10 @@
+@using JAStudio.Core.Note
+
+<div class="mnemonics user page_section">
+    <div class="page_section_title">mnemonic</div>
+    <div>@((MarkupString)Note.ActiveMnemonic)</div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public KanjiNote Note { get; set; } = null!;
+}

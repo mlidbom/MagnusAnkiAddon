@@ -1,0 +1,26 @@
+@using JAStudio.Core.Configuration
+@using JAStudio.Core.UI.Web.Sentence
+
+@if(Settings.ShowBreakdownInEditMode() && (Match.IncorrectReasons.Count > 0 || Match.HidingReasons.Count > 0))
+{
+    <span>
+        @foreach(var reason in Match.IncorrectReasons)
+        {
+            <div class="incorrect_reason">@((MarkupString)FormatReason(reason))</div>
+        }
+        @foreach(var reason in Match.HidingReasons)
+        {
+            <div class="hiding_reason">@((MarkupString)FormatReason(reason))</div>
+        }
+    </span>
+}
+
+@code {
+    [Parameter, EditorRequired] public MatchViewModel Match { get; set; } = null!;
+    [Parameter, EditorRequired] public Settings Settings { get; set; } = null!;
+
+    static string FormatReason(string reason) =>
+        reason.Contains("configured")
+            ? $"""<span class="configured">{reason}</span>"""
+            : reason;
+}

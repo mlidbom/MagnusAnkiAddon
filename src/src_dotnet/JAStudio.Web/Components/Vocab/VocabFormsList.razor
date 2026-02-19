@@ -1,0 +1,17 @@
+@using JAStudio.Core.Note.Vocabulary
+
+@if(_vocabs.Count > 1)
+{
+    <RelatedVocabList Vocabs="_vocabs" Title="forms" CssClass="forms" NoSentenceStatistics="false"/>
+}
+
+@code {
+    [Parameter, EditorRequired] public VocabNote Note { get; set; } = null!;
+
+    List<VocabNote> _vocabs = [];
+
+    protected override void OnParametersSet()
+    {
+        _vocabs = Note.Forms.AllListNotesBySentenceCount();
+    }
+}

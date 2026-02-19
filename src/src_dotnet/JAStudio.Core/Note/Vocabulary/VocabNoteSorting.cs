@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace JAStudio.Core.Note.Vocabulary;
 
-static class VocabNoteSorting
+public static class VocabNoteSorting
 {
    public static List<VocabNote> SortVocabListByStudyingStatus(
       IEnumerable<VocabNote> vocabs,

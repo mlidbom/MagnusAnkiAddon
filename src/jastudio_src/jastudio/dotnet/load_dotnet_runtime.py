@@ -42,6 +42,7 @@ try:
                 runtime_binaries / "JAStudio.PythonInterop.dll",
                 runtime_binaries / "JAStudio.Anki.dll",
                 runtime_binaries / "JAStudio.UI.dll",
+                runtime_binaries / "JAStudio.Web.dll",
                 runtime_binaries / "JAStudio.Anki.PythonInterop.dll",
         ]
 

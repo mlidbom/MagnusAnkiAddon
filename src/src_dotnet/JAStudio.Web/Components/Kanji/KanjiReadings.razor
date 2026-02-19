@@ -1,0 +1,23 @@
+@using JAStudio.Core.LanguageServices
+@using JAStudio.Core.Note
+
+<span class="reading">@((MarkupString)OnReadings)</span> <span class="readingsSeparator">|</span>
+<span class="reading">@((MarkupString)KunReadings)</span> <span class="readingsSeparator">|</span>
+<span class="reading">@((MarkupString)NanReadings)</span>
+
+@code {
+    [Parameter, EditorRequired] public KanjiNote Note { get; set; } = null!;
+
+    string OnReadings => string.Join(", ",
+        Note.ReadingOnListHtml
+            .Select(KanaUtils.HiraganaToKatakana)
+            .Select(r => $"""<span class="clipboard">{r}</span>"""));
+
+    string KunReadings => string.Join(", ",
+        Note.ReadingKunListHtml
+            .Select(r => $"""<span class="clipboard">{r}</span>"""));
+
+    string NanReadings => string.Join(", ",
+        Note.ReadingNanListHtml
+            .Select(r => $"""<span class="clipboard">{r}</span>"""));
+}

@@ -1,0 +1,51 @@
+@using JAStudio.Core.Note
+
+<div class="front-and-answer">
+    <div class="kanjiContainer">
+        <div class="kanji">
+            ::::::::::<span class="clipboard">@Note.GetQuestion()</span>::::::::::
+            @foreach(var confused in Note.RelatedConfusedWith)
+            {
+                <text> !</text><span class="clipboard">@confused</span>
+            }
+            @foreach(var similar in Note.UserSimilarMeaning)
+            {
+                <text> =</text><span class="clipboard">@similar</span>
+            }
+        </div>
+    </div>
+
+    @if(!string.IsNullOrEmpty(Note.UserAnswer.Value))
+    {
+        <div class="meaning user">@((MarkupString)Note.UserAnswer.Value)</div>
+    }
+    else
+    {
+        <div class="meaning">@((MarkupString)Note.SourceAnswer.Value)</div>
+    }
+
+    @if(!string.IsNullOrEmpty(Note.KanjiReferences.Value))
+    {
+        <div class="reference_url">@((MarkupString)Note.KanjiReferences.Value)</div>
+    }
+
+    <div class="vocabList">
+        <div class="vocabEntry"></div>
+        <div class="vocabEntry"></div>
+        <div class="vocabEntry"></div>
+    </div>
+
+    <div>
+        <div class="itemInfo">
+            <div>
+                <div class="text">
+                    <KanjiReadings Note="Note" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public KanjiNote Note { get; set; } = null!;
+}

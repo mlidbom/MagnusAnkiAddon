@@ -4,3 +4,6 @@
 [submodule "submodules/pythonnet-stub-generator"]
 	path = submodules/pythonnet-stub-generator
 	url = https://github.com/mlidbom/pythonnet-stub-generator.git
+[submodule "src/jas_database"]
+	path = src/jas_database
+	url = https://github.com/mlidbom/JAStudioData.git

@@ -1,0 +1,28 @@
+@using JAStudio.Core.Configuration
+@using JAStudio.Core.Note.NoteFields
+@using JAStudio.Core.Note.Sentences
+
+<div id="expressionAndReading">
+    @if(!string.IsNullOrEmpty(Note.User.Question.Value))
+    {
+        <div class="expression user clipboard">@((MarkupString)RenderWbr(Note.User.Question.Value))</div>
+    }
+    <div class="expression clipboard @(HasUserQuestion ? "overridden" : "")">@((MarkupString)RenderWbr(Note.SourceQuestion.Value))</div>
+    <div class="reading">@((MarkupString)Note.Reading.Value)</div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public SentenceNote Note { get; set; } = null!;
+    [Parameter, EditorRequired] public JapaneseConfig Config { get; set; } = null!;
+
+    bool HasUserQuestion => !string.IsNullOrEmpty(Note.User.Question.Value);
+
+    string RenderWbr(string question)
+    {
+        if(Config.ShowSentenceBreakdownInEditMode.Value)
+        {
+            return question.Replace(SentenceQuestionField.WordBreakTag, "<span class='wbr_tag'>&lt;wbr&gt;</span>");
+        }
+        return question;
+    }
+}

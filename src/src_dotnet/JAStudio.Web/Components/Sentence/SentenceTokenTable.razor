@@ -1,0 +1,77 @@
+@using JAStudio.Core.LanguageServices.JanomeEx.Tokenizing
+
+<div class="tokens page_section">
+    <div class="page_section_title">@Title</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Surface</th>
+                <th>Base</th>
+                <th>Boolean flags</th>
+                <th>Token class</th>
+                <th title="Parts of speech">POS1</th>
+                <th title="Parts of speech">POS2</th>
+                <th title="Parts of speech">POS3</th>
+                <th title="Parts of speech">POS4</th>
+                <th title="Inflected form">Inflected Form</th>
+                <th title="Inflection type">Inflection Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var token in Tokens)
+            {
+                var customTokenClass = token is not JNToken ? "custom_token_class" : "";
+                <tr>
+                    <td class="surface"><span class="japanese clipboard">@token.Surface</span></td>
+                    <td class="base"><span class="japanese clipboard">@token.BaseForm</span></td>
+                    <td class="token_properties">@((MarkupString)RenderTokenProperties(token))</td>
+                    <td class="token_properties @customTokenClass">@token.GetType().Name</td>
+                    <td class="pos pos1"><span class="japanese clipboard">@token.SourceToken.PartsOfSpeech.Level1.Japanese</span>:@token.SourceToken.PartsOfSpeech.Level1.English</td>
+                    <td class="pos pos2"><span class="japanese clipboard">@token.SourceToken.PartsOfSpeech.Level2.Japanese</span>:@token.SourceToken.PartsOfSpeech.Level2.English</td>
+                    <td class="pos pos3"><span class="japanese clipboard">@token.SourceToken.PartsOfSpeech.Level3.Japanese</span>:@token.SourceToken.PartsOfSpeech.Level3.English</td>
+                    <td class="pos pos4"><span class="japanese clipboard">@token.SourceToken.PartsOfSpeech.Level4.Japanese</span>:@token.SourceToken.PartsOfSpeech.Level4.English</td>
+                    <td class="inflected_form clipboard">@token.SourceToken.InflectedForm</td>
+                    <td class="inflection_type clipboard">@token.SourceToken.InflectionType</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public List<IAnalysisToken> Tokens { get; set; } = null!;
+    [Parameter, EditorRequired] public string Title { get; set; } = "";
+
+    static readonly List<(Func<IAnalysisToken, bool> Predicate, string Abbr, string Title)> TokenBooleanFlags =
+    [
+        (t => t.IsPastTenseStem, "PTS", "past_tense_stem"),
+        (t => t.IsPastTenseMarker, "PTM", "past_tense_marker"),
+        (t => t.IsMasuStem, "Masu", "masu_stem"),
+        (t => t.IsAdverb, "Adv", "adverb"),
+        (t => t.IsIrrealis, "Irr", "irrealis"),
+        (t => t.IsEndOfStatement, "EOS", "end_of_statement"),
+        (t => t.HasTeFormStem, "HTFS", "has_te_form_stem"),
+        (t => t.IsNonWordCharacter, "NWC", "non_word_character"),
+        (t => t.IsDictionaryVerbFormStem, "DVS", "dictionary_verb_form_stem"),
+        (t => t.IsDictionaryVerbInflection, "DVI", "dictionary_verb_inflection"),
+        (t => t.IsGodanPotentialStem, "GPS", "godan_potential_stem"),
+        (t => t.IsGodanImperativeStem, "GIS", "godan_imperative_stem"),
+        (t => t.IsIchidanImperativeStem, "IIS", "ichidan_imperative_stem"),
+        (t => t.IsGodanPotentialInflection, "GPI", "godan_potential_inflection"),
+        (t => t.IsGodanImperativeInflection, "GII", "godan_imperative_inflection"),
+        (t => t.IsIchidanImperativeInflection, "III", "ichidan_imperative_inflection"),
+        (t => t.IsInflectableWord, "Infl", "inflectable_word"),
+        (t => t.IsIchidanVerb, "一段", "ichidan_verb"),
+        (t => t.IsGodanVerb, "五弾", "godan_verb")
+    ];
+
+    static string RenderTokenProperties(IAnalysisToken token)
+    {
+        var properties = TokenBooleanFlags
+            .Where(flag => flag.Predicate(token))
+            .Select(flag => $"""<span class="token_property" title="{flag.Title}">{flag.Title}</span>""")
+            .ToList();
+
+        return properties.Count > 0 ? string.Join(", ", properties) : "";
+    }
+}

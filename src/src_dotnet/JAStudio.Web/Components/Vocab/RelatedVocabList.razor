@@ -1,0 +1,42 @@
+@using JAStudio.Core.Note.Vocabulary
+@using JAStudio.Core.Storage.Media
+@using JAStudio.Web
+
+@if(Vocabs.Count > 0)
+{
+    <div class="relatedVocabListDiv page_section @CssClass">
+        <div class="page_section_title">@Title</div>
+        <div class="vocabHomophonesList">
+            <div>
+                @foreach(var vocab in Vocabs)
+                {
+                    <NoteLink Note="vocab">
+                        <div class="relatedVocab @(string.Join(" ", vocab.GetMetaTags()))">
+                            @{ var bestAudio = AudioSelector.SelectBest(vocab.Media.Audio); }
+                            @if(bestAudio != null)
+                            {
+                                <audio src="/media/@bestAudio.Id"></audio><span class="play-button"></span>
+                            }
+                            <span class="question clipboard">@vocab.Question.DisambiguationName</span>
+                            @{ var readings = string.Join(", ", vocab.GetReadings()); }
+                            @if(ShowReadings && readings != vocab.GetQuestion())
+                            {
+                                <span class="clipboard vocabReading">@readings</span>
+                            }
+                            @((MarkupString)vocab.MetaData.MetaTagsHtml(noSentenceStatistics: NoSentenceStatistics))
+                            <span class="meaning"> @((MarkupString)vocab.GetAnswer())</span>
+                        </div>
+                    </NoteLink>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public List<VocabNote> Vocabs { get; set; } = [];
+    [Parameter, EditorRequired] public string Title { get; set; } = "";
+    [Parameter, EditorRequired] public string CssClass { get; set; } = "";
+    [Parameter] public bool ShowReadings { get; set; } = true;
+    [Parameter] public bool NoSentenceStatistics { get; set; } = true;
+}

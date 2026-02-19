@@ -1,0 +1,19 @@
+@using JAStudio.Core.LanguageServices
+@using JAStudio.Core.Note.Collection
+@using JAStudio.Core.Note.Vocabulary
+
+<RelatedVocabList Vocabs="_vocabs" Title="homophones" CssClass="homophones"/>
+
+@code {
+    [Parameter, EditorRequired] public VocabNote Note { get; set; } = null!;
+
+    List<VocabNote> _vocabs = [];
+
+    protected override void OnParametersSet()
+    {
+        var homophoneNotes = VocabNoteSorting.SortVocabListByStudyingStatus(Note.RelatedNotes.HomophonesNotes());
+        _vocabs = homophoneNotes.Count > 0
+                     ? new List<VocabNote> { Note }.Concat(homophoneNotes).ToList()
+                     : [];
+    }
+}

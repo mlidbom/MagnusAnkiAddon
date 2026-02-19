@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Compze.Utilities.Logging;
@@ -16,6 +17,11 @@ public class JPCollection
    public VocabCollection Vocab { get; }
    public KanjiCollection Kanji { get; }
    public SentenceCollection Sentences { get; }
+
+   public bool IsInitialized { get; private set; }
+
+   readonly List<Action> _initializedListeners = [];
+   public void OnInitialized(Action listener) => _initializedListeners.Add(listener);
 
    public JPNote? NoteFromNoteId(NoteId noteId)
    {
@@ -89,6 +95,7 @@ public class JPCollection
    public void ClearCaches()
    {
       using var _ = this.Log().Warning().LogMethodExecutionTime();
+      IsInitialized = false;
       NoteServices.ExternalNoteIdMap.Clear();
       Vocab.Cache.Clear();
       Kanji.Cache.Clear();
@@ -134,6 +141,10 @@ public class JPCollection
                               });
 
       WireMediaIntoNotes(runner);
+
+      IsInitialized = true;
+      foreach(var listener in _initializedListeners)
+         listener();
    }
 
    void LoadFromRepository()

@@ -1,0 +1,130 @@
+@page "/card/vocab/{Side}"
+@using JAStudio.Core.Note
+@using JAStudio.Core.Note.Collection
+@using JAStudio.Core.Note.Vocabulary
+@using JAStudio.Core.ViewModels.KanjiList
+
+<HeadContent>
+    <link rel="stylesheet" href="/css/vocab-card.css" />
+</HeadContent>
+
+@if(_note != null)
+{
+    @if(IsFront && IsListening)
+    {
+        @* Listening front: empty — Anki plays audio via mustache template *@
+    }
+    else if(IsFront)
+    {
+        <div class="card">
+            <div id="container1">
+                <div id="container2">
+                    <div class="front-and-answer">
+                        <div class="question">@_note.GetQuestion()</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    } else
+    {
+        <div class="card">
+            <div id="container1">
+                <div id="container2" class="@(string.Join(" ", _note.Tags.ToStringList())) card@CardType @ContainerClasses()">
+
+                    <div class="front-and-answer">
+                        <div>
+                            <div class="question">
+                                <div>
+                                    <span class="clipboard">@_note.GetQuestion()</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="middleSection">
+                        @if(!string.IsNullOrEmpty(_note.References.Value))
+                        {
+                            <div class="referenceLink">@((MarkupString)_note.References.Value)</div>
+                        }
+
+                        @if(!_hasAudio)
+                        {
+                            <span class="reading clipboard noaudio">@(string.Join(", ", _note.GetReadings()))</span>
+                        }
+
+                        <VocabMeaning Note="_note"/>
+                        <VocabMetaData Note="_note"/>
+                        <VocabMnemonic Note="_note"/>
+                        <VocabTechnicalNotes Note="_note"/>
+                        <VocabExplanation Note="_note"/>
+                        <VocabCompoundParts Note="_note"/>
+                        <VocabKanjiList Note="_note" KanjiListViewModel="_kanjiListViewModel"/>
+                        <VocabConfusedWith Note="_note"/>
+                        <VocabIsStemOf Note="_note"/>
+                        <VocabDerivedFrom Note="_note"/>
+                        <VocabErgativeTwin Note="_note"/>
+                        <VocabFormsList Note="_note"/>
+                        <VocabStemVocabulary Note="_note"/>
+                        <VocabPerfectSynonyms Note="_note"/>
+                        <VocabSynonyms Note="_note"/>
+                        <VocabSeeAlso Note="_note"/>
+                        <VocabAntonyms Note="_note"/>
+                        <VocabHomophones Note="_note"/>
+                        <VocabDerivedVocabulary Note="_note"/>
+                        <VocabInCompounds Note="_note"/>
+                        <VocabStemInCompounds Note="_note"/>
+                        <VocabSentencesList Note="_note"/>
+                        <VocabInvalidSentences Note="_note"/>
+                    </div>
+
+                    @if(!string.IsNullOrEmpty(_note.User.ExplanationLong.Value))
+                    {
+                        <div id="__explanation_long" class="user">@((MarkupString)_note.User.ExplanationLong.Value)</div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+} else
+{
+    <p>Note not found (ID: @NoteId)</p>
+}
+
+@code {
+    [Parameter] public string Side { get; set; } = "";
+    [SupplyParameterFromQuery] public string? NoteId { get; set; }
+    [SupplyParameterFromQuery] public string? CardType { get; set; }
+
+    [Inject] public JPCollection Collection { get; set; } = null!;
+    [Inject] public SentenceKanjiListViewModel KanjiListViewModelFactory { get; set; } = null!;
+
+    VocabNote? _note;
+    KanjiListViewModel? _kanjiListViewModel;
+    bool _hasAudio;
+    bool IsFront => string.Equals(Side, "front", StringComparison.OrdinalIgnoreCase);
+    bool IsListening => string.Equals(CardType, CardTypes.Listening, StringComparison.OrdinalIgnoreCase);
+
+    protected override void OnParametersSet()
+    {
+        if(NoteId is {} id)
+        {
+            _note = Collection.NoteFromNoteId(JAStudio.Core.Note.NoteId.Parse(id)) as VocabNote;
+            if(_note != null)
+            {
+                var kanjis = _note.Kanji.ExtractMainFormKanji();
+                _kanjiListViewModel = kanjis.Count > 0 ? KanjiListViewModelFactory.Create(kanjis) : null;
+                _hasAudio = !string.IsNullOrEmpty(_note.Audio.First.RawValue())
+                         || !string.IsNullOrEmpty(_note.Audio.Second.RawValue())
+                         || !string.IsNullOrEmpty(_note.Audio.Tts.RawValue());
+            }
+        }
+    }
+
+    string ContainerClasses()
+    {
+        var classes = "";
+        if(!string.IsNullOrEmpty(_note!.User.Explanation.Value)) classes += " has__explanation";
+        if(!string.IsNullOrEmpty(_note.User.ExplanationLong.Value)) classes += " has__explanation_long";
+        return classes;
+    }
+}

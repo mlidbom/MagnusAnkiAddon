@@ -1,0 +1,68 @@
+@page "/card/kanji/{Side}"
+@using JAStudio.Core.Note
+@using JAStudio.Core.Note.Collection
+
+<HeadContent>
+    <link rel="stylesheet" href="/css/kanji-card.css" />
+</HeadContent>
+
+@if(_note != null)
+{
+    @if(IsFront)
+    {
+        <div class="card">
+            <div id="container1">
+                <div id="container2">
+                    <div class="mainContent">
+                        <div class="front-and-answer">
+                            <div>
+                                <div class="kanji">::::::::::<span class="clipboard">@_note.GetQuestion()</span>::::::::::
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    } else
+    {
+        <div class="card">
+            <div id="container1">
+                <div id="container2">
+                    <div class="mainContent kanjiReading">
+                        <KanjiCardHeader Note="_note"/>
+                        <div>
+                            <KanjiMnemonic Note="_note"/>
+                            <KanjiDependencies Note="_note"/>
+                            <KanjiVocabList Note="_note"/>
+                            <KanjiList Note="_note"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+} else
+{
+    <p>Note not found (ID: @NoteId)</p>
+}
+
+@code {
+    [Parameter] public string Side { get; set; } = "";
+    [SupplyParameterFromQuery] public string? NoteId { get; set; }
+    [SupplyParameterFromQuery] public string? CardType { get; set; }
+
+    [Inject] public JPCollection Collection { get; set; } = null!;
+
+    KanjiNote? _note;
+    bool IsFront => string.Equals(Side, "front", StringComparison.OrdinalIgnoreCase);
+
+    protected override void OnParametersSet()
+    {
+        if(NoteId is {} id)
+        {
+            _note = Collection.NoteFromNoteId(JAStudio.Core.Note.NoteId.Parse(id)) as KanjiNote;
+        }
+    }
+
+}

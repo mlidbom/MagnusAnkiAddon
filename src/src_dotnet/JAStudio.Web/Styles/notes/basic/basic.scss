@@ -1,0 +1,41 @@
+@import "../../_040_japanese.scss";
+
+.card #container1 #container2 { //Let's stay focused and not break other stuff
+
+   /* FONTS & COLORS */
+   font-size: 20pt;
+
+   .answer { text-align: left; }
+
+   .reference_url { font-size: 12pt; }
+
+   .question { font-size:30pt; }
+
+   /*　www.japanesewithanime.com　*/
+   :not(a).transcript-extra { color: rgb(109, 255, 109); }
+
+
+   .comments > div{ font-size:30pt;
+                    background:black; }
+
+   .expression, .reading { font-size: 60pt; }
+
+   .translation { font-size:30pt; }
+
+   /* LAYOUT */
+   .screenshot img { width: auto;
+                     height: 200pt; }
+
+   .comments { margin-top:20pt;
+               display: flex;
+               justify-content: center; }
+
+   .comments > div{ 	text-align:left; }
+
+
+   .reading ruby rt { visibility: hidden; }
+   /*
+   .reading ruby:active rt { visibility: visible; }
+   .reading ruby:hover rt { visibility: visible; }
+   */
+}

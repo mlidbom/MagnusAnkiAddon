@@ -1,0 +1,27 @@
+@using JAStudio.Core.LanguageServices
+@using JAStudio.Core.Note.Vocabulary
+
+<RelatedVocabList Vocabs="_vocabs" Title="part of compound" CssClass="in_compound_words"/>
+
+@code {
+    [Parameter, EditorRequired] public VocabNote Note { get; set; } = null!;
+
+    List<VocabNote> _vocabs = [];
+
+    protected override void OnParametersSet()
+    {
+        var forms = Conjugator.GetVocabStems(Note).Concat([Note.Question.Raw]).ToList();
+
+        int PreferCompoundsStartingWithThisVocab(VocabNote vocab)
+        {
+            var question = vocab.Question.Raw;
+            return forms.Any(form => question.StartsWith(form)) ? 0 : 1;
+        }
+
+        _vocabs = Note.RelatedNotes.InCompounds()
+                      .OrderBy(it => it.GetQuestion())
+                      .ThenBy(PreferCompoundsStartingWithThisVocab)
+                      .Take(30)
+                      .ToList();
+    }
+}

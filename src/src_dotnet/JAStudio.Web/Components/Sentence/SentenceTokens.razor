@@ -1,0 +1,21 @@
+@using JAStudio.Core.Configuration
+@using JAStudio.Core.LanguageServices.JanomeEx.Tokenizing
+@using JAStudio.Core.UI.Web.Sentence
+
+@if(Settings.ShowBreakdownInEditMode())
+{
+    var tokens = Analysis.Analysis.PreProcessedTokens.ToList();
+
+    <SentenceTokenTable Tokens="tokens" Title="Tokens" />
+
+    @if(tokens.Any(it => it is not JNToken))
+    {
+        var unprocessedTokens = Analysis.Analysis.TokenizedText.Tokens.Cast<IAnalysisToken>().ToList();
+        <SentenceTokenTable Tokens="unprocessedTokens" Title="Unprocessed Tokens" />
+    }
+}
+
+@code {
+    [Parameter, EditorRequired] public TextAnalysisViewModel Analysis { get; set; } = null!;
+    [Parameter, EditorRequired] public Settings Settings { get; set; } = null!;
+}

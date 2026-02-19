@@ -1,0 +1,11 @@
+{
+  "Arguments": "--style=expanded --silence-deprecation=import",
+  "GenerateScopedCss": false,
+  "Compilations": [
+    { "Source": "Styles/notes/kanji/kanji.scss", "Target": "wwwroot/css/kanji-card.css" },
+    { "Source": "Styles/notes/vocab/vocab.scss", "Target": "wwwroot/css/vocab-card.css" },
+    { "Source": "Styles/notes/sentence/sentence.scss", "Target": "wwwroot/css/sentence-card.css" },
+    { "Source": "Styles/notes/basic/basic.scss", "Target": "wwwroot/css/basic-card.css" },
+    { "Source": "Styles/jas_anki_card_template_styles.scss", "Target": "wwwroot/css/jas_anki_card_template_styles.css" }
+  ]
+}
