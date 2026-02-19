@@ -1,0 +1,44 @@
+@using JAStudio.Core.Note.Vocabulary
+@using JAStudio.Core.Storage.Media
+@using JAStudio.Web
+
+@if(_sentences.Count > 0)
+{
+    <div id="invalidInSentencesSection" class="page_section invalid_in_sentences">
+        <div class="page_section_title" title="primary form hits: ">Marked as invalid in @_totalCount sentences@_showingMessage</div>
+        <div id="highlightedSentencesList">
+            <div>
+                @foreach(var sentence in _sentences)
+                {
+                    <div class="highlightedSentenceDiv">
+                        @{ var bestAudio = AudioSelector.SelectBest(sentence.Media.Audio); }
+                        @if(bestAudio != null)
+                        {
+                            <audio src="/media/@bestAudio.Id"></audio><a class="play-button"></a>
+                        }
+                        <div class="highlightedSentence">
+                            <div class="sentenceQuestion"><span class="clipboard">@sentence.Question.WithoutInvisibleSpace()</span></div>
+                            <div class="sentenceAnswer"> @((MarkupString)sentence.GetAnswer())</div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public VocabNote Note { get; set; } = null!;
+
+    List<JAStudio.Core.Note.Sentences.SentenceNote> _sentences = [];
+    int _totalCount;
+    string _showingMessage = "";
+
+    protected override void OnParametersSet()
+    {
+        var allInvalid = Note.Sentences.InvalidIn();
+        _totalCount = allInvalid.Count;
+        _sentences = allInvalid.Take(30).ToList();
+        _showingMessage = _totalCount > 30 ? " showing first 30" : "";
+    }
+}

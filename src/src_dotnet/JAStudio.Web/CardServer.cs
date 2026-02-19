@@ -7,6 +7,7 @@ using JAStudio.Core;
 using JAStudio.Core.Note.Collection;
 using JAStudio.Core.Storage.Media;
 using JAStudio.Core.UI.Web;
+using JAStudio.Core.ViewModels.KanjiList;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -54,7 +55,9 @@ public class CardServer
       // These are singletons managed by the Core bootstrapper.
       builder.Services.AddSingleton(_ => TemporaryServiceCollection.Instance.CoreApp.Collection);
       builder.Services.AddSingleton(_ => TemporaryServiceCollection.Instance.CoreApp.Collection.Kanji);
+      builder.Services.AddSingleton(_ => TemporaryServiceCollection.Instance.CoreApp.Collection.Vocab);
       builder.Services.AddSingleton(_ => TemporaryServiceCollection.Instance.ServiceLocator.Resolve<MediaFileIndex>());
+      builder.Services.AddSingleton(_ => TemporaryServiceCollection.Instance.ServiceLocator.Resolve<SentenceKanjiListViewModel>());
 
       builder.Services.AddCors(options =>
          options.AddDefaultPolicy(policy =>

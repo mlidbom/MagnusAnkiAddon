@@ -1,0 +1,12 @@
+@using JAStudio.Core.Note.Vocabulary
+
+@if(!string.IsNullOrEmpty(Note.User.Mnemonic.Value))
+{
+    <div>
+        <div class="mnemonic override">@((MarkupString)Note.User.Mnemonic.Value)</div>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public VocabNote Note { get; set; } = null!;
+}

@@ -1,0 +1,12 @@
+@using JAStudio.Core.Note.Vocabulary
+
+<div id="metaData" class="@(string.Join(" ", Note.GetMetaTags()))">
+    @((MarkupString)Note.MetaData.MetaTagsHtml())
+    <span class="_derog">derog</span>
+    <span class="_masustem">masu stem</span>
+    <span class="reading clipboard">@(string.Join(", ", Note.GetReadings()))</span>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public VocabNote Note { get; set; } = null!;
+}

@@ -1,0 +1,14 @@
+@using JAStudio.Core.Note.Vocabulary
+
+<RelatedVocabList Vocabs="_vocabs" Title="conjugation forms" CssClass="stem_vocabulary"/>
+
+@code {
+    [Parameter, EditorRequired] public VocabNote Note { get; set; } = null!;
+
+    List<VocabNote> _vocabs = [];
+
+    protected override void OnParametersSet()
+    {
+        _vocabs = Note.RelatedNotes.StemsNotes().ToList();
+    }
+}

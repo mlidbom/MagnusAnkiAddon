@@ -1,0 +1,12 @@
+@using JAStudio.Core.Note.Vocabulary
+
+@if(!string.IsNullOrEmpty(Note.TechnicalNotes.Value))
+{
+    <div id="technical_notes" class="user">
+        <span class="heading">Technical notes:</span> @((MarkupString)Note.TechnicalNotes.Value)
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public VocabNote Note { get; set; } = null!;
+}
