@@ -7,7 +7,7 @@
         @{ var bestAudio = AudioSelector.SelectBest(CompoundPart.VocabNote.Media.Audio); }
         @if(bestAudio != null)
         {
-            <audio src="/media/@bestAudio.Id"></audio><span class="play-button"></span>
+            <audio src="/media/@bestAudio.Id"></audio><span class="play-button">▶</span>
         }
         <NoteLink Note="CompoundPart.VocabNote">
             <span class="vocabQuestion clipboard">@CompoundPart.Question</span>

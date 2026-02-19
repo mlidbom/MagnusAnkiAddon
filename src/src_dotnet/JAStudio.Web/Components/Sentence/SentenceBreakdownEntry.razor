@@ -10,7 +10,7 @@
         @{ var bestAudio = Match.VocabMatch != null ? AudioSelector.SelectBest(Match.VocabMatch.Vocab.Media.Audio) : null; }
         @if(bestAudio != null)
         {
-            <audio src="/media/@bestAudio.Id"></audio><span class="play-button"></span>
+            <audio src="/media/@bestAudio.Id"></audio><span class="play-button">▶</span>
         }
         @if(Match.VocabMatch != null)
         {

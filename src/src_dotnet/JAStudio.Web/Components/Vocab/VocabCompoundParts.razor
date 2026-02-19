@@ -16,7 +16,7 @@
                             @{ var bestAudio = AudioSelector.SelectBest(part.Vocab.Media.Audio); }
                             @if(bestAudio != null)
                             {
-                                <audio src="/media/@bestAudio.Id"></audio><span class="play-button"></span>
+                                <audio src="/media/@bestAudio.Id"></audio><span class="play-button">▶</span>
                             }
                             <span class="question clipboard">@part.Vocab.Question.DisambiguationName</span>
                             @{ var readings = string.Join(", ", part.Vocab.GetReadings()); }

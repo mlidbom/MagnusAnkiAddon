@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using MudBlazor.Services;
 
 namespace JAStudio.Web;
 
@@ -74,6 +75,8 @@ public class CardServer
       builder.Services.AddRazorComponents()
                       .AddInteractiveServerComponents();
 
+      builder.Services.AddMudServices();
+
       // Bridge domain services from the Compze service locator into Blazor DI.
       // These are singletons managed by the Core bootstrapper.
       builder.Services.AddSingleton(_ => TemporaryServiceCollection.Instance.CoreApp.Collection);
@@ -111,9 +114,33 @@ public class CardServer
       _app.MapRazorComponents<Components.App>()
           .AddInteractiveServerRenderMode();
 
+      ConfigureMediaEndpoint(_app);
+      ConfigureOpenInBrowserEndpoint(_app);
+
+      try
+      {
+         _app.StartAsync().GetAwaiter().GetResult();
+      }
+      catch
+      {
+         _app.DisposeAsync().AsTask().GetAwaiter().GetResult();
+         _app = null;
+         throw;
+      }
+
+      // Resolve the actual port assigned by the OS
+      var address = _app.Urls.First();
+      Port = new Uri(address).Port;
+      CardServerUrl.BaseUrl = BaseUrl;
+      SavePort(Port);
+      Console.WriteLine($"[CardServer] Listening on {BaseUrl}");
+   }
+
+   static void ConfigureMediaEndpoint(WebApplication app)
+   {
       // Serve media files from the storage directory by MediaFileId (GUID).
       // URL: /media/{guid}
-      _app.MapGet("/media/{id}", (string id, MediaFileIndex index) =>
+      app.MapGet("/media/{id}", (string id, MediaFileIndex index) =>
       {
          var mediaId = MediaFileId.Parse(id);
          var attachment = index.TryGetAttachment(mediaId)
@@ -135,24 +162,18 @@ public class CardServer
 
          return Results.File(attachment.FilePath, contentType, enableRangeProcessing: true);
       });
+   }
 
+   void ConfigureOpenInBrowserEndpoint(WebApplication app)
+   {
       // API endpoint for opening a note card in the system browser.
       // Called by NoteLink when clicked during review mode (avoids navigating away from the reviewed card).
-      _app.MapGet("/api/open-in-browser/{noteType}/{noteId}", (string noteType, string noteId) =>
+      app.MapGet("/api/open-in-browser/{noteType}/{noteId}", (string noteType, string noteId) =>
       {
          var url = $"{BaseUrl}/card/{noteType}/back?NoteId={noteId}";
-         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+         Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
          return Results.Ok();
       });
-
-      _app.RunAsync();
-
-      // Resolve the actual port assigned by the OS
-      var address = _app.Urls.First();
-      Port = new Uri(address).Port;
-      CardServerUrl.BaseUrl = BaseUrl;
-      SavePort(Port);
-      Console.WriteLine($"[CardServer] Listening on {BaseUrl}");
    }
 
    /// <summary>
