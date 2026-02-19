@@ -17,7 +17,7 @@
                             @{ var bestAudio = AudioSelector.SelectBest(sentence.Sentence.Media.Audio); }
                             @if(bestAudio != null)
                             {
-                                <audio src="/media/@bestAudio.Id"></audio><span class="play-button"></span>
+                                <audio src="/media/@bestAudio.Id"></audio><span class="play-button">▶</span>
                             }
                             <div class="highlightedSentence">
                                 <div class="sentenceQuestion"><span class="clipboard">@((MarkupString)sentence.FormatSentence())</span> <span class="deck_indicator">@sentence.Sentence.GetSourceTag()</span></div>

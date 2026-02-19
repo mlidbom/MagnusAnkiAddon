@@ -19,6 +19,7 @@
 
    <ItemGroup>
      <PackageReference Include="AspNetCore.SassCompiler" Version="1.97.1" />
+     <PackageReference Include="MudBlazor" Version="8.15.0" />
    </ItemGroup>
 
 </Project>

@@ -1,0 +1,38 @@
+@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.WebUtilities
+@inject NavigationManager Navigation
+
+<HeadContent>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+</HeadContent>
+
+<MudThemeProvider Theme="_theme" IsDarkMode="true" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+@if(_shellVisible)
+{
+    <MudAppBar Dense="true" Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" OnClick="ToggleDrawer" />
+        <MudText Typo="Typo.h6" Class="ml-2">JAStudio</MudText>
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Inherit" OnClick="HideShell" Title="Hide shell (press M to show)" />
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="_drawerOpen" Variant="DrawerVariant.Temporary" Elevation="2">
+        <MudNavMenu>
+            <MudText Typo="Typo.h6" Class="px-4 mt-4 mb-2">Navigate</MudText>
+            <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+            <MudNavLink Href="/search" Icon="@Icons.Material.Filled.Search">Search notes</MudNavLink>
+
+            <MudText Typo="Typo.h6" Class="px-4 mt-4 mb-2">Admin</MudText>
+            <MudNavLink Href="/admin" Icon="@Icons.Material.Filled.Settings">Batch actions</MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+}
+
+<MudMainContent Class="@(_shellVisible ? "pt-14" : "")">
+    @Body
+</MudMainContent>

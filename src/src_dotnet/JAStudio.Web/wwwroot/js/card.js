@@ -1,75 +1,51 @@
-﻿// Card interaction scripts for Blazor iframe
-// Right-click selection for clipboard elements and audio player setup
+﻿// Card interaction scripts for Blazor iframe.
+// Uses event delegation on `document` so handlers survive Blazor Server DOM re-renders
+// without needing re-initialization.
 
-function initializeCardInteractions() {
-   function selectText(element) {
+// Right-click on clipboard/highlight elements selects their text for easy copying.
+document.addEventListener('mousedown', function (event) {
+   if (event.button !== 2) return;
+
+   const element = event.target.closest('.clipboard, ja, .headword-term, rad, radical, voc, vocab, kan, kanji, read, reading');
+   if (!element) return;
+
+   const selection = window.getSelection();
+   const selectedText = selection.toString();
+   if (!selectedText || !element.contains(selection.anchorNode)) {
       const range = document.createRange();
       range.selectNodeContents(element);
-      const selection = window.getSelection();
       selection.removeAllRanges();
       selection.addRange(range);
    }
+});
 
-   document.querySelectorAll('.clipboard, ja, .headword-term, rad, radical, voc, vocab, kan, kanji, read, reading')
-      .forEach(function (element) {
-         if (element.dataset.rightClickInitialized) return;
-         element.dataset.rightClickInitialized = 'true';
+// Play/pause audio via the play-button span next to <audio> elements.
+document.addEventListener('click', function (e) {
+   const button = e.target.closest('.play-button');
+   if (!button) return;
 
-         element.addEventListener('mousedown', event => {
-            if (event.button === 2) {
-               const selection = window.getSelection();
-               const selectedText = selection.toString();
+   e.preventDefault();
+   e.stopPropagation();
+   const audio = button.previousElementSibling;
+   if (!audio || audio.tagName !== 'AUDIO') return;
 
-               if (!selectedText || !element.contains(selection.anchorNode)) {
-                  selectText(element);
-               }
-            }
-         });
-      });
-
-   setupAudioPlayers();
-}
-
-function setupAudioPlayers() {
-   const initializedClassName = "initialized";
-   const audioElements = document.getElementsByTagName('audio');
-
-   for (let i = 0; i < audioElements.length; i++) {
-      const audio = audioElements[i];
-      const button = audio.nextElementSibling;
-      if (button && audio.getAttribute('src') && button.classList.contains('play-button') && !button.classList.contains(initializedClassName)) {
-         button.classList.add(initializedClassName);
-         button.innerHTML = '▶';
-
-         button.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const audioElement = this.previousElementSibling;
-            if (audioElement.paused) {
-               audioElement.play();
-               this.innerHTML = '⏸︎';
-            } else {
-               audioElement.pause();
-               this.innerHTML = '▶';
-            }
-         });
-
-         audio.parentNode.insertBefore(button, audio.nextSibling);
-
-         audio.addEventListener('ended', function() { this.nextElementSibling.innerHTML = '▶'; });
-      }
+   if (audio.paused) {
+      audio.play();
+      button.textContent = '⏸︎';
+   } else {
+      audio.pause();
+      button.textContent = '▶';
    }
-}
+});
 
-// Initialize when DOM is ready, and re-initialize after Blazor enhanced navigations
-if (document.readyState === 'loading') {
-   document.addEventListener('DOMContentLoaded', initializeCardInteractions);
-} else {
-   initializeCardInteractions();
-}
-
-// Re-initialize after Blazor Server re-renders content
-Blazor.addEventListener('enhancedload', initializeCardInteractions);
+// Reset play button text when audio finishes.
+document.addEventListener('ended', function (e) {
+   if (e.target.tagName !== 'AUDIO') return;
+   const button = e.target.nextElementSibling;
+   if (button && button.classList.contains('play-button')) {
+      button.textContent = '▶';
+   }
+}, true); // useCapture: 'ended' doesn't bubble
 
 // Note link click handling.
 // In Anki's iframe: call the server API to open in the system browser (avoids navigating the review iframe).
@@ -92,3 +68,24 @@ function setupNoteLinks() {
 }
 
 setupNoteLinks();
+
+// Shell toggle: press 'm' to show/hide the app shell.
+// Stores a .NET object reference set by MainLayout via JS interop.
+window.jaStudioShell = {
+   _dotNetRef: null,
+   registerToggle: function(dotNetRef) {
+      this._dotNetRef = dotNetRef;
+   },
+   unregisterToggle: function() {
+      this._dotNetRef = null;
+   }
+};
+
+document.addEventListener('keydown', function(e) {
+   if (e.key === 'm' && !e.ctrlKey && !e.altKey && !e.metaKey
+       && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && !e.target.isContentEditable) {
+      if (window.jaStudioShell._dotNetRef) {
+         window.jaStudioShell._dotNetRef.invokeMethodAsync('ToggleShellFromJs');
+      }
+   }
+});
