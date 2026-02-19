@@ -8,17 +8,13 @@ namespace JAStudio.Core.UI.Web.Kanji;
 public class KanjiNoteRenderer
 {
    // ReSharper disable once UnusedMember.Global called from python
-   public AppendingPrerenderer<KanjiNote> CreateRenderer() => new(RenderBlazorIframe, RenderBlazorIframeFront);
+   public AppendingPrerenderer<KanjiNote> CreateRenderer() => new(RenderIframe);
 
-   static string RenderBlazorIframe(KanjiNote note) => RenderIframe(note, "back", "");
-
-   static string RenderBlazorIframeFront(KanjiNote note) => RenderIframe(note, "front", "");
-
-   static string RenderIframe(KanjiNote note, string side, string extraStyle)
+   static string RenderIframe(KanjiNote note, string cardTemplateName, string side)
    {
       var baseUrl = CardServerUrl.BaseUrl;
       if(baseUrl == null) return "<!-- CardServer not running -->";
       var externalId = note.Collection.GetExternalNoteId(note.GetId());
-      return $"""<iframe src="{baseUrl}/card/kanji/{side}?NoteId={externalId}" style="position:fixed;inset:0;width:100%;height:100%;border:none;{extraStyle}" frameborder="0"></iframe>""";
+      return $"""<iframe src="{baseUrl}/card/kanji/{side}?NoteId={externalId}&CardType={cardTemplateName}" style="position:fixed;inset:0;width:100%;height:100%;border:none;" frameborder="0"></iframe>""";
    }
 }

@@ -8,17 +8,13 @@ namespace JAStudio.Core.UI.Web.Vocab;
 public class VocabNoteRenderer
 {
    // ReSharper disable once UnusedMember.Global called from python
-   public AppendingPrerenderer<VocabNote> CreateRenderer() => new(RenderBlazorIframe, RenderBlazorIframeFront);
+   public AppendingPrerenderer<VocabNote> CreateRenderer() => new(RenderIframe);
 
-   static string RenderBlazorIframe(VocabNote note) => RenderIframe(note, "back");
-
-   static string RenderBlazorIframeFront(VocabNote note) => RenderIframe(note, "front");
-
-   static string RenderIframe(VocabNote note, string side)
+   static string RenderIframe(VocabNote note, string cardTemplateName, string side)
    {
       var baseUrl = CardServerUrl.BaseUrl;
       if(baseUrl == null) return "<!-- CardServer not running -->";
       var externalId = note.Collection.GetExternalNoteId(note.GetId());
-      return $"""<iframe src="{baseUrl}/card/vocab/{side}?NoteId={externalId}" style="position:fixed;inset:0;width:100%;height:100%;border:none;" frameborder="0"></iframe>""";
+      return $"""<iframe src="{baseUrl}/card/vocab/{side}?NoteId={externalId}&CardType={cardTemplateName}" style="position:fixed;inset:0;width:100%;height:100%;border:none;" frameborder="0"></iframe>""";
    }
 }

@@ -50,6 +50,7 @@
 @code {
     [Parameter] public string Side { get; set; } = "";
     [SupplyParameterFromQuery] public long? NoteId { get; set; }
+    [SupplyParameterFromQuery] public string? CardType { get; set; }
 
     [Inject] public JPCollection Collection { get; set; } = null!;
 

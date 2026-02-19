@@ -7,23 +7,19 @@ using JAStudio.Core.SysUtils;
 namespace JAStudio.Core.UI.Web;
 
 /// <summary>
-/// Prerenderer that appends rendered content to the incoming HTML rather than replacing tags.
-/// Starts rendering in the background when the question is shown, applies the result when the answer is shown.
+/// Prerenderer that returns a Blazor iframe for both front and back card displays.
+/// On review questions, starts prerendering the back side in the background.
 /// </summary>
 public class AppendingPrerenderer<TNote> where TNote : JPNote
 {
-   readonly Func<TNote, string> _renderMethod;
-   readonly Func<TNote, string>? _frontRenderMethod;
+   readonly Func<TNote, string, string, string> _renderIframe;
    Task<string>? _prerenderedTask;
 
-   public AppendingPrerenderer(Func<TNote, string> renderMethod, Func<TNote, string>? frontRenderMethod = null)
-   {
-      _renderMethod = renderMethod;
-      _frontRenderMethod = frontRenderMethod;
-   }
+   /// <param name="renderIframe">Given a note, card template name, and side (front/back), returns the iframe HTML.</param>
+   public AppendingPrerenderer(Func<TNote, string, string, string> renderIframe) => _renderIframe = renderIframe;
 
    // ReSharper disable once UnusedMember.Global used from python
-   public string Render(TNote note, string html, string typeOfDisplay)
+   public string Render(TNote note, string html, string typeOfDisplay, string cardTemplateName)
    {
       if(!note.Collection.IsInitialized)
          return Mine.AppStillLoadingMessage;
@@ -31,30 +27,31 @@ public class AppendingPrerenderer<TNote> where TNote : JPNote
       if(DisplayType.IsDisplayingQuestion(typeOfDisplay))
       {
          if(DisplayType.IsDisplayingReviewQuestion(typeOfDisplay))
-            SchedulePrerender(note);
-         if(_frontRenderMethod != null)
-            return _frontRenderMethod(note);
-      } else if(DisplayType.IsDisplayingReviewAnswer(typeOfDisplay) && _prerenderedTask != null)
+            SchedulePrerender(note, cardTemplateName);
+         return RenderIframeWithTiming(note, cardTemplateName, "front");
+      }
+
+      if(DisplayType.IsDisplayingReviewAnswer(typeOfDisplay) && _prerenderedTask != null)
       {
          html = ApplyPrerendered(html);
       } else if(DisplayType.IsDisplayingAnswer(typeOfDisplay))
       {
-         html = RenderSynchronously(note, html);
+         html = RenderSynchronously(note, html, cardTemplateName);
       }
 
       return html;
    }
 
-   void SchedulePrerender(TNote note)
+   void SchedulePrerender(TNote note, string cardTemplateName)
    {
-      _prerenderedTask = TaskCE.Run(() => RenderWithTiming(note));
+      _prerenderedTask = TaskCE.Run(() => RenderIframeWithTiming(note, cardTemplateName, "back"));
    }
 
-   string RenderWithTiming(TNote note)
+   string RenderIframeWithTiming(TNote note, string cardTemplateName, string side)
    {
       using(StopWatch.LogWarningIfSlowerThan(0.5, "prerendering"))
       {
-         return _renderMethod(note);
+         return _renderIframe(note, cardTemplateName, side);
       }
    }
 
@@ -68,11 +65,11 @@ public class AppendingPrerenderer<TNote> where TNote : JPNote
       }
    }
 
-   string RenderSynchronously(TNote note, string html)
+   string RenderSynchronously(TNote note, string html, string cardTemplateName)
    {
       using(StopWatch.LogWarningIfSlowerThan(0.5, "live_rendering"))
       {
-         return html + RenderWithTiming(note);
+         return html + RenderIframeWithTiming(note, cardTemplateName, "back");
       }
    }
 }
