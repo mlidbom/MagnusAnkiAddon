@@ -1,63 +1,194 @@
 # Web Rendering Architecture: From String Interpolation to Blazor
 
-## Status: Vision / Architecture Decision Record
+## Status: In Progress — Vocab & Kanji Done, Sentence Next
 
-## Problem Statement
+## Completed Work
 
-Our card renderers (17 files in `JAStudio.Core/UI/Web/`) build HTML via raw C# string interpolation. This approach:
+### Infrastructure (Done)
+- **CardServer** (`JAStudio.Web/CardServer.cs`): In-process Kestrel/Blazor Server on OS-assigned port
+- **AppendingPrerenderer** (`JAStudio.Core/UI/Web/AppendingPrerenderer.cs`): Generic iframe renderer
+  - Takes `Func<TNote, string cardTemplateName, string side, string>` — builds iframe URL
+  - On question: returns front iframe, schedules background prerender of back iframe
+  - On answer: appends prerendered back iframe to mustache HTML
+  - Knows nothing about card types — fully generic
+- **Python shim** (`dotnet_rendering_content_renderer_anki_shim.py`): Passes `card.template()["name"]` as `cardTemplateName` to .NET `Render()` method
+- **PreRenderingContentRenderer** (`JAStudio.Core/UI/Web/PreRenderingContentRenderer.cs`): Tag-replacement renderer (used by sentence), also takes `cardTemplateName` (unused for now)
 
-- Has no automatic HTML escaping
-- Makes composition difficult (methods return `string`, manually concatenated)
-- Interleaves C# code and HTML structure, making changes error-prone
-- Duplicates patterns (e.g., kanji-item rendering in both `UdSentenceBreakdownRenderer` and `VocabKanjiListRenderer`)
+### Vocab Cards (Done)
+- `VocabCard.razor` — page at `/card/vocab/{Side}?NoteId=X&CardType=Y`
+  - Reading front: shows question text
+  - Listening front: renders nothing (empty body — Anki plays audio before hook fires)
+  - Back (both types): full answer with all 20+ sub-components
+  - Uses `card@CardType` for container class (dynamic `cardReading`/`cardListening`)
+- `VocabNoteRenderer.cs` — single `RenderIframe` method, builds URL with `{side}`, `NoteId`, `CardType`
+- 24 Blazor components in `Components/Vocab/` (VocabMeaning, VocabKanjiList, VocabSentencesList, etc.)
+- Mustache templates simplified to audio-only stubs:
+  - `vocab.front.read.mustache`: `{{Q}}`
+  - `vocab.front.listening.mustache`: `{{Audio_b}}{{Audio_g}}...`
+  - `vocab.back.reading.mustache`: audio tags only
+  - `vocab.back.listening.mustache`: `{{FrontSide}}`
+  - `vocab.back.mustache`: **deleted** (was the shared back template with `##BLAZOR_IFRAME##`)
 
-Now that the code is in .NET, we have far better options.
+### Kanji Cards (Done)
+- `KanjiCard.razor` — page at `/card/kanji/{Side}?NoteId=X&CardType=Y`
+- `KanjiNoteRenderer.cs` — same pattern as vocab
+- 6 Blazor components in `Components/Kanji/`
 
-## Current Architecture
+### Key Pattern: How Blazor Components Work
+Components receive the note as a `[Parameter]`, access domain data directly, render themselves:
+```razor
+@if(KanjiListViewModel != null)
+{
+    <div id="kanji_list" class="page_section">
+        @foreach(var kanji in KanjiListViewModel.KanjiList)
+        {
+            <div class="kanji_item @(string.Join(" ", kanji.Kanji.GetMetaTags()))">
+                <span class="kanji_kanji clipboard">@kanji.Question()</span>
+                ...
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public VocabNote Note { get; set; } = null!;
+    [Parameter] public KanjiListViewModel? KanjiListViewModel { get; set; }
+}
+```
+
+### Key Discovery: Anki Audio Behavior
+Anki processes `{{Audio_*}}` tags and queues audio playback **before** the `card_will_show` hook fires. The hook only controls the visual HTML. So the iframe can fully replace the HTML without affecting audio playback. This means the front side always returns an iframe — even for listening cards where the iframe renders an empty page.
+
+## Next: Sentence Card Port to Blazor
+
+### What Exists Today
+
+**Sentence uses `PreRenderingContentRenderer`** (tag-replacement), NOT `AppendingPrerenderer` (iframe):
 
 ```
-Anki template (.mustache)
-  ├── Mustache fields expanded by Anki: {{Audio}}, {{Tags}}, {{Reading}}, etc.
-  ├── Placeholder tags: ##SENTENCE_ANALYSIS##, ##KANJI_LIST##, ##VOCAB_COMPOUNDS##, etc.
-  └── Static JS reference: <script src="__magnus_js.js">
-
-Python hook (on_card_render)
-  └── Calls C# via pythonnet
-
-PreRenderingContentRenderer<TNote>
-  ├── On question display: schedules parallel Task.Run for each ##TAG## renderer
-  ├── On answer display: awaits tasks, replaces ##TAG##s in HTML string
-  └── On edit/preview: renders all tags synchronously
-
-17 Renderer classes (C#)
-  └── Each returns a string of HTML built via StringBuilder / string interpolation
+SentenceNoteRenderer.CreateRenderer() returns PreRenderingContentRenderer<SentenceNote> with:
+  "##USER_QUESTION##"     → SentenceRenderer.RenderUserQuestion(note)
+  "##SOURCE_QUESTION##"   → SentenceRenderer.RenderSourceQuestion(note)
+  "##SENTENCE_ANALYSIS##" → UdSentenceBreakdownRenderer.RenderSentenceAnalysis(note)
 ```
 
-## Target Architecture
+The mustache `sentence.back.mustache` still has `##TAG##` placeholders that get replaced by C# string-interpolation renderers.
 
-### Overview
+**Sentence mustache templates:**
+- `sentence.front.Read.mustache`: question text wrapped in container divs, plus `<script src="__magnus_js.js">`
+- `sentence.front.Listen.mustache`: `{{Audio Sentence}}`
+- `sentence.back.reading.mustache`: `{{Audio Sentence}}`
+- `sentence.back.listening.mustache`: `{{FrontSide}}`
+- `sentence.back.mustache`: Full back template with mustache fields and `##TAG##` placeholders (~45 lines)
 
+**Sentence back mustache structure:**
+```html
+<div id="container1">
+    <div id="container2" class="{{Tags}} card{{Card}}">
+        <div class="topSection">
+            <div class="image">{{Screenshot}}</div>
+            <div id="answerSection">
+                <div id="expressionAndReading">
+                    {{#__question}}<div class="expression user clipboard">##USER_QUESTION##</div>{{/__question}}
+                    <div class="expression clipboard {{#__question}}overridden{{/__question}}">##SOURCE_QUESTION##</div>
+                    <div class="reading">{{furigana::Reading}}</div>
+                </div>
+                <!-- answers (user, source, analysis) with overridden classes -->
+            </div>
+        </div>
+        <div class="bottomSection">
+            <!-- user comments, source comments -->
+        </div>
+        ##SENTENCE_ANALYSIS##
+    </div>
+</div>
 ```
-Anki template (static, set once, never changed)
-  ├── {{Audio}}     ← Anki processes this for native auto-play
-  └── placeholder   ← never seen by user
 
-Python hook (2 lines)
-  └── Returns: <iframe src="http://localhost:PORT/card/TYPE/SIDE?nid=NID">
-```
+### Renderers to Port
 
-### Python Integration — Zero Changes Required
+#### 1. SentenceRenderer (trivial)
+Renders `##USER_QUESTION##` and `##SOURCE_QUESTION##` — just wraps `<wbr>` tags for edit mode display. 2 methods, both return a single string. Will become inline Razor logic.
 
-The existing Python hook infrastructure does not need to change at all. The current rendering path:
+#### 2. UdSentenceBreakdownRenderer (big one — ~280 lines of string interpolation)
+Renders `##SENTENCE_ANALYSIS##`. This is the complex part:
 
-```
-Anki hook → DotNetPrerenderingContentRendererAnkiShim.render()
-  → resolves note via NoteFromExternalId(card.nid)
-  → calls C# PreRenderingContentRenderer<TNote>.Render(note, html, type_of_display)
-  → returns modified HTML string to Anki
-```
+**Creates `SentenceViewModel`** which contains:
+- `TextAnalysisViewModel` — runs sentence analysis (tokenization, word extraction, dictionary lookup)
+- `List<MatchViewModel>` — displayed vocabulary matches
 
-The Python shim (`dotnet_rendering_content_renderer_anki_shim.py`) passes the HTML string to C# and returns whatever C# gives back. It doesn't care what that HTML contains. So the change is entirely inside the C# `Render()` method — instead of performing `##TAG##` replacements on the incoming HTML, it simply returns an iframe pointing at the Blazor server. The Python shim, the hook wiring, the note resolution — all unchanged.
+**For each displayed match, renders:**
+- Invalid/hiding reason spans (edit mode only)
+- Audio play button with `<audio src="...">` tag
+- Parsed form (the word as it appears in the sentence)
+- Vocab form (dictionary form, if different from parsed)
+- Readings (if different from parsed form)
+- Meta tags HTML (JLPT level, frequency, etc.)
+- Answer (meaning)
+- **Compound parts** (recursive — each part has the same structure)
+- **Kanji list** (per matched word — reuses KanjiListViewModel pattern)
+
+**Also renders (edit mode only):**
+- Token table: all MeCab tokens with POS levels 1-4, inflection type/form, boolean flags
+- Unprocessed tokens table (if any custom tokens exist)
+
+**View settings panel:** Toggle abbreviations for breakdown configuration
+
+### ViewModels Already In Place (keep as-is)
+These are in `JAStudio.Core/UI/Web/Sentence/` and are pure domain logic — they stay:
+- `SentenceViewModel` — top-level, creates TextAnalysisViewModel and DisplayedMatches
+- `TextAnalysisViewModel` — wraps TextAnalysis, creates CandidateWordVariantViewModels
+- `CandidateWordVariantViewModel` — wraps CandidateWordVariant, creates MatchViewModels
+- `MatchViewModel` — vocab match with display logic, compound parts, kanji, meta tags
+- `CompoundPartViewModel` — recursive compound part with display data
+
+### Migration Plan
+
+1. **Switch SentenceNoteRenderer to AppendingPrerenderer** (same pattern as Vocab/Kanji)
+   - Change `CreateRenderer()` to return `AppendingPrerenderer<SentenceNote>`
+   - Single `RenderIframe` method building URL: `/card/sentence/{side}?NoteId=X&CardType=Y`
+   - Delete `PreRenderingContentRenderer` class entirely (sentence was its only user)
+
+2. **Create `SentenceCard.razor`** page at `/card/sentence/{Side}`
+   - Front (Reading): question text in container divs
+   - Front (Listening): empty (audio handled by Anki)
+   - Back: full answer with all sections
+
+3. **Create Blazor components in `Components/Sentence/`:**
+   - `SentenceTopSection.razor` — screenshot + answer section (question, reading, meanings)
+   - `SentenceComments.razor` — user + source comments
+   - `SentenceBreakdown.razor` — the main vocabulary breakdown list
+   - `SentenceVocabEntry.razor` — single matched word (audio, forms, readings, meta, answer)
+   - `SentenceCompoundPart.razor` — compound part entry (similar to VocabEntry but simpler)
+   - `SentenceMatchKanji.razor` — kanji list per match (reuse `KanjiList.razor` from Kanji/ or shared)
+   - `SentenceViewSettings.razor` — toggle abbreviation panel
+   - `SentenceTokenTable.razor` — token debug table (edit mode only)
+
+4. **Simplify sentence mustache templates** (same pattern as vocab):
+   - `sentence.front.Read.mustache`: `{{Q}}` (or keep container divs if needed)
+   - `sentence.front.Listen.mustache`: `{{Audio Sentence}}` (unchanged)
+   - `sentence.back.reading.mustache`: `{{Audio Sentence}}` (audio only)
+   - `sentence.back.listening.mustache`: `{{FrontSide}}` (unchanged)
+   - Delete `sentence.back.mustache`
+
+5. **Delete old renderers:**
+   - `UdSentenceBreakdownRenderer.cs` — replaced by Blazor components
+   - `SentenceRenderer.cs` — replaced by inline Razor logic
+   - `QuestionRenderer.cs` — duplicate of SentenceRenderer (same code)
+   - `PreRenderingContentRenderer.cs` — no longer needed
+
+### Shared Components to Extract
+The sentence breakdown's kanji rendering is nearly identical to `VocabKanjiList.razor`. Consider extracting a shared `KanjiList.razor` in `Components/Shared/` that both vocab and sentence components use.
+
+### Things to Watch
+- **`{{furigana::Reading}}`** — Anki's built-in furigana rendering. The Blazor page needs to handle furigana formatting itself (the Ruby tag pattern).
+- **`{{Screenshot}}`** — Anki field, renders as `<img>` tag. Check how media paths need to work from the iframe context.
+- **Audio paths** — `match.AudioPath` / `compoundPart.AudioPath` reference files in Anki media. Need to verify these work from the iframe (may need media proxy endpoint on CardServer).
+- **WBR tags** — The `SentenceQuestionField.WordBreakTag` replacement in question rendering for edit mode.
+- **Edit mode sections** — Token tables and invalid reason spans only show when `settings.ShowBreakdownInEditMode()` is true.
+
+## Superseded Architecture Notes
+
+(The rest of the original doc below is the original vision doc. Much of it is now implemented. Kept for reference.)
 
 Kestrel web server (in-process via pythonnet)
   ├── /card/{noteType}/{side}?nid={id}   → Razor-rendered full HTML page
