@@ -12,6 +12,7 @@ public class JsonFilesystemObjectRepository<TData> where TData : class, IIdentif
 {
    readonly string _directory;
    readonly JsonSerializerOptions _jsonOptions;
+   readonly HashSet<string> _ensuredDirectories = new(StringComparer.OrdinalIgnoreCase);
 
    string SnapshotPath => Path.Combine(_directory, "snapshot.bin");
 
@@ -34,7 +35,7 @@ public class JsonFilesystemObjectRepository<TData> where TData : class, IIdentif
    public void Save(TData data)
    {
       var path = FilePath(data.Id);
-      Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+      EnsureDirectoryExists(Path.GetDirectoryName(path)!);
       File.WriteAllText(path, JsonSerializer.Serialize(data, _jsonOptions));
    }
 
@@ -67,7 +68,7 @@ public class JsonFilesystemObjectRepository<TData> where TData : class, IIdentif
 
    public void SaveSnapshot(List<TData> data)
    {
-      Directory.CreateDirectory(_directory);
+      EnsureDirectoryExists(_directory);
       using var stream = File.Create(SnapshotPath);
       MemoryPackSerializer.SerializeAsync(stream, data).GetAwaiter().GetResult();
    }
@@ -139,6 +140,12 @@ public class JsonFilesystemObjectRepository<TData> where TData : class, IIdentif
    static string Bucket(Guid id) => id.ToString("N")[..2];
 
    string FilePath(Guid id) => Path.Combine(_directory, Bucket(id), $"{id}.json");
+
+   void EnsureDirectoryExists(string directory)
+   {
+      if(_ensuredDirectories.Add(directory))
+         Directory.CreateDirectory(directory);
+   }
 
    record SnapshotChanges(List<ScannedFile> ChangedFiles, HashSet<Guid> CurrentIds, int DeletedCount)
    {
