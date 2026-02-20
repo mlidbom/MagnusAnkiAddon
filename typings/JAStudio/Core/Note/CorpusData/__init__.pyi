@@ -1,12 +1,13 @@
 import typing, abc
 from MemoryPack import IMemoryPackFormatterRegister, IMemoryPackable_1
+from JAStudio.Core.Storage import IIdentifiableByGuid
 from System import Guid, Action
 from System.Collections.Generic import List_1
 from JAStudio.Core.Note import NoteData
 from JAStudio.Core.Anki import AnkiKanjiNote, AnkiSentenceNote, AnkiVocabNote
 from JAStudio.Core.Note.Sentences import SentenceConfiguration, ParsingResult
 
-class CorpusDataBase(IMemoryPackFormatterRegister, abc.ABC):
+class CorpusObjectData(IMemoryPackFormatterRegister, IIdentifiableByGuid, abc.ABC):
     @property
     def Id(self) -> Guid: ...
     @Id.setter
@@ -18,7 +19,7 @@ class CorpusDataBase(IMemoryPackFormatterRegister, abc.ABC):
     def ToNoteData(self) -> NoteData: ...
 
 
-class KanjiData(CorpusDataBase, IMemoryPackable_1[KanjiData]):
+class KanjiData(CorpusObjectData, IMemoryPackable_1[KanjiData]):
     def __init__(self) -> None: ...
     @property
     def ActiveAnswer(self) -> str: ...
@@ -155,7 +156,7 @@ class SentenceConfigSubData(IMemoryPackable_1[SentenceConfigSubData]):
     def IncorrectMatches(self, value: List_1[WordExclusionSubData]) -> List_1[WordExclusionSubData]: ...
 
 
-class SentenceData(CorpusDataBase, IMemoryPackable_1[SentenceData]):
+class SentenceData(CorpusObjectData, IMemoryPackable_1[SentenceData]):
     def __init__(self) -> None: ...
     @property
     def ActiveAnswer(self) -> str: ...
@@ -252,7 +253,7 @@ class SentenceParsingResultSubData(IMemoryPackable_1[SentenceParsingResultSubDat
     def Sentence(self, value: str) -> str: ...
 
 
-class VocabData(CorpusDataBase, IMemoryPackable_1[VocabData]):
+class VocabData(CorpusObjectData, IMemoryPackable_1[VocabData]):
     def __init__(self) -> None: ...
     @property
     def ActiveAnswer(self) -> str: ...
