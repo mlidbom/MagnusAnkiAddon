@@ -9,11 +9,18 @@ sealed class AnkiDb : DataConnection
 {
    AnkiDb(DataOptions options) : base(options) {}
 
-   public ITable<NoteTypeRow> NoteTypes => this.GetTable<NoteTypeRow>();
-   public ITable<FieldRow> Fields => this.GetTable<FieldRow>();
    public ITable<NoteRow> Notes => this.GetTable<NoteRow>();
    public ITable<CardRow> Cards => this.GetTable<CardRow>();
+   public ITable<NoteTypeRow> NoteTypes => this.GetTable<NoteTypeRow>();
+   public ITable<FieldRow> Fields => this.GetTable<FieldRow>();
    public ITable<TemplateRow> Templates => this.GetTable<TemplateRow>();
+   public ITable<DeckRow> Decks => this.GetTable<DeckRow>();
+   public ITable<DeckConfigRow> DeckConfigs => this.GetTable<DeckConfigRow>();
+   public ITable<ConfigRow> Config => this.GetTable<ConfigRow>();
+   public ITable<ReviewLogRow> ReviewLog => this.GetTable<ReviewLogRow>();
+   public ITable<GraveRow> Graves => this.GetTable<GraveRow>();
+   public ITable<TagRow> Tags => this.GetTable<TagRow>();
+   public ITable<CollectionRow> Collection => this.GetTable<CollectionRow>();
 
    /// <summary>
    /// Open the Anki database for reading as an immutable snapshot.
