@@ -22,7 +22,7 @@ applyTo: "**/*.cs"
 ### Business Logic (JAStudio.Core)
 - Keep pure domain logic in Core - no UI dependencies
 - Make code testable: prefer dependency injection
-- Use immutable types where practical (record types, readonly properties)
+- Use immutable types where practical (readonly properties, private setters)
 - No direct Anki/Python dependencies in Core
 
 ### Python Interop (JAStudio.PythonInterop)

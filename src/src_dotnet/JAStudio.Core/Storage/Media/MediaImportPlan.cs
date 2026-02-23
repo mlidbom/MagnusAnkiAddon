@@ -4,17 +4,36 @@ using JAStudio.Core.Note.NoteFields;
 
 namespace JAStudio.Core.Storage.Media;
 
-public record PlannedFileImport(
-   string SourcePath,
-   string TargetDirectory,
-   CopyrightStatus Copyright,
-   SourceTag SourceTag,
-   string OriginalFileName,
-   NoteId NoteId,
-   MediaType MediaType);
+public class PlannedFileImport(
+   string sourcePath,
+   string targetDirectory,
+   CopyrightStatus copyright,
+   SourceTag sourceTag,
+   string originalFileName,
+   NoteId noteId,
+   MediaType mediaType)
+{
+   public string SourcePath { get; } = sourcePath;
+   public string TargetDirectory { get; } = targetDirectory;
+   public CopyrightStatus Copyright { get; } = copyright;
+   public SourceTag SourceTag { get; } = sourceTag;
+   public string OriginalFileName { get; } = originalFileName;
+   public NoteId NoteId { get; } = noteId;
+   public MediaType MediaType { get; } = mediaType;
+}
 
-public record AlreadyStoredFile(MediaAttachment Existing, NoteId NoteId);
-public record MissingFile(string FileName, NoteId NoteId, string FieldName);
+public class AlreadyStoredFile(MediaAttachment existing, NoteId noteId)
+{
+   public MediaAttachment Existing { get; } = existing;
+   public NoteId NoteId { get; } = noteId;
+}
+
+public class MissingFile(string fileName, NoteId noteId, string fieldName)
+{
+   public string FileName { get; } = fileName;
+   public NoteId NoteId { get; } = noteId;
+   public string FieldName { get; } = fieldName;
+}
 
 public class MediaImportPlan
 {

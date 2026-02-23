@@ -147,10 +147,18 @@ public class JsonFilesystemObjectRepository<TData> where TData : class, IIdentif
          Directory.CreateDirectory(directory);
    }
 
-   record SnapshotChanges(List<ScannedFile> ChangedFiles, HashSet<Guid> CurrentIds, int DeletedCount)
+   class SnapshotChanges(List<ScannedFile> changedFiles, HashSet<Guid> currentIds, int deletedCount)
    {
+      public List<ScannedFile> ChangedFiles { get; } = changedFiles;
+      public HashSet<Guid> CurrentIds { get; } = currentIds;
+      public int DeletedCount { get; } = deletedCount;
       public bool HasChanges => ChangedFiles.Count + DeletedCount > 0;
    }
 
-   public record ScannedFile(string Path, Guid Id, DateTime LastWriteUtc);
+   public class ScannedFile(string path, Guid id, DateTime lastWriteUtc)
+   {
+      public string Path { get; } = path;
+      public Guid Id { get; } = id;
+      public DateTime LastWriteUtc { get; } = lastWriteUtc;
+   }
 }

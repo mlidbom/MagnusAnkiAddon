@@ -1,3 +1,8 @@
 namespace JAStudio.Core.Storage.Media;
 
-public record TtsInfo(string Engine, string Voice, string Version);
+public class TtsInfo(string engine, string voice, string version)
+{
+   public string Engine { get; } = engine;
+   public string Voice { get; } = voice;
+   public string Version { get; } = version;
+}

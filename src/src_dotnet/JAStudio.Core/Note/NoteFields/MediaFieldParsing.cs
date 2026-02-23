@@ -9,7 +9,11 @@ public enum MediaType
    Image
 }
 
-public record MediaReference(string FileName, MediaType Type);
+public class MediaReference(string fileName, MediaType type)
+{
+   public string FileName { get; } = fileName;
+   public MediaType Type { get; } = type;
+}
 
 public static partial class MediaFieldParsing
 {

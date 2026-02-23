@@ -2,29 +2,65 @@ using System.Collections.Generic;
 
 namespace JAStudio.Dictionary;
 
-public sealed record WordEntry(
-   long Id,
-   IReadOnlyList<WordKanji> Kanjis,
-   IReadOnlyList<WordReading> Readings,
-   IReadOnlyList<WordSense> Senses);
+public sealed class WordEntry(
+   long id,
+   IReadOnlyList<WordKanji> kanjis,
+   IReadOnlyList<WordReading> readings,
+   IReadOnlyList<WordSense> senses)
+{
+   public long Id { get; } = id;
+   public IReadOnlyList<WordKanji> Kanjis { get; } = kanjis;
+   public IReadOnlyList<WordReading> Readings { get; } = readings;
+   public IReadOnlyList<WordSense> Senses { get; } = senses;
+}
 
-public sealed record WordKanji(string Text, IReadOnlyList<string> Priorities);
+public sealed class WordKanji(string text, IReadOnlyList<string> priorities)
+{
+   public string Text { get; } = text;
+   public IReadOnlyList<string> Priorities { get; } = priorities;
+}
 
-public sealed record WordReading(string Text, IReadOnlyList<string> Priorities);
+public sealed class WordReading(string text, IReadOnlyList<string> priorities)
+{
+   public string Text { get; } = text;
+   public IReadOnlyList<string> Priorities { get; } = priorities;
+}
 
-public sealed record WordSense(
-   IReadOnlyList<string> Glosses,
-   IReadOnlyList<string> PartsOfSpeech,
-   IReadOnlyList<string> Miscellanea);
+public sealed class WordSense(
+   IReadOnlyList<string> glosses,
+   IReadOnlyList<string> partsOfSpeech,
+   IReadOnlyList<string> miscellanea)
+{
+   public IReadOnlyList<string> Glosses { get; } = glosses;
+   public IReadOnlyList<string> PartsOfSpeech { get; } = partsOfSpeech;
+   public IReadOnlyList<string> Miscellanea { get; } = miscellanea;
+}
 
-public sealed record NameEntry(
-   long Id,
-   IReadOnlyList<NameKanji> Kanjis,
-   IReadOnlyList<NameReading> Readings,
-   IReadOnlyList<NameTranslation> Translations);
+public sealed class NameEntry(
+   long id,
+   IReadOnlyList<NameKanji> kanjis,
+   IReadOnlyList<NameReading> readings,
+   IReadOnlyList<NameTranslation> translations)
+{
+   public long Id { get; } = id;
+   public IReadOnlyList<NameKanji> Kanjis { get; } = kanjis;
+   public IReadOnlyList<NameReading> Readings { get; } = readings;
+   public IReadOnlyList<NameTranslation> Translations { get; } = translations;
+}
 
-public sealed record NameKanji(string Text, IReadOnlyList<string> Priorities);
+public sealed class NameKanji(string text, IReadOnlyList<string> priorities)
+{
+   public string Text { get; } = text;
+   public IReadOnlyList<string> Priorities { get; } = priorities;
+}
 
-public sealed record NameReading(string Text, IReadOnlyList<string> Priorities);
+public sealed class NameReading(string text, IReadOnlyList<string> priorities)
+{
+   public string Text { get; } = text;
+   public IReadOnlyList<string> Priorities { get; } = priorities;
+}
 
-public sealed record NameTranslation(IReadOnlyList<string> Transcriptions);
+public sealed class NameTranslation(IReadOnlyList<string> transcriptions)
+{
+   public IReadOnlyList<string> Transcriptions { get; } = transcriptions;
+}

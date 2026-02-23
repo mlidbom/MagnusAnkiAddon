@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace JAStudio.Core.TaskRunners;
 
-public record ThreadCount
+public class ThreadCount
 {
    public static readonly ThreadCount One = new(1);
    public static readonly ThreadCount AllLogicalCores = new(Environment.ProcessorCount);

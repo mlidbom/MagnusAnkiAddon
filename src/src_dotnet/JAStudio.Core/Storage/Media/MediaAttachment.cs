@@ -4,7 +4,7 @@ using JAStudio.Core.Note;
 
 namespace JAStudio.Core.Storage.Media;
 
-public abstract record MediaAttachment
+public abstract class MediaAttachment
 {
    public required MediaFileId Id { get; init; }
    public required List<NoteId> NoteIds { get; init; }
@@ -15,9 +15,9 @@ public abstract record MediaAttachment
    [JsonIgnore] public string FilePath { get; internal set; } = string.Empty;
 }
 
-public record AudioAttachment : MediaAttachment
+public class AudioAttachment : MediaAttachment
 {
    public TtsInfo? Tts { get; init; }
 }
 
-public record ImageAttachment : MediaAttachment;
+public class ImageAttachment : MediaAttachment;

@@ -2,8 +2,10 @@ using System;
 
 namespace JAStudio.Core.Storage.Media;
 
-public readonly record struct MediaFileId(Guid Value)
+public readonly struct MediaFileId(Guid value) : IEquatable<MediaFileId>
 {
+   public Guid Value { get; } = value;
+
    public static MediaFileId New() => new(Guid.NewGuid());
 
    public static MediaFileId Parse(string value) => new(Guid.Parse(value));
@@ -23,4 +25,10 @@ public readonly record struct MediaFileId(Guid Value)
    public bool IsEmpty => Value == Guid.Empty;
 
    public override string ToString() => Value.ToString("D");
+
+   public bool Equals(MediaFileId other) => Value == other.Value;
+   public override bool Equals(object? obj) => obj is MediaFileId other && Equals(other);
+   public override int GetHashCode() => Value.GetHashCode();
+   public static bool operator ==(MediaFileId left, MediaFileId right) => left.Equals(right);
+   public static bool operator !=(MediaFileId left, MediaFileId right) => !left.Equals(right);
 }

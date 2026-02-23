@@ -10,7 +10,13 @@ using MemoryPack;
 
 namespace JAStudio.Core.Storage.Media;
 
-public record MediaFileInfo(MediaFileId Id, string FullPath, string OriginalFileName, string Extension);
+public class MediaFileInfo(MediaFileId id, string fullPath, string originalFileName, string extension)
+{
+   public MediaFileId Id { get; } = id;
+   public string FullPath { get; } = fullPath;
+   public string OriginalFileName { get; } = originalFileName;
+   public string Extension { get; } = extension;
+}
 
 public class MediaFileIndex
 {
