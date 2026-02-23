@@ -3,17 +3,17 @@ using LinqToDB.Data;
 
 namespace JAStudio.Dictionary;
 
-public sealed class JMDictDb : DataConnection
+sealed class JMDictDb : DataConnection
 {
    JMDictDb(DataOptions options) : base(options) {}
 
-   public ITable<WordKanji> WordKanjis => this.GetTable<WordKanji>();
-   public ITable<WordReading> WordReadings => this.GetTable<WordReading>();
-   public ITable<WordSense> WordSenses => this.GetTable<WordSense>();
+   public ITable<WordKanjiRow> WordKanjis => this.GetTable<WordKanjiRow>();
+   public ITable<WordReadingRow> WordReadings => this.GetTable<WordReadingRow>();
+   public ITable<WordSenseRow> WordSenses => this.GetTable<WordSenseRow>();
 
-   public ITable<NameKanji> NameKanjis => this.GetTable<NameKanji>();
-   public ITable<NameReading> NameReadings => this.GetTable<NameReading>();
-   public ITable<NameTranslation> NameTranslations => this.GetTable<NameTranslation>();
+   public ITable<NameKanjiRow> NameKanjis => this.GetTable<NameKanjiRow>();
+   public ITable<NameReadingRow> NameReadings => this.GetTable<NameReadingRow>();
+   public ITable<NameTranslationRow> NameTranslations => this.GetTable<NameTranslationRow>();
 
    public static JMDictDb OpenReadOnly(string dbPath) =>
       new(new DataOptions()

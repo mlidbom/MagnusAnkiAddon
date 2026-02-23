@@ -13,7 +13,7 @@ namespace JAStudio.Dictionary;
 
 public static class JMDictDatabaseGenerator
 {
-   public const int SchemaVersion = 2;
+   public const int SchemaVersion = 3;
 
    public static void Generate(string dbPath, Action<string>? log = null)
    {
@@ -54,27 +54,27 @@ public static class JMDictDatabaseGenerator
    static void CreateSchema(JMDictDb db)
    {
       db.CreateTable<WordEntryRow>();
-      db.CreateTable<WordKanji>();
-      db.CreateTable<WordReading>();
-      db.CreateTable<WordSense>();
+      db.CreateTable<WordKanjiRow>();
+      db.CreateTable<WordReadingRow>();
+      db.CreateTable<WordSenseRow>();
       db.CreateTable<NameEntryRow>();
-      db.CreateTable<NameKanji>();
-      db.CreateTable<NameReading>();
-      db.CreateTable<NameTranslation>();
+      db.CreateTable<NameKanjiRow>();
+      db.CreateTable<NameReadingRow>();
+      db.CreateTable<NameTranslationRow>();
    }
 
    static void CreateIndexes(JMDictDb db)
    {
-      db.Execute("CREATE INDEX IX_WordKanji_Text ON WordKanji(Text)");
-      db.Execute("CREATE INDEX IX_WordReading_Text ON WordReading(Text)");
-      db.Execute("CREATE INDEX IX_WordKanji_EntryId ON WordKanji(EntryId)");
-      db.Execute("CREATE INDEX IX_WordReading_EntryId ON WordReading(EntryId)");
-      db.Execute("CREATE INDEX IX_WordSense_EntryId ON WordSense(EntryId)");
-      db.Execute("CREATE INDEX IX_NameKanji_Text ON NameKanji(Text)");
-      db.Execute("CREATE INDEX IX_NameReading_Text ON NameReading(Text)");
-      db.Execute("CREATE INDEX IX_NameKanji_EntryId ON NameKanji(EntryId)");
-      db.Execute("CREATE INDEX IX_NameReading_EntryId ON NameReading(EntryId)");
-      db.Execute("CREATE INDEX IX_NameTranslation_EntryId ON NameTranslation(EntryId)");
+      db.Execute("CREATE INDEX IX_WordKanjiRow_Text ON WordKanjiRow(Text)");
+      db.Execute("CREATE INDEX IX_WordReadingRow_Text ON WordReadingRow(Text)");
+      db.Execute("CREATE INDEX IX_WordKanjiRow_EntryId ON WordKanjiRow(EntryId)");
+      db.Execute("CREATE INDEX IX_WordReadingRow_EntryId ON WordReadingRow(EntryId)");
+      db.Execute("CREATE INDEX IX_WordSenseRow_EntryId ON WordSenseRow(EntryId)");
+      db.Execute("CREATE INDEX IX_NameKanjiRow_Text ON NameKanjiRow(Text)");
+      db.Execute("CREATE INDEX IX_NameReadingRow_Text ON NameReadingRow(Text)");
+      db.Execute("CREATE INDEX IX_NameKanjiRow_EntryId ON NameKanjiRow(EntryId)");
+      db.Execute("CREATE INDEX IX_NameReadingRow_EntryId ON NameReadingRow(EntryId)");
+      db.Execute("CREATE INDEX IX_NameTranslationRow_EntryId ON NameTranslationRow(EntryId)");
    }
 
    static void InsertWordEntries(JMDictDb db, List<IJapaneseEntry> entries)
@@ -87,10 +87,10 @@ public static class JMDictDatabaseGenerator
          db.Insert(new WordEntryRow { Id = id });
 
          foreach(var kanji in entry.Kanjis)
-            db.Insert(new WordKanji { EntryId = id, Text = kanji.Text, PrioritiesRaw = JoinCodes(kanji.Priorities) });
+            db.Insert(new WordKanjiRow { EntryId = id, Text = kanji.Text, PrioritiesRaw = JoinCodes(kanji.Priorities) });
 
          foreach(var reading in entry.Readings)
-            db.Insert(new WordReading { EntryId = id, Text = reading.Text, PrioritiesRaw = JoinCodes(reading.Priorities) });
+            db.Insert(new WordReadingRow { EntryId = id, Text = reading.Text, PrioritiesRaw = JoinCodes(reading.Priorities) });
 
          IEnumerable<PartOfSpeech> lastPos = [];
          foreach(var sense in entry.Senses)
@@ -109,7 +109,7 @@ public static class JMDictDatabaseGenerator
 
             var posToUse = currentPos.Count > 0 ? currentPos : lastPos.ToList();
 
-            db.Insert(new WordSense
+            db.Insert(new WordSenseRow
             {
                EntryId = id,
                GlossesRaw = string.Join("|", englishGlosses),
@@ -134,13 +134,13 @@ public static class JMDictDatabaseGenerator
          db.Insert(new NameEntryRow { Id = id });
 
          foreach(var kanji in entry.Kanjis)
-            db.Insert(new NameKanji { EntryId = id, Text = kanji.Text, PrioritiesRaw = JoinCodes(kanji.Priorities) });
+            db.Insert(new NameKanjiRow { EntryId = id, Text = kanji.Text, PrioritiesRaw = JoinCodes(kanji.Priorities) });
 
          foreach(var reading in entry.Readings)
-            db.Insert(new NameReading { EntryId = id, Text = reading.Text, PrioritiesRaw = JoinCodes(reading.Priorities) });
+            db.Insert(new NameReadingRow { EntryId = id, Text = reading.Text, PrioritiesRaw = JoinCodes(reading.Priorities) });
 
          foreach(var translation in entry.Translations)
-            db.Insert(new NameTranslation { EntryId = id, TranscriptionsRaw = string.Join("|", translation.Transcriptions) });
+            db.Insert(new NameTranslationRow { EntryId = id, TranscriptionsRaw = string.Join("|", translation.Transcriptions) });
 
          id++;
       }

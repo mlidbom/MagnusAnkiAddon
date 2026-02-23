@@ -106,9 +106,9 @@ public sealed class JMDictDatabase : IDisposable
 
       return entryIds.Select(id => new WordEntry(
          id,
-         kanjis[id].ToList(),
-         readings[id].ToList(),
-         senses[id].ToList())).ToList();
+         kanjis[id].Select(r => new WordKanji(r)).ToList(),
+         readings[id].Select(r => new WordReading(r)).ToList(),
+         senses[id].Select(r => new WordSense(r)).ToList())).ToList();
    }
 
    static List<NameEntry> LoadNameEntries(JMDictDb db, List<long> entryIds)
@@ -133,9 +133,9 @@ public sealed class JMDictDatabase : IDisposable
 
       return entryIds.Select(id => new NameEntry(
          id,
-         kanjis[id].ToList(),
-         readings[id].ToList(),
-         translations[id].ToList())).ToList();
+         kanjis[id].Select(r => new NameKanji(r)).ToList(),
+         readings[id].Select(r => new NameReading(r)).ToList(),
+         translations[id].Select(r => new NameTranslation(r)).ToList())).ToList();
    }
 
    public void Dispose() {}
