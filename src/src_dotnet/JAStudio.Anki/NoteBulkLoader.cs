@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using JAStudio.Core.Anki;
 using JAStudio.Core.Note;
-using Microsoft.Data.Sqlite;
+using LinqToDB;
 
 namespace JAStudio.Anki;
 
@@ -36,9 +37,9 @@ public static class NoteBulkLoader
    /// </summary>
    public static AnkiBulkLoadResult LoadAllNotesOfType(string dbFilePath, string noteTypeName, Func<Guid, NoteId> idFactory)
    {
-      using var db = AnkiDatabase.OpenReadOnly(dbFilePath);
-      var (noteTypeId, fieldMap) = GetNoteTypeInfo(db.Connection, noteTypeName);
-      return LoadNotes(db.Connection, noteTypeId, fieldMap, idFactory);
+      using var db = AnkiDb.OpenReadOnly(dbFilePath);
+      var (noteTypeId, fieldMap) = GetNoteTypeInfo(db, noteTypeName);
+      return LoadNotes(db, noteTypeId, fieldMap, idFactory);
    }
 
    /// <summary>
@@ -47,36 +48,29 @@ public static class NoteBulkLoader
    /// </summary>
    public static Dictionary<long, NoteId> LoadAnkiIdMaps(string dbFilePath)
    {
-      using var db = AnkiDatabase.OpenReadOnly(dbFilePath);
+      using var db = AnkiDb.OpenReadOnly(dbFilePath);
       var result = new Dictionary<long, NoteId>();
 
       foreach(var noteTypeName in NoteTypes.AllList)
       {
          var idFactory = NoteTypes.IdFactoryFromName(noteTypeName);
-         var (noteTypeId, fieldMap) = GetNoteTypeInfo(db.Connection, noteTypeName);
+         var (noteTypeId, fieldMap) = GetNoteTypeInfo(db, noteTypeName, throwIfMissing: false);
 
-         if(!fieldMap.TryGetValue(AnkiFieldNames.JasNoteId, out var jasNoteIdOrdinal))
+         if(noteTypeId == null || !fieldMap.TryGetValue(AnkiFieldNames.JasNoteId, out var jasNoteIdOrdinal))
             continue;
 
-         using var cmd = db.Connection.CreateCommand();
-         cmd.CommandText = """
-                           SELECT notes.id, notes.flds
-                           FROM notes
-                           WHERE notes.mid = @mid
-                           """;
-         cmd.Parameters.AddWithValue("@mid", noteTypeId);
+         var notes = db.Notes
+                       .Where(n => n.NoteTypeId == noteTypeId.Value)
+                       .Select(n => new { n.Id, n.Fields })
+                       .ToList();
 
-         using var reader = cmd.ExecuteReader();
-         while(reader.Read())
+         foreach(var note in notes)
          {
-            var ankiId = reader.GetInt64(0);
-            var fldsRaw = reader.IsDBNull(1) ? "" : reader.GetString(1);
-            var fieldValues = string.IsNullOrEmpty(fldsRaw) ? [] : fldsRaw.Split(FieldSeparator);
-
+            var fieldValues = string.IsNullOrEmpty(note.Fields) ? [] : note.Fields.Split(FieldSeparator);
             var jasNoteIdStr = jasNoteIdOrdinal < fieldValues.Length ? fieldValues[jasNoteIdOrdinal] : "";
             if(Guid.TryParse(jasNoteIdStr, out var guid))
             {
-               result[ankiId] = idFactory(guid);
+               result[note.Id] = idFactory(guid);
             }
          }
       }
@@ -84,74 +78,45 @@ public static class NoteBulkLoader
       return result;
    }
 
-   static (long noteTypeId, Dictionary<string, int> fieldMap) GetNoteTypeInfo(SqliteConnection connection, string noteTypeName)
+   static (long? noteTypeId, Dictionary<string, int> fieldMap) GetNoteTypeInfo(AnkiDb db, string noteTypeName, bool throwIfMissing = true)
    {
-      // Get note type ID.
-      // The notetypes.name column has COLLATE unicase (Anki custom). To avoid depending on that
-      // collation working correctly, we fetch all note types and match in C#.
-      using var ntCmd = connection.CreateCommand();
-      ntCmd.CommandText = "SELECT id, name FROM notetypes";
-      using var ntReader = ntCmd.ExecuteReader();
+      // Fetch all note types in C# to avoid depending on Anki's custom unicase collation
+      var allNoteTypes = db.NoteTypes.ToList();
+      var match = allNoteTypes.FirstOrDefault(nt => string.Equals(nt.Name, noteTypeName, StringComparison.Ordinal));
 
-      long? noteTypeId = null;
-      while(ntReader.Read())
+      if(match == null)
       {
-         if(string.Equals(ntReader.GetString(1), noteTypeName, StringComparison.Ordinal))
-         {
-            noteTypeId = ntReader.GetInt64(0);
-            break;
-         }
+         if(throwIfMissing)
+            throw new KeyNotFoundException($"Note type '{noteTypeName}' not found in Anki database.");
+         return (null, new Dictionary<string, int>());
       }
 
-      if(noteTypeId == null)
-         throw new KeyNotFoundException($"Note type '{noteTypeName}' not found in Anki database.");
+      var fieldMap = db.Fields
+                       .Where(f => f.NoteTypeId == match.Id)
+                       .OrderBy(f => f.Ordinal)
+                       .ToList()
+                       .ToDictionary(f => f.Name, f => f.Ordinal);
 
-      // Get field name → ordinal mapping
-      using var fCmd = connection.CreateCommand();
-      fCmd.CommandText = "SELECT name, ord FROM fields WHERE ntid = @ntid ORDER BY ord";
-      fCmd.Parameters.AddWithValue("@ntid", noteTypeId);
-
-      var fieldMap = new Dictionary<string, int>();
-      using var reader = fCmd.ExecuteReader();
-      while(reader.Read())
-      {
-         var name = reader.GetString(0);
-         var ord = reader.GetInt32(1);
-         fieldMap[name] = ord;
-      }
-
-      return (noteTypeId.Value, fieldMap);
+      return (match.Id, fieldMap);
    }
 
-   static AnkiBulkLoadResult LoadNotes(SqliteConnection connection, long noteTypeId, Dictionary<string, int> fieldMap, Func<Guid, NoteId> idFactory)
+   static AnkiBulkLoadResult LoadNotes(AnkiDb db, long? noteTypeId, Dictionary<string, int> fieldMap, Func<Guid, NoteId> idFactory)
    {
-      using var cmd = connection.CreateCommand();
-      cmd.CommandText = """
-                        SELECT notes.id,
-                               notes.tags,
-                               notes.flds
-                        FROM notes
-                        WHERE notes.mid = @mid
-                        """;
-      cmd.Parameters.AddWithValue("@mid", noteTypeId);
+      var notes = db.Notes
+                    .Where(n => n.NoteTypeId == noteTypeId!.Value)
+                    .Select(n => new { n.Id, n.Tags, n.Fields })
+                    .ToList();
 
-      using var reader = cmd.ExecuteReader();
       var results = new List<NoteData>();
       var ankiIdMap = new Dictionary<long, NoteId>();
 
-      while(reader.Read())
+      foreach(var note in notes)
       {
-         var ankiId = reader.GetInt64(0);
-
-         var tagsRaw = reader.IsDBNull(1) ? "" : reader.GetString(1);
-         var tags = string.IsNullOrEmpty(tagsRaw)
+         var tags = string.IsNullOrEmpty(note.Tags)
                        ? new List<string>()
-                       : new List<string>(tagsRaw.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+                       : new List<string>(note.Tags.Split(' ', StringSplitOptions.RemoveEmptyEntries));
 
-         var fldsRaw = reader.IsDBNull(2) ? "" : reader.GetString(2);
-         var fieldValues = string.IsNullOrEmpty(fldsRaw)
-                              ? []
-                              : fldsRaw.Split(FieldSeparator);
+         var fieldValues = string.IsNullOrEmpty(note.Fields) ? [] : note.Fields.Split(FieldSeparator);
 
          var fields = new Dictionary<string, string>(fieldMap.Count);
          foreach(var (name, ordinal) in fieldMap)
@@ -166,7 +131,7 @@ public static class NoteBulkLoader
                          ? idFactory(guid)
                          : idFactory(Guid.NewGuid());
 
-         ankiIdMap[ankiId] = noteId;
+         ankiIdMap[note.Id] = noteId;
          results.Add(new NoteData(noteId, fields, tags));
       }
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using JAStudio.Core.Note;
 using JAStudio.Core.Note.Collection;
 
@@ -19,53 +20,26 @@ public static class CardStudyingStatusLoader
    /// </summary>
    public static List<CardStudyingStatus> FetchAll(string dbFilePath)
    {
-      using var db = AnkiDatabase.OpenReadOnly(dbFilePath);
+      using var db = AnkiDb.OpenReadOnly(dbFilePath);
 
-      // First get the note type IDs for our known types by scanning in C# (avoids unicase collation issues)
-      var noteTypeIds = new Dictionary<long, string>();
-      using(var ntCmd = db.Connection.CreateCommand())
-      {
-         ntCmd.CommandText = "SELECT id, name FROM notetypes";
-         using var ntReader = ntCmd.ExecuteReader();
-         while(ntReader.Read())
-         {
-            var name = ntReader.GetString(1);
-            if(NoteTypes.All.Contains(name))
-               noteTypeIds[ntReader.GetInt64(0)] = name;
-         }
-      }
+      // Fetch all note types in C# to avoid depending on Anki's custom unicase collation
+      var allNoteTypes = db.NoteTypes.ToList();
+      var noteTypeIds = allNoteTypes
+                       .Where(nt => NoteTypes.All.Contains(nt.Name))
+                       .ToDictionary(nt => nt.Id, nt => nt.Name);
 
       if(noteTypeIds.Count == 0)
          return [];
 
-      // Build the IN clause with the numeric IDs (no collation needed)
-      var idList = string.Join(",", noteTypeIds.Keys);
-      using var cmd = db.Connection.CreateCommand();
-      cmd.CommandText = $"""
-                         SELECT cards.nid   AS note_id,
-                                templates.name AS card_type,
-                                cards.queue AS queue,
-                                notes.mid AS note_type_id
-                         FROM cards
-                         JOIN notes ON cards.nid = notes.id
-                         JOIN templates ON templates.ntid = notes.mid AND templates.ord = cards.ord
-                         WHERE notes.mid IN ({idList})
-                         """;
+      var noteTypeIdList = noteTypeIds.Keys.ToList();
 
-      using var reader = cmd.ExecuteReader();
-      var results = new List<CardStudyingStatus>();
+      var results = (from card in db.Cards
+                     join note in db.Notes on card.NoteId equals note.Id
+                     join template in db.Templates on new { note.NoteTypeId, card.Ordinal } equals new { template.NoteTypeId, template.Ordinal }
+                     where noteTypeIdList.Contains(note.NoteTypeId)
+                     select new { card.NoteId, template.Name, card.Queue, note.NoteTypeId })
+        .ToList();
 
-      while(reader.Read())
-      {
-         var noteId = reader.GetInt64(0);
-         var cardType = reader.GetString(1);
-         var isSuspended = reader.GetInt32(2) == QueueTypeSuspended;
-         var noteTypeId = reader.GetInt64(3);
-         var noteTypeName = noteTypeIds[noteTypeId];
-
-         results.Add(new CardStudyingStatus(noteId, cardType, isSuspended, noteTypeName));
-      }
-
-      return results;
+      return results.Select(r => new CardStudyingStatus(r.NoteId, r.Name, r.Queue == QueueTypeSuspended, noteTypeIds[r.NoteTypeId])).ToList();
    }
 }
