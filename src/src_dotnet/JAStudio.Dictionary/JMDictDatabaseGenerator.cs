@@ -13,7 +13,7 @@ namespace JAStudio.Dictionary;
 
 public static class JMDictDatabaseGenerator
 {
-   const int SchemaVersion = 1;
+   public const int SchemaVersion = 2;
 
    public static void Generate(string dbPath, Action<string>? log = null)
    {
@@ -65,16 +65,16 @@ public static class JMDictDatabaseGenerator
 
    static void CreateIndexes(JMDictDb db)
    {
-      db.Execute("CREATE INDEX idx_word_kanji_text ON word_kanji(text)");
-      db.Execute("CREATE INDEX idx_word_reading_text ON word_reading(text)");
-      db.Execute("CREATE INDEX idx_word_kanji_entry ON word_kanji(entry_id)");
-      db.Execute("CREATE INDEX idx_word_reading_entry ON word_reading(entry_id)");
-      db.Execute("CREATE INDEX idx_word_sense_entry ON word_sense(entry_id)");
-      db.Execute("CREATE INDEX idx_name_kanji_text ON name_kanji(text)");
-      db.Execute("CREATE INDEX idx_name_reading_text ON name_reading(text)");
-      db.Execute("CREATE INDEX idx_name_kanji_entry ON name_kanji(entry_id)");
-      db.Execute("CREATE INDEX idx_name_reading_entry ON name_reading(entry_id)");
-      db.Execute("CREATE INDEX idx_name_translation_entry ON name_translation(entry_id)");
+      db.Execute("CREATE INDEX IX_WordKanji_Text ON WordKanji(Text)");
+      db.Execute("CREATE INDEX IX_WordReading_Text ON WordReading(Text)");
+      db.Execute("CREATE INDEX IX_WordKanji_EntryId ON WordKanji(EntryId)");
+      db.Execute("CREATE INDEX IX_WordReading_EntryId ON WordReading(EntryId)");
+      db.Execute("CREATE INDEX IX_WordSense_EntryId ON WordSense(EntryId)");
+      db.Execute("CREATE INDEX IX_NameKanji_Text ON NameKanji(Text)");
+      db.Execute("CREATE INDEX IX_NameReading_Text ON NameReading(Text)");
+      db.Execute("CREATE INDEX IX_NameKanji_EntryId ON NameKanji(EntryId)");
+      db.Execute("CREATE INDEX IX_NameReading_EntryId ON NameReading(EntryId)");
+      db.Execute("CREATE INDEX IX_NameTranslation_EntryId ON NameTranslation(EntryId)");
    }
 
    static void InsertWordEntries(JMDictDb db, List<IJapaneseEntry> entries)

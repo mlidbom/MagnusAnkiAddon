@@ -16,10 +16,32 @@ public sealed class JMDictDatabase : IDisposable
 
    public static JMDictDatabase OpenOrGenerate(string dbPath, Action<string>? log = null)
    {
+      if(File.Exists(dbPath))
+      {
+         var version = ReadSchemaVersion(dbPath);
+         if(version < JMDictDatabaseGenerator.SchemaVersion)
+         {
+            log?.Invoke($"Database schema version {version} is outdated (current: {JMDictDatabaseGenerator.SchemaVersion}), regenerating...");
+            File.Delete(dbPath);
+         }
+      }
+
       if(!File.Exists(dbPath))
          JMDictDatabaseGenerator.Generate(dbPath, log);
 
       return Open(dbPath);
+   }
+
+   static long ReadSchemaVersion(string dbPath)
+   {
+      using var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={dbPath};Mode=ReadOnly");
+      connection.Open();
+      using var cmd = connection.CreateCommand();
+      cmd.CommandText = "PRAGMA user_version";
+      var result = (long)cmd.ExecuteScalar()!;
+      connection.Close();
+      Microsoft.Data.Sqlite.SqliteConnection.ClearPool(connection);
+      return result;
    }
 
    JMDictDb OpenDb() => JMDictDb.OpenReadOnly(_dbPath);
