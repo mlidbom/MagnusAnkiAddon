@@ -13,7 +13,7 @@ namespace JAStudio.Anki;
 [Table(Name = "notes")]
 sealed class NoteRow
 {
-   [PrimaryKey, Identity]                      public long   Id             { get; init; } // epoch-ms timestamp
+   [PrimaryKey]                                public long   Id             { get; init; } // epoch-ms timestamp (Anki-assigned, not auto-increment)
    [Column(Name = "guid")]                     public string Guid           { get; init; } = ""; // globally unique id (8-char base91)
    [Column(Name = "mid")]                      public long   NoteTypeId     { get; init; } // model (note type) id
    [Column(Name = "mod")]                      public long   ModifiedEpoch  { get; init; } // modification timestamp (epoch seconds)
@@ -31,7 +31,7 @@ sealed class NoteRow
 [Table(Name = "cards")]
 sealed class CardRow
 {
-   [PrimaryKey, Identity]                      public long   Id                  { get; init; } // epoch-ms timestamp
+   [PrimaryKey]                                public long   Id                  { get; init; } // epoch-ms timestamp (Anki-assigned, not auto-increment)
    [Column(Name = "nid")]                      public long   NoteId              { get; init; }
    [Column(Name = "did")]                      public long   DeckId              { get; init; }
    [Column(Name = "ord")]                      public int    Ordinal             { get; init; } // which template (0-based)
@@ -56,7 +56,7 @@ sealed class CardRow
 [Table(Name = "notetypes")]
 sealed class NoteTypeRow
 {
-   [PrimaryKey, Identity]                      public long   Id             { get; init; }
+   [PrimaryKey]                                public long   Id             { get; init; }
    [Column(Name = "name")]                     public string Name           { get; init; } = "";
    [Column(Name = "mtime_secs")]               public long   ModifiedEpoch  { get; init; }
    [Column(Name = "usn")]                      public long   UpdateSequence { get; init; }
@@ -92,7 +92,7 @@ sealed class TemplateRow
 [Table(Name = "decks")]
 sealed class DeckRow
 {
-   [PrimaryKey, Identity]                      public long   Id             { get; init; }
+   [PrimaryKey]                                public long   Id             { get; init; }
    [Column(Name = "name")]                     public string Name           { get; init; } = "";
    [Column(Name = "mtime_secs")]               public long   ModifiedEpoch  { get; init; }
    [Column(Name = "usn")]                      public long   UpdateSequence { get; init; }
@@ -105,7 +105,7 @@ sealed class DeckRow
 [Table(Name = "deck_config")]
 sealed class DeckConfigRow
 {
-   [PrimaryKey, Identity]                      public long   Id             { get; init; }
+   [PrimaryKey]                                public long   Id             { get; init; }
    [Column(Name = "name")]                     public string Name           { get; init; } = "";
    [Column(Name = "mtime_secs")]               public long   ModifiedEpoch  { get; init; }
    [Column(Name = "usn")]                      public long   UpdateSequence { get; init; }
@@ -128,7 +128,7 @@ sealed class ConfigRow
 [Table(Name = "revlog")]
 sealed class ReviewLogRow
 {
-   [PrimaryKey, Identity]                      public long Id               { get; init; } // epoch-ms timestamp
+   [PrimaryKey]                                public long Id               { get; init; } // epoch-ms timestamp (Anki-assigned, not auto-increment)
    [Column(Name = "cid")]                      public long CardId           { get; init; }
    [Column(Name = "usn")]                      public long UpdateSequence   { get; init; }
    [Column(Name = "ease")]                     public long EaseButton       { get; init; } // 1=again, 2=hard, 3=good, 4=easy
@@ -165,7 +165,7 @@ sealed class TagRow
 [Table(Name = "col")]
 sealed class CollectionRow
 {
-   [PrimaryKey, Identity]                      public long   Id             { get; init; }
+   [PrimaryKey]                                public long   Id             { get; init; }
    [Column(Name = "crt")]                      public long   CreatedEpoch   { get; init; } // collection creation timestamp
    [Column(Name = "mod")]                      public long   ModifiedEpoch  { get; init; }
    [Column(Name = "scm")]                      public long   SchemaChanged  { get; init; } // schema modification epoch
