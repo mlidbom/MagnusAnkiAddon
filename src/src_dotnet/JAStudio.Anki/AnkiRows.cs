@@ -1,4 +1,6 @@
 using LinqToDB.Mapping;
+// ReSharper disable UnusedMember.Global
+// ReSharper disable ClassNeverInstantiated.Global
 
 namespace JAStudio.Anki;
 
