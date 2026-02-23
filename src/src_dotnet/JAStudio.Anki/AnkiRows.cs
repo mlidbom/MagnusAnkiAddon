@@ -2,6 +2,8 @@ using LinqToDB.Mapping;
 
 namespace JAStudio.Anki;
 
+// @formatter:off
+
 // ── Row types mirroring Anki's SQLite schema ────────────────────────────────
 // Property names decode Anki's cryptic abbreviations into readable meanings.
 // Column Name= attributes map back to the actual database column names.
