@@ -2,8 +2,8 @@ name: Auto Approve Workflow Runs
 
 on:
   workflow_dispatch:  # Add this line
-  schedule:
-    - cron: '*/5 * * * *' # every 5 minutes
+  #schedule:
+  #  - cron: '*/5 * * * *' # every 5 minutes
 
 jobs:
   auto-approve:
