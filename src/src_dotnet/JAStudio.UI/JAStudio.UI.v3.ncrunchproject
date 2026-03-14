@@ -1,5 +1,9 @@
 ﻿<ProjectConfiguration>
   <Settings>
-    <IgnoreThisComponentCompletely>True</IgnoreThisComponentCompletely>
+    <AdditionalFilesToIncludeForProject>
+      <Value>**\*.axaml</Value>
+    </AdditionalFilesToIncludeForProject>
+    <BuildProcessType>ActualBuildHost</BuildProcessType>
+    <HiddenComponentWarnings />
   </Settings>
 </ProjectConfiguration>

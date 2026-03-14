@@ -39,7 +39,7 @@ public class PythonDotNetShimTests
 
       other.Must().DeepEqual(expected);
 
-      //this is way too slow, we need another aproach for our amounts of data
+      //this is way too slow, we need another approach for our amounts of data
       PythonEnvironment.Use(() =>
       {
          for(var i = 0; i < 10000; i++)

@@ -1,3 +1,7 @@
 ﻿<ProjectConfiguration>
-  <Settings />
+  <Settings>
+    <HiddenComponentWarnings>
+      <Value>InconsistentCompilerResultsOverGrid</Value>
+    </HiddenComponentWarnings>
+  </Settings>
 </ProjectConfiguration>
