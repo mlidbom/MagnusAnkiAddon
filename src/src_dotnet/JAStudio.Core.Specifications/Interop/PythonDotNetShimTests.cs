@@ -6,6 +6,7 @@ using Xunit;
 
 namespace JAStudio.Core.Specifications.Interop;
 
+[NCrunch.Framework.RequiresCapability("PYTHON_VENV")]
 public class PythonDotNetShimTests
 {
    [Fact] public void RoundTrippingStringListResultInIdenticalList()
